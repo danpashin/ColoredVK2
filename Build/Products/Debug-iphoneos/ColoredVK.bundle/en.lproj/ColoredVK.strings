@@ -1,0 +1,32 @@
+//  
+//  ColoredVK.strings
+//  ColoredVK
+//  
+//  Created by Даниил on 08.04.2015.
+//  Copyright (©) Daniil Pashin 2015. All rights reserved.
+//  
+
+
+"NAVIGATION_BAR" = "Navigation bar";
+"TOOLBAR" = "Toolbar";
+"MENU_BACKGROUND" = "Menu";
+"MESSAGES_BACKGROUND" = "Messages";
+"OTHER" = "Other";
+
+"TOOLBAR_COLOR" = "Change toolbar color";
+"BAR_COLOR" = "Change nav bar color";
+"BACKGROUND_COLOR" = "Background color";
+"FOREGROUND_COLOR" = "Foreground color";
+"ENABLED_IMAGE" = "Use image instead";
+
+"CHANGE_BACKGROUND" = "Change background";
+"IMAGE_BLACKOUT" = "Image blackout";
+"USE_BLUR" = "Use blur*";
+"USE_BLUR_WARNING" = "*Using blur on old devices may cause lags";
+"SEPARATOR_COLOR" = "Separators color";
+"HIDE_SEPARATORS" = "Hide separators";
+
+"SHOW_BAR" = "Always show nav bar";
+"BLACK_KB" = "Black keyboard";
+
+"DEVELOPER_IN_VK" = "Developer in VK";

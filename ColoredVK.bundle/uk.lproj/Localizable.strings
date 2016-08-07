@@ -1,0 +1,27 @@
+//  
+//  Localizable.strings
+//  ColoredVK
+//  
+//  Created by Даниил on 30.06.16.
+//  Copyright (©) Daniil Pashin 2016. All rights reserved.
+//  
+
+
+"ERROR" = "Помилка";
+"CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Неможливо зберегти зображення. Спробуйте знову або зверніться до розробника.";
+
+"YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE" = "Ваш твік застарів. Актуальна версія - %@";
+"REMIND_LATER_BUTTON_TITLE" = "Нагадати пізніше";
+"SKIP_THIS_VERSION_BUTTON_TITLE" = "Пропустити цю версію";
+"UPADTE_BUTTON_TITLE" = "Оновити зараз";
+
+"TWEAK_FOOTER_TEXT" = "Версія твіка: %@\nВерсія VK App: %@";
+"LOADING_TWEAK_FILES_ERROR_MESSAGE" = "При завантаженні файлів сталася помилка.\nПеревірте їх наявність або зверніться до розробника.";
+
+"SELECT_COLOR_TITLE" = "Вибрати колір";
+"ALERT_COPY_CURRENT_VALUE_TIILE" = "Скопіювати поточне значення hex";
+"ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Введіть 16-ковий код кольору\n(Символ # ставити не обов'язково)";
+"EXAMPLE_ALERT_MESSAGE" = "Наприклад %@";
+"SAVE_THIS_COLOR_QUESTION" = "Зберегти цей колір?";
+"RESET_BUTTON_TITLE" = "Скинути збережений колір";
+"TAP_AND_HOLD_BUTTON_TITLE" = "Натисніть і утримуйте кнопку, щоб продовжити";

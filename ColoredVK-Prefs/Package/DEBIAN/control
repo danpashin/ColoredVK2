@@ -1,0 +1,9 @@
+Package: com.daniilpashin.coloredvk
+Name: ColoredVK 
+Version: 3.0
+Description: Colorize your VK App!
+Section: Tweaks
+Depends: firmware (>= 7.0), preferenceloader
+Architecture: iphoneos-arm
+Author: Daniil Pashin
+Maintainer: Daniil Pashin

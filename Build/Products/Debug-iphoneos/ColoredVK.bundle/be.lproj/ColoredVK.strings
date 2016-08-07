@@ -1,0 +1,32 @@
+//  
+//  ColoredVK.strings
+//  ColoredVK
+//  
+//  Created by Даниил on 08.04.2015.
+//  Copyright (©) Daniil Pashin 2015. All rights reserved.
+//  
+    
+
+"NAVIGATION_BAR" = "Бар навігацыі";
+"TOOLBAR" = "Тулбар";
+"MENU_BACKGROUND" = "Меню";
+"MESSAGES_BACKGROUND" = "Паведамлення";
+"OTHER" = "іншае";
+
+"TOOLBAR_COLOR" = "Змяніць колер тулбара";
+"BAR_COLOR" = "Змяніць бар навігацыі";
+"BACKGROUND_COLOR" = "Колер фону";
+"FOREGROUND_COLOR" = "Колер кнопак";
+"ENABLED_IMAGE" = "Малюнак замест колеру";
+
+"CHANGE_BACKGROUND" = "Змяніць фон";
+"IMAGE_BLACKOUT" = "Зацямненне малюнка.";
+"USE_BLUR" = "Выкарыстоўваць блюрее*";
+"USE_BLUR_WARNING" = "*Выкарыстанне размыцця на старых прыладах можа выклікаць лагі";
+"SEPARATOR_COLOR" = "Колер падзельнікаў";
+"HIDE_SEPARATORS" = "Схаваць падзельнікі";
+
+"SHOW_BAR" = "Заўсёды паказваць бар";
+"BLACK_KB" = "Чорная клавіятура";
+
+"DEVELOPER_IN_VK" = "Распрацоўшчык у ВК";

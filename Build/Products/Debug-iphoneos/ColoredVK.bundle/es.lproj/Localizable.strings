@@ -1,0 +1,27 @@
+//  
+//  Localizable.strings
+//  ColoredVK
+//  
+//  Created by Даниил on 30.06.16.
+//  Copyright (©) Daniil Pashin 2016. All rights reserved.
+//  
+
+
+"ERROR" = "Error";
+"CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "No se puede guardar la imagen. Inténtalo de nuevo o desarrollador de contactos.";
+
+"YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE" = "Usted está utilizando la versión obsoleta pellizco. Más reciente es %@";
+"REMIND_LATER_BUTTON_TITLE" = "Recordar después";
+"SKIP_THIS_VERSION_BUTTON_TITLE" = "Omitir esta version";
+"UPADTE_BUTTON_TITLE" = "Actualizar ahora";
+
+"TWEAK_FOOTER_TEXT" = "Tweak versión: %@\nVK App versión: %@";
+"LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Tweak error al cargar los archivos.\nComprobar su disponibilidad o de contacto del desarrollador.";
+
+"SELECT_COLOR_TITLE" = "Seleccionar el color";
+"ALERT_COPY_CURRENT_VALUE_TIILE" = "Se copia el valor hexadecimal actual";
+"ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Introduzca un código de color hexadecimal\n(símbolo # no es necesario)";
+"EXAMPLE_ALERT_MESSAGE" = "Como %@";
+"SAVE_THIS_COLOR_QUESTION" = "Guarde este color?";
+"RESET_BUTTON_TITLE" = "Restablecer el color guardado";
+"TAP_AND_HOLD_BUTTON_TITLE" = "Toque y mantenga pulsado el botón para continuar";

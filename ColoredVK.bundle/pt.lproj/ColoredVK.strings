@@ -1,0 +1,35 @@
+//  
+//  ColoredVK.strings
+//  ColoredVK
+//  
+//  Created by Даниил on 08.04.2015.
+//  Copyright (©) Daniil Pashin 2015. All rights reserved.
+//  
+
+"BLACK_THEME" = "Tema preto";
+"ENABLE_BLACK_THEME" = "Habilitar";
+"BLACK_THEME_FOOTER" = "";
+
+"NAVIGATION_BAR" = "Barra de navegação";
+"TOOLBAR" = "Toolbar";
+"MENU_BACKGROUND" = "Cardápio";
+"MESSAGES_BACKGROUND" = "Mensagens";
+"OTHER" = "De outros";
+
+"TOOLBAR_COLOR" = "Mude a cor da barra de ferramentas";
+"BAR_COLOR" = "Alterar a cor da barra de navegação";
+"BACKGROUND_COLOR" = "Cor de fundo";
+"FOREGROUND_COLOR" = "Cor do primeiro plano";
+"ENABLED_IMAGE" = "Usar uma imagem em vez";
+
+"CHANGE_BACKGROUND" = "Mude o fundo";
+"IMAGE_BLACKOUT" = "Apagão imagem";
+"USE_BLUR" = "Use borrão*";
+"USE_BLUR_WARNING" = "*Usando desfoque em dispositivos antigos podem causar atrasos";
+"SEPARATOR_COLOR" = "Cor separadores";
+"HIDE_SEPARATORS" = "Ocultar separadores";
+
+"SHOW_BAR" = "Sempre mostrar barra de navegação";
+"BLACK_KB" = "Teclado preto";
+
+"DEVELOPER_IN_VK" = "Desenvolvedor na VK";
