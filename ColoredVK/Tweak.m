@@ -163,62 +163,63 @@ static BOOL compareNumbers(int *number, int *minValue, int *maxValue)
 
 static void checkUpdates()
 {
-    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *stringURL = [NSString stringWithFormat:@"http://danpashin.ru/api/v1.0/cvk/checkUpdates.php?userVers=%@", kColoredVKVersion];
-        
         NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
         
-        NSURLResponse *response;
-        NSData *respData = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&response error:nil];
-        NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:respData options:0 error:nil];
-        
-        NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:prefsPath];
-        if (responseDict.count > 0) {
-            NSString *version = responseDict[@"version"];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSString *message = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE", nil, cvkBunlde, nil), version];
-                NSString *skip = NSLocalizedStringFromTableInBundle(@"SKIP_THIS_VERSION_BUTTON_TITLE", nil, cvkBunlde, nil);
-                NSString *remindLater = NSLocalizedStringFromTableInBundle(@"REMIND_LATER_BUTTON_TITLE", nil, cvkBunlde, nil);
-                NSString *updateNow = NSLocalizedStringFromTableInBundle(@"UPADTE_BUTTON_TITLE", nil, cvkBunlde, nil);
-                
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ColoredVK"
-                                                                message:message
-                                                               delegate:nil
-                                                      cancelButtonTitle:remindLater
-                                                      otherButtonTitles:skip, updateNow, nil];
-                alert.tapBlock = ^(UIAlertView *alertView, NSInteger buttonIndex) {
-                    NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
-                    
-                    if ([title isEqualToString:skip]) {
-                        [prefs setValue:version forKey:@"skippedVersion"];
-                        [prefs writeToFile:prefsPath atomically:YES];
-                    } else if ([title isEqualToString:updateNow]) {
-                        NSString *key;
+        [NSURLConnection sendAsynchronousRequest:urlRequest 
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+                                   if (data != nil) {
+                                       NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:prefsPath];
+                                       id responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                                       if ([responseDict isKindOfClass:[NSDictionary class]]) {
+                                           NSString *version = responseDict[@"version"];
+                                           
+                                           if (![prefs[@"skippedVersion"] isEqualToString:version]) {
+                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                   NSString *message = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE", nil, cvkBunlde, nil), version];
+                                                   NSString *skip = NSLocalizedStringFromTableInBundle(@"SKIP_THIS_VERSION_BUTTON_TITLE", nil, cvkBunlde, nil);
+                                                   NSString *remindLater = NSLocalizedStringFromTableInBundle(@"REMIND_LATER_BUTTON_TITLE", nil, cvkBunlde, nil);
+                                                   NSString *updateNow = NSLocalizedStringFromTableInBundle(@"UPADTE_BUTTON_TITLE", nil, cvkBunlde, nil);
+                                                   
+                                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ColoredVK"
+                                                                                                   message:message
+                                                                                                  delegate:nil
+                                                                                         cancelButtonTitle:remindLater
+                                                                                         otherButtonTitles:skip, updateNow, nil];
+                                                   alert.tapBlock = ^(UIAlertView *alertView, NSInteger buttonIndex) {
+                                                       NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
+                                                       
+                                                       if ([title isEqualToString:skip]) {
+                                                           [prefs setValue:version forKey:@"skippedVersion"];
+                                                           [prefs writeToFile:prefsPath atomically:YES];
+                                                       } else if ([title isEqualToString:updateNow]) {
+                                                           NSString *key;
 #ifdef COMPILE_FOR_JAILBREAK
-                        key = @"cydiaURL";
+                                                           key = @"cydiaURL";
 #else 
-                        key = @"ipaURL";
+                                                           key = @"ipaURL";
 #endif
-                        NSURL *url = [NSURL URLWithString:responseDict[key]];
-                        if ([[UIApplication sharedApplication] canOpenURL:url]) {
-                            [[UIApplication sharedApplication] openURL:url];
-                        }
-                    }
-                };
-                if (![prefs[@"skippedVersion"] isEqualToString:version]) {  [alert show]; }
-            });
-            
-        }
-        
-        NSDateFormatter *dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"yyyy-MM-dd";
-        NSString *dateString = [dateFormatter stringFromDate:[NSDate date]];
-        [prefs setValue:dateString forKey:@"lastCheckForUpdates"];
-        [prefs writeToFile:prefsPath atomically:YES];
-        
-        
+                                                           NSURL *url = [NSURL URLWithString:responseDict[key]];
+                                                           if ([[UIApplication sharedApplication] canOpenURL:url]) {
+                                                               [[UIApplication sharedApplication] openURL:url];
+                                                           }
+                                                       }
+                                                   };
+                                                   
+                                                   [alert show];
+                                               });
+                                           }
+                                           
+                                           NSDateFormatter *dateFormatter = [NSDateFormatter new];
+                                           dateFormatter.dateFormat = @"yyyy-MM-dd";
+                                           NSString *dateString = [dateFormatter stringFromDate:[NSDate date]];
+                                           [prefs setValue:dateString forKey:@"lastCheckForUpdates"];
+                                           [prefs writeToFile:prefsPath atomically:YES];
+                                       }
+                                   }
+                               }];
     });
 }
 
