@@ -16,8 +16,7 @@
 "MESSAGES_BACKGROUND" = "Mensagens";
 "OTHER" = "De outros";
 
-"TOOLBAR_COLOR" = "Mude a cor da barra de ferramentas";
-"BAR_COLOR" = "Alterar a cor da barra de navegação";
+"CHANGE_COLORS" = "Alterar cores";
 "BACKGROUND_COLOR" = "Cor de fundo";
 "FOREGROUND_COLOR" = "Cor do primeiro plano";
 "ENABLED_IMAGE" = "Usar uma imagem em vez";

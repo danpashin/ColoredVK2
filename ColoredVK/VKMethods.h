@@ -47,6 +47,12 @@
 //@end
 
 
+@interface TextKitLayer : CALayer
+- (void)drawInContext:(struct CGContext *)arg1;
+- (id)init;
+@property(retain, nonatomic) id text; // @synthesize text=_text;
+@end
+
 @interface TextKitLabelInteractive : UIView
 @property(readonly, nonatomic) CALayer *textLayer;
 @end

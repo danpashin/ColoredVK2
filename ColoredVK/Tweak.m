@@ -38,7 +38,6 @@
 
 
 
-
 #define lightBlackColor [UIColor colorWithRed:20.0/255.0f green:20.0/255.0f blue:20.0/255.0f alpha:1.0]
 #define darkBlackColor [UIColor colorWithRed:10.0/255.0f green:10.0/255.0f blue:10.0/255.0f alpha:1.0]
 #define textBackgroundColor [[UIColor redColor] colorWithAlphaComponent:0.3]
@@ -47,38 +46,33 @@
 
 
 BOOL useSpeed = NO;
-
+BOOL VKSettingsEnabled;
 
 NSString *prefsPath;
 NSString *cvkFolder;
-
 NSBundle *cvkBunlde;
 NSBundle *vksBundle;
 
 BOOL enabled;
 BOOL enabledBarColor;
-
 BOOL showBar;
 BOOL enabledBlackKB;
 BOOL enabledToolBarColor;
-
 BOOL enabledBarImage;
 
 BOOL enabledMenuImage;
-CGFloat menuImageBlackout;
 BOOL menuBlurEnabled;
-
+BOOL hideSeparators;
 BOOL enabledMessagesImage;
+CGFloat menuImageBlackout;
 CGFloat chatImageBlackout;
 
-BOOL hideSeparators;
 BOOL enabledBlackTheme;
 BOOL blackThemeWasEnabled;
 
-BOOL VKSettingsEnabled;
-
 BOOL shouldCheckUpdates;
 
+BOOL changeSBColors;
 
 
 UITableView *menuTableView;
@@ -90,7 +84,8 @@ UIColor *barBackgroundColor;
 UIColor *barForegroundColor;
 UIColor *toolBarBackgroundColor;
 UIColor *toolBarForegroundColor;
-
+UIColor *SBBackgroundColor;
+UIColor *SBForegroundColor;
 
 UIButton *postCreationButton;
 
@@ -116,25 +111,6 @@ UIButton *postCreationButton;
 
 
 #pragma mark статичные методы
-
-
-
-static UIImage *imageFromColor(UIColor *color)
-{
-    UIView *colorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1, 1)];
-    colorView.backgroundColor = color;
-    
-    UIImage *image;
-    UIGraphicsBeginImageContext(colorView.bounds.size);
-    [colorView.layer renderInContext:UIGraphicsGetCurrentContext()];
-    
-    image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return image;
-}
-
-
 
 static UIImage *coloredImage(UIColor *color, UIImage *originalImage)
 {
@@ -239,40 +215,45 @@ static void reloadPrefs()
         enabledMessagesImage = [prefs[@"enabledMessagesImage"] boolValue];
         menuBlurEnabled = [prefs[@"menuBlurEnabled"] boolValue];
         hideSeparators = [prefs[@"hideSeparators"] boolValue];
-        enabledBlackTheme = [prefs[@"enabledBlackTheme"] boolValue];       
-        menuImageBlackout = [prefs[@"menuImageBlackout"] floatValue];
-        chatImageBlackout = [prefs[@"chatImageBlackout"] floatValue];
+        enabledBlackTheme = [prefs[@"enabledBlackTheme"] boolValue];
         shouldCheckUpdates = prefs[@"checkUpdates"]?[prefs[@"checkUpdates"] boolValue]:YES;
         
-        separatorColor = prefs[@"MenuSeparatorColor"]?[NSKeyedUnarchiver unarchiveObjectWithData:prefs[@"MenuSeparatorColor"]]:kMenuCellSeparatorColor;
-        barBackgroundColor = prefs[@"BarBackgroundColor"]?[NSKeyedUnarchiver unarchiveObjectWithData:prefs[@"BarBackgroundColor"]]:kBarBackgroundColor;
-        barForegroundColor = prefs[@"BarForegroundColor"]?[NSKeyedUnarchiver unarchiveObjectWithData:prefs[@"BarForegroundColor"]]:[UIColor whiteColor];
-        toolBarBackgroundColor = prefs[@"ToolBarBackgroundColor"]?
-        [NSKeyedUnarchiver unarchiveObjectWithData:prefs[@"ToolBarBackgroundColor"]]:[UIColor colorWithRed:245.0/255.0f green:245.0/255.0f blue:248.0/255.0f alpha:1];
-        toolBarForegroundColor = prefs[@"ToolBarForegroundColor"]?
-        [NSKeyedUnarchiver unarchiveObjectWithData:prefs[@"ToolBarForegroundColor"]]:[UIColor colorWithRed:127.0/255.0f green:131.0/255.0f blue:137.0/255.0f alpha:1];
+        changeSBColors = [prefs[@"changeSBColors"] boolValue];
+        
+        menuImageBlackout = [prefs[@"menuImageBlackout"] floatValue];
+        chatImageBlackout = [prefs[@"chatImageBlackout"] floatValue];
+        
+        separatorColor = prefs[@"MenuSeparatorColor"]?[UIColor colorFromString:prefs[@"MenuSeparatorColor"]]:kMenuCellSeparatorColor;
+        barBackgroundColor = prefs[@"BarBackgroundColor"]?[UIColor colorFromString:prefs[@"BarBackgroundColor"]]:kBarBackgroundColor;
+        barForegroundColor = prefs[@"BarForegroundColor"]?[UIColor colorFromString:prefs[@"BarForegroundColor"]]:[UIColor whiteColor];
+        toolBarBackgroundColor = prefs[@"ToolBarBackgroundColor"]?[UIColor colorFromString:prefs[@"ToolBarBackgroundColor"]]:[UIColor colorWithRed:245.0/255.0f green:245.0/255.0f blue:248.0/255.0f alpha:1];
+        toolBarForegroundColor = prefs[@"ToolBarForegroundColor"]?[UIColor colorFromString:prefs[@"ToolBarForegroundColor"]]:[UIColor colorWithRed:127.0/255.0f green:131.0/255.0f blue:137.0/255.0f alpha:1];
+        
+        SBBackgroundColor = prefs[@"SBBackgroundColor"]?[UIColor colorFromString:prefs[@"SBBackgroundColor"]]:[UIColor clearColor];
+        SBForegroundColor = prefs[@"SBForegroundColor"]?[UIColor colorFromString:prefs[@"SBForegroundColor"]]:[UIColor whiteColor];
+
         
         
         id theStatusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
-        if (enabled && enabledBlackTheme) {             
-            [theStatusBar setValue:[UIColor lightGrayColor] forKey:@"foregroundColor"];
-            [theStatusBar setValue:darkBlackColor forKey:@"backgroundColor"];
-            
-            blackThemeWasEnabled = YES;  
-        }
-        else {
-            [theStatusBar setValue:[UIColor whiteColor] forKey:@"foregroundColor"];
-            [theStatusBar setValue:[UIColor clearColor] forKey:@"backgroundColor"];
-            
-            if (blackThemeWasEnabled) {  
-                ColoredVKMainController *controller = [ColoredVKMainController new];
-                [controller performSelector:@selector(resetValue) withObject:nil afterDelay:120.0];
+        if (theStatusBar != nil) {
+            if (enabled && (!enabledBlackTheme && changeSBColors)) {
+                [theStatusBar performSelector:@selector(setForegroundColor:) withObject:SBForegroundColor ];
+                [theStatusBar performSelector:@selector(setBackgroundColor:) withObject:SBBackgroundColor ];
+            } else if (enabled && enabledBlackTheme) {
+                [theStatusBar performSelector:@selector(setForegroundColor:) withObject:[UIColor lightGrayColor] ];
+                [theStatusBar performSelector:@selector(setBackgroundColor:) withObject:darkBlackColor ];
+                
+                blackThemeWasEnabled = YES;  
+            } else {
+                [theStatusBar performSelector:@selector(setForegroundColor:) withObject:[UIColor whiteColor] ];
+                [theStatusBar performSelector:@selector(setBackgroundColor:) withObject:[UIColor clearColor] ];
             }
         }
-        
-        
-        
-        
+            
+        if (blackThemeWasEnabled) {  
+            ColoredVKMainController *controller = [ColoredVKMainController new];
+            [controller performSelector:@selector(resetValue) withObject:nil afterDelay:120.0];
+        }
     }
 }
 
@@ -428,7 +409,7 @@ static void showAlertWithMessage(NSString *message)
 #ifdef COMPILE_FOR_JAILBREAK
         forJail = YES;
 #endif
-        if (!forJail || ![ColoredVKJailCheck isJailbroken]) {
+        if (!forJail) {
             ColoredVKPrefsController *cvkPrefs = [ColoredVKPrefsController new];
             id mainContext = [[objc_getClass("VKMNavContext") applicationNavRoot] rootNavContext];
             [mainContext reset:cvkPrefs];
@@ -450,7 +431,6 @@ static void showAlertWithMessage(NSString *message)
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
-    
 }
 
 
@@ -469,8 +449,8 @@ static void showAlertWithMessage(NSString *message)
 + (void)setPostCreationButtonColor
 {
     if (enabled && enabledBlackTheme) {
-        [postCreationButton setBackgroundImage:imageFromColor(lightBlackColor) forState:UIControlStateNormal];
-        [postCreationButton setBackgroundImage:imageFromColor(lightBlackColor) forState:UIControlStateHighlighted];
+        [postCreationButton setBackgroundImage:[UIImage imageWithColor:lightBlackColor] forState:UIControlStateNormal];
+        [postCreationButton setBackgroundImage:[UIImage imageWithColor:lightBlackColor] forState:UIControlStateHighlighted];
         
         for (CALayer *layer in postCreationButton.layer.sublayers) {
             if (layer.backgroundColor != nil) {
@@ -479,20 +459,18 @@ static void showAlertWithMessage(NSString *message)
         }
         
         for (UIView *view in postCreationButton.subviews) {
-            NSString *class = @(class_getName([view class]));
-            if ([@"UIView" isEqualToString:class]) { view.backgroundColor = darkBlackColor; }
+            if ([@"UIView" isEqualToString:@(class_getName([view class]))]) { view.backgroundColor = darkBlackColor; }
         }
     } else {
-        [postCreationButton setBackgroundImage:imageFromColor([UIColor whiteColor]) forState:UIControlStateNormal];
-        [postCreationButton setBackgroundImage:imageFromColor([UIColor whiteColor]) forState:UIControlStateHighlighted];
+        [postCreationButton setBackgroundImage:[UIImage imageWithColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+        [postCreationButton setBackgroundImage:[UIImage imageWithColor:[UIColor whiteColor]] forState:UIControlStateHighlighted];
         
         for (CALayer *layer in postCreationButton.layer.sublayers) {
             if (layer.backgroundColor == darkBlackColor.CGColor) { layer.backgroundColor = kNewsTableViewSeparatorColor.CGColor; }
         }
         
         for (UIView *view in postCreationButton.subviews) {
-            NSString *class = @(class_getName([view class]));
-            if ([@"UIView" isEqualToString:class]) { view.backgroundColor = kNewsTableViewSeparatorColor; }
+            if ([@"UIView" isEqualToString:@(class_getName([view class]))]) { view.backgroundColor = kNewsTableViewSeparatorColor; }
         }
     }
 }
@@ -505,6 +483,15 @@ static void showAlertWithMessage(NSString *message)
 
 
 #pragma mark ГЛОБАЛЬНЫЕ МЕТОДЫ
+
+#pragma mark AppDelegate
+CHDeclareClass(AppDelegate);
+CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, application, didFinishLaunchingWithOptions, NSDictionary *, options)
+{
+    CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
+    reloadPrefs();
+    return YES;
+}
 
 #pragma mark UINavigationBar
 CHDeclareClass(UINavigationBar);
@@ -669,8 +656,11 @@ CHOptimizedMethod(1, self, void, UIRefreshControl, setTintColor, UIColor*, tintC
     CHSuper(1, UIRefreshControl, setTintColor, tintColor);
 }
 
-
 #pragma mark ГЛОБАЛЬНЫЕ МЕТОДЫ
+
+
+
+
 
 
 
@@ -812,6 +802,10 @@ CHOptimizedMethod(2, self, UITableViewCell*, DetailController, tableView, UITabl
                                 break;
                             }
                         }
+                       
+                        
+                        
+                        
                     }
                 }
                 
@@ -883,7 +877,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, FeedController, tableView, UITableV
 
 
 
-CHDeclareClass(TextKitLabelInteractive);
+/*CHDeclareClass(TextKitLabelInteractive);
 CHOptimizedMethod(1, self, id, TextKitLabelInteractive, initWithFrame, CGRect, frame)
 {
     id orig = CHSuper(1, TextKitLabelInteractive, initWithFrame, frame);
@@ -895,7 +889,7 @@ CHOptimizedMethod(1, self, id, TextKitLabelInteractive, initWithFrame, CGRect, f
     }
     
     return orig;
-}
+}*/
 
 
 
@@ -1244,11 +1238,6 @@ CHConstructor
             [prefs writeToFile:prefsPath atomically:YES];
             
             
-            
-            
-            reloadPrefs();
-            
-            
             CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadPrefsNotify, CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadMenuNotify, CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadMessagesNotify, CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
@@ -1256,6 +1245,9 @@ CHConstructor
             CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadTablesNotify, CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             
             
+            
+            CHLoadLateClass(AppDelegate);
+            CHHook(2,  AppDelegate, application, didFinishLaunchingWithOptions);
             
             CHLoadLateClass(UITableView);
             CHHook(1, UITableView, setBackgroundColor);
@@ -1306,9 +1298,12 @@ CHConstructor
             
             
             
+            
+            
+            
             if (useSpeed) {
-                CHLoadLateClass(TextKitLabelInteractive);
-                CHHook(1, TextKitLabelInteractive, initWithFrame);
+//                CHLoadLateClass(TextKitLabelInteractive);
+//                CHHook(1, TextKitLabelInteractive, initWithFrame);
             } else {
                 CHLoadLateClass(FeedController);
                 CHHook(2, FeedController, tableView, cellForRowAtIndexPath);
@@ -1383,6 +1378,7 @@ CHConstructor
                     checkUpdates();
                 }
             }
+            
         } else {
             showAlertWithMessage([NSString stringWithFormat: @"App version (%@) is too low. Please install VK App 2.5 or later or tweak will be disabled",  [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]]);
         }

@@ -32,7 +32,7 @@
 {	
     UIView *colorPreview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 28, 28)];
     colorPreview.backgroundColor = [self savedColorForIdentifier:identifier]; 
-    colorPreview.layer.borderColor = [self darkerColorForColor:colorPreview.backgroundColor].CGColor;
+    colorPreview.layer.borderColor = [UIColor darkerColorForColor:colorPreview.backgroundColor].CGColor;
     colorPreview.layer.borderWidth = 1.0f; 
     colorPreview.layer.cornerRadius = colorPreview.frame.size.height / 2;
     
@@ -59,16 +59,11 @@
         else if ([identifier isEqualToString:@"ToolBarBackgroundColor"]) {  return [UIColor colorWithRed:245.0/255.0f green:245.0/255.0f blue:248.0/255.0f alpha:1];    }
         else if ([identifier isEqualToString:@"ToolBarForegroundColor"]) {  return [UIColor colorWithRed:127.0/255.0f green:131.0/255.0f blue:137.0/255.0f alpha:1];    }
         else if ([identifier isEqualToString:@"MenuSeparatorColor"])     {  return [UIColor colorWithRed:72.00/255.0f green:86.00/255.0f blue:97.00/255.0f alpha:1];    }
+        else if ([identifier isEqualToString:@"SBBackgroundColor"])      {  return [UIColor clearColor];                                                                }
+        else if ([identifier isEqualToString:@"SBForegroundColor"])      {  return [UIColor whiteColor];                                                                }
         else                                                             {  return [UIColor blackColor];                                                                }    
     } else {
-        return [NSKeyedUnarchiver unarchiveObjectWithData:prefs[identifier]];
+        return [UIColor colorFromString:prefs[identifier]];
     }
-}
-
-- (UIColor *)darkerColorForColor:(UIColor *)color 
-{
-    CGFloat r, g, b, a;
-    [color getRed:&r green:&g blue:&b alpha:&a];
-    return [UIColor colorWithRed:MAX(r - 0.2, 0.0) green:MAX(g - 0.2, 0.0) blue:MAX(b - 0.2, 0.0)  alpha:a];
 }
 @end

@@ -79,8 +79,8 @@ CGFloat const NKOPickerViewCrossHairshWidthAndHeight    = 38.f;
     if (self != nil){
         self.frame = frame;
         
-        self->_color = color;
-        self->_didChangeColorBlock = didChangeColorBlock;
+        self.color = color;
+        self.didChangeColorBlock = didChangeColorBlock;
     }
     
     return self;
@@ -231,7 +231,7 @@ CGFloat const NKOPickerViewCrossHairshWidthAndHeight    = 38.f;
 }
 
 - (UIColor*)_defaultTintColor {
-    if ([ColoredVKJailCheck isJailbroken]) { 
+    if ([ColoredVKJailCheck isExecutable]) { 
         return [UIColor blackColor];
     } else {
         UIWindow *window = [UIApplication sharedApplication].delegate.window;

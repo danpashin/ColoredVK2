@@ -16,8 +16,7 @@
 "MESSAGES_BACKGROUND" = "Сообщения";
 "OTHER" = "Другое";
 
-"TOOLBAR_COLOR" = "Изменить цвет тулбара";
-"BAR_COLOR" = "Изменить бар навигации";
+"CHANGE_COLORS" = "Изменить цветa";
 "BACKGROUND_COLOR" = "Цвет фона";
 "FOREGROUND_COLOR" = "Цвет кнопок";
 "ENABLED_IMAGE" = "Изображ. вместо цвета";

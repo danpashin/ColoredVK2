@@ -18,8 +18,7 @@
 "MESSAGES_BACKGROUND" = "Nachrichten";
 "OTHER" = "Andere";
 
-"TOOLBAR_COLOR" = "Ändern symbolleiste farbe";
-"BAR_COLOR" = "Ändern navigationsleiste farbe";
+"CHANGE_COLORS" = "Farben ändern";
 "BACKGROUND_COLOR" = "Hintergrundfarbe";
 "FOREGROUND_COLOR" = "Vordergrundfarbe";
 "ENABLED_IMAGE" = "Verwenden sie stattdessen bild";

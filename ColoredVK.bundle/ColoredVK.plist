@@ -38,7 +38,7 @@
 			<key>key</key>
 			<string>enabledBarColor</string>
 			<key>label</key>
-			<string>BAR_COLOR</string>
+			<string>CHANGE_COLORS</string>
 			<key>icon</key>
 			<string>NavBarIcon.png</string>
 		</dict>
@@ -92,7 +92,7 @@
 			<key>key</key>
 			<string>enabledToolBarColor</string>
 			<key>label</key>
-			<string>TOOLBAR_COLOR</string>
+			<string>CHANGE_COLORS</string>
 			<key>icon</key>
 			<string>ToolBarIcon.png</string>
 		</dict>
@@ -219,6 +219,46 @@
 			<string>chatImageBlackout</string>
 		</dict>
 		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>STATUS_BAR_COLORS</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>key</key>
+			<string>changeSBColors</string>
+			<key>label</key>
+			<string>CHANGE_COLORS</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>showColorPicker:</string>
+			<key>label</key>
+			<string>FOREGROUND_COLOR</string>
+			<key>cellClass</key>
+			<string>ColoredVKColorCell</string>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>id</key>
+			<string>SBForegroundColor</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>showColorPicker:</string>
+			<key>label</key>
+			<string>BACKGROUND_COLOR</string>
+			<key>cellClass</key>
+			<string>ColoredVKColorCell</string>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>id</key>
+			<string>SBBackgroundColor</string>
+		</dict>
+		<dict>
 			<key>label</key>
 			<string>OTHER</string>
 			<key>cell</key>
@@ -233,10 +273,6 @@
 			<string>enabledBlackKB</string>
 			<key>label</key>
 			<string>BLACK_KB</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
 		</dict>
 		<dict>
 			<key>cell</key>

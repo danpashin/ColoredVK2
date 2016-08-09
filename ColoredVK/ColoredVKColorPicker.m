@@ -61,11 +61,10 @@
     [mainView addSubview:resetButton];
         
     
-    CGRect pickerRect =  CGRectMake(0,  resetButton.frame.origin.y + resetButton.frame.size.height,  mainView.frame.size.width, mainView.frame.size.height - 100);    
+    CGRect pickerRect = CGRectMake(0,  resetButton.frame.origin.y + resetButton.frame.size.height,  mainView.frame.size.width, mainView.frame.size.height - 100);    
     NKOColorPickerDidChangeColorBlock colorDidChange = ^(UIColor *color){ self.customColor = color;};
     self.colorPickerView = [[NKOColorPickerView alloc] initWithFrame:pickerRect color:self.customColor andDidChangeColorBlock:colorDidChange];
     [mainView addSubview:self.colorPickerView];
-     
     
     if (([self.prefs[@"enabled"] boolValue] && [self.prefs[@"enabledBlackTheme"] boolValue]) && !isExecutable ) {
         mainView.backgroundColor = [UIColor colorWithRed:10.0/255.0f green:10.0/255.0f blue:10.0/255.0f alpha:1.0];
@@ -80,7 +79,7 @@
      if (self.prefs[identifier] == nil) {
         return [self defaultColorForIdentifier:identifier];
     } else {
-        return (UIColor*)[NSKeyedUnarchiver unarchiveObjectWithData:self.prefs[identifier]];
+        return [UIColor colorFromString:self.prefs[identifier]];
     }
 }
 
@@ -91,13 +90,15 @@
     else if ([identifier isEqualToString:@"ToolBarBackgroundColor"]) {  return [UIColor colorWithRed:245.0/255.0f green:245.0/255.0f blue:248.0/255.0f alpha:1];    }
     else if ([identifier isEqualToString:@"ToolBarForegroundColor"]) {  return [UIColor colorWithRed:127.0/255.0f green:131.0/255.0f blue:137.0/255.0f alpha:1];    }
     else if ([identifier isEqualToString:@"MenuSeparatorColor"])     {  return [UIColor colorWithRed:72.00/255.0f green:86.00/255.0f blue:97.00/255.0f alpha:1];    }
+    else if ([identifier isEqualToString:@"SBBackgroundColor"])      {  return [UIColor clearColor];                                                                }
+    else if ([identifier isEqualToString:@"SBForegroundColor"])      {  return [UIColor whiteColor];                                                                }
     else                                                             {  return [UIColor blackColor];                                                                }
 }
 
 
 - (void)writeValues 
-{    
-    (self.prefs)[self.cellIdentifier] = [NSKeyedArchiver archivedDataWithRootObject:self.customColor];
+{
+    (self.prefs)[self.cellIdentifier] = [NSString stringFromColor:self.customColor];
     [self.prefs writeToFile:prefsPath atomically:YES];
     
     [self dismissPicker];
@@ -113,10 +114,9 @@
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
     }
     
-    if (!isJailbroken) {
+    if (!isExecutable) {
         self.navigationController.navigationBar.barTintColor = [self savedColorForIdentifier:@"BarBackgroundColor"];
-        [UINavigationBar appearance].barTintColor = [self savedColorForIdentifier:@"Bar"];
-        self.navigationController.navigationBar.tintColor = [UIColor blackColor];
+        [UINavigationBar appearance].barTintColor = [self savedColorForIdentifier:@"BarBackgroundColor"];
     }
     [self dismissViewControllerAnimated:YES completion:nil]; 
 }
@@ -155,7 +155,7 @@
     
     UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, width, height)];
     textField.center = CGPointMake(view.frame .size.width / 2, title.center.y + 35);
-    textField.placeholder = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"EXAMPLE_ALERT_MESSAGE", nil, cvkBunlde, nil), [self hexStringFromColor:self.customColor] ];
+    textField.placeholder = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"EXAMPLE_ALERT_MESSAGE", nil, cvkBunlde, nil), [NSString hexStringFromColor:self.customColor] ];
     textField.borderStyle = UITextBorderStyleRoundedRect;
     textField.clearButtonMode = UITextFieldViewModeWhileEditing;
     textField.returnKeyType = UIReturnKeyDone;
@@ -176,8 +176,8 @@
     valueButton.titleLabel.adjustsFontSizeToFitWidth = YES;
     [valueButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     (valueButton.titleLabel).textAlignment = NSTextAlignmentCenter;
-    [valueButton setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1]] forState:UIControlStateNormal];
-    [valueButton setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:68.0/255.0f green:92.0/255.0f blue:156.0/255.0f alpha:1]] forState:UIControlStateHighlighted];
+    [valueButton setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1]] forState:UIControlStateNormal];
+    [valueButton setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:68.0/255.0f green:92.0/255.0f blue:156.0/255.0f alpha:1]] forState:UIControlStateHighlighted];
     [valueButton addTarget:self action:@selector(copyHEXValue) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:valueButton];
     
@@ -190,8 +190,8 @@
         textField.textColor = [UIColor lightGrayColor];
         textField.layer.borderColor = [UIColor colorWithRed:40.0/255.0f green:40.0/255.0f blue:40.0/255.0f alpha:1.0].CGColor;
         
-        [valueButton setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:40.0/255.0f green:40.0/255.0f blue:40.0/255.0f alpha:1.0]] forState:UIControlStateNormal];
-        [valueButton setBackgroundImage:[self imageWithColor:[UIColor blackColor]] forState:UIControlStateHighlighted];
+        [valueButton setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:40.0/255.0f green:40.0/255.0f blue:40.0/255.0f alpha:1.0]] forState:UIControlStateNormal];
+        [valueButton setBackgroundImage:[UIImage imageWithColor:[UIColor blackColor]] forState:UIControlStateHighlighted];
     }
     
     self.popup = [KLCPopup popupWithContentView:view 
@@ -241,7 +241,7 @@
 
 - (void)copyHEXValue 
 { 
-    [UIPasteboard generalPasteboard].string = [self hexStringFromColor:[self savedColorForIdentifier:self.cellIdentifier]];
+    [UIPasteboard generalPasteboard].string = [NSString hexStringFromColor:[self savedColorForIdentifier:self.cellIdentifier]];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -270,46 +270,10 @@
             textField.layer.borderColor = [UIColor clearColor].CGColor;
         }
         
-        self.customColor = [self colorFromHexString:textField.text];
+        self.customColor = [UIColor colorFromHexString:textField.text];
         self.colorPickerView.color = self.customColor;
     }
     [textField resignFirstResponder];
     return YES;
 }
-
-
-- (UIColor *)colorFromHexString:(NSString *)hexString 
-{
-    if (![hexString hasPrefix:@"#"]) { hexString = [@"#" stringByAppendingString:hexString]; }
-    int red = 0;
-    int green = 0;
-    int blue = 0;
-    sscanf(hexString.UTF8String, "#%02X%02X%02X", &red, &green, &blue);
-    return  [UIColor colorWithRed:red/255.0 green:green/255.0 blue:blue/255.0 alpha:1.0];
-}
-
-- (NSString *)hexStringFromColor:(UIColor *)color
-{
-    const CGFloat *components = CGColorGetComponents(color.CGColor);
-    CGFloat r = components[0];
-    CGFloat g = components[1];
-    CGFloat b = components[2];
-    NSString *hexString = [NSString stringWithFormat:@"#%02X%02X%02X", (int)(r * 255), (int)(g * 255), (int)(b * 255)];
-    return hexString;
-}
-
-- (UIImage *)imageWithColor:(UIColor *)color
-{
-    UIView *colorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1, 1)];
-    colorView.backgroundColor = color;
-    
-    UIGraphicsBeginImageContext(colorView.bounds.size);
-    [colorView.layer renderInContext:UIGraphicsGetCurrentContext()];
-    
-    UIImage *colorImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return colorImage;
-}
-
 @end

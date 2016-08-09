@@ -16,8 +16,7 @@
 "MESSAGES_BACKGROUND" = "Messages";
 "OTHER" = "Other";
 
-"TOOLBAR_COLOR" = "Change toolbar color";
-"BAR_COLOR" = "Change nav bar color";
+"CHANGE_COLORS" = "Change colors";
 "BACKGROUND_COLOR" = "Background color";
 "FOREGROUND_COLOR" = "Foreground color";
 "ENABLED_IMAGE" = "Use image instead";

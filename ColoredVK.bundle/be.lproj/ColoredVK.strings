@@ -18,8 +18,7 @@
 "MESSAGES_BACKGROUND" = "Паведамлення";
 "OTHER" = "іншае";
 
-"TOOLBAR_COLOR" = "Змяніць колер тулбара";
-"BAR_COLOR" = "Змяніць бар навігацыі";
+"CHANGE_COLORS" = "Змяненне колеру";
 "BACKGROUND_COLOR" = "Колер фону";
 "FOREGROUND_COLOR" = "Колер кнопак";
 "ENABLED_IMAGE" = "Малюнак замест колеру";

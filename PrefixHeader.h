@@ -6,13 +6,15 @@
 //
 //
 
-
+#import "NSString+ColoredVK.h"
+#import "UIColor+ColoredVK.h"
+#import "UIImage+COloredVK.h"
 
 //#define AUTOMATIC_PATHS_DETECTION
 
 //#define DEBUG
 
-#define COMPILE_FOR_JAILBREAK
+//#define COMPILE_FOR_JAILBREAK
 
 #ifdef COMPILE_FOR_JAILBREAK
 

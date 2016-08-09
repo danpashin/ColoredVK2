@@ -29,16 +29,6 @@
         [specifiersArray addObject:[self footer]];
     }  else {
         [specifiersArray insertObject:[self footer] atIndex:[specifiersArray indexOfObject:specifiersArray.lastObject]];
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
-            
-            for (PSSpecifier *spec in specifiersArray) {                    
-                if ([spec.identifier isEqualToString:@"prefsLink"]) {
-                    [spec setProperty:@([prefs[@"enabled"] boolValue]) forKey:@"enabled"];
-                }
-            }
-        });
     }
     
     _specifiers = [specifiersArray copy];
@@ -73,8 +63,6 @@
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
-    
-    [self reloadSpecifiers];
 }
 
 
