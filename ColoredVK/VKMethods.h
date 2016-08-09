@@ -35,7 +35,8 @@
 @property(retain, nonatomic) UILabel *name;
 @end
 
-
+@interface VKMGroupedCell : UITableViewCell
+@end
 
 //@interface ChatController : UIViewController
 //
@@ -49,7 +50,7 @@
 
 @interface TextKitLayer : CALayer
 - (void)drawInContext:(struct CGContext *)arg1;
-- (id)init;
+- (instancetype)init;
 @property(retain, nonatomic) id text; // @synthesize text=_text;
 @end
 
@@ -58,9 +59,15 @@
 @end
 
 
+
+
 @interface AudioController : UIViewController
 @property(retain, nonatomic) UIButton *pp;
 @end
 
+
+@interface TextEditController : UIViewController
+@property(retain, nonatomic) UITextView *textView; // @synthesize textView=_textView;
+@end
 
 

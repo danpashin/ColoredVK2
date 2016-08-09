@@ -38,10 +38,10 @@
     
     NSDictionary *tweakSettings = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
     
-    [tweakSettings setValue:@(stepper.value) forKey:(self.specifier).identifier];
+    [tweakSettings setValue:[NSString stringWithFormat:@"%.1f", stepper.value] forKey:self.specifier.identifier];
     [tweakSettings writeToFile:prefsPath atomically:YES];
     
-    if ([(self.specifier).identifier isEqualToString:@"menuImageBlackout"]) {
+    if ([self.specifier.identifier isEqualToString:@"menuImageBlackout"]) {
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
     }
 }

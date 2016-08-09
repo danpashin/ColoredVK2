@@ -656,6 +656,20 @@ CHOptimizedMethod(1, self, void, UIRefreshControl, setTintColor, UIColor*, tintC
     CHSuper(1, UIRefreshControl, setTintColor, tintColor);
 }
 
+#pragma mark VKMGroupedCell
+CHDeclareClass(VKMGroupedCell);
+CHOptimizedMethod(2, self, id, VKMGroupedCell, initWithStyle, UITableViewCellStyle, style, reuseIdentifier, NSString*, reuseIdentifier)
+{
+    VKMGroupedCell *cell = CHSuper(2, VKMGroupedCell, initWithStyle, style, reuseIdentifier, reuseIdentifier);
+    
+    if (enabled && enabledBlackTheme) {
+        cell.backgroundView = nil;
+        cell.backgroundColor = lightBlackColor;
+    }
+    
+    return  cell;
+}
+
 #pragma mark ГЛОБАЛЬНЫЕ МЕТОДЫ
 
 
@@ -666,6 +680,31 @@ CHOptimizedMethod(1, self, void, UIRefreshControl, setTintColor, UIColor*, tintC
 
 
 
+
+#pragma mark TextEditController
+CHDeclareClass(TextEditController);
+CHOptimizedMethod(1, self, void, TextEditController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, TextEditController, viewWillAppear, animated);
+    if (enabled && enabledBlackTheme) {
+        self.textView.backgroundColor = darkBlackColor;
+        self.textView.textColor = [UIColor lightGrayColor];
+        
+        for (id view in self.view.subviews) {
+            if ([view isKindOfClass:[UIView class]]) {
+                for (UIView *subView in [view subviews]) {
+                    if ([subView isKindOfClass:objc_getClass("LayoutAwareView")]) {
+                        for (UIView *subSubView in subView.subviews) {
+                            if ([subSubView isKindOfClass:[UIToolbar class]]) {
+                                [(UIToolbar*)subSubView setBarTintColor:lightBlackColor];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 
 #pragma mark фуллскрин
@@ -686,17 +725,13 @@ CHOptimizedMethod(0, self, BOOL, PhotoFeedController, VKMScrollViewFullscreenEna
 
 
 
-#pragma mark Фидлента
+#pragma mark NewsFeedController
 CHOptimizedMethod(2, self, UITableViewCell*, NewsFeedController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, NewsFeedController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     newsFeedTableView = tableView;
     return cell;
 }
-
-
-
-
 
 
 
@@ -724,6 +759,7 @@ CHOptimizedMethod(0, self, void, VKMAccessibilityTableView, reloadData)
 }
 
 
+#pragma mark DialogsController
 CHDeclareClass(DialogsController);
 CHOptimizedMethod(2, self, UITableViewCell*, DialogsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
@@ -740,6 +776,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, DialogsController, tableView, UITab
 
 
  // группы
+#pragma mark VKMLiveController
 CHDeclareClass(VKMLiveController);
 CHOptimizedMethod(2, self, UITableViewCell*, VKMLiveController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
@@ -774,6 +811,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMLiveController, tableView, UITab
 
 
 
+#pragma mark DetailController
 CHDeclareClass(DetailController);
 CHOptimizedMethod(2, self, UITableViewCell*, DetailController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
@@ -825,6 +863,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, DetailController, tableView, UITabl
     return cell;
 }
 
+#pragma mark FeedController
 CHDeclareClass(FeedController);
 CHOptimizedMethod(2, self, UITableViewCell*, FeedController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
@@ -893,7 +932,7 @@ CHOptimizedMethod(1, self, id, TextKitLabelInteractive, initWithFrame, CGRect, f
 
 
 
-
+#pragma mark NewsFeedPostCreationButton
 CHDeclareClass(NewsFeedPostCreationButton);
 CHOptimizedMethod(1, self, id, NewsFeedPostCreationButton, initWithFrame, CGRect, frame)
 {
@@ -908,7 +947,7 @@ CHOptimizedMethod(1, self, id, NewsFeedPostCreationButton, initWithFrame, CGRect
 
 
 
-#pragma mark Сообщения
+#pragma mark ChatController
 CHDeclareClass(ChatController);
 CHOptimizedMethod(2, self, UITableViewCell*, ChatController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
@@ -1299,6 +1338,15 @@ CHConstructor
             
             
             
+            
+            
+            
+            CHLoadLateClass(TextEditController);
+            CHHook(1, TextEditController, viewWillAppear);
+            
+            
+            CHLoadLateClass(VKMGroupedCell);
+            CHHook(2, VKMGroupedCell, initWithStyle, reuseIdentifier);
             
             
             if (useSpeed) {
