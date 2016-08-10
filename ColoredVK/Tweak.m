@@ -372,13 +372,7 @@ static void showAlertWithMessage(NSString *message)
 
 
 + (MenuCell *)createCustomCell
-{
-    id theStatusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
-    if (enabled && enabledBlackTheme) {             
-        [theStatusBar setValue:[UIColor lightGrayColor] forKey:@"foregroundColor"];
-        [theStatusBar setValue:darkBlackColor forKey:@"backgroundColor"];
-    }
-    
+{    
     MenuCell *cell = [[objc_getClass("MenuCell") alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"customCell"];
     cell.showsReorderControl = NO;
     cell.tag = 450;
@@ -403,8 +397,14 @@ static void showAlertWithMessage(NSString *message)
     [switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventValueChanged];
     [cell addSubview:switchView];
     
+    
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressRecognized:)];
+    longPress.minimumPressDuration = 0.5;
+    [cell addGestureRecognizer:longPress];
+    
+    
+    
     cell.select = (id)^(id arg1, id arg2, id arg3, id arg4) {
-        
         BOOL forJail = NO;
 #ifdef COMPILE_FOR_JAILBREAK
         forJail = YES;
@@ -442,6 +442,16 @@ static void showAlertWithMessage(NSString *message)
     blurEffectView.tag = tag;
     
     return blurEffectView;
+}
+
++ (void)longPressRecognized:(UILongPressGestureRecognizer *)recognizer
+{
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
+        ColoredVKPrefsController *cvkPrefs = [ColoredVKPrefsController new];
+    
+        VKMMainController *controller = [objc_getClass("VKMMainController") rootMainController];
+        [controller.navMain pushViewController:cvkPrefs animated:YES];
+    }
 }
 
 
@@ -593,6 +603,27 @@ CHOptimizedMethod(1, self, void, UITableView, setBackgroundColor, UIColor*, colo
     }
     CHSuper(1, UITableView, setBackgroundColor, color);
 }
+
+
+#pragma mark UITableViewIndex
+CHDeclareClass(UITableViewIndex);
+CHOptimizedMethod(1, self, void, UITableViewIndex, setIndexBackgroundColor, UIColor*, color)
+{
+    if (enabled &&  enabledBlackTheme) {
+        color = [UIColor clearColor];
+    }
+    CHSuper(1, UITableViewIndex, setIndexBackgroundColor, color);
+}
+
+CHOptimizedMethod(1, self, void, UITableViewIndex, setIndexColor, UIColor*, color)
+{
+    if (enabled &&  enabledBlackTheme) {
+        color = [UIColor lightGrayColor];
+    }
+    CHSuper(1, UITableViewIndex, setIndexColor, color);
+}
+
+
  
 CHOptimizedMethod(1, self, void, UITableView, setSeparatorColor, UIColor*, color)
 {
@@ -664,7 +695,7 @@ CHOptimizedMethod(2, self, id, VKMGroupedCell, initWithStyle, UITableViewCellSty
     
     if (enabled && enabledBlackTheme) {
         cell.backgroundView = nil;
-        cell.backgroundColor = lightBlackColor;
+        cell.contentView.backgroundColor = lightBlackColor;
     }
     
     return  cell;
@@ -680,6 +711,81 @@ CHOptimizedMethod(2, self, id, VKMGroupedCell, initWithStyle, UITableViewCellSty
 
 
 
+
+
+#pragma  mark FeedbackController
+CHDeclareClass(FeedbackController);
+CHOptimizedMethod(2, self, UITableViewCell*, FeedbackController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, FeedbackController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    if (enabled && enabledBlackTheme) {
+        for (id view in cell.contentView.subviews) {
+            if ([@"MOCTLabel" isEqualToString:@(class_getName([view class]))]) {
+                UIView *label = view;
+                label.layer.backgroundColor = textBackgroundColor.CGColor;
+                break;
+            }
+        }
+    } else if (blackThemeWasEnabled) {
+        for (id view in cell.contentView.subviews) {
+            if ([@"MOCTLabel" isEqualToString:@(class_getName([view class]))]) {
+                UIView *label = view;
+                label.layer.backgroundColor = [UIColor clearColor].CGColor;
+                break;
+            }
+        }
+    }
+    return cell;
+}
+
+#pragma  mark CountryCallingCodeController
+CHDeclareClass(CountryCallingCodeController);
+CHOptimizedMethod(2, self, UITableViewCell*, CountryCallingCodeController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, CountryCallingCodeController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    if (enabled && enabledBlackTheme) {
+        cell.backgroundView = nil;
+        cell.backgroundColor = lightBlackColor;
+        tableView.backgroundView = nil;
+        tableView.backgroundColor = darkBlackColor;
+        
+        self.navigationController.navigationBar.barTintColor = [UIColor redColor];
+    }
+    return cell;
+}
+
+#pragma  mark SignupPhoneController
+CHDeclareClass(SignupPhoneController);
+CHOptimizedMethod(2, self, UITableViewCell*, SignupPhoneController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, SignupPhoneController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    if (enabled && enabledBlackTheme) {
+        cell.backgroundView = nil;
+        cell.backgroundColor = lightBlackColor;
+        tableView.backgroundView = nil;
+        tableView.backgroundColor = darkBlackColor;
+        
+        [UITextField appearance].textColor = [UIColor lightGrayColor];
+        
+    }
+    return cell;
+}
+
+#pragma  mark NewLoginController
+CHDeclareClass(NewLoginController);
+CHOptimizedMethod(2, self, UITableViewCell*, NewLoginController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, NewLoginController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    if (enabled && enabledBlackTheme) {
+        cell.backgroundView = nil;
+        cell.backgroundColor = lightBlackColor;
+        tableView.backgroundView = nil;
+        tableView.backgroundColor = darkBlackColor;
+        
+        [UITextField appearance].textColor = [UIColor lightGrayColor];
+    }
+    return cell;
+}
 
 #pragma mark TextEditController
 CHDeclareClass(TextEditController);
@@ -723,8 +829,6 @@ CHOptimizedMethod(0, self, BOOL, PhotoFeedController, VKMScrollViewFullscreenEna
     return CHSuper(0, PhotoFeedController, VKMScrollViewFullscreenEnabled);
 }
 
-
-
 #pragma mark NewsFeedController
 CHOptimizedMethod(2, self, UITableViewCell*, NewsFeedController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
@@ -747,7 +851,7 @@ CHOptimizedMethod(0, self, void, VKMAccessibilityTableView, reloadData)
             if (enabled && enabledBlackTheme) {
                 profView.backgroundColor = lightBlackColor;
                 profView.name.textColor = [UIColor lightGrayColor];
-            } else {
+            } else if (blackThemeWasEnabled) {
                 profView.backgroundColor = [UIColor whiteColor];
                 profView.name.textColor = [UIColor blackColor];
             }
@@ -799,7 +903,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMLiveController, tableView, UITab
         UIView *selectedBackView = [UIView new];
         selectedBackView.backgroundColor = darkBlackColor;
         cell.selectedBackgroundView = selectedBackView;
-    } else {
+    } else if (blackThemeWasEnabled) {
         tableView.separatorColor = kNewsTableViewSeparatorColor;
         tableView.backgroundColor = kNewsTableViewBackgroundColor;
         
@@ -888,28 +992,25 @@ CHOptimizedMethod(2, self, UITableViewCell*, FeedController, tableView, UITableV
                 }   
             }
         });
-    } else {
-        if (blackThemeWasEnabled) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-                for (UIView *view in cell.contentView.subviews) {
-                    if ([view isKindOfClass:objc_getClass("TapableComponentView")]) {
-                        for (UIView *subview in view.subviews) {
-                            if ([subview isKindOfClass:objc_getClass("TextKitLabelInteractive")]) {
-                                for (CALayer *layer in subview.layer.sublayers) {
-                                    if ([layer isKindOfClass:objc_getClass("TextKitLayer")]) {
-                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                            layer.backgroundColor = [UIColor clearColor].CGColor;
-                                        });
-                                        break;
-                                    }
+    } else if (blackThemeWasEnabled) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            for (UIView *view in cell.contentView.subviews) {
+                if ([view isKindOfClass:objc_getClass("TapableComponentView")]) {
+                    for (UIView *subview in view.subviews) {
+                        if ([subview isKindOfClass:objc_getClass("TextKitLabelInteractive")]) {
+                            for (CALayer *layer in subview.layer.sublayers) {
+                                if ([layer isKindOfClass:objc_getClass("TextKitLayer")]) {
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        layer.backgroundColor = [UIColor clearColor].CGColor;
+                                    });
+                                    break;
                                 }
                             }
                         }
                     }
                 }
-            });
-        }
-        
+            }
+        });
     }
     return cell;
 }
@@ -1292,6 +1393,10 @@ CHConstructor
             CHHook(1, UITableView, setBackgroundColor);
             CHHook(1, UITableView, setSeparatorColor);
             
+            CHLoadLateClass(UITableViewIndex);
+            CHHook(1, UITableViewIndex, setIndexBackgroundColor);
+            CHHook(1, UITableViewIndex, setIndexColor);
+            
             
             CHLoadLateClass(PSListController);
             CHHook(2, PSListController, tableView, cellForRowAtIndexPath);
@@ -1340,6 +1445,21 @@ CHConstructor
             
             
             
+            
+            CHLoadLateClass(FeedbackController);
+            CHHook(2, FeedbackController, tableView, cellForRowAtIndexPath);
+            
+            
+            CHLoadLateClass(CountryCallingCodeController);
+            CHHook(2, CountryCallingCodeController, tableView, cellForRowAtIndexPath);
+            
+            
+            CHLoadLateClass(SignupPhoneController);
+            CHHook(2, SignupPhoneController, tableView, cellForRowAtIndexPath);
+            
+            
+            CHLoadLateClass(NewLoginController);
+            CHHook(2, NewLoginController, tableView, cellForRowAtIndexPath);
             
             CHLoadLateClass(TextEditController);
             CHHook(1, TextEditController, viewWillAppear);

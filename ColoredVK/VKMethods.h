@@ -8,6 +8,8 @@
 
 
 @interface VKMMainController : UIViewController
++ (id)rootMainControllerForSession:(id)arg1;
++ (id)rootMainController;
 @property(retain, nonatomic) NSArray *menu;
 @property(retain, nonatomic) UINavigationController *navMain;
 @end
@@ -20,8 +22,9 @@
 
 @interface VKMNavContext : NSObject 
 + (id)applicationNavRoot;
-@property (NS_NONATOMIC_IOSONLY, readonly, strong) VKMNavContext *rootNavContext;
 - (void)reset:(id)arg1;
+@property (readonly, strong) VKMNavContext *rootNavContext;
+@property(retain, nonatomic) UINavigationController *navController;
 @end
 
 
@@ -59,15 +62,17 @@
 @end
 
 
-
-
 @interface AudioController : UIViewController
 @property(retain, nonatomic) UIButton *pp;
 @end
 
-
 @interface TextEditController : UIViewController
-@property(retain, nonatomic) UITextView *textView; // @synthesize textView=_textView;
+@property(retain, nonatomic) UITextView *textView;
 @end
+
+@interface CountryCallingCodeController : UITableViewController
+@end
+
+
 
 
