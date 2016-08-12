@@ -17,6 +17,7 @@
 "MENU_BACKGROUND" = "Menü";
 "MESSAGES_BACKGROUND" = "Nachrichten";
 "OTHER" = "Andere";
+"STATUS_BAR_COLORS" = "Statusleiste";
 
 "CHANGE_COLORS" = "Farben ändern";
 "BACKGROUND_COLOR" = "Hintergrundfarbe";

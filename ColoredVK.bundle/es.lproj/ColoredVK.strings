@@ -6,6 +6,7 @@
 //  Copyright (©) Daniil Pashin 2015. All rights reserved.
 //  
 
+
 "BLACK_THEME" = "Tema negro";
 "ENABLE_BLACK_THEME" = "Habilitar";
 "BLACK_THEME_FOOTER" = "";
@@ -15,6 +16,7 @@
 "MENU_BACKGROUND" = "Menú";
 "MESSAGES_BACKGROUND" = "mensajes";
 "OTHER" = "Otro";
+"STATUS_BAR_COLORS" = "Barra de estado";
 
 "CHANGE_COLORS" = "Cambian de color";
 "BACKGROUND_COLOR" = "Color de fondo";

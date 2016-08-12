@@ -15,6 +15,7 @@
 "MENU_BACKGROUND" = "Cardápio";
 "MESSAGES_BACKGROUND" = "Mensagens";
 "OTHER" = "De outros";
+"STATUS_BAR_COLORS" = "Barra de status";
 
 "CHANGE_COLORS" = "Alterar cores";
 "BACKGROUND_COLOR" = "Cor de fundo";

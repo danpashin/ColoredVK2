@@ -89,6 +89,8 @@ UIColor *SBForegroundColor;
 
 UIButton *postCreationButton;
 
+UISwitch *cvkSwitch;
+
 
 
 @interface ColoredVKMainController : NSObject
@@ -187,13 +189,13 @@ static void checkUpdates()
                                                    [alert show];
                                                });
                                            }
-                                           
-                                           NSDateFormatter *dateFormatter = [NSDateFormatter new];
-                                           dateFormatter.dateFormat = @"yyyy-MM-dd";
-                                           NSString *dateString = [dateFormatter stringFromDate:[NSDate date]];
-                                           [prefs setValue:dateString forKey:@"lastCheckForUpdates"];
-                                           [prefs writeToFile:prefsPath atomically:YES];
                                        }
+                                       
+                                       NSDateFormatter *dateFormatter = [NSDateFormatter new];
+                                       dateFormatter.dateFormat = @"yyyy-MM-dd";
+                                       NSString *dateString = [dateFormatter stringFromDate:[NSDate date]];
+                                       [prefs setValue:dateString forKey:@"lastCheckForUpdates"];
+                                       [prefs writeToFile:prefsPath atomically:YES];
                                    }
                                }];
     });
@@ -253,6 +255,11 @@ static void reloadPrefs()
         if (blackThemeWasEnabled) {  
             ColoredVKMainController *controller = [ColoredVKMainController new];
             [controller performSelector:@selector(resetValue) withObject:nil afterDelay:120.0];
+        }
+        
+        
+        if (cvkSwitch != nil) {
+            cvkSwitch.on = enabled;
         }
     }
 }
@@ -389,36 +396,33 @@ static void showAlertWithMessage(NSString *message)
     backgroundView.backgroundColor = kMenuCellSelectedColor;
     cell.selectedBackgroundView = backgroundView;    
     
-    UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
-    switchView.frame = CGRectMake([UIScreen mainScreen].bounds.size.width/1.2 - switchView.frame.size.width, (cell.contentView.frame.size.height - switchView.frame.size.height)/2, 0, 0);
-    switchView.tag = 451;
-    switchView.on = enabled;
-    switchView.onTintColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
-    [switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventValueChanged];
-    [cell addSubview:switchView];
+//    UISwitch *switchView = [UISwitch new];
+//    switchView.frame = CGRectMake([UIScreen mainScreen].bounds.size.width/1.2 - switchView.frame.size.width, (cell.contentView.frame.size.height - switchView.frame.size.height)/2, 0, 0);
+//    switchView.tag = 451;
+//    switchView.on = enabled;
+//    switchView.onTintColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
+//    [switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventValueChanged];
+//    [cell addSubview:switchView];
+    
+    cvkSwitch.frame = CGRectMake([UIScreen mainScreen].bounds.size.width/1.2 - cvkSwitch.frame.size.width, (cell.contentView.frame.size.height - cvkSwitch.frame.size.height)/2, 0, 0);
+    cvkSwitch.tag = 451;
+    cvkSwitch.onTintColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
+    [cvkSwitch addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventValueChanged];
+    [cell addSubview:cvkSwitch];
     
     
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressRecognized:)];
-    longPress.minimumPressDuration = 0.5;
-    [cell addGestureRecognizer:longPress];
-    
-    
-    
+#ifndef COMPILE_FOR_JAILBREAK
     cell.select = (id)^(id arg1, id arg2, id arg3, id arg4) {
-        BOOL forJail = NO;
-#ifdef COMPILE_FOR_JAILBREAK
-        forJail = YES;
-#endif
-        if (!forJail) {
-            ColoredVKPrefsController *cvkPrefs = [ColoredVKPrefsController new];
-            id mainContext = [[objc_getClass("VKMNavContext") applicationNavRoot] rootNavContext];
-            [mainContext reset:cvkPrefs];
+        
+        ColoredVKPrefsController *cvkPrefs = [ColoredVKPrefsController new];
+        id mainContext = [[objc_getClass("VKMNavContext") applicationNavRoot] rootNavContext];
+        [mainContext reset:cvkPrefs];
 
-        }
         return nil; 
     };
-    return cell;
+#endif
     
+    return cell;
 }
 
 + (void) switchTriggered:(UISwitch *)switchView
@@ -443,17 +447,6 @@ static void showAlertWithMessage(NSString *message)
     
     return blurEffectView;
 }
-
-+ (void)longPressRecognized:(UILongPressGestureRecognizer *)recognizer
-{
-    if (recognizer.state == UIGestureRecognizerStateBegan) {
-        ColoredVKPrefsController *cvkPrefs = [ColoredVKPrefsController new];
-    
-        VKMMainController *controller = [objc_getClass("VKMMainController") rootMainController];
-        [controller.navMain pushViewController:cvkPrefs animated:YES];
-    }
-}
-
 
 
 + (void)setPostCreationButtonColor
@@ -500,6 +493,23 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
 {
     CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
     reloadPrefs();
+    
+    if (shouldCheckUpdates) {
+        NSLog(@"[COLOREDVK] checking for updates...");
+        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
+        NSTimeInterval daysCheckingInterval = 3.0;
+        
+        NSDateFormatter *dateFormatter = [NSDateFormatter new];
+        dateFormatter.dateFormat = @"yyyy-MM-dd";                
+        NSDate *lastCheckForUpdatesDate = prefs[@"lastCheckForUpdates"] ? [dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]] :[NSDate date];
+        
+        NSTimeInterval daysSinceCheckUpdates = [[NSDate date] timeIntervalSinceDate:lastCheckForUpdatesDate];
+        if ((((NSInteger)daysSinceCheckUpdates / 3600) >= daysCheckingInterval * 24) || (prefs[@"lastCheckForUpdates"] == nil)) {
+            checkUpdates();
+            NSLog(@"[COLOREDVK] checkUpdates() called...");
+        }
+    }
+    
     return YES;
 }
 
@@ -1367,6 +1377,8 @@ CHConstructor
             prefsPath = CVK_PREFS_PATH;
             cvkFolder = CVK_FOLDER_PATH;
             
+            cvkSwitch = [UISwitch new];
+            
             NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:prefsPath];
             
             if (![[NSFileManager defaultManager] fileExistsAtPath:prefsPath]) { prefs = [NSMutableDictionary new]; }
@@ -1532,19 +1544,6 @@ CHConstructor
             } else {
                 VKSettingsEnabled = NO;
                 CHHook(2, VKMMainController, tableView, numberOfRowsInSection);
-            }
-            
-            if (shouldCheckUpdates) {
-                NSTimeInterval daysCheckingInterval = 1.0;
-                
-                NSDateFormatter *dateFormatter = [NSDateFormatter new];
-                dateFormatter.dateFormat = @"yyyy-MM-dd";                
-                NSDate *lastCheckForUpdatesDate = prefs[@"lastCheckForUpdates"] ? [dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]] :[NSDate date];
-                
-                NSTimeInterval daysSinceCheckUpdates = [[NSDate date] timeIntervalSinceDate:lastCheckForUpdatesDate];
-                if ((((NSInteger)daysSinceCheckUpdates / 3600) >= daysCheckingInterval * 24) || (prefs[@"lastCheckForUpdates"] == nil)) {
-                    checkUpdates();
-                }
             }
             
         } else {

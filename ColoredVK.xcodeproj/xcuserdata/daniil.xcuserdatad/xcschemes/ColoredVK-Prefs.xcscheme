@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A5B6ED051D3D659800383425"
-               BuildableName = "ColoredVK.bundle"
+               BuildableName = "ColoredVK2.bundle"
                BlueprintName = "ColoredVK-Prefs"
                ReferencedContainer = "container:ColoredVK.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A5B6ED051D3D659800383425"
-            BuildableName = "ColoredVK.bundle"
+            BuildableName = "ColoredVK2.bundle"
             BlueprintName = "ColoredVK-Prefs"
             ReferencedContainer = "container:ColoredVK.xcodeproj">
          </BuildableReference>
@@ -64,7 +64,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A5B6ED051D3D659800383425"
-            BuildableName = "ColoredVK.bundle"
+            BuildableName = "ColoredVK2.bundle"
             BlueprintName = "ColoredVK-Prefs"
             ReferencedContainer = "container:ColoredVK.xcodeproj">
          </BuildableReference>
