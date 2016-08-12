@@ -1,0 +1,10 @@
+{
+	entry = {
+		bundle = ColoredVK2;
+		cell = PSLinkCell;
+		detail = "ColoredVKPrefsController";
+		icon = "prefs-icon.png";
+		isController = 1;
+		label = ColoredVK;
+	};
+}

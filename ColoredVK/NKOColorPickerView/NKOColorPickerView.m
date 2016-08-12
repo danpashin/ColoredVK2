@@ -230,15 +230,8 @@ CGFloat const NKOPickerViewCrossHairshWidthAndHeight    = 38.f;
     [self _setColor:_tcolor];
 }
 
-- (UIColor*)_defaultTintColor {
-    if ([ColoredVKJailCheck isExecutable]) { 
-        return [UIColor blackColor];
-    } else {
-        UIWindow *window = [UIApplication sharedApplication].delegate.window;
-        if ([window respondsToSelector:@selector(tintColor)]) {
-            return window.tintColor;
-        }
-    }
+- (UIColor *)_defaultTintColor
+{
     return [UIColor blackColor];
 }
 

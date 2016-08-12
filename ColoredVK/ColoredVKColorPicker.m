@@ -53,7 +53,7 @@
     [resetButton setTitleColor:[UIColor colorWithRed:0.8 green:0 blue:0 alpha:1.0] forState:UIControlStateHighlighted];
     (resetButton.titleLabel).textAlignment = NSTextAlignmentCenter;
     (resetButton.titleLabel).numberOfLines = 2;
-    [resetButton addTarget:self action:@selector(addErrorAnimationForView:) forControlEvents:UIControlEventTouchUpInside];
+    [resetButton addTarget:self action:@selector(addErrorAnimationForButton:) forControlEvents:UIControlEventTouchUpInside];
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(resetColorValue)];
     longPress.minimumPressDuration = 1.0;
     longPress.numberOfTouchesRequired = 1;
@@ -72,6 +72,39 @@
     }
     
     [self.view addSubview:mainView];
+    
+    self.view.backgroundColor = mainView.backgroundColor;
+    
+    
+//    mainView.translatesAutoresizingMaskIntoConstraints = NO;
+//    [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[resetButton(32)]-(10)-|"
+//                                                                      options:0
+//                                                                      metrics:nil
+//                                                                        views:NSDictionaryOfVariableBindings(resetButton)]];
+//    [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[resetButton(32)]-(10)-|"
+//                                                                     options:0
+//                                                                     metrics:nil
+//                                                                       views:NSDictionaryOfVariableBindings(resetButton)]];
+//    [mainView addConstraints: [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[resetButton]|"
+//                                                                       options:0
+//                                                                       metrics:nil
+//                                                                         views:NSDictionaryOfVariableBindings(resetButton)]];
+//    [mainView addConstraints: [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[colorPickerView]|"
+//                                                                      options:0
+//                                                                      metrics:nil
+//                                                                        views:NSDictionaryOfVariableBindings(self.colorPickerView)]];
+//    
+//    self.view.translatesAutoresizingMaskIntoConstraints = NO;
+//    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[mainView]|"
+//                                                                      options:0
+//                                                                      metrics:nil
+//                                                                        views:NSDictionaryOfVariableBindings(mainView)]];
+//    
+//    [self.view addConstraints: [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[mainView]|"
+//                                                                       options:0
+//                                                                       metrics:nil
+//                                                                         views:NSDictionaryOfVariableBindings(mainView)]];
+
 }
 
 - (UIColor *)savedColorForIdentifier:(NSString *)identifier
@@ -204,7 +237,7 @@
 }
 
 
-- (void)addErrorAnimationForView:(UIButton*)button
+- (void)addErrorAnimationForButton:(UIButton*)button
 {
     NSString *oldTitle = [button titleForState:UIControlStateNormal];
     
