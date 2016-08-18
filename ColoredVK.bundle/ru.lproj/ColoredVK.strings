@@ -15,6 +15,7 @@
 "MENU_BACKGROUND" = "Меню";
 "MESSAGES_BACKGROUND" = "Сообщения";
 "OTHER" = "Другое";
+"STATUS_BAR_COLORS" = "Статус бар";
 
 "CHANGE_COLORS" = "Изменить цветa";
 "BACKGROUND_COLOR" = "Цвет фона";

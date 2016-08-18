@@ -17,6 +17,7 @@
 "MENU_BACKGROUND" = "Меню";
 "MESSAGES_BACKGROUND" = "Паведамлення";
 "OTHER" = "іншае";
+"STATUS_BAR_COLORS" = "Радок стану";
 
 "CHANGE_COLORS" = "Змяненне колеру";
 "BACKGROUND_COLOR" = "Колер фону";

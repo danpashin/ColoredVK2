@@ -114,7 +114,7 @@
 
 /* Begin PBXFileReference section */
 		A50731D41CD535130088EF9F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		A5079FB21CC92157005B9693 /* ColoredVK.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ColoredVK.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		A5079FB21CC92157005B9693 /* ColoredVK2.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ColoredVK2.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5079FB51CC92157005B9693 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A5079FCA1CC9261B005B9693 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A53488851D28FDCE00911638 /* NKOColorPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKOColorPickerView.h; sourceTree = "<group>"; };
@@ -160,7 +160,7 @@
 		A58F34131D5A378100838814 /* NSString+ColoredVK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ColoredVK.h"; sourceTree = "<group>"; };
 		A58F341C1D5A3BBA00838814 /* UIImage+ColoredVK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ColoredVK.h"; sourceTree = "<group>"; };
 		A58F341D1D5A3BBA00838814 /* UIImage+ColoredVK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ColoredVK.m"; sourceTree = "<group>"; };
-		A5B6ED061D3D659800383425 /* ColoredVK.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ColoredVK.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		A5B6ED061D3D659800383425 /* ColoredVK2.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ColoredVK2.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5B6ED0E1D3D659800383425 /* control */ = {isa = PBXFileReference; lastKnownFileType = text; name = control; path = Package/DEBIAN/control; sourceTree = "<group>"; };
 		A5B6ED691D3D703600383425 /* ColoredVK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ColoredVK.bundle; sourceTree = "<group>"; };
 		A5C35BD61D5227AE00637243 /* ColoredVKJailCheck.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKJailCheck.h; sourceTree = "<group>"; };
@@ -219,8 +219,8 @@
 		A5079FB31CC92157005B9693 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A5079FB21CC92157005B9693 /* ColoredVK.dylib */,
-				A5B6ED061D3D659800383425 /* ColoredVK.bundle */,
+				A5079FB21CC92157005B9693 /* ColoredVK2.dylib */,
+				A5B6ED061D3D659800383425 /* ColoredVK2.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -495,7 +495,7 @@
 			);
 			name = ColoredVK;
 			productName = ColoredVK;
-			productReference = A5079FB21CC92157005B9693 /* ColoredVK.dylib */;
+			productReference = A5079FB21CC92157005B9693 /* ColoredVK2.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 		A5B6ED051D3D659800383425 /* ColoredVK-Prefs */ = {
@@ -514,7 +514,7 @@
 			);
 			name = "ColoredVK-Prefs";
 			productName = "ColoredVK-Prefs";
-			productReference = A5B6ED061D3D659800383425 /* ColoredVK.bundle */;
+			productReference = A5B6ED061D3D659800383425 /* ColoredVK2.bundle */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -583,7 +583,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ${PROJECT_DIR}\n\ncp -r ColoredVK.bundle/. ~/Desktop/vkUnarch/Payload/vkclient.app/${PRODUCT_NAME}.bundle/\ncp ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.dylib ~/Desktop/vkUnarch/Payload/vkclient.app/${PRODUCT_NAME}.bundle/\ncd ~/Desktop/vkUnarch\noptool install -c load -p \"@executable_path/${PRODUCT_NAME}.bundle/${PRODUCT_NAME}.dylib\" -t Payload/vkclient.app/vkclient\nif [ -f ~/Desktop/vk.ipa ];\n    then rm ~/Desktop/vk.ipa \nfi\nzip -r ~/Desktop/${PRODUCT_NAME}.ipa Payload\noptool uninstall -p \"@executable_path/${PRODUCT_NAME}.bundle/${PRODUCT_NAME}.dylib\" -t Payload/vkclient.app/vkclient\nrm -rf Payload/vkclient.app/${PRODUCT_NAME}.bundle\n\n#cp -r ColoredVK.bundle ~/Desktop/\n#cp ${BUILT_PRODUCTS_DIR}/ColoredVK.dylib ~/Desktop/ColoredVK.bundle/";
+			shellScript = "cd ${PROJECT_DIR}\n\ncp -r ColoredVK.bundle/. ~/Desktop/vkUnarch/Payload/vkclient.app/${PRODUCT_NAME}.bundle/\ncp ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.dylib ~/Desktop/vkUnarch/Payload/vkclient.app/${PRODUCT_NAME}.bundle/\ncd ~/Desktop/vkUnarch\noptool install -c load -p \"@executable_path/${PRODUCT_NAME}.bundle/${PRODUCT_NAME}.dylib\" -t Payload/vkclient.app/vkclient\nif [ -f ~/Desktop/vk.ipa ];\n    then rm ~/Desktop/vk.ipa \nfi\nzip -r ~/Desktop/${PRODUCT_NAME}.ipa Payload\noptool uninstall -p \"@executable_path/${PRODUCT_NAME}.bundle/${PRODUCT_NAME}.dylib\" -t Payload/vkclient.app/vkclient\nrm -rf Payload/vkclient.app/${PRODUCT_NAME}.bundle\n\ncp -r ${PROJECT_DIR}/ColoredVK.bundle ~/Desktop/\ncp ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.dylib ~/Desktop/ColoredVK.bundle/";
 			showEnvVarsInLog = 0;
 		};
 		A5BD7EA91D44CCB900BFC3A1 /* ShellScript */ = {
@@ -597,8 +597,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ${PROJECT_DIR}\n\ncp -r ColoredVK.bundle/. ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.bundle\n\nif [ -f ${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}_${PLATFORM_NAME}-arm.deb ];\nthen rm -rf ${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}_${PLATFORM_NAME}-arm.deb \nfi\n\ncp -r ColoredVK-Prefs/Package ~/Desktop/\ncp -r ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.bundle ~/Desktop/Package/Library/PreferenceBundles\ncp ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.dylib ~/Desktop/Package/Library/MobileSubstrate/DynamicLibraries\necho \"{ Filter = { Bundles = ( \\\"com.vk.vkclient\\\" ); }; }\" >> ~/Desktop/Package/Library/MobileSubstrate/DynamicLibraries/${PRODUCT_NAME}.plist\ncd ~/Desktop\ndpkg-deb -b -Zgzip Package ${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}_${PLATFORM_NAME}-arm.deb\nrm -rf Package";
-			showEnvVarsInLog = 0;
+			shellScript = "cd ${PROJECT_DIR}\n\ncp -r ${PROJECT_DIR}/ColoredVK.bundle/. ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.bundle\n\nif [ -f ${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}_${PLATFORM_NAME}-arm.deb ];\nthen rm -rf ${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}_${PLATFORM_NAME}-arm.deb \nfi\n\ncp -r ColoredVK-Prefs/Package ~/Desktop/\ncp -r ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.bundle ~/Desktop/Package/Library/PreferenceBundles\ncp ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.dylib ~/Desktop/Package/Library/MobileSubstrate/DynamicLibraries\necho \"{ Filter = { Bundles = ( \\\"com.vk.vkclient\\\" ); }; }\" >> ~/Desktop/Package/Library/MobileSubstrate/DynamicLibraries/${PRODUCT_NAME}.plist\ncd ~/Desktop\ndpkg-deb -b -Zgzip Package ${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}_${PLATFORM_NAME}-arm.deb\nrm -rf Package";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -766,7 +765,7 @@
 		A5B6ED261D3D659800383425 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.0-beta-4";
+				APP_VERSION = 3.0;
 				ARCHS = (
 					armv7,
 					armv7s,
@@ -774,7 +773,7 @@
 				);
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
+				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -785,7 +784,7 @@
 				INSTALL_PATH = /Library/PreferenceBundles;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.daniilpashin.coloredvk2;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
 				SUPPORTED_PLATFORMS = iphoneos;
 				VALID_ARCHS = "armv7 armv7s arm64";
@@ -796,7 +795,7 @@
 		A5B6ED271D3D659800383425 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.0-beta-4";
+				APP_VERSION = 3.0;
 				ARCHS = (
 					armv7,
 					armv7s,
@@ -804,7 +803,7 @@
 				);
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
+				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -815,7 +814,7 @@
 				INSTALL_PATH = /Library/PreferenceBundles;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.daniilpashin.coloredvk2;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
 				SUPPORTED_PLATFORMS = iphoneos;
 				VALID_ARCHS = "armv7 armv7s arm64";

@@ -495,7 +495,6 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
     reloadPrefs();
     
     if (shouldCheckUpdates) {
-        NSLog(@"[COLOREDVK] checking for updates...");
         NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
         NSTimeInterval daysCheckingInterval = 3.0;
         
@@ -506,7 +505,6 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
         NSTimeInterval daysSinceCheckUpdates = [[NSDate date] timeIntervalSinceDate:lastCheckForUpdatesDate];
         if ((((NSInteger)daysSinceCheckUpdates / 3600) >= daysCheckingInterval * 24) || (prefs[@"lastCheckForUpdates"] == nil)) {
             checkUpdates();
-            NSLog(@"[COLOREDVK] checkUpdates() called...");
         }
     }
     

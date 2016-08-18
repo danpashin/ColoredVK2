@@ -11,7 +11,7 @@
 #import "UIImage+COloredVK.h"
 
 
-#define COMPILE_FOR_JAILBREAK
+//#define COMPILE_FOR_JAILBREAK
 
 
 
@@ -31,4 +31,4 @@
 
 #endif
 
-#define kColoredVKVersion @"3.0-beta-4"
+#define kColoredVKVersion @"3.0"
