@@ -16,9 +16,18 @@
 	<string>${APP_VERSION}</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.vk.vkclient</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>vk</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
-	<key>NSPrincipalClass</key>
-	<string>ColoredVKPrefsController</string>
 </dict>
 </plist>
