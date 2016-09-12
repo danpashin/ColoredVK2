@@ -20,7 +20,7 @@
     
         
         UILabel *heading = [UILabel new];
-        heading.frame =  CGRectMake(0, 0, self.frame.size.width, 100);
+        heading.frame =  CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 100);
         heading.font = [UIFont fontWithName:@"HelveticaNeue" size:35.0];
         heading.text = @"ColoredVK";
         heading.backgroundColor = [UIColor clearColor];
@@ -29,7 +29,7 @@
         [self addSubview:heading];
         
         UILabel *subtitle = [UILabel new];
-        subtitle.frame = CGRectMake(0, heading.frame.origin.x + heading.frame.size.height - 20, self.frame.size.width, 32);
+        subtitle.frame = CGRectMake(0, heading.frame.origin.x + heading.frame.size.height - 20, heading.frame.size.width, 32);
         subtitle.font = [UIFont fontWithName:@"HelveticaNeue" size:14.0];
         subtitle.text = @"Colorize your VK App!";
         subtitle.backgroundColor = [UIColor clearColor];

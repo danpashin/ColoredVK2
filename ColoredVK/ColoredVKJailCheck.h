@@ -10,7 +10,6 @@
 
 @interface ColoredVKJailCheck : NSObject
 
-+ (BOOL)isJailbroken;
-+ (BOOL)isExecutable;
++ (BOOL)isInjected;
 
 @end

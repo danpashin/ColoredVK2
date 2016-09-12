@@ -11,21 +11,20 @@
 #import "PrefixHeader.h"
 #import "ColoredVKJailCheck.h"
 
-#define UIKitLocalizedString(key) [[NSBundle bundleWithIdentifier:@"com.apple.UIKit"] localizedStringForKey:key value:@"" table:nil]
-
 
 @implementation ColoredVKColorPicker
+
+- (UIStatusBarStyle) preferredStatusBarStyle
+{
+    if ([ColoredVKJailCheck isInjected]) return UIStatusBarStyleLightContent;
+}
+
 - (void)viewDidLoad
 {
-#ifdef COMPILE_FOR_JAILBREAK
-    isJailbroken = YES;
-#else
-    isJailbroken = NO;
-#endif
-    cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    prefsPath = CVK_PREFS_PATH;
     
-    isExecutable = [ColoredVKJailCheck isExecutable];
+    BOOL injected = [ColoredVKJailCheck isInjected];
+    prefsPath = injected?CVK_NON_JAIL_PREFS_PATH:CVK_JAIL_PREFS_PATH;
+    cvkBunlde = injected?[NSBundle bundleWithPath:CVK_NON_JAIL_BUNDLE_PATH]:[NSBundle bundleWithPath:CVK_JAIL_BUNDLE_PATH];
     
     [super viewDidLoad];
     
@@ -33,11 +32,11 @@
     
     self.navigationItem.title = NSLocalizedStringFromTableInBundle(@"SELECT_COLOR_TITLE", nil, cvkBunlde, nil);
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(writeValues)];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Hex" style:UIBarButtonItemStylePlain target:self action:@selector(showHexWindow)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"#" style:UIBarButtonItemStylePlain target:self action:@selector(showHexWindow)];
     
     
-    self.customColor = [self savedColorForIdentifier:self.cellIdentifier];
-    self.navigationController.navigationBar.barTintColor = [self savedColorForIdentifier:@"BarBackgroundColor"];
+    self.customColor = [UIColor savedColorForIdentifier:self.cellIdentifier];
+    self.navigationController.navigationBar.barTintColor = [UIColor savedColorForIdentifier:@"BarBackgroundColor"];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     [UINavigationBar appearanceWhenContainedIn:self.class, nil].titleTextAttributes = @{ NSForegroundColorAttributeName : [UIColor whiteColor] } ;
     
@@ -51,8 +50,10 @@
     resetButton.titleLabel.adjustsFontSizeToFitWidth = YES;
     [resetButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
     [resetButton setTitleColor:[UIColor colorWithRed:0.8 green:0 blue:0 alpha:1.0] forState:UIControlStateHighlighted];
-    (resetButton.titleLabel).textAlignment = NSTextAlignmentCenter;
-    (resetButton.titleLabel).numberOfLines = 2;
+    resetButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    resetButton.titleLabel.numberOfLines = 2;
+    resetButton.titleLabel.shadowOffset = CGSizeMake(0, 1);
+    [resetButton setTitleShadowColor:[UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1] forState:UIControlStateNormal];
     [resetButton addTarget:self action:@selector(addErrorAnimationForButton:) forControlEvents:UIControlEventTouchUpInside];
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(resetColorValue)];
     longPress.minimumPressDuration = 1.0;
@@ -64,13 +65,9 @@
     CGRect pickerRect = CGRectMake(0,  resetButton.frame.origin.y + resetButton.frame.size.height,  mainView.frame.size.width, mainView.frame.size.height - 100);    
     NKOColorPickerDidChangeColorBlock colorDidChange = ^(UIColor *color){ self.customColor = color;};
     self.colorPickerView = [[NKOColorPickerView alloc] initWithFrame:pickerRect color:self.customColor andDidChangeColorBlock:colorDidChange];
+    self.colorPickerView.tintColor = [UIColor colorWithRed:200.0/255.0f green:201.0/255.0f blue:202.0/255.0f alpha:1.0];
     [mainView addSubview:self.colorPickerView];
-    
-    if (([self.prefs[@"enabled"] boolValue] && [self.prefs[@"enabledBlackTheme"] boolValue]) && !isExecutable ) {
-        mainView.backgroundColor = [UIColor colorWithRed:10.0/255.0f green:10.0/255.0f blue:10.0/255.0f alpha:1.0];
-        (self.colorPickerView).tintColor = [UIColor whiteColor];
-    }
-    
+        
     [self.view addSubview:mainView];
     
     self.view.backgroundColor = mainView.backgroundColor;
@@ -107,31 +104,10 @@
 
 }
 
-- (UIColor *)savedColorForIdentifier:(NSString *)identifier
-{
-     if (self.prefs[identifier] == nil) {
-        return [self defaultColorForIdentifier:identifier];
-    } else {
-        return [UIColor colorFromString:self.prefs[identifier]];
-    }
-}
-
-- (UIColor *)defaultColorForIdentifier:(NSString *)identifier 
-{
-    if      ([identifier isEqualToString:@"BarBackgroundColor"])     {  return [UIColor colorWithRed:60.00/255.0f green:112.0/255.0f blue:169.0/255.0f alpha:1];    }
-    else if ([identifier isEqualToString:@"BarForegroundColor"])     {  return [UIColor whiteColor];                                                                }
-    else if ([identifier isEqualToString:@"ToolBarBackgroundColor"]) {  return [UIColor colorWithRed:245.0/255.0f green:245.0/255.0f blue:248.0/255.0f alpha:1];    }
-    else if ([identifier isEqualToString:@"ToolBarForegroundColor"]) {  return [UIColor colorWithRed:127.0/255.0f green:131.0/255.0f blue:137.0/255.0f alpha:1];    }
-    else if ([identifier isEqualToString:@"MenuSeparatorColor"])     {  return [UIColor colorWithRed:72.00/255.0f green:86.00/255.0f blue:97.00/255.0f alpha:1];    }
-    else if ([identifier isEqualToString:@"SBBackgroundColor"])      {  return [UIColor clearColor];                                                                }
-    else if ([identifier isEqualToString:@"SBForegroundColor"])      {  return [UIColor whiteColor];                                                                }
-    else                                                             {  return [UIColor blackColor];                                                                }
-}
-
 
 - (void)writeValues 
 {
-    (self.prefs)[self.cellIdentifier] = [NSString stringFromColor:self.customColor];
+    self.prefs[self.cellIdentifier] = [NSString stringFromColor:self.customColor];
     [self.prefs writeToFile:prefsPath atomically:YES];
     
     [self dismissPicker];
@@ -143,14 +119,9 @@
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk.prefs.colorUpdate" object:nil userInfo:@{ @"CVKColorCellIdentifier" : self.cellIdentifier }];
     
-    if ([self.cellIdentifier isEqualToString:@"MenuSeparatorColor"]) {
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-    }
+    NSArray *identificsToReloadMenu = @[@"MenuSeparatorColor", @"switchesTintColor", @"switchesOnTintColor"];
+    if ([identificsToReloadMenu containsObject:self.cellIdentifier]) CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
     
-    if (!isExecutable) {
-        self.navigationController.navigationBar.barTintColor = [self savedColorForIdentifier:@"BarBackgroundColor"];
-        [UINavigationBar appearance].barTintColor = [self savedColorForIdentifier:@"BarBackgroundColor"];
-    }
     [self dismissViewControllerAnimated:YES completion:nil]; 
 }
 
@@ -214,19 +185,6 @@
     [valueButton addTarget:self action:@selector(copyHEXValue) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:valueButton];
     
-    
-    if (([self.prefs[@"enabled"] boolValue] && [self.prefs[@"enabledBlackTheme"] boolValue]) && !isExecutable ) {
-        
-        view.backgroundColor = [UIColor blackColor];
-        
-        textField.backgroundColor = [UIColor blackColor];
-        textField.textColor = [UIColor lightGrayColor];
-        textField.layer.borderColor = [UIColor colorWithRed:40.0/255.0f green:40.0/255.0f blue:40.0/255.0f alpha:1.0].CGColor;
-        
-        [valueButton setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:40.0/255.0f green:40.0/255.0f blue:40.0/255.0f alpha:1.0]] forState:UIControlStateNormal];
-        [valueButton setBackgroundImage:[UIImage imageWithColor:[UIColor blackColor]] forState:UIControlStateHighlighted];
-    }
-    
     self.popup = [KLCPopup popupWithContentView:view 
                                        showType:KLCPopupShowTypeBounceIn
                                     dismissType:KLCPopupDismissTypeBounceOut 
@@ -274,7 +232,7 @@
 
 - (void)copyHEXValue 
 { 
-    [UIPasteboard generalPasteboard].string = [NSString hexStringFromColor:[self savedColorForIdentifier:self.cellIdentifier]];
+    [UIPasteboard generalPasteboard].string = [NSString hexStringFromColor:[UIColor savedColorForIdentifier:self.cellIdentifier]];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -283,11 +241,7 @@
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", expression];
     
     if (![predicate evaluateWithObject:textField.text]) {
-        if (([self.prefs[@"enabled"] boolValue] && [self.prefs[@"enabledBlackTheme"] boolValue]) && !isExecutable ) {
-            textField.layer.borderColor = [UIColor colorWithRed:0.6 green:0 blue:0 alpha:1.0].CGColor;
-        } else {
-            textField.layer.borderColor = [UIColor colorWithRed:0.8 green:0 blue:0 alpha:1.0].CGColor;
-        }
+        textField.layer.borderColor = [UIColor colorWithRed:0.8 green:0 blue:0 alpha:1.0].CGColor;
         
         CAKeyframeAnimation *animation = [CAKeyframeAnimation animation];
         animation.keyPath = @"position.x";
@@ -297,11 +251,7 @@
         animation.additive = YES;
         [textField.layer addAnimation:animation forKey:@"shake"];
     } else {
-        if (([self.prefs[@"enabled"] boolValue] && [self.prefs[@"enabledBlackTheme"] boolValue]) && !isExecutable ) {
-            textField.layer.borderColor = [UIColor colorWithRed:25.0/255.0f green:25.0/255.0f blue:25.0/255.0f alpha:1.0].CGColor;
-        } else {
-            textField.layer.borderColor = [UIColor clearColor].CGColor;
-        }
+        textField.layer.borderColor = [UIColor clearColor].CGColor;
         
         self.customColor = [UIColor colorFromHexString:textField.text];
         self.colorPickerView.color = self.customColor;

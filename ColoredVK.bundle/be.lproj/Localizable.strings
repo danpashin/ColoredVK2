@@ -27,3 +27,8 @@
 "SAVE_THIS_COLOR_QUESTION" = "Захаваць гэты колер?";
 "RESET_BUTTON_TITLE" = "Скінуць захаваны колер";
 "TAP_AND_HOLD_BUTTON_TITLE" = "Націсніце і ўтрымлівайце кнопку, каб працягнуць";
+
+"USE_IN_MENU" = "Выкарыстоўваць у меню";
+"USE_IN_MESSAGES" = "Выкарыстоўваць у паведамленнях";
+"CAN_NOT_SAVE_IMAGE_NO_INTERNET_CONNECTION" = "Немагчыма загрузіць малюнак.\nПраверце падлучэнне да Інтэрнэту.";
+"IMAGE_SAVED_SUCCESSFULLY" = "Вобраз паспяхова захаваны";

@@ -8,28 +8,36 @@
     
 "BLACK_THEME" = "Темная тема";
 "ENABLE_BLACK_THEME" = "Включить";
-"BLACK_THEME_FOOTER" = "";
 
 "NAVIGATION_BAR" = "Бар навигации";
 "TOOLBAR" = "Тулбар";
 "MENU_BACKGROUND" = "Меню";
 "MESSAGES_BACKGROUND" = "Сообщения";
-"OTHER" = "Другое";
+"MISCELLANEOUS" = "Разное";
 "STATUS_BAR_COLORS" = "Статус бар";
+"SWITCH_COLORS" = "Переключатели";
 
 "CHANGE_COLORS" = "Изменить цветa";
 "BACKGROUND_COLOR" = "Цвет фона";
-"FOREGROUND_COLOR" = "Цвет кнопок";
+"FOREGROUND_COLOR" = "Основной цвет";
 "ENABLED_IMAGE" = "Изображ. вместо цвета";
+"USE_BLUR" = "Использовать размытие *";
 
 "CHANGE_BACKGROUND" = "Изменить фон";
 "IMAGE_BLACKOUT" = "Затемнение изобр.";
-"USE_BLUR" = "Использовать блюр*";
-"USE_BLUR_WARNING" = "*Использование размытия на старых устройствах может вызвать лаги";
+"SELECTION_STYLE" = "Стиль выбора";
+"NONE" = "Нет";
+"TRANSPARENT" = "Прозрачный";
+"BLURRED" = "Размытый";
 "SEPARATOR_COLOR" = "Цвет разделителей";
 "HIDE_SEPARATORS" = "Скрыть разделители";
+"HIDE_SEARCH" = "Спрятать поиск *";
+"VKAPP_RESTART_IS_NEEDED" = "* Необходим рестарт VK App";
+"USE_BLUR_IN_MESSAGES_FOOTER" = "* Если включено, бар навигации и тулбар в сообщениях будут размыты";
 
+"KEYBOARD_STYLE" = "Стиль клавиатуры";
+"BLACK" = "Черная";
+"WHITE" = "Белая";
 "SHOW_BAR" = "Всегда показывать бар";
-"BLACK_KB" = "Чёрная клавиатура";
 
 "DEVELOPER_IN_VK" = "Разработчик в ВК";

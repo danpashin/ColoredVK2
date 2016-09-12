@@ -237,7 +237,7 @@ CGFloat const NKOPickerViewCrossHairshWidthAndHeight    = 38.f;
 
 - (UIImage *)_imageWithName:(NSString*)name 
 {
-    NSBundle *cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    NSBundle *cvkBunlde = [ColoredVKJailCheck isInjected]?[NSBundle bundleWithPath:CVK_NON_JAIL_BUNDLE_PATH]:[NSBundle bundleWithPath:CVK_JAIL_BUNDLE_PATH];
     return [UIImage imageWithContentsOfFile:[cvkBunlde pathForResource:name ofType:@"png"]];
 }
 

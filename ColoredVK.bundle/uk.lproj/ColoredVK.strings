@@ -8,28 +8,36 @@
     
 "BLACK_THEME" = "Чорна тема";
 "ENABLE_BLACK_THEME" = "Включити";
-"BLACK_THEME_FOOTER" = "";
 
 "NAVIGATION_BAR" = "Бар навігації";
 "TOOLBAR" = "Тулбар";
 "MENU_BACKGROUND" = "Меню";
 "MESSAGES_BACKGROUND" = "Повідомлення";
-"OTHER" = "інше";
+"MISCELLANEOUS" = "Різне";
 "STATUS_BAR_COLORS" = "Рядок стану";
+"SWITCH_COLORS" = "Перемикачі";
 
 "CHANGE_COLORS" = "Зміна кольору";
 "BACKGROUND_COLOR" = "Колір фону";
-"FOREGROUND_COLOR" = "Колір кнопок";
+"FOREGROUND_COLOR" = "Основний колір";
 "ENABLED_IMAGE" = "Зображення замість кольору";
+"USE_BLUR" = "Використовуйте розмиття *";
 
 "CHANGE_BACKGROUND" = "Змінити фон";
 "IMAGE_BLACKOUT" = "Затемнення зображення";
-"USE_BLUR" = "Використовувати блюр*";
-"USE_BLUR_WARNING" = "*Використання розмиття на старих пристроях може викликати лаги";
+"SELECTION_STYLE" = "Cтиль вибору";
+"NONE" = "Немає";
+"TRANSPARENT" = "Прозорий";
+"BLURRED" = "Розмитий";
 "SEPARATOR_COLOR" = "Колір роздільників";
 "HIDE_SEPARATORS" = "Приховати роздільники";
+"HIDE_SEARCH" = "Приховати пошук *";
+"VKAPP_RESTART_IS_NEEDED" = "* VKApp перезавантаження потрібна";
+"USE_BLUR_IN_MESSAGES_FOOTER" = "* Якщо включено, панель інструментів і панель інструментів буде розмита";
 
+"KEYBOARD_STYLE" = "Стиль клавіатури";
+"BLACK" = "Чорна";
+"WHITE" = "Біла";
 "SHOW_BAR" = "Завжди показувати бар";
-"BLACK_KB" = "Чорна клавіатура";
 
 "DEVELOPER_IN_VK" = "Розробник в ВК";

@@ -25,3 +25,8 @@
 "SAVE_THIS_COLOR_QUESTION" = "Зберегти цей колір?";
 "RESET_BUTTON_TITLE" = "Скинути збережений колір";
 "TAP_AND_HOLD_BUTTON_TITLE" = "Натисніть і утримуйте кнопку, щоб продовжити";
+
+"USE_IN_MENU" = "Використовувати в меню";
+"USE_IN_MESSAGES" = "Використовувати в повідомленнях";
+"CAN_NOT_SAVE_IMAGE_NO_INTERNET_CONNECTION" = "Не можете зберегти зображення.\nПеревірте підключення до Інтернету";
+"IMAGE_SAVED_SUCCESSFULLY" = "Образ успішно збережено";

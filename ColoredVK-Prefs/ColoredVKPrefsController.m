@@ -9,32 +9,44 @@
 
 #import "ColoredVKPrefsController.h"
 #import "PrefixHeader.h"
+#import "ColoredVKJailCheck.h"
 
 @implementation ColoredVKPrefsController
 
+//- (UIStatusBarStyle) preferredStatusBarStyle
+//{
+//    if ([ColoredVKJailCheck isInjected]) return UIStatusBarStyleLightContent;
+//}
+
 - (id)specifiers
 {
+    BOOL injected = [ColoredVKJailCheck isInjected];
+    cvkBunlde = injected?[NSBundle bundleWithPath:CVK_NON_JAIL_BUNDLE_PATH]:[NSBundle bundleWithPath:CVK_JAIL_BUNDLE_PATH];
+    prefsPath = injected?CVK_NON_JAIL_PREFS_PATH:CVK_JAIL_PREFS_PATH;
     
-//    prefsPath = @"/var/mobile/Library/Preferences/com.daniilpashin.coloredvk.plist";
-//    cvkBunlde = [NSBundle bundleWithPath:@"/Library/PreferenceBundles/ColoredVK.bundle"];
+    NSString *plistName = @"ColoredVKMainPrefs";
     
-    prefsPath = CVK_PREFS_PATH;
-    cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-
+    NSMutableArray *specifiersArray;
+    if ([self respondsToSelector:@selector(setBundle:)]) {
+        self.bundle = cvkBunlde;
+        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
+    } else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:bundle:)]) {
+        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:cvkBunlde] mutableCopy];
+    } else {
+        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
+    }
     
-    
-    NSMutableArray *specifiersArray = [[self loadSpecifiersFromPlistName:@"ColoredVKMainPrefs" target:self] mutableCopy];
     if (specifiersArray.count == 0) {
+        specifiersArray = [NSMutableArray new];
         [specifiersArray addObject:[self errorMessage]];
         [specifiersArray addObject:[self footer]];
-    }  else {
-        [specifiersArray insertObject:[self footer] atIndex:[specifiersArray indexOfObject:specifiersArray.lastObject]];
-    }
+    }  else [specifiersArray insertObject:[self footer] atIndex:[specifiersArray indexOfObject:specifiersArray.lastObject]];
     
     _specifiers = [specifiersArray copy];
     
     [UISwitch appearanceWhenContainedIn:self.class, nil].tintColor = [UIColor colorWithRed:235.0/255.0f green:235.0/255.0f blue:235.0/255.0f alpha:1.0];
     [UISwitch appearanceWhenContainedIn:self.class, nil].onTintColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
+    [UISwitch appearanceWhenContainedIn:self.class, nil].tag = 404;
     [UITableView appearanceWhenContainedIn:self.class, nil].separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
     
     return _specifiers;
@@ -45,9 +57,7 @@
 {    
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
     
-    if (!prefs[specifier.properties[@"key"]]) {
-        return specifier.properties[@"default"];
-    }
+    if (!prefs[specifier.properties[@"key"]]) return specifier.properties[@"default"];
     return prefs[specifier.properties[@"key"]];
 }
 
@@ -71,7 +81,7 @@
     NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, cvkBunlde, nil), [self getTweakVersion], [self getVKVersion] ];
     
     PSSpecifier *footer = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-    [footer setProperty:[footerText stringByAppendingString:[NSString stringWithFormat:@"\n\n© Daniil Pashin %@", [self dynamicYear]]] forKey:@"footerText"];
+    [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2015"] forKey:@"footerText"];
     [footer setProperty:@"1" forKey:@"footerAlignment"];
     
     return footer;
@@ -84,8 +94,6 @@
     [errorMessage setProperty:@"1" forKey:@"footerAlignment"];
     return errorMessage;
 }
-
-
 
 - (NSString *)getTweakVersion
 {
@@ -100,30 +108,11 @@
 }
 
 
-- (NSString *)dynamicYear
-{
-    NSString *dynamicYear = @"2015";
-    
-    NSDateFormatter *dateFormatter = [NSDateFormatter new];
-    dateFormatter.dateFormat = @"yyyy";
-    
-    NSString *dateString = [dateFormatter stringFromDate:[NSDate date]];
-    
-    if (![dynamicYear isEqual:dateString]) {   dynamicYear = [NSString stringWithFormat:@"%@ - %@", dynamicYear, dateString]; }
-    return dynamicYear;
-}
-
-
-
 - (void)openProfie
 {    
     NSURL *appURL = [NSURL URLWithString:@"vk://vk.com/danpashin"];
-    NSURL *safariURL = [NSURL URLWithString:@"https://vk.com/danpashin"];
-    if ( [[UIApplication sharedApplication] canOpenURL:appURL] ) {
-        [[UIApplication sharedApplication] openURL:appURL];
-    } else {
-        [[UIApplication sharedApplication] openURL:safariURL];
-    }
+    if ([[UIApplication sharedApplication] canOpenURL:appURL]) [[UIApplication sharedApplication] openURL:appURL];
+    else [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://vk.com/danpashin"]];
 }
 
 @end

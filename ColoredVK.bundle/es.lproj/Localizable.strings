@@ -25,3 +25,8 @@
 "SAVE_THIS_COLOR_QUESTION" = "Guarde este color?";
 "RESET_BUTTON_TITLE" = "Restablecer el color guardado";
 "TAP_AND_HOLD_BUTTON_TITLE" = "Toque y mantenga pulsado el botón para continuar";
+
+"USE_IN_MENU" = "Uso en el menú";
+"USE_IN_MESSAGES" = "Su uso en los mensajes";
+"CAN_NOT_SAVE_IMAGE_NO_INTERNET_CONNECTION" = "No se puede guardar la imagen.\nCompruebe su conexión a Internet";
+"IMAGE_SAVED_SUCCESSFULLY" = "Imagen guardado correctamente";

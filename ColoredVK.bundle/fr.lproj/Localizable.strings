@@ -25,3 +25,8 @@
 "SAVE_THIS_COLOR_QUESTION" = "Enregistrer cette couleur?";
 "RESET_BUTTON_TITLE" = "Réinitialiser la couleur enregistrée";
 "TAP_AND_HOLD_BUTTON_TITLE" = "Tap & maintenez le bouton pour continuer";
+
+"USE_IN_MENU" = "Utiliser dans le menu";
+"USE_IN_MESSAGES" = "Utiliser dans les messages";
+"CAN_NOT_SAVE_IMAGE_NO_INTERNET_CONNECTION" = "Vous ne pouvez pas enregistrer d'image.\nVérifiez votre connexion Internet";
+"IMAGE_SAVED_SUCCESSFULLY" = "L'Image enregistrée avec succès";

@@ -17,8 +17,10 @@
 {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier specifier:specifier];
     if (self) {
-        prefsPath = CVK_PREFS_PATH;
-        cvkFolder = CVK_FOLDER_PATH;
+        
+        BOOL injected = [ColoredVKJailCheck isInjected];
+        prefsPath = injected?CVK_NON_JAIL_PREFS_PATH:CVK_JAIL_PREFS_PATH;
+        cvkFolder = injected?CVK_NON_JAIL_FOLDER_PATH:CVK_JAIL_FOLDER_PATH;   
         
         NSString *identifier = specifier.identifier;
         
@@ -60,28 +62,25 @@
 
 - (void)updateCellForIdentifier:(NSString *)identifier
 {
-    NSDictionary *tweakSettings = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
     
     UISwitch *switchView = [UISwitch new];
     [switchView addTarget:self action:@selector(writeSwtchState:) forControlEvents:UIControlEventValueChanged];
-    switchView.on = [tweakSettings[self.key] boolValue];
+    switchView.on = [prefs[self.key] boolValue];
     switchView.enabled = NO;
     switchView.opaque = YES;
     self.accessoryView = switchView;
     
-   
-    dispatch_async (dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+    NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
         UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfFile:[cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identifier]]]];
-        
         if (image != nil) {
             dispatch_async (dispatch_get_main_queue(), ^{
                 self.myImageView.image = image;
                 switchView.enabled = YES; 
             });
         }
-    });
-        //        self.myImageView.image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        //        [self.myImageView setTintColor:[UIColor redColor]];
+    }];
+    [operation start];
     
 }
 
@@ -104,22 +103,18 @@
 
 - (void)removeImage:(UILongPressGestureRecognizer *)recognizer
 {
-    NSString *identifier = (recognizer.accessibilityElements).lastObject;
+    NSString *identifier = recognizer.accessibilityElements.lastObject;
     
     if ([identifier isEqualToString:(self.specifier).identifier]) {
-        NSString *preview = [cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identifier]];
-        NSString *fullImage = [cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]];
+        NSString *previewPath = [cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identifier]];
+        NSString *fullImagePath = [cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]];
         
         
         NSError *error = nil;
         NSFileManager *fileManager = [NSFileManager defaultManager];
         
-        if ([fileManager fileExistsAtPath:preview]) {
-            [fileManager removeItemAtPath:preview error:&error];
-        }
-        if ([fileManager fileExistsAtPath:fullImage]) {
-            [fileManager removeItemAtPath:fullImage error:&error];
-        }
+        if ([fileManager fileExistsAtPath:previewPath]) [fileManager removeItemAtPath:previewPath error:&error];
+        if ([fileManager fileExistsAtPath:fullImagePath]) [fileManager removeItemAtPath:fullImagePath error:&error];
         
         if (!error) {
             self.myImageView.image = nil;

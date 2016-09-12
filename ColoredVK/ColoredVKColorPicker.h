@@ -14,9 +14,6 @@
 @interface ColoredVKColorPicker : UIViewController <UITextFieldDelegate> {
     NSString *prefsPath;
     NSBundle *cvkBunlde;
-    
-    BOOL isJailbroken;
-    BOOL isExecutable;
 }
 
 @property (strong, nonatomic) NSString *cellIdentifier;

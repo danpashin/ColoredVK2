@@ -8,7 +8,8 @@
 
 
 #import <UIKit/UIKit.h>
-#import "Preferences.h"
+#import "PSTableCell.h"
+#import "PSSpecifier.h"
 
 @interface ColoredVKStepperPrefsCell : PSTableCell {
     NSString *prefsPath;

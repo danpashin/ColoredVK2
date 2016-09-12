@@ -12,13 +12,35 @@
 /**
  Creates color from string
  */
-+ (UIColor *)colorFromString:(NSString *)string;
++ (UIColor * _Nonnull)colorFromString:(NSString * _Nonnull)string;
 /**
  Creates color from string (only hex strings are allowed)
  */
-+ (UIColor *)colorFromHexString:(NSString *)hexString;
++ (UIColor * _Nonnull)colorFromHexString:(NSString * _Nonnull )hexString;
 /**
  Creates color darker than current
  */
-+ (UIColor *)darkerColorForColor:(UIColor *)color;
++ (UIColor * _Nonnull)darkerColorForColor:(UIColor * _Nonnull)color;
+/**
+ Returns saved color for ColoredVK identifiers
+ */
++ ( UIColor * _Nonnull)savedColorForIdentifier:(NSString * _Nonnull)identifier;
+/**
+ Returns standart color for ColoredVK identifiers
+ */
++ (UIColor * _Nonnull)defaultColorForIdentifier:(NSString * _Nonnull)identifier;
+
+
+/**
+ Returns color with 20.0 white
+ */
++ (UIColor * _Nonnull)lightBlackColor;
+/**
+ Returns color with 10.0 white
+ */
++ (UIColor * _Nonnull)darkBlackColor;
+/**
+ Returns color with 178.5 red
+ */
++ (UIColor * _Nonnull)buttonsTintColor;
 @end
