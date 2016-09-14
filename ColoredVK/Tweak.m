@@ -109,6 +109,8 @@ CVKKeyboardStyle keyboardStyle;
 
 VKHUD *hud;
 
+NSString *imageSource;
+
 
 
 @interface ColoredVKMainController : NSObject
@@ -534,7 +536,6 @@ static void setPostCreationButtonColor()
                                            preview = UIGraphicsGetImageFromCurrentImageContext();
                                            [UIImagePNGRepresentation(preview) writeToFile:prevImagePath atomically:YES];
                                            UIGraphicsEndImageContext();
-                                           
                                        }
                                        
                                        [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk.image.update" object:nil userInfo:@{@"identifier" : imageID}];
@@ -547,21 +548,24 @@ static void setPostCreationButtonColor()
                                            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
                                        }
                                        if (success) {
+                                           dispatch_async(dispatch_get_main_queue(), ^{
                                            [hud hideWithResult:YES message:NSLocalizedStringFromTableInBundle(@"IMAGE_SAVED_SUCCESSFULLY", nil, cvkBunlde, nil)];
                                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                                                [hud hide:YES];
                                            });
+                                               });
                                        }
                                        
                                    } else {
+                                       dispatch_async(dispatch_get_main_queue(), ^{
                                        [hud hideWithResult:NO message:connectionError.localizedDescription];
                                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                                            [hud hide:YES];
                                        });
+                                           });
                                    }
                                }];
         });
-
 }
 @end
 
@@ -575,26 +579,26 @@ static void setPostCreationButtonColor()
 CHDeclareClass(AppDelegate);
 CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, application, didFinishLaunchingWithOptions, NSDictionary *, options)
 {
-    NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-        NSString *licencePath =  [ColoredVKJailCheck isInjected]?CVK_NON_JAIL_PREFS_PATH:CVK_JAIL_PREFS_PATH;
-        licencePath = [licencePath stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"];
-        
-        if (![[NSFileManager defaultManager] fileExistsAtPath:licencePath]) {
-            tweakEnabled = NO;
-            ColoredVKInstaller *installer = [[ColoredVKInstaller alloc] init];
-            [installer beginDownload];
-        } 
-        else {
-            NSData *decryptedData = [[NSData dataWithContentsOfFile:licencePath] AES128DecryptedDataWithKey:@"BE7555818BC236315C987C1D9B17F"];
-            NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
-            if ([dict[@"IS_PURCHASED"] boolValue] != YES) {
-               tweakEnabled = NO; 
-            }
-        }
-
-    }];
-    operation.queuePriority = NSOperationQueuePriorityHigh;
-    [operation start];
+//    NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+//        NSString *licencePath =  [ColoredVKJailCheck isInjected]?CVK_NON_JAIL_PREFS_PATH:CVK_JAIL_PREFS_PATH;
+//        licencePath = [licencePath stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"];
+//        
+//        if (![[NSFileManager defaultManager] fileExistsAtPath:licencePath]) {
+//            tweakEnabled = NO;
+//            ColoredVKInstaller *installer = [[ColoredVKInstaller alloc] init];
+//            [installer beginDownload];
+//        } 
+//        else {
+//            NSData *decryptedData = [[NSData dataWithContentsOfFile:licencePath] AES128DecryptedDataWithKey:@"BE7555818BC236315C987C1D9B17F"];
+//            NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
+//            if ([dict[@"IS_PURCHASED"] boolValue] != YES) {
+//               tweakEnabled = NO; 
+//            }
+//        }
+//
+//    }];
+//    operation.queuePriority = NSOperationQueuePriorityHigh;
+//    [operation start];
     reloadPrefs();
     
     
@@ -671,22 +675,18 @@ CHOptimizedMethod(0, self, void, UIToolbar, layoutSubviews)
                     textView.textColor = [UIColor lightGrayColor];
                 }
             }
-        } else if (enabledToolBarColor || useMessagesBlur) {
-            
+        } else if (enabledToolBarColor) {
             NSArray *controllersToChange = @[@"UIView", @"RootView"];
             if ([controllersToChange containsObject:CLASS_NAME(self.superview)]) {
                 BOOL canUseTint = YES;
-                BOOL canUseBlur = NO;
                 for (id view in self.subviews) {
                     if ([@"InputPanelViewTextView" isEqualToString:CLASS_NAME(view)]) {
                         canUseTint = NO;
-                        canUseBlur = YES;
                         break;
                     }
                 }
-                if (canUseBlur) setBlur(self, YES);
-                else if (enabledToolBarColor) self.barTintColor = toolBarBackgroundColor;
-                if (canUseTint && enabledToolBarColor) self.tintColor = toolBarForegroundColor;
+                self.barTintColor = toolBarBackgroundColor;
+                if (canUseTint) self.tintColor = toolBarForegroundColor;
                 
             }
         } 
@@ -869,6 +869,7 @@ CHOptimizedMethod(1, self, void, UIAlertController, viewWillAppear, BOOL, animat
 }
 
 
+#pragma mark UISwitch
 CHDeclareClass(UISwitch);
 CHOptimizedMethod(0, self, void, UISwitch, layoutSubviews)
 {
@@ -897,6 +898,7 @@ CHOptimizedMethod(0, self, void, UISwitch, layoutSubviews)
 }
 
 
+#pragma mark UISegmentedControl
 CHDeclareClass(UISegmentedControl);
 CHOptimizedMethod(0, self, void, UISegmentedControl, layoutSubviews)
 {
@@ -1278,8 +1280,18 @@ CHOptimizedMethod(1, self, id, NewsFeedPostCreationButton, initWithFrame, CGRect
 
 
 
+
+
+
 #pragma mark ChatController
 CHDeclareClass(ChatController);
+CHOptimizedMethod(1, self, void, ChatController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, ChatController, viewWillAppear, animated);
+    if (useMessagesBlur) setBlur(self.inputPanel, YES);
+}
+
+
 CHOptimizedMethod(2, self, UITableViewCell*, ChatController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     
@@ -1551,7 +1563,7 @@ CHOptimizedMethod(1, self, void, AudioController, viewWillAppear, BOOL, animated
 }
 
 
-
+#pragma mark PhotoBrowserController
 CHDeclareClass(PhotoBrowserController);
 CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, animated)
 {
@@ -1559,29 +1571,16 @@ CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, a
     if ([self isKindOfClass:objc_getClass("PhotoBrowserController")]) {
         
         UIImage *saveImage = [UIImage imageWithContentsOfFile:[cvkBunlde pathForResource:@"download" ofType:@"png"]];
+//        UIImage *saveImage = [UIImage imageNamed:@"store_download_image" inBundle:[NSBundle mainBundle] compatibleWithTraitCollection:nil];
         UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] bk_initWithImage:saveImage 
                                                                           style:UIBarButtonItemStylePlain 
                                                                         handler:^(id  _Nonnull sender) {
-                                                                            __block NSString *source;
-                                                                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-                                                                                for (PhotoHostView *hostView in self.hosts) {
-                                                                                    if (hostView.maxVariant != nil) {
-                                                                                        source = hostView.maxVariant.src;
-                                                                                        break;
-                                                                                    } else if (hostView.initialVariant != nil) {
-                                                                                        source = hostView.initialVariant.src;
-                                                                                        break;
-                                                                                    }
-                                                                                }
-                                                                            });
-                                                                            
+                                                                            hud = [objc_getClass("VKHUD") hud];
                                                                             BlockActionController *actionController = [objc_getClass("BlockActionController") actionSheetWithTitle:nil];
                                                                             [actionController addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"USE_IN_MENU", nil, cvkBunlde, nil) 
                                                                                                            block:(id)^(id arg1) {
-                                                                                                               hud = [objc_getClass("VKHUD") hud];
-                                                                                                               
                                                                                                                NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-                                                                                                                   [ColoredVKMainController downloadImageWithSource:source andID:@"menuBackgroundImage"];
+                                                                                                                   [ColoredVKMainController downloadImageWithSource:imageSource andID:@"menuBackgroundImage"];
                                                                                                                }];
                                                                                                                [hud showForOperation:operation];
                                                                                                                [operation start];
@@ -1590,7 +1589,7 @@ CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, a
                                                                             [actionController addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"USE_IN_MESSAGES", nil, cvkBunlde, nil) 
                                                                                                            block:(id)^(id arg1) {
                                                                                                                NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-                                                                                                                   [ColoredVKMainController downloadImageWithSource:source andID:@"messagesBackgroundImage"];
+                                                                                                                   [ColoredVKMainController downloadImageWithSource:imageSource andID:@"messagesBackgroundImage"];
                                                                                                                }];
                                                                                                                [hud showForOperation:operation];
                                                                                                                [operation start];
@@ -1598,9 +1597,69 @@ CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, a
                                                                             [actionController setCancelButtonWithTitle:UIKitLocalizedString(@"Cancel") block:nil];
                                                                             [actionController showInViewController:self];
                                                                         }];
+
         self.navigationItem.rightBarButtonItems = @[self.navigationItem.rightBarButtonItem, saveButton];
     }
 }
+
+CHOptimizedMethod(1, self, VKPhotoSized*, PhotoBrowserController, photoForPage, unsigned long long, page)
+{
+    VKPhotoSized *photo = CHSuper(1, PhotoBrowserController, photoForPage, page);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (photo.variants != nil) {
+            int maxVariantIndex = 0;
+            for (VKImageVariant *variant in photo.variants.allValues) {
+                if (variant.type > maxVariantIndex) {
+                    maxVariantIndex = variant.type;
+                    imageSource = variant.src;
+                }
+            }
+        }
+    });
+    return photo;
+}
+
+
+
+#pragma mark VKMBrowserController
+CHDeclareClass(VKMBrowserController);
+CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, VKMBrowserController, viewWillAppear, animated);
+    if ([self isKindOfClass:objc_getClass("VKMBrowserController")]) {
+        NSMutableArray *mutableItems = [self.toolbar.items mutableCopy];
+        UIImage *saveImage = [UIImage imageWithContentsOfFile:[cvkBunlde pathForResource:@"download" ofType:@"png"]];
+        UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] bk_initWithImage:saveImage 
+                                                                          style:UIBarButtonItemStylePlain 
+                                                                        handler:^(id  _Nonnull sender) {
+                                                                            hud = [objc_getClass("VKHUD") hud];
+                                                                            BlockActionController *actionController = [objc_getClass("BlockActionController") actionSheetWithTitle:nil];
+                                                                            [actionController addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"USE_IN_MENU", nil, cvkBunlde, nil) 
+                                                                                                           block:(id)^(id arg1) {
+                                                                                                               NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+                                                                                                                   [ColoredVKMainController downloadImageWithSource:self.target.url.absoluteString andID:@"menuBackgroundImage"];
+                                                                                                               }];
+                                                                                                               [hud showForOperation:operation];
+                                                                                                               [operation start];
+                                                                                                           }];
+                                                                            
+                                                                            [actionController addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"USE_IN_MESSAGES", nil, cvkBunlde, nil) 
+                                                                                                           block:(id)^(id arg1) {
+                                                                                                               NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+                                                                                                                   [ColoredVKMainController downloadImageWithSource:self.target.url.absoluteString andID:@"messagesBackgroundImage"];
+                                                                                                               }];
+                                                                                                               [hud showForOperation:operation];
+                                                                                                               [operation start];
+                                                                                                           }];
+                                                                            [actionController setCancelButtonWithTitle:UIKitLocalizedString(@"Cancel") block:nil];
+                                                                            [actionController showInViewController:self];
+                                                                        }];
+
+        [mutableItems addObject:saveButton];
+        [self.toolbar setItems:[mutableItems copy] animated:YES];
+    }
+}
+
 
 
 
@@ -1794,6 +1853,7 @@ CHConstructor
                 
                 CHLoadLateClass(ChatController);
                 CHHook(2, ChatController, tableView, cellForRowAtIndexPath);
+                CHHook(1, ChatController, viewWillAppear);
                 
                 
                 CHLoadLateClass(HintsSearchDisplayController);
@@ -1806,8 +1866,11 @@ CHConstructor
                 
                 CHLoadLateClass(PhotoBrowserController);
                 CHHook(1, PhotoBrowserController, viewWillAppear);
+                CHHook(1, PhotoBrowserController, photoForPage);
                 
                 
+                CHLoadLateClass(VKMBrowserController);
+                CHHook(1, VKMBrowserController, viewWillAppear);
                 
                 
                 

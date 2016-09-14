@@ -27,4 +27,4 @@
 
 #define UIKitLocalizedString(key) [[NSBundle bundleWithIdentifier:@"com.apple.UIKit"] localizedStringForKey:key value:@"" table:nil]
 
-#define kColoredVKVersion @"3.0.1-beta-1"
+#define kColoredVKVersion @"3.1-beta-1"

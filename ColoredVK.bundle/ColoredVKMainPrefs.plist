@@ -49,6 +49,10 @@
 			<string>updatesIcon.png</string>
 		</dict>
 		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
 			<key>label</key>
 			<string>DEVELOPER_IN_VK</string>
 			<key>icon</key>
@@ -61,6 +65,14 @@
 			<string>ColoredVKLinkCell</string>
 			<key>id</key>
 			<string>developerLink</string>
+		</dict>
+		<dict>
+			<key>label</key>
+			<string>LICENCES</string>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKLicencesController</string>
 		</dict>
 	</array>
 </dict>

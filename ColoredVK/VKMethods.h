@@ -116,6 +116,21 @@
 
 
 
+
+@interface InputPanelView : UIToolbar
+@end
+@interface ExtraInputPanelView : InputPanelView
+@end
+@interface RootView : UIView
+@property(retain, nonatomic) ExtraInputPanelView *inputPanelView;
+@end
+
+@interface ChatController : UIViewController
+@property(retain, nonatomic) RootView *root;
+@property(retain, nonatomic) ExtraInputPanelView *inputPanel;
+@end
+
+
 @interface VKRenderedText : NSObject
 @property(readwrite, copy, nonatomic) NSAttributedString *text;
 @end
@@ -142,6 +157,8 @@
 @end
 
 
+
+
 @interface VKImageVariant : NSObject
 @property(nonatomic) int type;
 @property(nonatomic) int height; 
@@ -155,21 +172,21 @@
 @property(retain, nonatomic) VKImageVariant *initialVariant;
 @property(retain, nonatomic) VKImageVariant *currentVariant;
 @end
+@interface VKPhoto : NSObject
+@property(retain, nonatomic) NSNumber *user_id;
+@property(retain, nonatomic) NSNumber *aid;
+@property(nonatomic) double ratio;
+@property(retain, nonatomic) NSMutableDictionary *variants;
+@end
+
+@interface VKPhotoSized : VKPhoto
+@property(nonatomic) int sizeType;
+@end
 
 
 
 
 
-//@interface VKPhoto : NSObject
-//@property(retain, nonatomic) NSNumber *user_id;
-//@property(retain, nonatomic) NSNumber *aid;
-//@property(nonatomic) double ratio;
-//@property(retain, nonatomic) NSMutableDictionary *variants;
-//@end
-//
-//@interface VKPhotoSized : VKPhoto
-//@property(nonatomic) int sizeType;
-//@end
 
 @interface MBProgressHUD : UIView
 - (void)hideDelayed:(id)arg1;
@@ -200,4 +217,88 @@
 - (void)actionClose:(id)arg1;
 
 @end
+
+
+
+@class VKMBrowserController;
+@interface VKMBrowserTarget : NSObject
+
+@property(nonatomic) _Bool simpleChrome; // @synthesize simpleChrome=_simpleChrome;
+@property(retain, nonatomic) NSURL *url; // @synthesize url=_url;
+@property(nonatomic) VKMBrowserController *weakBrowser; // @synthesize weakBrowser=_weakBrowser;
+- (void)fillShareActions:(id)arg1;
+- (_Bool)canShare;
+- (id)targetURL;
+- (id)title;
+- (void)reload;
+- (void)render;
+- (void)stop;
+- (void)load;
+- (void)dealloc;
+
+@end
+
+
+@interface VKMBrowserController : UIViewController 
+
+@property(retain, nonatomic) UIBarButtonItem *buttonForward; // @synthesize buttonForward=_buttonForward;
+@property(retain, nonatomic) UIBarButtonItem *buttonBack; // @synthesize buttonBack=_buttonBack;
+@property(retain, nonatomic) UIToolbar *toolbar; // @synthesize toolbar=_toolbar;
+@property(retain, nonatomic) UIButton *safariButton; // @synthesize safariButton=_safariButton;
+@property(retain, nonatomic) UIButton *toolbarButton; // @synthesize toolbarButton=_toolbarButton;
+@property(retain, nonatomic) UIScrollView *webScrollView; // @synthesize webScrollView=_webScrollView;
+@property(retain, nonatomic) UILabel *headerLoading; // @synthesize headerLoading=_headerLoading;
+@property(retain, nonatomic) UILabel *headerURL; // @synthesize headerURL=_headerURL;
+@property(retain, nonatomic) UILabel *headerTitle; // @synthesize headerTitle=_headerTitle;
+@property(retain, nonatomic) VKMBrowserTarget *target; // @synthesize target=_target;
+@property(retain, nonatomic) NSMutableArray *stack; // @synthesize stack=_stack;
+@property(nonatomic) _Bool hideToolbar; // @synthesize hideToolbar=_hideToolbar;
+@property(nonatomic) _Bool keepDefaultStyle; // @synthesize keepDefaultStyle=_keepDefaultStyle;
+@property(retain, nonatomic) UIWebView *webView; // @synthesize webView=_webView;
+@end
+
+
+
+
+@interface VKDoc : NSObject
+
+@property(nonatomic) _Bool saved; // @synthesize saved=_saved;
+@property(nonatomic) double ratio; // @synthesize ratio=_ratio;
+@property(retain, nonatomic) NSNumber *date; // @synthesize date=_date;
+@property(retain, nonatomic) NSString *url; // @synthesize url=_url;
+@property(retain, nonatomic) NSString *ext; // @synthesize ext=_ext;
+@property(nonatomic) int size; // @synthesize size=_size;
+@property(retain, nonatomic) NSString *title; // @synthesize title=_title;
+@property(retain, nonatomic) NSMutableDictionary *variants; // @synthesize variants=_variants;
+- (_Bool)isVideo;
+- (id)thumbnailUrl;
+- (id)messagesPlaceholder;
+- (id)messagesVariant;
+- (id)fullVariant;
+- (int)fullVariantType;
+- (id)thumbnailVariant;
+- (id)attachmentIco;
+- (id)attachmentImage;
+- (id)attachmentStatus:(_Bool)arg1;
+- (id)attachmentTitle;
+- (id)attachmentPlaceholder;
+- (id)sizeString;
+@end
+
+
+
+@interface VKMURLDocTarget : VKMBrowserTarget
+@property(readonly, retain, nonatomic) VKDoc *document;
+- (void)fillShareActions:(id)arg1;
+- (_Bool)canShare;
+- (void)reload;
+- (id)targetURL;
+- (id)title;
+- (void)stop;
+- (void)load;
+- (id)description;
+- (void)dealloc;
+
+@end
+
 

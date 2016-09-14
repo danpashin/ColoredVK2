@@ -36,6 +36,10 @@
 		A51B49511D7C98100041D600 /* UIBarButtonItem+BlocksKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A51B494F1D7C98100041D600 /* UIBarButtonItem+BlocksKit.m */; };
 		A51B49531D7C99580041D600 /* BKDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = A51B49521D7C99580041D600 /* BKDefines.h */; };
 		A522B7F81D53466100DE4AE4 /* ColoredVKJailCheck.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C35BD71D5227AE00637243 /* ColoredVKJailCheck.m */; };
+		A525E3861D872B7A0015CA59 /* ColoredVKLicencesController.h in Headers */ = {isa = PBXBuildFile; fileRef = A525E3841D872B7A0015CA59 /* ColoredVKLicencesController.h */; };
+		A525E3871D872B7A0015CA59 /* ColoredVKLicencesController.h in Headers */ = {isa = PBXBuildFile; fileRef = A525E3841D872B7A0015CA59 /* ColoredVKLicencesController.h */; };
+		A525E3881D872B7A0015CA59 /* ColoredVKLicencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = A525E3851D872B7A0015CA59 /* ColoredVKLicencesController.m */; };
+		A525E3891D872B7A0015CA59 /* ColoredVKLicencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = A525E3851D872B7A0015CA59 /* ColoredVKLicencesController.m */; };
 		A53488871D28FDCE00911638 /* NKOColorPickerView.h in Headers */ = {isa = PBXBuildFile; fileRef = A53488851D28FDCE00911638 /* NKOColorPickerView.h */; };
 		A53517A51D270D79001AB841 /* UIAlertView+Blocks.h in Headers */ = {isa = PBXBuildFile; fileRef = A53517A31D270D78001AB841 /* UIAlertView+Blocks.h */; };
 		A5372DDE1CCB9ABE00EC57D2 /* ColoredVKPrefs.h in Headers */ = {isa = PBXBuildFile; fileRef = A5372DDC1CCB9ABE00EC57D2 /* ColoredVKPrefs.h */; };
@@ -106,6 +110,8 @@
 		A5B6ED431D3D677900383425 /* UIImage+ResizeMagick.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D84BFE1CCFF312000C13B9 /* UIImage+ResizeMagick.h */; };
 		A5B6ED441D3D68CE00383425 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5461E211CCD06C6008469FA /* CoreGraphics.framework */; };
 		A5B6ED451D3D68F000383425 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A50731D41CD535130088EF9F /* QuartzCore.framework */; };
+		A5B860B21D89653C00DAF2B3 /* ColoredVKInstaller.m in Sources */ = {isa = PBXBuildFile; fileRef = A5EB1CCC1D8547F100C97A91 /* ColoredVKInstaller.m */; };
+		A5B860B31D89654100DAF2B3 /* ColoredVKInstaller.h in Headers */ = {isa = PBXBuildFile; fileRef = A5EB1CCB1D8547F100C97A91 /* ColoredVKInstaller.h */; };
 		A5B995E81D3F5F590077FD12 /* Tweak.m in Sources */ = {isa = PBXBuildFile; fileRef = A53D91961CCA82B400E45A49 /* Tweak.m */; };
 		A5B995E91D3F5F590077FD12 /* ColoredVKPrefs.m in Sources */ = {isa = PBXBuildFile; fileRef = A5372DDD1CCB9ABE00EC57D2 /* ColoredVKPrefs.m */; };
 		A5B995EA1D3F5F590077FD12 /* ColoredVKColorPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = A5372DF91CCBC8E700EC57D2 /* ColoredVKColorPicker.m */; };
@@ -136,8 +142,6 @@
 		A5DD94101D3E1E8D0006E470 /* ColoredVKHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = A5DD940E1D3E1E8D0006E470 /* ColoredVKHeader.h */; };
 		A5DD94111D3E1E8D0006E470 /* ColoredVKHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DD940F1D3E1E8D0006E470 /* ColoredVKHeader.m */; };
 		A5EB1CCA1D85418500C97A91 /* libMobileGestaltExtensions.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A5EB1CC91D85418500C97A91 /* libMobileGestaltExtensions.tbd */; };
-		A5EB1CCD1D8547F100C97A91 /* ColoredVKInstaller.h in Headers */ = {isa = PBXBuildFile; fileRef = A5EB1CCB1D8547F100C97A91 /* ColoredVKInstaller.h */; };
-		A5EB1CCE1D8547F100C97A91 /* ColoredVKInstaller.m in Sources */ = {isa = PBXBuildFile; fileRef = A5EB1CCC1D8547F100C97A91 /* ColoredVKInstaller.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -159,6 +163,8 @@
 		A51B494E1D7C98100041D600 /* UIBarButtonItem+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+BlocksKit.h"; sourceTree = "<group>"; };
 		A51B494F1D7C98100041D600 /* UIBarButtonItem+BlocksKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarButtonItem+BlocksKit.m"; sourceTree = "<group>"; };
 		A51B49521D7C99580041D600 /* BKDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKDefines.h; sourceTree = "<group>"; };
+		A525E3841D872B7A0015CA59 /* ColoredVKLicencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKLicencesController.h; sourceTree = "<group>"; };
+		A525E3851D872B7A0015CA59 /* ColoredVKLicencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKLicencesController.m; sourceTree = "<group>"; };
 		A53488851D28FDCE00911638 /* NKOColorPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NKOColorPickerView.h; sourceTree = "<group>"; };
 		A53488861D28FDCE00911638 /* NKOColorPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NKOColorPickerView.m; sourceTree = "<group>"; };
 		A53517A31D270D78001AB841 /* UIAlertView+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+Blocks.h"; sourceTree = "<group>"; };
@@ -362,8 +368,6 @@
 			children = (
 				A53D12911D467016009567B5 /* PrefixHeader.h */,
 				A53D91961CCA82B400E45A49 /* Tweak.m */,
-				A5EB1CCB1D8547F100C97A91 /* ColoredVKInstaller.h */,
-				A5EB1CCC1D8547F100C97A91 /* ColoredVKInstaller.m */,
 				A5372DDC1CCB9ABE00EC57D2 /* ColoredVKPrefs.h */,
 				A5372DDD1CCB9ABE00EC57D2 /* ColoredVKPrefs.m */,
 				A5372DF81CCBC8E700EC57D2 /* ColoredVKColorPicker.h */,
@@ -378,6 +382,10 @@
 				A55569E31D3AD007005C3EDD /* ColoredVKLinkCell.m */,
 				A5C35BD61D5227AE00637243 /* ColoredVKJailCheck.h */,
 				A5C35BD71D5227AE00637243 /* ColoredVKJailCheck.m */,
+				A525E3841D872B7A0015CA59 /* ColoredVKLicencesController.h */,
+				A525E3851D872B7A0015CA59 /* ColoredVKLicencesController.m */,
+				A5EB1CCB1D8547F100C97A91 /* ColoredVKInstaller.h */,
+				A5EB1CCC1D8547F100C97A91 /* ColoredVKInstaller.m */,
 				A53D919D1CCA82C000E45A49 /* Supporting Files */,
 			);
 			path = ColoredVK;
@@ -492,6 +500,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5B860B31D89654100DAF2B3 /* ColoredVKInstaller.h in Headers */,
 				A53D12941D46A1CE009567B5 /* PrefixHeader.h in Headers */,
 				A53BFBCD1D8573960071D9A2 /* NSData+AES.h in Headers */,
 				A53D127D1D46241A009567B5 /* PSEditableTableCell.h in Headers */,
@@ -506,9 +515,9 @@
 				A5372DFA1CCBC8E700EC57D2 /* ColoredVKColorPicker.h in Headers */,
 				A5D84C001CCFF312000C13B9 /* UIImage+ResizeMagick.h in Headers */,
 				A53D12791D46241A009567B5 /* PSControlTableCell.h in Headers */,
+				A525E3861D872B7A0015CA59 /* ColoredVKLicencesController.h in Headers */,
 				A51B49531D7C99580041D600 /* BKDefines.h in Headers */,
 				A5DC150C1CCC03E1004D6731 /* ColoredVKColorCell.h in Headers */,
-				A5EB1CCD1D8547F100C97A91 /* ColoredVKInstaller.h in Headers */,
 				A5771EFC1CCE50BD002FF676 /* ColoredVKImageCell.h in Headers */,
 				A55F5FFF1D3B81270099BE4F /* KLCPopup.h in Headers */,
 				A50116AF1D7EED1100C75DFB /* SVProgressAnimatedView.h in Headers */,
@@ -568,6 +577,7 @@
 				A5B6ED421D3D677900383425 /* NKOColorPickerView.h in Headers */,
 				A5B6ED431D3D677900383425 /* UIImage+ResizeMagick.h in Headers */,
 				A53D12861D46241A009567B5 /* PSRootController.h in Headers */,
+				A525E3871D872B7A0015CA59 /* ColoredVKLicencesController.h in Headers */,
 				A53D12761D46241A009567B5 /* PreferencesAppController.h in Headers */,
 				A50116AC1D7EED1100C75DFB /* SVIndefiniteAnimatedView.h in Headers */,
 				A53D128C1D46241A009567B5 /* PSSwitchTableCell.h in Headers */,
@@ -682,7 +692,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ${PROJECT_DIR}\n\ncp -r ColoredVK.bundle/. ~/Desktop/vkUnarch/Payload/vkclient.app/${PRODUCT_NAME}.bundle/\ncp ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.dylib ~/Desktop/vkUnarch/Payload/vkclient.app/${PRODUCT_NAME}.bundle/\ncd ~/Desktop/vkUnarch\noptool install -c load -p \"@executable_path/${PRODUCT_NAME}.bundle/${PRODUCT_NAME}.dylib\" -t Payload/vkclient.app/vkclient\nif [ -f ~/Desktop/vk.ipa ];\n    then rm ~/Desktop/vk.ipa \nfi\nzip -r ~/Desktop/${PRODUCT_NAME}.ipa Payload\noptool uninstall -p \"@executable_path/${PRODUCT_NAME}.bundle/${PRODUCT_NAME}.dylib\" -t Payload/vkclient.app/vkclient\nrm -rf Payload/vkclient.app/${PRODUCT_NAME}.bundle\n\n#cp -r ${PROJECT_DIR}/ColoredVK.bundle ~/Desktop/${PRODUCT_NAME}.bundle\n#cp ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.dylib ~/Desktop/${PRODUCT_NAME}.bundle/";
+			shellScript = "cd ${PROJECT_DIR}\n\ncp -r ColoredVK.bundle/. ~/Desktop/vkUnarch/Payload/vkclient.app/${PRODUCT_NAME}.bundle/\ncp ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.dylib ~/Desktop/vkUnarch/Payload/vkclient.app/${PRODUCT_NAME}.bundle/\ncd ~/Desktop/vkUnarch\noptool install -c load -p \"@executable_path/${PRODUCT_NAME}.bundle/${PRODUCT_NAME}.dylib\" -t Payload/vkclient.app/vkclient\nif [ -f ~/Desktop/vk.ipa ];\n    then rm ~/Desktop/vk.ipa \nfi\nzip -r ~/Desktop/${PRODUCT_NAME}.ipa Payload\noptool uninstall -p \"@executable_path/${PRODUCT_NAME}.bundle/${PRODUCT_NAME}.dylib\" -t Payload/vkclient.app/vkclient\nrm -rf Payload/vkclient.app/${PRODUCT_NAME}.bundle\n\ncp -r ${PROJECT_DIR}/ColoredVK.bundle ~/Desktop/${PRODUCT_NAME}.bundle\ncp ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.dylib ~/Desktop/${PRODUCT_NAME}.bundle/";
 			showEnvVarsInLog = 0;
 		};
 		A5BD7EA91D44CCB900BFC3A1 /* ShellScript */ = {
@@ -706,6 +716,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5B860B21D89653C00DAF2B3 /* ColoredVKInstaller.m in Sources */,
 				A5AC06901D56605E0073EEE0 /* ColoredVKPrefsController.m in Sources */,
 				A5D772FA1D55EC240043EEE8 /* ColoredVKHeader.m in Sources */,
 				A50116AD1D7EED1100C75DFB /* SVIndefiniteAnimatedView.m in Sources */,
@@ -717,9 +728,9 @@
 				A5B995EC1D3F5F590077FD12 /* ColoredVKImageCell.m in Sources */,
 				A5B995ED1D3F5F590077FD12 /* ColoredVKStepperPrefsCell.m in Sources */,
 				A5C35BD91D5227AE00637243 /* ColoredVKJailCheck.m in Sources */,
-				A5EB1CCE1D8547F100C97A91 /* ColoredVKInstaller.m in Sources */,
 				A50116B11D7EED1100C75DFB /* SVProgressAnimatedView.m in Sources */,
 				A5B995EE1D3F5F590077FD12 /* ColoredVKLinkCell.m in Sources */,
+				A525E3881D872B7A0015CA59 /* ColoredVKLicencesController.m in Sources */,
 				A53BFBCE1D8573960071D9A2 /* NSData+AES.m in Sources */,
 				A51B49511D7C98100041D600 /* UIBarButtonItem+BlocksKit.m in Sources */,
 				A58F34141D5A378100838814 /* UIColor+ColoredVK.m in Sources */,
@@ -756,6 +767,7 @@
 				A5DD940C1D3E15470006E470 /* NKOColorPickerView.m in Sources */,
 				A5DD940D1D3E15470006E470 /* UIImage+ResizeMagick.m in Sources */,
 				A58F34191D5A378100838814 /* NSString+ColoredVK.m in Sources */,
+				A525E3891D872B7A0015CA59 /* ColoredVKLicencesController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

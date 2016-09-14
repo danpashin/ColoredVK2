@@ -18,10 +18,11 @@
 
 @implementation ColoredVKPrefs
 
-//- (UIStatusBarStyle) preferredStatusBarStyle
-//{
-//    if ([ColoredVKJailCheck isInjected]) return UIStatusBarStyleLightContent;
-//}
+- (UIStatusBarStyle) preferredStatusBarStyle
+{
+    if ([ColoredVKJailCheck isInjected]) return UIStatusBarStyleLightContent;
+    else return UIStatusBarStyleDefault;
+}
 
 - (id)specifiers
 {
@@ -30,24 +31,28 @@
     cvkBunlde = injected?[NSBundle bundleWithPath:CVK_NON_JAIL_BUNDLE_PATH]:[NSBundle bundleWithPath:CVK_JAIL_BUNDLE_PATH];
     cvkFolder = injected?CVK_NON_JAIL_FOLDER_PATH:CVK_JAIL_FOLDER_PATH;
     
+    prefsPath = @"/var/mobile/Library/Preferences/com.daniilpashin.coloredvk2.plist";
+    cvkBunlde = [NSBundle bundleWithPath: @"/Library/PreferenceBundles/ColoredVK2.bundle"];
+    cvkFolder = @"/var/mobile/Library/Preferences/ColoredVK2";
+    
     NSString *plistName = @"ColoredVK";
     
-    NSMutableArray *specifiersArray;
-    if ([self respondsToSelector:@selector(setBundle:)]) {
+    NSMutableArray *specifiersArray = [NSMutableArray new];
+    if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
         self.bundle = cvkBunlde;
         specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
     } else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:bundle:)]) {
         specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:cvkBunlde] mutableCopy];
     } 
-    else {
+    else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
         specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
     }
     
     if (specifiersArray.count == 0) {
         specifiersArray = [NSMutableArray new];
         [specifiersArray addObject:[self errorMessage]];
-        [specifiersArray addObject:[self footer]];
-    }  else [specifiersArray insertObject:[self footer] atIndex:[specifiersArray indexOfObject:specifiersArray.lastObject]];
+    }
+    [specifiersArray addObject:[self footer]];
     
     _specifiers = [specifiersArray copy];
     
@@ -167,8 +172,9 @@
         
         UIImage *newImage = [image resizedImageByMagick: [NSString stringWithFormat:@"%fx%f#", [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height]];
         
-        BOOL success = [UIImagePNGRepresentation(newImage) writeToFile:imagePath atomically:YES];
-        if (success) {
+        NSError *error = nil;
+        [UIImagePNGRepresentation(newImage) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
+        if (!error) {
             UIGraphicsBeginImageContext(CGSizeMake(40, 40));
             UIImage *preview = image;
             [preview drawInRect:CGRectMake(0, 0, 40, 40)];
@@ -187,8 +193,8 @@
             if ([self.imageID isEqualToString:@"messagesBackgroundImage"]) {
                 CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
             }
-            if (success) [SVProgressHUD showSuccessWithStatus:NSLocalizedStringFromTableInBundle(@"IMAGE_SAVED_SUCCESSFULLY", nil, cvkBunlde, nil)];
-            else [SVProgressHUD showErrorWithStatus:NSLocalizedStringFromTableInBundle(@"CAN_NOT_SAVE_IMAGE_TRY_AGAIN", nil, cvkBunlde, nil)];
+            if (!error) [SVProgressHUD showSuccessWithStatus:NSLocalizedStringFromTableInBundle(@"IMAGE_SAVED_SUCCESSFULLY", nil, cvkBunlde, nil)];
+            else [SVProgressHUD showErrorWithStatus:error.localizedDescription];
             
             [SVProgressHUD dismissWithDelay:2.0 completion:^{
                 [picker dismissViewControllerAnimated:YES completion:nil];
@@ -214,4 +220,10 @@
     if ( [UIDevice currentDevice].systemVersion.floatValue >= 8.0 ) [titles addObject:NSLocalizedStringFromTableInBundle(@"BLURRED", @"ColoredVK", cvkBunlde, nil)];
     return [titles copy];
 }
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+}
+
 @end

@@ -13,10 +13,11 @@
 
 @implementation ColoredVKPrefsController
 
-//- (UIStatusBarStyle) preferredStatusBarStyle
-//{
-//    if ([ColoredVKJailCheck isInjected]) return UIStatusBarStyleLightContent;
-//}
+- (UIStatusBarStyle) preferredStatusBarStyle
+{
+    if ([ColoredVKJailCheck isInjected]) return UIStatusBarStyleLightContent;
+    else return UIStatusBarStyleDefault;
+}
 
 - (id)specifiers
 {
@@ -24,23 +25,27 @@
     cvkBunlde = injected?[NSBundle bundleWithPath:CVK_NON_JAIL_BUNDLE_PATH]:[NSBundle bundleWithPath:CVK_JAIL_BUNDLE_PATH];
     prefsPath = injected?CVK_NON_JAIL_PREFS_PATH:CVK_JAIL_PREFS_PATH;
     
+//    prefsPath = @"/var/mobile/Library/Preferences/com.daniilpashin.coloredvk2.plist";
+//    cvkBunlde = [NSBundle bundleWithPath: @"/Library/PreferenceBundles/ColoredVK2.bundle"];
+    
     NSString *plistName = @"ColoredVKMainPrefs";
     
-    NSMutableArray *specifiersArray;
-    if ([self respondsToSelector:@selector(setBundle:)]) {
+    NSMutableArray *specifiersArray = [NSMutableArray new];
+    if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
         self.bundle = cvkBunlde;
         specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
     } else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:bundle:)]) {
         specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:cvkBunlde] mutableCopy];
-    } else {
+    } 
+    else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
         specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
     }
     
     if (specifiersArray.count == 0) {
         specifiersArray = [NSMutableArray new];
         [specifiersArray addObject:[self errorMessage]];
-        [specifiersArray addObject:[self footer]];
-    }  else [specifiersArray insertObject:[self footer] atIndex:[specifiersArray indexOfObject:specifiersArray.lastObject]];
+    }
+    [specifiersArray addObject:[self footer]];
     
     _specifiers = [specifiersArray copy];
     

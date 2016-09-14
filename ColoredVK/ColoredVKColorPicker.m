@@ -16,7 +16,7 @@
 
 - (UIStatusBarStyle) preferredStatusBarStyle
 {
-    if ([ColoredVKJailCheck isInjected]) return UIStatusBarStyleLightContent;
+    return UIStatusBarStyleLightContent;
 }
 
 - (void)viewDidLoad
