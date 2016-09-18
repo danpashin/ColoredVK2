@@ -9,7 +9,6 @@
 
 #import "ColoredVKStepperPrefsCell.h"
 #import "PrefixHeader.h"
-#import "ColoredVKJailCheck.h"
 
 @implementation ColoredVKStepperPrefsCell
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)identifier specifier:(PSSpecifier *)specifier
@@ -17,7 +16,7 @@
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier specifier:specifier];
     
     if (self) {
-        prefsPath = [ColoredVKJailCheck isInjected]?CVK_NON_JAIL_PREFS_PATH:CVK_JAIL_PREFS_PATH;
+        prefsPath = CVK_PREFS_PATH;
         
         NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:prefsPath];
         

@@ -7,7 +7,6 @@
 //
 
 #import "ColoredVKLicencesController.h"
-#import "ColoredVKJailCheck.h"
 #import "PrefixHeader.h"
 
 @interface ColoredVKLicencesController ()
@@ -18,24 +17,24 @@
 
 - (UIStatusBarStyle) preferredStatusBarStyle
 {
-    if ([ColoredVKJailCheck isInjected]) return UIStatusBarStyleLightContent;
-    else return UIStatusBarStyleDefault;
+#ifndef COMPILE_FOR_JAIL
+    return UIStatusBarStyleLightContent;
+#else
+    return UIStatusBarStyleDefault;
+#endif
 }
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
+    [super viewDidLoad];    
     
-    NSString *bundlePath = [ColoredVKJailCheck isInjected]?CVK_NON_JAIL_BUNDLE_PATH:CVK_JAIL_BUNDLE_PATH;
-    NSString *path = [[NSBundle bundleWithPath:bundlePath] pathForResource:@"Licences" ofType:@"plist"];
+    NSString *path = [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] pathForResource:@"Licences" ofType:@"plist"];
     NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path][@"Licences"];
     
     NSString *text = @"";
     
-    for (NSString *key in dict.allKeys) {
-        NSString *value = [dict valueForKey:key];
-//        value = [value stringByReplacingOccurrencesOfString:@"\\n" withString:@"\n"];
-        text = [text stringByAppendingFormat:@"%@\n\n%@\n\n\n", key, value];
+    for (NSString *key in [dict.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]) {
+        text = [text stringByAppendingFormat:@"%@\n\n%@\n\n\n", key, [dict valueForKey:key]];
     }
     
     UITextView *textView = [UITextView new];

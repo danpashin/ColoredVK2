@@ -36,7 +36,7 @@
         [iv getCString:ivPtr maxLength:sizeof(ivPtr) encoding:NSUTF8StringEncoding];
     }
 
-    NSUInteger dataLength = [self length];
+    NSUInteger dataLength = self.length;
     size_t bufferSize = dataLength + kCCBlockSizeAES128;
     void *buffer = malloc(bufferSize);
 
@@ -47,7 +47,7 @@
                                           keyPtr,
                                           kCCBlockSizeAES128,
                                           ivPtr,
-                                          [self bytes],
+                                          self.bytes,
                                           dataLength,
                                           buffer,
                                           bufferSize,

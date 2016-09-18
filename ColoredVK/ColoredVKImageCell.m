@@ -9,18 +9,16 @@
 
 #import "ColoredVKImageCell.h"
 #import "PrefixHeader.h"
-#import "ColoredVKJailCheck.h"
 
 @implementation ColoredVKImageCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)identifier specifier:(PSSpecifier *)specifier
 {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier specifier:specifier];
-    if (self) {
+    if (self) {        
+        prefsPath = CVK_PREFS_PATH;
+        cvkFolder = CVK_FOLDER_PATH;
         
-        BOOL injected = [ColoredVKJailCheck isInjected];
-        prefsPath = injected?CVK_NON_JAIL_PREFS_PATH:CVK_JAIL_PREFS_PATH;
-        cvkFolder = injected?CVK_NON_JAIL_FOLDER_PATH:CVK_JAIL_FOLDER_PATH;   
         
         NSString *identifier = specifier.identifier;
         

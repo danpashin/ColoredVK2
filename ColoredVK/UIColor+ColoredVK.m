@@ -7,7 +7,6 @@
 //
 
 #import "UIColor+ColoredVK.h"
-#import "ColoredVKJailCheck.h"
 #import "PrefixHeader.h"
 
 @implementation UIColor (ColoredVK)
@@ -36,7 +35,7 @@
 
 + (UIColor *)savedColorForIdentifier:(NSString *)identifier 
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:[ColoredVKJailCheck isInjected]?CVK_NON_JAIL_PREFS_PATH:CVK_JAIL_PREFS_PATH];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     
     if (prefs[identifier] == nil) return [UIColor defaultColorForIdentifier:identifier];
     return [UIColor colorFromString:prefs[identifier]];

@@ -8,34 +8,48 @@
 
 #import "ColoredVKInstaller.h"
 
-#define PRODUCT_ID @"com.daniilpashin.coloredvk2"
+#define PRODUCT_ID @"org.thebigboss.coloredvk2"
 
 #import <MobileGestalt/MobileGestalt.h>
 #import "PrefixHeader.h"
-#import "ColoredVKJailCheck.h"
 #import "NSData+AES.h"
 
 @interface ColoredVKInstaller()
-@property (strong, nonatomic) UIAlertView *alertView;
+@property (strong, nonatomic) UIAlertController *alertController;
+@property (strong, nonatomic) UIAlertAction *cancelAction;
+@property (strong, nonatomic) UIAlertAction *exitAction;
 @property (strong, nonatomic) NSBlockOperation *operation;
 @end
 
 @implementation ColoredVKInstaller
 - (void)beginDownload
-{
-    self.alertView = [[UIAlertView alloc] initWithTitle:@"ColoredVK" 
-                                                message:@"Downloading licence..." 
-                                               delegate:self 
-                                      cancelButtonTitle:@"Cancel" 
-                                      otherButtonTitles:nil];
+{        
+    self.alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK" message:@"Downloading licence..." preferredStyle:UIAlertControllerStyleAlert];
+    self.cancelAction = [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self.operation cancel];
+    }];
+    self.exitAction = [UIAlertAction actionWithTitle:@"Exit to apply changes" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [[UIApplication sharedApplication] performSelector:@selector(suspend)];
+        [NSThread sleepForTimeInterval:0.5];
+        exit(0);
+    }];
+    self.exitAction.enabled = NO;
+    [self.alertController addAction:self.cancelAction];
+    [self.alertController addAction:self.exitAction];
     
-    [self.alertView show];
-    self.operation = [NSBlockOperation blockOperationWithBlock:^{
+    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:self.alertController animated:YES completion:nil];
+    
+    
+    self.operation = [NSBlockOperation blockOperationWithBlock:^{        
+        NSString *udid = [UIDevice currentDevice].identifierForVendor.UUIDString;
+#ifdef COMPILE_FOR_JAIL
+        udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(kMGUniqueDeviceID)];
+#endif
         
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://danpashin.ru/api/v1.1/"]];
         request.HTTPMethod = @"POST";
         [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
-        request.HTTPBody = [[NSString stringWithFormat:@"udid=%@&package=%@&version=%@", MGCopyAnswer(CFSTR("UniqueDeviceID")), PRODUCT_ID, kColoredVKVersion] dataUsingEncoding:NSUTF8StringEncoding];    
+        request.HTTPBody = [[NSString stringWithFormat:@"udid=%@&package=%@&version=%@", udid, PRODUCT_ID, kColoredVKVersion] dataUsingEncoding:NSUTF8StringEncoding];    
         
         NSHTTPURLResponse *response;
         NSError *error = nil;
@@ -46,46 +60,31 @@
             switch (status) {
                 case 200:
                     if (!response.allHeaderFields[@"Error-Description"]) {
-                        NSString *licencePath =  [ColoredVKJailCheck isInjected]?CVK_NON_JAIL_PREFS_PATH:CVK_JAIL_PREFS_PATH;
+                        NSString *licencePath = CVK_PREFS_PATH;
                         licencePath = [licencePath stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"];
                         
                         NSError *writingError = nil;
-                        NSData *encrypterdData = [[NSKeyedArchiver archivedDataWithRootObject:@{@"IS_PURCHASED":@YES}] AES128EncryptedDataWithKey:@"BE7555818BC236315C987C1D9B17F"];
+                        NSData *encrypterdData = [[NSKeyedArchiver archivedDataWithRootObject:@{@"UDID":udid}] AES128EncryptedDataWithKey:@"BE7555818BC236315C987C1D9B17F"];
                         [encrypterdData writeToFile:licencePath options:NSDataWritingAtomic error:&writingError];
                         
                         if (!writingError) {
-                            self.alertView.tag = 1;
-                            [self.alertView setMessage:@"Licence was downloaded successfully"];
-                            [self.alertView addButtonWithTitle:@"Exit to apply changes"];
+                            self.alertController.message = @"Licence was downloaded successfully";
+                            self.exitAction.enabled = YES;
+                            self.cancelAction.enabled = NO;
                         } else {
-                            [self.alertView setMessage:[NSString stringWithFormat:@"Error: %@", writingError.localizedDescription]];
-                            [self.alertView addButtonWithTitle:@"Exit"];
+                            self.alertController.message = [NSString stringWithFormat:@"Error: %@", writingError.localizedDescription];
                         }
                     }
                     break;
                 case 403:
-                    [self.alertView setMessage:[NSString stringWithFormat:@"Error while downloading licence:\n%@", response.allHeaderFields[@"Error-Description"]]];
+                    self.alertController.message = [NSString stringWithFormat:@"Error while downloading licence:\n%@", response.allHeaderFields[@"Error-Description"]];
                     break;
             }
         } else {
-            [self.alertView setMessage:[NSString stringWithFormat:@"Error: %@", error.localizedDescription]];
+            self.alertController.message = [NSString stringWithFormat:@"Error while downloading licence:\n%@", error.localizedDescription];
         }
     }];
     self.operation.queuePriority = NSOperationQueuePriorityHigh;
     [self.operation start];
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (alertView.tag == 1) {
-        [alertView dismiss];
-        [[UIApplication sharedApplication] performSelector:@selector(suspend)];
-        [NSThread sleepForTimeInterval:0.2];
-        exit(0);
-    } 
-    else {
-        [alertView dismissWithClickedButtonIndex:0 animated:YES];
-        [self.operation cancel];
-    }
 }
 @end

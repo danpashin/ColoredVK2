@@ -9,7 +9,6 @@
 
 #import "ColoredVKColorPicker.h"
 #import "PrefixHeader.h"
-#import "ColoredVKJailCheck.h"
 
 
 @implementation ColoredVKColorPicker
@@ -20,11 +19,9 @@
 }
 
 - (void)viewDidLoad
-{
-    
-    BOOL injected = [ColoredVKJailCheck isInjected];
-    prefsPath = injected?CVK_NON_JAIL_PREFS_PATH:CVK_JAIL_PREFS_PATH;
-    cvkBunlde = injected?[NSBundle bundleWithPath:CVK_NON_JAIL_BUNDLE_PATH]:[NSBundle bundleWithPath:CVK_JAIL_BUNDLE_PATH];
+{    
+    prefsPath = CVK_PREFS_PATH;
+    cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     
     [super viewDidLoad];
     

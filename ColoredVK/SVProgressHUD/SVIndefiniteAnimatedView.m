@@ -40,7 +40,7 @@
         UIBezierPath* smoothedPath = [UIBezierPath bezierPathWithArcCenter:arcCenter radius:self.radius startAngle:(CGFloat) (M_PI*3/2) endAngle:(CGFloat) (M_PI/2+M_PI*5) clockwise:YES];
         
         _indefiniteAnimatedLayer = [CAShapeLayer layer];
-        _indefiniteAnimatedLayer.contentsScale = [[UIScreen mainScreen] scale];
+        _indefiniteAnimatedLayer.contentsScale = [UIScreen mainScreen].scale;
         _indefiniteAnimatedLayer.frame = CGRectMake(0.0f, 0.0f, arcCenter.x*2, arcCenter.y*2);
         _indefiniteAnimatedLayer.fillColor = [UIColor clearColor].CGColor;
         _indefiniteAnimatedLayer.strokeColor = self.strokeColor.CGColor;
@@ -57,7 +57,7 @@
         
         NSString *path = [imageBundle pathForResource:@"angle-mask" ofType:@"png"];
         
-        maskLayer.contents = (__bridge id)[[UIImage imageWithContentsOfFile:path] CGImage];
+        maskLayer.contents = (__bridge id)[UIImage imageWithContentsOfFile:path].CGImage;
         maskLayer.frame = _indefiniteAnimatedLayer.bounds;
         _indefiniteAnimatedLayer.mask = maskLayer;
         
@@ -98,7 +98,7 @@
 
 - (void)setFrame:(CGRect)frame {
     if(!CGRectEqualToRect(frame, super.frame)) {
-        [super setFrame:frame];
+        super.frame = frame;
         
         if(self.superview) {
             [self layoutAnimatedLayer];

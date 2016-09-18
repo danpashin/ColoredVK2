@@ -9,7 +9,6 @@
 
 #import "ColoredVKPrefs.h"
 #import "ColoredVKColorPicker.h"
-#import "ColoredVKJailCheck.h"
 #import "UIImage+ResizeMagick.h"
 #import "PrefixHeader.h"
 #import <MobileCoreServices/MobileCoreServices.h>
@@ -20,20 +19,19 @@
 
 - (UIStatusBarStyle) preferredStatusBarStyle
 {
-    if ([ColoredVKJailCheck isInjected]) return UIStatusBarStyleLightContent;
-    else return UIStatusBarStyleDefault;
+#ifndef COMPILE_FOR_JAIL
+    return UIStatusBarStyleLightContent;
+#else
+    return UIStatusBarStyleDefault;
+#endif
 }
 
 - (id)specifiers
-{
-    BOOL injected = [ColoredVKJailCheck isInjected];
-    prefsPath = injected?CVK_NON_JAIL_PREFS_PATH:CVK_JAIL_PREFS_PATH;
-    cvkBunlde = injected?[NSBundle bundleWithPath:CVK_NON_JAIL_BUNDLE_PATH]:[NSBundle bundleWithPath:CVK_JAIL_BUNDLE_PATH];
-    cvkFolder = injected?CVK_NON_JAIL_FOLDER_PATH:CVK_JAIL_FOLDER_PATH;
+{    
+    prefsPath = CVK_PREFS_PATH;
+    cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    cvkFolder = CVK_FOLDER_PATH;
     
-    prefsPath = @"/var/mobile/Library/Preferences/com.daniilpashin.coloredvk2.plist";
-    cvkBunlde = [NSBundle bundleWithPath: @"/Library/PreferenceBundles/ColoredVK2.bundle"];
-    cvkFolder = @"/var/mobile/Library/Preferences/ColoredVK2";
     
     NSString *plistName = @"ColoredVK";
     
@@ -67,7 +65,6 @@
     return _specifiers;
 }
 
-
 - (id) readPreferenceValue:(PSSpecifier*)specifier
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
@@ -87,7 +84,7 @@
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
     
     
-    NSArray *identificsToReloadMenu = @[@"menuSelectionStyle", @"hideSeparators", @"hideMenuSearch", @"enabledBlackTheme", @"changeSwitchColor"];
+    NSArray *identificsToReloadMenu = @[@"menuSelectionStyle", @"hideSeparators", @"enabledBlackTheme", @"changeSwitchColor"];
     if ([identificsToReloadMenu containsObject:specifier.identifier]) {
          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
     }
@@ -170,10 +167,11 @@
         NSString *imagePath = [cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.imageID]];
         NSString *prevImagePath = [cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", self.imageID]];
         
-        UIImage *newImage = [image resizedImageByMagick: [NSString stringWithFormat:@"%fx%f#", [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height]];
+        UIImage *crImage = [image imageScaledToWidth:[UIScreen mainScreen].bounds.size.width height:[UIScreen mainScreen].bounds.size.height];
+//        crImage = [image resizedImageByMagick: [NSString stringWithFormat:@"%ix%i#", width, height]];
         
         NSError *error = nil;
-        [UIImagePNGRepresentation(newImage) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
+        [UIImagePNGRepresentation(crImage) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
         if (!error) {
             UIGraphicsBeginImageContext(CGSizeMake(40, 40));
             UIImage *preview = image;
@@ -220,10 +218,4 @@
     if ( [UIDevice currentDevice].systemVersion.floatValue >= 8.0 ) [titles addObject:NSLocalizedStringFromTableInBundle(@"BLURRED", @"ColoredVK", cvkBunlde, nil)];
     return [titles copy];
 }
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-}
-
 @end

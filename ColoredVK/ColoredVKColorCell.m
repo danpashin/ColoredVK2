@@ -9,7 +9,6 @@
 
 #import "ColoredVKColorCell.h"
 #import "PrefixHeader.h"
-#import "ColoredVKJailCheck.h"
 
 @implementation ColoredVKColorCell
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)identifier specifier:(PSSpecifier *)specifier

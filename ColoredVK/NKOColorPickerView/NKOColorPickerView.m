@@ -29,7 +29,6 @@
 //
 
 #import "NKOColorPickerView.h"
-#import "ColoredVKJailCheck.h"
 
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
@@ -237,7 +236,7 @@ CGFloat const NKOPickerViewCrossHairshWidthAndHeight    = 38.f;
 
 - (UIImage *)_imageWithName:(NSString*)name 
 {
-    NSBundle *cvkBunlde = [ColoredVKJailCheck isInjected]?[NSBundle bundleWithPath:CVK_NON_JAIL_BUNDLE_PATH]:[NSBundle bundleWithPath:CVK_JAIL_BUNDLE_PATH];
+    NSBundle *cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     return [UIImage imageWithContentsOfFile:[cvkBunlde pathForResource:name ofType:@"png"]];
 }
 

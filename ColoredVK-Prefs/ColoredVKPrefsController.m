@@ -9,24 +9,22 @@
 
 #import "ColoredVKPrefsController.h"
 #import "PrefixHeader.h"
-#import "ColoredVKJailCheck.h"
 
 @implementation ColoredVKPrefsController
 
 - (UIStatusBarStyle) preferredStatusBarStyle
 {
-    if ([ColoredVKJailCheck isInjected]) return UIStatusBarStyleLightContent;
-    else return UIStatusBarStyleDefault;
+#ifndef COMPILE_FOR_JAIL
+    return UIStatusBarStyleLightContent;
+#else
+    return UIStatusBarStyleDefault;
+#endif
 }
 
 - (id)specifiers
 {
-    BOOL injected = [ColoredVKJailCheck isInjected];
-    cvkBunlde = injected?[NSBundle bundleWithPath:CVK_NON_JAIL_BUNDLE_PATH]:[NSBundle bundleWithPath:CVK_JAIL_BUNDLE_PATH];
-    prefsPath = injected?CVK_NON_JAIL_PREFS_PATH:CVK_JAIL_PREFS_PATH;
-    
-//    prefsPath = @"/var/mobile/Library/Preferences/com.daniilpashin.coloredvk2.plist";
-//    cvkBunlde = [NSBundle bundleWithPath: @"/Library/PreferenceBundles/ColoredVK2.bundle"];
+    prefsPath = CVK_PREFS_PATH;
+    cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     
     NSString *plistName = @"ColoredVKMainPrefs";
     

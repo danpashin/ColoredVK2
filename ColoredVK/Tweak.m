@@ -19,13 +19,11 @@
 
 #import "ColoredVKPrefs.h"
 #import "ColoredVKPrefsController.h"
-#import "ColoredVKJailCheck.h"
+#import "ColoredVKInstaller.h"
 #import "PrefixHeader.h"
-#import "UIAlertView+Blocks.h"
 #import "UIBarButtonItem+BlocksKit.h"
 #import "VKMethods.h"
 #import "UIImage+ResizeMagick.h"
-#import "ColoredVKInstaller.h"
 
 
 
@@ -42,7 +40,7 @@
 #define textBackgroundColor [[UIColor redColor] colorWithAlphaComponent:0.3]
 
 
-NSTimeInterval const daysCheckingInterval = 3.0;
+NSTimeInterval const daysCheckingInterval = 2.0;
 
 
 typedef NS_ENUM(NSInteger, CVKCellSelectionStyle) {
@@ -65,6 +63,7 @@ NSString *prefsPath;
 NSString *cvkFolder;
 NSBundle *cvkBunlde;
 NSBundle *vksBundle;
+NSString *imageSource = @"";
 
 BOOL enabled;
 BOOL enabledBarColor;
@@ -109,7 +108,6 @@ CVKKeyboardStyle keyboardStyle;
 
 VKHUD *hud;
 
-NSString *imageSource;
 
 
 
@@ -160,7 +158,10 @@ static BOOL compareNumbers(int *number, int *minValue, int *maxValue)
 static void checkUpdates()
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *stringURL = [NSString stringWithFormat:@"http://danpashin.ru/api/v1.0/cvk/checkUpdates.php?userVers=%@", kColoredVKVersion];
+        NSString *stringURL = [NSString stringWithFormat:@"http://danpashin.ru/api/v1.1/checkUpdates.php?userVers=%@&product=com.daniilpashin.coloredvk2", kColoredVKVersion];
+#ifndef COMPILE_FOR_JAIL
+        stringURL = [stringURL stringByAppendingString:@"&getIPA=1"];
+#endif
         NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
         
         [NSURLConnection sendAsynchronousRequest:urlRequest 
@@ -168,8 +169,8 @@ static void checkUpdates()
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
                                    if (data != nil) {
                                        NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:prefsPath];
-                                       id responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-                                       if ([responseDict isKindOfClass:[NSDictionary class]]) {
+                                       NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                                       if (!responseDict[@"error"]) {
                                            NSString *version = responseDict[@"version"];
                                            
                                            if (![prefs[@"skippedVersion"] isEqualToString:version]) {
@@ -179,34 +180,26 @@ static void checkUpdates()
                                                    NSString *remindLater = NSLocalizedStringFromTableInBundle(@"REMIND_LATER_BUTTON_TITLE", nil, cvkBunlde, nil);
                                                    NSString *updateNow = NSLocalizedStringFromTableInBundle(@"UPADTE_BUTTON_TITLE", nil, cvkBunlde, nil);
                                                    
-                                                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ColoredVK"
-                                                                                                   message:message
-                                                                                                  delegate:nil
-                                                                                         cancelButtonTitle:remindLater
-                                                                                         otherButtonTitles:skip, updateNow, nil];
-                                                   alert.tapBlock = ^(UIAlertView *alertView, NSInteger buttonIndex) {
-                                                       NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
-                                                       
-                                                       if ([title isEqualToString:skip]) {
-                                                           [prefs setValue:version forKey:@"skippedVersion"];
-                                                           [prefs writeToFile:prefsPath atomically:YES];
-                                                       } else if ([title isEqualToString:updateNow]) {
-                                                           NSString *key = [ColoredVKJailCheck isInjected]?@"ipaURL":@"cydiaURL";
-                                                           NSURL *url = [NSURL URLWithString:responseDict[key]];
-                                                           if ([[UIApplication sharedApplication] canOpenURL:url]) [[UIApplication sharedApplication] openURL:url];
-                                                        
-                                                       }
-                                                   };
+                                                   UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK" message:message preferredStyle:UIAlertControllerStyleAlert];
+                                                   [alertController addAction:[UIAlertAction actionWithTitle:skip style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                                                       [prefs setValue:version forKey:@"skippedVersion"];
+                                                       [prefs writeToFile:prefsPath atomically:YES];
+                                                   }]];
+                                                   [alertController addAction:[UIAlertAction actionWithTitle:remindLater style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
+                                                   [alertController addAction:[UIAlertAction actionWithTitle:updateNow style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                       NSURL *url = [NSURL URLWithString:responseDict[@"url"]];
+                                                       if ([[UIApplication sharedApplication] canOpenURL:url]) [[UIApplication sharedApplication] openURL:url];
+
+                                                   }]];
+                                                   [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
                                                    
-                                                   [alert show];
                                                });
                                            }
                                        }
                                        
                                        NSDateFormatter *dateFormatter = [NSDateFormatter new];
                                        dateFormatter.dateFormat = @"yyyy-MM-dd";
-                                       NSString *dateString = [dateFormatter stringFromDate:[NSDate date]];
-                                       [prefs setValue:dateString forKey:@"lastCheckForUpdates"];
+                                       [prefs setValue:[dateFormatter stringFromDate:[NSDate date]] forKey:@"lastCheckForUpdates"];
                                        [prefs writeToFile:prefsPath atomically:YES];
                                    }
                                }];
@@ -279,12 +272,9 @@ static void reloadPrefs()
 static void showAlertWithMessage(NSString *message)
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ColoredVK"
-                                                        message:message
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK" message:message preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
     });
 }
 
@@ -294,7 +284,7 @@ static void setBlur(id bar, BOOL set)
     if (set) {
         if ([bar isKindOfClass:[UINavigationBar class]]) {
             UINavigationBar *navbar = bar;
-            if ([navbar.subviews containsObject:[navbar viewWithTag:403]]) [[navbar viewWithTag:403] removeFromSuperview];
+//            if ([navbar.subviews containsObject:[navbar viewWithTag:403]]) [[navbar viewWithTag:403] removeFromSuperview];
             navbar.barTintColor = [UIColor clearColor];
             UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]];
             blurEffectView.frame = CGRectMake(0, -20, navbar.frame.size.width, navbar.frame.size.height + 20);
@@ -302,6 +292,13 @@ static void setBlur(id bar, BOOL set)
             blurEffectView.tag = 10;
             blurEffectView.layer.backgroundColor =  [[UIColor blackColor] colorWithAlphaComponent:0.3].CGColor;
             blurEffectView.userInteractionEnabled = NO;
+            
+            UIView *borderView = [UIView new];
+            borderView.frame = CGRectMake(0, navbar.frame.size.height + 19, navbar.frame.size.width, 1);
+            borderView.backgroundColor = [UIColor whiteColor];
+            borderView.alpha = 0.1;
+            [blurEffectView addSubview:borderView];
+            
             if (![navbar.subviews containsObject:[navbar viewWithTag:10]]) {                        
                 [navbar addSubview:blurEffectView];
                 [navbar sendSubviewToBack:blurEffectView];
@@ -317,6 +314,13 @@ static void setBlur(id bar, BOOL set)
             blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             blurEffectView.tag = 10;
             blurEffectView.userInteractionEnabled = NO;
+            
+            UIView *borderView = [UIView new];
+            borderView.frame = CGRectMake(0, 0, toolBar.frame.size.width, 1);
+            borderView.backgroundColor = [UIColor whiteColor];
+            borderView.alpha = 0.1;
+            [blurEffectView addSubview:borderView];
+            
             if (![toolBar.subviews containsObject:[toolBar viewWithTag:10]]) {                        
                 [toolBar addSubview:blurEffectView];
                 [toolBar sendSubviewToBack:blurEffectView];
@@ -517,7 +521,7 @@ static void setPostCreationButtonColor()
 + (void)downloadImageWithSource:(NSString *)url andID:(NSString *)imageID
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:url] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:60.0];
         [NSURLConnection sendAsynchronousRequest:urlRequest
                                            queue:[NSOperationQueue mainQueue] 
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
@@ -528,13 +532,14 @@ static void setPostCreationButtonColor()
                                        
                                        UIImage *image = [[UIImage imageWithData:data] resizedImageByMagick: [NSString stringWithFormat:@"%fx%f#", [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height]];
                                        
-                                       BOOL success = [UIImagePNGRepresentation(image) writeToFile:imagePath atomically:YES];
-                                       if (success) {
+                                       NSError *error = nil;
+                                       [UIImagePNGRepresentation(image) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
+                                       if (!error) {
                                            UIGraphicsBeginImageContext(CGSizeMake(40, 40));
                                            UIImage *preview = image;
                                            [preview drawInRect:CGRectMake(0, 0, 40, 40)];
                                            preview = UIGraphicsGetImageFromCurrentImageContext();
-                                           [UIImagePNGRepresentation(preview) writeToFile:prevImagePath atomically:YES];
+                                           [UIImagePNGRepresentation(preview) writeToFile:prevImagePath options:NSDataWritingAtomic error:&error];
                                            UIGraphicsEndImageContext();
                                        }
                                        
@@ -547,22 +552,16 @@ static void setPostCreationButtonColor()
                                        if ([imageID isEqualToString:@"messagesBackgroundImage"]) {
                                            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
                                        }
-                                       if (success) {
-                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                           [hud hideWithResult:YES message:NSLocalizedStringFromTableInBundle(@"IMAGE_SAVED_SUCCESSFULLY", nil, cvkBunlde, nil)];
-                                           dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                               [hud hide:YES];
-                                           });
-                                               });
-                                       }
+                                       dispatch_async(dispatch_get_main_queue(), ^{
+                                           [hud hideWithResult:error?NO:YES message:error?error.localizedDescription:NSLocalizedStringFromTableInBundle(@"IMAGE_SAVED_SUCCESSFULLY", nil, cvkBunlde, nil)];
+                                           [hud performSelector:@selector(hide:) withObject:@YES afterDelay:3.0];
+                                       });
                                        
                                    } else {
                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                       [hud hideWithResult:NO message:connectionError.localizedDescription];
-                                       dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                           [hud hide:YES];
+                                           [hud hideWithResult:NO message:connectionError.localizedDescription];
+                                           [hud performSelector:@selector(hide:) withObject:@YES afterDelay:3.0];
                                        });
-                                           });
                                    }
                                }];
         });
@@ -579,28 +578,34 @@ static void setPostCreationButtonColor()
 CHDeclareClass(AppDelegate);
 CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, application, didFinishLaunchingWithOptions, NSDictionary *, options)
 {
-//    NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-//        NSString *licencePath =  [ColoredVKJailCheck isInjected]?CVK_NON_JAIL_PREFS_PATH:CVK_JAIL_PREFS_PATH;
-//        licencePath = [licencePath stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"];
-//        
-//        if (![[NSFileManager defaultManager] fileExistsAtPath:licencePath]) {
-//            tweakEnabled = NO;
-//            ColoredVKInstaller *installer = [[ColoredVKInstaller alloc] init];
-//            [installer beginDownload];
-//        } 
-//        else {
-//            NSData *decryptedData = [[NSData dataWithContentsOfFile:licencePath] AES128DecryptedDataWithKey:@"BE7555818BC236315C987C1D9B17F"];
-//            NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
-//            if ([dict[@"IS_PURCHASED"] boolValue] != YES) {
-//               tweakEnabled = NO; 
-//            }
-//        }
-//
-//    }];
-//    operation.queuePriority = NSOperationQueuePriorityHigh;
-//    [operation start];
-    reloadPrefs();
     
+    NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+        NSString *licencePath = CVK_PREFS_PATH;
+        licencePath = [licencePath stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"];
+        
+        if (![[NSFileManager defaultManager] fileExistsAtPath:licencePath]) {
+            tweakEnabled = NO;
+            ColoredVKInstaller *installer = [[ColoredVKInstaller alloc] init];
+            [installer performSelector:@selector(beginDownload) withObject:nil afterDelay:5.0];
+        } 
+        else {
+            NSString *udid = [UIDevice currentDevice].identifierForVendor.UUIDString;
+#ifdef COMPILE_FOR_JAIL
+            udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(kMGUniqueDeviceID)];
+#endif
+            NSData *decryptedData = [[NSData dataWithContentsOfFile:licencePath] AES128DecryptedDataWithKey:@"BE7555818BC236315C987C1D9B17F"];
+            NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
+            if (![dict[@"UDID"] isEqualToString:udid]) {
+                tweakEnabled = NO;
+                ColoredVKInstaller *installer = [[ColoredVKInstaller alloc] init];
+                [installer performSelector:@selector(beginDownload) withObject:nil afterDelay:5.0];
+            }
+        }
+        
+    }];
+    operation.queuePriority = NSOperationQueuePriorityHigh;
+    [operation start];
+    reloadPrefs();
     
     CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
     
@@ -616,6 +621,7 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
             checkUpdates();
         }
     }
+    
     return YES;
 }
 
@@ -909,6 +915,17 @@ CHOptimizedMethod(0, self, void, UISegmentedControl, layoutSubviews)
     }
 }
 
+#pragma mark UISegmentedControl
+CHDeclareClass(UIRefreshControl);
+CHOptimizedMethod(0, self, void, UIRefreshControl, layoutSubviews)
+{
+    CHSuper(0, UIRefreshControl, layoutSubviews);
+    
+    if ([self isKindOfClass:objc_getClass("UIRefreshControl")]) {
+        if (enabled && enabledBlackTheme) self.tintColor = [UIColor colorWithWhite:0.5 alpha:1.0];
+    }
+}
+
 #pragma mark GLOBAL METHODS
 #pragma mark -
 
@@ -1011,7 +1028,7 @@ CHOptimizedMethod(1, self, void, TextEditController, viewWillAppear, BOOL, anima
                     if ([subView isKindOfClass:objc_getClass("LayoutAwareView")]) {
                         for (UIView *subSubView in subView.subviews) {
                             if ([subSubView isKindOfClass:[UIToolbar class]]) {
-                                [(UIToolbar*)subSubView setBarTintColor:[UIColor lightBlackColor]];
+                                ((UIToolbar*)subSubView).barTintColor = [UIColor lightBlackColor];
                             }
                         }
                     }
@@ -1210,7 +1227,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, FeedController, tableView, UITableV
                             for (CALayer *layer in subview.layer.sublayers) {
                                 if ([layer isKindOfClass:objc_getClass("TextKitLayer")]) {
                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                        layer.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.3].CGColor;
+                                        layer.backgroundColor = textBackgroundColor.CGColor;
                                     });
                                     break;
                                 }
@@ -1288,7 +1305,14 @@ CHDeclareClass(ChatController);
 CHOptimizedMethod(1, self, void, ChatController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, ChatController, viewWillAppear, animated);
-    if (useMessagesBlur) setBlur(self.inputPanel, YES);
+    if (enabled) {
+        if (enabledBlackTheme) {
+            for (UIView *subview in self.inputPanel.subviews) {
+                if ([subview respondsToSelector:@selector(setBackgroundColor:)]) subview.backgroundColor = [UIColor clearColor];
+            }
+        }
+        else if (useMessagesBlur) setBlur(self.inputPanel, YES);
+    }
 }
 
 
@@ -1308,7 +1332,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, ChatController, tableView, UITableV
              if (!viewColor || !layerColor) {
                  if (imageView.layer.sublayers.count == 0) {
                      imageView.hidden = YES;
-                     cell.contentView.backgroundColor = [UIColor colorWithRed:40.0/255.0f green:40.0/255.0f blue:40.0/255.0f alpha:1.0];
+                     cell.contentView.backgroundColor = [UIColor colorWithWhite:40.0/255.0f alpha:1.0];
                  }
              }
          }
@@ -1325,14 +1349,14 @@ CHOptimizedMethod(2, self, UITableViewCell*, ChatController, tableView, UITableV
             if (!viewColor || !layerColor) {
                 if (imageView.layer.sublayers.count == 0) {
                     imageView.hidden = YES;
-                    cell.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.3];
+                    cell.backgroundColor = [UIColor colorWithWhite:1 alpha:0.15];
                 }
             }
         }
         
         for (id view in cell.contentView.subviews) {
             if ([view isKindOfClass:[UILabel class]]) {
-                if ([view respondsToSelector:@selector(setTextColor:)]) { [view setTextColor:[[UIColor whiteColor] colorWithAlphaComponent:0.7]]; }
+                if ([view respondsToSelector:@selector(setTextColor:)]) { [view setTextColor:[UIColor colorWithWhite:1 alpha:0.7]]; }
                 break;
             }
         }
@@ -1353,7 +1377,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, ChatController, tableView, UITableV
             
             UIView *frontView = [UIView new];
             frontView.frame = backView.frame;
-            frontView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:chatImageBlackout];
+            frontView.backgroundColor = [UIColor colorWithWhite:0 alpha:chatImageBlackout];
             [backView addSubview:frontView];
             
             tableView.backgroundView = backView;
@@ -1447,7 +1471,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
             
             UIView *frontView = [UIView new];
             frontView.frame = CGRectMake(0, 0, tableView.superview.frame.size.width, tableView.superview.frame.size.height);
-            frontView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:menuImageBlackout];
+            frontView.backgroundColor = [UIColor colorWithWhite:0 alpha:menuImageBlackout];
             [backgrondView addSubview:frontView];
             
             [tableView.superview insertSubview:backgrondView atIndex:0];
@@ -1458,7 +1482,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
         
         
         UIView *selectedBackView = [UIView new];
-        if (menuSelectionStyle == CVKCellSelectionStyleTransparent) selectedBackView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.3];
+        if (menuSelectionStyle == CVKCellSelectionStyleTransparent) selectedBackView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
         else if (menuSelectionStyle == CVKCellSelectionStyleBlurred) {
             selectedBackView.backgroundColor = [UIColor clearColor];
             if (![selectedBackView.subviews containsObject: [selectedBackView viewWithTag:100] ]) [selectedBackView addSubview:[ColoredVKMainController  blurForView:selectedBackView withTag:100]];
@@ -1469,7 +1493,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
         if (VKSettingsEnabled) {
             if ([cell.textLabel.text isEqualToString:NSLocalizedStringFromTableInBundle(@"GroupsAndPeople", nil, vksBundle, nil)]) {
                 if (menuSelectionStyle != CVKCellSelectionStyleNone) {
-                    cell.contentView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.3];
+                    cell.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
                 }
             }
         }
@@ -1545,7 +1569,7 @@ CHOptimizedMethod(1, self, void, AudioController, viewWillAppear, BOOL, animated
             if ([view isKindOfClass:[UIImageView class]]) {
                 view.backgroundColor = [UIColor blackColor];
             } else {
-                view.backgroundColor = [UIColor colorWithRed:30.0/255.0f green:30.0/255.0f blue:30.0/255.0f alpha:1.0];
+                view.backgroundColor = [UIColor colorWithWhite:30/255.0f alpha:1.0];
                 for (id subView in  view.subviews) {
                     if ([subView respondsToSelector:@selector(setBackgroundColor:)]) {
                         [subView setBackgroundColor:[UIColor clearColor]];
@@ -1571,7 +1595,6 @@ CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, a
     if ([self isKindOfClass:objc_getClass("PhotoBrowserController")]) {
         
         UIImage *saveImage = [UIImage imageWithContentsOfFile:[cvkBunlde pathForResource:@"download" ofType:@"png"]];
-//        UIImage *saveImage = [UIImage imageNamed:@"store_download_image" inBundle:[NSBundle mainBundle] compatibleWithTraitCollection:nil];
         UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] bk_initWithImage:saveImage 
                                                                           style:UIBarButtonItemStylePlain 
                                                                         handler:^(id  _Nonnull sender) {
@@ -1627,7 +1650,6 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
 {
     CHSuper(1, VKMBrowserController, viewWillAppear, animated);
     if ([self isKindOfClass:objc_getClass("VKMBrowserController")]) {
-        NSMutableArray *mutableItems = [self.toolbar.items mutableCopy];
         UIImage *saveImage = [UIImage imageWithContentsOfFile:[cvkBunlde pathForResource:@"download" ofType:@"png"]];
         UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] bk_initWithImage:saveImage 
                                                                           style:UIBarButtonItemStylePlain 
@@ -1654,9 +1676,8 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
                                                                             [actionController setCancelButtonWithTitle:UIKitLocalizedString(@"Cancel") block:nil];
                                                                             [actionController showInViewController:self];
                                                                         }];
-
-        [mutableItems addObject:saveButton];
-        [self.toolbar setItems:[mutableItems copy] animated:YES];
+        self.navigationItem.rightBarButtonItem = saveButton;
+        
     }
 }
 
@@ -1696,11 +1717,10 @@ CHConstructor
     @autoreleasepool {
             if ([[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"] intValue] >= 27) {
                 
-                BOOL injected = [ColoredVKJailCheck isInjected];
-                prefsPath = injected?CVK_NON_JAIL_PREFS_PATH:CVK_JAIL_PREFS_PATH;
-                cvkBunlde = injected?[NSBundle bundleWithPath:CVK_NON_JAIL_BUNDLE_PATH]:[NSBundle bundleWithPath:CVK_JAIL_BUNDLE_PATH];
-                vksBundle = injected?[NSBundle bundleWithPath:VKS_NON_JAIL_BUNDLE_PATH]:[NSBundle bundleWithPath:VKS_JAIL_BUNDLE_PATH];
-                cvkFolder = injected?CVK_NON_JAIL_FOLDER_PATH:CVK_JAIL_FOLDER_PATH;                
+                prefsPath = CVK_PREFS_PATH;
+                cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+                vksBundle = [NSBundle bundleWithPath:VKS_BUNDLE_PATH];
+                cvkFolder = CVK_FOLDER_PATH;
                 
                 NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:prefsPath];
                 if (![[NSFileManager defaultManager] fileExistsAtPath:prefsPath]) prefs = [NSMutableDictionary new];
@@ -1775,6 +1795,10 @@ CHConstructor
                 
                 CHLoadLateClass(UISegmentedControl);
                 CHHook(0, UISegmentedControl, layoutSubviews);
+                
+                
+                CHLoadLateClass(UIRefreshControl);
+                CHHook(0, UIRefreshControl, layoutSubviews);
                 
                 
                 

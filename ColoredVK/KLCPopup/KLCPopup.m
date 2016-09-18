@@ -643,7 +643,7 @@ const KLCPopupLayout KLCPopupLayoutCenter = { KLCPopupHorizontalLayoutCenter, KL
       NSValue* centerValue = [parameters valueForKey:@"center"];
       if (centerValue != nil) {
         
-        CGPoint centerInView = [centerValue CGPointValue];
+        CGPoint centerInView = centerValue.CGPointValue;
         CGPoint centerInSelf;
         
         // Convert coordinates from provided view to self. Otherwise use as-is.
