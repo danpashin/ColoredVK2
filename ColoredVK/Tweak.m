@@ -150,10 +150,6 @@ static UIImage *coloredImage(UIColor *color, UIImage *originalImage)
 }
 
 
-static BOOL compareNumbers(int *number, int *minValue, int *maxValue)
-{
-    return (number >= minValue && number <= maxValue)?YES:NO;
-}
 
 static void checkUpdates()
 {
