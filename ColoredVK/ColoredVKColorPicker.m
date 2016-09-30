@@ -9,9 +9,39 @@
 
 #import "ColoredVKColorPicker.h"
 #import "PrefixHeader.h"
+#import "NKOColorPickerView.h"
+#import "KLCPopup.h"
+
+@interface ColoredVKColorPicker() <UITextFieldDelegate>
+@property (strong, nonatomic) NSString *cellIdentifier;
+@property (strong, nonatomic) NSString *prefsPath;
+@property (strong, nonatomic) NSBundle *cvkBunlde;
+@property (strong, nonatomic) NSMutableDictionary *prefs;
+@property (strong, nonatomic) UIColor *customColor;
+@property (strong, nonatomic) UIView *mainView;
+@property (strong, nonatomic) KLCPopup *popup;
+@property (strong, nonatomic) NKOColorPickerView *colorPickerView;
+@end
 
 
 @implementation ColoredVKColorPicker
+
+- (instancetype)init
+{
+    CVKLog(@"ColoredVKColorPicker init is deprecated. Use initWithIdentifier:");
+    return nil;
+}
+
+- (instancetype)initWithIdentifier:(NSString *)identifier
+{
+    self = [super init];
+    if (self) {
+        self.cellIdentifier = identifier;
+    } else {
+        self.cellIdentifier = @"";
+    }
+    return self;
+}
 
 - (UIStatusBarStyle) preferredStatusBarStyle
 {
@@ -19,15 +49,15 @@
 }
 
 - (void)viewDidLoad
-{    
-    prefsPath = CVK_PREFS_PATH;
-    cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+{
+    self.prefsPath = CVK_PREFS_PATH;
+    self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     
     [super viewDidLoad];
     
-    self.prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:prefsPath];
+    self.prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
     
-    self.navigationItem.title = NSLocalizedStringFromTableInBundle(@"SELECT_COLOR_TITLE", nil, cvkBunlde, nil);
+    self.navigationItem.title = NSLocalizedStringFromTableInBundle(@"SELECT_COLOR_TITLE", nil, self.cvkBunlde, nil);
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(writeValues)];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"#" style:UIBarButtonItemStylePlain target:self action:@selector(showHexWindow)];
     
@@ -37,75 +67,71 @@
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     [UINavigationBar appearanceWhenContainedIn:self.class, nil].titleTextAttributes = @{ NSForegroundColorAttributeName : [UIColor whiteColor] } ;
     
-    UIView *mainView = [UIView new];
-    mainView.backgroundColor = [UIColor whiteColor];
-    mainView.frame = CGRectMake(0,self.navigationController.navigationBar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height);
+    self.mainView = [UIView new];
+    self.mainView.backgroundColor = [UIColor whiteColor];
+    self.mainView.frame = (CGRect){{0, self.navigationController.navigationBar.frame.size.height}, self.view.frame.size};
+    if (IS_IPAD) self.mainView.frame = (CGRect){{0,self.navigationController.navigationBar.frame.size.height}, self.navigationController.preferredContentSize};
     
     
-    UIButton *resetButton = [[UIButton alloc] initWithFrame:CGRectMake(0, mainView.frame.origin.y - 15, mainView.frame.size.width, 32)];
-    [resetButton setTitle:NSLocalizedStringFromTableInBundle(@"RESET_BUTTON_TITLE", nil, cvkBunlde, nil) forState:UIControlStateNormal];
+    UIButton *resetButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.mainView.frame.origin.y - 15, self.mainView.frame.size.width, 32)];
+    [resetButton setTitle:NSLocalizedStringFromTableInBundle(@"RESET_BUTTON_TITLE", nil, self.cvkBunlde, nil) forState:UIControlStateNormal];
     resetButton.titleLabel.adjustsFontSizeToFitWidth = YES;
     [resetButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
     [resetButton setTitleColor:[UIColor colorWithRed:0.8 green:0 blue:0 alpha:1.0] forState:UIControlStateHighlighted];
     resetButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     resetButton.titleLabel.numberOfLines = 2;
     resetButton.titleLabel.shadowOffset = CGSizeMake(0, 1);
-    [resetButton setTitleShadowColor:[UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1] forState:UIControlStateNormal];
+    [resetButton setTitleShadowColor:[UIColor colorWithRed:225.0/255.0f green:226.0/255.0f blue:227.0/255.0f alpha:1] forState:UIControlStateNormal];
     [resetButton addTarget:self action:@selector(addErrorAnimationForButton:) forControlEvents:UIControlEventTouchUpInside];
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(resetColorValue)];
     longPress.minimumPressDuration = 1.0;
     longPress.numberOfTouchesRequired = 1;
     [resetButton addGestureRecognizer:longPress];
-    [mainView addSubview:resetButton];
+    [self.mainView addSubview:resetButton];
         
     
-    CGRect pickerRect = CGRectMake(0,  resetButton.frame.origin.y + resetButton.frame.size.height,  mainView.frame.size.width, mainView.frame.size.height - 100);    
-    NKOColorPickerDidChangeColorBlock colorDidChange = ^(UIColor *color){ self.customColor = color;};
-    self.colorPickerView = [[NKOColorPickerView alloc] initWithFrame:pickerRect color:self.customColor andDidChangeColorBlock:colorDidChange];
+    CGRect pickerRect = CGRectMake(0,  resetButton.frame.origin.y + resetButton.frame.size.height,  self.mainView.frame.size.width, self.mainView.frame.size.height - 100);
+    self.colorPickerView = [[NKOColorPickerView alloc] initWithFrame:pickerRect 
+                                                               color:self.customColor 
+                                              andDidChangeColorBlock:^(UIColor *color) {
+                                                  self.customColor = color;
+                                                  if ([self.cellIdentifier isEqualToString:@"BarBackgroundColor"]) self.navigationController.navigationBar.barTintColor = color;
+                                                  if ([self.cellIdentifier isEqualToString:@"BarForegroundColor"]) self.navigationController.navigationBar.tintColor = color;
+                                              }];
     self.colorPickerView.tintColor = [UIColor colorWithRed:200.0/255.0f green:201.0/255.0f blue:202.0/255.0f alpha:1.0];
-    [mainView addSubview:self.colorPickerView];
+    [self.mainView addSubview:self.colorPickerView];
         
-    [self.view addSubview:mainView];
+    [self.view addSubview:self.mainView];
     
-    self.view.backgroundColor = mainView.backgroundColor;
+    self.view.backgroundColor = self.mainView.backgroundColor;
     
-    
-//    mainView.translatesAutoresizingMaskIntoConstraints = NO;
-//    [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[resetButton(32)]-(10)-|"
-//                                                                      options:0
-//                                                                      metrics:nil
-//                                                                        views:NSDictionaryOfVariableBindings(resetButton)]];
-//    [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[resetButton(32)]-(10)-|"
-//                                                                     options:0
-//                                                                     metrics:nil
-//                                                                       views:NSDictionaryOfVariableBindings(resetButton)]];
-//    [mainView addConstraints: [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[resetButton]|"
-//                                                                       options:0
-//                                                                       metrics:nil
-//                                                                         views:NSDictionaryOfVariableBindings(resetButton)]];
-//    [mainView addConstraints: [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[colorPickerView]|"
-//                                                                      options:0
-//                                                                      metrics:nil
-//                                                                        views:NSDictionaryOfVariableBindings(self.colorPickerView)]];
-//    
-//    self.view.translatesAutoresizingMaskIntoConstraints = NO;
-//    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[mainView]|"
-//                                                                      options:0
-//                                                                      metrics:nil
-//                                                                        views:NSDictionaryOfVariableBindings(mainView)]];
-//    
-//    [self.view addConstraints: [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[mainView]|"
-//                                                                       options:0
-//                                                                       metrics:nil
-//                                                                         views:NSDictionaryOfVariableBindings(mainView)]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShown) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHidden) name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)keyboardWillShown
+{
+    [UIView animateWithDuration:0.2 animations:^{
+        self.popup.contentView.frame = CGRectMake(self.popup.contentView.frame.origin.x, self.popup.contentView.frame.origin.y - 50,
+                                                  self.popup.contentView.frame.size.width, self.popup.contentView.frame.size.height);
+    }];
 
 }
+- (void)keyboardWillHidden
+{
+    [UIView animateWithDuration:0.2 animations:^{
+        self.popup.contentView.frame = CGRectMake(self.popup.contentView.frame.origin.x, self.popup.contentView.frame.origin.y + 50,
+                                                  self.popup.contentView.frame.size.width, self.popup.contentView.frame.size.height);
+    }];
+}
+
+
 
 
 - (void)writeValues 
 {
     self.prefs[self.cellIdentifier] = [NSString stringFromColor:self.customColor];
-    [self.prefs writeToFile:prefsPath atomically:YES];
+    [self.prefs writeToFile:self.prefsPath atomically:YES];
     
     [self dismissPicker];
 }
@@ -138,7 +164,7 @@
     UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width, 30)];
     title.center = CGPointMake(view.frame .size.width / 2, 20);
     
-    NSString *locString = NSLocalizedStringFromTableInBundle(@"ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE", nil, cvkBunlde, nil);
+    NSString *locString = NSLocalizedStringFromTableInBundle(@"ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE", nil, self.cvkBunlde, nil);
     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:locString];
     
     NSRange rangeBefore = NSMakeRange(0, [locString substringToIndex:[locString rangeOfString:@"("].location].length );
@@ -156,7 +182,7 @@
     
     UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, width, height)];
     textField.center = CGPointMake(view.frame .size.width / 2, title.center.y + 35);
-    textField.placeholder = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"EXAMPLE_ALERT_MESSAGE", nil, cvkBunlde, nil), [NSString hexStringFromColor:self.customColor] ];
+    textField.placeholder = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"EXAMPLE_ALERT_MESSAGE", nil, self.cvkBunlde, nil), [NSString hexStringFromColor:self.customColor] ];
     textField.borderStyle = UITextBorderStyleRoundedRect;
     textField.clearButtonMode = UITextFieldViewModeWhileEditing;
     textField.returnKeyType = UIReturnKeyDone;
@@ -172,13 +198,17 @@
     UIButton *valueButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, width, height)];
     valueButton.center = CGPointMake(view.frame .size.width / 2, textField.center.y + 40);
     valueButton.layer.masksToBounds = YES;
-    valueButton.layer.cornerRadius = 5;
-    [valueButton setTitle:NSLocalizedStringFromTableInBundle(@"ALERT_COPY_CURRENT_VALUE_TIILE", nil, cvkBunlde, nil) forState:UIControlStateNormal];
+    valueButton.layer.cornerRadius = 6;
+    valueButton.layer.borderColor = [UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1].CGColor;
+    valueButton.layer.borderWidth = 1.0;
+    [valueButton setTitle:NSLocalizedStringFromTableInBundle(@"ALERT_COPY_CURRENT_VALUE_TIILE", nil, self.cvkBunlde, nil) forState:UIControlStateNormal];
     valueButton.titleLabel.adjustsFontSizeToFitWidth = YES;
-    [valueButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    (valueButton.titleLabel).textAlignment = NSTextAlignmentCenter;
-    [valueButton setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1]] forState:UIControlStateNormal];
-    [valueButton setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:68.0/255.0f green:92.0/255.0f blue:156.0/255.0f alpha:1]] forState:UIControlStateHighlighted];
+    [valueButton setTitleColor:[UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1] forState:UIControlStateNormal];
+    [valueButton setTitleColor:[UIColor colorWithRed:60.0/255.0f green:82.0/255.0f blue:131.0/255.0f alpha:1] forState:UIControlStateHighlighted];
+    valueButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    [valueButton addTarget:self action:@selector(highlightButtonBorder:) forControlEvents:UIControlEventTouchDown];
+    [valueButton addTarget:self action:@selector(unHighlightButtonBorder:) forControlEvents:UIControlEventTouchUpOutside];
+    [valueButton addTarget:self action:@selector(unHighlightButtonBorder:) forControlEvents:UIControlEventTouchUpInside];
     [valueButton addTarget:self action:@selector(copyHEXValue) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:valueButton];
     
@@ -189,6 +219,16 @@
                        dismissOnBackgroundTouch:YES 
                           dismissOnContentTouch:NO];
     [self.popup show];
+}
+
+- (void)highlightButtonBorder:(UIButton *)button
+{
+    button.layer.borderColor = [UIColor colorWithRed:60.0/255.0f green:82.0/255.0f blue:131.0/255.0f alpha:1].CGColor;
+}
+
+- (void)unHighlightButtonBorder:(UIButton *)button
+{
+    button.layer.borderColor = [UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1].CGColor;
 }
 
 
@@ -203,7 +243,7 @@
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:1.0f
                                           animations:^{ 
-                                              [button setTitle:NSLocalizedStringFromTableInBundle(@"TAP_AND_HOLD_BUTTON_TITLE", nil, cvkBunlde, nil) forState:UIControlStateNormal];
+                                              [button setTitle:NSLocalizedStringFromTableInBundle(@"TAP_AND_HOLD_BUTTON_TITLE", nil, self.cvkBunlde, nil) forState:UIControlStateNormal];
                                               button.alpha = 1.0; 
                                           }
                                           completion:^(BOOL finished) {
@@ -223,7 +263,7 @@
     if (self.prefs[self.cellIdentifier] != nil) {
         [self.prefs removeObjectForKey:self.cellIdentifier];
     }
-    [self.prefs writeToFile:prefsPath atomically:YES];
+    [self.prefs writeToFile:self.prefsPath atomically:YES];
     [self dismissPicker];
 }
 
@@ -239,14 +279,6 @@
     
     if (![predicate evaluateWithObject:textField.text]) {
         textField.layer.borderColor = [UIColor colorWithRed:0.8 green:0 blue:0 alpha:1.0].CGColor;
-        
-        CAKeyframeAnimation *animation = [CAKeyframeAnimation animation];
-        animation.keyPath = @"position.x";
-        animation.values = @[ @0, @10, @-10, @10, @0 ];
-        animation.keyTimes = @[ @0, @(1 / 6.0), @(3 / 6.0), @(5 / 6.0), @1 ];
-        animation.duration = 0.3;
-        animation.additive = YES;
-        [textField.layer addAnimation:animation forKey:@"shake"];
     } else {
         textField.layer.borderColor = [UIColor clearColor].CGColor;
         
@@ -255,5 +287,10 @@
     }
     [textField resignFirstResponder];
     return YES;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 @end

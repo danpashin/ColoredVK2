@@ -75,11 +75,16 @@
 @end
 
 
-//@interface VKRenderedText : NSObject
-//@property(readwrite, copy, nonatomic) NSAttributedString *text;
-//@end
+@interface VKRenderedText : NSObject
+{
+    NSAttributedString *text;
+}
+@property(readonly, copy, nonatomic) NSAttributedString *text;
+@end
 
-
+@interface TextKitLayer : CALayer
+@property(retain, nonatomic) VKRenderedText *text;
+@end
 
 
 
@@ -128,3 +133,17 @@
 - (void)hideWithResult:(BOOL)arg1 message:(NSString *)arg2;
 - (void)hideWithResult:(BOOL)arg1;
 @end
+
+
+
+
+@interface VKMessage : NSObject
+@property(nonatomic) BOOL read_state;
+@end
+
+@interface MessageCell : UITableViewCell
+@property(retain, nonatomic) VKMessage *message;
+- (void)updateReadState;
+@end
+
+

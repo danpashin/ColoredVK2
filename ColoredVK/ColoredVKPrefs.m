@@ -12,22 +12,20 @@
 #import "UIImage+ResizeMagick.h"
 #import "PrefixHeader.h"
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "SVProgressHUD.h"
+#import "LHProgressHUD.h"
 
+OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0);
 
 @implementation ColoredVKPrefs
 
 - (UIStatusBarStyle) preferredStatusBarStyle
 {
-#ifndef COMPILE_FOR_JAIL
-    return UIStatusBarStyleLightContent;
-#else
-    return UIStatusBarStyleDefault;
-#endif
+    if ([NSStringFromClass([[UIApplication sharedApplication].keyWindow.rootViewController class]) isEqualToString:@"DeckController"]) return UIStatusBarStyleLightContent;
+    else return UIStatusBarStyleDefault;
 }
 
 - (id)specifiers
-{    
+{
     prefsPath = CVK_PREFS_PATH;
     cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     cvkFolder = CVK_FOLDER_PATH;
@@ -141,11 +139,10 @@
 
 - (void)showColorPicker:(PSSpecifier*)specifier
 {
-    ColoredVKColorPicker *picker = [ColoredVKColorPicker new];
-    picker.cellIdentifier = specifier.identifier;
-    
+    ColoredVKColorPicker *picker = [[ColoredVKColorPicker alloc] initWithIdentifier:specifier.identifier];    
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:picker];
-    nav.modalPresentationStyle = UIModalPresentationFullScreen;
+    nav.modalPresentationStyle = UIModalPresentationFormSheet;
+    if (IS_IPAD) nav.preferredContentSize = CGSizeMake(self.view.frame.size.width - 100, self.view.frame.size.height / 1.5);
     [self.navigationController presentViewController:nav animated:YES completion:nil];
 }
 
@@ -154,21 +151,44 @@
     self.imageID = specifier.identifier;
     UIImagePickerController *picker = [UIImagePickerController new];
     picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    picker.mediaTypes =  @[(NSString *) kUTTypeImage];
     picker.delegate = self;
+    if (IS_IPAD) {
+        picker.modalPresentationStyle = UIModalPresentationPopover;
+        picker.popoverPresentationController.sourceView = self.view;
+        picker.popoverPresentationController.sourceRect = CGRectMake(self.view.frame.size.width/2, self.view.frame.size.width/2, 1, 1);
+        
+        PSTableCell *cell = [self cachedCellForSpecifier:specifier];
+        if ([cell.subviews containsObject:[cell viewWithTag:20]]) {
+            picker.popoverPresentationController.sourceView = cell;
+            picker.popoverPresentationController.sourceRect = CGRectMake([cell viewWithTag:20].frame.origin.x, [cell viewWithTag:20].frame.origin.y, 1, 1);
+        }
+    } 
     [self.navigationController presentViewController:picker animated:YES completion:nil];
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
 {
-    [SVProgressHUD show];
+    LHProgressHUD *hud = [LHProgressHUD showAddedToView:picker.view];
+    hud.backgroundView.blurStyle = LHBlurEffectStyleDark;
+    hud.centerBackgroundView.blurStyle = LHBlurEffectStyleNone;
+    hud.centerBackgroundView.backgroundColor = [UIColor clearColor];
+    [self saveImage:image completionBlock:^(BOOL success, NSString *message) {
+        success?[hud showSuccessWithStatus:@"" animated:YES]:[hud showFailureWithStatus:message animated:YES];
+        [hud hideAfterDelay:1.5 hiddenBlock:^{ [picker dismissViewControllerAnimated:YES completion:nil]; }];
+    }];
+   
+}
+
+
+- (void)saveImage:(UIImage *)image completionBlock:( void(^)(BOOL success, NSString *message) )block
+{
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         if (![[NSFileManager defaultManager] fileExistsAtPath:cvkFolder]) [[NSFileManager defaultManager] createDirectoryAtPath:cvkFolder withIntermediateDirectories:NO attributes:nil error:nil];
         NSString *imagePath = [cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.imageID]];
         NSString *prevImagePath = [cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", self.imageID]];
         
         UIImage *crImage = [image imageScaledToWidth:[UIScreen mainScreen].bounds.size.width height:[UIScreen mainScreen].bounds.size.height];
-//        crImage = [image resizedImageByMagick: [NSString stringWithFormat:@"%ix%i#", width, height]];
+            //    crImage = [[UIImage imageWithData:UIImagePNGRepresentation(image)] resizedImageByMagick: [NSString stringWithFormat:@"%fx%f#", [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height]];
         
         NSError *error = nil;
         [UIImagePNGRepresentation(crImage) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
@@ -177,27 +197,17 @@
             UIImage *preview = image;
             [preview drawInRect:CGRectMake(0, 0, 40, 40)];
             preview = UIGraphicsGetImageFromCurrentImageContext();
-            [UIImagePNGRepresentation(preview) writeToFile:prevImagePath atomically:YES];
+            [UIImagePNGRepresentation(preview) writeToFile:prevImagePath options:NSDataWritingAtomic error:&error];
             UIGraphicsEndImageContext();
         }
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk.image.update" object:nil userInfo:@{ @"identifier" : self.imageID }];
-            
-            if ([self.imageID isEqualToString:@"menuBackgroundImage"]) {
-                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-            }
-            
-            if ([self.imageID isEqualToString:@"messagesBackgroundImage"]) {
-                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
-            }
-            if (!error) [SVProgressHUD showSuccessWithStatus:NSLocalizedStringFromTableInBundle(@"IMAGE_SAVED_SUCCESSFULLY", nil, cvkBunlde, nil)];
-            else [SVProgressHUD showErrorWithStatus:error.localizedDescription];
-            
-            [SVProgressHUD dismissWithDelay:2.0 completion:^{
-                [picker dismissViewControllerAnimated:YES completion:nil];
-            }];
-        });
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk.image.update" object:nil userInfo:@{ @"identifier" : self.imageID }];
+        if ([self.imageID isEqualToString:@"menuBackgroundImage"]) {
+            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+        } else if ([self.imageID isEqualToString:@"messagesBackgroundImage"]) {
+            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
+        }    
+        dispatch_async(dispatch_get_main_queue(), ^{ if (block) block(error?NO:YES, error?error.localizedDescription:nil); });
     });
 }
 

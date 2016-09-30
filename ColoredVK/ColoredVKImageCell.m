@@ -9,6 +9,9 @@
 
 #import "ColoredVKImageCell.h"
 #import "PrefixHeader.h"
+#import "LHProgressHUD.h"
+
+#define UIKitLocalizedString(key) [[NSBundle bundleWithIdentifier:@"com.apple.UIKit"] localizedStringForKey:key value:@"" table:nil]
 
 @implementation ColoredVKImageCell
 
@@ -42,10 +45,10 @@
         
         self.myImageView.userInteractionEnabled = YES;
         
-        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(removeImage:)];
+        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showActionsForImage:)];
         longPress.minimumPressDuration = 1.0;
         longPress.accessibilityElements = @[identifier];
-        [self.myImageView addGestureRecognizer:longPress];
+        [self addGestureRecognizer:longPress];
         
         self.opaque = YES;
         self.contentView.opaque = YES;
@@ -95,38 +98,78 @@
 - (void)updateImageCell:(NSNotification *)notification
 {
     NSString *identifier = notification.userInfo[@"identifier"];
-    if ([(self.specifier).identifier isEqualToString:identifier]) { [self updateCellForIdentifier:identifier]; }
+    if ([self.specifier.identifier isEqualToString:identifier]) { [self updateCellForIdentifier:identifier]; }
 	[self sendNotifications];
 }
 
-- (void)removeImage:(UILongPressGestureRecognizer *)recognizer
+- (void)showActionsForImage:(UILongPressGestureRecognizer *)recognizer
 {
     NSString *identifier = recognizer.accessibilityElements.lastObject;
-    
-    if ([identifier isEqualToString:(self.specifier).identifier]) {
-        NSString *previewPath = [cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identifier]];
-        NSString *fullImagePath = [cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]];
+    if (recognizer.state == UIGestureRecognizerStateBegan && [identifier isEqualToString:self.specifier.identifier]) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        [alertController addAction:
+         [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Save to Camera Roll")
+                                  style:UIAlertActionStyleDefault
+                                handler:^(UIAlertAction *action) {
+                                    UIImage *image = [UIImage imageWithContentsOfFile:[cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]]];
+                                    UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
+                                }]];
+        [alertController addAction:
+         [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Share...")
+                                  style:UIAlertActionStyleDefault
+                                handler:^(UIAlertAction *action) {
+                                    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[
+                                                                                                                                     [UIImage imageWithContentsOfFile:[cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]]]
+                                                                                                                                     ] 
+                                                                                                             applicationActivities:nil];
+                                    if (IS_IPAD) {
+                                        activityVC.modalPresentationStyle = UIModalPresentationPopover;
+                                        activityVC.popoverPresentationController.sourceView = self;
+                                        activityVC.popoverPresentationController.sourceRect = CGRectMake(self.myImageView.frame.origin.x, self.myImageView.frame.origin.y, 1, 1);
+                                    }
+                                    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:activityVC animated:YES completion:nil];
+                                }]];
+        [alertController addAction:
+         [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete")
+                                  style:UIAlertActionStyleDestructive
+                                handler:^(UIAlertAction *action) {
+                                    UIAlertController *warningAlert = [UIAlertController alertControllerWithTitle:@"Warning"  message:@"This action can not be undone" preferredStyle:UIAlertControllerStyleAlert];
+                                    [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+                                    [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete")
+                                                                                     style:UIAlertActionStyleDestructive 
+                                                                                   handler:^(UIAlertAction *action) { 
+                                                                                       NSString *previewPath = [cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identifier]];
+                                                                                       NSString *fullImagePath = [cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]];
+                                                                                       
+                                                                                       NSError *error = nil;
+                                                                                       NSFileManager *fileManager = [NSFileManager defaultManager];
+                                                                                       
+                                                                                       if ([fileManager fileExistsAtPath:previewPath]) [fileManager removeItemAtPath:previewPath error:&error];
+                                                                                       if ([fileManager fileExistsAtPath:fullImagePath]) [fileManager removeItemAtPath:fullImagePath error:&error];
+                                                                                       
+                                                                                       if (!error) {
+                                                                                           self.myImageView.image = nil;
+                                                                                           UISwitch *switchView = (UISwitch *)self.accessoryView;
+                                                                                           switchView.on = NO;
+                                                                                           switchView.enabled = NO;
+                                                                                           NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
+                                                                                           [prefs setValue:@NO forKey:self.key];
+                                                                                           [prefs writeToFile:prefsPath atomically:YES];
+                                                                                           [self sendNotifications];
+                                                                                       }
+                                                                                   }]];
+                                    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:warningAlert animated:YES completion:nil];
+                                }]];
+        [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
         
-        
-        NSError *error = nil;
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        
-        if ([fileManager fileExistsAtPath:previewPath]) [fileManager removeItemAtPath:previewPath error:&error];
-        if ([fileManager fileExistsAtPath:fullImagePath]) [fileManager removeItemAtPath:fullImagePath error:&error];
-        
-        if (!error) {
-            self.myImageView.image = nil;
-            
-            UISwitch *switchView = (UISwitch *)self.accessoryView;
-            switchView.on = NO;
-            switchView.enabled = NO;
-            
-            NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
-            [prefs setValue:@NO forKey:self.key];
-            [prefs writeToFile:prefsPath atomically:YES];
-            
-            [self sendNotifications];
+        if (IS_IPAD) {
+            alertController.modalPresentationStyle = UIModalPresentationPopover;
+            alertController.popoverPresentationController.sourceView = self;
+            alertController.popoverPresentationController.sourceRect = CGRectMake(self.myImageView.frame.origin.x, self.myImageView.frame.origin.y, 1, 1);
         }
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]]]) 
+            [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
     }
 }
 

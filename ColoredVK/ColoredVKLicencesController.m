@@ -17,11 +17,8 @@
 
 - (UIStatusBarStyle) preferredStatusBarStyle
 {
-#ifndef COMPILE_FOR_JAIL
-    return UIStatusBarStyleLightContent;
-#else
-    return UIStatusBarStyleDefault;
-#endif
+    if ([NSStringFromClass([[UIApplication sharedApplication].keyWindow.rootViewController class]) isEqualToString:@"DeckController"]) return UIStatusBarStyleLightContent;
+    else return UIStatusBarStyleDefault;
 }
 
 - (void)viewDidLoad

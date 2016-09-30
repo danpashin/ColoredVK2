@@ -34,6 +34,7 @@
     colorPreview.layer.borderColor = [UIColor darkerColorForColor:colorPreview.backgroundColor].CGColor;
     colorPreview.layer.borderWidth = 1.0f; 
     colorPreview.layer.cornerRadius = colorPreview.frame.size.height / 2;
+    colorPreview.tag = 10;
     
     self.opaque = YES;
     self.contentView.opaque = YES;
