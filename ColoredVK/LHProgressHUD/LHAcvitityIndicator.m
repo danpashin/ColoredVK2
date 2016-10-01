@@ -151,7 +151,7 @@
     animation.keyPath = @"strokeEnd";
     animation.fromValue = @(0.00);
     animation.toValue = @(1.00);
-    animation.duration = 0.8;
+    animation.duration = 0.6;
     animation.delegate = self;
     animation.removedOnCompletion = NO;
     animation.fillMode = kCAFillModeForwards;

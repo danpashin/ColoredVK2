@@ -670,7 +670,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ${PROJECT_DIR}\necho \"TEST\"\ncp -r ColoredVK.bundle/. ~/Desktop/vkUnarch/Payload/vkclient.app/${PRODUCT_NAME}.bundle/\ncp ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.dylib ~/Desktop/vkUnarch/Payload/vkclient.app/${PRODUCT_NAME}.bundle/\ncd ~/Desktop/vkUnarch\noptool install -c load -p \"@executable_path/${PRODUCT_NAME}.bundle/${PRODUCT_NAME}.dylib\" -t Payload/vkclient.app/vkclient\nif [ -f ~/Desktop/vk.ipa ];\n    then rm ~/Desktop/vk.ipa \nfi\nzip -r ~/Desktop/${PRODUCT_NAME}.ipa Payload\noptool uninstall -p \"@executable_path/${PRODUCT_NAME}.bundle/${PRODUCT_NAME}.dylib\" -t Payload/vkclient.app/vkclient\nrm -rf Payload/vkclient.app/${PRODUCT_NAME}.bundle\n\n#cp -r ${PROJECT_DIR}/ColoredVK.bundle ~/Desktop/${PRODUCT_NAME}.bundle\n#cp ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.dylib ~/Desktop/${PRODUCT_NAME}.bundle/";
+			shellScript = "cd ${PROJECT_DIR}\necho \"TEST\"\ncp -r ColoredVK.bundle/. ~/Desktop/vkUnarch/Payload/vkclient.app/${PRODUCT_NAME}.bundle/\ncp ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.dylib ~/Desktop/vkUnarch/Payload/vkclient.app/${PRODUCT_NAME}.bundle/\ncd ~/Desktop/vkUnarch\noptool install -c load -p \"@executable_path/${PRODUCT_NAME}.bundle/${PRODUCT_NAME}.dylib\" -t Payload/vkclient.app/vkclient\nif [ -f ~/Desktop/vk.ipa ];\n    then rm ~/Desktop/vk.ipa \nfi\nzip -r ~/Desktop/${PRODUCT_NAME}.ipa Payload\noptool uninstall -p \"@executable_path/${PRODUCT_NAME}.bundle/${PRODUCT_NAME}.dylib\" -t Payload/vkclient.app/vkclient\nrm -rf Payload/vkclient.app/${PRODUCT_NAME}.bundle\n\ncp -r ${PROJECT_DIR}/ColoredVK.bundle ~/Desktop/${PRODUCT_NAME}.bundle\ncp ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.dylib ~/Desktop/${PRODUCT_NAME}.bundle/";
 			showEnvVarsInLog = 0;
 		};
 		A5BD7EA91D44CCB900BFC3A1 /* ShellScript */ = {
@@ -885,7 +885,7 @@
 		A5B6ED261D3D659800383425 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = 3.1.1;
+				APP_VERSION = 3.1.2;
 				ARCHS = (
 					armv7,
 					armv7s,
@@ -912,7 +912,7 @@
 		A5B6ED271D3D659800383425 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = 3.1.1;
+				APP_VERSION = 3.1.2;
 				ARCHS = (
 					armv7,
 					armv7s,

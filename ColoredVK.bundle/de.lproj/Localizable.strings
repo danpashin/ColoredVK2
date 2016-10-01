@@ -8,6 +8,8 @@
 
 
 "ERROR" = "Fehler";
+"WARNING" = "Warnung";
+"THIS_ACTION_CAN_NOT_BE_UNDONE" = "Diese Aktion kann nicht rückgängig gemacht werden";
 "CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Das bild kann nicht gespeichert werden. Versuchen sie es erneut oder kontaktieren entwickler.";
 
 "YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE" = "Sie verwenden veraltete zwicken Version. Neueste %@";
@@ -22,11 +24,8 @@
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Kopieren sie aktuelle hex-wert";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Geben Sie einen hexadezimalen farbcode\n(Symbol # ist nicht erforderlich,)";
 "EXAMPLE_ALERT_MESSAGE" = "Wie %@";
-"SAVE_THIS_COLOR_QUESTION" = "Speichern sie diese farbe?";
 "RESET_BUTTON_TITLE" = "Zurücksetzen gespeichert farbe";
 "TAP_AND_HOLD_BUTTON_TITLE" = "Tippen und halten, um fortzufahren";
 
 "USE_IN_MENU" = "Verwenden sie im menü";
 "USE_IN_MESSAGES" = "Verwenden sie im nachrichten";
-"CAN_NOT_SAVE_IMAGE_NO_INTERNET_CONNECTION" = "Nicht bild speichern.\nÜberprüfen sie ihre Internet verbindung.";
-"IMAGE_SAVED_SUCCESSFULLY" = "Bild erfolgreich gespeichert";

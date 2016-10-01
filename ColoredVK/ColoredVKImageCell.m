@@ -11,8 +11,6 @@
 #import "PrefixHeader.h"
 #import "LHProgressHUD.h"
 
-#define UIKitLocalizedString(key) [[NSBundle bundleWithIdentifier:@"com.apple.UIKit"] localizedStringForKey:key value:@"" table:nil]
-
 @implementation ColoredVKImageCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)identifier specifier:(PSSpecifier *)specifier
@@ -104,6 +102,7 @@
 
 - (void)showActionsForImage:(UILongPressGestureRecognizer *)recognizer
 {
+    NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     NSString *identifier = recognizer.accessibilityElements.lastObject;
     if (recognizer.state == UIGestureRecognizerStateBegan && [identifier isEqualToString:self.specifier.identifier]) {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
@@ -133,7 +132,9 @@
          [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete")
                                   style:UIAlertActionStyleDestructive
                                 handler:^(UIAlertAction *action) {
-                                    UIAlertController *warningAlert = [UIAlertController alertControllerWithTitle:@"Warning"  message:@"This action can not be undone" preferredStyle:UIAlertControllerStyleAlert];
+                                    UIAlertController *warningAlert = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, cvkBundle, nil)  
+                                                                                                          message:NSLocalizedStringFromTableInBundle(@"THIS_ACTION_CAN_NOT_BE_UNDONE", nil, cvkBundle, nil) 
+                                                                                                   preferredStyle:UIAlertControllerStyleAlert];
                                     [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
                                     [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete")
                                                                                      style:UIAlertActionStyleDestructive 

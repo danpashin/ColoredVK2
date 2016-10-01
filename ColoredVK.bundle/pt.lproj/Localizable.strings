@@ -8,6 +8,8 @@
 
 
 "ERROR" = "Erro";
+"WARNING" = "Aviso";
+"THIS_ACTION_CAN_NOT_BE_UNDONE" = "Esta ação não pode ser desfeita";
 "CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Não é possível salvar imagem. Tente de novo ou desenvolvedor de contacto.";
 
 "YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE" = "Você está usando a versão emenda ultrapassada. Últimas é de %@";
@@ -22,11 +24,8 @@
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Copie valor hexadecimal atual";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Introduza um código de cor hexadecimal\n(símbolo # não é necessário)";
 "EXAMPLE_ALERT_MESSAGE" = "Tal como %@";
-"SAVE_THIS_COLOR_QUESTION" = "Salve esta cor?";
 "RESET_BUTTON_TITLE" = "Repor cor salvo";
 "TAP_AND_HOLD_BUTTON_TITLE" = "Toque e segure o botão para continuar";
 
 "USE_IN_MENU" = "Utilizar o menu";
 "USE_IN_MESSAGES" = "Usar nas mensagens";
-"CAN_NOT_SAVE_IMAGE_NO_INTERNET_CONNECTION" = "Não pode guardar a imagem.\nVerifique sua conexão com a Internet";
-"IMAGE_SAVED_SUCCESSFULLY" = "Imagem salva com sucesso";

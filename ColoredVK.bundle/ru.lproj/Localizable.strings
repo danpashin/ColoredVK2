@@ -8,6 +8,8 @@
 
 
 "ERROR" = "Ошибка";
+"WARNING" = "Предупреждение";
+"THIS_ACTION_CAN_NOT_BE_UNDONE" = "Это действие не может быть отменено";
 "CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Невозможно сохранить изображение. Попробуйте снова или обратитесь к разработчику.";
 
 "YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE" = "Ваш твик устарел. Актуальная версия - %@";
@@ -22,11 +24,8 @@
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Скопировать текущее значение hex";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Введите 16-ричный цветовой код\n(Символ # ставить необязательно)";
 "EXAMPLE_ALERT_MESSAGE" = "Например %@";
-"SAVE_THIS_COLOR_QUESTION" = "Сохранить этот цвет?";
 "RESET_BUTTON_TITLE" = "Сбросить сохраненный цвет";
 "TAP_AND_HOLD_BUTTON_TITLE" = "Нажмите и удерживайте кнопку, чтобы продолжить";
 
 "USE_IN_MENU" = "Использовать в меню";
 "USE_IN_MESSAGES" = "Использовать в сообщениях";
-"CAN_NOT_SAVE_IMAGE_NO_INTERNET_CONNECTION" = "невозможно сохранить изображение.\nПроверьте ваше соединение с интернетом";
-"IMAGE_SAVED_SUCCESSFULLY" = "Изображение успешно сохранено";

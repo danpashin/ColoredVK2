@@ -1294,6 +1294,8 @@ CHOptimizedMethod(2, self, UITableViewCell*, ChatController, tableView, UITableV
              }
          }
          
+         if ([CLASS_NAME(cell) isEqualToString:@"UITableViewCell"]) cell.backgroundColor = [UIColor clearColor];
+         
          if (tableView.backgroundView == nil) {
             UIView *backView = [UIView new];
             backView.frame = CGRectMake(0, 0, tableView.frame.size.width, tableView.frame.size.height);

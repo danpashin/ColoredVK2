@@ -200,14 +200,15 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
             [UIImagePNGRepresentation(preview) writeToFile:prevImagePath options:NSDataWritingAtomic error:&error];
             UIGraphicsEndImageContext();
         }
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk.image.update" object:nil userInfo:@{ @"identifier" : self.imageID }];
-        if ([self.imageID isEqualToString:@"menuBackgroundImage"]) {
-            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-        } else if ([self.imageID isEqualToString:@"messagesBackgroundImage"]) {
-            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
-        }    
-        dispatch_async(dispatch_get_main_queue(), ^{ if (block) block(error?NO:YES, error?error.localizedDescription:nil); });
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk.image.update" object:nil userInfo:@{ @"identifier" : self.imageID }];
+            if ([self.imageID isEqualToString:@"menuBackgroundImage"]) {
+                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+            } else if ([self.imageID isEqualToString:@"messagesBackgroundImage"]) {
+                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
+            }    
+            if (block) block(error?NO:YES, error?error.localizedDescription:nil); 
+        });
     });
 }
 
