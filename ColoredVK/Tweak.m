@@ -27,6 +27,7 @@
 
 
 
+
 #define CLASS_NAME(obj) @(class_getName([obj class]))
 
 #define kMenuCellBackgroundColor [UIColor colorWithRed:56.0/255.0f green:69.0/255.0f blue:84.0/255.0f alpha:1]
@@ -63,7 +64,6 @@ NSString *prefsPath;
 NSString *cvkFolder;
 NSBundle *cvkBunlde;
 NSBundle *vksBundle;
-NSString *imageSource = @"";
 
 BOOL enabled;
 BOOL enabledBarColor;
@@ -553,16 +553,18 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
         else {
             NSString *udid = [UIDevice currentDevice].identifierForVendor.UUIDString;
 #ifdef COMPILE_FOR_JAIL
-            udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(kMGUniqueDeviceID)];
+            udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(kMGUniqueDeviceID)];            
 #endif
             NSData *decryptedData = [[NSData dataWithContentsOfFile:licencePath] AES128DecryptedDataWithKey:@"BE7555818BC236315C987C1D9B17F"];
             NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
             if (![dict[@"UDID"] isEqualToString:udid]) {
-                tweakEnabled = NO;
-                ColoredVKInstaller *installer = [[ColoredVKInstaller alloc] init];
-                [installer performSelector:@selector(beginDownload) withObject:nil afterDelay:5.0];
-            }
+//                tweakEnabled = NO;
+//                ColoredVKInstaller *installer = [[ColoredVKInstaller alloc] init];
+//                [installer performSelector:@selector(beginDownload) withObject:nil afterDelay:5.0];
+            }            
         }
+        
+//        showAlertWithMessage([NSString stringWithFormat:@"Device:\n%@", MGCopyAnswer(kMGUniqueDeviceID)]);
         
     }];
     operation.queuePriority = NSOperationQueuePriorityHigh;
@@ -755,7 +757,10 @@ CHOptimizedMethod(2, self, UITableViewCell*, PSListController, tableView, UITabl
 CHDeclareClass(UILabel);
 CHOptimizedMethod(1, self, void, UILabel, drawRect, CGRect, rect)
 {
-    if (enabled && enabledBlackTheme) self.textColor = [UIColor lightGrayColor];
+    if (enabled && enabledBlackTheme) { 
+        self.textColor = [UIColor lightGrayColor];
+        self.alpha = 0.8;
+    } else if (blackThemeWasEnabled) self.alpha = 1;
     
     CHSuper(1, UILabel, drawRect, rect);
 }
@@ -849,7 +854,7 @@ CHOptimizedMethod(0, self, void, UISwitch, layoutSubviews)
 {
     CHSuper(0, UISwitch, layoutSubviews);
     
-    if ([self isKindOfClass:objc_getClass("UISwitch")]) {
+    if ([CLASS_NAME(self) isEqualToString:@"UISwitch"]) {
         
         if (enabled && enabledBlackTheme) {
             self.onTintColor = [UIColor colorWithWhite:0.2 alpha:1.0];
@@ -1151,20 +1156,18 @@ CHOptimizedMethod(2, self, UITableViewCell*, DetailController, tableView, UITabl
             
             if ([@"UIView" isEqualToString:class]) view.backgroundColor = [UIColor blackColor];
             
-            if (indexPath.row == 0) {
-                if ([@"TextKitLabelInteractive" isEqualToString:class]) {
-                    for (CALayer *layer in view.layer.sublayers) {
-                        if ([layer isKindOfClass:objc_getClass("TextKitLayer")]) {
-                            layer.backgroundColor = textBackgroundColor.CGColor;
-                            break;
-                        }
+            if ([@"TextKitLabelInteractive" isEqualToString:class]) {
+                for (CALayer *layer in view.layer.sublayers) {
+                    if ([layer isKindOfClass:objc_getClass("TextKitLayer")]) {
+                        layer.backgroundColor = textBackgroundColor.CGColor;
+                        break;
                     }
                 }
-                if ([@"UITextView" isEqualToString:class]) {
-                    UITextView *textView = (UITextView*)view;
-                    textView.backgroundColor = [UIColor lightBlackColor];
-                    textView.textColor = [UIColor lightGrayColor];
-                }
+            }
+            if ([@"UITextView" isEqualToString:class]) {
+                UITextView *textView = (UITextView*)view;
+                textView.backgroundColor = [UIColor lightBlackColor];
+                textView.textColor = [UIColor lightGrayColor];
             }
             if ([@"UILabel" isEqualToString:class]) view.alpha = 0.5;
             if ([@"VKMLabel" isEqualToString:class]) view.layer.backgroundColor = textBackgroundColor.CGColor;
@@ -1363,16 +1366,12 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
     
     menuTableView = tableView;
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        for (id view in cell.subviews) {
-            if ([view isKindOfClass:objc_getClass("UISwitch")]) {
-                dispatch_async(dispatch_get_main_queue(), ^{ 
-                    UISwitch *switchView = view;
-                    [switchView layoutSubviews];
-                });
-            }
-        }
-    });
+    NSDictionary *identifiers = @{@"customCell" : @228, @"cvkCell": @404};
+    if ([identifiers.allKeys containsObject:cell.reuseIdentifier]) {
+        UISwitch *switchView = [cell viewWithTag:[identifiers[cell.reuseIdentifier] integerValue]];
+        if ([CLASS_NAME(switchView) isEqualToString:@"UISwitch"]) [switchView layoutSubviews];
+    }
+    
     
     if (enabled && hideSeparators) tableView.separatorColor = [UIColor clearColor]; 
     else if (enabled && !hideSeparators) tableView.separatorColor = separatorColor; 
@@ -1382,7 +1381,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
         cell.backgroundColor = [UIColor lightBlackColor];
         cell.contentView.backgroundColor = [UIColor lightBlackColor];
         cell.textLabel.textColor = [UIColor lightGrayColor];
-        if ((indexPath.section == 1) && (indexPath.row == 0)) { cell.backgroundColor = [UIColor darkBlackColor]; }
+        if ((indexPath.section == 1) && (indexPath.row == 0)) cell.backgroundColor = [UIColor darkBlackColor];
         
         UIView *selectedBackView = [UIView new];
         selectedBackView.backgroundColor = [UIColor darkBlackColor];
@@ -1431,7 +1430,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
         if (menuSelectionStyle == CVKCellSelectionStyleTransparent) selectedBackView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
         else if (menuSelectionStyle == CVKCellSelectionStyleBlurred) {
             selectedBackView.backgroundColor = [UIColor clearColor];
-            if (![selectedBackView.subviews containsObject: [selectedBackView viewWithTag:100] ]) [selectedBackView addSubview:[ColoredVKMainController  blurForView:selectedBackView withTag:100]];
+            if (![selectedBackView.subviews containsObject: [selectedBackView viewWithTag:100] ]) [selectedBackView addSubview:[ColoredVKMainController blurForView:selectedBackView withTag:100]];
             
         } else selectedBackView.backgroundColor = [UIColor clearColor];
         cell.selectedBackgroundView = selectedBackView;
@@ -1498,8 +1497,7 @@ CHDeclareClass(VKSettings);
 CHOptimizedMethod(0, self, id, VKSettings, generateMenu)
 {
     NSMutableArray *array = CHSuper(0, VKSettings, generateMenu);
-    MenuCell *cell = [ColoredVKMainController createCustomCell];
-    [array addObject:cell];
+    [array addObject:[ColoredVKMainController createCustomCell]];
     return array;
 }
 
@@ -1545,6 +1543,18 @@ CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, a
         UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] bk_initWithImage:saveImage 
                                                                           style:UIBarButtonItemStylePlain 
                                                                         handler:^(id  _Nonnull sender) {
+                                                                            NSString *imageSource = @"";
+                                                                            int indexOfPage = self.paging.contentOffset.x / self.paging.frame.size.width;
+                                                                            VKPhotoSized *photo = [self photoForPage:indexOfPage];
+                                                                            if (photo.variants != nil) {
+                                                                                int maxVariantIndex = 0;
+                                                                                for (VKImageVariant *variant in photo.variants.allValues) {
+                                                                                    if (variant.type > maxVariantIndex) {
+                                                                                        maxVariantIndex = variant.type;
+                                                                                        imageSource = variant.src;
+                                                                                    }
+                                                                                }
+                                                                            }
                                                                             VKHUD *hud = [objc_getClass("VKHUD") hud];
                                                                             BlockActionController *actionController = [objc_getClass("BlockActionController") actionSheetWithTitle:nil];
                                                                             [actionController addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"USE_IN_MENU", nil, cvkBunlde, nil) 
@@ -1578,25 +1588,10 @@ CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, a
                                                                             [actionController showInViewController:self];
                                                                         }];
 
-        self.navigationItem.rightBarButtonItems = @[self.navigationItem.rightBarButtonItem, saveButton];
+        NSMutableArray *buttons = [self.navigationItem.rightBarButtonItems mutableCopy];
+        [buttons addObject:saveButton];
+        self.navigationItem.rightBarButtonItems = [buttons copy];
     }
-}
-
-CHOptimizedMethod(1, self, VKPhotoSized*, PhotoBrowserController, photoForPage, unsigned long long, page)
-{
-    VKPhotoSized *photo = CHSuper(1, PhotoBrowserController, photoForPage, page);
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if (photo.variants != nil) {
-            int maxVariantIndex = 0;
-            for (VKImageVariant *variant in photo.variants.allValues) {
-                if (variant.type > maxVariantIndex) {
-                    maxVariantIndex = variant.type;
-                    imageSource = variant.src;
-                }
-            }
-        }
-//    });
-    return photo;
 }
 
 
@@ -1852,7 +1847,6 @@ CHConstructor
                 CHHook(1, ChatController, viewWillAppear);
                 
                 CHLoadLateClass(MessageCell);
-//                CHHook(0, MessageCell, transitionToReadState);
                 CHHook(1, MessageCell, updateBackground);
                 
                 
@@ -1867,7 +1861,6 @@ CHConstructor
                 
                 CHLoadLateClass(PhotoBrowserController);
                 CHHook(1, PhotoBrowserController, viewWillAppear);
-                CHHook(1, PhotoBrowserController, photoForPage);
                 
                 
                 CHLoadLateClass(VKMBrowserController);

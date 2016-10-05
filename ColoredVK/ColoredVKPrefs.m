@@ -139,11 +139,20 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 - (void)showColorPicker:(PSSpecifier*)specifier
 {
-    ColoredVKColorPicker *picker = [[ColoredVKColorPicker alloc] initWithIdentifier:specifier.identifier];    
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:picker];
-    nav.modalPresentationStyle = UIModalPresentationFormSheet;
-    if (IS_IPAD) nav.preferredContentSize = CGSizeMake(self.view.frame.size.width - 100, self.view.frame.size.height / 1.5);
-    [self.navigationController presentViewController:nav animated:YES completion:nil];
+    ColoredVKColorPicker *picker = [[ColoredVKColorPicker alloc] initWithIdentifier:specifier.identifier];
+    picker.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    self.definesPresentationContext = NO;
+    picker.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    picker.view.backgroundColor = [UIColor clearColor];
+    
+    UIViewController *controller = [UIViewController new];
+    picker.pickerWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    picker.pickerWindow.rootViewController = controller;
+    picker.pickerWindow.windowLevel = UIWindowLevelNormal;
+    picker.pickerWindow.backgroundColor = [UIColor clearColor];
+    [picker.pickerWindow makeKeyAndVisible];
+    [controller presentViewController:picker animated:YES completion:nil];
+
 }
 
 - (void)chooseImage:(PSSpecifier*)specifier

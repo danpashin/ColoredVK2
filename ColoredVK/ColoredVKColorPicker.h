@@ -11,4 +11,5 @@
 
 @interface ColoredVKColorPicker : UIViewController
 - (instancetype)initWithIdentifier:(NSString *)identifier;
+@property (strong, nonatomic) UIWindow *pickerWindow;
 @end

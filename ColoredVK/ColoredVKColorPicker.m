@@ -12,7 +12,7 @@
 #import "NKOColorPickerView.h"
 #import "KLCPopup.h"
 
-@interface ColoredVKColorPicker() <UITextFieldDelegate>
+@interface ColoredVKColorPicker() <UITextFieldDelegate, UIGestureRecognizerDelegate>
 @property (strong, nonatomic) NSString *cellIdentifier;
 @property (strong, nonatomic) NSString *prefsPath;
 @property (strong, nonatomic) NSBundle *cvkBunlde;
@@ -28,7 +28,7 @@
 
 - (instancetype)init
 {
-    CVKLog(@"ColoredVKColorPicker init is deprecated. Use initWithIdentifier:");
+    [[NSException exceptionWithName:NSGenericException reason:@"ColoredVKColorPicker init is forbidden. Use initWithIdentifier:" userInfo:nil] raise];
     return nil;
 }
 
@@ -37,8 +37,6 @@
     self = [super init];
     if (self) {
         self.cellIdentifier = identifier;
-    } else {
-        self.cellIdentifier = @"";
     }
     return self;
 }
@@ -48,69 +46,101 @@
     return UIStatusBarStyleLightContent;
 }
 
-- (void)viewDidLoad
+- (void)viewWillAppear:(BOOL)animated
 {
     self.prefsPath = CVK_PREFS_PATH;
     self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     
-    [super viewDidLoad];
+    [super viewWillAppear:animated];
+    
     
     self.prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
-    
-    self.navigationItem.title = NSLocalizedStringFromTableInBundle(@"SELECT_COLOR_TITLE", nil, self.cvkBunlde, nil);
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(writeValues)];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"#" style:UIBarButtonItemStylePlain target:self action:@selector(showHexWindow)];
-    
-    
     self.customColor = [UIColor savedColorForIdentifier:self.cellIdentifier];
-    self.navigationController.navigationBar.barTintColor = [UIColor savedColorForIdentifier:@"BarBackgroundColor"];
-    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
-    [UINavigationBar appearanceWhenContainedIn:self.class, nil].titleTextAttributes = @{ NSForegroundColorAttributeName : [UIColor whiteColor] } ;
+    
+    
+    UIView *backView = [[UIView alloc] initWithFrame:self.view.frame];
+    backView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
+    backView.tag = 10;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(writeValues)];
+    tap.delegate = self;
+    [backView addGestureRecognizer:tap];
+    [self.view addSubview:backView];
+    
     
     self.mainView = [UIView new];
-    self.mainView.backgroundColor = [UIColor whiteColor];
-    self.mainView.frame = (CGRect){{0, self.navigationController.navigationBar.frame.size.height}, self.view.frame.size};
-    if (IS_IPAD) self.mainView.frame = (CGRect){{0,self.navigationController.navigationBar.frame.size.height}, self.navigationController.preferredContentSize};
+    self.mainView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.6];
+    
+    int widthFromEdge = IS_IPAD?20:8;
+    self.mainView.frame = (CGRect){{widthFromEdge, 0}, {self.view.frame.size.width - widthFromEdge*2, self.view.frame.size.height - widthFromEdge*10}};
+    self.mainView.center = self.view.center;
+    self.mainView.layer.masksToBounds = YES;
+    self.mainView.layer.cornerRadius = 10;
+    
+    UIVisualEffectView *blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+    blurView.frame = self.mainView.bounds;
+    blurView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.mainView addSubview:blurView];
     
     
-    UIButton *resetButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.mainView.frame.origin.y - 15, self.mainView.frame.size.width, 32)];
+    UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 5, self.mainView.frame.size.width, 32)];
+    topView.backgroundColor = [UIColor clearColor];
+    [self.mainView addSubview:topView];
+    
+    UIButton *hexButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 0, topView.frame.size.height, topView.frame.size.height)];
+    hexButton.center = CGPointMake(hexButton.frame.origin.x + hexButton.frame.size.width/2, hexButton.frame.size.height/2);
+    [hexButton setTitle:@"#" forState:UIControlStateNormal];
+    hexButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    [hexButton setTitleColor:[UIColor colorWithRed:0 green:122/255.0 blue:1 alpha:1] forState:UIControlStateNormal];
+    [hexButton addTarget:self action:@selector(showHexWindow) forControlEvents:UIControlEventTouchUpInside];
+    [topView addSubview:hexButton];
+    
+    UIButton *resetButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, topView.frame.size.width/1.8, topView.frame.size.height)];
+    resetButton.center = CGPointMake(topView.center.x, resetButton.frame.size.height/2);
     [resetButton setTitle:NSLocalizedStringFromTableInBundle(@"RESET_BUTTON_TITLE", nil, self.cvkBunlde, nil) forState:UIControlStateNormal];
     resetButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+    resetButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     [resetButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
     [resetButton setTitleColor:[UIColor colorWithRed:0.8 green:0 blue:0 alpha:1.0] forState:UIControlStateHighlighted];
-    resetButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    resetButton.titleLabel.numberOfLines = 2;
-    resetButton.titleLabel.shadowOffset = CGSizeMake(0, 1);
-    [resetButton setTitleShadowColor:[UIColor colorWithRed:225.0/255.0f green:226.0/255.0f blue:227.0/255.0f alpha:1] forState:UIControlStateNormal];
-    [resetButton addTarget:self action:@selector(addErrorAnimationForButton:) forControlEvents:UIControlEventTouchUpInside];
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(resetColorValue)];
-    longPress.minimumPressDuration = 1.0;
-    longPress.numberOfTouchesRequired = 1;
-    [resetButton addGestureRecognizer:longPress];
-    [self.mainView addSubview:resetButton];
-        
+    [resetButton addTarget:self action:@selector(resetColorValue) forControlEvents:UIControlEventTouchUpInside];
+    [topView addSubview:resetButton];
     
-    CGRect pickerRect = CGRectMake(0,  resetButton.frame.origin.y + resetButton.frame.size.height,  self.mainView.frame.size.width, self.mainView.frame.size.height - 100);
-    self.colorPickerView = [[NKOColorPickerView alloc] initWithFrame:pickerRect 
-                                                               color:self.customColor 
-                                              andDidChangeColorBlock:^(UIColor *color) {
-                                                  self.customColor = color;
-                                                  if ([self.cellIdentifier isEqualToString:@"BarBackgroundColor"]) self.navigationController.navigationBar.barTintColor = color;
-                                                  if ([self.cellIdentifier isEqualToString:@"BarForegroundColor"]) self.navigationController.navigationBar.tintColor = color;
-                                              }];
+    int width = 58;
+    UIButton *doneButton = [[UIButton alloc] initWithFrame:CGRectMake(topView.frame.size.width - width - 5, 0, width, topView.frame.size.height)];
+    doneButton.center = CGPointMake(doneButton.frame.origin.x + doneButton.frame.size.width/2, doneButton.frame.size.height/2);
+    [doneButton setTitle:UIKitLocalizedString(@"Save") forState:UIControlStateNormal];
+    doneButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    doneButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+    [doneButton setTitleColor:[UIColor colorWithRed:0 green:122/255.0 blue:1 alpha:1] forState:UIControlStateNormal];
+    [doneButton addTarget:self action:@selector(writeValues) forControlEvents:UIControlEventTouchUpInside];
+    [topView addSubview:doneButton];    
+    
+    CGRect pickerRect = CGRectMake(0, topView.frame.origin.y + topView.frame.size.height,  
+                                   self.mainView.frame.size.width, 
+                                   self.mainView.frame.size.height - (topView.frame.origin.y + topView.frame.size.height));
+    self.colorPickerView = [[NKOColorPickerView alloc] initWithFrame:pickerRect color:self.customColor 
+                                              andDidChangeColorBlock:^(UIColor *color) { self.customColor = color; }];
     self.colorPickerView.tintColor = [UIColor colorWithRed:200.0/255.0f green:201.0/255.0f blue:202.0/255.0f alpha:1.0];
     [self.mainView addSubview:self.colorPickerView];
         
     [self.view addSubview:self.mainView];
     
-    self.view.backgroundColor = self.mainView.backgroundColor;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShown) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHidden) name:UIKeyboardWillHideNotification object:nil];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [UIView animateWithDuration:2.0 delay:0.0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+        self.mainView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
+    } completion:nil];
+    
+}
+
 - (void)keyboardWillShown
 {
+    self.popup.shouldDismissOnBackgroundTouch = NO;
     [UIView animateWithDuration:0.2 animations:^{
         self.popup.contentView.frame = CGRectMake(self.popup.contentView.frame.origin.x, self.popup.contentView.frame.origin.y - 50,
                                                   self.popup.contentView.frame.size.width, self.popup.contentView.frame.size.height);
@@ -119,6 +149,7 @@
 }
 - (void)keyboardWillHidden
 {
+    self.popup.shouldDismissOnBackgroundTouch = YES;
     [UIView animateWithDuration:0.2 animations:^{
         self.popup.contentView.frame = CGRectMake(self.popup.contentView.frame.origin.x, self.popup.contentView.frame.origin.y + 50,
                                                   self.popup.contentView.frame.size.width, self.popup.contentView.frame.size.height);
@@ -126,6 +157,30 @@
 }
 
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{    
+    if ([touch.view isDescendantOfView:[self.view viewWithTag:10]]) return YES;
+    return NO;
+}
+
+- (void)resetColorValue
+{
+    UIAlertController *warningAlert = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBunlde, nil)  
+                                                                          message:NSLocalizedStringFromTableInBundle(@"THIS_ACTION_CAN_NOT_BE_UNDONE", nil, self.cvkBunlde, nil) 
+                                                                   preferredStyle:UIAlertControllerStyleAlert];
+    [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+    [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete")
+                                                     style:UIAlertActionStyleDestructive 
+                                                   handler:^(UIAlertAction *action) { 
+                                                       if (self.prefs[self.cellIdentifier] != nil) {
+                                                           [self.prefs removeObjectForKey:self.cellIdentifier];
+                                                       }
+                                                       [self.prefs writeToFile:self.prefsPath atomically:YES];
+                                                       [self dismissPicker];
+                                                   }]];
+    [self presentViewController:warningAlert animated:YES completion:nil];
+    
+}
 
 
 - (void)writeValues 
@@ -145,7 +200,10 @@
     NSArray *identificsToReloadMenu = @[@"MenuSeparatorColor", @"switchesTintColor", @"switchesOnTintColor"];
     if ([identificsToReloadMenu containsObject:self.cellIdentifier]) CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
     
-    [self dismissViewControllerAnimated:YES completion:nil]; 
+    [self dismissViewControllerAnimated:YES completion:^{
+        self.pickerWindow.hidden = YES;
+        self.pickerWindow = nil;
+    }];
 }
 
 
@@ -229,42 +287,6 @@
 - (void)unHighlightButtonBorder:(UIButton *)button
 {
     button.layer.borderColor = [UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1].CGColor;
-}
-
-
-- (void)addErrorAnimationForButton:(UIButton*)button
-{
-    NSString *oldTitle = [button titleForState:UIControlStateNormal];
-    
-    NSTimeInterval hideTimeInterval = 0.5f;
-    NSTimeInterval showDelay = 1.0f;
-    [UIView animateWithDuration:hideTimeInterval 
-                     animations:^{ button.alpha = 0.0; }
-                     completion:^(BOOL finished) {
-                         [UIView animateWithDuration:1.0f
-                                          animations:^{ 
-                                              [button setTitle:NSLocalizedStringFromTableInBundle(@"TAP_AND_HOLD_BUTTON_TITLE", nil, self.cvkBunlde, nil) forState:UIControlStateNormal];
-                                              button.alpha = 1.0; 
-                                          }
-                                          completion:^(BOOL finished) {
-                                              [UIView animateWithDuration:hideTimeInterval delay:showDelay options:0 animations:^{ button.alpha = 0.0; } 
-                                                               completion:^(BOOL finished) { 
-                                                                   [UIView animateWithDuration:1.0f animations:^{ [button setTitle:oldTitle forState:UIControlStateNormal]; button.alpha = 1.0; }];
-                                                               }
-                                               ];
-                                          }
-                          ];
-                     }
-     ];
-}
-
-- (void)resetColorValue
-{
-    if (self.prefs[self.cellIdentifier] != nil) {
-        [self.prefs removeObjectForKey:self.cellIdentifier];
-    }
-    [self.prefs writeToFile:self.prefsPath atomically:YES];
-    [self dismissPicker];
 }
 
 - (void)copyHEXValue 

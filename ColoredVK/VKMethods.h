@@ -97,7 +97,10 @@
 @end
 
 
+@class VKPhotoSized;
 @interface PhotoBrowserController : UIViewController
+@property(retain, nonatomic) UIScrollView *paging;
+- (VKPhotoSized *)photoForPage:(unsigned long long)page;
 @end
 
 @interface VKImageVariant : NSObject

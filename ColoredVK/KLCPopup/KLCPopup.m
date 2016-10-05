@@ -619,21 +619,21 @@ const KLCPopupLayout KLCPopupLayoutCenter = { KLCPopupHorizontalLayoutCenter, KL
       self.contentView.frame = contentViewFrame;
       
       // Reset _containerView's constraints in case contentView is uaing autolayout.
-      UIView* contentView = _contentView;
-      NSDictionary* views = NSDictionaryOfVariableBindings(contentView);
+//      UIView* contentView = _contentView;
+//      NSDictionary* views = NSDictionaryOfVariableBindings(contentView);
       
       [_containerView removeConstraints:_containerView.constraints];
-      [_containerView addConstraints:
-       [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[contentView]|"
-                                               options:0
-                                               metrics:nil
-                                                 views:views]];
-      
-      [_containerView addConstraints:
-       [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[contentView]|"
-                                               options:0
-                                               metrics:nil
-                                                 views:views]];
+//      [_containerView addConstraints:
+//       [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[contentView]|"
+//                                               options:0
+//                                               metrics:nil
+//                                                 views:views]];
+//      
+//      [_containerView addConstraints:
+//       [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[contentView]|"
+//                                               options:0
+//                                               metrics:nil
+//                                                 views:views]];
       
       // Determine final position and necessary autoresizingMask for container.
       CGRect finalContainerFrame = containerFrame;
