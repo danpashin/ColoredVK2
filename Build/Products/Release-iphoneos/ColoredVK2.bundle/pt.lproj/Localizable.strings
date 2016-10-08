@@ -1,0 +1,30 @@
+//  
+//  Localizable.strings
+//  ColoredVK
+//  
+//  Created by Даниил on 30.06.16.
+//  Copyright (©) Daniil Pashin 2016. All rights reserved.
+//  
+
+
+"ERROR" = "Erro";
+"WARNING" = "Aviso";
+"THIS_ACTION_CAN_NOT_BE_UNDONE" = "Esta ação não pode ser desfeita";
+"CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Não é possível salvar imagem. Tente de novo ou desenvolvedor de contacto.";
+
+"YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE" = "Você está usando a versão emenda ultrapassada. Últimas é de %@";
+"REMIND_LATER_BUTTON_TITLE" = "Lembrar mais tarde";
+"SKIP_THIS_VERSION_BUTTON_TITLE" = "Ir esta versão";
+"UPADTE_BUTTON_TITLE" = "atualizar agora";
+
+"TWEAK_FOOTER_TEXT" = "Tweak versão: %@\nVK App versão: %@";
+"LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Erro ao carregar ajustar arquivos.\nVerifique a sua disponibilidade ou contato desenvolvedor.";
+
+"SELECT_COLOR_TITLE" = "Selecione a cor";
+"ALERT_COPY_CURRENT_VALUE_TIILE" = "Copie valor hexadecimal atual";
+"ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Introduza um código de cor hexadecimal\n(símbolo # não é necessário)";
+"EXAMPLE_ALERT_MESSAGE" = "Tal como %@";
+"RESET_COLOR_QUESTION" = "Você realmente deseja redefinir cor?";
+
+"USE_IN_MENU" = "Utilizar o menu";
+"USE_IN_MESSAGES" = "Usar nas mensagens";

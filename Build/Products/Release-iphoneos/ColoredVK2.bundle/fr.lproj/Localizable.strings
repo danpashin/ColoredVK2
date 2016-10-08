@@ -1,0 +1,30 @@
+//  
+//  Localizable.strings
+//  ColoredVK
+//  
+//  Created by Даниил on 30.06.16.
+//  Copyright (©) Daniil Pashin 2016. All rights reserved.
+//  
+
+
+"ERROR" = "Erreur";
+"WARNING" = "Avertissement";
+"THIS_ACTION_CAN_NOT_BE_UNDONE" = "Cette action ne peut pas être annulée";
+"CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Vous ne pouvez pas enregistrer l'image. Essayez à nouveau ou développeur de contact.";
+
+"YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE" = "Vous utilisez version obsolète de tweak. Dernières est %@";
+"REMIND_LATER_BUTTON_TITLE" = "Rappeler plus tard";
+"SKIP_THIS_VERSION_BUTTON_TITLE" = "Passez cette version";
+"UPADTE_BUTTON_TITLE" = "Mettre à jour maintenant";
+
+"TWEAK_FOOTER_TEXT" = "Tweak version: %@\nVK App version: %@";
+"LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Erreur lors du chargement tweak fichiers.\nVérifiez leur disponibilité ou développeur de contact.";
+
+"SELECT_COLOR_TITLE" = "Choisissez la couleur";
+"ALERT_COPY_CURRENT_VALUE_TIILE" = "Copier valeur hexadécimale actuelle";
+"ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Entrez un code de couleur hexadécimal\n(symbole # est pas nécessaire)";
+"EXAMPLE_ALERT_MESSAGE" = "Tel que %@";
+"RESET_COLOR_QUESTION" = "Voulez-vous vraiment réinitialiser la couleur?";
+
+"USE_IN_MENU" = "Utiliser dans le menu";
+"USE_IN_MESSAGES" = "Utiliser dans les messages";

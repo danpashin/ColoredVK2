@@ -9,6 +9,12 @@
 
 #import "ColoredVKPrefsController.h"
 #import "PrefixHeader.h"
+#import "ColoredVKHeader.h"
+
+@interface ColoredVKPrefsController ()
+@property (strong, nonatomic) NSString *prefsPath;
+@property (strong, nonatomic) NSBundle *cvkBunlde;
+@end
 
 @implementation ColoredVKPrefsController
 
@@ -20,17 +26,17 @@
 
 - (id)specifiers
 {
-    prefsPath = CVK_PREFS_PATH;
-    cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    self.prefsPath = CVK_PREFS_PATH;
+    self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     
     NSString *plistName = @"ColoredVKMainPrefs";
     
     NSMutableArray *specifiersArray = [NSMutableArray new];
     if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
-        self.bundle = cvkBunlde;
+        self.bundle = self.cvkBunlde;
         specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
     } else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:bundle:)]) {
-        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:cvkBunlde] mutableCopy];
+        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBunlde] mutableCopy];
     } 
     else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
         specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
@@ -47,15 +53,27 @@
     [UISwitch appearanceWhenContainedIn:self.class, nil].tintColor = [UIColor colorWithRed:235.0/255.0f green:235.0/255.0f blue:235.0/255.0f alpha:1.0];
     [UISwitch appearanceWhenContainedIn:self.class, nil].onTintColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
     [UISwitch appearanceWhenContainedIn:self.class, nil].tag = 404;
-    [UITableView appearanceWhenContainedIn:self.class, nil].separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
     
     return _specifiers;
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    for (UIView *view in self.view.subviews) {
+        if ([NSStringFromClass([view class]) isEqualToString:@"UITableView"]) {
+            UITableView *tableView = (UITableView *)view;
+            tableView.tableHeaderView = [ColoredVKHeader headerForView:self.view];
+            tableView.separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
+            break;
+        }
+    }
+}
 
 - (id) readPreferenceValue:(PSSpecifier*)specifier
 {    
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    if (prefs == nil) { prefs = [NSMutableDictionary new]; [prefs writeToFile:self.prefsPath atomically:YES]; }
     
     if (!prefs[specifier.properties[@"key"]]) return specifier.properties[@"default"];
     return prefs[specifier.properties[@"key"]];
@@ -64,21 +82,22 @@
 
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
 {
-    NSMutableDictionary *prefs = [[NSMutableDictionary alloc] init];
-    [prefs addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:prefsPath]];
+    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
     [prefs setValue:value forKey:specifier.properties[@"key"]];
-    [prefs writeToFile:prefsPath atomically:YES];
+    [prefs writeToFile:self.prefsPath atomically:YES];
     
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
+    if ([specifier.identifier isEqualToString:@"enabled"]) {
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
+    }
 }
 
 
 - (PSSpecifier *)footer
 {
-    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, cvkBunlde, nil), [self getTweakVersion], [self getVKVersion] ];
+    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.cvkBunlde, nil), [self getTweakVersion], [self getVKVersion] ];
     
     PSSpecifier *footer = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
     [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2015"] forKey:@"footerText"];
@@ -90,20 +109,20 @@
 - (PSSpecifier *)errorMessage
 {
     PSSpecifier *errorMessage = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-    [errorMessage setProperty:[NSLocalizedStringFromTableInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", nil, cvkBunlde, nil) stringByAppendingString:@"\n\nhttps://vk.com/danpashin"] forKey:@"footerText"];
+    [errorMessage setProperty:[NSLocalizedStringFromTableInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", nil, self.cvkBunlde, nil) stringByAppendingString:@"\n\nhttps://vk.com/danpashin"] forKey:@"footerText"];
     [errorMessage setProperty:@"1" forKey:@"footerAlignment"];
     return errorMessage;
 }
 
 - (NSString *)getTweakVersion
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
     return [prefs[@"cvkVersion"] stringByReplacingOccurrencesOfString:@"-" withString:@" "];
 }
 
 - (NSString *)getVKVersion
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
     return prefs[@"vkVersion"];
 }
 

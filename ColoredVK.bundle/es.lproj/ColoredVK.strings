@@ -6,7 +6,6 @@
 //  Copyright (©) Daniil Pashin 2015. All rights reserved.
 //  
 
-
 "BLACK_THEME" = "Tema negro";
 "ENABLE_BLACK_THEME" = "Habilitar";
 
@@ -41,4 +40,4 @@
 "WHITE" = "Blanco";
 "SHOW_BAR" = "Mostrar siempre la barra de navegación";
 
-"DEVELOPER_IN_VK" = "Programador en VK";
+"RESET_SETTINGS" = "Restablecimiento de la configuración";

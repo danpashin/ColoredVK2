@@ -24,8 +24,8 @@
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Kopieren sie aktuelle hex-wert";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Geben Sie einen hexadezimalen farbcode\n(Symbol # ist nicht erforderlich,)";
 "EXAMPLE_ALERT_MESSAGE" = "Wie %@";
-"RESET_BUTTON_TITLE" = "Zurücksetzen gespeichert farbe";
-"TAP_AND_HOLD_BUTTON_TITLE" = "Tippen und halten, um fortzufahren";
+"RESET_COLOR_QUESTION" = "Tun sie wirklich zurücksetzen möchten farbe?";
+"RESET_SETTINGS_QUESTION" = "Wollen sie wirklich, um Einstellungen zurücksetzen?";
 
 "USE_IN_MENU" = "Verwenden sie im menü";
 "USE_IN_MESSAGES" = "Verwenden sie im nachrichten";

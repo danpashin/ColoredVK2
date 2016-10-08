@@ -1,0 +1,30 @@
+//  
+//  Localizable.strings
+//  ColoredVK
+//  
+//  Created by Даниил on 30.06.16.
+//  Copyright (©) Daniil Pashin 2016. All rights reserved.
+//  
+
+
+"ERROR" = "Error";
+"WARNING" = "Warning";
+"THIS_ACTION_CAN_NOT_BE_UNDONE" = "This action can not be undone";
+"CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Can not save image. Try again or contact developer.";
+
+"YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE" = "U're using outdated tweak version. Latest is %@";
+"REMIND_LATER_BUTTON_TITLE" = "Remind later";
+"SKIP_THIS_VERSION_BUTTON_TITLE" = "Skip this version";
+"UPADTE_BUTTON_TITLE" = "Update now";
+
+"TWEAK_FOOTER_TEXT" = "Tweak version: %@\nVK App version: %@";
+"LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Error loading tweak files.\nCheck their availability or contact developer.";
+
+"SELECT_COLOR_TITLE" = "Select color";
+"ALERT_COPY_CURRENT_VALUE_TIILE" = "Copy current hex value";
+"ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Enter a hexadecimal color code\n(Symbol # is not necessary)";
+"EXAMPLE_ALERT_MESSAGE" = "Like %@";
+"RESET_COLOR_QUESTION" = "Do you really want to reset color?";
+
+"USE_IN_MENU" = "Use in the menu";
+"USE_IN_MESSAGES" = "Use in the messages";

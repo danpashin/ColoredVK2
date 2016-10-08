@@ -1,0 +1,30 @@
+//  
+//  Localizable.strings
+//  ColoredVK
+//  
+//  Created by Даниил on 30.06.16.
+//  Copyright (©) Daniil Pashin 2016. All rights reserved.
+//  
+
+
+"ERROR" = "Fehler";
+"WARNING" = "Warnung";
+"THIS_ACTION_CAN_NOT_BE_UNDONE" = "Diese Aktion kann nicht rückgängig gemacht werden";
+"CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Das bild kann nicht gespeichert werden. Versuchen sie es erneut oder kontaktieren entwickler.";
+
+"YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE" = "Sie verwenden veraltete zwicken Version. Neueste %@";
+"REMIND_LATER_BUTTON_TITLE" = "Erinnere mich später";
+"SKIP_THIS_VERSION_BUTTON_TITLE" = "Überspringe diese version";
+"UPADTE_BUTTON_TITLE" = "Jetzt aktualisieren";
+
+"TWEAK_FOOTER_TEXT" = "Tweak version: %@\nVK App version: %@";
+"LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Fehler beim laden des zwicken Dateien.\nÜberprüfen sie ihre verfügbarkeit oder Kontakt entwickler.";
+
+"SELECT_COLOR_TITLE" = "Wählen sie die farbe";
+"ALERT_COPY_CURRENT_VALUE_TIILE" = "Kopieren sie aktuelle hex-wert";
+"ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Geben Sie einen hexadezimalen farbcode\n(Symbol # ist nicht erforderlich,)";
+"EXAMPLE_ALERT_MESSAGE" = "Wie %@";
+"RESET_COLOR_QUESTION" = "Tun sie wirklich zurücksetzen möchten farbe?";
+
+"USE_IN_MENU" = "Verwenden sie im menü";
+"USE_IN_MESSAGES" = "Verwenden sie im nachrichten";

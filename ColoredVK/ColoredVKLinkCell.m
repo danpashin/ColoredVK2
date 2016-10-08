@@ -11,13 +11,10 @@
 
 @implementation ColoredVKLinkCell
 
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)identifier specifier:(PSSpecifier *)specifier
+- (void)layoutSubviews
 {
-    self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier specifier:specifier];
-    if (self) {
-        self.titleLabel.textColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
-    }
-    return self;
+    [super layoutSubviews];
+    self.titleLabel.textColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
 }
 
 @end

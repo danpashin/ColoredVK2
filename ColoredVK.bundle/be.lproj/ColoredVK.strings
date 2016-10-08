@@ -2,8 +2,6 @@
 //  ColoredVK.strings
 //  ColoredVK
 //  
-//  Belarusian
-//  
 //  Created by Даниил on 08.04.2015.
 //  Copyright (©) Daniil Pashin 2015. All rights reserved.
 //  
@@ -42,4 +40,4 @@
 "WHITE" = "Белы";
 "SHOW_BAR" = "Заўсёды паказваць бар";
 
-"DEVELOPER_IN_VK" = "Распрацоўшчык у ВК";
+"RESET_SETTINGS" = "Скід налад";

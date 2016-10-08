@@ -558,9 +558,9 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
             NSData *decryptedData = [[NSData dataWithContentsOfFile:licencePath] AES128DecryptedDataWithKey:@"BE7555818BC236315C987C1D9B17F"];
             NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
             if (![dict[@"UDID"] isEqualToString:udid]) {
-//                tweakEnabled = NO;
-//                ColoredVKInstaller *installer = [[ColoredVKInstaller alloc] init];
-//                [installer performSelector:@selector(beginDownload) withObject:nil afterDelay:5.0];
+                tweakEnabled = NO;
+                ColoredVKInstaller *installer = [[ColoredVKInstaller alloc] init];
+                [installer performSelector:@selector(beginDownload) withObject:nil afterDelay:5.0];
             }            
         }
         

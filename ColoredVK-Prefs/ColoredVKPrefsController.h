@@ -10,8 +10,5 @@
 #import <UIKit/UIKit.h>
 #import "Preferences.h"
 
-@interface ColoredVKPrefsController : PSListController {
-    NSString *prefsPath;
-    NSBundle *cvkBunlde;
-}
+@interface ColoredVKPrefsController : PSListController
 @end

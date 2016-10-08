@@ -24,8 +24,8 @@
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Copie valor hexadecimal atual";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Introduza um código de cor hexadecimal\n(símbolo # não é necessário)";
 "EXAMPLE_ALERT_MESSAGE" = "Tal como %@";
-"RESET_BUTTON_TITLE" = "Repor cor salvo";
-"TAP_AND_HOLD_BUTTON_TITLE" = "Toque e segure o botão para continuar";
+"RESET_COLOR_QUESTION" = "Você realmente deseja redefinir cor?";
+"RESET_SETTINGS_QUESTION" = "Você realmente deseja redefinir as configurações?";
 
 "USE_IN_MENU" = "Utilizar o menu";
 "USE_IN_MESSAGES" = "Usar nas mensagens";

@@ -161,10 +161,18 @@
 			<string>menuSelectionStyle</string>
 			<key>default</key>
 			<string>1</string>
-			<key>valuesDataSource</key>
-			<string>menuValuesDataSource</string>
-			<key>titlesDataSource</key>
-			<string>menuTitlesDataSource</string>
+			<key>validValues</key>
+			<array>
+				<string>0</string>
+				<string>1</string>
+				<string>2</string>
+			</array>
+			<key>validTitles</key>
+			<array>
+				<string>NONE</string>
+				<string>TRANSPARENT</string>
+				<string>BLURRED</string>
+			</array>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -373,6 +381,16 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>resetSettings</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKRedButtonCell</string>
+			<key>label</key>
+			<string>RESET_SETTINGS</string>
 		</dict>
 	</array>
 	<key>title</key>

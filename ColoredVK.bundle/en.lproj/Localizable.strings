@@ -24,8 +24,8 @@
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Copy current hex value";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Enter a hexadecimal color code\n(Symbol # is not necessary)";
 "EXAMPLE_ALERT_MESSAGE" = "Like %@";
-"RESET_BUTTON_TITLE" = "Reset saved color";
-"TAP_AND_HOLD_BUTTON_TITLE" = "Tap & hold button to continue";
+"RESET_COLOR_QUESTION" = "Do you really want to reset color?";
+"RESET_SETTINGS_QUESTION" = "Do you really want to reset settings?";
 
 "USE_IN_MENU" = "Use in the menu";
 "USE_IN_MESSAGES" = "Use in the messages";

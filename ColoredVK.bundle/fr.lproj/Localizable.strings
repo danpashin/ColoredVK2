@@ -24,8 +24,8 @@
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Copier valeur hexadécimale actuelle";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Entrez un code de couleur hexadécimal\n(symbole # est pas nécessaire)";
 "EXAMPLE_ALERT_MESSAGE" = "Tel que %@";
-"RESET_BUTTON_TITLE" = "Réinitialiser la couleur enregistrée";
-"TAP_AND_HOLD_BUTTON_TITLE" = "Tap & maintenez le bouton pour continuer";
+"RESET_COLOR_QUESTION" = "Voulez-vous vraiment réinitialiser la couleur?";
+"RESET_SETTINGS_QUESTION" = "Voulez-vous vraiment réinitialiser les paramètres?";
 
 "USE_IN_MENU" = "Utiliser dans le menu";
 "USE_IN_MESSAGES" = "Utiliser dans les messages";

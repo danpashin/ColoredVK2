@@ -9,8 +9,10 @@
 
 #import "ColoredVKColorPicker.h"
 #import "PrefixHeader.h"
-#import "NKOColorPickerView.h"
 #import "KLCPopup.h"
+#import "HRColorMapView.h"
+#import "HRBrightnessSlider.h"
+#import "HRColorInfoView.h"
 
 @interface ColoredVKColorPicker() <UITextFieldDelegate, UIGestureRecognizerDelegate>
 @property (strong, nonatomic) NSString *cellIdentifier;
@@ -20,7 +22,10 @@
 @property (strong, nonatomic) UIColor *customColor;
 @property (strong, nonatomic) UIView *mainView;
 @property (strong, nonatomic) KLCPopup *popup;
-@property (strong, nonatomic) NKOColorPickerView *colorPickerView;
+@property (strong, nonatomic) HRColorInfoView *infoView;
+@property (strong, nonatomic) HRBrightnessSlider *sliderView;
+@property (strong, nonatomic) HRColorMapView *colorMapView;
+@property (assign, nonatomic) CGFloat brightness;
 @end
 
 
@@ -56,6 +61,7 @@
     
     self.prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
     self.customColor = [UIColor savedColorForIdentifier:self.cellIdentifier];
+    [self.customColor getHue:nil saturation:nil brightness:&_brightness alpha:nil];
     
     
     UIView *backView = [[UIView alloc] initWithFrame:self.view.frame];
@@ -86,19 +92,11 @@
     topView.backgroundColor = [UIColor clearColor];
     [self.mainView addSubview:topView];
     
-    UIButton *hexButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 0, topView.frame.size.height, topView.frame.size.height)];
-    hexButton.center = CGPointMake(hexButton.frame.origin.x + hexButton.frame.size.width/2, hexButton.frame.size.height/2);
-    [hexButton setTitle:@"#" forState:UIControlStateNormal];
-    hexButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    [hexButton setTitleColor:[UIColor colorWithRed:0 green:122/255.0 blue:1 alpha:1] forState:UIControlStateNormal];
-    [hexButton addTarget:self action:@selector(showHexWindow) forControlEvents:UIControlEventTouchUpInside];
-    [topView addSubview:hexButton];
-    
-    UIButton *resetButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, topView.frame.size.width/1.8, topView.frame.size.height)];
-    resetButton.center = CGPointMake(topView.center.x, resetButton.frame.size.height/2);
-    [resetButton setTitle:NSLocalizedStringFromTableInBundle(@"RESET_BUTTON_TITLE", nil, self.cvkBunlde, nil) forState:UIControlStateNormal];
-    resetButton.titleLabel.adjustsFontSizeToFitWidth = YES;
-    resetButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    UIButton *resetButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, topView.frame.size.height)];
+    resetButton.center = CGPointMake(resetButton.frame.origin.x + resetButton.frame.size.width/2, resetButton.frame.size.height/2);
+    [resetButton setTitle:@"↻" forState:UIControlStateNormal];
+    resetButton.titleLabel.font = [UIFont systemFontOfSize:24.0];
+    resetButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     [resetButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
     [resetButton setTitleColor:[UIColor colorWithRed:0.8 green:0 blue:0 alpha:1.0] forState:UIControlStateHighlighted];
     [resetButton addTarget:self action:@selector(resetColorValue) forControlEvents:UIControlEventTouchUpInside];
@@ -108,21 +106,98 @@
     UIButton *doneButton = [[UIButton alloc] initWithFrame:CGRectMake(topView.frame.size.width - width - 5, 0, width, topView.frame.size.height)];
     doneButton.center = CGPointMake(doneButton.frame.origin.x + doneButton.frame.size.width/2, doneButton.frame.size.height/2);
     [doneButton setTitle:UIKitLocalizedString(@"Save") forState:UIControlStateNormal];
-    doneButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    doneButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
     doneButton.titleLabel.adjustsFontSizeToFitWidth = YES;
     [doneButton setTitleColor:[UIColor colorWithRed:0 green:122/255.0 blue:1 alpha:1] forState:UIControlStateNormal];
     [doneButton addTarget:self action:@selector(writeValues) forControlEvents:UIControlEventTouchUpInside];
-    [topView addSubview:doneButton];    
+    [topView addSubview:doneButton]; 
     
-    CGRect pickerRect = CGRectMake(0, topView.frame.origin.y + topView.frame.size.height,  
-                                   self.mainView.frame.size.width, 
-                                   self.mainView.frame.size.height - (topView.frame.origin.y + topView.frame.size.height));
-    self.colorPickerView = [[NKOColorPickerView alloc] initWithFrame:pickerRect color:self.customColor 
-                                              andDidChangeColorBlock:^(UIColor *color) { self.customColor = color; }];
-    self.colorPickerView.tintColor = [UIColor colorWithRed:200.0/255.0f green:201.0/255.0f blue:202.0/255.0f alpha:1.0];
-    [self.mainView addSubview:self.colorPickerView];
-        
+    
+    self.infoView = [HRColorInfoView new];
+    self.infoView.frame = CGRectMake(10, topView.frame.origin.y + topView.frame.size.height + 10, 60, 80);
+    self.infoView.color = self.customColor;
+    [self.infoView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showHexWindow)]];
+    [self.mainView addSubview:self.infoView];
+    
+    self.sliderView = [HRBrightnessSlider new];
+    self.sliderView.frame = CGRectMake(self.infoView.frame.origin.x + self.infoView.frame.size.width + 10, (self.infoView.frame.origin.y + self.infoView.frame.size.height)/2, 
+                                       self.mainView.frame.size.width - (self.infoView.frame.origin.x + self.infoView.frame.size.width + 10), 32);
+    [self.sliderView addTarget:self action:@selector(setColorBrightness:) forControlEvents:UIControlEventValueChanged];
+    self.sliderView.color = self.customColor;
+    self.sliderView.brightnessLowerLimit = @0;
+    [self.mainView addSubview:self.sliderView];    
+    
+    CGRect pickerRect = CGRectMake(10, topView.frame.origin.y + topView.frame.size.height + 120, self.mainView.frame.size.width-20, 
+                                   self.mainView.frame.size.height - (topView.frame.origin.y + topView.frame.size.height + 120));    
+    self.colorMapView = [HRColorMapView colorMapWithFrame:pickerRect saturationUpperLimit:0.9];
+    [self.colorMapView addTarget:self action:@selector(setColor:) forControlEvents:UIControlEventValueChanged];
+    self.colorMapView.color = self.customColor;
+    self.colorMapView.tileSize = @1;
+    self.colorMapView.brightness = 1;
+    self.colorMapView.layer.masksToBounds = YES;
+    self.colorMapView.layer.cornerRadius = 4;
+    [self.mainView addSubview:self.colorMapView];
+    
+    
     [self.view addSubview:self.mainView];
+    
+    
+    self.mainView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromEdge-[_mainView]-fromEdge-|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                      metrics:@{ @"fromEdge" : @(widthFromEdge*4)} views:NSDictionaryOfVariableBindings(_mainView)]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-fromEdge-[_mainView]-fromEdge-|" options:NSLayoutFormatDirectionLeadingToTrailing 
+                                                                      metrics:@{ @"fromEdge" : @(widthFromEdge)} views:NSDictionaryOfVariableBindings(_mainView)]];
+    
+    backView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[backView]-|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                      metrics:nil views:NSDictionaryOfVariableBindings(backView)]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(-10)-[backView]-(-10)-|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                      metrics:nil views:NSDictionaryOfVariableBindings(backView)]];
+    
+    
+    topView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[topView(height)]" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                          metrics:@{@"height":@32} views:NSDictionaryOfVariableBindings(topView, _infoView)]];
+    
+    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[topView]-|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                          metrics:nil views:NSDictionaryOfVariableBindings(topView)]];
+    
+    
+    resetButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [topView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[resetButton(32)]" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                    metrics:nil views:NSDictionaryOfVariableBindings(resetButton)]];
+    
+    doneButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [topView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[doneButton(32)]" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                    metrics:nil views:NSDictionaryOfVariableBindings(doneButton)]];
+    
+    [topView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[resetButton(resetButtonWidth)]-[doneButton]-|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                    metrics:@{@"resetButtonWidth": @(resetButton.frame.size.width)} views:NSDictionaryOfVariableBindings(resetButton, doneButton)]];
+    
+    
+    self.infoView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromTop-[_infoView(height)]" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                          metrics:@{@"height":@(self.infoView.frame.size.height), @"fromTop": @(topView.frame.origin.y + topView.frame.size.height + 10)} views:NSDictionaryOfVariableBindings(_infoView)]];
+    
+    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_infoView(width)]" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                          metrics:@{@"width" : @(self.infoView.frame.size.width)} views:NSDictionaryOfVariableBindings(_infoView)]];
+    
+    self.sliderView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromTop-[_sliderView(16)]" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                          metrics:@{@"fromTop": @((self.infoView.frame.origin.y + self.infoView.frame.size.height)/2 + 10)} views:NSDictionaryOfVariableBindings(_sliderView)]];
+    
+    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-fromLeft-[_sliderView]-|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                          metrics:@{@"fromLeft" : @(self.infoView.frame.origin.x + self.infoView.frame.size.width + 10)} views:NSDictionaryOfVariableBindings(_sliderView)]];
+    
+    self.colorMapView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromTop-[_colorMapView]-|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                          metrics:@{@"fromTop": @((self.infoView.frame.origin.y + self.infoView.frame.size.height) + 10)} views:NSDictionaryOfVariableBindings(_colorMapView)]];
+    
+    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_colorMapView]-|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                          metrics:nil views:NSDictionaryOfVariableBindings(_colorMapView)]];
+    
+    
     
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShown) name:UIKeyboardWillShowNotification object:nil];
@@ -133,9 +208,32 @@
 {
     [super viewDidAppear:animated];
     [UIView animateWithDuration:2.0 delay:0.0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-        self.mainView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
+        self.mainView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.5];
     } completion:nil];
     
+}
+
+- (void)updateColorsFromPicker:(BOOL)fromPicker
+{
+    CGFloat hue, saturation, brightness;
+    [self.customColor getHue:&hue saturation:&saturation brightness:&brightness alpha:nil];
+    self.customColor = [UIColor colorWithHue:hue saturation:saturation brightness:fromPicker?self.brightness:brightness alpha:1];
+    self.infoView.color = self.customColor;
+    self.sliderView.color = self.customColor;
+    self.colorMapView.color = self.customColor;
+//    self.colorMapView.brightness = fromPicker?self.brightness:brightness;
+}
+
+- (void)setColor:(HRColorMapView *)colorMap
+{
+    self.customColor = colorMap.color;
+    [self updateColorsFromPicker:YES];
+}
+
+- (void)setColorBrightness:(HRBrightnessSlider *)brightnessSlider
+{
+    self.brightness = brightnessSlider.brightness.floatValue;
+    [self updateColorsFromPicker:YES];
 }
 
 - (void)keyboardWillShown
@@ -166,15 +264,13 @@
 - (void)resetColorValue
 {
     UIAlertController *warningAlert = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBunlde, nil)  
-                                                                          message:NSLocalizedStringFromTableInBundle(@"THIS_ACTION_CAN_NOT_BE_UNDONE", nil, self.cvkBunlde, nil) 
+                                                                          message:NSLocalizedStringFromTableInBundle(@"RESET_COLOR_QUESTION", nil, self.cvkBunlde, nil) 
                                                                    preferredStyle:UIAlertControllerStyleAlert];
     [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete")
                                                      style:UIAlertActionStyleDestructive 
                                                    handler:^(UIAlertAction *action) { 
-                                                       if (self.prefs[self.cellIdentifier] != nil) {
-                                                           [self.prefs removeObjectForKey:self.cellIdentifier];
-                                                       }
+                                                       if (self.prefs[self.cellIdentifier]) [self.prefs removeObjectForKey:self.cellIdentifier];
                                                        [self.prefs writeToFile:self.prefsPath atomically:YES];
                                                        [self dismissPicker];
                                                    }]];
@@ -305,7 +401,7 @@
         textField.layer.borderColor = [UIColor clearColor].CGColor;
         
         self.customColor = [UIColor colorFromHexString:textField.text];
-        self.colorPickerView.color = self.customColor;
+        [self updateColorsFromPicker:NO];
     }
     [textField resignFirstResponder];
     return YES;

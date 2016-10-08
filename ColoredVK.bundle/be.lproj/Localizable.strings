@@ -26,8 +26,8 @@
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Скапіяваць бягучае значэнне hex";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Калі ласка, увядзіце 16-ричный каляровай код\n(Знак # ставіць не абавязкова)";
 "EXAMPLE_ALERT_MESSAGE" = "Напрыклад %@";
-"RESET_BUTTON_TITLE" = "Скінуць захаваны колер";
-"TAP_AND_HOLD_BUTTON_TITLE" = "Націсніце і ўтрымлівайце кнопку, каб працягнуць";
+"RESET_COLOR_QUESTION" = "Вы сапраўды хочаце скінуць колер?";
+"RESET_SETTINGS_QUESTION" = "Вы сапраўды хочаце скінуць налады?";
 
 "USE_IN_MENU" = "Выкарыстоўваць у меню";
 "USE_IN_MESSAGES" = "Выкарыстоўваць у паведамленнях";

@@ -24,8 +24,8 @@
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Скопировать текущее значение hex";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Введите 16-ричный цветовой код\n(Символ # ставить необязательно)";
 "EXAMPLE_ALERT_MESSAGE" = "Например %@";
-"RESET_BUTTON_TITLE" = "Сбросить сохраненный цвет";
-"TAP_AND_HOLD_BUTTON_TITLE" = "Нажмите и удерживайте кнопку, чтобы продолжить";
+"RESET_COLOR_QUESTION" = "Вы действительно хотите сбросить цвет?";
+"RESET_SETTINGS_QUESTION" = "Вы действительно хотите сбросить настройки?";
 
 "USE_IN_MENU" = "Использовать в меню";
 "USE_IN_MESSAGES" = "Использовать в сообщениях";
