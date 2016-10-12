@@ -75,6 +75,11 @@
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
     if (prefs == nil) { prefs = [NSMutableDictionary new]; [prefs writeToFile:self.prefsPath atomically:YES]; }
     
+    if ((specifier.properties[@"iconImage"] == nil) && specifier.properties[@"icon"]) {
+        [specifier setProperty:[UIImage imageNamed:[specifier.properties[@"icon"] stringByDeletingPathExtension] inBundle:self.cvkBunlde compatibleWithTraitCollection:nil] forKey:@""];
+        [self reloadSpecifier:specifier];
+    }
+    
     if (!prefs[specifier.properties[@"key"]]) return specifier.properties[@"default"];
     return prefs[specifier.properties[@"key"]];
 }

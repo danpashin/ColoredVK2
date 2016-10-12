@@ -38,7 +38,7 @@
 			<key>label</key>
 			<string>CHANGE_COLORS</string>
 			<key>icon</key>
-			<string>NavBarIcon.png</string>
+			<string>NavigationBarIcon.png</string>
 		</dict>
 		<dict>
 			<key>action</key>

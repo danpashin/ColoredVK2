@@ -28,7 +28,7 @@
 			<key>detail</key>
 			<string>ColoredVKPrefs</string>
 			<key>icon</key>
-			<string>settings.png</string>
+			<string>SettingsIcon.png</string>
 			<key>id</key>
 			<string>prefsLink</string>
 		</dict>
@@ -42,7 +42,7 @@
 			<key>label</key>
 			<string>CHECK_UPDATES</string>
 			<key>icon</key>
-			<string>updatesIcon.png</string>
+			<string>UpdatesIcon.png</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -52,7 +52,7 @@
 			<key>label</key>
 			<string>DEVELOPER_IN_VK</string>
 			<key>icon</key>
-			<string>Autor_icon.png</string>
+			<string>AuthorIcon.png</string>
 			<key>cell</key>
 			<string>PSTableCell</string>
 			<key>action</key>
@@ -70,7 +70,7 @@
 			<key>detail</key>
 			<string>ColoredVKLicencesController</string>
 			<key>icon</key>
-			<string>Copyright.png</string>
+			<string>CopyrightIcon.png</string>
 		</dict>
 	</array>
 </dict>

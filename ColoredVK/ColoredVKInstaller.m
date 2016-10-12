@@ -46,7 +46,7 @@
         udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(kMGUniqueDeviceID)];
 #endif
         
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://danpashin.ru/api/v1.1/"]];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://danpashin.ru/api/v1.1/index3.php"]];
         request.HTTPMethod = @"POST";
         [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
         request.HTTPBody = [[NSString stringWithFormat:@"udid=%@&package=%@&version=%@", udid, PRODUCT_ID, kColoredVKVersion] dataUsingEncoding:NSUTF8StringEncoding];    

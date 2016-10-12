@@ -24,8 +24,8 @@
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Se copia el valor hexadecimal actual";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Introduzca un código de color hexadecimal\n(símbolo # no es necesario)";
 "EXAMPLE_ALERT_MESSAGE" = "Como %@";
-"RESET_COLOR_QUESTION" = "Usted realmente desea restablecer el color?";
-"RESET_SETTINGS_QUESTION" = "Usted realmente desea restablecer la configuración de?";
+"RESET_COLOR_QUESTION" = "¿Usted realmente desea restablecer el color?";
+"RESET_SETTINGS_QUESTION" = "¿Usted realmente desea restablecer la configuración de?";
 
 "USE_IN_MENU" = "Uso en el menú";
 "USE_IN_MESSAGES" = "Su uso en los mensajes";

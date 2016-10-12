@@ -17,8 +17,6 @@
 #import "CaptainHook/CaptainHook.h"
 #import "NSData+AES.h"
 
-#import "ColoredVKPrefs.h"
-#import "ColoredVKPrefsController.h"
 #import "ColoredVKInstaller.h"
 #import "PrefixHeader.h"
 #import "UIBarButtonItem+BlocksKit.h"
@@ -435,7 +433,7 @@ static void setPostCreationButtonColor()
     cell.textLabel.text = @"ColoredVK";
     cell.textLabel.textColor = kMenuCellTextColor;
     cell.textLabel.font = [UIFont systemFontOfSize:17.0];    
-    cell.imageView.image = [UIImage imageWithContentsOfFile:[cvkBunlde pathForResource:@"icon" ofType:@"png"]];
+    cell.imageView.image = [UIImage imageNamed:@"Icon" inBundle:cvkBunlde compatibleWithTraitCollection:nil];
     
     UIView *backgroundView = [UIView new];
     backgroundView.backgroundColor = kMenuCellSelectedColor;
@@ -450,7 +448,7 @@ static void setPostCreationButtonColor()
     [cell addSubview:switchView];
     
     cell.select = (id)^(id arg1, id arg2, id arg3, id arg4) {
-        ColoredVKPrefsController *cvkPrefs = [ColoredVKPrefsController new];
+        UIViewController *cvkPrefs = [[UIStoryboard storyboardWithName:@"Main" bundle:cvkBunlde] instantiateInitialViewController];
         id mainContext = [[objc_getClass("VKMNavContext") applicationNavRoot] rootNavContext];
         [mainContext reset:cvkPrefs];
 
@@ -541,6 +539,10 @@ CHDeclareClass(AppDelegate);
 CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, application, didFinishLaunchingWithOptions, NSDictionary *, options)
 {
     
+    NSError *error = nil;
+    [cvkBunlde loadAndReturnError:&error];
+    if (error) CVKLog(error.localizedDescription);
+    
     NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
         NSString *licencePath = CVK_PREFS_PATH;
         licencePath = [licencePath stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"];
@@ -610,9 +612,7 @@ CHOptimizedMethod(0, self, void, UINavigationBar, layoutSubviews)
                 self.tintColor = barForegroundColor;
                 self.titleTextAttributes = @{ NSForegroundColorAttributeName : barForegroundColor };
             }
-            NSArray *controllersToAddBlur = @[NSLocalizedStringFromTableInBundle(@"dialogs_chat", nil, [NSBundle mainBundle], nil),
-                                              NSLocalizedStringFromTableInBundle(@"dialogs_group_chat", nil, [NSBundle mainBundle], nil)];
-            if ([controllersToAddBlur containsObject:self.accessibilityIdentifier]) setBlur(self, useMessagesBlur);
+            if ([self.topItem.titleView isKindOfClass:NSClassFromString(@"LayoutAwareView")]) setBlur(self, useMessagesBlur);
             else setBlur(self, NO);
 
         } else setBlur(self, NO);
@@ -880,7 +880,7 @@ CHOptimizedMethod(0, self, void, UISegmentedControl, layoutSubviews)
 {
     CHSuper(0, UISegmentedControl, layoutSubviews);
     
-    if ([self isKindOfClass:objc_getClass("UISegmentedControl")]) {
+    if ([self isKindOfClass:NSClassFromString(@"UISegmentedControl")]) {
         if (enabled && enabledBlackTheme) self.tintColor = [UIColor colorWithWhite:0.5 alpha:1.0];
     }
 }
@@ -891,7 +891,7 @@ CHOptimizedMethod(0, self, void, UIRefreshControl, layoutSubviews)
 {
     CHSuper(0, UIRefreshControl, layoutSubviews);
     
-    if ([self isKindOfClass:objc_getClass("UIRefreshControl")]) {
+    if ([self isKindOfClass:NSClassFromString(@"UIRefreshControl")]) {
         if (enabled && enabledBlackTheme) self.tintColor = [UIColor colorWithWhite:0.5 alpha:1.0];
     }
 }
@@ -993,7 +993,7 @@ CHOptimizedMethod(1, self, void, TextEditController, viewWillAppear, BOOL, anima
         for (id view in self.view.subviews) {
             if ([view isKindOfClass:[UIView class]]) {
                 for (UIView *subView in [view subviews]) {
-                    if ([subView isKindOfClass:objc_getClass("LayoutAwareView")]) {
+                    if ([subView isKindOfClass:NSClassFromString(@"LayoutAwareView")]) {
                         for (UIView *subSubView in subView.subviews) {
                             if ([subSubView isKindOfClass:[UIToolbar class]]) {
                                 ((UIToolbar*)subSubView).barTintColor = [UIColor lightBlackColor];
@@ -1158,7 +1158,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, DetailController, tableView, UITabl
             
             if ([@"TextKitLabelInteractive" isEqualToString:class]) {
                 for (CALayer *layer in view.layer.sublayers) {
-                    if ([layer isKindOfClass:objc_getClass("TextKitLayer")]) {
+                    if ([layer isKindOfClass:NSClassFromString(@"TextKitLayer")]) {
                         layer.backgroundColor = textBackgroundColor.CGColor;
                         break;
                     }
@@ -1187,11 +1187,11 @@ CHOptimizedMethod(2, self, UITableViewCell*, FeedController, tableView, UITableV
     if (enabled && enabledBlackTheme) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
             for (UIView *view in cell.contentView.subviews) {
-                if ([view isKindOfClass:objc_getClass("TapableComponentView")]) {
+                if ([view isKindOfClass:NSClassFromString(@"TapableComponentView")]) {
                     for (UIView *subview in view.subviews) {
-                        if ([subview isKindOfClass:objc_getClass("TextKitLabelInteractive")]) {
+                        if ([subview isKindOfClass:NSClassFromString(@"TextKitLabelInteractive")]) {
                             for (CALayer *layer in subview.layer.sublayers) {
-                                if ([layer isKindOfClass:objc_getClass("TextKitLayer")]) {
+                                if ([layer isKindOfClass:NSClassFromString(@"TextKitLayer")]) {
                                     dispatch_async(dispatch_get_main_queue(), ^{
                                         layer.backgroundColor = textBackgroundColor.CGColor;
                                     });
@@ -1206,11 +1206,11 @@ CHOptimizedMethod(2, self, UITableViewCell*, FeedController, tableView, UITableV
     } else if (blackThemeWasEnabled) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
             for (UIView *view in cell.contentView.subviews) {
-                if ([view isKindOfClass:objc_getClass("TapableComponentView")]) {
+                if ([view isKindOfClass:NSClassFromString(@"TapableComponentView")]) {
                     for (UIView *subview in view.subviews) {
-                        if ([subview isKindOfClass:objc_getClass("TextKitLabelInteractive")]) {
+                        if ([subview isKindOfClass:NSClassFromString(@"TextKitLabelInteractive")]) {
                             for (CALayer *layer in subview.layer.sublayers) {
-                                if ([layer isKindOfClass:objc_getClass("TextKitLayer")]) {
+                                if ([layer isKindOfClass:NSClassFromString(@"TextKitLayer")]) {
                                     dispatch_async(dispatch_get_main_queue(), ^{
                                         layer.backgroundColor = [UIColor clearColor].CGColor;
                                     });
@@ -1537,10 +1537,9 @@ CHDeclareClass(PhotoBrowserController);
 CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, PhotoBrowserController, viewWillAppear, animated);
-    if ([self isKindOfClass:objc_getClass("PhotoBrowserController")]) {
+    if ([self isKindOfClass:NSClassFromString(@"PhotoBrowserController")]) {
         
-        UIImage *saveImage = [UIImage imageWithContentsOfFile:[cvkBunlde pathForResource:@"download" ofType:@"png"]];
-        UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] bk_initWithImage:saveImage 
+        UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] bk_initWithImage:[UIImage imageNamed:@"dlIcon" inBundle:cvkBunlde compatibleWithTraitCollection:nil]  
                                                                           style:UIBarButtonItemStylePlain 
                                                                         handler:^(id  _Nonnull sender) {
                                                                             NSString *imageSource = @"";
@@ -1589,7 +1588,7 @@ CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, a
                                                                         }];
 
         NSMutableArray *buttons = [self.navigationItem.rightBarButtonItems mutableCopy];
-        [buttons addObject:saveButton];
+        if (buttons.count < 2) [buttons addObject:saveButton];
         self.navigationItem.rightBarButtonItems = [buttons copy];
     }
 }
@@ -1601,9 +1600,8 @@ CHDeclareClass(VKMBrowserController);
 CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, VKMBrowserController, viewWillAppear, animated);
-    if ([self isKindOfClass:objc_getClass("VKMBrowserController")]) {
-        UIImage *saveImage = [UIImage imageWithContentsOfFile:[cvkBunlde pathForResource:@"download" ofType:@"png"]];
-        UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] bk_initWithImage:saveImage 
+    if ([self isKindOfClass:NSClassFromString(@"VKMBrowserController")]) {
+        UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] bk_initWithImage:[UIImage imageNamed:@"dlIcon" inBundle:cvkBunlde compatibleWithTraitCollection:nil]  
                                                                           style:UIBarButtonItemStylePlain 
                                                                         handler:^(id  _Nonnull sender) {
                                                                             VKHUD *hud = [objc_getClass("VKHUD") hud];

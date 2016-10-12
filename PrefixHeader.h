@@ -12,7 +12,7 @@
 
 
 
-#define COMPILE_FOR_JAIL
+//#define COMPILE_FOR_JAIL
 
 
 #ifdef  COMPILE_FOR_JAIL

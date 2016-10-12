@@ -10,11 +10,6 @@
 #import <UIKit/UIKit.h>
 #import "Preferences.h"
 
-@interface ColoredVKPrefs : PSListController <UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
-    NSString *prefsPath;
-    NSString *cvkFolder;
-    NSBundle *cvkBunlde;
-}
+@interface ColoredVKPrefs : PSListController 
 
-@property (strong, nonatomic) NSString *imageID;
 @end

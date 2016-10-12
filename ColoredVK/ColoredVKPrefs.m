@@ -16,6 +16,13 @@
 
 OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0);
 
+@interface ColoredVKPrefs () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@property (strong, nonatomic) NSString *prefsPath;
+@property (strong, nonatomic) NSBundle *cvkBunlde;
+@property (strong, nonatomic) NSString *cvkFolder;
+@property (strong, nonatomic) NSString *imageID;
+@end
+
 @implementation ColoredVKPrefs
 
 - (UIStatusBarStyle) preferredStatusBarStyle
@@ -26,19 +33,19 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 - (id)specifiers
 {
-    prefsPath = CVK_PREFS_PATH;
-    cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    cvkFolder = CVK_FOLDER_PATH;
+    self.prefsPath = CVK_PREFS_PATH;
+    self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    self.cvkFolder = CVK_FOLDER_PATH;
     
     
     NSString *plistName = @"ColoredVK";
     
     NSMutableArray *specifiersArray = [NSMutableArray new];
     if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
-        self.bundle = cvkBunlde;
+        self.bundle = self.cvkBunlde;
         specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
     } else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:bundle:)]) {
-        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:cvkBunlde] mutableCopy];
+        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBunlde] mutableCopy];
     } 
     else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
         specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
@@ -76,7 +83,12 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 - (id) readPreferenceValue:(PSSpecifier*)specifier
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    
+    if ((specifier.properties[@"iconImage"] == nil) && specifier.properties[@"icon"]) {
+        [specifier setProperty:[UIImage imageNamed:[specifier.properties[@"icon"] stringByDeletingPathExtension] inBundle:self.self.cvkBunlde compatibleWithTraitCollection:nil] forKey:@""];
+        [self reloadSpecifier:specifier];
+    }
     
     if (!prefs[specifier.properties[@"key"]]) return specifier.properties[@"default"];
     return prefs[specifier.properties[@"key"]];
@@ -103,16 +115,16 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 - (void)setPrefsValue:(id)value forKey:(NSString *)key
 {
-    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:prefsPath];
+    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
     if (value) [prefs setValue:value forKey:key];
     else [prefs removeObjectForKey:key];
-    [prefs writeToFile:prefsPath atomically:YES];
+    [prefs writeToFile:self.prefsPath atomically:YES];
 }
 
 
 - (PSSpecifier *)footer
 {
-    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, cvkBunlde, nil), [self getTweakVersion], [self getVKVersion] ];
+    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.cvkBunlde, nil), [self getTweakVersion], [self getVKVersion] ];
     
     PSSpecifier *footer = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
     [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2015"] forKey:@"footerText"];
@@ -124,7 +136,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 - (PSSpecifier *)errorMessage
 {
     PSSpecifier *errorMessage = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-    [errorMessage setProperty:[NSLocalizedStringFromTableInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", nil, cvkBunlde, nil) stringByAppendingString:@"\n\nhttps://vk.com/danpashin"] forKey:@"footerText"];
+    [errorMessage setProperty:[NSLocalizedStringFromTableInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", nil, self.cvkBunlde, nil) stringByAppendingString:@"\n\nhttps://vk.com/danpashin"] forKey:@"footerText"];
     [errorMessage setProperty:@"1" forKey:@"footerAlignment"];
     return errorMessage;
 }
@@ -133,13 +145,13 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 - (NSString *)getTweakVersion
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
     return [prefs[@"cvkVersion"] stringByReplacingOccurrencesOfString:@"-" withString:@" "];
 }
 
 - (NSString *)getVKVersion
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
     return prefs[@"vkVersion"];
 }
 
@@ -154,23 +166,23 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 - (void)resetSettings
 {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, cvkBunlde, nil)
-                                                                             message:NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS_QUESTION", nil, cvkBunlde, nil) 
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBunlde, nil)
+                                                                             message:NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS_QUESTION", nil, self.cvkBunlde, nil) 
                                                                       preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:[NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"ColoredVK", cvkBunlde, nil) componentsSeparatedByString:@" "][0] 
+    [alertController addAction:[UIAlertAction actionWithTitle:[NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"ColoredVK", self.cvkBunlde, nil) componentsSeparatedByString:@" "][0] 
                                                         style:UIAlertActionStyleDestructive 
                                                       handler:^(UIAlertAction *action) {
-                                                          NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:prefsPath];
+                                                          NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
                                                           NSArray *keysToExclude = @[@"cvkVersion", @"vkVersion", @"lastCheckForUpdates"];
                                                           for (NSString *key in prefs.allKeys) {
                                                               if (![keysToExclude containsObject:key]) [prefs removeObjectForKey:key];
                                                           }
-                                                          [prefs writeToFile:prefsPath atomically:YES];
+                                                          [prefs writeToFile:self.prefsPath atomically:YES];
                                                           
                                                           NSFileManager *manager = [NSFileManager defaultManager];
                                                           NSArray *imageNames = [manager contentsOfDirectoryAtPath:CVK_FOLDER_PATH error:nil];
                                                           for (NSString *name in imageNames) {
-                                                              if ([name.pathExtension.lowercaseString isEqualToString:@"png"]) [manager removeItemAtPath:[NSString stringWithFormat:@"%@/%@", cvkFolder, name] error:nil];
+                                                              if ([name.pathExtension.lowercaseString isEqualToString:@"png"]) [manager removeItemAtPath:[NSString stringWithFormat:@"%@/%@", self.cvkFolder, name] error:nil];
                                                           }
                                                           
                                                           [self reloadSpecifiers];
@@ -243,9 +255,9 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 - (void)saveImage:(UIImage *)image completionBlock:( void(^)(BOOL success, NSString *message) )block
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if (![[NSFileManager defaultManager] fileExistsAtPath:cvkFolder]) [[NSFileManager defaultManager] createDirectoryAtPath:cvkFolder withIntermediateDirectories:NO attributes:nil error:nil];
-        NSString *imagePath = [cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.imageID]];
-        NSString *prevImagePath = [cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", self.imageID]];
+        if (![[NSFileManager defaultManager] fileExistsAtPath:self.cvkFolder]) [[NSFileManager defaultManager] createDirectoryAtPath:self.cvkFolder withIntermediateDirectories:NO attributes:nil error:nil];
+        NSString *imagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.imageID]];
+        NSString *prevImagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", self.imageID]];
         
         UIImage *crImage = [image imageScaledToWidth:[UIScreen mainScreen].bounds.size.width height:[UIScreen mainScreen].bounds.size.height];
         
