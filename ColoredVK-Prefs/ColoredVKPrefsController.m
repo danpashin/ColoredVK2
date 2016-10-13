@@ -50,10 +50,6 @@
     
     _specifiers = [specifiersArray copy];
     
-    [UISwitch appearanceWhenContainedIn:self.class, nil].tintColor = [UIColor colorWithRed:235.0/255.0f green:235.0/255.0f blue:235.0/255.0f alpha:1.0];
-    [UISwitch appearanceWhenContainedIn:self.class, nil].onTintColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
-    [UISwitch appearanceWhenContainedIn:self.class, nil].tag = 404;
-    
     return _specifiers;
 }
 
@@ -74,11 +70,6 @@
 {    
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
     if (prefs == nil) { prefs = [NSMutableDictionary new]; [prefs writeToFile:self.prefsPath atomically:YES]; }
-    
-    if ((specifier.properties[@"iconImage"] == nil) && specifier.properties[@"icon"]) {
-        [specifier setProperty:[UIImage imageNamed:[specifier.properties[@"icon"] stringByDeletingPathExtension] inBundle:self.cvkBunlde compatibleWithTraitCollection:nil] forKey:@""];
-        [self reloadSpecifier:specifier];
-    }
     
     if (!prefs[specifier.properties[@"key"]]) return specifier.properties[@"default"];
     return prefs[specifier.properties[@"key"]];

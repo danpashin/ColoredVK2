@@ -387,13 +387,15 @@
 			<string>resetSettings</string>
 			<key>cell</key>
 			<string>PSButtonCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKRedButtonCell</string>
 			<key>label</key>
 			<string>RESET_SETTINGS</string>
+			<key>textColor</key>
+			<string>1.0, 0.0, 0.0, 1.0</string>
+			<key>shouldCenter</key>
+			<true/>
 		</dict>
 	</array>
 	<key>title</key>
-	<string>ColoredVK</string>
+	<string>Settings</string>
 </dict>
 </plist>

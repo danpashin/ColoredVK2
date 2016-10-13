@@ -1,0 +1,17 @@
+//  
+//  ColoredVKUpdates.strings
+//  ColoredVK
+//  
+//  Created by Даниил on 30.06.16.
+//  Copyright (©) Daniil Pashin 2016. All rights reserved.
+//  
+
+"CHECK_UPDATES" = "Перевірити оновлення";
+"CHECK_UPDATES_INTERVAL" = "Інтервал";
+"CHECK_NOW" = "Перевірте зараз";
+"LAST_CHECK" = "Остання перевірка";
+
+"EVERY_DAY" = "Кожен день";
+"EVERY_WEEK" = "Щотижня";
+"EVERY_TWO_WEEKS" = "Кожні два тижні";
+"EVERY_MONTH" = "Кожен місяць";

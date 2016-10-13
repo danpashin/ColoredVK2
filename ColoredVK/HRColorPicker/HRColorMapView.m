@@ -104,7 +104,7 @@
     void(^renderBackgroundToContext)(CGContextRef, CGRect) = ^(CGContextRef context, CGRect rect) {
         CGFloat margin = 0;
 
-        CGContextSetFillColorWithColor(context, [[UIColor whiteColor] CGColor]);
+        CGContextSetFillColorWithColor(context, [UIColor whiteColor].CGColor);
         CGContextFillRect(context, rect);
 
         CGFloat height;
@@ -132,11 +132,11 @@
     return [[HRColorMapView alloc] initWithFrame:frame saturationUpperLimit:saturationUpperLimit];
 }
 
-- (id)init {
+- (instancetype)init {
     return [self initWithFrame:CGRectZero saturationUpperLimit:0.95];
 }
 
-- (id)initWithFrame:(CGRect)frame saturationUpperLimit:(CGFloat)saturationUpperLimit {
+- (instancetype)initWithFrame:(CGRect)frame saturationUpperLimit:(CGFloat)saturationUpperLimit {
     self = [super initWithFrame:frame];
     if (self) {
         self.saturationUpperLimit = @(saturationUpperLimit);
@@ -145,7 +145,7 @@
     return self;
 }
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super initWithCoder:coder];
     if (self) {
         [self _init];
@@ -160,9 +160,9 @@
     self.brightness = 0.5;
     self.backgroundColor = [UIColor whiteColor];
 
-    CGFloat lineWidth = 1.f / [[UIScreen mainScreen] scale];
+    CGFloat lineWidth = 1.f / [UIScreen mainScreen].scale;
     _lineLayer = [[CALayer alloc] init];
-    _lineLayer.backgroundColor = [[UIColor colorWithWhite:0.7 alpha:1] CGColor];
+    _lineLayer.backgroundColor = [UIColor colorWithWhite:0.7 alpha:1].CGColor;
     _lineLayer.frame = CGRectMake(0, -lineWidth, CGRectGetWidth(self.frame), lineWidth);
     [self.layer addSublayer:_lineLayer];
 
@@ -221,7 +221,7 @@
     self.colorMapBackgroundLayer.frame = self.bounds;
     [self updateColorCursor];
     _didLayoutSubview = YES;
-    [_initializeQueue setSuspended:!self.isAbleToCreateColorMap];
+    _initializeQueue.suspended = !self.isAbleToCreateColorMap;
 }
 
 - (CGSize)intrinsicContentSize {
@@ -252,12 +252,12 @@
 
 - (void)setSaturationUpperLimit:(NSNumber *)saturationUpperLimit {
     _saturationUpperLimit = saturationUpperLimit;
-    [_initializeQueue setSuspended:!self.isAbleToCreateColorMap];
+    _initializeQueue.suspended = !self.isAbleToCreateColorMap;
 }
 
 - (void)setTileSize:(NSNumber *)tileSize {
     _tileSize = tileSize;
-    [_initializeQueue setSuspended:!self.isAbleToCreateColorMap];
+    _initializeQueue.suspended = !self.isAbleToCreateColorMap;
     CGRect cursorFrame = _colorCursor.frame;
 
     cursorFrame.origin = CGPointMake(

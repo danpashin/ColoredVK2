@@ -16,6 +16,7 @@
 "REMIND_LATER_BUTTON_TITLE" = "Lembrar mais tarde";
 "SKIP_THIS_VERSION_BUTTON_TITLE" = "Ir esta versão";
 "UPADTE_BUTTON_TITLE" = "atualizar agora";
+"NO_UPDATES_FOUND_BUTTON_TITLE" = "Actualizações não encontrado";
 
 "TWEAK_FOOTER_TEXT" = "Tweak versão: %@\nVK App versão: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Erro ao carregar ajustar arquivos.\nVerifique a sua disponibilidade ou contato desenvolvedor.";

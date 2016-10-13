@@ -34,13 +34,11 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<true/>
-			<key>key</key>
-			<string>checkUpdates</string>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKUpdatesController</string>
 			<key>label</key>
-			<string>CHECK_UPDATES</string>
+			<string>UPDATES_SETTINGS</string>
 			<key>icon</key>
 			<string>UpdatesIcon.png</string>
 		</dict>
@@ -52,15 +50,15 @@
 			<key>label</key>
 			<string>DEVELOPER_IN_VK</string>
 			<key>icon</key>
-			<string>AuthorIcon.png</string>
+			<string>AuthorIcon</string>
 			<key>cell</key>
 			<string>PSTableCell</string>
 			<key>action</key>
 			<string>openProfie</string>
-			<key>cellClass</key>
-			<string>ColoredVKLinkCell</string>
 			<key>id</key>
 			<string>developerLink</string>
+			<key>textColor</key>
+			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
 		<dict>
 			<key>label</key>

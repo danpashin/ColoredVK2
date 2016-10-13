@@ -16,6 +16,7 @@
 "REMIND_LATER_BUTTON_TITLE" = "Remind later";
 "SKIP_THIS_VERSION_BUTTON_TITLE" = "Skip this version";
 "UPADTE_BUTTON_TITLE" = "Update now";
+"NO_UPDATES_FOUND_BUTTON_TITLE" = "No updates found";
 
 "TWEAK_FOOTER_TEXT" = "Tweak version: %@\nVK App version: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Error loading tweak files.\nCheck their availability or contact developer.";

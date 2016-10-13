@@ -16,6 +16,7 @@
 "REMIND_LATER_BUTTON_TITLE" = "Напомнить позже";
 "SKIP_THIS_VERSION_BUTTON_TITLE" = "Пропустить эту версию";
 "UPADTE_BUTTON_TITLE" = "Обновить сейчас";
+"NO_UPDATES_FOUND_BUTTON_TITLE" = "Обновлений не найдено";
 
 "TWEAK_FOOTER_TEXT" = "Версия твика: %@\nВерсия VK App: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "При загрузке файлов произошла ошибка.\nПроверьте  их наличие или обратитесь к разработчику.";

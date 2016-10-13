@@ -16,6 +16,7 @@
 "REMIND_LATER_BUTTON_TITLE" = "Erinnere mich später";
 "SKIP_THIS_VERSION_BUTTON_TITLE" = "Überspringe diese version";
 "UPADTE_BUTTON_TITLE" = "Jetzt aktualisieren";
+"NO_UPDATES_FOUND_BUTTON_TITLE" = "Keine updates gefunden";
 
 "TWEAK_FOOTER_TEXT" = "Tweak version: %@\nVK App version: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Fehler beim laden des zwicken Dateien.\nÜberprüfen sie ihre verfügbarkeit oder Kontakt entwickler.";

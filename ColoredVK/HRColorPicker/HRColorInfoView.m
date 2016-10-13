@@ -43,11 +43,11 @@ const CGFloat kHRColorInfoViewCornerRadius = 3.;
 
 @synthesize color = _color;
 
-- (id)init {
+- (instancetype)init {
     return [self initWithFrame:CGRectZero];
 }
 
-- (id)initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         [self _init];
@@ -55,7 +55,7 @@ const CGFloat kHRColorInfoViewCornerRadius = 3.;
     return self;
 }
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super initWithCoder:coder];
     if (self) {
         [self _init];
@@ -75,8 +75,8 @@ const CGFloat kHRColorInfoViewCornerRadius = 3.;
 
     _borderLayer = [[CALayer alloc] initWithLayer:self.layer];
     _borderLayer.cornerRadius = kHRColorInfoViewCornerRadius;
-    _borderLayer.borderColor = [[UIColor lightGrayColor] CGColor];
-    _borderLayer.borderWidth = 1.f / [[UIScreen mainScreen] scale];
+    _borderLayer.borderColor = [UIColor lightGrayColor].CGColor;
+    _borderLayer.borderWidth = 1.f / [UIScreen mainScreen].scale;
     [self.layer addSublayer:_borderLayer];
 }
 

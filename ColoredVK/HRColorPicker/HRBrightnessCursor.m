@@ -36,7 +36,7 @@
     BOOL _editing;
 }
 
-- (id)init {
+- (instancetype)init {
     self = [super initWithFrame:CGRectMake(0, 0, 28, 28)];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
@@ -44,9 +44,9 @@
         _backLayer = [[CALayer alloc] init];
         _backLayer.frame = self.frame;
         _backLayer.cornerRadius = CGRectGetHeight(self.frame) / 2;
-        _backLayer.borderColor = [[UIColor colorWithWhite:0.65 alpha:1.] CGColor];
-        _backLayer.borderWidth = 1.0 / [[UIScreen mainScreen] scale];
-        _backLayer.backgroundColor = [[UIColor colorWithWhite:1. alpha:.7] CGColor];
+        _backLayer.borderColor = [UIColor colorWithWhite:0.65 alpha:1.].CGColor;
+        _backLayer.borderWidth = 1.0 / [UIScreen mainScreen].scale;
+        _backLayer.backgroundColor = [UIColor colorWithWhite:1. alpha:.7].CGColor;
         [self.layer addSublayer:_backLayer];
 
         _colorLayer = [[CALayer alloc] init];
@@ -70,7 +70,7 @@
     [CATransaction begin];
     [CATransaction setValue:(id) kCFBooleanTrue
                      forKey:kCATransactionDisableActions];
-    _colorLayer.backgroundColor = [color CGColor];
+    _colorLayer.backgroundColor = color.CGColor;
     [CATransaction commit];
 
     HRHSVColor hsvColor;

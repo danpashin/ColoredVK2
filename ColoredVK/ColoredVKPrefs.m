@@ -59,13 +59,6 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     
     _specifiers = [specifiersArray copy];
     
-    dispatch_async(dispatch_queue_create("com.daniilpashin.coloredvk2.prefs", nil), ^{
-        [UISwitch appearanceWhenContainedIn:self.class, nil].tintColor = [UIColor colorWithRed:235.0/255.0f green:235.0/255.0f blue:235.0/255.0f alpha:1.0];
-        [UISwitch appearanceWhenContainedIn:self.class, nil].onTintColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
-        [UISwitch appearanceWhenContainedIn:self.class, nil].tag = 404;
-        [UISegmentedControl appearanceWhenContainedIn:self.class, nil].tintColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
-    });
-    
     return _specifiers;
 }
 
@@ -84,11 +77,6 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 - (id) readPreferenceValue:(PSSpecifier*)specifier
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
-    
-    if ((specifier.properties[@"iconImage"] == nil) && specifier.properties[@"icon"]) {
-        [specifier setProperty:[UIImage imageNamed:[specifier.properties[@"icon"] stringByDeletingPathExtension] inBundle:self.self.cvkBunlde compatibleWithTraitCollection:nil] forKey:@""];
-        [self reloadSpecifier:specifier];
-    }
     
     if (!prefs[specifier.properties[@"key"]]) return specifier.properties[@"default"];
     return prefs[specifier.properties[@"key"]];

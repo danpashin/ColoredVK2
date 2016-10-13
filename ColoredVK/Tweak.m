@@ -39,7 +39,7 @@
 #define textBackgroundColor [[UIColor redColor] colorWithAlphaComponent:0.3]
 
 
-NSTimeInterval const daysCheckingInterval = 2.0;
+
 
 
 typedef NS_ENUM(NSInteger, CVKCellSelectionStyle) {
@@ -53,6 +53,7 @@ typedef NS_ENUM(NSInteger, CVKKeyboardStyle) {
     CVKKeyboardStyleBlack
 };
 
+NSTimeInterval updatesInterval;
 
 BOOL tweakEnabled = YES;
 
@@ -189,7 +190,7 @@ static void checkUpdates()
                                        }
                                        
                                        NSDateFormatter *dateFormatter = [NSDateFormatter new];
-                                       dateFormatter.dateFormat = @"yyyy-MM-dd";
+                                       dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
                                        [prefs setValue:[dateFormatter stringFromDate:[NSDate date]] forKey:@"lastCheckForUpdates"];
                                        [prefs writeToFile:prefsPath atomically:YES];
                                    }
@@ -221,6 +222,7 @@ static void reloadPrefs()
         menuImageBlackout = [prefs[@"menuImageBlackout"] floatValue];
         chatImageBlackout = [prefs[@"chatImageBlackout"] floatValue];
         
+        updatesInterval = prefs[@"updatesInterval"]?[prefs[@"updatesInterval"] doubleValue]:1.0;
         menuSelectionStyle = prefs[@"menuSelectionStyle"]?[prefs[@"menuSelectionStyle"] integerValue]:CVKCellSelectionStyleTransparent;
         keyboardStyle = prefs[@"keyboardStyle"]?[prefs[@"keyboardStyle"] intValue]:CVKKeyboardStyleBlack;
         
@@ -579,11 +581,11 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
         NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
         
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"yyyy-MM-dd";                
+        dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";                
         NSDate *lastCheckForUpdatesDate = prefs[@"lastCheckForUpdates"] ? [dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]] :[NSDate date];
         
         NSTimeInterval daysSinceCheckUpdates = [[NSDate date] timeIntervalSinceDate:lastCheckForUpdatesDate];
-        if ((((NSInteger)daysSinceCheckUpdates / 3600) >= daysCheckingInterval * 24) || (prefs[@"lastCheckForUpdates"] == nil)) {
+        if ((((NSInteger)daysSinceCheckUpdates / 3600) >= updatesInterval * 24) || (prefs[@"lastCheckForUpdates"] == nil)) {
             checkUpdates();
         }
     }

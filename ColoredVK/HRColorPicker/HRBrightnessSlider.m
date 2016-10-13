@@ -46,11 +46,11 @@
 @synthesize brightness = _brightness;
 @synthesize brightnessLowerLimit = _brightnessLowerLimit;
 
-- (id)init {
+- (instancetype)init {
     return [self initWithFrame:CGRectZero];
 }
 
-- (id)initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         [self _init];
@@ -58,7 +58,7 @@
     return self;
 }
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super initWithCoder:coder];
     if (self) {
         [self _init];
@@ -70,8 +70,8 @@
     _sliderLayer = [[CAGradientLayer alloc] initWithLayer:self.layer];
     _sliderLayer.startPoint = CGPointMake(0, .5);
     _sliderLayer.endPoint = CGPointMake(1, .5);
-    _sliderLayer.borderColor = [[UIColor lightGrayColor] CGColor];
-    _sliderLayer.borderWidth = 1.f / [[UIScreen mainScreen] scale];
+    _sliderLayer.borderColor = [UIColor lightGrayColor].CGColor;
+    _sliderLayer.borderWidth = 1.f / [UIScreen mainScreen].scale;
 
     [self.layer addSublayer:_sliderLayer];
 
@@ -190,7 +190,7 @@
 }
 
 - (void)setFrame:(CGRect)frame {
-    [super setFrame:frame];
+    super.frame = frame;
 }
 
 #pragma mark AutoLayout
