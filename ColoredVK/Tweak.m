@@ -22,6 +22,7 @@
 #import "UIBarButtonItem+BlocksKit.h"
 #import "VKMethods.h"
 #import "UIImage+ResizeMagick.h"
+#import "NSDate+DateTools.h"
 
 
 
@@ -150,7 +151,7 @@ static UIImage *coloredImage(UIColor *color, UIImage *originalImage)
 
 static void checkUpdates()
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *stringURL = [NSString stringWithFormat:@"http://danpashin.ru/api/v1.1/checkUpdates.php?userVers=%@&product=com.daniilpashin.coloredvk2", kColoredVKVersion];
 #ifndef COMPILE_FOR_JAIL
         stringURL = [stringURL stringByAppendingString:@"&getIPA=1"];
@@ -195,7 +196,7 @@ static void checkUpdates()
                                        [prefs writeToFile:prefsPath atomically:YES];
                                    }
                                }];
-    });
+//    });
 }
 
 
@@ -540,54 +541,18 @@ static void setPostCreationButtonColor()
 CHDeclareClass(AppDelegate);
 CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, application, didFinishLaunchingWithOptions, NSDictionary *, options)
 {
-    
-    NSError *error = nil;
-    [cvkBunlde loadAndReturnError:&error];
-    if (error) CVKLog(error.localizedDescription);
-    
-    NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-        NSString *licencePath = CVK_PREFS_PATH;
-        licencePath = [licencePath stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"];
-        
-        if (![[NSFileManager defaultManager] fileExistsAtPath:licencePath]) {
-            tweakEnabled = NO;
-            ColoredVKInstaller *installer = [[ColoredVKInstaller alloc] init];
-            [installer performSelector:@selector(beginDownload) withObject:nil afterDelay:5.0];
-        } 
-        else {
-            NSString *udid = [UIDevice currentDevice].identifierForVendor.UUIDString;
-#ifdef COMPILE_FOR_JAIL
-            udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(kMGUniqueDeviceID)];            
-#endif
-            NSData *decryptedData = [[NSData dataWithContentsOfFile:licencePath] AES128DecryptedDataWithKey:@"BE7555818BC236315C987C1D9B17F"];
-            NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
-            if (![dict[@"UDID"] isEqualToString:udid]) {
-                tweakEnabled = NO;
-                ColoredVKInstaller *installer = [[ColoredVKInstaller alloc] init];
-                [installer performSelector:@selector(beginDownload) withObject:nil afterDelay:5.0];
-            }            
-        }
-        
-//        showAlertWithMessage([NSString stringWithFormat:@"Device:\n%@", MGCopyAnswer(kMGUniqueDeviceID)]);
-        
-    }];
-    operation.queuePriority = NSOperationQueuePriorityHigh;
-    [operation start];
+    [cvkBunlde load];
     reloadPrefs();
     
     CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
     
+    [[ColoredVKInstaller alloc] startWithCompletionBlock:^(BOOL disableTweak) { if (disableTweak) tweakEnabled = NO; }];
     if (shouldCheckUpdates) {
         NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
         
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";                
-        NSDate *lastCheckForUpdatesDate = prefs[@"lastCheckForUpdates"] ? [dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]] :[NSDate date];
-        
-        NSTimeInterval daysSinceCheckUpdates = [[NSDate date] timeIntervalSinceDate:lastCheckForUpdatesDate];
-        if ((((NSInteger)daysSinceCheckUpdates / 3600) >= updatesInterval * 24) || (prefs[@"lastCheckForUpdates"] == nil)) {
-            checkUpdates();
-        }
+        dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+        if (!prefs[@"lastCheckForUpdates"] || ([dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]].daysAgo >= updatesInterval)) checkUpdates();
     }
     
     return YES;

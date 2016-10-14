@@ -10,6 +10,7 @@
 #import "ColoredVKPrefsController.h"
 #import "PrefixHeader.h"
 #import "ColoredVKHeader.h"
+#import "ColoredVKInstaller.h"
 
 @interface ColoredVKPrefsController ()
 @property (strong, nonatomic) NSString *prefsPath;
@@ -56,6 +57,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[ColoredVKInstaller alloc] startWithCompletionBlock:nil];
     for (UIView *view in self.view.subviews) {
         if ([NSStringFromClass([view class]) isEqualToString:@"UITableView"]) {
             UITableView *tableView = (UITableView *)view;
@@ -126,8 +128,16 @@
 - (void)openProfie
 {    
     NSURL *appURL = [NSURL URLWithString:@"vk://vk.com/danpashin"];
-    if ([[UIApplication sharedApplication] canOpenURL:appURL]) [[UIApplication sharedApplication] openURL:appURL];
-    else [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://vk.com/danpashin"]];
+    UIApplication *application = [UIApplication sharedApplication];
+    if ([application canOpenURL:appURL]) [self openURL:appURL];
+    else [self openURL:[NSURL URLWithString:@"https://vk.com/danpashin"]];
+}
+
+- (void)openURL:(NSURL *)url
+{
+    UIApplication *application = [UIApplication sharedApplication];
+    if ([application respondsToSelector:@selector(openURL:options:completionHandler:)]) [application openURL:url options:@{} completionHandler:^(BOOL success) {}];
+    else [application openURL:url];
 }
 
 @end

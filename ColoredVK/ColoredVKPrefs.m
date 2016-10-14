@@ -1,10 +1,10 @@
-    //
-    //  ColoredVKPrefs.m
-    //  ColoredVK
-    //
-    //  Created by Даниил on 23.04.16.
-    //  Copyright (c) 2016 Daniil Pashin. All rights reserved.
-    //
+//
+//  ColoredVKPrefs.m
+//  ColoredVK
+//
+//  Created by Даниил on 23.04.16.
+//  Copyright (c) 2016 Daniil Pashin. All rights reserved.
+//
 
 
 #import "ColoredVKPrefs.h"
@@ -13,6 +13,7 @@
 #import "PrefixHeader.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "LHProgressHUD.h"
+#import "NSDate+DateTools.h"
 
 OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0);
 
@@ -38,7 +39,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     self.cvkFolder = CVK_FOLDER_PATH;
     
     
-    NSString *plistName = @"ColoredVK";
+    NSString *plistName = self.specifier.properties[@"plistToLoad"];
     
     NSMutableArray *specifiersArray = [NSMutableArray new];
     if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
@@ -51,11 +52,25 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
         specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
     }
     
+//    for (PSSpecifier *specifier in specifiersArray) {
+//        specifier.name = NSLocalizedStringFromTableInBundle(specifier.name, @"ColoredVK", self.cvkBunlde, nil);
+//        
+//        if (specifier.properties[@"footerText"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.cvkBunlde, nil) forKey:@"footerText"];
+//        if (specifier.properties[@"label"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"label"], @"ColoredVK", self.cvkBunlde, nil) forKey:@"label"];
+//        if (specifier.properties[@"validTitles"]) {            
+//            NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
+//            for (NSString *key in specifier.titleDictionary.allKeys) {
+//                [tempDict setValue:NSLocalizedStringFromTableInBundle([specifier.titleDictionary objectForKey:key], @"ColoredVK", self.cvkBunlde, nil) forKey:key];
+//            }
+//            specifier.titleDictionary = [tempDict copy];
+//        }
+//    }
+    
     if (specifiersArray.count == 0) {
         specifiersArray = [NSMutableArray new];
         [specifiersArray addObject:[self errorMessage]];
     }
-    [specifiersArray addObject:[self footer]];
+    if ([self.specifier.properties[@"shouldAddFooter"] boolValue]) [specifiersArray addObject:[self footer]];
     
     _specifiers = [specifiersArray copy];
     
@@ -91,7 +106,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     
     NSArray *identificsToReloadMenu = @[@"menuSelectionStyle", @"hideSeparators", @"enabledBlackTheme", @"changeSwitchColor"];
     if ([identificsToReloadMenu containsObject:specifier.identifier]) {
-         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
     }
     
     if ([specifier.identifier isEqualToString:@"enabledBlackTheme"]) {
@@ -142,15 +157,6 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
     return prefs[@"vkVersion"];
 }
-
-
-- (void)openProfie
-{    
-    NSURL *appURL = [NSURL URLWithString:@"vk://vk.com/danpashin"];
-    if ([[UIApplication sharedApplication] canOpenURL:appURL]) [[UIApplication sharedApplication] openURL:appURL];
-    else [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://vk.com/danpashin"]];
-}
-
 
 - (void)resetSettings
 {
@@ -269,5 +275,67 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
             if (block) block(error?NO:YES, error?error.localizedDescription:nil); 
         });
     });
+}
+
+- (NSString *)getLastCheckForUpdates:(PSSpecifier *)specifier
+{
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+    
+    return prefs[@"lastCheckForUpdates"]?
+    [dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]].timeAgoSinceNow :  NSLocalizedStringFromTableInBundle(@"NEVER", nil, self.cvkBunlde, nil);
+}
+
+- (void)checkForUpdates:(id)sender
+{
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSString *stringURL = [NSString stringWithFormat:@"http://danpashin.ru/api/v1.1/checkUpdates.php?userVers=%@&product=com.daniilpashin.coloredvk2", kColoredVKVersion];
+#ifndef COMPILE_FOR_JAIL
+        stringURL = [stringURL stringByAppendingString:@"&getIPA=1"];
+#endif
+        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
+        
+        [NSURLConnection sendAsynchronousRequest:urlRequest 
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                                   UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+                                   if (!connectionError) {
+                                       NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
+                                       NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                                       if (!responseDict[@"error"]) {
+                                           NSString *skip = NSLocalizedStringFromTableInBundle(@"SKIP_THIS_VERSION_BUTTON_TITLE", nil, self.cvkBunlde, nil);
+                                           NSString *remindLater = NSLocalizedStringFromTableInBundle(@"REMIND_LATER_BUTTON_TITLE", nil, self.cvkBunlde, nil);
+                                           NSString *updateNow = NSLocalizedStringFromTableInBundle(@"UPADTE_BUTTON_TITLE", nil, self.cvkBunlde, nil);
+                                           
+                                           alertController.message = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE", nil, self.cvkBunlde, nil), responseDict[@"version"]];
+                                           [alertController addAction:[UIAlertAction actionWithTitle:skip style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                                               [prefs setValue:responseDict[@"version"] forKey:@"skippedVersion"];
+                                               [prefs writeToFile:self.prefsPath atomically:YES];
+                                           }]];
+                                           [alertController addAction:[UIAlertAction actionWithTitle:remindLater style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
+                                           [alertController addAction:[UIAlertAction actionWithTitle:updateNow style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                               NSURL *url = [NSURL URLWithString:responseDict[@"url"]];
+                                               if ([[UIApplication sharedApplication] canOpenURL:url]) [[UIApplication sharedApplication] openURL:url];
+                                               
+                                           }]];
+                                       } else {
+                                           alertController.message = NSLocalizedStringFromTableInBundle(@"NO_UPDATES_FOUND_BUTTON_TITLE", nil, self.cvkBunlde, nil);
+                                           [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
+                                       }
+                                       dispatch_async(dispatch_get_main_queue(), ^{
+                                           [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+                                       });
+                                       
+                                       NSDateFormatter *dateFormatter = [NSDateFormatter new];
+                                       dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+                                       [prefs setValue:[dateFormatter stringFromDate:[NSDate date]] forKey:@"lastCheckForUpdates"];
+                                       [prefs writeToFile:self.prefsPath atomically:YES];
+                                       [self reloadSpecifiers];
+                                   }
+                               }];
+//    });
+    
 }
 @end

@@ -12,9 +12,6 @@
 
 
 
-//#define COMPILE_FOR_JAIL
-
-
 #ifdef  COMPILE_FOR_JAIL
 #define CVK_BUNDLE_PATH     @"/Library/PreferenceBundles/ColoredVK2.bundle"
 #define VKS_BUNDLE_PATH     @"/Library/PreferenceBundles/vksprefs.bundle"

@@ -30,3 +30,5 @@
 
 "USE_IN_MENU" = "Use in the menu";
 "USE_IN_MESSAGES" = "Use in the messages";
+
+"NEVER" = "Never";

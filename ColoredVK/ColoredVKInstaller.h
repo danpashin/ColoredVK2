@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@interface ColoredVKInstaller : NSObject <NSURLConnectionDelegate, NSURLConnectionDataDelegate>
+@interface ColoredVKInstaller : NSObject
 - (void)beginDownload;
+- (void)startWithCompletionBlock:( void(^)(BOOL disableTweak) )block;
 @end

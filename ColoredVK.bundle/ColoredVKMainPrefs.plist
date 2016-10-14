@@ -21,26 +21,30 @@
 			<string>PSGroupCell</string>
 		</dict>
 		<dict>
-			<key>label</key>
-			<string>SETTINGS</string>
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
 			<string>ColoredVKPrefs</string>
+			<key>plistToLoad</key>
+			<string>ColoredVK</string>
+			<key>shouldAddFooter</key>
+			<true/>
+			<key>label</key>
+			<string>SETTINGS</string>
 			<key>icon</key>
 			<string>SettingsIcon.png</string>
-			<key>id</key>
-			<string>prefsLink</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>ColoredVKUpdatesController</string>
-			<key>label</key>
-			<string>UPDATES_SETTINGS</string>
+			<string>ColoredVKPrefs</string>
+			<key>plistToLoad</key>
+			<string>ColoredVKUpdates</string>
 			<key>icon</key>
 			<string>UpdatesIcon.png</string>
+			<key>label</key>
+			<string>UPDATES_SETTINGS</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -55,8 +59,6 @@
 			<string>PSTableCell</string>
 			<key>action</key>
 			<string>openProfie</string>
-			<key>id</key>
-			<string>developerLink</string>
 			<key>textColor</key>
 			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>

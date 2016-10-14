@@ -22,6 +22,35 @@
 @end
 
 @implementation ColoredVKInstaller
+
+- (void)startWithCompletionBlock:( void(^)(BOOL disableTweak) )block
+{
+    NSBlockOperation *startOperation = [NSBlockOperation blockOperationWithBlock:^{
+        NSString *licencePath = CVK_PREFS_PATH;
+        licencePath = [licencePath stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"];
+        
+        if (![[NSFileManager defaultManager] fileExistsAtPath:licencePath]) {
+            if (block) block(YES);
+            [self performSelector:@selector(beginDownload) withObject:nil afterDelay:2.0];
+        }
+        else {
+            NSString *udid = [UIDevice currentDevice].identifierForVendor.UUIDString;
+#ifdef COMPILE_FOR_JAIL
+            udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(kMGUniqueDeviceID)];            
+#endif
+            NSData *decryptedData = [[NSData dataWithContentsOfFile:licencePath] AES128DecryptedDataWithKey:@"BE7555818BC236315C987C1D9B17F"];
+            NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
+            if (![dict[@"UDID"] isEqualToString:udid]) {
+                if (block) block(YES);
+                [self performSelector:@selector(beginDownload) withObject:nil afterDelay:2.0];
+            }
+            if (block) block(NO);
+        }
+    }];
+    startOperation.queuePriority = NSOperationQueuePriorityHigh;
+    [startOperation start];
+}
+
 - (void)beginDownload
 {        
     self.alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK" message:@"Downloading licence..." preferredStyle:UIAlertControllerStyleAlert];
@@ -46,7 +75,7 @@
         udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(kMGUniqueDeviceID)];
 #endif
         
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://danpashin.ru/api/v1.1/index3.php"]];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://danpashin.ru/api/v1.1/"]];
         request.HTTPMethod = @"POST";
         [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
         request.HTTPBody = [[NSString stringWithFormat:@"udid=%@&package=%@&version=%@", udid, PRODUCT_ID, kColoredVKVersion] dataUsingEncoding:NSUTF8StringEncoding];    
