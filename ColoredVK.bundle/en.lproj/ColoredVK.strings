@@ -41,3 +41,22 @@
 "SHOW_BAR" = "Always show nav bar";
 
 "RESET_SETTINGS" = "Reset settings";
+
+
+// chek updates controller
+"CHECK_UPDATES" = "Check updates";
+"CHECK_UPDATES_INTERVAL" = "Interval";
+"CHECK_NOW" = "Check now";
+"LAST_CHECK" = "Last check";
+
+"EVERY_DAY" = "Every day";
+"EVERY_WEEK" = "Every week";
+"EVERY_TWO_WEEKS" = "Every two weeks";
+"EVERY_MONTH" = "Every month";
+
+
+// About controller
+"SETTINGS" = "Settings";
+"DEVELOPER_IN_VK" = "Developer in VK";
+"UPDATES_SETTINGS" = "Updates settings";
+"LICENCES" = "Licences";

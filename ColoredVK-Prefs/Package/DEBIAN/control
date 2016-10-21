@@ -1,7 +1,7 @@
 Package: com.daniilpashin.coloredvk2
 Name: ColoredVK 2
 Version: 3.1.4-beta
-Description: Colorize your VK App!
+Description: Customize your VK App!
 Section: Tweaks
 Depends: firmware (>= 8.0), preferenceloader
 Architecture: iphoneos-arm

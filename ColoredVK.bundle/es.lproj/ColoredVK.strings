@@ -41,3 +41,22 @@
 "SHOW_BAR" = "Mostrar siempre la barra de navegación";
 
 "RESET_SETTINGS" = "Restablecimiento de la configuración";
+
+
+// chek updates controller
+"CHECK_UPDATES" = "Comprobar las actualizaciones";
+"CHECK_UPDATES_INTERVAL" = "Intervalo de";
+"CHECK_NOW" = "Comprobar ahora";
+"LAST_CHECK" = "Última comprobación";
+
+"EVERY_DAY" = "Cada día";
+"EVERY_WEEK" = "Cada semana";
+"EVERY_TWO_WEEKS" = "Cada dos semanas";
+"EVERY_MONTH" = "Cada mes";
+
+
+// About controller
+"SETTINGS" = "Ajustes";
+"DEVELOPER_IN_VK" = "Programador en VK";
+"UPDATES_SETTINGS" = "Configuración de actualizaciones";
+"LICENCES" = "Licencias";

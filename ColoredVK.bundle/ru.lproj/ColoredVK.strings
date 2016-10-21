@@ -41,3 +41,22 @@
 "SHOW_BAR" = "Всегда показывать бар";
 
 "RESET_SETTINGS" = "Сбросить настройки";
+
+
+// chek updates controller
+"CHECK_UPDATES" = "Проверять обновления";
+"CHECK_UPDATES_INTERVAL" = "Интервал";
+"CHECK_NOW" = "Проверить сейчас";
+"LAST_CHECK" = "Последняя проверка";
+
+"EVERY_DAY" = "Каждый день";
+"EVERY_WEEK" = "Каждую неделю";
+"EVERY_TWO_WEEKS" = "Каждые две недели";
+"EVERY_MONTH" = "Каждый месяц";
+
+
+// About controller
+"SETTINGS" = "Настройки";
+"DEVELOPER_IN_VK" = "Разработчик в ВК";
+"UPDATES_SETTINGS" = "Настройки обновлений";
+"LICENCES" = "Лицензии";

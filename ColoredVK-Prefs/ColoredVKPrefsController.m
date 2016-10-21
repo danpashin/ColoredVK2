@@ -30,7 +30,7 @@
     self.prefsPath = CVK_PREFS_PATH;
     self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     
-    NSString *plistName = @"ColoredVKMainPrefs";
+    NSString *plistName = @"Main";
     
     NSMutableArray *specifiersArray = [NSMutableArray new];
     if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
@@ -122,21 +122,4 @@
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
     return prefs[@"vkVersion"];
 }
-
-
-- (void)openProfie
-{
-    NSURL *appURL = [NSURL URLWithString:@"vk://vk.com/danpashin"];
-    UIApplication *application = [UIApplication sharedApplication];
-    if ([application canOpenURL:appURL]) [self openURL:appURL];
-    else [self openURL:[NSURL URLWithString:@"https://vk.com/danpashin"]];
-}
-
-- (void)openURL:(NSURL *)url
-{
-    UIApplication *application = [UIApplication sharedApplication];
-    if ([application respondsToSelector:@selector(openURL:options:completionHandler:)]) [application openURL:url options:@{} completionHandler:^(BOOL success) {}];
-    else [application openURL:url];
-}
-
 @end

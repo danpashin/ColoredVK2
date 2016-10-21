@@ -32,7 +32,7 @@
         
         UILabel *subtitle = [[UILabel alloc] initWithFrame:CGRectZero];
         subtitle.font = [UIFont fontWithName:@"HelveticaNeue" size:14.0];
-        subtitle.text = @"Colorize your VK App!";
+        subtitle.text = @"Customize your VK App!";
         subtitle.backgroundColor = [UIColor clearColor];
         subtitle.textColor = [UIColor grayColor];
         subtitle.textAlignment = NSTextAlignmentCenter;

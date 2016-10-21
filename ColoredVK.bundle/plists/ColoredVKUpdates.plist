@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>key</key>
+			<string>checkUpdates</string>
+			<key>label</key>
+			<string>CHECK_UPDATES</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>detail</key>
+			<string>PSListItemsController</string>
+			<key>label</key>
+			<string>CHECK_UPDATES_INTERVAL</string>
+			<key>key</key>
+			<string>updatesInterval</string>
+			<key>default</key>
+			<string>1</string>
+			<key>validValues</key>
+			<array>
+				<string>1</string>
+				<string>7</string>
+				<string>14</string>
+				<string>30</string>
+			</array>
+			<key>validTitles</key>
+			<array>
+				<string>EVERY_DAY</string>
+				<string>EVERY_WEEK</string>
+				<string>EVERY_TWO_WEEKS</string>
+				<string>EVERY_MONTH</string>
+			</array>
+			<key>icon</key>
+			<string>IntervalIcon.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>default</key>
+			<true/>
+			<key>label</key>
+			<string>CHECK_NOW</string>
+			<key>action</key>
+			<string>checkForUpdates:</string>
+			<key>textColor</key>
+			<string>0.35, 0.5, 0.7, 1.0</string>
+			<key>icon</key>
+			<string>UpdateIcon.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSTitleValueCell</string>
+			<key>label</key>
+			<string>LAST_CHECK</string>
+			<key>get</key>
+			<string>getLastCheckForUpdates:</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Updates Settings</string>
+</dict>
+</plist>

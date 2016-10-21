@@ -41,3 +41,21 @@
 "SHOW_BAR" = "Заўсёды паказваць бар";
 
 "RESET_SETTINGS" = "Скід налад";
+
+    // chek updates controller
+"CHECK_UPDATES" = "Праверыць абнаўлення";
+"CHECK_UPDATES_INTERVAL" = "Інтэрвал";
+"CHECK_NOW" = "Праверце зараз";
+"LAST_CHECK" = "Апошняя праверка";
+
+"EVERY_DAY" = "Кожны дзень";
+"EVERY_WEEK" = "Кожны тыдзень";
+"EVERY_TWO_WEEKS" = "Кожныя два тыдні";
+"EVERY_MONTH" = "Кожен місяць";
+
+
+// About controller
+"SETTINGS" = "Налады";
+"DEVELOPER_IN_VK" = "Распрацоўшчык у ВК";
+"UPDATES_SETTINGS" = "Налады абнаўлення";
+"LICENCES" = "Ліцэнзіі";

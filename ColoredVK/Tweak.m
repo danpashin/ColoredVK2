@@ -1282,7 +1282,11 @@ CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, anima
     if (enabled) {
         if (enabledBlackTheme) shouldAddBlur = NO;
         else if (enabledBarColor || useMessagesBlur) {
-            NSArray *controllersToAddBlur = @[@"DialogsController", @"MultiChatController", @"SingleUserChatController", @"GroupsController"];
+            NSArray *controllersToAddBlur = @[@"DialogsController"
+                                              ,@"MultiChatController"
+                                              ,@"SingleUserChatController" 
+//                                              ,@"GroupsController"
+                                              ];
             if ([controllersToAddBlur containsObject:CLASS_NAME(self)]) shouldAddBlur = YES;
         } else shouldAddBlur = NO;
     } else shouldAddBlur = NO;

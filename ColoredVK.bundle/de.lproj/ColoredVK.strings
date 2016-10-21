@@ -41,3 +41,22 @@
 "SHOW_BAR" = "Immer zeigen navigationsleiste";
 
 "RESET_SETTINGS" = "Einstellungen zurücksetzen";
+
+
+// chek updates controller
+"CHECK_UPDATES" = "Überprüfen auf updates";
+"CHECK_UPDATES_INTERVAL" = "Intervall";
+"CHECK_NOW" = "Jetzt prüfen";
+"LAST_CHECK" = "Letzter check";
+
+"EVERY_DAY" = "Jeden tag";
+"EVERY_WEEK" = "Jede woche";
+"EVERY_TWO_WEEKS" = "Alle zwei wochen";
+"EVERY_MONTH" = "Jeden monat";
+
+
+// About controller
+"SETTINGS" = "Einstellungen";
+"DEVELOPER_IN_VK" = "Entwickler in VK";
+"UPDATES_SETTINGS" = "Updates-Einstellungen";
+"LICENCES" = "Lizenzen";

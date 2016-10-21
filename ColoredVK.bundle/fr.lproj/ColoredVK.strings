@@ -41,3 +41,22 @@
 "SHOW_BAR" = "Toujours afficher la barre de navigation";
 
 "RESET_SETTINGS" = "Réinitialiser les paramètres";
+
+
+// chek updates controller
+"CHECK_UPDATES" = "Vérifier les mises à jour";
+"CHECK_UPDATES_INTERVAL" = "Intervalle de";
+"CHECK_NOW" = "CHECK_NOW";
+"LAST_CHECK" = "Dernière vérification";
+
+"EVERY_DAY" = "Tous les jours";
+"EVERY_WEEK" = "Chaque semaine";
+"EVERY_TWO_WEEKS" = "Toutes les deux semaines";
+"EVERY_MONTH" = "Chaque mois";
+
+
+// About controller
+"SETTINGS" = "Paramètres";
+"DEVELOPER_IN_VK" = "Développeur dans VK";
+"UPDATES_SETTINGS" = "Paramètres de mises à jour";
+"LICENCES" = "Licences";

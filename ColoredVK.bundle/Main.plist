@@ -6,17 +6,31 @@
 	<array>
 		<dict>
 			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>key</key>
+			<string>enabled</string>
+			<key>id</key>
+			<string>enabled</string>
+			<key>label</key>
+			<string>ENABLED</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
 			<string>ColoredVKPrefs</string>
 			<key>plistToLoad</key>
 			<string>NavToolBar</string>
 			<key>label</key>
-			<string>Navigaton bar &amp; tool bar</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
+			<string>NAVIGATION_TOOL_BAR</string>
+			<key>icon</key>
+			<string>BarsIcon.png</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -26,11 +40,9 @@
 			<key>plistToLoad</key>
 			<string>Menu</string>
 			<key>label</key>
-			<string>Menu</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
+			<string>MENU</string>
+			<key>icon</key>
+			<string>MenuIcon.png</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -40,11 +52,9 @@
 			<key>plistToLoad</key>
 			<string>Messages</string>
 			<key>label</key>
-			<string>Messages</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
+			<string>MESSAGES</string>
+			<key>icon</key>
+			<string>MessagesIcon.png</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -54,23 +64,25 @@
 			<key>plistToLoad</key>
 			<string>Misc</string>
 			<key>label</key>
-			<string>Miscellaneous</string>
+			<string>MISCELLANEOUS</string>
+			<key>icon</key>
+			<string>ListIcon.png</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 		</dict>
 		<dict>
-			<key>action</key>
-			<string>resetSettings</string>
 			<key>cell</key>
-			<string>PSButtonCell</string>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKPrefs</string>
+			<key>plistToLoad</key>
+			<string>About</string>
 			<key>label</key>
-			<string>RESET_SETTINGS</string>
-			<key>textColor</key>
-			<string>1.0, 0.0, 0.0, 1.0</string>
-			<key>shouldCenter</key>
-			<true/>
+			<string>ABOUT</string>
+			<key>icon</key>
+			<string>AboutIcon.png</string>
 		</dict>
 	</array>
 </dict>

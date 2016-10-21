@@ -40,7 +40,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     self.cvkFolder = CVK_FOLDER_PATH;
     
     
-    NSString *plistName = self.specifier.properties[@"plistToLoad"];
+    NSString *plistName = [@"plists/" stringByAppendingString:self.specifier.properties[@"plistToLoad"]];
     
     NSMutableArray *specifiersArray = [NSMutableArray new];
     if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
@@ -339,5 +339,20 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
                                }];
 //    });
     
+}
+
+- (void)openProfie
+{
+    NSURL *appURL = [NSURL URLWithString:@"vk://vk.com/danpashin"];
+    UIApplication *application = [UIApplication sharedApplication];
+    if ([application canOpenURL:appURL]) [self openURL:appURL];
+    else [self openURL:[NSURL URLWithString:@"https://vk.com/danpashin"]];
+}
+
+- (void)openURL:(NSURL *)url
+{
+    UIApplication *application = [UIApplication sharedApplication];
+    if ([application respondsToSelector:@selector(openURL:options:completionHandler:)]) [application openURL:url options:@{} completionHandler:^(BOOL success) {}];
+    else [application openURL:url];
 }
 @end
