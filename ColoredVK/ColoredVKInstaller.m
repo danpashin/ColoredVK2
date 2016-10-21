@@ -38,13 +38,15 @@
 #ifdef COMPILE_FOR_JAIL
             udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(kMGUniqueDeviceID)];            
 #endif
-            NSData *decryptedData = [[NSData dataWithContentsOfFile:licencePath] AES128DecryptedDataWithKey:@"BE7555818BC236315C987C1D9B17F"];
-            NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
-            if (![dict[@"UDID"] isEqualToString:udid]) {
-                if (block) block(YES);
-                [self performSelector:@selector(beginDownload) withObject:nil afterDelay:2.0];
-            }
-            if (block) block(NO);
+            if (udid.length > 10) {
+                NSData *decryptedData = [[NSData dataWithContentsOfFile:licencePath] AES128DecryptedDataWithKey:@"BE7555818BC236315C987C1D9B17F"];
+                NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
+                if (![dict[@"UDID"] isEqualToString:udid]) {
+                    if (block) block(YES);
+                    [self performSelector:@selector(beginDownload) withObject:nil afterDelay:2.0];
+                } else { if (block) block(NO); }
+            
+            } else { if (block) block(NO); }
         }
     }];
     startOperation.queuePriority = NSOperationQueuePriorityHigh;

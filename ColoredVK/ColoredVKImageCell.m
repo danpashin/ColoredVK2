@@ -23,9 +23,10 @@
         
         NSString *identifier = specifier.identifier;
         
-        if ([identifier isEqualToString:@"barImage"]) { self.key = @"enabledBarImage"; }
-        if ([identifier isEqualToString:@"menuBackgroundImage"]) { self.key = @"enabledMenuImage"; }
-        if ([identifier isEqualToString:@"messagesBackgroundImage"]) { self.key = @"enabledMessagesImage"; }
+        if ([identifier isEqualToString:@"barImage"]) self.key = @"enabledBarImage"; 
+        if ([identifier isEqualToString:@"menuBackgroundImage"]) self.key = @"enabledMenuImage"; 
+        if ([identifier isEqualToString:@"messagesBackgroundImage"]) self.key = @"enabledMessagesImage"; 
+        if ([identifier isEqualToString:@"messagesListBackgroundImage"]) self.key = @"enabledMessagesListImage";
 		
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateImageCell:) name:@"com.daniilpashin.coloredvk.image.update" object:nil];

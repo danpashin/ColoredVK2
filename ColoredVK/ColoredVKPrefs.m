@@ -14,6 +14,7 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "LHProgressHUD.h"
 #import "NSDate+DateTools.h"
+#import "UIImage+ResizeMagick.h"
 
 OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0);
 
@@ -52,19 +53,19 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
         specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
     }
     
-//    for (PSSpecifier *specifier in specifiersArray) {
-//        specifier.name = NSLocalizedStringFromTableInBundle(specifier.name, @"ColoredVK", self.cvkBunlde, nil);
-//        
-//        if (specifier.properties[@"footerText"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.cvkBunlde, nil) forKey:@"footerText"];
-//        if (specifier.properties[@"label"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"label"], @"ColoredVK", self.cvkBunlde, nil) forKey:@"label"];
-//        if (specifier.properties[@"validTitles"]) {            
-//            NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
-//            for (NSString *key in specifier.titleDictionary.allKeys) {
-//                [tempDict setValue:NSLocalizedStringFromTableInBundle([specifier.titleDictionary objectForKey:key], @"ColoredVK", self.cvkBunlde, nil) forKey:key];
-//            }
-//            specifier.titleDictionary = [tempDict copy];
-//        }
-//    }
+    for (PSSpecifier *specifier in specifiersArray) {
+        specifier.name = NSLocalizedStringFromTableInBundle(specifier.name, @"ColoredVK", self.cvkBunlde, nil);
+        
+        if (specifier.properties[@"footerText"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.cvkBunlde, nil) forKey:@"footerText"];
+        if (specifier.properties[@"label"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"label"], @"ColoredVK", self.cvkBunlde, nil) forKey:@"label"];
+        if (specifier.properties[@"validTitles"]) {            
+            NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
+            for (NSString *key in specifier.titleDictionary.allKeys) {
+                [tempDict setValue:NSLocalizedStringFromTableInBundle([specifier.titleDictionary objectForKey:key], @"ColoredVK", self.cvkBunlde, nil) forKey:key];
+            }
+            specifier.titleDictionary = [tempDict copy];
+        }
+    }
     
     if (specifiersArray.count == 0) {
         specifiersArray = [NSMutableArray new];
@@ -111,7 +112,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     
     if ([specifier.identifier isEqualToString:@"enabledBlackTheme"]) {
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
+//        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
     }
 }
 
@@ -253,10 +254,8 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
         NSString *imagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.imageID]];
         NSString *prevImagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", self.imageID]];
         
-        UIImage *crImage = [image imageScaledToWidth:[UIScreen mainScreen].bounds.size.width height:[UIScreen mainScreen].bounds.size.height];
-        
         NSError *error = nil;
-        [UIImagePNGRepresentation(crImage) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
+        [UIImagePNGRepresentation(image) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
         if (!error) {
             UIGraphicsBeginImageContext(CGSizeMake(40, 40));
             UIImage *preview = image;
@@ -264,7 +263,11 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
             preview = UIGraphicsGetImageFromCurrentImageContext();
             [UIImagePNGRepresentation(preview) writeToFile:prevImagePath options:NSDataWritingAtomic error:&error];
             UIGraphicsEndImageContext();
+            
+            UIImage *recisedImage = [[UIImage imageWithContentsOfFile:imagePath] resizedImageByMagick: [NSString stringWithFormat:@"%fx%f#", [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height]];
+            [UIImagePNGRepresentation(recisedImage) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
         }
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk.image.update" object:nil userInfo:@{ @"identifier" : self.imageID }];
             if ([self.imageID isEqualToString:@"menuBackgroundImage"]) {
@@ -284,8 +287,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
     
-    return prefs[@"lastCheckForUpdates"]?
-    [dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]].timeAgoSinceNow :  NSLocalizedStringFromTableInBundle(@"NEVER", nil, self.cvkBunlde, nil);
+    return prefs[@"lastCheckForUpdates"]?[dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]].timeAgoSinceNow : NSLocalizedStringFromTableInBundle(@"NEVER", nil, self.cvkBunlde, nil);
 }
 
 - (void)checkForUpdates:(id)sender

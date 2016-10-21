@@ -26,7 +26,7 @@
 			<key>detail</key>
 			<string>ColoredVKPrefs</string>
 			<key>plistToLoad</key>
-			<string>ColoredVK</string>
+			<string>Main</string>
 			<key>shouldAddFooter</key>
 			<true/>
 			<key>label</key>

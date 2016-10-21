@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Info</key>
+	<array>
+		<dict>
+			<key>title</key>
+			<string>USE_IN_MENU</string>
+			<key>identifier</key>
+			<string>menuBackgroundImage</string>
+		</dict>
+		<dict>
+			<key>title</key>
+			<string>USE_IN_MESSAGES</string>
+			<key>identifier</key>
+			<string>messagesBackgroundImage</string>
+		</dict>
+		<dict>
+			<key>title</key>
+			<string>USE_IN_MESSAGES_LIST</string>
+			<key>identifier</key>
+			<string>messagesListBackgroundImage</string>
+		</dict>
+	</array>
+</dict>
+</plist>

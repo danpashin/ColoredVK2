@@ -23,7 +23,8 @@
 #import "VKMethods.h"
 #import "UIImage+ResizeMagick.h"
 #import "NSDate+DateTools.h"
-
+#import <objc/runtime.h>
+#import <dlfcn.h>
 
 
 
@@ -74,8 +75,10 @@ BOOL enabledBarImage;
 BOOL enabledMenuImage;
 BOOL hideSeparators;
 BOOL enabledMessagesImage;
+BOOL enabledMessagesListImage;
 CGFloat menuImageBlackout;
 CGFloat chatImageBlackout;
+CGFloat chatListImageBlackout;
 
 BOOL enabledBlackTheme;
 BOOL blackThemeWasEnabled;
@@ -88,7 +91,7 @@ BOOL hideMenuSearch;
 BOOL changeSwitchColor;
 
 UITableView *menuTableView;
-UITableView *chatTableView;
+//UITableView *chatTableView;
 UITableView *newsFeedTableView;
 
 UIColor *separatorColor;
@@ -102,6 +105,7 @@ UIColor *switchesTintColor;
 UIColor *switchesOnTintColor;
 
 UIButton *postCreationButton;
+UISwitch *cvkSwitch;
 
 CVKCellSelectionStyle menuSelectionStyle;
 CVKKeyboardStyle keyboardStyle;
@@ -121,30 +125,27 @@ CVKKeyboardStyle keyboardStyle;
 + (UIVisualEffectView *)blurForView:(UIView *)view withTag:(int)tag;
 
 + (MenuCell*) createCustomCell;
-
-- (void)resetValue;
 @end
 
 
 #pragma mark Static methods
 
 static UIImage *coloredImage(UIColor *color, UIImage *originalImage)
-{
-    UIImage *image;
-    
+{    
     UIGraphicsBeginImageContextWithOptions(originalImage.size, NO, originalImage.scale);
     CGContextRef context = UIGraphicsGetCurrentContext();
-    [color setFill];
-    CGContextTranslateCTM(context, 0, originalImage.size.height);
-    CGContextScaleCTM(context, 1.0, -1.0);
-    CGContextClipToMask(context, CGRectMake(0, 0, originalImage.size.width, originalImage.size.height), originalImage.CGImage);
-    CGContextFillRect(context, CGRectMake(0, 0, originalImage.size.width, originalImage.size.height));
-    
-    image = UIGraphicsGetImageFromCurrentImageContext();
-    
+    if (context) {
+        [color setFill];
+        CGContextTranslateCTM(context, 0, originalImage.size.height);
+        CGContextScaleCTM(context, 1.0, -1.0);
+        CGContextClipToMask(context, CGRectMake(0, 0, originalImage.size.width, originalImage.size.height), originalImage.CGImage);
+        CGContextFillRect(context, CGRectMake(0, 0, originalImage.size.width, originalImage.size.height));
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+        return image;
+    }
     UIGraphicsEndImageContext();
     
-    return image;
+    return originalImage;
 }
 
 
@@ -219,9 +220,11 @@ static void reloadPrefs()
         useMessagesBlur = [prefs[@"useMessagesBlur"] boolValue];
         hideMenuSearch = [prefs[@"hideMenuSearch"] boolValue];
         changeSwitchColor = [prefs[@"changeSwitchColor"] boolValue];
+        enabledMessagesListImage = [prefs[@"enabledMessagesListImage"] boolValue];
         
         menuImageBlackout = [prefs[@"menuImageBlackout"] floatValue];
         chatImageBlackout = [prefs[@"chatImageBlackout"] floatValue];
+        chatListImageBlackout = [prefs[@"chatListImageBlackout"] floatValue];
         
         updatesInterval = prefs[@"updatesInterval"]?[prefs[@"updatesInterval"] doubleValue]:1.0;
         menuSelectionStyle = prefs[@"menuSelectionStyle"]?[prefs[@"menuSelectionStyle"] integerValue]:CVKCellSelectionStyleTransparent;
@@ -254,11 +257,8 @@ static void reloadPrefs()
             }
         }
             
-        if (blackThemeWasEnabled) {
-            ColoredVKMainController *controller = [ColoredVKMainController new];
-            [controller performSelector:@selector(resetValue) withObject:nil afterDelay:120.0];
-        }
-    
+        if (blackThemeWasEnabled && !enabledBlackTheme) dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(120 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{ blackThemeWasEnabled = NO; });
+        if (cvkSwitch) cvkSwitch.on = enabled;
     }
 }
 
@@ -364,12 +364,46 @@ static void setPostCreationButtonColor()
 }
 
 
+static void setImageToTable(UITableView *tableView, NSString *imageName, CGFloat blackout, BOOL flip)
+{
+    if (tableView.backgroundView == nil) {
+        UIView *backView = [UIView new];
+        backView.frame = CGRectMake(0, 0, tableView.frame.size.width, tableView.frame.size.height);
+        
+        UIImageView *myImageView = [UIImageView new];
+        myImageView.frame = CGRectMake(0, 0, tableView.frame.size.width, tableView.frame.size.height);
+        myImageView.image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.png", cvkFolder, imageName]];
+        myImageView.contentMode = UIViewContentModeScaleAspectFill;
+        if (flip) myImageView.transform = CGAffineTransformMakeRotation(180 * M_PI/180);
+        [backView addSubview:myImageView];
+        
+        UIView *frontView = [UIView new];
+        frontView.frame = CGRectMake(0, 0, tableView.frame.size.width, tableView.frame.size.height);
+        frontView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:blackout];
+        [backView addSubview:frontView];
+        
+        tableView.backgroundView = backView;
+    } 
+}
+
+
+static NSArray *getInfoForActionController()
+{
+    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[cvkBunlde pathForResource:@"ImagesDLInfo" ofType:@"plist"]];
+    if (dict) {
+        NSArray *arr = dict.allValues.lastObject;
+        if (arr) return arr;
+        else return @[];
+    } else return @[];
+}
+
+
 
 @implementation ColoredVKMainController
 
 + (void)setupMenuBar:(UITableView*)tableView
 {
-    if (!hideMenuSearch) [self setupUISearchBar:(UISearchBar*)tableView.tableHeaderView];
+    [self setupUISearchBar:(UISearchBar*)tableView.tableHeaderView];
 }
 
 + (void)resetMenuTableView:(UITableView*)tableView 
@@ -379,7 +413,7 @@ static void setPostCreationButtonColor()
     for (UIView *view in tableView.superview.subviews) { if (view.tag == 25) { [view removeFromSuperview];  break; } }
     for (UIView *view in tableView.superview.subviews) { if (view.tag == 23) { [view removeFromSuperview];  break; } }
     
-    if (!hideMenuSearch) [self resetUISearchBar:(UISearchBar*)tableView.tableHeaderView];
+    [self resetUISearchBar:(UISearchBar*)tableView.tableHeaderView];
 }
 
 
@@ -444,15 +478,17 @@ static void setPostCreationButtonColor()
     
     UISwitch *switchView = [UISwitch new];
     switchView.frame = CGRectMake([UIScreen mainScreen].bounds.size.width/1.2 - switchView.frame.size.width, (cell.contentView.frame.size.height - switchView.frame.size.height)/2, 0, 0);
-    switchView.tag = 404;
+    switchView.tag = 405;
     switchView.on = enabled;
     switchView.onTintColor = [UIColor defaultColorForIdentifier:@"switchesOnTintColor"];
     [switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventValueChanged];
+    cvkSwitch = switchView;
+    cvkSwitch.onTintColor = [UIColor defaultColorForIdentifier:@"switchesOnTintColor"];
     [cell addSubview:switchView];
     
     cell.select = (id)^(id arg1, id arg2, id arg3, id arg4) {
         UIViewController *cvkPrefs = [[UIStoryboard storyboardWithName:@"Main" bundle:cvkBunlde] instantiateInitialViewController];
-        id mainContext = [[objc_getClass("VKMNavContext") applicationNavRoot] rootNavContext];
+        VKMNavContext *mainContext = [[objc_getClass("VKMNavContext") applicationNavRoot] rootNavContext];
         [mainContext reset:cvkPrefs];
 
         return nil; 
@@ -486,10 +522,6 @@ static void setPostCreationButtonColor()
     return blurEffectView;
 }
 
-- (void)resetValue {
-    blackThemeWasEnabled = NO; 
-}
-
 + (void)downloadImageWithSource:(NSString *)url identificator:(NSString *)imageID completionBlock:( void(^)(BOOL success, NSString *message) )block
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
@@ -520,10 +552,6 @@ static void setPostCreationButtonColor()
                                        if ([imageID isEqualToString:@"menuBackgroundImage"]) {
                                            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
                                        }
-                                       
-                                       if ([imageID isEqualToString:@"messagesBackgroundImage"]) {
-                                           CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
-                                       }
                                        dispatch_async(dispatch_get_main_queue(), ^{ block(error?NO:YES, error?error.localizedDescription:@"");  });
                                    } else dispatch_async(dispatch_get_main_queue(), ^{ block(NO, connectionError.localizedDescription); });
                                }];
@@ -531,6 +559,25 @@ static void setPostCreationButtonColor()
 }
 @end
 
+
+static void setNavigationBar(UINavigationBar *navBar)
+{
+    if (enabled) {
+        if (enabledBlackTheme) {
+            setBlur(navBar, NO);
+            navBar.barTintColor = [UIColor darkBlackColor];
+            navBar.tintColor = [UIColor lightGrayColor];
+            navBar.titleTextAttributes = @{ NSForegroundColorAttributeName : [UIColor lightGrayColor] };
+        }  else if (enabledBarColor || useMessagesBlur) {
+            if (enabledBarColor) {
+                if (enabledBarImage) navBar.barTintColor = [UIColor colorWithPatternImage:[UIImage imageWithContentsOfFile:[cvkFolder stringByAppendingString:@"/barImage.png"]]];
+                else navBar.barTintColor = barBackgroundColor;
+                navBar.tintColor = barForegroundColor;
+                navBar.titleTextAttributes = @{ NSForegroundColorAttributeName : barForegroundColor };
+            }
+        }
+    }
+}
 
 
 
@@ -565,27 +612,13 @@ CHDeclareClass(UINavigationBar);
 CHOptimizedMethod(0, self, void, UINavigationBar, layoutSubviews)
 {
     CHSuper(0, UINavigationBar, layoutSubviews);
-    
-    if (enabled) {
-        if (enabledBlackTheme) {
-            setBlur(self, NO);
-            self.barTintColor = [UIColor darkBlackColor];
-            self.tintColor = [UIColor lightGrayColor];
-            self.titleTextAttributes = @{ NSForegroundColorAttributeName : [UIColor lightGrayColor] };
-        }  else if (enabledBarColor || useMessagesBlur) {
-            if (enabledBarColor) {
-                if (enabledBarImage) self.barTintColor = [UIColor colorWithPatternImage:[UIImage imageWithContentsOfFile:[cvkFolder stringByAppendingString:@"/barImage.png"]]];
-                else self.barTintColor = barBackgroundColor;
-                self.tintColor = barForegroundColor;
-                self.titleTextAttributes = @{ NSForegroundColorAttributeName : barForegroundColor };
-            }
-            if ([self.topItem.titleView isKindOfClass:NSClassFromString(@"LayoutAwareView")]) setBlur(self, useMessagesBlur);
-            else setBlur(self, NO);
+    setNavigationBar(self);
+}
 
-        } else setBlur(self, NO);
-        
-    } else setBlur(self, NO);
-    
+CHOptimizedMethod(0, self, void, UINavigationBar, setNeedsLayout)
+{
+    CHSuper(0, UINavigationBar, setNeedsLayout);
+    setNavigationBar(self);
 }
 
 
@@ -625,6 +658,22 @@ CHOptimizedMethod(0, self, void, UIToolbar, layoutSubviews)
                 for (id view in self.subviews) {
                     if ([@"InputPanelViewTextView" isEqualToString:CLASS_NAME(view)]) {
                         canUseTint = NO;
+                        if (!(useMessagesBlur && [CLASS_NAME(self.superview.superclass) isEqualToString:@"UIView"])) {
+                            for (UIView *view in self.subviews) {
+                                if ([view isKindOfClass:[UIButton class]]) {
+                                    UIButton *btn = (UIButton *)view;
+                                    [btn setTitleColor:[UIColor darkerColorForColor:toolBarForegroundColor] forState:UIControlStateDisabled];
+                                    [btn setTitleColor:toolBarForegroundColor forState:UIControlStateNormal];
+                                    BOOL btnToExclude = NO;
+                                    NSArray *btnsWithActionsToExclude = @[@"actionToggleEmoji:"];
+                                    for (NSString *action in [btn actionsForTarget:btn.allTargets.allObjects[0] forControlEvent:UIControlEventTouchUpInside]) {
+                                        if ([btnsWithActionsToExclude containsObject:action]) btnToExclude = YES;
+                                    }
+                                    if (!btnToExclude && btn.currentImage) [btn setImage:coloredImage(toolBarForegroundColor, [btn imageForState:UIControlStateNormal]) forState:UIControlStateNormal];
+                                }
+                            }
+                        }
+
                         break;
                     }
                 }
@@ -651,6 +700,7 @@ CHOptimizedMethod(0, self, long long, UITextInputTraits, keyboardAppearance)
 
 
 
+#pragma mark - BLACK THEME
 #pragma mark UITableViewCell
 CHDeclareClass(UITableViewCell);
 CHOptimizedMethod(0, self, void, UITableViewCell, layoutSubviews)
@@ -821,7 +871,7 @@ CHOptimizedMethod(0, self, void, UISwitch, layoutSubviews)
 {
     CHSuper(0, UISwitch, layoutSubviews);
     
-    if ([CLASS_NAME(self) isEqualToString:@"UISwitch"]) {
+    if ([self isKindOfClass:NSClassFromString(@"UISwitch")] && (self.tag != 404)) {
         
         if (enabled && enabledBlackTheme) {
             self.onTintColor = [UIColor colorWithWhite:0.2 alpha:1.0];
@@ -835,7 +885,6 @@ CHOptimizedMethod(0, self, void, UISwitch, layoutSubviews)
             self.tintColor = nil;
             self.thumbTintColor = nil;
             self.onTintColor = nil;
-            if (self.tag == 404) self.onTintColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
         }
     }
 }
@@ -865,15 +914,6 @@ CHOptimizedMethod(0, self, void, UIRefreshControl, layoutSubviews)
 
 #pragma mark GLOBAL METHODS
 #pragma mark -
-
-
-
-
-
-
-
-
-
 
 
 #pragma  mark FeedbackController
@@ -974,33 +1014,6 @@ CHOptimizedMethod(1, self, void, TextEditController, viewWillAppear, BOOL, anima
 }
 
 
-#pragma mark фуллскрин
-CHDeclareClass(NewsFeedController);
-
-CHOptimizedMethod(0, self, BOOL, NewsFeedController, VKMScrollViewFullscreenEnabled)
-{
-    if (enabled && showBar) return NO;
-    return CHSuper(0, NewsFeedController, VKMScrollViewFullscreenEnabled);
-}
-
-CHDeclareClass(PhotoFeedController);
-CHOptimizedMethod(0, self, BOOL, PhotoFeedController, VKMScrollViewFullscreenEnabled)
-{
-    if (enabled && showBar) return NO; 
-    return CHSuper(0, PhotoFeedController, VKMScrollViewFullscreenEnabled);
-}
-
-#pragma mark NewsFeedController
-CHOptimizedMethod(2, self, UITableViewCell*, NewsFeedController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
-{
-    UITableViewCell *cell = CHSuper(2, NewsFeedController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    newsFeedTableView = tableView;
-    return cell;
-}
-
-
-
-
 #pragma mark User profile
 CHDeclareClass(ProfileView);
 CHOptimizedMethod(0, self, void, ProfileView, layoutSubviews)
@@ -1016,62 +1029,8 @@ CHOptimizedMethod(0, self, void, ProfileView, layoutSubviews)
 }
 
 
-#pragma mark DialogsController
-CHDeclareClass(DialogsController);
-CHOptimizedMethod(2, self, UITableViewCell*, DialogsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
-{
-    UITableViewCell *cell = CHSuper(2, DialogsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    
-    if (enabled && enabledBlackTheme) {
-        cell.contentView.backgroundColor = [UIColor lightBlackColor];
-        tableView.backgroundColor = [UIColor darkBlackColor];
-    } 
-//    else if (enabled && enabledMessagesImage) {
-//        cell.contentView.backgroundColor = [UIColor clearColor];
-//        cell.backgroundColor = [UIColor clearColor];
-//        
-//        
-//        for (id view in cell.contentView.subviews) {
-//            if ([view isKindOfClass:[UILabel class]]) {
-//                UILabel *label = view;
-//                label.textColor = [[UIColor whiteColor] colorWithAlphaComponent:0.8];
-//                    //                if (!label.hidden) { label.hidden = YES; } // у прочитанных лейблов есть свойтово hidden
-//            }
-//            
-//            if ([view respondsToSelector:@selector(setBackgroundColor:)]) {
-//                [view setBackgroundColor:[[UIColor whiteColor] colorWithAlphaComponent:0.1]];
-//            }
-//        }
-//        cell.subviews[0].hidden = YES;
-//        
-//        tableView.separatorColor = [tableView.separatorColor colorWithAlphaComponent:0.2];
-//        
-//        if (tableView.backgroundView == nil) {
-//            UIView *backView = [UIView new];
-//            backView.frame = CGRectMake(0, 0, tableView.frame.size.width, tableView.frame.size.height);
-//            
-//            UIImageView *myImageView = [UIImageView new];
-//            myImageView.frame = CGRectMake(0, 0, tableView.frame.size.width, tableView.frame.size.height);
-//            myImageView.image = [UIImage imageWithContentsOfFile:[cvkFolder stringByAppendingString:@"/messagesBackgroundImage.png"]];
-//            myImageView.contentMode = UIViewContentModeScaleAspectFill;
-//            [backView addSubview:myImageView];
-//            
-//            UIView *frontView = [UIView new];
-//            frontView.frame = CGRectMake(0, 0, tableView.frame.size.width, tableView.frame.size.height);
-//            frontView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:chatImageBlackout];
-//            [backView addSubview:frontView];
-//            
-//            tableView.backgroundView = backView;
-//        }
-//    }
-    
-    return cell;
-}
 
-
-
- // группы
-#pragma mark VKMLiveController
+#pragma mark VKMLiveController 
 CHDeclareClass(VKMLiveController);
 CHOptimizedMethod(2, self, UITableViewCell*, VKMLiveController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
@@ -1103,7 +1062,6 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMLiveController, tableView, UITab
     
     return cell;
 }
-
 
 
 #pragma mark DetailController
@@ -1194,10 +1152,6 @@ CHOptimizedMethod(2, self, UITableViewCell*, FeedController, tableView, UITableV
 }
 
 
-
-
-
-
 //CHDeclareClass(VKRenderedText);
 
 //CHOptimizedMethod(1, self, void, VKRenderedText, drawInContext, CGContextRef, context)
@@ -1228,10 +1182,188 @@ CHOptimizedMethod(1, self, id, NewsFeedPostCreationButton, initWithFrame, CGRect
     
     return origButton;
 }
+#pragma mark BLACK THEME
+#pragma mark -
 
 
 
 
+#pragma mark NewsFeedController
+CHDeclareClass(NewsFeedController);
+CHOptimizedMethod(0, self, BOOL, NewsFeedController, VKMScrollViewFullscreenEnabled)
+{
+    if (enabled && showBar) return NO;
+    return CHSuper(0, NewsFeedController, VKMScrollViewFullscreenEnabled);
+}
+CHOptimizedMethod(2, self, UITableViewCell*, NewsFeedController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, NewsFeedController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    newsFeedTableView = tableView;
+    return cell;
+}
+
+#pragma mark PhotoFeedController
+CHDeclareClass(PhotoFeedController);
+CHOptimizedMethod(0, self, BOOL, PhotoFeedController, VKMScrollViewFullscreenEnabled)
+{
+    if (enabled && showBar) return NO; 
+    return CHSuper(0, PhotoFeedController, VKMScrollViewFullscreenEnabled);
+}
+
+
+
+
+
+
+
+    // вполне рабочая модель
+    // за исключением отсутствия блюра в тулбаре и непрозрачным баром поиска
+//#pragma mark GroupsController
+//CHDeclareClass(GroupsController);
+//CHOptimizedMethod(0, self, void, GroupsController, viewWillLayoutSubviews)
+//{
+//    CHSuper(0, GroupsController, viewWillLayoutSubviews);
+//    if ([self isKindOfClass:NSClassFromString(@"GroupsController")] && enabled) {
+//        if (enabledBlackTheme) {
+//            self.tableView.backgroundColor = [UIColor darkBlackColor];
+//            self.tableView.backgroundView = nil;
+//        } else if (enabledMessagesListImage) {
+//            setImageToTable(self.tableView, @"messagesListBackgroundImage", chatListImageBlackout, NO);
+//            self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2];
+//            
+//            
+//        }
+//    }
+//}
+//
+//#pragma mark GroupCell
+//CHDeclareClass(GroupCell);
+//CHOptimizedMethod(0, self, void, GroupCell, layoutSubviews)
+//{
+//    CHSuper(0, GroupCell, layoutSubviews);
+//    if ([self isKindOfClass:NSClassFromString(@"GroupCell")] && enabled) {
+//        if (enabledBlackTheme) {
+//            self.backgroundColor = [UIColor lightBlackColor]; 
+//        } else if (enabledMessagesListImage) {
+//            self.backgroundColor =  [UIColor clearColor];
+//                //            self.backgroundView = nil;
+//            
+//            self.name.textColor = [UIColor colorWithWhite:1 alpha:0.8];
+//            self.name.backgroundColor = [UIColor clearColor];
+//            self.status.textColor = [UIColor colorWithWhite:1 alpha:0.8];
+//            self.status.backgroundColor = [UIColor clearColor];
+//            
+//        }
+//    }
+//}
+//
+//CHOptimizedMethod(2, self, id, GroupCell, initWithStyle, UITableViewCellStyle, style, reuseIdentifier, NSString*, identifier)
+//{
+//    GroupCell *cell = CHSuper(2, GroupCell, initWithStyle, style, reuseIdentifier, identifier);
+//    
+//    if ([cell isKindOfClass:NSClassFromString(@"GroupCell")] && (enabled && enabledMessagesListImage)) {
+//        UIView *backView = [UIView new];
+//        backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
+//        cell.selectedBackgroundView = backView;
+//    }
+//    
+//    return cell;
+//}
+
+
+
+
+#pragma mark VKMTableController - установка блюра
+CHDeclareClass(VKMTableController);
+CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, VKMTableController, viewWillAppear, animated);
+    BOOL shouldAddBlur = NO;
+    if (enabled) {
+        if (enabledBlackTheme) shouldAddBlur = NO;
+        else if (enabledBarColor || useMessagesBlur) {
+            NSArray *controllersToAddBlur = @[@"DialogsController", @"MultiChatController", @"SingleUserChatController", @"GroupsController"];
+            if ([controllersToAddBlur containsObject:CLASS_NAME(self)]) shouldAddBlur = YES;
+        } else shouldAddBlur = NO;
+    } else shouldAddBlur = NO;
+    
+    setBlur(self.navigationController.navigationBar, shouldAddBlur);
+}
+
+
+
+#pragma mark DialogsController - список диалогов
+CHDeclareClass(DialogsController);
+CHOptimizedMethod(0, self, void, DialogsController, viewWillLayoutSubviews)
+{
+    CHSuper(0, DialogsController, viewWillLayoutSubviews);
+    if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && enabled) {
+        if (enabledBlackTheme) {
+            self.tableView.backgroundColor = [UIColor darkBlackColor];
+            self.tableView.backgroundView = nil;
+        } else if (enabledMessagesListImage) {
+            setImageToTable(self.tableView, @"messagesListBackgroundImage", chatListImageBlackout, NO);
+            self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2];
+                //            self.tableView.refreshControl.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+            
+            UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;              
+            for (UIView *field in search.subviews.lastObject.subviews){
+                if (![field isKindOfClass:[UITextField class]]) [field removeFromSuperview];
+                else {
+                    field.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+                    UITextField *textField = (UITextField*)field;
+                    textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:textField.placeholder
+                                                                                      attributes:@{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent:0.5]}];
+                }
+            }
+        }
+    }
+}
+
+
+#pragma mark NewDialogCell
+CHDeclareClass(NewDialogCell);
+CHOptimizedMethod(0, self, void, NewDialogCell, layoutSubviews)
+{
+    CHSuper(0, NewDialogCell, layoutSubviews);
+    if ([self isKindOfClass:NSClassFromString(@"NewDialogCell")] && enabled) {
+        if (enabledBlackTheme) {
+            self.contentView.backgroundColor = [UIColor lightBlackColor]; 
+        } else if (enabledMessagesListImage) {
+            self.contentView.backgroundColor =  [UIColor clearColor];
+            self.backgroundColor = [UIColor clearColor];
+            self.backgroundView = nil;
+            
+            self.dialogText.textColor = [UIColor colorWithWhite:1 alpha:0.8];
+            self.name.textColor = [UIColor colorWithWhite:1 alpha:0.8];
+            self.time.textColor = [UIColor colorWithWhite:1 alpha:0.8];
+            self.attach.textColor = [UIColor colorWithWhite:1 alpha:0.8];
+        }
+    }
+}
+
+CHOptimizedMethod(2, self, id, NewDialogCell, initWithStyle, UITableViewCellStyle, style, reuseIdentifier, NSString*, identifier)
+{
+    NewDialogCell *cell = CHSuper(2, NewDialogCell, initWithStyle, style, reuseIdentifier, identifier);
+    
+    if ([cell isKindOfClass:NSClassFromString(@"NewDialogCell")] && (enabled && enabledMessagesListImage)) {
+        UIView *backView = [UIView new];
+        backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
+        cell.selectedBackgroundView = backView;
+    }
+    
+    return cell;
+}
+
+
+#pragma mark BackgroundView
+CHDeclareClass(BackgroundView);
+CHOptimizedMethod(1, self, void, BackgroundView, drawRect, CGRect, rect)
+{
+    self.layer.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3].CGColor;
+    self.layer.cornerRadius = self.cornerRadius;
+    self.layer.masksToBounds = YES;
+}
 
 
 #pragma mark ChatController
@@ -1249,12 +1381,24 @@ CHOptimizedMethod(1, self, void, ChatController, viewWillAppear, BOOL, animated)
     }
 }
 
+CHOptimizedMethod(0, self, void, ChatController, viewWillLayoutSubviews)
+{
+    CHSuper(0, ChatController, viewWillLayoutSubviews);
+    
+    if ([self isKindOfClass:NSClassFromString(@"ChatController")] && enabled) {
+        if (enabledBlackTheme) {
+            self.tableView.backgroundColor = [UIColor darkBlackColor];
+            self.tableView.backgroundView = nil;
+        } else if (enabledMessagesImage) setImageToTable(self.tableView, @"messagesBackgroundImage", chatImageBlackout, YES);        
+    }
+}
+
 
 CHOptimizedMethod(2, self, UITableViewCell*, ChatController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, ChatController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (indexPath.row == 0) chatTableView = tableView;
+//    if (indexPath.row == 0) chatTableView = tableView;
     
      if (enabled && (enabledMessagesImage && !enabledBlackTheme) ) {
          for (id view in cell.contentView.subviews) {
@@ -1263,28 +1407,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, ChatController, tableView, UITableV
                  break;
              }
          }
-         
          if ([CLASS_NAME(cell) isEqualToString:@"UITableViewCell"]) cell.backgroundColor = [UIColor clearColor];
-         
-         if (tableView.backgroundView == nil) {
-            UIView *backView = [UIView new];
-            backView.frame = CGRectMake(0, 0, tableView.frame.size.width, tableView.frame.size.height);
-            
-            UIImageView *myImageView = [UIImageView new];
-            myImageView.frame = backView.frame;
-            myImageView.image = [UIImage imageWithContentsOfFile:[cvkFolder stringByAppendingString:@"/messagesBackgroundImage.png"]];
-            myImageView.contentMode = UIViewContentModeScaleAspectFill;
-            float degrees = 180;
-            myImageView.transform = CGAffineTransformMakeRotation(degrees * M_PI/180);
-            [backView addSubview:myImageView];
-            
-            UIView *frontView = [UIView new];
-            frontView.frame = backView.frame;
-            frontView.backgroundColor = [UIColor colorWithWhite:0 alpha:chatImageBlackout];
-            [backView addSubview:frontView];
-            
-            tableView.backgroundView = backView;
-        }
     }
     
     return cell;
@@ -1333,7 +1456,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
     
     menuTableView = tableView;
     
-    NSDictionary *identifiers = @{@"customCell" : @228, @"cvkCell": @404};
+    NSDictionary *identifiers = @{@"customCell" : @228, @"cvkCell": @405};
     if ([identifiers.allKeys containsObject:cell.reuseIdentifier]) {
         UISwitch *switchView = [cell viewWithTag:[identifiers[cell.reuseIdentifier] integerValue]];
         if ([CLASS_NAME(switchView) isEqualToString:@"UISwitch"]) [switchView layoutSubviews];
@@ -1505,7 +1628,6 @@ CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, a
 {
     CHSuper(1, PhotoBrowserController, viewWillAppear, animated);
     if ([self isKindOfClass:NSClassFromString(@"PhotoBrowserController")]) {
-        
         UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] bk_initWithImage:[UIImage imageNamed:@"dlIcon" inBundle:cvkBunlde compatibleWithTraitCollection:nil]  
                                                                           style:UIBarButtonItemStylePlain 
                                                                         handler:^(id  _Nonnull sender) {
@@ -1523,33 +1645,23 @@ CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, a
                                                                             }
                                                                             VKHUD *hud = [objc_getClass("VKHUD") hud];
                                                                             BlockActionController *actionController = [objc_getClass("BlockActionController") actionSheetWithTitle:nil];
-                                                                            [actionController addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"USE_IN_MENU", nil, cvkBunlde, nil) 
-                                                                                                           block:(id)^(id arg1) {
-                                                                                                               NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-                                                                                                                   [ColoredVKMainController downloadImageWithSource:imageSource 
-                                                                                                                                                      identificator:@"menuBackgroundImage"
-                                                                                                                                                 completionBlock:^(BOOL success, NSString *message) {
-                                                                                                                                                     success?[hud hideWithResult:success]:[hud hideWithResult:success message:message];
-                                                                                                                                                     [hud performSelector:@selector(hide:) withObject:@YES afterDelay:3.0];
-                                                                                                                                                 }];
+                                                                            NSArray *info = getInfoForActionController();
+                                                                            for (NSDictionary *dict in info) {
+                                                                                [actionController addButtonWithTitle:NSLocalizedStringFromTableInBundle(dict[@"title"], nil, cvkBunlde, nil) 
+                                                                                                               block:(id)^(id arg1) {
+                                                                                                                   NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+                                                                                                                       [ColoredVKMainController downloadImageWithSource:imageSource 
+                                                                                                                                                          identificator:dict[@"identifier"]
+                                                                                                                                                        completionBlock:^(BOOL success, NSString *message) {
+                                                                                                                                                            success?[hud hideWithResult:success]:[hud hideWithResult:success message:message];
+                                                                                                                                                            [hud performSelector:@selector(hide:) withObject:@YES afterDelay:3.0];
+                                                                                                                                                        }];
+                                                                                                                   }];
+                                                                                                                   [hud showForOperation:operation];
+                                                                                                                   [operation start];
                                                                                                                }];
-                                                                                                               [hud showForOperation:operation];
-                                                                                                               [operation start];
-                                                                                                           }];
-                                                                            
-                                                                            [actionController addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"USE_IN_MESSAGES", nil, cvkBunlde, nil) 
-                                                                                                           block:(id)^(id arg1) {
-                                                                                                               NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-                                                                                                                   [ColoredVKMainController downloadImageWithSource:imageSource 
-                                                                                                                                                      identificator:@"messagesBackgroundImage"
-                                                                                                                                                    completionBlock:^(BOOL success, NSString *message) {
-                                                                                                                                                     success?[hud hideWithResult:success]:[hud hideWithResult:success message:message];
-                                                                                                                                                     [hud performSelector:@selector(hide:) withObject:@YES afterDelay:3.0];
-                                                                                                                                                 }];
-                                                                                                               }];
-                                                                                                               [hud showForOperation:operation];
-                                                                                                               [operation start];
-                                                                                                           }];
+
+                                                                            }
                                                                             [actionController setCancelButtonWithTitle:UIKitLocalizedString(@"Cancel") block:nil];
                                                                             [actionController showInViewController:self];
                                                                         }];
@@ -1571,36 +1683,25 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
         UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] bk_initWithImage:[UIImage imageNamed:@"dlIcon" inBundle:cvkBunlde compatibleWithTraitCollection:nil]  
                                                                           style:UIBarButtonItemStylePlain 
                                                                         handler:^(id  _Nonnull sender) {
+                                                                            
                                                                             VKHUD *hud = [objc_getClass("VKHUD") hud];
                                                                             BlockActionController *actionController = [objc_getClass("BlockActionController") actionSheetWithTitle:nil];
-                                                                            [actionController addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"USE_IN_MENU", nil, cvkBunlde, nil) 
-                                                                                                           block:(id)^(id arg1) {
-                                                                                                               NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-                                                                                                                   [ColoredVKMainController downloadImageWithSource:self.target.url.absoluteString 
-                                                                                                                                                      identificator:@"menuBackgroundImage"
-                                                                                                                                                    completionBlock:^(BOOL success, NSString *message) {
-                                                                                                                                                     success?[hud hideWithResult:success]:[hud hideWithResult:success message:message];
-                                                                                                                                                     [hud performSelector:@selector(hide:) withObject:@YES afterDelay:3.0];
-                                                                                                                                                 }];
-
+                                                                            NSArray *info = getInfoForActionController();
+                                                                            for (NSDictionary *dict in info) {
+                                                                                [actionController addButtonWithTitle:NSLocalizedStringFromTableInBundle(dict[@"title"], nil, cvkBunlde, nil) 
+                                                                                                               block:(id)^(id arg1) {
+                                                                                                                   NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+                                                                                                                       [ColoredVKMainController downloadImageWithSource:self.target.url.absoluteString 
+                                                                                                                                                          identificator:dict[@"identifier"]
+                                                                                                                                                        completionBlock:^(BOOL success, NSString *message) {
+                                                                                                                                                            success?[hud hideWithResult:success]:[hud hideWithResult:success message:message];
+                                                                                                                                                            [hud performSelector:@selector(hide:) withObject:@YES afterDelay:3.0];
+                                                                                                                                                        }];
+                                                                                                                   }];
+                                                                                                                   [hud showForOperation:operation];
+                                                                                                                   [operation start];
                                                                                                                }];
-                                                                                                               [hud showForOperation:operation];
-                                                                                                               [operation start];
-                                                                                                           }];
-                                                                            
-                                                                            [actionController addButtonWithTitle:NSLocalizedStringFromTableInBundle(@"USE_IN_MESSAGES", nil, cvkBunlde, nil) 
-                                                                                                           block:(id)^(id arg1) {
-                                                                                                               NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-                                                                                                                   [ColoredVKMainController downloadImageWithSource:self.target.url.absoluteString 
-                                                                                                                                                      identificator:@"messagesBackgroundImage"
-                                                                                                                                                    completionBlock:^(BOOL success, NSString *message) {
-                                                                                                                                                         success?[hud hideWithResult:success]:[hud hideWithResult:success message:message];
-                                                                                                                                                         [hud performSelector:@selector(hide:) withObject:@YES afterDelay:3.0];
-                                                                                                                                                 }];
-                                                                                                               }];
-                                                                                                               [hud showForOperation:operation];
-                                                                                                               [operation start];
-                                                                                                           }];
+                                                                            }
                                                                             [actionController setCancelButtonWithTitle:UIKitLocalizedString(@"Cancel") block:nil];
                                                                             [actionController showInViewController:self];
                                                                         }];
@@ -1630,11 +1731,11 @@ static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFS
     [menuTableView reloadData];
 }
 
-static void reloadMessagesNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
-{
-    chatTableView.backgroundView = nil;
-    [chatTableView reloadData];
-}
+//static void reloadMessagesNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
+//{
+//    chatTableView.backgroundView = nil;
+//    [chatTableView reloadData];
+//}
 
 
 
@@ -1663,7 +1764,7 @@ CHConstructor
                 
                 CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadPrefsNotify, CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
                 CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadMenuNotify, CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-                CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadMessagesNotify, CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+//                CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadMessagesNotify, CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
                 CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadTablesNotify, CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
                 
                 
@@ -1694,7 +1795,8 @@ CHConstructor
                 
                 
                 CHLoadLateClass(UINavigationBar);
-                CHHook(0, UINavigationBar, layoutSubviews);
+                if (IS_IOS_10_OR_LATER) CHHook(0, UINavigationBar, setNeedsLayout);
+                else                    CHHook(0, UINavigationBar, layoutSubviews);
                 
                 
                 CHLoadLateClass(UIToolbar);
@@ -1731,6 +1833,10 @@ CHConstructor
                 
                 CHLoadLateClass(UIRefreshControl);
                 CHHook(0, UIRefreshControl, layoutSubviews);
+                
+                
+                CHLoadLateClass(BackgroundView);
+                CHHook(1, BackgroundView, drawRect);
                 
                 
                 
@@ -1777,12 +1883,28 @@ CHConstructor
                 CHHook(2, DetailController, tableView, cellForRowAtIndexPath);
                 
                 
+                CHLoadLateClass(VKMTableController);
+                CHHook(1, VKMTableController, viewWillAppear);
+                
+                
                 CHLoadLateClass(DialogsController);
-                CHHook(2, DialogsController, tableView, cellForRowAtIndexPath);
+                CHHook(0, DialogsController, viewWillLayoutSubviews);
+                
+                
+                CHLoadLateClass(NewDialogCell);
+                CHHook(0, NewDialogCell, layoutSubviews);
+                CHHook(2, NewDialogCell, initWithStyle, reuseIdentifier);
                 
                 
                 CHLoadLateClass(VKMLiveController);
                 CHHook(2, VKMLiveController, tableView, cellForRowAtIndexPath);
+                
+//                CHLoadLateClass(GroupsController);
+//                CHHook(0, GroupsController, viewWillLayoutSubviews);
+//                
+//                CHLoadLateClass(GroupCell);
+//                CHHook(0, GroupCell, layoutSubviews);
+//                CHHook(2, GroupCell, initWithStyle, reuseIdentifier);
                 
                 
                 CHLoadLateClass(ProfileView);
@@ -1808,6 +1930,7 @@ CHConstructor
                 
                 
                 CHLoadLateClass(ChatController);
+                CHHook(0, ChatController, viewWillLayoutSubviews);
                 CHHook(2, ChatController, tableView, cellForRowAtIndexPath);
                 CHHook(1, ChatController, viewWillAppear);
                 
@@ -1822,6 +1945,7 @@ CHConstructor
                 
 //                CHLoadLateClass(VKRenderedText);
 //                CHHook(1, VKRenderedText, drawInContext);
+                
                 
                 
                 CHLoadLateClass(PhotoBrowserController);

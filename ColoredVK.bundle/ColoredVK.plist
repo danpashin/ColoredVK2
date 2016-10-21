@@ -6,24 +6,6 @@
 	<array>
 		<dict>
 			<key>label</key>
-			<string>BLACK_THEME</string>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>label</key>
-			<string>ENABLE_BLACK_THEME</string>
-			<key>key</key>
-			<string>enabledBlackTheme</string>
-			<key>id</key>
-			<string>enabledBlackTheme</string>
-		</dict>
-		<dict>
-			<key>label</key>
 			<string>NAVIGATION_BAR</string>
 			<key>cell</key>
 			<string>PSGroupCell</string>
@@ -260,6 +242,34 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
+			<string>MESSAGES_LIST_BACKGROUND</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKImageCell</string>
+			<key>action</key>
+			<string>chooseImage:</string>
+			<key>label</key>
+			<string>CHANGE_BACKGROUND</string>
+			<key>id</key>
+			<string>messagesListBackgroundImage</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>label</key>
+			<string>IMAGE_BLACKOUT</string>
+			<key>cellClass</key>
+			<string>ColoredVKStepperPrefsCell</string>
+			<key>id</key>
+			<string>chatListImageBlackout</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
 			<string>STATUS_BAR_COLORS</string>
 		</dict>
 		<dict>
@@ -301,6 +311,24 @@
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>MISCELLANEOUS</string>
+		</dict>
+		<dict>
+			<key>label</key>
+			<string>BLACK_THEME</string>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>label</key>
+			<string>ENABLE_BLACK_THEME</string>
+			<key>key</key>
+			<string>enabledBlackTheme</string>
+			<key>id</key>
+			<string>enabledBlackTheme</string>
 		</dict>
 		<dict>
 			<key>cell</key>
