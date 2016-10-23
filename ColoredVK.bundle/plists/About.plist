@@ -10,7 +10,7 @@
 			<key>detail</key>
 			<string>ColoredVKPrefs</string>
 			<key>plistToLoad</key>
-			<string>ColoredVKUpdates</string>
+			<string>UpdatesSettings</string>
 			<key>icon</key>
 			<string>UpdatesIcon.png</string>
 			<key>label</key>

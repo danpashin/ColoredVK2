@@ -19,12 +19,23 @@
 @property (strong, nonatomic) UIAlertAction *cancelAction;
 @property (strong, nonatomic) UIAlertAction *exitAction;
 @property (strong, nonatomic) NSBlockOperation *operation;
+@property (assign, nonatomic) BOOL fromPrefs;
 @end
 
 @implementation ColoredVKInstaller
-
+- (void)startWithUserInfo:(NSDictionary*)userInfo
+{
+    [self startWithUserInfo:userInfo completionBlock:^(BOOL disableTweak){}];
+}
 - (void)startWithCompletionBlock:( void(^)(BOOL disableTweak) )block
 {
+    [self startWithUserInfo:nil completionBlock:block];
+}
+
+- (void)startWithUserInfo:(NSDictionary*)userInfo completionBlock:( void(^)(BOOL disableTweak) )block 
+{
+    if (userInfo && userInfo[@"fromPreferences"]) self.fromPrefs = [userInfo[@"fromPreferences"] boolValue];
+    else self.fromPrefs = NO;
     NSBlockOperation *startOperation = [NSBlockOperation blockOperationWithBlock:^{
         NSString *licencePath = CVK_PREFS_PATH;
         licencePath = [licencePath stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"];
@@ -60,15 +71,13 @@
         [self.operation cancel];
     }];
     self.exitAction = [UIAlertAction actionWithTitle:@"Exit to apply changes" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [[UIApplication sharedApplication] performSelector:@selector(suspend)];
-        [NSThread sleepForTimeInterval:0.5];
-        exit(0);
+        if (!self.fromPrefs) [self actionExit];
     }];
     self.exitAction.enabled = NO;
     [self.alertController addAction:self.cancelAction];
     [self.alertController addAction:self.exitAction];
     
-    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:self.alertController animated:YES completion:nil];
+    [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:self.alertController animated:YES completion:nil];
     
     
     self.operation = [NSBlockOperation blockOperationWithBlock:^{        
@@ -117,5 +126,12 @@
     }];
     self.operation.queuePriority = NSOperationQueuePriorityHigh;
     [self.operation start];
+}
+
+- (void) actionExit
+{
+    [[UIApplication sharedApplication] performSelector:@selector(suspend)];
+    [NSThread sleepForTimeInterval:0.5];
+    exit(0);
 }
 @end

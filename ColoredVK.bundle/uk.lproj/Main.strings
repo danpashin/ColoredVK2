@@ -8,9 +8,8 @@
     
 
 "ENABLED" = "Включено";
-"NAVIGATION_TOOL_BAR" = "Бар навігації & тулбар";
+"NAVIGATION_TOOL_BAR" = "Бар навігації і тулбар";
 "MENU" = "Меню";
-"MESSAGES" = "Повідомлень";
-"GROUPS" = "Групи";
+"MESSAGES" = "Повідомлень і групи";
 "MISCELLANEOUS" = "Різне";
 "ABOUT" = "Про програму";

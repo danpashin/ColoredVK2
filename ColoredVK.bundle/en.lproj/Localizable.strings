@@ -30,5 +30,7 @@
 
 "USE_IN_MENU" = "Use in the menu";
 "USE_IN_MESSAGES" = "Use in the messages";
+"USE_IN_MESSAGE_LIST" = "Use in message list";
+"USE_IN_GROUP_LIST" = "Use in group list";
 
 "NEVER" = "Never";

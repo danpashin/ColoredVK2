@@ -25,7 +25,7 @@
 {
     [super viewDidLoad];    
     
-    NSString *path = [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] pathForResource:@"Licences" ofType:@"plist"];
+    NSString *path = [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] pathForResource:@"Licences" ofType:@"plist" inDirectory:@"plists"];
     NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path][@"Licences"];
     
     NSString *text = @"";

@@ -8,8 +8,6 @@
 
 
 @interface VKMMainController : UIViewController
-+ (id)rootMainControllerForSession:(id)arg1;
-+ (id)rootMainController;
 @property(retain, nonatomic) NSArray *menu;
 @property(retain, nonatomic) UINavigationController *navMain;
 @end
@@ -96,7 +94,7 @@
 @class VKPhotoSized;
 @interface PhotoBrowserController : UIViewController
 @property(retain, nonatomic) UIScrollView *paging;
-- (VKPhotoSized *)photoForPage:(unsigned long long)page;
+- (VKPhotoSized *)photoForPage:(NSInteger)page;
 @end
 
 @interface VKImageVariant : NSObject
@@ -203,6 +201,8 @@
 @interface VKMEditableController : VKMLiveController
 @end
 @interface VKMToolbarController : VKMEditableController
+@property(readonly, retain, nonatomic) UISegmentedControl *segment;
+@property(readonly, retain, nonatomic) UIToolbar *toolbar;
 @end
 
 @interface VKMMultiIndexController : VKMToolbarController
@@ -212,3 +212,6 @@
 @end
 
 
+
+@interface DialogsSearchController : VKMSearchController
+@end

@@ -10,7 +10,6 @@
 "ENABLED" = "Включено";
 "NAVIGATION_TOOL_BAR" = "Бар навигации и тулбар";
 "MENU" = "Меню";
-"MESSAGES" = "Сообщения";
-"GROUPS" = "Группы";
+"MESSAGES" = "Сообщения и группы";
 "MISCELLANEOUS" = "Разное";
 "ABOUT" = "О программе";

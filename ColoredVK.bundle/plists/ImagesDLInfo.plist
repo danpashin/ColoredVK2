@@ -18,7 +18,7 @@
 		</dict>
 		<dict>
 			<key>title</key>
-			<string>USE_IN_MESSAGES_LIST</string>
+			<string>USE_IN_MESSAGE_LIST</string>
 			<key>identifier</key>
 			<string>messagesListBackgroundImage</string>
 		</dict>

@@ -82,11 +82,11 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>id</key>
-			<string>hideSeparators</string>
+			<string>hideMenuSeparators</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
-			<string>hideSeparators</string>
+			<string>hideMenuSeparators</string>
 			<key>label</key>
 			<string>HIDE_SEPARATORS</string>
 		</dict>

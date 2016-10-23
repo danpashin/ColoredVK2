@@ -6,13 +6,14 @@
 //  Copyright (©) Daniil Pashin 2015. All rights reserved.
 //  
 
-"BLACK_THEME" = "Black theme";
-"ENABLE_BLACK_THEME" = "Enable";
+"ENABLE_BLACK_THEME" = "Enable black theme";
 
 "NAVIGATION_BAR" = "Navigation bar";
 "TOOLBAR" = "Toolbar";
 "MENU_BACKGROUND" = "Menu";
 "MESSAGES_BACKGROUND" = "Messages";
+"MESSAGES_LIST_BACKGROUND" = "Messages list";
+"GROUPS" = "Groups";
 "MISCELLANEOUS" = "Miscellaneous";
 "STATUS_BAR_COLORS" = "Status bar";
 "SWITCH_COLORS" = "Switches";
@@ -33,7 +34,7 @@
 "HIDE_SEPARATORS" = "Hide separators";
 "HIDE_SEARCH" = "Hide search *";
 "VKAPP_RESTART_IS_NEEDED" = "* VK App restart is needed";
-"USE_BLUR_IN_MESSAGES_FOOTER" = "* If enabled navigation bar and toolbar will be blurred in messages";
+"USE_BLUR_FOOTER" = "* If enabled navigation bar and toolbar will be blurred";
 
 "KEYBOARD_STYLE" = "Keyboard style";
 "BLACK" = "Black";

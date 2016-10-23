@@ -8,9 +8,8 @@
 
 
 "ENABLED" = "Enabled";
-"NAVIGATION_TOOL_BAR" = "Navigation bar & tool bar";
+"NAVIGATION_TOOL_BAR" = "Navigation bar and toolbar";
 "MENU" = "Menu";
-"MESSAGES" = "Messages";
-"GROUPS" = "Groups";
+"MESSAGES" = "Messages and groups";
 "MISCELLANEOUS" = "Miscellaneous";
 "ABOUT" = "About";

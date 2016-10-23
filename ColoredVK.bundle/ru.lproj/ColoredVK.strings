@@ -13,6 +13,8 @@
 "TOOLBAR" = "Тулбар";
 "MENU_BACKGROUND" = "Меню";
 "MESSAGES_BACKGROUND" = "Сообщения";
+"MESSAGES_LIST_BACKGROUND" = "Список сообщений";
+"GROUPS" = "Группы";
 "MISCELLANEOUS" = "Разное";
 "STATUS_BAR_COLORS" = "Статус бар";
 "SWITCH_COLORS" = "Переключатели";
@@ -33,7 +35,7 @@
 "HIDE_SEPARATORS" = "Скрыть разделители";
 "HIDE_SEARCH" = "Спрятать поиск *";
 "VKAPP_RESTART_IS_NEEDED" = "* Необходим рестарт VK App";
-"USE_BLUR_IN_MESSAGES_FOOTER" = "* Если включено, бар навигации и тулбар в сообщениях будут размыты";
+"USE_BLUR_FOOTER" = "* Если включено, бар навигации и тулбар будут размыты";
 
 "KEYBOARD_STYLE" = "Стиль клавиатуры";
 "BLACK" = "Черная";

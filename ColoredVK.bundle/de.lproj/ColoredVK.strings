@@ -13,6 +13,8 @@
 "TOOLBAR" = "Toolbar";
 "MENU_BACKGROUND" = "Menü";
 "MESSAGES_BACKGROUND" = "Nachrichten";
+"MESSAGES_LIST_BACKGROUND" = "Nachrichten liste";
+"GROUPS" = "Gruppen";
 "MISCELLANEOUS" = "Sonstiges";
 "STATUS_BAR_COLORS" = "Statusleiste";
 "SWITCH_COLORS" = "Schalter";
@@ -33,7 +35,7 @@
 "HIDE_SEPARATORS" = "Ausblenden separatoren";
 "HIDE_SEARCH" = "Ausblenden suche *";
 "VKAPP_RESTART_IS_NEEDED" = "* VK App Neustart erforderlich ist";
-"USE_BLUR_IN_MESSAGES_FOOTER" = "* Wenn aktiviert, wird die Navigationsleiste und die Symbolleiste wird unscharf";
+"USE_BLUR_FOOTER" = "* Wenn aktiviert, wird die Navigationsleiste und die Symbolleiste wird unscharf";
 
 "KEYBOARD_STYLE" = "Tastatur stil";
 "BLACK" = "Schwarz";

@@ -105,7 +105,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
     
-    NSArray *identificsToReloadMenu = @[@"menuSelectionStyle", @"hideSeparators", @"enabledBlackTheme", @"changeSwitchColor"];
+    NSArray *identificsToReloadMenu = @[@"menuSelectionStyle", @"hideMenuSeparators", @"enabledBlackTheme", @"changeSwitchColor"];
     if ([identificsToReloadMenu containsObject:specifier.identifier]) {
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
     }

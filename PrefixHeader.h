@@ -29,4 +29,4 @@
 #define UIKitLocalizedString(key) [[NSBundle bundleWithIdentifier:@"com.apple.UIKit"] localizedStringForKey:key value:@"" table:nil]
 #define IS_IOS_10_OR_LATER    ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10.0)
 
-#define kColoredVKVersion @"3.1.4-beta"
+#define kColoredVKVersion @"3.2"

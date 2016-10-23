@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ColoredVK/Tweak.m"
-            timestampString = "498685033.851355"
+            timestampString = "498837669.281423"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1035"
-            endingLineNumber = "1035"
-            landmarkName = "CHOptimizedMethod()"
+            startingLineNumber = "231"
+            endingLineNumber = "231"
+            landmarkName = "reloadPrefs()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -26,11 +26,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ColoredVK/Tweak.m"
-            timestampString = "498685641.177323"
+            timestampString = "498908096.548758"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1896"
-            endingLineNumber = "1896">
+            startingLineNumber = "1020"
+            endingLineNumber = "1020"
+            landmarkName = "CHOptimizedMethod()"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

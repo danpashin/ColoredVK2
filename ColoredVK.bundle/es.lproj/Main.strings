@@ -8,9 +8,8 @@
 
 
 "ENABLED" = "Habilitado";
-"NAVIGATION_TOOL_BAR" = "Barra de navegación & de herramientas";
+"NAVIGATION_TOOL_BAR" = "Barra de navegación y de herramientas";
 "MENU" = "Menú";
-"MESSAGES" = "Mensajes";
-"GROUPS" = "Grupos";
+"MESSAGES" = "Mensajes y Grupos";
 "MISCELLANEOUS" = "Miscelánea";
 "ABOUT" = "Sobre el programa";

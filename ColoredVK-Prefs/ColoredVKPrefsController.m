@@ -57,7 +57,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [[ColoredVKInstaller alloc] startWithCompletionBlock:^(BOOL disableTweak){}];
+    UINavigationBar *navbar = self.navigationController.navigationBar;
+    if ([navbar.subviews containsObject:[navbar viewWithTag:10]]) {
+        [[navbar viewWithTag:10] removeFromSuperview];        
+        [navbar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+    }
+    [[ColoredVKInstaller alloc] startWithUserInfo:@{@"fromPreferences" : @YES }];
     for (UIView *view in self.view.subviews) {
         if ([NSStringFromClass([view class]) isEqualToString:@"UITableView"]) {
             UITableView *tableView = (UITableView *)view;
