@@ -22,6 +22,12 @@
 			<key>identifier</key>
 			<string>messagesListBackgroundImage</string>
 		</dict>
+		<dict>
+			<key>title</key>
+			<string>USE_IN_GROUP_LIST</string>
+			<key>identifier</key>
+			<string>groupsListBackgroundImage</string>
+		</dict>
 	</array>
 </dict>
 </plist>

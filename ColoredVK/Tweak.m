@@ -502,12 +502,11 @@ static NSArray *getInfoForActionController()
     cvkSwitch = switchView;
     [cell addSubview:switchView];
     
-    cell.select = (id)^(id arg1, id arg2, id arg3, id arg4) {
+    cell.select = (id)^(MainModel *model, id arg2) {
         UIViewController *cvkPrefs = [[UIStoryboard storyboardWithName:@"Main" bundle:cvkBunlde] instantiateInitialViewController];
         VKMNavContext *mainContext = [[objc_getClass("VKMNavContext") applicationNavRoot] rootNavContext];
         [mainContext reset:cvkPrefs];
-
-        return nil; 
+        return nil;
     };
     
     return cell;
@@ -523,7 +522,7 @@ static NSArray *getInfoForActionController()
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
+//        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
     });
 }
 
@@ -671,30 +670,33 @@ CHOptimizedMethod(0, self, void, UIToolbar, layoutSubviews)
             NSArray *controllersToChange = @[@"UIView", @"RootView"];
             if ([controllersToChange containsObject:CLASS_NAME(self.superview)]) {
                 BOOL canUseTint = YES;
+                BOOL needsButtonColor = NO;
                 for (id view in self.subviews) {
                     if ([@"InputPanelViewTextView" isEqualToString:CLASS_NAME(view)]) {
                         canUseTint = NO;
-                        if (!(useMessagesBlur && [CLASS_NAME(self.superview.superclass) isEqualToString:@"UIView"])) {
-                            for (UIView *view in self.subviews) {
-                                if ([view isKindOfClass:[UIButton class]]) {
-                                    UIButton *btn = (UIButton *)view;
-                                    [btn setTitleColor:[UIColor darkerColorForColor:toolBarForegroundColor] forState:UIControlStateDisabled];
-                                    [btn setTitleColor:toolBarForegroundColor forState:UIControlStateNormal];
-                                    BOOL btnToExclude = NO;
-                                    NSArray *btnsWithActionsToExclude = @[@"actionToggleEmoji:"];
-                                    for (NSString *action in [btn actionsForTarget:btn.allTargets.allObjects[0] forControlEvent:UIControlEventTouchUpInside]) {
-                                        if ([btnsWithActionsToExclude containsObject:action]) btnToExclude = YES;
-                                    }
-                                    if (!btnToExclude && btn.currentImage) [btn setImage:coloredImage(toolBarForegroundColor, [btn imageForState:UIControlStateNormal]) forState:UIControlStateNormal];
-                                }
-                            }
-                        }
-
+                        needsButtonColor = YES;
                         break;
                     }
                 }
                 self.barTintColor = toolBarBackgroundColor;
                 if (canUseTint) self.tintColor = toolBarForegroundColor;
+                
+                if (needsButtonColor) {
+                    for (UIView *view in self.subviews) {
+                        if ([view isKindOfClass:[UIButton class]]) {
+                            UIButton *btn = (UIButton *)view;
+                            [btn setTitleColor:[UIColor darkerColorForColor:toolBarForegroundColor] forState:UIControlStateDisabled];
+                            [btn setTitleColor:toolBarForegroundColor forState:UIControlStateNormal];
+                            BOOL btnToExclude = NO;
+                            NSArray *btnsWithActionsToExclude = @[@"actionToggleEmoji:"];
+                            for (NSString *action in [btn actionsForTarget:btn.allTargets.allObjects[0] forControlEvent:UIControlEventTouchUpInside]) {
+                                if ([btnsWithActionsToExclude containsObject:action]) btnToExclude = YES;
+                            }
+                            if (!btnToExclude && btn.currentImage) [btn setImage:coloredImage(toolBarForegroundColor, [btn imageForState:UIControlStateNormal]) forState:UIControlStateNormal];
+                        }
+                    }
+
+                }
                 
             }
         } 
@@ -1320,6 +1322,15 @@ CHOptimizedMethod(2, self, UITableViewCell*, GroupsController, tableView, UITabl
 
 #pragma mark DialogsController - список диалогов
 CHDeclareClass(DialogsController);
+
+CHOptimizedMethod(0, self, void, DialogsController, viewWillLayoutSubviews)
+{
+    CHSuper(0, DialogsController, viewWillLayoutSubviews);
+    if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && (enabled && (!enabledBlackTheme && enabledMessagesListImage)) ) {
+            setImageToTable(self.tableView, @"messagesListBackgroundImage", chatListImageBlackout, NO);
+    }
+}
+
 CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, DialogsController, viewWillAppear, animated);
@@ -1328,13 +1339,12 @@ CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animat
             self.tableView.backgroundColor = [UIColor darkBlackColor];
             self.tableView.backgroundView = nil;
         } else if (enabledMessagesListImage) {
-            setImageToTable(self.tableView, @"messagesListBackgroundImage", chatListImageBlackout, NO);
             self.tableView.separatorColor = (enabled && hideMessagesListSeparators)?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
             
             UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
             search.backgroundImage = [UIImage new];
             for (UIView *field in search.subviews.lastObject.subviews){
-                if ([field isKindOfClass:[UITextField class]]){
+                if ([field isKindOfClass:[UITextField class]]) {
                     field.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
                     UITextField *textField = (UITextField*)field;
                     textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:textField.placeholder
@@ -1471,7 +1481,7 @@ CHDeclareClass(MessageCell);
 CHOptimizedMethod(1, self, void, MessageCell, updateBackground, BOOL, animated)
 {
     CHSuper(1, MessageCell, updateBackground, animated);
-    if (enabled) {
+    if (enabled && (enabledMessagesImage || enabledBlackTheme)) {
         self.backgroundView = nil;
         if (!self.message.read_state) self.backgroundColor = enabledBlackTheme?[UIColor colorWithWhite:40.0/255.0f alpha:1.0]:[UIColor colorWithWhite:1 alpha:0.15];
         else self.backgroundColor = [UIColor clearColor];
@@ -1950,6 +1960,7 @@ CHConstructor
                 
                 
                 CHLoadLateClass(DialogsController);
+                CHHook(0, DialogsController, viewWillLayoutSubviews);
                 CHHook(1, DialogsController, viewWillAppear);
                 
                 

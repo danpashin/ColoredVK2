@@ -29,7 +29,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 - (UIStatusBarStyle) preferredStatusBarStyle
 {
-    if ([NSStringFromClass([[UIApplication sharedApplication].keyWindow.rootViewController class]) isEqualToString:@"DeckController"]) return UIStatusBarStyleLightContent;
+    if ([NSStringFromClass([UIApplication.sharedApplication.keyWindow.rootViewController class]) isEqualToString:@"DeckController"]) return UIStatusBarStyleLightContent;
     else return UIStatusBarStyleDefault;
 }
 

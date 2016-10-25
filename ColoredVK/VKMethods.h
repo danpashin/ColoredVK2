@@ -13,9 +13,10 @@
 @end
 
 
-
+@class MainModel;
 @interface MenuCell : UITableViewCell 
-@property(copy, nonatomic) id select;
+@property (copy, nonatomic) id(^select)(MainModel *model, id arg2);
+
 @end
 
 @interface VKMNavContext : NSObject 
@@ -214,4 +215,9 @@
 
 
 @interface DialogsSearchController : VKMSearchController
+@end
+
+@interface Model : NSObject
+@end
+@interface MainModel : Model
 @end

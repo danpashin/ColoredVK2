@@ -21,7 +21,7 @@
 
 - (UIStatusBarStyle) preferredStatusBarStyle
 {
-    if ([NSStringFromClass([[UIApplication sharedApplication].keyWindow.rootViewController class]) isEqualToString:@"DeckController"]) return UIStatusBarStyleLightContent;
+    if ([NSStringFromClass([UIApplication.sharedApplication.keyWindow.rootViewController class]) isEqualToString:@"DeckController"]) return UIStatusBarStyleLightContent;
     else return UIStatusBarStyleDefault;
 }
 

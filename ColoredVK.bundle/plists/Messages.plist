@@ -21,6 +21,8 @@
 			<string>CHANGE_BACKGROUND</string>
 			<key>id</key>
 			<string>messagesBackgroundImage</string>
+			<key>textColor</key>
+			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -59,6 +61,8 @@
 			<string>CHANGE_BACKGROUND</string>
 			<key>id</key>
 			<string>messagesListBackgroundImage</string>
+			<key>textColor</key>
+			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -111,6 +115,8 @@
 			<string>CHANGE_BACKGROUND</string>
 			<key>id</key>
 			<string>groupsListBackgroundImage</string>
+			<key>textColor</key>
+			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
 		<dict>
 			<key>cell</key>
