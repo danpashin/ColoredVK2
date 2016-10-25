@@ -521,8 +521,8 @@ static NSArray *getInfoForActionController()
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
-//        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
+//        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
     });
 }
 
@@ -594,6 +594,66 @@ static void setNavigationBar(UINavigationBar *navBar)
     }
 }
 
+static void setToolBar(UIToolbar *toolbar)
+{
+    if (enabled && [toolbar respondsToSelector:@selector(setBarTintColor:)]) {
+        if (enabledBlackTheme) {
+            
+            setBlur(toolbar, NO);
+            toolbar.translucent = NO;
+            NSArray *controllersToChange = @[@"UIView", @"RootView"];
+            if ([controllersToChange containsObject:CLASS_NAME(toolbar.superview)]) {
+                toolbar.tintColor = [UIColor lightGrayColor];
+                toolbar.barTintColor = [UIColor darkBlackColor];
+                for (UIView *subview in toolbar.subviews) {
+                    if (![@"_UIToolbarBackground" isEqualToString:CLASS_NAME(subview)]) {
+                        if ([subview respondsToSelector:@selector(setBackgroundColor:)]) subview.backgroundColor = [UIColor clearColor];
+                    }
+                }
+            }
+            for (id view in toolbar.subviews) {
+                if ([view isKindOfClass:[UITextView class]]) {
+                    UITextView *textView = view;
+                    textView.backgroundColor = [UIColor lightBlackColor];
+                    textView.textColor = [UIColor lightGrayColor];
+                }
+            }
+        } else if (enabledToolBarColor) {
+            NSArray *controllersToChange = @[@"UIView", @"RootView"];
+            if ([controllersToChange containsObject:CLASS_NAME(toolbar.superview)]) {
+                BOOL canUseTint = YES;
+                BOOL needsButtonColor = NO;
+                for (id view in toolbar.subviews) {
+                    if ([@"InputPanelViewTextView" isEqualToString:CLASS_NAME(view)]) {
+                        canUseTint = NO;
+                        needsButtonColor = YES;
+                        break;
+                    }
+                }
+                toolbar.barTintColor = toolBarBackgroundColor;
+                if (canUseTint) toolbar.tintColor = toolBarForegroundColor;
+                
+                if (needsButtonColor) {
+                    for (UIView *view in toolbar.subviews) {
+                        if ([view isKindOfClass:[UIButton class]]) {
+                            UIButton *btn = (UIButton *)view;
+                            [btn setTitleColor:[UIColor darkerColorForColor:toolBarForegroundColor] forState:UIControlStateDisabled];
+                            [btn setTitleColor:toolBarForegroundColor forState:UIControlStateNormal];
+                            BOOL btnToExclude = NO;
+                            NSArray *btnsWithActionsToExclude = @[@"actionToggleEmoji:"];
+                            for (NSString *action in [btn actionsForTarget:btn.allTargets.allObjects[0] forControlEvent:UIControlEventTouchUpInside]) {
+                                if ([btnsWithActionsToExclude containsObject:action]) btnToExclude = YES;
+                            }
+                            if (!btnToExclude && btn.currentImage) [btn setImage:coloredImage(toolBarForegroundColor, [btn imageForState:UIControlStateNormal]) forState:UIControlStateNormal];
+                        }
+                    }
+                    
+                }
+                
+            }
+        } 
+    } else setBlur(toolbar, NO);
+}
 
 
 
@@ -643,66 +703,14 @@ CHDeclareClass(UIToolbar);
 CHOptimizedMethod(0, self, void, UIToolbar, layoutSubviews)
 {
     CHSuper(0, UIToolbar, layoutSubviews);
-    
-    if (enabled) {
-        if (enabledBlackTheme) {
-
-            setBlur(self, NO);
-            self.translucent = NO;
-            NSArray *controllersToChange = @[@"UIView", @"RootView"];
-            if ([controllersToChange containsObject:CLASS_NAME(self.superview)]) {
-                self.tintColor = [UIColor lightGrayColor];
-                self.barTintColor = [UIColor darkBlackColor];
-                for (UIView *subview in self.subviews) {
-                    if (![@"_UIToolbarBackground" isEqualToString:CLASS_NAME(subview)]) {
-                        if ([subview respondsToSelector:@selector(setBackgroundColor:)]) subview.backgroundColor = [UIColor clearColor];
-                    }
-                }
-            }
-            for (id view in self.subviews) {
-                if ([view isKindOfClass:[UITextView class]]) {
-                    UITextView *textView = view;
-                    textView.backgroundColor = [UIColor lightBlackColor];
-                    textView.textColor = [UIColor lightGrayColor];
-                }
-            }
-        } else if (enabledToolBarColor) {
-            NSArray *controllersToChange = @[@"UIView", @"RootView"];
-            if ([controllersToChange containsObject:CLASS_NAME(self.superview)]) {
-                BOOL canUseTint = YES;
-                BOOL needsButtonColor = NO;
-                for (id view in self.subviews) {
-                    if ([@"InputPanelViewTextView" isEqualToString:CLASS_NAME(view)]) {
-                        canUseTint = NO;
-                        needsButtonColor = YES;
-                        break;
-                    }
-                }
-                self.barTintColor = toolBarBackgroundColor;
-                if (canUseTint) self.tintColor = toolBarForegroundColor;
-                
-                if (needsButtonColor) {
-                    for (UIView *view in self.subviews) {
-                        if ([view isKindOfClass:[UIButton class]]) {
-                            UIButton *btn = (UIButton *)view;
-                            [btn setTitleColor:[UIColor darkerColorForColor:toolBarForegroundColor] forState:UIControlStateDisabled];
-                            [btn setTitleColor:toolBarForegroundColor forState:UIControlStateNormal];
-                            BOOL btnToExclude = NO;
-                            NSArray *btnsWithActionsToExclude = @[@"actionToggleEmoji:"];
-                            for (NSString *action in [btn actionsForTarget:btn.allTargets.allObjects[0] forControlEvent:UIControlEventTouchUpInside]) {
-                                if ([btnsWithActionsToExclude containsObject:action]) btnToExclude = YES;
-                            }
-                            if (!btnToExclude && btn.currentImage) [btn setImage:coloredImage(toolBarForegroundColor, [btn imageForState:UIControlStateNormal]) forState:UIControlStateNormal];
-                        }
-                    }
-
-                }
-                
-            }
-        } 
-    } else setBlur(self, NO);
+    setToolBar(self);
 }
 
+CHOptimizedMethod(0, self, void, UIToolbar, setNeedsLayout)
+{
+    CHSuper(0, UIToolbar, setNeedsLayout);
+    setToolBar(self);
+}
 
 
 #pragma mark UITextInputTraits
@@ -1871,7 +1879,8 @@ CHConstructor
                 
                 
                 CHLoadLateClass(UIToolbar);
-                CHHook(0, UIToolbar, layoutSubviews);
+                if (IS_IOS_10_OR_LATER) CHHook(0, UIToolbar, setNeedsLayout);
+                else                    CHHook(0, UIToolbar, layoutSubviews);
                 
                 
                 CHLoadLateClass(UITextInputTraits);
