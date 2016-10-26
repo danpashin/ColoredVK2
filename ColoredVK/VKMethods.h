@@ -221,3 +221,7 @@
 @end
 @interface MainModel : Model
 @end
+
+
+@interface VKPPBadge : UIImageView
+@end

@@ -1209,6 +1209,15 @@ CHOptimizedMethod(1, self, id, NewsFeedPostCreationButton, initWithFrame, CGRect
     
     return origButton;
 }
+
+
+CHDeclareClass(VKPPBadge);
+CHOptimizedMethod(0, self, void, VKPPBadge, layoutSubviews)
+{
+    if ([self isKindOfClass:NSClassFromString(@"VKPPBadge")] && (enabled && enabledBlackTheme)) self.image = coloredImage([UIColor colorWithWhite:0.2 alpha:1], self.image);
+    CHSuper(0, VKPPBadge, layoutSubviews);
+}
+
 #pragma mark BLACK THEME
 #pragma mark -
 
@@ -1381,9 +1390,13 @@ CHOptimizedMethod(1, self, void, VKMSearchController, searchDisplayControllerWil
     CHSuper(1, VKMSearchController, searchDisplayControllerWillBeginSearch, controller);
     if ([controller isKindOfClass:NSClassFromString(@"DialogsSearchController")] && (enabled && enabledMessagesListImage)) {
         for (UIView *field in controller.searchBar.subviews.lastObject.subviews){
-            if ([field isKindOfClass:[UITextField class]]){
+            if ([field isKindOfClass:[UITextField class]]) {
                 field.backgroundColor = [UIColor colorWithWhite:1 alpha:1];
             } else if (![field isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) field.hidden = NO;
+            if (enabledBlackTheme && [field isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) field.hidden = YES;
+        }
+        if (enabledBlackTheme) {
+            controller.searchBar.scopeBarBackgroundImage = [UIImage imageWithColor:[UIColor colorWithWhite:0 alpha:1]];
         }
     }
 }
@@ -1430,10 +1443,12 @@ CHOptimizedMethod(2, self, id, NewDialogCell, initWithStyle, UITableViewCellStyl
 CHDeclareClass(BackgroundView);
 CHOptimizedMethod(1, self, void, BackgroundView, drawRect, CGRect, rect)
 {
-    if (enabled && enabledMessagesListImage) {
-        self.layer.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2].CGColor;
+    if (enabled) {
         self.layer.cornerRadius = self.cornerRadius;
         self.layer.masksToBounds = YES;
+        if (enabledBlackTheme) self.layer.backgroundColor = [UIColor colorWithWhite:0.2 alpha:1].CGColor;
+        else if (enabledMessagesListImage) self.layer.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2].CGColor;
+        else CHSuper(1, BackgroundView, drawRect, rect);
     } else CHSuper(1, BackgroundView, drawRect, rect);
 }
 
@@ -1917,6 +1932,10 @@ CHConstructor
                 
                 CHLoadLateClass(BackgroundView);
                 CHHook(1, BackgroundView, drawRect);
+                
+                
+                CHLoadLateClass(VKPPBadge);
+                CHHook(0, VKPPBadge, layoutSubviews);
                 
                 
                 
