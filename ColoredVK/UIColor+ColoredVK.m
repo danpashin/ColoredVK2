@@ -18,7 +18,7 @@
 
 + (UIColor *)colorFromHexString:(NSString *)hexString 
 {
-    if (![hexString hasPrefix:@"#"]) { hexString = [@"#" stringByAppendingString:hexString]; }
+    if (![hexString hasPrefix:@"#"]) hexString = [@"#" stringByAppendingString:hexString];
     int red = 0;
     int green = 0;
     int blue = 0;

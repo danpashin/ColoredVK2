@@ -24,6 +24,7 @@
 "FOREGROUND_COLOR" = "Color principal";
 "ENABLED_IMAGE" = "Utilizar una imagen en vez";
 "USE_BLUR" = "El uso de desenfoque *";
+"BLUR_SETTINGS" = "El desenfoque de la configuración";
 
 "CHANGE_BACKGROUND" = "Cambiar el fondo";
 "IMAGE_BLACKOUT" = "Apagón imagen";

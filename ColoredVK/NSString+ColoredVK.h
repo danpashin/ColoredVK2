@@ -18,4 +18,6 @@
  Creates hex string from color
  */
 + (NSString *)hexStringFromColor:(UIColor *)color;
+
++ (NSString *)unlocalizedStringFromLocalized:(NSString *)localizedString table:(NSString *)table;
 @end

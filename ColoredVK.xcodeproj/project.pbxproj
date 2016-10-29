@@ -119,6 +119,18 @@
 		A5DA87DF1D944EB700763B5F /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5DA87DD1D944EAC00763B5F /* ImageIO.framework */; };
 		A5DA87E21D944ED400763B5F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5DA87E01D944ECE00763B5F /* CoreGraphics.framework */; };
 		A5EB1CCA1D85418500C97A91 /* libMobileGestaltExtensions.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A5EB1CC91D85418500C97A91 /* libMobileGestaltExtensions.tbd */; };
+		A5EFC6791DC3870900A281BD /* BEMAnimationManager.h in Headers */ = {isa = PBXBuildFile; fileRef = A5EFC6711DC3870900A281BD /* BEMAnimationManager.h */; };
+		A5EFC67A1DC3870900A281BD /* BEMAnimationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A5EFC6721DC3870900A281BD /* BEMAnimationManager.m */; };
+		A5EFC67B1DC3870900A281BD /* BEMCheckBox.h in Headers */ = {isa = PBXBuildFile; fileRef = A5EFC6731DC3870900A281BD /* BEMCheckBox.h */; };
+		A5EFC67C1DC3870900A281BD /* BEMCheckBox.m in Sources */ = {isa = PBXBuildFile; fileRef = A5EFC6741DC3870900A281BD /* BEMCheckBox.m */; };
+		A5EFC67D1DC3870900A281BD /* BEMCheckBoxGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = A5EFC6751DC3870900A281BD /* BEMCheckBoxGroup.h */; };
+		A5EFC67E1DC3870900A281BD /* BEMCheckBoxGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = A5EFC6761DC3870900A281BD /* BEMCheckBoxGroup.m */; };
+		A5EFC67F1DC3870900A281BD /* BEMPathManager.h in Headers */ = {isa = PBXBuildFile; fileRef = A5EFC6771DC3870900A281BD /* BEMPathManager.h */; };
+		A5EFC6801DC3870900A281BD /* BEMPathManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A5EFC6781DC3870900A281BD /* BEMPathManager.m */; };
+		A5EFC6851DC3871600A281BD /* ColoredVKListController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5EFC6811DC3871600A281BD /* ColoredVKListController.h */; };
+		A5EFC6861DC3871600A281BD /* ColoredVKListController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5EFC6821DC3871600A281BD /* ColoredVKListController.m */; };
+		A5EFC6871DC3871600A281BD /* ColoredVKSelectCell.h in Headers */ = {isa = PBXBuildFile; fileRef = A5EFC6831DC3871600A281BD /* ColoredVKSelectCell.h */; };
+		A5EFC6881DC3871600A281BD /* ColoredVKSelectCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5EFC6841DC3871600A281BD /* ColoredVKSelectCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -219,6 +231,18 @@
 		A5DC150A1CCC03E1004D6731 /* ColoredVKColorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ColoredVKColorCell.h; path = ../ColoredVK/ColoredVKColorCell.h; sourceTree = "<group>"; };
 		A5DC150B1CCC03E1004D6731 /* ColoredVKColorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ColoredVKColorCell.m; path = ../ColoredVK/ColoredVKColorCell.m; sourceTree = "<group>"; };
 		A5EB1CC91D85418500C97A91 /* libMobileGestaltExtensions.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libMobileGestaltExtensions.tbd; path = usr/lib/libMobileGestaltExtensions.tbd; sourceTree = SDKROOT; };
+		A5EFC6711DC3870900A281BD /* BEMAnimationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEMAnimationManager.h; sourceTree = "<group>"; };
+		A5EFC6721DC3870900A281BD /* BEMAnimationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMAnimationManager.m; sourceTree = "<group>"; };
+		A5EFC6731DC3870900A281BD /* BEMCheckBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEMCheckBox.h; sourceTree = "<group>"; };
+		A5EFC6741DC3870900A281BD /* BEMCheckBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMCheckBox.m; sourceTree = "<group>"; };
+		A5EFC6751DC3870900A281BD /* BEMCheckBoxGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEMCheckBoxGroup.h; sourceTree = "<group>"; };
+		A5EFC6761DC3870900A281BD /* BEMCheckBoxGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMCheckBoxGroup.m; sourceTree = "<group>"; };
+		A5EFC6771DC3870900A281BD /* BEMPathManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BEMPathManager.h; sourceTree = "<group>"; };
+		A5EFC6781DC3870900A281BD /* BEMPathManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BEMPathManager.m; sourceTree = "<group>"; };
+		A5EFC6811DC3871600A281BD /* ColoredVKListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKListController.h; sourceTree = "<group>"; };
+		A5EFC6821DC3871600A281BD /* ColoredVKListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKListController.m; sourceTree = "<group>"; };
+		A5EFC6831DC3871600A281BD /* ColoredVKSelectCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKSelectCell.h; sourceTree = "<group>"; };
+		A5EFC6841DC3871600A281BD /* ColoredVKSelectCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKSelectCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -443,6 +467,10 @@
 				A504C0821DB011ED006C5FBC /* PSTableCell+ColoredVK.m */,
 				A525E3841D872B7A0015CA59 /* ColoredVKLicencesController.h */,
 				A525E3851D872B7A0015CA59 /* ColoredVKLicencesController.m */,
+				A5EFC6811DC3871600A281BD /* ColoredVKListController.h */,
+				A5EFC6821DC3871600A281BD /* ColoredVKListController.m */,
+				A5EFC6831DC3871600A281BD /* ColoredVKSelectCell.h */,
+				A5EFC6841DC3871600A281BD /* ColoredVKSelectCell.m */,
 				A5D979B31DAEBDF800607F06 /* Main.storyboard */,
 				A5D979A41DAEBA1000607F06 /* Images.xcassets */,
 				A5DD93FE1D3E0F560006E470 /* Supporting Files */,
@@ -523,6 +551,7 @@
 		A5DD93FE1D3E0F560006E470 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				A5EFC6701DC3870900A281BD /* BEMCheckBox */,
 				A504C0621DAFE839006C5FBC /* DateTools */,
 				A55F5FFC1D3B81270099BE4F /* KLCPopup */,
 				A5ADE9071DA7DDC700673F1A /* HRColorPicker */,
@@ -530,6 +559,21 @@
 				A5B6ED0B1D3D659800383425 /* Package */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A5EFC6701DC3870900A281BD /* BEMCheckBox */ = {
+			isa = PBXGroup;
+			children = (
+				A5EFC6711DC3870900A281BD /* BEMAnimationManager.h */,
+				A5EFC6721DC3870900A281BD /* BEMAnimationManager.m */,
+				A5EFC6731DC3870900A281BD /* BEMCheckBox.h */,
+				A5EFC6741DC3870900A281BD /* BEMCheckBox.m */,
+				A5EFC6751DC3870900A281BD /* BEMCheckBoxGroup.h */,
+				A5EFC6761DC3870900A281BD /* BEMCheckBoxGroup.m */,
+				A5EFC6771DC3870900A281BD /* BEMPathManager.h */,
+				A5EFC6781DC3870900A281BD /* BEMPathManager.m */,
+			);
+			path = BEMCheckBox;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -556,6 +600,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5EFC6871DC3871600A281BD /* ColoredVKSelectCell.h in Headers */,
+				A5EFC67F1DC3870900A281BD /* BEMPathManager.h in Headers */,
 				A5D979D61DAEC1E600607F06 /* ColoredVKPrefsController.h in Headers */,
 				A5D979D71DAEC1E600607F06 /* ColoredVKHeader.h in Headers */,
 				A5D979731DAEB8EA00607F06 /* PrefixHeader.h in Headers */,
@@ -582,9 +628,13 @@
 				A5D979871DAEB8EA00607F06 /* UIImage+LHProgressHUD.h in Headers */,
 				A5D979881DAEB8EA00607F06 /* UIImage+ColoredVK.h in Headers */,
 				A5D979891DAEB8EA00607F06 /* UIColor+ColoredVK.h in Headers */,
+				A5EFC67D1DC3870900A281BD /* BEMCheckBoxGroup.h in Headers */,
 				A5D9798A1DAEB8EA00607F06 /* NSString+ColoredVK.h in Headers */,
 				A5D9798B1DAEB8EA00607F06 /* KLCPopup.h in Headers */,
+				A5EFC6791DC3870900A281BD /* BEMAnimationManager.h in Headers */,
 				A504C0731DAFE839006C5FBC /* DTConstants.h in Headers */,
+				A5EFC67B1DC3870900A281BD /* BEMCheckBox.h in Headers */,
+				A5EFC6851DC3871600A281BD /* ColoredVKListController.h in Headers */,
 				A5D9798C1DAEB8EA00607F06 /* UIImage+ResizeMagick.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -722,15 +772,19 @@
 				A5B871051DB811F700BFCED7 /* NSData+AES.m in Sources */,
 				A5D979BB1DAEC1CB00607F06 /* HRBrightnessCursor.m in Sources */,
 				A5D979BC1DAEC1CB00607F06 /* HRBrightnessSlider.m in Sources */,
+				A5EFC67C1DC3870900A281BD /* BEMCheckBox.m in Sources */,
 				A5D979BD1DAEC1CB00607F06 /* HRColorCursor.m in Sources */,
 				A5D979BE1DAEC1CB00607F06 /* HRColorInfoView.m in Sources */,
 				A5D979BF1DAEC1CB00607F06 /* HRColorMapView.m in Sources */,
 				A504C0741DAFE839006C5FBC /* DTConstants.m in Sources */,
 				A5D979C01DAEC1CB00607F06 /* HRHSVColorUtil.m in Sources */,
+				A5EFC6881DC3871600A281BD /* ColoredVKSelectCell.m in Sources */,
 				A5D979C11DAEC1CB00607F06 /* UIImage+CoreGraphics.m in Sources */,
 				A5D979C21DAEC1CB00607F06 /* LHAcvitityIndicator.m in Sources */,
 				A5D979C31DAEC1CB00607F06 /* LHBackgroundView.m in Sources */,
 				A5D979C41DAEC1CB00607F06 /* LHGifImageView.m in Sources */,
+				A5EFC6861DC3871600A281BD /* ColoredVKListController.m in Sources */,
+				A5EFC67A1DC3870900A281BD /* BEMAnimationManager.m in Sources */,
 				A5D979C51DAEC1CB00607F06 /* LHProgressHUD.m in Sources */,
 				A5D979C61DAEC1CB00607F06 /* UIImage+LHProgressHUD.m in Sources */,
 				A5D979C71DAEC1CB00607F06 /* UIImage+ColoredVK.m in Sources */,
@@ -741,8 +795,10 @@
 				A5D979CB1DAEC1CB00607F06 /* UIImage+ResizeMagick.m in Sources */,
 				A5D979CC1DAEC1CB00607F06 /* ColoredVKPrefsController.m in Sources */,
 				A5D979CD1DAEC1CB00607F06 /* ColoredVKHeader.m in Sources */,
+				A5EFC67E1DC3870900A281BD /* BEMCheckBoxGroup.m in Sources */,
 				A5D979CE1DAEC1CB00607F06 /* ColoredVKPrefs.m in Sources */,
 				A5D979CF1DAEC1CB00607F06 /* ColoredVKColorPicker.m in Sources */,
+				A5EFC6801DC3870900A281BD /* BEMPathManager.m in Sources */,
 				A5D979D01DAEC1CB00607F06 /* ColoredVKColorCell.m in Sources */,
 				A5D979D11DAEC1CB00607F06 /* ColoredVKImageCell.m in Sources */,
 				A504C0841DB011ED006C5FBC /* PSTableCell+ColoredVK.m in Sources */,

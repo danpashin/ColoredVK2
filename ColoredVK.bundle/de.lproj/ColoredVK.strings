@@ -24,6 +24,7 @@
 "FOREGROUND_COLOR" = "Hauptfarbe";
 "ENABLED_IMAGE" = "Verwenden sie stattdessen bild";
 "USE_BLUR" = "Verwenden sie blur *";
+"BLUR_SETTINGS" = "Weichzeichner-Einstellungen";
 
 "CHANGE_BACKGROUND" = "Hintergrund ändern";
 "IMAGE_BLACKOUT" = "Bild blackout";

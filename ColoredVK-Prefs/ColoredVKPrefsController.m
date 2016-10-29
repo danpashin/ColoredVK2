@@ -57,11 +57,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    UINavigationBar *navbar = self.navigationController.navigationBar;
-    if ([navbar.subviews containsObject:[navbar viewWithTag:10]]) {
-        [[navbar viewWithTag:10] removeFromSuperview];        
-        [navbar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-    }
     [[ColoredVKInstaller alloc] startWithUserInfo:@{@"fromPreferences" : @YES }];
     for (UIView *view in self.view.subviews) {
         if ([NSStringFromClass([view class]) isEqualToString:@"UITableView"]) {
@@ -70,6 +65,16 @@
             tableView.separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
             break;
         }
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    UINavigationBar *navbar = self.navigationController.navigationBar;
+    if ([navbar.subviews containsObject:[navbar viewWithTag:10]]) {
+        [[navbar viewWithTag:10] removeFromSuperview];        
+        [navbar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
     }
 }
 

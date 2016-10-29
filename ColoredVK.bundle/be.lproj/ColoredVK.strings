@@ -24,6 +24,7 @@
 "FOREGROUND_COLOR" = "Асноўны колер";
 "ENABLED_IMAGE" = "Малюнак замест колеру";
 "USE_BLUR" = "Выкарыстоўвайце размыццё *";
+"BLUR_SETTINGS" = "Налады размыцця";
 
 "CHANGE_BACKGROUND" = "Змяніць фон";
 "IMAGE_BLACKOUT" = "Зацямненне малюнка.";

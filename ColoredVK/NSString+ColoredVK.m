@@ -7,6 +7,7 @@
 //
 
 #import "NSString+ColoredVK.h"
+#import "PrefixHeader.h"
 
 @implementation NSString (ColoredVK)
 + (NSString *)stringFromColor:(UIColor*)color
@@ -21,5 +22,13 @@
     if (color == nil) color = [UIColor blackColor];
     const CGFloat *components = CGColorGetComponents(color.CGColor);
     return [NSString stringWithFormat:@"#%02X%02X%02X", (int)(components[0] * 255), (int)(components[1] * 255), (int)(components[2] * 255)];
+}
+
++ (NSString *)unlocalizedStringFromLocalized:(NSString *)localizedString table:(NSString *)table
+{
+    NSString *stringsPath = [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] pathForResource:table ofType:@"strings"];
+    NSDictionary *locStringsDict = [NSDictionary dictionaryWithContentsOfFile:stringsPath];
+    return [locStringsDict allKeysForObject:localizedString][0];
+    
 }
 @end

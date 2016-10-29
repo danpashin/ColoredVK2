@@ -24,6 +24,7 @@
 "FOREGROUND_COLOR" = "Cor principal";
 "ENABLED_IMAGE" = "Usar uma imagem em vez";
 "USE_BLUR" = "Usar blur";
+"BLUR_SETTINGS" = "Blur definições";
 
 "CHANGE_BACKGROUND" = "Mude o fundo";
 "IMAGE_BLACKOUT" = "Apagão imagem";

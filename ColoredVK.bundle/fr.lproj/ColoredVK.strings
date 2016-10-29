@@ -24,6 +24,7 @@
 "FOREGROUND_COLOR" = "Couleur principale";
 "ENABLED_IMAGE" = "Utilisez l'image au lieu";
 "USE_BLUR" = "Utilisez le flou *";
+"BLUR_SETTINGS" = "Flou paramètres";
 
 "CHANGE_BACKGROUND" = "Changement de fond";
 "IMAGE_BLACKOUT" = "Image en panne";

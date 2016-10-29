@@ -23,6 +23,7 @@
 "FOREGROUND_COLOR" = "Foreground color";
 "ENABLED_IMAGE" = "Use image instead";
 "USE_BLUR" = "Use blur *";
+"BLUR_SETTINGS" = "Blur settings";
 
 "CHANGE_BACKGROUND" = "Change background";
 "IMAGE_BLACKOUT" = "Image blackout";

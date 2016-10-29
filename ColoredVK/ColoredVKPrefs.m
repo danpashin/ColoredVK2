@@ -90,6 +90,16 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     }
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    UINavigationBar *navbar = self.navigationController.navigationBar;
+    if ([navbar.subviews containsObject:[navbar viewWithTag:10]]) {
+        [[navbar viewWithTag:10] removeFromSuperview];        
+        [navbar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+    }
+}
+
 - (id) readPreferenceValue:(PSSpecifier*)specifier
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];

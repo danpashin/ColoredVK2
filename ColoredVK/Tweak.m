@@ -406,9 +406,9 @@ static void setImageToTable(UITableView *tableView, NSString *imageName, CGFloat
 
 static NSArray *getInfoForActionController()
 {
-    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[cvkBunlde pathForResource:@"ImagesDLInfo" ofType:@"plist" inDirectory:@"plists"]];
+    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[cvkBunlde pathForResource:@"AdvancedInfo" ofType:@"plist" inDirectory:@"plists"]];
     if (dict) {
-        NSArray *arr = dict.allValues.lastObject;
+        NSArray *arr = dict[@"ImagesDLInfo"];
         if (arr) return arr;
         else return @[];
     } else return @[];
@@ -583,14 +583,12 @@ static void setNavigationBar(UINavigationBar *navBar)
             navBar.barTintColor = [UIColor darkBlackColor];
             navBar.tintColor = [UIColor lightGrayColor];
             navBar.titleTextAttributes = @{ NSForegroundColorAttributeName : [UIColor lightGrayColor] };
-        }  else if (enabledBarColor || useMessagesBlur) {
-            if (enabledBarColor) {
+        }  else if (enabledBarColor) {
                 if (enabledBarImage) navBar.barTintColor = [UIColor colorWithPatternImage:[UIImage imageWithContentsOfFile:[cvkFolder stringByAppendingString:@"/barImage.png"]]];
                 else navBar.barTintColor = barBackgroundColor;
                 navBar.tintColor = barForegroundColor;
                 navBar.titleTextAttributes = @{ NSForegroundColorAttributeName : barForegroundColor };
             }
-        }
     }
 }
 
@@ -1464,7 +1462,7 @@ CHOptimizedMethod(1, self, void, ChatController, viewWillAppear, BOOL, animated)
                 if ([subview respondsToSelector:@selector(setBackgroundColor:)]) subview.backgroundColor = [UIColor clearColor];
             }
         }
-        else if (useMessagesBlur) setBlur(self.inputPanel, YES);
+        else if ([controllersToAddBlur[@"SingleUserChatController"] boolValue]) setBlur(self.inputPanel, YES);
     }
 }
 

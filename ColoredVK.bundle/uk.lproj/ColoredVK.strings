@@ -24,6 +24,7 @@
 "FOREGROUND_COLOR" = "Основний колір";
 "ENABLED_IMAGE" = "Зображення замість кольору";
 "USE_BLUR" = "Використовуйте розмиття *";
+"BLUR_SETTINGS" = "Налаштування розмиття";
 
 "CHANGE_BACKGROUND" = "Змінити фон";
 "IMAGE_BLACKOUT" = "Затемнення зображення";

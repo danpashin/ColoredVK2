@@ -23,7 +23,7 @@
 "BACKGROUND_COLOR" = "Цвет фона";
 "FOREGROUND_COLOR" = "Основной цвет";
 "ENABLED_IMAGE" = "Изображ. вместо цвета";
-"USE_BLUR" = "Использовать размытие *";
+"BLUR_SETTINGS" = "Настройки размытия";
 
 "CHANGE_BACKGROUND" = "Изменить фон";
 "IMAGE_BLACKOUT" = "Затемнение изобр.";

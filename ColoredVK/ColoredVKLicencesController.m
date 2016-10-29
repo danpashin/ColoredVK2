@@ -25,7 +25,7 @@
 {
     [super viewDidLoad];    
     
-    NSString *path = [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] pathForResource:@"Licences" ofType:@"plist" inDirectory:@"plists"];
+    NSString *path = [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] pathForResource:@"AdvancedInfo" ofType:@"plist" inDirectory:@"plists"];
     NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path][@"Licences"];
     
     NSString *text = @"";
@@ -47,6 +47,16 @@
     
     self.navigationItem.title = @"Licences";
     
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    UINavigationBar *navbar = self.navigationController.navigationBar;
+    if ([navbar.subviews containsObject:[navbar viewWithTag:10]]) {
+        [[navbar viewWithTag:10] removeFromSuperview];        
+        [navbar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+    }
 }
 
 @end
