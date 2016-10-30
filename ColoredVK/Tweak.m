@@ -1370,6 +1370,32 @@ CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animat
     }
 }
 
+CHOptimizedMethod(2, self, UITableViewCell*, DialogsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && enabled) {
+        NewDialogCell *cell = (NewDialogCell *)CHSuper(2, DialogsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+        if (enabledBlackTheme) {
+            cell.contentView.backgroundColor = [UIColor lightBlackColor]; 
+        } else if (enabledMessagesListImage) {
+            cell.contentView.backgroundColor =  [UIColor clearColor];
+            cell.backgroundColor = [UIColor clearColor];
+            cell.backgroundView = nil;
+            
+            cell.dialogText.textColor = [UIColor colorWithWhite:1 alpha:0.8];
+            cell.name.textColor = [UIColor colorWithWhite:1 alpha:0.8];
+            cell.time.textColor = [UIColor colorWithWhite:1 alpha:0.8];
+            cell.attach.textColor = [UIColor colorWithWhite:1 alpha:0.8];
+            
+            UIView *backView = [UIView new];
+            backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
+            cell.selectedBackgroundView = backView;
+
+        }
+        return cell;
+    }
+    return CHSuper(2, DialogsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+}
+
 
 
 #pragma mark VKMSearchController
@@ -1399,44 +1425,6 @@ CHOptimizedMethod(1, self, void, VKMSearchController, searchDisplayControllerWil
     }
 }
 
-
-
-
-#pragma mark NewDialogCell
-CHDeclareClass(NewDialogCell);
-CHOptimizedMethod(0, self, void, NewDialogCell, layoutSubviews)
-{
-    CHSuper(0, NewDialogCell, layoutSubviews);
-    if ([self isKindOfClass:NSClassFromString(@"NewDialogCell")] && enabled) {
-        if (enabledBlackTheme) {
-            self.contentView.backgroundColor = [UIColor lightBlackColor]; 
-        } else if (enabledMessagesListImage) {
-            self.contentView.backgroundColor =  [UIColor clearColor];
-            self.backgroundColor = [UIColor clearColor];
-            self.backgroundView = nil;
-            
-            self.dialogText.textColor = [UIColor colorWithWhite:1 alpha:0.8];
-            self.name.textColor = [UIColor colorWithWhite:1 alpha:0.8];
-            self.time.textColor = [UIColor colorWithWhite:1 alpha:0.8];
-            self.attach.textColor = [UIColor colorWithWhite:1 alpha:0.8];
-        }
-    }
-}
-
-CHOptimizedMethod(2, self, id, NewDialogCell, initWithStyle, UITableViewCellStyle, style, reuseIdentifier, NSString*, identifier)
-{
-    NewDialogCell *cell = CHSuper(2, NewDialogCell, initWithStyle, style, reuseIdentifier, identifier);
-    
-    if ([cell isKindOfClass:NSClassFromString(@"NewDialogCell")] && (enabled && enabledMessagesListImage)) {
-        UIView *backView = [UIView new];
-        backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
-        cell.selectedBackgroundView = backView;
-    }
-    
-    return cell;
-}
-
-
 #pragma mark BackgroundView
 CHDeclareClass(BackgroundView);
 CHOptimizedMethod(1, self, void, BackgroundView, drawRect, CGRect, rect)
@@ -1462,7 +1450,7 @@ CHOptimizedMethod(1, self, void, ChatController, viewWillAppear, BOOL, animated)
                 if ([subview respondsToSelector:@selector(setBackgroundColor:)]) subview.backgroundColor = [UIColor clearColor];
             }
         }
-        else if ([controllersToAddBlur[@"SingleUserChatController"] boolValue]) setBlur(self.inputPanel, YES);
+        else if (useMessagesBlur) setBlur(self.inputPanel, YES);
     }
 }
 
@@ -1988,16 +1976,12 @@ CHConstructor
                 CHLoadLateClass(DialogsController);
                 CHHook(0, DialogsController, viewWillLayoutSubviews);
                 CHHook(1, DialogsController, viewWillAppear);
+                CHHook(2, DialogsController, tableView, cellForRowAtIndexPath);
                 
                 
                 CHLoadLateClass(VKMSearchController);
                 CHHook(1, VKMSearchController, searchDisplayControllerWillEndSearch);
                 CHHook(1, VKMSearchController, searchDisplayControllerWillBeginSearch);
-                
-                
-                CHLoadLateClass(NewDialogCell);
-                CHHook(0, NewDialogCell, layoutSubviews);
-                CHHook(2, NewDialogCell, initWithStyle, reuseIdentifier);
                 
                 
                 CHLoadLateClass(VKMLiveController);
