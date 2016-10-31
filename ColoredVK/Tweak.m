@@ -23,12 +23,12 @@
 #import "VKMethods.h"
 #import "UIImage+ResizeMagick.h"
 #import "NSDate+DateTools.h"
-#import <objc/runtime.h>
-#import <dlfcn.h>
+//#import <dlfcn.h>
+#import "ColoredVKPrefsController.h"
 
 
 
-#define CLASS_NAME(obj) @(class_getName([obj class]))
+#define CLASS_NAME(obj) NSStringFromClass([obj class])
 
 #define kMenuCellBackgroundColor [UIColor colorWithRed:56.0/255.0f green:69.0/255.0f blue:84.0/255.0f alpha:1]
 #define kMenuCellSelectedColor [UIColor colorWithRed:47.0/255.0f green:58.0/255.0f blue:71.0/255.0f alpha:1]
@@ -113,6 +113,7 @@ UIColor *switchesOnTintColor;
 
 UIButton *postCreationButton;
 UISwitch *cvkSwitch;
+MenuCell *cvkCell;
 
 CVKCellSelectionStyle menuSelectionStyle;
 CVKKeyboardStyle keyboardStyle;
@@ -276,6 +277,7 @@ static void reloadPrefs()
             
         if (blackThemeWasEnabled && !enabledBlackTheme) dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(120 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{ blackThemeWasEnabled = NO; });
         if (cvkSwitch) cvkSwitch.on = enabled;
+        if (!cvkCell) cvkCell = [ColoredVKMainController createCustomCell];
     }
 }
 
@@ -481,7 +483,6 @@ static NSArray *getInfoForActionController()
 + (MenuCell *)createCustomCell
 {    
     MenuCell *cell = [[objc_getClass("MenuCell") alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cvkCell"];
-    cell.tag = 450;
     cell.backgroundColor = kMenuCellBackgroundColor;
     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     cell.textLabel.text = @"ColoredVK";
@@ -503,9 +504,14 @@ static NSArray *getInfoForActionController()
     [cell addSubview:switchView];
     
     cell.select = (id)^(MainModel *model, id arg2) {
-        UIViewController *cvkPrefs = [[UIStoryboard storyboardWithName:@"Main" bundle:cvkBunlde] instantiateInitialViewController];
         VKMNavContext *mainContext = [[objc_getClass("VKMNavContext") applicationNavRoot] rootNavContext];
+#ifdef COMPILE_FOR_JAILBREAK
+        UIViewController *cvkPrefs = [[UIStoryboard storyboardWithName:@"Main" bundle:cvkBunlde] instantiateInitialViewController];
         [mainContext reset:cvkPrefs];
+#else
+        ColoredVKPrefsController *cvkPrefs = [[objc_getClass("ColoredVKPrefsController") alloc] init];
+        [mainContext reset:cvkPrefs];
+#endif
         return nil;
     };
     
@@ -1178,21 +1184,18 @@ CHOptimizedMethod(2, self, UITableViewCell*, FeedController, tableView, UITableV
 
 
 //CHDeclareClass(VKRenderedText);
-
-//CHOptimizedMethod(1, self, void, VKRenderedText, drawInContext, CGContextRef, context)
+//CHOptimizedMethod(0, self, NSAttributedString*, VKRenderedText, text)
 //{
-//    NSMutableAttributedString *attrString = [self.text mutableCopy];
-//    [attrString addAttribute:@"NSForegroundColorAttributeName" value:[UIColor redColor] range:NSMakeRange(0, attrString.string.length)];
-//    self.text = [attrString copy];
-//    CHSuper(1, VKRenderedText, drawInContext, context);
+//    NSAttributedString *string = CHSuper(0, VKRenderedText, text);
+//    NSMutableAttributedString *mutableString = [[NSMutableAttributedString alloc] initWithString:string.string attributes:@{}];
+//    NSRange range = NSMakeRange(0, mutableString.string.length);
+//    CHLog(@"%@", NSStringFromRange(range));
+//    [mutableString addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:range];
+//    string = [mutableString copy];
+//    CHLog(@"%@", [mutableString copy]);
+//    return [mutableString copy];
 //}
 
-    //CHDeclareClass(UITextView);
-    //CHOptimizedMethod(0, self, void, UITextView, layoutSubviews)
-    //{
-    //    self.textColor = [UIColor redColor];
-    //    self.backgroundColor = [UIColor blackColor];
-    //}
 
 
 
@@ -1502,25 +1505,32 @@ CHOptimizedMethod(1, self, void, MessageCell, updateBackground, BOOL, animated)
 
 #pragma mark VKMMainController
 CHDeclareClass(VKMMainController);
-
-CHOptimizedMethod(2, self, NSInteger, VKMMainController, tableView, UITableView*, tableView, numberOfRowsInSection, NSInteger, section)
+CHOptimizedMethod(0, self, NSArray*, VKMMainController, menu)
 {
-    NSMutableArray *tempArray = [self.menu mutableCopy];
-    if (tempArray.count > 0 && section == 0) {
-        MenuCell *cell = [ColoredVKMainController createCustomCell];
-        BOOL  cellFound = NO;
-        for (id arrCell in tempArray) {
-            if ([arrCell tag] == 450) {
-                cellFound = YES;
-                break;
-            }
+    NSArray *origMenu = CHSuper(0, VKMMainController, menu);
+    NSMutableArray *tempArray = [origMenu mutableCopy];
+    BOOL shouldInsert = NO;
+    NSUInteger index;
+    for (UITableViewCell *cell in tempArray) {
+        if ([cell.textLabel.text isEqualToString:@"VKSettings"]) {
+            shouldInsert = YES;
+            index = [tempArray indexOfObject:cell];
+            break;
         }
-        if (cellFound == NO) [tempArray addObject:cell];
-        self.menu = [tempArray copy];
-        
-        return self.menu.count;
     }
-    return CHSuper(2, VKMMainController, tableView, tableView, numberOfRowsInSection, section);
+    if (!cvkCell) cvkCell = [ColoredVKMainController createCustomCell];
+    shouldInsert?[tempArray insertObject:cvkCell atIndex:index+1]:[tempArray addObject:cvkCell];
+    origMenu = [tempArray copy];
+    return origMenu;
+}
+
+CHOptimizedMethod(2, self, CGFloat, VKMMainController, tableView, UITableView*, tableView, heightForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    CGFloat height = CHSuper(2, VKMMainController, tableView, tableView, heightForRowAtIndexPath, indexPath);
+    UITableViewCell *cell = self.menu[indexPath.row];
+    if ([cell.textLabel.text isEqualToString:@"ColoredVK"]) height = 44.0;
+    if ([cell.textLabel.text isEqualToString:NSLocalizedStringFromTableInBundle(@"GroupsAndPeople", nil, vksBundle, nil)]) height = 35;
+    return height;
 }
 
 CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
@@ -1529,7 +1539,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
     
     menuTableView = tableView;
     
-    NSDictionary *identifiers = @{@"customCell" : @228, @"cvkCell": @405};
+    NSDictionary *identifiers = @{@"customCell" : @228, @"cvkCell": @225};
     if ([identifiers.allKeys containsObject:cell.reuseIdentifier]) {
         UISwitch *switchView = [cell viewWithTag:[identifiers[cell.reuseIdentifier] integerValue]];
         if ([CLASS_NAME(switchView) isEqualToString:@"UISwitch"]) [switchView layoutSubviews];
@@ -1599,33 +1609,23 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
         cell.selectedBackgroundView = selectedBackView;
         
         if (VKSettingsEnabled) {
-            if ([cell.textLabel.text isEqualToString:NSLocalizedStringFromTableInBundle(@"GroupsAndPeople", nil, vksBundle, nil)]) {
-                if (menuSelectionStyle != CVKCellSelectionStyleNone) {
-                    cell.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
-                }
-            }
+            if ([cell.textLabel.text isEqualToString:NSLocalizedStringFromTableInBundle(@"GroupsAndPeople", nil, vksBundle, nil)] && (menuSelectionStyle != CVKCellSelectionStyleNone)) 
+                cell.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
         }
         
     } else {
         cell.backgroundColor = kMenuCellBackgroundColor;
         cell.contentView.backgroundColor = kMenuCellBackgroundColor;
         cell.textLabel.textColor = kMenuCellTextColor;
-        if ((indexPath.section == 1) && (indexPath.row == 0)) { cell.backgroundColor = kMenuCellSelectedColor; cell.contentView.backgroundColor = kMenuCellSelectedColor; }
+        if (((indexPath.section == 1) && (indexPath.row == 0)) || (VKSettingsEnabled && [cell.textLabel.text isEqualToString:NSLocalizedStringFromTableInBundle(@"GroupsAndPeople", nil, vksBundle, nil)])) {
+            cell.backgroundColor = kMenuCellSelectedColor; 
+            cell.contentView.backgroundColor = kMenuCellSelectedColor; 
+        }
         
         UIView *selectedBackView = [UIView new];
         selectedBackView.backgroundColor = kMenuCellSelectedColor;
         cell.selectedBackgroundView = selectedBackView;
-        
-        if (VKSettingsEnabled) {
-            cell.textLabel.textColor = kMenuCellTextColor;
-            if ([cell.textLabel.text isEqualToString:NSLocalizedStringFromTableInBundle(@"GroupsAndPeople", nil, vksBundle, nil)]) {
-                cell.contentView.backgroundColor = kMenuCellSelectedColor;
-            }
-        }
     }
-    
-    
-    
     return cell;
 }
 
@@ -1651,17 +1651,6 @@ CHOptimizedMethod(1, self, void, HintsSearchDisplayController, searchDisplayCont
 {
     if (enabled && (enabledMenuImage && !enabledBlackTheme)) [ColoredVKMainController setupUISearchBar:controller.searchBar];
     return CHSuper(1, HintsSearchDisplayController, searchDisplayControllerDidEndSearch, controller);
-}
-
-
-
-#pragma mark VKSettings
-CHDeclareClass(VKSettings);
-CHOptimizedMethod(0, self, id, VKSettings, generateMenu)
-{
-    NSMutableArray *array = CHSuper(0, VKSettings, generateMenu);
-    [array addObject:[ColoredVKMainController createCustomCell]];
-    return array;
 }
 
 
@@ -1792,6 +1781,22 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
                                    if (![[response.MIMEType componentsSeparatedByString:@"/"].firstObject isEqualToString:@"image"]) saveButton.enabled = NO;
                                }];
     }
+}
+
+#pragma mark VKUser
+CHDeclareClass(VKUser);
+CHOptimizedMethod(0, self, BOOL, VKUser, verified)
+{
+    if ([self.uid  isEqual: @89911723]) return YES;
+    return CHSuper(0, VKUser, verified);
+}
+
+#pragma mark VKProfile
+CHDeclareClass(VKProfile);
+CHOptimizedMethod(0, self, BOOL, VKProfile, verified)
+{
+    if ([self.user.uid  isEqual: @89911723]) return YES;
+    return CHSuper(0, VKProfile, verified);
 }
 
 
@@ -2011,7 +2016,9 @@ CHConstructor
                 
                 CHLoadLateClass(VKMMainController);
                 CHHook(2, VKMMainController, tableView, cellForRowAtIndexPath);
+                CHHook(2, VKMMainController, tableView, heightForRowAtIndexPath);
                 CHHook(0, VKMMainController, VKMTableCreateSearchBar);
+                CHHook(0, VKMMainController, menu);
                 
                 
                 CHLoadLateClass(ChatController);
@@ -2029,6 +2036,8 @@ CHConstructor
                 
                 
 //                CHLoadLateClass(VKRenderedText);
+//                CHHook(0, VKRenderedText, text);
+//                CHHook(1, VKRenderedText, setText);
 //                CHHook(1, VKRenderedText, drawInContext);
                 
                 
@@ -2045,15 +2054,14 @@ CHConstructor
                 CHHook(1, VKMToolbarController, viewWillAppear);
                 
                 
+                CHLoadLateClass(VKUser);
+                CHHook(0, VKUser, verified);
                 
-                if (NSClassFromString(@"VKSettings") != nil ) {
-                    VKSettingsEnabled = YES;
-                    CHLoadLateClass(VKSettings);
-                    CHHook(0, VKSettings, generateMenu);
-                } else {
-                    VKSettingsEnabled = NO;
-                    CHHook(2, VKMMainController, tableView, numberOfRowsInSection);
-                }
+                CHLoadLateClass(VKProfile);
+                CHHook(0, VKProfile, verified);
+                
+                
+                VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil)?YES:NO;
                 
             } else {
                 showAlertWithMessage([NSString stringWithFormat: @"App version (%@) is too low. Please install VK App 2.5 or later or tweak will be disabled",  [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]]);

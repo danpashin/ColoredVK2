@@ -24,9 +24,13 @@
 #define CVK_FOLDER_PATH     [NSHomeDirectory() stringByAppendingString:@"/Documents/ColoredVK2"]
 #endif
 
-#define CVKLog(obj) NSLog(@"[COLOREDVK] %@", obj)
 #define IS_IPAD  UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
 #define UIKitLocalizedString(key) [[NSBundle bundleWithIdentifier:@"com.apple.UIKit"] localizedStringForKey:key value:@"" table:nil]
 #define IS_IOS_10_OR_LATER    ([UIDevice currentDevice].systemVersion.floatValue >= 10.0)
 
-#define kColoredVKVersion @"3.2"
+#define kColoredVKVersion @"3.2.0.1"
+
+#ifdef CHAppName
+    #undef CHAppName
+#endif 
+#define CHAppName "[COLOREDVK2]"

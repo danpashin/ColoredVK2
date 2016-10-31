@@ -7,10 +7,17 @@
 		<key>ColoredVK For Jail.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
+		<key>ColoredVK For Non Jail.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
 			<integer>1</integer>
 		</dict>
 		<key>ColoredVK.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
@@ -43,6 +50,11 @@
 			<true/>
 		</dict>
 		<key>A562F80F1D2448400010CC31</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>A576D17E1DC621B90039884F</key>
 		<dict>
 			<key>primary</key>
 			<true/>

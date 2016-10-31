@@ -8,15 +8,24 @@
 
 
 @interface VKMMainController : UIViewController
+{
+    NSArray *_menu;
+}
 @property(retain, nonatomic) NSArray *menu;
 @property(retain, nonatomic) UINavigationController *navMain;
 @end
 
 
+
 @class MainModel;
 @interface MenuCell : UITableViewCell 
 @property (copy, nonatomic) id(^select)(MainModel *model, id arg2);
+@end
 
+
+@interface TitleMenuCell : MenuCell
++ (id)image:(id)arg1 statId:(id)arg2 title:(id)arg3 select:(id)arg4;
+@property(retain, nonatomic) UIButton *badge;
 @end
 
 @interface VKMNavContext : NSObject 
@@ -70,16 +79,25 @@
 
 
 
-//@interface VKRenderedText : NSObject
-//{
-//    NSAttributedString *text;
-//}
-//@property(readonly, copy, nonatomic) NSAttributedString *text;
-//@end
-//
-//@interface TextKitLayer : CALayer
-//@property(retain, nonatomic) VKRenderedText *text;
-//@end
+@interface VKRenderedText : NSObject
+{
+    NSAttributedString *_text;
+}
+@property(readonly, copy, nonatomic) NSAttributedString *text;
+@end
+
+@interface TextKitLayer : CALayer
+@property(retain, nonatomic) VKRenderedText *text;
+@end
+
+@interface VKRenderedTextAttributeValue : NSObject
++ (id)attribute:(id)arg1 value:(id)arg2 range:(struct _NSRange)arg3;
+@property(readonly, nonatomic) id value;
+@property(readonly, nonatomic) struct _NSRange range;
+@property(readonly, nonatomic) NSString *attribute;
+- (id)initWithAttribute:(id)arg1 value:(id)arg2 range:(struct _NSRange)arg3;
+@end
+
 
 
 
@@ -225,3 +243,18 @@
 
 @interface VKPPBadge : UIImageView
 @end
+
+
+
+
+@interface VKUser : NSObject
+@property(nonatomic) BOOL verified;
+@property(retain, nonatomic) NSNumber *uid;
+@end
+
+@interface VKProfile : NSObject
+@property(nonatomic) BOOL verified;
+@property(retain, nonatomic) NSString *status;
+@property(retain, nonatomic) VKUser *user; 
+@end
+

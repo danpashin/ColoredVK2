@@ -34,16 +34,16 @@
 			<key>id</key>
 			<string>chatImageBlackout</string>
 		</dict>
-        <dict>
-            <key>cell</key>
-            <string>PSSwitchCell</string>
-            <key>key</key>
-            <string>useMessagesBlur</string>
-            <key>label</key>
-            <string>USE_BLUR</string>
-            <key>default</key>
-            <false/>
-        </dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>key</key>
+			<string>useMessagesBlur</string>
+			<key>label</key>
+			<string>USE_BLUR</string>
+			<key>default</key>
+			<false/>
+		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
@@ -77,28 +77,22 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>key</key>
+			<string>useMessagesBlur</string>
+			<key>label</key>
+			<string>USE_BLUR</string>
+			<key>default</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
 			<string>hideMessagesListSeparators</string>
 			<key>label</key>
 			<string>HIDE_SEPARATORS</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSLinkListCell</string>
-			<key>detail</key>
-			<string>ColoredVKListController</string>
-			<key>label</key>
-			<string>BLUR_SETTINGS</string>
-			<key>nameToSave</key>
-			<string>blurSettings</string>
-			<key>cellToHighlight</key>
-			<string>MESSAGES_LIST_BACKGROUND</string>
-			<key>validTitles</key>
-			<array/>
-			<key>validValues</key>
-			<array/>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -133,28 +127,22 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>key</key>
+			<string>useMessagesBlur</string>
+			<key>label</key>
+			<string>USE_BLUR</string>
+			<key>default</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
 			<string>hideGroupsListSeparators</string>
 			<key>label</key>
 			<string>HIDE_SEPARATORS</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSLinkListCell</string>
-			<key>detail</key>
-			<string>ColoredVKListController</string>
-			<key>label</key>
-			<string>BLUR_SETTINGS</string>
-			<key>nameToSave</key>
-			<string>blurSettings</string>
-			<key>cellToHighlight</key>
-			<string>GROUPS</string>
-			<key>validTitles</key>
-			<array/>
-			<key>validValues</key>
-			<array/>
 		</dict>
 	</array>
 	<key>title</key>
