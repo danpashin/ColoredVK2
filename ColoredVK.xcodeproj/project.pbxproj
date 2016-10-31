@@ -265,6 +265,7 @@
 		A53D12911D467016009567B5 /* PrefixHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.h; sourceTree = SOURCE_ROOT; };
 		A53D91961CCA82B400E45A49 /* Tweak.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tweak.m; sourceTree = "<group>"; };
 		A53D91991CCA82B400E45A49 /* VKMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VKMethods.h; sourceTree = "<group>"; };
+		A55ECA0A1DC74C68006C2999 /* ColoredVK-Prefs copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ColoredVK-Prefs copy.plist"; sourceTree = "<group>"; };
 		A55F5FFD1D3B81270099BE4F /* KLCPopup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KLCPopup.h; sourceTree = "<group>"; };
 		A55F5FFE1D3B81270099BE4F /* KLCPopup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KLCPopup.m; sourceTree = "<group>"; };
 		A576D17A1DC601D80039884F /* control */ = {isa = PBXFileReference; lastKnownFileType = text; path = control; sourceTree = "<group>"; };
@@ -399,6 +400,7 @@
 		A5079FA81CC92157005B9693 = {
 			isa = PBXGroup;
 			children = (
+				A55ECA0A1DC74C68006C2999 /* ColoredVK-Prefs copy.plist */,
 				A5B6ED691D3D703600383425 /* ColoredVK.bundle */,
 				A53D91941CCA82B400E45A49 /* ColoredVK */,
 				A5B6ED0A1D3D659800383425 /* ColoredVK-Prefs */,
