@@ -31,22 +31,22 @@
 /** Returns a UIBezierPath object for the box of the checkbox
  * @returns The path of the box.
  */
-- (UIBezierPath *)pathForBox;
+@property (nonatomic, readonly, copy) UIBezierPath *pathForBox;
 
 /** Returns a UIBezierPath object for the checkmark of the checkbox
  * @returns The path of the checkmark.
  */
-- (UIBezierPath *)pathForCheckMark;
+@property (nonatomic, readonly, copy) UIBezierPath *pathForCheckMark;
 
 /** Returns a UIBezierPath object for an extra long checkmark which is in contact with the box.
  * @returns The path of the checkmark.
  */
-- (UIBezierPath *)pathForLongCheckMark;
+@property (nonatomic, readonly, copy) UIBezierPath *pathForLongCheckMark;
 
 /** Returns a UIBezierPath object for the flat checkmark of the checkbox
  * @see BEMAnimationTypeFlat
  * @returns The path of the flat checkmark.
  */
-- (UIBezierPath *)pathForFlatCheckMark;
+@property (nonatomic, readonly, copy) UIBezierPath *pathForFlatCheckMark;
 
 @end

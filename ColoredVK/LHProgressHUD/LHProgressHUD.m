@@ -157,13 +157,13 @@
 -(void)setInfoColor:(UIColor *)infoColor{
     _infoColor = infoColor;
     if ([self.lhSpinner isKindOfClass:[LHAcvitityIndicator class]]) {
-        [(LHAcvitityIndicator *)self.lhSpinner setInfoColor:infoColor];
+        ((LHAcvitityIndicator *)self.lhSpinner).infoColor = infoColor;
     }
 }
 -(void)setSpinnerColor:(UIColor *)spinnerColor{
     _spinnerColor = spinnerColor;
     if ([self.lhSpinner isKindOfClass:[LHAcvitityIndicator class]]) {
-        [(LHAcvitityIndicator *)self.lhSpinner setSpinnerColor:spinnerColor];
+        ((LHAcvitityIndicator *)self.lhSpinner).spinnerColor = spinnerColor;
     }
 }
 -(void)setMargin:(CGFloat)margin{

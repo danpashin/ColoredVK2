@@ -250,7 +250,7 @@
     [self.offBoxLayer removeFromSuperlayer];
     self.offBoxLayer = [CAShapeLayer layer];
     self.offBoxLayer.frame = self.bounds;
-    self.offBoxLayer.path = [self.pathManager pathForBox].CGPath;
+    self.offBoxLayer.path = self.pathManager.pathForBox.CGPath;
     self.offBoxLayer.fillColor = [UIColor clearColor].CGColor;
     self.offBoxLayer.strokeColor = self.tintColor.CGColor;
     self.offBoxLayer.lineWidth = self.lineWidth;
@@ -267,7 +267,7 @@
     [self.onBoxLayer removeFromSuperlayer];
     self.onBoxLayer = [CAShapeLayer layer];
     self.onBoxLayer.frame = self.bounds;
-    self.onBoxLayer.path = [self.pathManager pathForBox].CGPath;
+    self.onBoxLayer.path = self.pathManager.pathForBox.CGPath;
     self.onBoxLayer.lineWidth = self.lineWidth;
     self.onBoxLayer.fillColor = self.onFillColor.CGColor;
     self.onBoxLayer.strokeColor = self.onTintColor.CGColor;
@@ -282,7 +282,7 @@
     [self.checkMarkLayer removeFromSuperlayer];
     self.checkMarkLayer = [CAShapeLayer layer];
     self.checkMarkLayer.frame = self.bounds;
-    self.checkMarkLayer.path = [self.pathManager pathForCheckMark].CGPath;
+    self.checkMarkLayer.path = self.pathManager.pathForCheckMark.CGPath;
     self.checkMarkLayer.strokeColor = self.onCheckColor.CGColor;
     self.checkMarkLayer.lineWidth = self.lineWidth;
     self.checkMarkLayer.fillColor = [UIColor clearColor].CGColor;
@@ -334,7 +334,7 @@
             return;
             
         case BEMAnimationTypeFlat: {
-            CABasicAnimation *morphAnimation = [self.animationManager morphAnimationFromPath:[self.pathManager pathForFlatCheckMark] toPath:[self.pathManager pathForCheckMark]];
+            CABasicAnimation *morphAnimation = [self.animationManager morphAnimationFromPath:self.pathManager.pathForFlatCheckMark toPath:self.pathManager.pathForCheckMark];
             morphAnimation.delegate = self;
             
             CABasicAnimation *opacity = [self.animationManager opacityAnimationReverse:NO];
@@ -348,7 +348,7 @@
             
         case BEMAnimationTypeOneStroke: {
             // Temporary set the path of the checkmark to the long checkmark
-            self.checkMarkLayer.path = [[self.pathManager pathForLongCheckMark] bezierPathByReversingPath].CGPath;
+            self.checkMarkLayer.path = [self.pathManager.pathForLongCheckMark bezierPathByReversingPath].CGPath;
             
             CABasicAnimation *boxStrokeAnimation = [self.animationManager strokeAnimationReverse:NO];
             boxStrokeAnimation.duration = boxStrokeAnimation.duration / 2;
@@ -361,7 +361,7 @@
             checkStrokeAnimation.beginTime = CACurrentMediaTime() + boxStrokeAnimation.duration;
             [self.checkMarkLayer addAnimation:checkStrokeAnimation forKey:@"strokeEnd"];
             
-            CABasicAnimation *checkMorphAnimation = [self.animationManager morphAnimationFromPath:[self.pathManager pathForLongCheckMark] toPath:[self.pathManager pathForCheckMark]];
+            CABasicAnimation *checkMorphAnimation = [self.animationManager morphAnimationFromPath:self.pathManager.pathForLongCheckMark toPath:self.pathManager.pathForCheckMark];
             checkMorphAnimation.duration = checkMorphAnimation.duration / 6;
             checkMorphAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
             checkMorphAnimation.beginTime = CACurrentMediaTime() + boxStrokeAnimation.duration + checkStrokeAnimation.duration;
@@ -421,7 +421,7 @@
             return;
             
         case BEMAnimationTypeFlat: {
-            CABasicAnimation *animation = [self.animationManager morphAnimationFromPath:[self.pathManager pathForCheckMark] toPath:[self.pathManager pathForFlatCheckMark]];
+            CABasicAnimation *animation = [self.animationManager morphAnimationFromPath:self.pathManager.pathForCheckMark toPath:self.pathManager.pathForFlatCheckMark];
             animation.delegate = self;
             
             CABasicAnimation *opacity = [self.animationManager opacityAnimationReverse:YES];
@@ -434,9 +434,9 @@
             return;
             
         case BEMAnimationTypeOneStroke: {
-            self.checkMarkLayer.path = [[self.pathManager pathForLongCheckMark] bezierPathByReversingPath].CGPath;
+            self.checkMarkLayer.path = [self.pathManager.pathForLongCheckMark bezierPathByReversingPath].CGPath;
             
-            CABasicAnimation *checkMorphAnimation = [self.animationManager morphAnimationFromPath:[self.pathManager pathForCheckMark] toPath:[self.pathManager pathForLongCheckMark]];
+            CABasicAnimation *checkMorphAnimation = [self.animationManager morphAnimationFromPath:self.pathManager.pathForCheckMark toPath:self.pathManager.pathForLongCheckMark];
             checkMorphAnimation.delegate = nil;
             checkMorphAnimation.duration = checkMorphAnimation.duration / 6;
             [self.checkMarkLayer addAnimation:checkMorphAnimation forKey:@"path"];

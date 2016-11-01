@@ -13,24 +13,22 @@
 #import "NSData+AES.h"
 
 @interface ColoredVKInstaller()
-@property (assign, nonatomic) BOOL fromPrefs;
+@property (strong, nonatomic) UIAlertController *alertController;
+@property (strong, nonatomic) UIAlertAction *loginAction;
+@property (strong, nonatomic) UIAlertAction *cancelAction;
+@property (strong, nonatomic) NSString *login;
+@property (strong, nonatomic) NSString *password;
+@property (copy, nonatomic, nullable) void(^exitBlock)(UIAlertAction *action);
+@property (copy, nonatomic, nullable) NSString *udid;
 @end
 
 @implementation ColoredVKInstaller
-- (void)startWithUserInfo:(NSDictionary*)userInfo
+- (void)startWithCompletionBlock:( void(^)(BOOL disableTweak) )block 
 {
-    [self startWithUserInfo:userInfo completionBlock:^(BOOL disableTweak){}];
-}
-- (void)startWithCompletionBlock:( void(^)(BOOL disableTweak) )block
-{
-    [self startWithUserInfo:nil completionBlock:block];
-}
-
-- (void)startWithUserInfo:(NSDictionary*)userInfo completionBlock:( void(^)(BOOL disableTweak) )block 
-{
-    
-    if (userInfo && userInfo[@"fromPreferences"]) self.fromPrefs = [userInfo[@"fromPreferences"] boolValue];
-    else self.fromPrefs = NO;
+    self.udid = [UIDevice currentDevice].identifierForVendor.UUIDString;
+#ifdef COMPILE_FOR_JAIL
+    self.udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(kMGUniqueDeviceID)];
+#endif
     NSBlockOperation *startOperation = [NSBlockOperation blockOperationWithBlock:^{
         NSString *licencePath = CVK_PREFS_PATH;
         licencePath = [licencePath stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"];
@@ -40,18 +38,13 @@
             [self performSelector:@selector(beginDownload) withObject:nil afterDelay:2.0];
         }
         else {
-            NSString *udid = [UIDevice currentDevice].identifierForVendor.UUIDString;
-#ifdef COMPILE_FOR_JAIL
-            udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(kMGUniqueDeviceID)];            
-#endif
-            if (udid.length > 6) {
+            if (self.udid.length > 6) {
                 NSData *decryptedData = [[NSData dataWithContentsOfFile:licencePath] AES128DecryptedDataWithKey:@"BE7555818BC236315C987C1D9B17F"];
                 NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
-                if (![dict[@"UDID"] isEqualToString:udid]) {
+                if (![dict[@"UDID"] isEqualToString:self.udid]) {
                     if (block) block(YES);
                     [self performSelector:@selector(beginDownload) withObject:nil afterDelay:2.0];
                 } else if (block) block(NO);
-            
             } else if (block) block(NO);
         }
     }];
@@ -61,59 +54,101 @@
 
 - (void)beginDownload
 {
-    void(^exitBlock)(UIAlertAction *action) = ^(UIAlertAction *action) {
+    self.exitBlock = ^(UIAlertAction *action) {
         [[UIApplication sharedApplication] performSelector:@selector(suspend)];
         [NSThread sleepForTimeInterval:0.5];
         exit(0); 
     };
-    UIAlertController __block *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK" message:@"Downloading licence..." preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction __block *cancelAction = [UIAlertAction actionWithTitle:@"Exit" style:UIAlertActionStyleDefault handler:exitBlock];
-    [alertController addAction:cancelAction];
-    [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+    self.alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:@"Downloading licence..." preferredStyle:UIAlertControllerStyleAlert];
+    self.cancelAction = [UIAlertAction actionWithTitle:CVKLocalizedString(@"CLOSE_APP") style:UIAlertActionStyleDefault handler:self.exitBlock];
+    [self.alertController addAction:self.cancelAction];
+#ifndef COMPILE_FOR_JAIL
+    [self.alertController addAction:[UIAlertAction actionWithTitle:@"Tester?" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        self.alertController = nil;
+        [self performSelectorOnMainThread:@selector(actionLogin) withObject:nil waitUntilDone:NO];
+    }]];
+#endif
+    if ([self.alertController respondsToSelector:@selector(setPreferredAction:)]) self.alertController.preferredAction = self.cancelAction;
+    [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:self.alertController animated:YES completion:nil];
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        NSString *stringURL = @"http://danpashin.ru/api/v1.1/non-jail.php";
-        NSString *udid = [UIDevice currentDevice].identifierForVendor.UUIDString;
-#ifdef COMPILE_FOR_JAIL
-        stringURL = @"http://danpashin.ru/api/v1.1/";
-        udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(kMGUniqueDeviceID)];
-#endif
+        NSString *stringURL = [NSString stringWithFormat:@"http://danpashin.ru/api/v%@/", API_VERSION];
         
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
         request.HTTPMethod = @"POST";
         [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
-        request.HTTPBody = [[NSString stringWithFormat:@"udid=%@&package=org.thebigboss.coloredvk2&version=%@", udid, kColoredVKVersion] dataUsingEncoding:NSUTF8StringEncoding];    
+        NSString *parameters = [NSString stringWithFormat:@"udid=%@&package=org.thebigboss.coloredvk2&version=%@", self.udid, kColoredVKVersion];
+        if (self.login && self.password) parameters = [NSString stringWithFormat:@"%@&login=%@&password=%@", parameters, self.login, [NSString md5StringFromString:self.password]];
+        request.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];    
         
         NSHTTPURLResponse *response;
         NSError *error = nil;
         [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         
         if (!error) {
-            switch ([response.allHeaderFields[@"Status"] intValue]) {
-                case 200:
-                    if (!response.allHeaderFields[@"Error-Description"]) {
-                        NSString *licencePath = CVK_PREFS_PATH;
-                        licencePath = [licencePath stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"];
-                        
-                        NSError *writingError = nil;
-                        NSData *encrypterdData = [[NSKeyedArchiver archivedDataWithRootObject:@{@"UDID":udid}] AES128EncryptedDataWithKey:@"BE7555818BC236315C987C1D9B17F"];
-                        [encrypterdData writeToFile:licencePath options:NSDataWritingAtomic error:&writingError];
-                        
-                        if (!writingError) {
-                            alertController.message = @"Licence was downloaded successfully";
-                            cancelAction = [UIAlertAction actionWithTitle:@"Apply changes" style:UIAlertActionStyleDefault handler:exitBlock];
-                        } else {
-                            alertController.message = [NSString stringWithFormat:@"Error: %@", writingError.localizedDescription];
-                        }
-                    }
-                    break;
-                case 403:
-                    alertController.message = [NSString stringWithFormat:@"Error while downloading licence:\n%@\nYour udid is\n%@", response.allHeaderFields[@"Error-Description"], udid];
-                    break;
-            }
-        } else {
-            alertController.message = [NSString stringWithFormat:@"Error while downloading licence:\n%@\nYour udid is\n%@", error.localizedDescription, udid];
-        }
+            if (response.allHeaderFields[@"Status"] && ([response.allHeaderFields[@"Status"] intValue] == 200)) {
+                NSString *licencePath = [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"];
+                
+                NSError *writingError = nil;
+                NSData *encrypterdData = [[NSKeyedArchiver archivedDataWithRootObject:@{@"UDID":self.udid}] AES128EncryptedDataWithKey:@"BE7555818BC236315C987C1D9B17F"];
+                [encrypterdData writeToFile:licencePath options:NSDataWritingAtomic error:&writingError];
+                
+                if (!writingError) {
+                    [self.alertController dismissViewControllerAnimated:YES completion:nil];
+                    self.alertController = nil;
+                    self.exitBlock(nil);
+                } else {
+                    self.alertController.message = [NSString stringWithFormat:@"%@\n%@", CVKLocalizedString(@"ERROR"), writingError.localizedDescription];
+                }
+
+            } else self.alertController.message = [NSString stringWithFormat:CVKLocalizedString(@"ERROR_DOWNLOADING_LICENCE"), response.allHeaderFields[@"Error-Description"], self.udid];
+        } else self.alertController.message = [NSString stringWithFormat:CVKLocalizedString(@"ERROR_DOWNLOADING_LICENCE"), error.localizedDescription, self.udid];
     }];
+}
+
+- (void)actionLogin
+{
+    self.alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:@"Log In" preferredStyle:UIAlertControllerStyleAlert];
+    __weak typeof(self) weakSelf = self;
+    [self.alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = UIKitLocalizedString(@"Name");
+        textField.tag = 10;
+        [[NSNotificationCenter defaultCenter] addObserver:weakSelf selector:@selector(textFieldChanged:) name:UITextFieldTextDidChangeNotification object:textField];
+    }];
+    [self.alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = UIKitLocalizedString(@"Password");
+        textField.tag = 11;
+        textField.secureTextEntry = YES;
+        [[NSNotificationCenter defaultCenter] addObserver:weakSelf selector:@selector(textFieldChanged:) name:UITextFieldTextDidChangeNotification object:textField];
+    }];     
+    
+    
+    self.cancelAction = [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        self.alertController = nil;
+        self.login = nil;
+        self.password = nil;
+        [self performSelectorOnMainThread:@selector(beginDownload) withObject:nil waitUntilDone:NO];
+    }];
+    [self.alertController addAction:self.cancelAction];
+    
+    self.loginAction = [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Login") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        self.alertController = nil;
+        [self performSelectorOnMainThread:@selector(beginDownload) withObject:nil waitUntilDone:NO];
+    }];
+    self.loginAction.enabled = NO;
+    [self.alertController addAction:self.loginAction];
+    [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:self.alertController animated:YES completion:nil];
+}
+
+- (void)textFieldChanged:(NSNotification *)notification
+{
+    if (notification && [notification.object isKindOfClass:NSClassFromString(@"UITextField")]) {
+        UITextField *textField = notification.object;
+        if (textField.tag == 10) self.login = textField.text;
+        else if (textField.tag == 11) self.password = textField.text;
+        
+        if ((self.login.length > 0) && (self.password.length > 0)) self.loginAction.enabled = YES;
+        else self.loginAction.enabled = NO;
+    }
 }
 @end

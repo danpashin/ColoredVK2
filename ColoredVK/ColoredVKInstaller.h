@@ -10,7 +10,5 @@
 #import <UIKit/UIKit.h>
 
 @interface ColoredVKInstaller : NSObject
-- (void)startWithUserInfo:(NSDictionary*)userInfo;
 - (void)startWithCompletionBlock:( void(^)(BOOL disableTweak) )block;
-- (void)startWithUserInfo:(NSDictionary*)userInfo completionBlock:( void(^)(BOOL disableTweak) )block;
 @end

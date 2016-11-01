@@ -57,7 +57,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [[ColoredVKInstaller alloc] startWithUserInfo:@{@"fromPreferences" : @YES }];
+    [[ColoredVKInstaller alloc] startWithCompletionBlock:^(BOOL disableTweak) {}];
     for (UIView *view in self.view.subviews) {
         if ([NSStringFromClass([view class]) isEqualToString:@"UITableView"]) {
             UITableView *tableView = (UITableView *)view;

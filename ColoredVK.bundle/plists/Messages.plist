@@ -78,7 +78,7 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>key</key>
-			<string>useMessagesBlur</string>
+			<string>useMessagesListBlur</string>
 			<key>label</key>
 			<string>USE_BLUR</string>
 			<key>default</key>
@@ -128,7 +128,7 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>key</key>
-			<string>useMessagesBlur</string>
+			<string>useGroupsListBlur</string>
 			<key>label</key>
 			<string>USE_BLUR</string>
 			<key>default</key>

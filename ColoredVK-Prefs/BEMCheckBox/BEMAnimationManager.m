@@ -22,11 +22,11 @@
 - (CABasicAnimation *)strokeAnimationReverse:(BOOL)reverse {
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
     if (reverse) {
-        animation.fromValue = [NSNumber numberWithFloat:1.0];
-        animation.toValue = [NSNumber numberWithFloat:0.0];
+        animation.fromValue = @1.0f;
+        animation.toValue = @0.0f;
     } else {
-        animation.fromValue = [NSNumber numberWithFloat:0.0];
-        animation.toValue = [NSNumber numberWithFloat:1.0];
+        animation.fromValue = @0.0f;
+        animation.toValue = @1.0f;
     }
     animation.duration = self.animationDuration;
     animation.removedOnCompletion = NO;
@@ -39,11 +39,11 @@
 - (CABasicAnimation *)opacityAnimationReverse:(BOOL)reverse {
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
     if (reverse) {
-        animation.fromValue = [NSNumber numberWithFloat:1.0];
-        animation.toValue = [NSNumber numberWithFloat:0.0];
+        animation.fromValue = @1.0f;
+        animation.toValue = @0.0f;
     } else {
-        animation.fromValue = [NSNumber numberWithFloat:0.0];
-        animation.toValue = [NSNumber numberWithFloat:1.0];
+        animation.fromValue = @0.0f;
+        animation.toValue = @1.0f;
     }
     animation.duration = self.animationDuration;
     animation.removedOnCompletion = NO;
@@ -81,7 +81,7 @@
         CGFloat time = i * 1.0/(bounces + 1);
         
         [values addObject:[NSValue valueWithCATransform3D:CATransform3DMakeScale(scale, scale, scale)]];
-        [keyTimes addObject:[NSNumber numberWithFloat:time]];
+        [keyTimes addObject:@(time)];
     }
     
     if (reverse) {

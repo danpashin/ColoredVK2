@@ -23,7 +23,7 @@
 #import "VKMethods.h"
 #import "UIImage+ResizeMagick.h"
 #import "NSDate+DateTools.h"
-//#import <dlfcn.h>
+#import <dlfcn.h>
 #import "ColoredVKPrefsController.h"
 
 
@@ -57,7 +57,7 @@ typedef NS_ENUM(NSInteger, CVKKeyboardStyle) {
 
 NSTimeInterval updatesInterval;
 
-BOOL tweakEnabled = YES;
+BOOL tweakEnabled = NO;
 BOOL VKSettingsEnabled;
 
 NSString *prefsPath;
@@ -112,7 +112,7 @@ UIColor *switchesTintColor;
 UIColor *switchesOnTintColor;
 
 UIButton *postCreationButton;
-UISwitch *cvkSwitch;
+static void *const kcvkMenuSwitch = (void*)&kcvkMenuSwitch;
 MenuCell *cvkCell;
 
 CVKCellSelectionStyle menuSelectionStyle;
@@ -133,6 +133,7 @@ CVKKeyboardStyle keyboardStyle;
 + (UIVisualEffectView *)blurForView:(UIView *)view withTag:(int)tag;
 
 + (MenuCell*) createCustomCell;
++ (void)switchTriggered:(UISwitch*)switchView;
 @end
 
 
@@ -160,52 +161,46 @@ static UIImage *coloredImage(UIColor *color, UIImage *originalImage)
 
 static void checkUpdates()
 {
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *stringURL = [NSString stringWithFormat:@"http://danpashin.ru/api/v1.1/checkUpdates.php?userVers=%@&product=com.daniilpashin.coloredvk2", kColoredVKVersion];
+    NSString *stringURL = [NSString stringWithFormat:@"http://danpashin.ru/api/v%@/checkUpdates.php?userVers=%@&product=com.daniilpashin.coloredvk2", API_VERSION, kColoredVKVersion];
 #ifndef COMPILE_FOR_JAIL
-        stringURL = [stringURL stringByAppendingString:@"&getIPA=1"];
+    stringURL = [stringURL stringByAppendingString:@"&getIPA=1"];
 #endif
-        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
-        
-        [NSURLConnection sendAsynchronousRequest:urlRequest 
-                                           queue:[NSOperationQueue mainQueue]
-                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                                   if (!connectionError) {
-                                       NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:prefsPath];
-                                       NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-                                       if (!responseDict[@"error"]) {
-                                           NSString *version = responseDict[@"version"];
-                                           
-                                           if (![prefs[@"skippedVersion"] isEqualToString:version]) {
-                                               dispatch_async(dispatch_get_main_queue(), ^{
-                                                   NSString *message = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE", nil, cvkBunlde, nil), version];
-                                                   NSString *skip = NSLocalizedStringFromTableInBundle(@"SKIP_THIS_VERSION_BUTTON_TITLE", nil, cvkBunlde, nil);
-                                                   NSString *remindLater = NSLocalizedStringFromTableInBundle(@"REMIND_LATER_BUTTON_TITLE", nil, cvkBunlde, nil);
-                                                   NSString *updateNow = NSLocalizedStringFromTableInBundle(@"UPADTE_BUTTON_TITLE", nil, cvkBunlde, nil);
-                                                   
-                                                   UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK" message:message preferredStyle:UIAlertControllerStyleAlert];
-                                                   [alertController addAction:[UIAlertAction actionWithTitle:skip style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                                                       [prefs setValue:version forKey:@"skippedVersion"];
-                                                       [prefs writeToFile:prefsPath atomically:YES];
-                                                   }]];
-                                                   [alertController addAction:[UIAlertAction actionWithTitle:remindLater style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
-                                                   [alertController addAction:[UIAlertAction actionWithTitle:updateNow style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                       NSURL *url = [NSURL URLWithString:responseDict[@"url"]];
-                                                       if ([[UIApplication sharedApplication] canOpenURL:url]) [[UIApplication sharedApplication] openURL:url];
-
-                                                   }]];
-                                                   [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
-                                               });
-                                           }
-                                       }
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
+    
+    [NSURLConnection sendAsynchronousRequest:urlRequest 
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                               if (!connectionError) {
+                                   NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:prefsPath];
+                                   NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                                   if (!responseDict[@"error"]) {
+                                       NSString *version = responseDict[@"version"];
                                        
-                                       NSDateFormatter *dateFormatter = [NSDateFormatter new];
-                                       dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-                                       [prefs setValue:[dateFormatter stringFromDate:[NSDate date]] forKey:@"lastCheckForUpdates"];
-                                       [prefs writeToFile:prefsPath atomically:YES];
+                                       if (![prefs[@"skippedVersion"] isEqualToString:version]) {
+                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                               NSString *message = [NSString stringWithFormat:CVKLocalizedString(@"YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE"), version];
+                                               UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];
+                                               [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"SKIP_THIS_VERSION_BUTTON_TITLE") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                                                   [prefs setValue:version forKey:@"skippedVersion"];
+                                                   [prefs writeToFile:prefsPath atomically:YES];
+                                               }]];
+                                               [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"REMIND_LATER_BUTTON_TITLE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
+                                               [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"UPADTE_BUTTON_TITLE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                   NSURL *url = [NSURL URLWithString:responseDict[@"url"]];
+                                                   if ([[UIApplication sharedApplication] canOpenURL:url]) [[UIApplication sharedApplication] openURL:url];
+                                                   
+                                               }]];
+                                               [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+                                           });
+                                       }
                                    }
-                               }];
-//    });
+                                   
+                                   NSDateFormatter *dateFormatter = [NSDateFormatter new];
+                                   dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+                                   [prefs setValue:[dateFormatter stringFromDate:[NSDate date]] forKey:@"lastCheckForUpdates"];
+                                   [prefs writeToFile:prefsPath atomically:YES];
+                               }
+                           }];
 }
 
 
@@ -275,9 +270,9 @@ static void reloadPrefs()
             }
         }
             
-        if (blackThemeWasEnabled && !enabledBlackTheme) dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(120 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{ blackThemeWasEnabled = NO; });
-        if (cvkSwitch) cvkSwitch.on = enabled;
+        if (blackThemeWasEnabled && !enabledBlackTheme) dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(60 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{ blackThemeWasEnabled = NO; });
         if (!cvkCell) cvkCell = [ColoredVKMainController createCustomCell];
+        [ColoredVKMainController switchTriggered:nil];
     }
 }
 
@@ -285,7 +280,7 @@ static void reloadPrefs()
 static void showAlertWithMessage(NSString *message)
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK" message:message preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];
         [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
         [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
     });
@@ -297,7 +292,7 @@ static void setBlur(id bar, BOOL set)
     if (set) {
         if ([bar isKindOfClass:[UINavigationBar class]]) {
             UINavigationBar *navbar = bar;
-//            if ([navbar.subviews containsObject:[navbar viewWithTag:403]]) [[navbar viewWithTag:403] removeFromSuperview];
+            
             navbar.barTintColor = [UIColor clearColor];
             UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]];
             blurEffectView.frame = CGRectMake(0, -20, navbar.frame.size.width, navbar.frame.size.height + 20);
@@ -500,7 +495,7 @@ static NSArray *getInfoForActionController()
     switchView.on = enabled;
     switchView.onTintColor = [UIColor defaultColorForIdentifier:@"switchesOnTintColor"];
     [switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventValueChanged];
-    cvkSwitch = switchView;
+    objc_setAssociatedObject(self, kcvkMenuSwitch, switchView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [cell addSubview:switchView];
     
     cell.select = (id)^(MainModel *model, id arg2) {
@@ -518,18 +513,26 @@ static NSArray *getInfoForActionController()
     return cell;
 }
 
-+ (void) switchTriggered:(UISwitch *)switchView
++ (void)switchTriggered:(UISwitch *)switchView
 {
-    NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:prefsPath];
-    prefs[@"enabled"] = @(switchView.on);
-    [prefs writeToFile:prefsPath atomically:YES];
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-//        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
-    });
+    if (switchView) {
+        NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:prefsPath];
+        prefs[@"enabled"] = @(switchView.on);
+        [prefs writeToFile:prefsPath atomically:YES];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
+            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+                //        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
+            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
+        });
+    } else {
+        id object = objc_getAssociatedObject(self, kcvkMenuSwitch);
+        if ([object isKindOfClass:NSClassFromString(@"UISwitch")]) {
+            UISwitch *switchView = object;
+            switchView.on = enabled;
+        }
+    }
 }
 
 
@@ -672,7 +675,12 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
     
     CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
     
-    [[ColoredVKInstaller alloc] startWithCompletionBlock:^(BOOL disableTweak) { if (disableTweak) tweakEnabled = NO; }];
+    [[ColoredVKInstaller alloc] startWithCompletionBlock:^(BOOL disableTweak) {
+        if (!disableTweak) {
+            tweakEnabled = YES;
+            reloadPrefs();
+        }
+    }];
     if (shouldCheckUpdates) {
         NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
         
@@ -1238,6 +1246,8 @@ CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, anima
         else if (useMessagesBlur && ([CLASS_NAME(self) isEqualToString:@"MultiChatController"] || [CLASS_NAME(self) isEqualToString:@"SingleUserChatController"])) shouldAddBlur = YES;
         else if (useGroupsListBlur && [CLASS_NAME(self) isEqualToString:@"GroupsController"]) shouldAddBlur = YES;
         else if (useMessagesListBlur && [CLASS_NAME(self) isEqualToString:@"DialogsController"]) shouldAddBlur = YES;
+//        else if ([CLASS_NAME(self) isEqualToString:@"AudioAlbumController"]) shouldAddBlur = YES;
+//        else if ([CLASS_NAME(self) isEqualToString:@"AudioAlbumsController"]) shouldAddBlur = YES;
         else shouldAddBlur = NO;
     } else shouldAddBlur = NO;
     
@@ -1352,6 +1362,7 @@ CHOptimizedMethod(0, self, void, DialogsController, viewWillLayoutSubviews)
 CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, DialogsController, viewWillAppear, animated);
+//    dlopen([[NSBundle.mainBundle.bundlePath stringByAppendingString:@"/FLEXDylib.dylib"] UTF8String], RTLD_LAZY);
     if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && enabled) {
         if (enabledBlackTheme) {
             self.tableView.backgroundColor = [UIColor darkBlackColor];
@@ -1361,7 +1372,7 @@ CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animat
             
             UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
             search.backgroundImage = [UIImage new];
-            for (UIView *field in search.subviews.lastObject.subviews){
+            for (UIView *field in search.subviews.lastObject.subviews) {
                 if ([field isKindOfClass:[UITextField class]]) {
                     field.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
                     UITextField *textField = (UITextField*)field;
@@ -1380,9 +1391,10 @@ CHOptimizedMethod(2, self, UITableViewCell*, DialogsController, tableView, UITab
         if (enabledBlackTheme) {
             cell.contentView.backgroundColor = [UIColor lightBlackColor]; 
         } else if (enabledMessagesListImage) {
-            cell.contentView.backgroundColor =  [UIColor clearColor];
+            cell.backgroundView.hidden = YES;
             cell.backgroundColor = [UIColor clearColor];
-            cell.backgroundView = nil;
+            if (!cell.dialog.head.read_state && cell.unread.hidden) cell.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
+            else cell.contentView.backgroundColor = [UIColor clearColor];
             
             cell.dialogText.textColor = [UIColor colorWithWhite:1 alpha:0.8];
             cell.name.textColor = [UIColor colorWithWhite:1 alpha:0.8];
@@ -1465,16 +1477,13 @@ CHOptimizedMethod(0, self, void, ChatController, viewWillLayoutSubviews)
         if (enabledBlackTheme) {
             self.tableView.backgroundColor = [UIColor darkBlackColor];
             self.tableView.backgroundView = nil;
-        } else if (enabledMessagesImage) setImageToTable(self.tableView, @"messagesBackgroundImage", chatImageBlackout, YES);        
+        } else if (enabledMessagesImage) setImageToTable(self.tableView, @"messagesBackgroundImage", chatImageBlackout, YES);
     }
 }
-
 
 CHOptimizedMethod(2, self, UITableViewCell*, ChatController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, ChatController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    
-//    if (indexPath.row == 0) chatTableView = tableView;
     
      if (enabled && (enabledMessagesImage && !enabledBlackTheme) ) {
          for (id view in cell.contentView.subviews) {
@@ -1489,6 +1498,20 @@ CHOptimizedMethod(2, self, UITableViewCell*, ChatController, tableView, UITableV
     return cell;
 }
 
+CHOptimizedMethod(0, self, UIButton*, ChatController, editForward)
+{
+    UIButton *forwardButton = CHSuper(0, ChatController, editForward);
+    if (enabled && (!enabledBlackTheme && useMessagesBlur)) {
+        [forwardButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [forwardButton setImage:coloredImage([UIColor whiteColor], [forwardButton imageForState:UIControlStateNormal]) forState:UIControlStateNormal];
+        for (UIView *subview in forwardButton.superview.subviews) if ([subview isKindOfClass:NSClassFromString(@"UIToolbar")]) { setBlur(subview, YES); break; }
+    }
+    return forwardButton;
+}
+
+
+
+#pragma mark MessageCell
 CHDeclareClass(MessageCell);
 CHOptimizedMethod(1, self, void, MessageCell, updateBackground, BOOL, animated)
 {
@@ -1528,7 +1551,7 @@ CHOptimizedMethod(2, self, CGFloat, VKMMainController, tableView, UITableView*, 
 {
     CGFloat height = CHSuper(2, VKMMainController, tableView, tableView, heightForRowAtIndexPath, indexPath);
     UITableViewCell *cell = self.menu[indexPath.row];
-    if ([cell.textLabel.text isEqualToString:@"ColoredVK"]) height = 44.0;
+    if ([cell.textLabel.text isEqualToString:@"ColoredVK"]) height = 44;
     if ([cell.textLabel.text isEqualToString:NSLocalizedStringFromTableInBundle(@"GroupsAndPeople", nil, vksBundle, nil)]) height = 35;
     return height;
 }
@@ -1539,7 +1562,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
     
     menuTableView = tableView;
     
-    NSDictionary *identifiers = @{@"customCell" : @228, @"cvkCell": @225};
+    NSDictionary *identifiers = @{@"customCell" : @228, @"cvkCell": @405};
     if ([identifiers.allKeys containsObject:cell.reuseIdentifier]) {
         UISwitch *switchView = [cell viewWithTag:[identifiers[cell.reuseIdentifier] integerValue]];
         if ([CLASS_NAME(switchView) isEqualToString:@"UISwitch"]) [switchView layoutSubviews];
@@ -1691,6 +1714,11 @@ CHOptimizedMethod(0, self, UIStatusBarStyle, AudioController, preferredStatusBar
 
 
 
+//#pragma mark AudioAlbumController
+//CHDeclareClass(AudioAlbumController);
+
+
+
 #pragma mark PhotoBrowserController
 CHDeclareClass(PhotoBrowserController);
 CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, animated)
@@ -1716,7 +1744,7 @@ CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, a
                                                                             BlockActionController *actionController = [objc_getClass("BlockActionController") actionSheetWithTitle:nil];
                                                                             NSArray *info = getInfoForActionController();
                                                                             for (NSDictionary *dict in info) {
-                                                                                [actionController addButtonWithTitle:NSLocalizedStringFromTableInBundle(dict[@"title"], nil, cvkBunlde, nil) 
+                                                                                [actionController addButtonWithTitle:CVKLocalizedString(dict[@"title"]) 
                                                                                                                block:(id)^(id arg1) {
                                                                                                                    NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
                                                                                                                        [ColoredVKMainController downloadImageWithSource:imageSource 
@@ -1757,7 +1785,7 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
                                                                             BlockActionController *actionController = [objc_getClass("BlockActionController") actionSheetWithTitle:nil];
                                                                             NSArray *info = getInfoForActionController();
                                                                             for (NSDictionary *dict in info) {
-                                                                                [actionController addButtonWithTitle:NSLocalizedStringFromTableInBundle(dict[@"title"], nil, cvkBunlde, nil) 
+                                                                                [actionController addButtonWithTitle:CVKLocalizedString(dict[@"title"]) 
                                                                                                                block:(id)^(id arg1) {
                                                                                                                    NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
                                                                                                                        [ColoredVKMainController downloadImageWithSource:self.target.url.absoluteString 
@@ -1781,14 +1809,6 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
                                    if (![[response.MIMEType componentsSeparatedByString:@"/"].firstObject isEqualToString:@"image"]) saveButton.enabled = NO;
                                }];
     }
-}
-
-#pragma mark VKUser
-CHDeclareClass(VKUser);
-CHOptimizedMethod(0, self, BOOL, VKUser, verified)
-{
-    if ([self.uid  isEqual: @89911723]) return YES;
-    return CHSuper(0, VKUser, verified);
 }
 
 #pragma mark VKProfile
@@ -1833,7 +1853,7 @@ static void reloadTablesNotify(CFNotificationCenterRef center, void *observer, C
 CHConstructor
 {
     @autoreleasepool {
-            if ([[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"] intValue] >= 27) {
+            if ([[NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleVersion"] intValue] >= 27) {
                 
                 prefsPath = CVK_PREFS_PATH;
                 cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
@@ -1842,7 +1862,7 @@ CHConstructor
                 
                 NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:prefsPath];
                 if (![[NSFileManager defaultManager] fileExistsAtPath:prefsPath]) prefs = [NSMutableDictionary new];
-                [prefs setValue:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"] forKey:@"vkVersion"];
+                [prefs setValue:[NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"] forKey:@"vkVersion"];
                 [prefs setValue:kColoredVKVersion forKey:@"cvkVersion"]; 
                 [prefs writeToFile:prefsPath atomically:YES];
                 
@@ -2025,6 +2045,7 @@ CHConstructor
                 CHHook(0, ChatController, viewWillLayoutSubviews);
                 CHHook(2, ChatController, tableView, cellForRowAtIndexPath);
                 CHHook(1, ChatController, viewWillAppear);
+                CHHook(0, ChatController, editForward);
                 
                 CHLoadLateClass(MessageCell);
                 CHHook(1, MessageCell, updateBackground);
@@ -2037,8 +2058,6 @@ CHConstructor
                 
 //                CHLoadLateClass(VKRenderedText);
 //                CHHook(0, VKRenderedText, text);
-//                CHHook(1, VKRenderedText, setText);
-//                CHHook(1, VKRenderedText, drawInContext);
                 
                 
                 
@@ -2054,9 +2073,6 @@ CHConstructor
                 CHHook(1, VKMToolbarController, viewWillAppear);
                 
                 
-                CHLoadLateClass(VKUser);
-                CHHook(0, VKUser, verified);
-                
                 CHLoadLateClass(VKProfile);
                 CHHook(0, VKProfile, verified);
                 
@@ -2064,7 +2080,7 @@ CHConstructor
                 VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil)?YES:NO;
                 
             } else {
-                showAlertWithMessage([NSString stringWithFormat: @"App version (%@) is too low. Please install VK App 2.5 or later or tweak will be disabled",  [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]]);
+                showAlertWithMessage([NSString stringWithFormat: @"App version (%@) is too low. Please install VK App 2.5 or later or tweak will be disabled",  [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"]]);
             }
     }
 }

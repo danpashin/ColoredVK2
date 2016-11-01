@@ -95,9 +95,9 @@
         }
     } else {
         // Selection is nil
-        if(self.mustHaveSelection && [self.checkBoxes count] > 0){
+        if(self.mustHaveSelection && self.checkBoxes.count > 0){
             // We must have a selected checkbox, so re-call this method with the first checkbox
-            self.selectedCheckBox = [self.checkBoxes firstObject];
+            self.selectedCheckBox = self.checkBoxes.firstObject;
         } else {
             for (BEMCheckBox *checkBox in self.checkBoxes) {
                 BOOL shouldBeOn = NO;
@@ -114,14 +114,14 @@
     
     // If it must have a selection and we currently don't, select the first box
     if (mustHaveSelection && !self.selectedCheckBox) {
-        self.selectedCheckBox = [self.checkBoxes firstObject];
+        self.selectedCheckBox = self.checkBoxes.firstObject;
     }
 }
 
 #pragma mark Private methods called by BEMCheckBox
 
 - (void)_checkBoxSelectionChanged:(BEMCheckBox *)checkBox {
-    if ([checkBox on]) {
+    if (checkBox.on) {
         // Change selected checkbox to this one
         self.selectedCheckBox = checkBox;
     } else if(checkBox == self.selectedCheckBox) {

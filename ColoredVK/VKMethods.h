@@ -95,7 +95,7 @@
 @property(readonly, nonatomic) id value;
 @property(readonly, nonatomic) struct _NSRange range;
 @property(readonly, nonatomic) NSString *attribute;
-- (id)initWithAttribute:(id)arg1 value:(id)arg2 range:(struct _NSRange)arg3;
+- (instancetype)initWithAttribute:(id)arg1 value:(id)arg2 range:(struct _NSRange)arg3;
 @end
 
 
@@ -153,6 +153,7 @@
 
 
 
+
 @interface VKMessage : NSObject
 @property(nonatomic) BOOL read_state;
 @end
@@ -161,6 +162,10 @@
 @property(retain, nonatomic) VKMessage *message;
 @end
 
+
+@interface VKDialog : NSObject
+@property(retain, nonatomic) VKMessage *head;
+@end
 
 @interface BackgroundView : UILabel
 @property(nonatomic) int cornerRadius;
@@ -171,7 +176,10 @@
 @property(readonly, retain, nonatomic) UILabel *dialogText;
 @property(readonly, retain, nonatomic) UILabel *time;
 @property(readonly, retain, nonatomic) UILabel *name;
+@property(retain, nonatomic) VKDialog *dialog;
 @end
+
+
 
 
 @interface VKMSearchController : UISearchDisplayController
@@ -186,7 +194,7 @@
 @property(retain, nonatomic) UITableView *tableView;
 - (void)redrawSectionFooters;
 - (void)redrawSectionHeaders;
-- (id)VKMTableCreateSearchBar;
+@property (nonatomic, readonly, strong) id VKMTableCreateSearchBar;
 @end
 
 
@@ -200,6 +208,9 @@
 @end
 @interface ChatController : VKMTableController
 @property(retain, nonatomic) ExtraInputPanelView *inputPanel;
+@property(retain, nonatomic) UIButton *editForward;
+@property(retain, nonatomic) UIButton *editDelete;
+@property(retain, nonatomic) UIView *editToolbar;
 @end
 
 

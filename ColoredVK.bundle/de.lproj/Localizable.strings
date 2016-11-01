@@ -34,3 +34,5 @@
 "USE_IN_GROUP_LIST" = "Verwenden sie in der gruppe Liste";
 
 "NEVER" = "Nie";
+"ERROR_DOWNLOADING_LICENCE" = "Fehler beim herunterladen Lizenz:\n%@\n\Ihre UDID\n%@\n\nBitte nicht zeigen, dass es für jeden außer-Entwickler";
+"CLOSE_APP" = "In der Nähe app";

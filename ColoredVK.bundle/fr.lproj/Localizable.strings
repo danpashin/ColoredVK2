@@ -34,3 +34,5 @@
 "USE_IN_GROUP_LIST" = "Utiliser dans le groupe de la liste";
 
 "NEVER" = "Jamais";
+"ERROR_DOWNLOADING_LICENCE" = "Erreur lors du téléchargement de la licence:\n%@\n\nVotre UDID est \n%@\n\nMerci de ne pas le montrer à quiconque à l'exception de développeur";
+"CLOSE_APP" = "La fermeture de l'application";
