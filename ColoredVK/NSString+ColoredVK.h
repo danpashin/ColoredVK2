@@ -18,4 +18,8 @@
  Creates hex string from color
  */
 + (NSString *)hexStringFromColor:(UIColor *)color;
+/**
+ Creates md5 hash string from string
+ */
++ (NSString *)md5StringFromString:(NSString *)string;
 @end

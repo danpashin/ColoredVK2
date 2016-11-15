@@ -8,12 +8,15 @@
 
 
 "ERROR" = "Error";
+"WARNING" = "Warning";
+"THIS_ACTION_CAN_NOT_BE_UNDONE" = "This action can not be undone";
 "CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Can not save image. Try again or contact developer.";
 
 "YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE" = "U're using outdated tweak version. Latest is %@";
 "REMIND_LATER_BUTTON_TITLE" = "Remind later";
 "SKIP_THIS_VERSION_BUTTON_TITLE" = "Skip this version";
 "UPADTE_BUTTON_TITLE" = "Update now";
+"NO_UPDATES_FOUND_BUTTON_TITLE" = "No updates found";
 
 "TWEAK_FOOTER_TEXT" = "Tweak version: %@\nVK App version: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Error loading tweak files.\nCheck their availability or contact developer.";
@@ -22,6 +25,14 @@
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Copy current hex value";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Enter a hexadecimal color code\n(Symbol # is not necessary)";
 "EXAMPLE_ALERT_MESSAGE" = "Like %@";
-"SAVE_THIS_COLOR_QUESTION" = "Save this color?";
-"RESET_BUTTON_TITLE" = "Reset saved color";
-"TAP_AND_HOLD_BUTTON_TITLE" = "Tap & hold button to continue";
+"RESET_COLOR_QUESTION" = "Do you really want to reset color?";
+"RESET_SETTINGS_QUESTION" = "Do you really want to reset settings?";
+
+"USE_IN_MENU" = "Use in the menu";
+"USE_IN_MESSAGES" = "Use in the messages";
+"USE_IN_MESSAGE_LIST" = "Use in message list";
+"USE_IN_GROUP_LIST" = "Use in group list";
+
+"NEVER" = "Never";
+"ERROR_DOWNLOADING_LICENCE" = "Error while downloading licence:\n%@\n\nYour UDID is\n%@\n\nPlease don't show it for anyone except developer";
+"CLOSE_APP" = "Close app";

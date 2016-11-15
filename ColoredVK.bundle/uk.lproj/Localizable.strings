@@ -8,12 +8,15 @@
 
 
 "ERROR" = "Помилка";
+"WARNING" = "Попередження";
+"THIS_ACTION_CAN_NOT_BE_UNDONE" = "Ця дія не може бути скасована";
 "CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Неможливо зберегти зображення. Спробуйте знову або зверніться до розробника.";
 
 "YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE" = "Ваш твік застарів. Актуальна версія - %@";
 "REMIND_LATER_BUTTON_TITLE" = "Нагадати пізніше";
 "SKIP_THIS_VERSION_BUTTON_TITLE" = "Пропустити цю версію";
 "UPADTE_BUTTON_TITLE" = "Оновити зараз";
+"NO_UPDATES_FOUND_BUTTON_TITLE" = "Ніяких оновлень знайдено";
 
 "TWEAK_FOOTER_TEXT" = "Версія твіка: %@\nВерсія VK App: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "При завантаженні файлів сталася помилка.\nПеревірте їх наявність або зверніться до розробника.";
@@ -22,6 +25,14 @@
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Скопіювати поточне значення hex";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Введіть 16-ковий код кольору\n(Символ # ставити не обов'язково)";
 "EXAMPLE_ALERT_MESSAGE" = "Наприклад %@";
-"SAVE_THIS_COLOR_QUESTION" = "Зберегти цей колір?";
-"RESET_BUTTON_TITLE" = "Скинути збережений колір";
-"TAP_AND_HOLD_BUTTON_TITLE" = "Натисніть і утримуйте кнопку, щоб продовжити";
+"RESET_COLOR_QUESTION" = "Ви дійсно хочете скинути колір?";
+"RESET_SETTINGS_QUESTION" = "Ви дійсно хочете скинути налаштування?";
+
+"USE_IN_MENU" = "Використовувати в меню";
+"USE_IN_MESSAGES" = "Використовувати в повідомленнях";
+"USE_IN_MESSAGE_LIST" = "Використовувати в списку повідомлень";
+"USE_IN_GROUP_LIST" = "Використовувати в списку групи";
+
+"NEVER" = "Ніколи";
+"ERROR_DOWNLOADING_LICENCE" = "Помилка при скачування ліцензія:\n%@\n\nВаш UDID \n%@\n\nБудь ласка, не показуй його нікому, крім розробника";
+"CLOSE_APP" = "Закриття програми";

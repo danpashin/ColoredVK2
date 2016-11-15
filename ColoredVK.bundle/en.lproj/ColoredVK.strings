@@ -6,31 +6,69 @@
 //  Copyright (©) Daniil Pashin 2015. All rights reserved.
 //  
 
-
-"BLACK_THEME" = "Black theme";
-"ENABLE_BLACK_THEME" = "Enable";
-"BLACK_THEME_FOOTER" = "";
+"ENABLE_BLACK_THEME" = "Enable black theme";
 
 "NAVIGATION_BAR" = "Navigation bar";
 "TOOLBAR" = "Toolbar";
 "MENU_BACKGROUND" = "Menu";
 "MESSAGES_BACKGROUND" = "Messages";
-"OTHER" = "Other";
+"MESSAGES_LIST_BACKGROUND" = "Messages list";
+"GROUPS" = "Groups";
+"MISCELLANEOUS" = "Miscellaneous";
 "STATUS_BAR_COLORS" = "Status bar";
+"SWITCH_COLORS" = "Switches";
 
 "CHANGE_COLORS" = "Change colors";
 "BACKGROUND_COLOR" = "Background color";
 "FOREGROUND_COLOR" = "Foreground color";
 "ENABLED_IMAGE" = "Use image instead";
+"USE_BLUR" = "Use blur *";
+"BLUR_SETTINGS" = "Blur settings";
 
 "CHANGE_BACKGROUND" = "Change background";
 "IMAGE_BLACKOUT" = "Image blackout";
-"USE_BLUR" = "Use blur*";
-"USE_BLUR_WARNING" = "*Using blur on old devices may cause lags";
+"SELECTION_STYLE" = "Selection style";
+"NONE" = "None";
+"TRANSPARENT" = "Transparent";
+"BLURRED" = "Blurred";
 "SEPARATOR_COLOR" = "Separators color";
 "HIDE_SEPARATORS" = "Hide separators";
+"HIDE_SEARCH" = "Hide search *";
+"VKAPP_RESTART_IS_NEEDED" = "* VK App restart is needed";
+"USE_BLUR_FOOTER" = "* If enabled navigation bar and toolbar will be blurred";
 
+"KEYBOARD_STYLE" = "Keyboard style";
+"BLACK" = "Black";
+"WHITE" = "White";
 "SHOW_BAR" = "Always show nav bar";
-"BLACK_KB" = "Black keyboard";
 
+"USE_PARALLAX" = "Use parallax";
+
+
+"AUDIO_BACKGROUND" = "Audio";
+"AUDIO_PLAYER" = "Player";
+"CHANGE_APPEARANCE" = "Customize";
+"MINIMIZE" = "Minimize";
+
+
+
+
+
+
+// chek updates controller
+"CHECK_UPDATES" = "Check updates";
+"CHECK_UPDATES_INTERVAL" = "Interval";
+"CHECK_NOW" = "Check now";
+"LAST_CHECK" = "Last check";
+
+"EVERY_DAY" = "Every day";
+"EVERY_WEEK" = "Every week";
+"EVERY_TWO_WEEKS" = "Every two weeks";
+"EVERY_MONTH" = "Every month";
+
+
+// About controller
+"SETTINGS" = "Settings";
 "DEVELOPER_IN_VK" = "Developer in VK";
+"UPDATES_SETTINGS" = "Updates settings";
+"LICENCES" = "Licences";

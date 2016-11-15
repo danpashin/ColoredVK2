@@ -8,28 +8,65 @@
 
 "BLACK_THEME" = "Tema preto";
 "ENABLE_BLACK_THEME" = "Habilitar";
-"BLACK_THEME_FOOTER" = "";
 
 "NAVIGATION_BAR" = "Barra de navegação";
 "TOOLBAR" = "Toolbar";
 "MENU_BACKGROUND" = "Cardápio";
 "MESSAGES_BACKGROUND" = "Mensagens";
-"OTHER" = "De outros";
+"MESSAGES_LIST_BACKGROUND" = "Lista de mensagens";
+"GROUPS" = "Grupos";
+"MISCELLANEOUS" = "Diversos";
 "STATUS_BAR_COLORS" = "Barra de status";
+"SWITCH_COLORS" = "Opções";
 
 "CHANGE_COLORS" = "Alterar cores";
 "BACKGROUND_COLOR" = "Cor de fundo";
-"FOREGROUND_COLOR" = "Cor do primeiro plano";
+"FOREGROUND_COLOR" = "Cor principal";
 "ENABLED_IMAGE" = "Usar uma imagem em vez";
+"USE_BLUR" = "Usar blur";
+"BLUR_SETTINGS" = "Blur definições";
 
 "CHANGE_BACKGROUND" = "Mude o fundo";
 "IMAGE_BLACKOUT" = "Apagão imagem";
-"USE_BLUR" = "Use borrão*";
-"USE_BLUR_WARNING" = "*Usando desfoque em dispositivos antigos podem causar atrasos";
+"SELECTION_STYLE" = "Estilo selecção";
+"NONE" = "Nenhum";
+"TRANSPARENT" = "Transparente";
+"BLURRED" = "Desfocada";
 "SEPARATOR_COLOR" = "Cor separadores";
 "HIDE_SEPARATORS" = "Ocultar separadores";
+"HIDE_SEARCH" = "Ocultar pesquisa *";
+"VKAPP_RESTART_IS_NEEDED" = "* VKApp é necessário reiniciar";
+"USE_BLUR_FOOTER" = "* Se ativada, a barra de navegação e a barra de ferramentas será turva";
 
+"KEYBOARD_STYLE" = "Estilo de teclado";
+"BLACK" = "Preto";
+"WHITE" = "Branco";
 "SHOW_BAR" = "Sempre mostrar barra de navegação";
-"BLACK_KB" = "Teclado preto";
 
+"USE_PARALLAX" = "Use parallax";
+
+
+"AUDIO_BACKGROUND" = "Áudio";
+"AUDIO_PLAYER" = "Player";
+"CHANGE_APPEARANCE" = "Personalizar";
+"MINIMIZE" = "Minimizar";
+
+
+
+// chek updates controller
+"CHECK_UPDATES" = "Verificar atualizações";
+"CHECK_UPDATES_INTERVAL" = "Intervalo de";
+"CHECK_NOW" = "Verifique agora";
+"LAST_CHECK" = "Última seleção";
+
+"EVERY_DAY" = "Todos os dias";
+"EVERY_WEEK" = "A cada semana";
+"EVERY_TWO_WEEKS" = "A cada duas semanas";
+"EVERY_MONTH" = "A cada mês";
+
+
+// About controller
+"SETTINGS" = "Configurações";
 "DEVELOPER_IN_VK" = "Desenvolvedor na VK";
+"UPDATES_SETTINGS" = "Atualizações de definições";
+"LICENCES" = "Licenças";

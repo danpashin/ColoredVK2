@@ -10,6 +10,6 @@
 #import <UIKit/UIKit.h>
 #import "Preferences.h"
 
-@interface ColoredVKHeader : PSTableCell
-
+@interface ColoredVKHeader : UIView
++ (instancetype)headerForView:(UIView *)rootView;
 @end

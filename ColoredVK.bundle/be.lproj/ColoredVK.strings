@@ -2,36 +2,70 @@
 //  ColoredVK.strings
 //  ColoredVK
 //  
-//  Belarusian
-//  
 //  Created by Даниил on 08.04.2015.
 //  Copyright (©) Daniil Pashin 2015. All rights reserved.
 //  
 
 "BLACK_THEME" = "Чорная тэма";
 "ENABLE_BLACK_THEME" = "ўключыць";
-"BLACK_THEME_FOOTER" = "";
 
 "NAVIGATION_BAR" = "Бар навігацыі";
 "TOOLBAR" = "Тулбар";
 "MENU_BACKGROUND" = "Меню";
 "MESSAGES_BACKGROUND" = "Паведамлення";
-"OTHER" = "іншае";
+"MESSAGES_LIST_BACKGROUND" = "Спіс паведамленняў";
+"GROUPS" = "Групы";
+"MISCELLANEOUS" = "Розны";
 "STATUS_BAR_COLORS" = "Радок стану";
+"SWITCH_COLORS" = "Перамыкачы";
 
 "CHANGE_COLORS" = "Змяненне колеру";
 "BACKGROUND_COLOR" = "Колер фону";
-"FOREGROUND_COLOR" = "Колер кнопак";
+"FOREGROUND_COLOR" = "Асноўны колер";
 "ENABLED_IMAGE" = "Малюнак замест колеру";
+"USE_BLUR" = "Выкарыстоўвайце размыццё *";
+"BLUR_SETTINGS" = "Налады размыцця";
 
 "CHANGE_BACKGROUND" = "Змяніць фон";
 "IMAGE_BLACKOUT" = "Зацямненне малюнка.";
-"USE_BLUR" = "Выкарыстоўваць блюрее*";
-"USE_BLUR_WARNING" = "*Выкарыстанне размыцця на старых прыладах можа выклікаць лагі";
+"SELECTION_STYLE" = "Стыль выбару";
+"NONE" = "Няма";
+"TRANSPARENT" = "Празрысты";
+"BLURRED" = "Размыты";
 "SEPARATOR_COLOR" = "Колер падзельнікаў";
 "HIDE_SEPARATORS" = "Схаваць падзельнікі";
+"HIDE_SEARCH" = "Схаваць пошук *";
+"VKAPP_RESTART_IS_NEEDED" = "* VK App перазагрузка патрэбна";
+"USE_BLUR_FOOTER" = "* Калі ўключана, панэль навігацыі і панэль інструментаў будзе размытая";
 
+"KEYBOARD_STYLE" = "Стыль клавіятуры";
+"BLACK" = "Чорны";
+"WHITE" = "Белы";
 "SHOW_BAR" = "Заўсёды паказваць бар";
-"BLACK_KB" = "Чорная клавіятура";
 
+"USE_PARALLAX" = "Выкарыстанне паралакс";
+
+
+"AUDIO_BACKGROUND" = "Аўдыё";
+"AUDIO_PLAYER" = "Плэер";
+"CHANGE_APPEARANCE" = "Customize";
+"MINIMIZE" = "Мінімізаваць";
+
+
+    // chek updates controller
+"CHECK_UPDATES" = "Праверыць абнаўлення";
+"CHECK_UPDATES_INTERVAL" = "Інтэрвал";
+"CHECK_NOW" = "Праверце зараз";
+"LAST_CHECK" = "Апошняя праверка";
+
+"EVERY_DAY" = "Кожны дзень";
+"EVERY_WEEK" = "Кожны тыдзень";
+"EVERY_TWO_WEEKS" = "Кожныя два тыдні";
+"EVERY_MONTH" = "Кожен місяць";
+
+
+// About controller
+"SETTINGS" = "Налады";
 "DEVELOPER_IN_VK" = "Распрацоўшчык у ВК";
+"UPDATES_SETTINGS" = "Налады абнаўлення";
+"LICENCES" = "Ліцэнзіі";

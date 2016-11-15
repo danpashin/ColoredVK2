@@ -11,16 +11,18 @@
 
 @implementation ColoredVKHeader
 
-- (instancetype)initWithSpecifier:(PSSpecifier *)specifier
++ (instancetype)headerForView:(UIView *)rootView
 {
-    self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"CVKHeaderCell" specifier:specifier];
+    return [[ColoredVKHeader alloc] initWithFrame:CGRectMake(0, 0, rootView.frame.size.width, 120)];
+}
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
     if (self) {
-        
         self.backgroundColor = [UIColor clearColor];
-    
         
-        UILabel *heading = [UILabel new];
-        heading.frame =  CGRectMake(0, 0, self.frame.size.width, 100);
+        UILabel *heading = [[UILabel alloc] initWithFrame:CGRectZero];
         heading.font = [UIFont fontWithName:@"HelveticaNeue" size:35.0];
         heading.text = @"ColoredVK";
         heading.backgroundColor = [UIColor clearColor];
@@ -28,21 +30,26 @@
         heading.textAlignment = NSTextAlignmentCenter;
         [self addSubview:heading];
         
-        UILabel *subtitle = [UILabel new];
-        subtitle.frame = CGRectMake(0, heading.frame.origin.x + heading.frame.size.height - 20, self.frame.size.width, 32);
+        UILabel *subtitle = [[UILabel alloc] initWithFrame:CGRectZero];
         subtitle.font = [UIFont fontWithName:@"HelveticaNeue" size:14.0];
-        subtitle.text = @"Colorize your VK App!";
+        subtitle.text = @"Customize your VK App!";
         subtitle.backgroundColor = [UIColor clearColor];
         subtitle.textColor = [UIColor grayColor];
         subtitle.textAlignment = NSTextAlignmentCenter;
         [self addSubview:subtitle];
+        
+        heading.translatesAutoresizingMaskIntoConstraints = NO;
+        subtitle.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-20-[heading]-[subtitle]-20-|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                     metrics:nil views:NSDictionaryOfVariableBindings(heading, subtitle)]];
+        
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[heading]-|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                     metrics:nil views:NSDictionaryOfVariableBindings(heading)]];
+        
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[subtitle]-|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                     metrics:nil views:NSDictionaryOfVariableBindings(subtitle)]];
     }
     
     return self;
-}
-
-- (CGFloat)preferredHeightForWidth:(CGFloat)width
-{ 
-    return 120; 
 }
 @end

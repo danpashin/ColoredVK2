@@ -8,12 +8,15 @@
 
 
 "ERROR" = "Error";
+"WARNING" = "Advertencia";
+"THIS_ACTION_CAN_NOT_BE_UNDONE" = "Esta acción no se puede deshacer";
 "CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "No se puede guardar la imagen. Inténtalo de nuevo o desarrollador de contactos.";
 
 "YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE" = "Usted está utilizando la versión obsoleta pellizco. Más reciente es %@";
 "REMIND_LATER_BUTTON_TITLE" = "Recordar después";
 "SKIP_THIS_VERSION_BUTTON_TITLE" = "Omitir esta version";
 "UPADTE_BUTTON_TITLE" = "Actualizar ahora";
+"NO_UPDATES_FOUND_BUTTON_TITLE" = "No hay actualizaciones encontrado";
 
 "TWEAK_FOOTER_TEXT" = "Tweak versión: %@\nVK App versión: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Tweak error al cargar los archivos.\nComprobar su disponibilidad o de contacto del desarrollador.";
@@ -22,6 +25,14 @@
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Se copia el valor hexadecimal actual";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Introduzca un código de color hexadecimal\n(símbolo # no es necesario)";
 "EXAMPLE_ALERT_MESSAGE" = "Como %@";
-"SAVE_THIS_COLOR_QUESTION" = "Guarde este color?";
-"RESET_BUTTON_TITLE" = "Restablecer el color guardado";
-"TAP_AND_HOLD_BUTTON_TITLE" = "Toque y mantenga pulsado el botón para continuar";
+"RESET_COLOR_QUESTION" = "¿Usted realmente desea restablecer el color?";
+"RESET_SETTINGS_QUESTION" = "¿Usted realmente desea restablecer la configuración de?";
+
+"USE_IN_MENU" = "Uso en el menú";
+"USE_IN_MESSAGES" = "Su uso en los mensajes";
+"USE_IN_MESSAGE_LIST" = "Uso en la lista de mensajes";
+"USE_IN_GROUP_LIST" = "Uso de la lista de grupos de";
+
+"NEVER" = "Nunca";
+"ERROR_DOWNLOADING_LICENCE" = "Error al descargar licencia:\n%@\n\n Tu UDID es\n%@\n\nPor favor, no lo para nadie excepto para el desarrollador";
+"CLOSE_APP" = "Cierre de la aplicación";

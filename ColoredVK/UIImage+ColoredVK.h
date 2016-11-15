@@ -17,4 +17,6 @@
  Creates image with color and specified size  
  */
 + (UIImage *)imageWithColor:(UIColor *)color andSize:(CGSize)size;
+
+- (UIImage *)imageScaledToWidth:(CGFloat)width height:(CGFloat)height;
 @end

@@ -1,0 +1,17 @@
+//  
+//  Main.strings
+//  ColoredVK
+//  
+//  Created by Даниил on 08.04.2015.
+//  Copyright (©) Daniil Pashin 2015. All rights reserved.
+//  
+    
+
+"ENABLED" = "Включено";
+"NAVIGATION_TOOL_BAR" = "Бар навигации и тулбар";
+"MENU" = "Меню";
+"MESSAGES" = "Сообщения и группы";
+"AUDIO" = "Аудиозаписи";
+"MISCELLANEOUS" = "Разное";
+"RESET_SETTINGS" = "Сбросить настройки";
+"ABOUT" = "О программе";

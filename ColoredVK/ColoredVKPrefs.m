@@ -1,122 +1,145 @@
-    //
-    //  ColoredVKPrefs.m
-    //  ColoredVK
-    //
-    //  Created by Даниил on 23.04.16.
-    //  Copyright (c) 2016 Daniil Pashin. All rights reserved.
-    //
+//
+//  ColoredVKPrefs.m
+//  ColoredVK
+//
+//  Created by Даниил on 23.04.16.
+//  Copyright (c) 2016 Daniil Pashin. All rights reserved.
+//
 
 
 #import "ColoredVKPrefs.h"
 #import "ColoredVKColorPicker.h"
-#import "ColoredVKJailCheck.h"
 #import "UIImage+ResizeMagick.h"
 #import "PrefixHeader.h"
+#import <MobileCoreServices/MobileCoreServices.h>
+#import "LHProgressHUD.h"
+#import "NSDate+DateTools.h"
+#import "UIImage+ResizeMagick.h"
 
+OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0);
+
+@interface ColoredVKPrefs () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@property (strong, nonatomic) NSString *prefsPath;
+@property (strong, nonatomic) NSBundle *cvkBunlde;
+@property (strong, nonatomic) NSString *cvkFolder;
+@property (strong, nonatomic) NSString *imageID;
+@end
 
 @implementation ColoredVKPrefs
+
+- (UIStatusBarStyle) preferredStatusBarStyle
+{
+    if ([NSStringFromClass(UIApplication.sharedApplication.keyWindow.rootViewController.class) isEqualToString:@"DeckController"]) return UIStatusBarStyleLightContent;
+    else return UIStatusBarStyleDefault;
+}
+
 - (id)specifiers
 {
-    cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    prefsPath = CVK_PREFS_PATH;
-    cvkFolder = CVK_FOLDER_PATH;
+    self.prefsPath = CVK_PREFS_PATH;
+    self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    self.cvkFolder = CVK_FOLDER_PATH;
     
-    [UISwitch appearanceWhenContainedIn:self.class, nil].tintColor = [UIColor colorWithRed:235.0/255.0f green:235.0/255.0f blue:235.0/255.0f alpha:1.0];
-    [UISwitch appearanceWhenContainedIn:self.class, nil].onTintColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
-    [UITableView appearanceWhenContainedIn:self.class, nil].separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
     
-    NSMutableArray *specifiersArray = [[self loadSpecifiersFromPlistName:@"ColoredVK" target:self] mutableCopy];
+    NSString *plistName = [@"plists/" stringByAppendingString:self.specifier.properties[@"plistToLoad"]];
     
-    if (specifiersArray.count == 0) {
-        [specifiersArray addObject:[self errorMessage]];
-        [specifiersArray addObject:[self footer]];
-    }  else {
-        if ([ColoredVKJailCheck isExecutable]) {
-            for (PSSpecifier *spec in specifiersArray) {
-                
-                if ([spec.identifier isEqualToString:@"developerLink"]) {
-                    [specifiersArray removeObject:spec];
-                    [specifiersArray addObject:[self footer]];
-                }
+    NSMutableArray *specifiersArray = [NSMutableArray new];
+    if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
+        self.bundle = self.cvkBunlde;
+        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
+    } else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:bundle:)]) {
+        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBunlde] mutableCopy];
+    } 
+    else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
+        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
+    }
+    
+    for (PSSpecifier *specifier in specifiersArray) {
+        specifier.name = NSLocalizedStringFromTableInBundle(specifier.name, @"ColoredVK", self.cvkBunlde, nil);
+        
+        if (specifier.properties[@"footerText"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.cvkBunlde, nil) forKey:@"footerText"];
+        if (specifier.properties[@"label"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"label"], @"ColoredVK", self.cvkBunlde, nil) forKey:@"label"];
+        if (specifier.properties[@"validTitles"]) {            
+            NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
+            for (NSString *key in specifier.titleDictionary.allKeys) {
+                [tempDict setValue:NSLocalizedStringFromTableInBundle(specifier.titleDictionary[key], @"ColoredVK", self.cvkBunlde, nil) forKey:key];
             }
-        } else {
-            [specifiersArray insertObject:[self footer] atIndex:[specifiersArray indexOfObject:specifiersArray.lastObject]];
-        }
-        
-        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
-        
-        if ([prefs[@"enabledBlackTheme"] boolValue]) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                for (PSSpecifier *spec in specifiersArray) {                    
-                    if ([spec.identifier isEqualToString:@"enabledBlackTheme"]) {
-                        [spec setProperty:@YES forKey:@"enabled"];
-                    } else if ([spec.identifier isEqualToString:@"developerLink"]) {
-                        [spec setProperty:@YES forKey:@"enabled"];
-                    } else {
-                        [spec setProperty:@NO forKey:@"enabled"];
-                    }
-                }
-            });
+            specifier.titleDictionary = [tempDict copy];
         }
     }
     
-    _specifiers = [specifiersArray copy];
+    if (specifiersArray.count == 0) {
+        specifiersArray = [NSMutableArray new];
+        [specifiersArray addObject:[self errorMessage]];
+    }
+    if ([self.specifier.properties[@"shouldAddFooter"] boolValue]) [specifiersArray addObject:[self footer]];
     
-        
+    _specifiers = [specifiersArray copy];
     
     return _specifiers;
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    for (UIView *view in self.view.subviews) {
+        if ([view isKindOfClass:NSClassFromString(@"UITableView")]) {
+            UITableView *tableView = (UITableView *)view;
+            tableView.separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
+            break;
+        }
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    UINavigationBar *navbar = self.navigationController.navigationBar;
+    if ([navbar.subviews containsObject:[navbar viewWithTag:10]]) {
+        [[navbar viewWithTag:10] removeFromSuperview];        
+        [navbar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+    }
+}
 
 - (id) readPreferenceValue:(PSSpecifier*)specifier
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
-    if (![prefs[@"enabledBlackTheme"] boolValue]) {
-        if ([specifier.identifier isEqualToString:@"useBlur"] ) {
-            if ( [UIDevice currentDevice].systemVersion.floatValue >= 8.0 ) {
-                [specifier setProperty:@YES forKey:@"enabled"];
-            } else {
-                [specifier setProperty:@NO forKey:@"enabled"];
-            }
-        } 
-    }
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    if ([specifier.identifier isEqualToString:@"enabledBlackTheme"]) [specifier setProperty:@NO forKey:@"enabled"];
     
-    if (!prefs[specifier.properties[@"key"]]) {
-        return specifier.properties[@"default"];
-    }
+    if (!prefs[specifier.properties[@"key"]]) return specifier.properties[@"default"];
     return prefs[specifier.properties[@"key"]];
 }
 
 
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
-{
-    NSMutableDictionary *prefs = [[NSMutableDictionary alloc] init];
-    [prefs addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:prefsPath]];
-    [prefs setValue:value forKey:specifier.properties[@"key"]];
-    [prefs writeToFile:prefsPath atomically:YES];
+{    
+    [self setPrefsValue:value forKey:specifier.properties[@"key"]];
     
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
     
-    if ([specifier.identifier isEqualToString:@"useBlur"] || [specifier.identifier isEqualToString:@"hideSeparators"]) {
+    NSArray *identificsToReloadMenu = @[@"menuSelectionStyle", @"hideMenuSeparators", @"enabledBlackTheme", @"changeSwitchColor", @"useMenuParallax"];
+    if ([identificsToReloadMenu containsObject:specifier.identifier])
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-    }
     
-    if ([specifier.identifier isEqualToString:@"enabledBlackTheme"]) {
+    if ([specifier.identifier isEqualToString:@"enabledBlackTheme"])
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
-        
-        [self reloadSpecifiers];
-    }
+}
+
+
+- (void)setPrefsValue:(id)value forKey:(NSString *)key
+{
+    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    if (value) [prefs setValue:value forKey:key];
+    else [prefs removeObjectForKey:key];
+    [prefs writeToFile:self.prefsPath atomically:YES];
 }
 
 
 - (PSSpecifier *)footer
 {
-    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, cvkBunlde, nil), [self getTweakVersion], [self getVKVersion] ];
+    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.cvkBunlde, nil), [self getTweakVersion], [self getVKVersion] ];
     
     PSSpecifier *footer = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-    [footer setProperty:[footerText stringByAppendingString:[NSString stringWithFormat:@"\n\n© Daniil Pashin %@", [self dynamicYear]]] forKey:@"footerText"];
+    [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2015"] forKey:@"footerText"];
     [footer setProperty:@"1" forKey:@"footerAlignment"];
     
     return footer;
@@ -125,61 +148,77 @@
 - (PSSpecifier *)errorMessage
 {
     PSSpecifier *errorMessage = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-    [errorMessage setProperty:[NSLocalizedStringFromTableInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", nil, cvkBunlde, nil) stringByAppendingString:@"\n\nhttps://vk.com/danpashin"] forKey:@"footerText"];
+    [errorMessage setProperty:[NSLocalizedStringFromTableInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", nil, self.cvkBunlde, nil) stringByAppendingString:@"\n\nhttps://vk.com/danpashin"] forKey:@"footerText"];
     [errorMessage setProperty:@"1" forKey:@"footerAlignment"];
     return errorMessage;
 }
 
 
+
 - (NSString *)getTweakVersion
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
     return [prefs[@"cvkVersion"] stringByReplacingOccurrencesOfString:@"-" withString:@" "];
 }
 
 - (NSString *)getVKVersion
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
     return prefs[@"vkVersion"];
 }
 
-
-- (NSString *)dynamicYear
+- (void)resetSettings
 {
-    NSString *dynamicYear = @"2015";
-    
-    NSDateFormatter *dateFormatter = [NSDateFormatter new];
-    dateFormatter.dateFormat = @"yyyy";
-    
-    NSString *dateString = [dateFormatter stringFromDate:[NSDate date]];
-    
-    if (![dynamicYear isEqual:dateString]) { dynamicYear = [NSString stringWithFormat:@"%@ - %@", dynamicYear, dateString]; }
-    return dynamicYear;
-}
-
-
-
-- (void)openProfie
-{    
-    NSURL *appURL = [NSURL URLWithString:@"vk://vk.com/danpashin"];
-    NSURL *safariURL = [NSURL URLWithString:@"https://vk.com/danpashin"];
-    if ( [[UIApplication sharedApplication] canOpenURL:appURL] ) {
-        [[UIApplication sharedApplication] openURL:appURL];
-    } else {
-        [[UIApplication sharedApplication] openURL:safariURL];
-    }
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBunlde, nil)
+                                                                             message:NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS_QUESTION", nil, self.cvkBunlde, nil) 
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:[NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"ColoredVK", self.cvkBunlde, nil) componentsSeparatedByString:@" "][0] 
+                                                        style:UIAlertActionStyleDestructive 
+                                                      handler:^(UIAlertAction *action) {
+                                                          NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
+                                                          NSArray *keysToExclude = @[@"cvkVersion", @"vkVersion", @"lastCheckForUpdates"];
+                                                          for (NSString *key in prefs.allKeys) {
+                                                              if (![keysToExclude containsObject:key]) [prefs removeObjectForKey:key];
+                                                          }
+                                                          [prefs writeToFile:self.prefsPath atomically:YES];
+                                                          
+                                                          NSFileManager *manager = [NSFileManager defaultManager];
+                                                          NSArray *imageNames = [manager contentsOfDirectoryAtPath:CVK_FOLDER_PATH error:nil];
+                                                          for (NSString *name in imageNames) {
+                                                              if ([name.pathExtension.lowercaseString isEqualToString:@"png"]) [manager removeItemAtPath:[NSString stringWithFormat:@"%@/%@", self.cvkFolder, name] error:nil];
+                                                          }
+                                                          
+                                                          [self reloadSpecifiers];
+                                                          for (id viewController in self.parentViewController.childViewControllers) {
+                                                              if ([viewController respondsToSelector:@selector(reloadSpecifiers)]) { [viewController performSelector:@selector(reloadSpecifiers)]; break; }
+                                                          }
+                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
+                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
+                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
+                                                      }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
 }
 
 
 
 - (void)showColorPicker:(PSSpecifier*)specifier
 {
-    ColoredVKColorPicker *picker = [ColoredVKColorPicker new];
-    picker.cellIdentifier = specifier.identifier;
+    ColoredVKColorPicker *picker = [[ColoredVKColorPicker alloc] initWithIdentifier:specifier.identifier];
+    picker.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    self.definesPresentationContext = NO;
+    picker.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    picker.view.backgroundColor = [UIColor clearColor];
     
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:picker];
-    nav.modalPresentationStyle = UIModalPresentationFormSheet;
-    [self.navigationController presentViewController:nav animated:YES completion:nil];
+    UIViewController *controller = [UIViewController new];
+    picker.pickerWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    picker.pickerWindow.rootViewController = controller;
+    picker.pickerWindow.windowLevel = UIWindowLevelNormal;
+    picker.pickerWindow.backgroundColor = [UIColor clearColor];
+    [picker.pickerWindow makeKeyAndVisible];
+    [controller presentViewController:picker animated:YES completion:nil];
+
 }
 
 - (void)chooseImage:(PSSpecifier*)specifier
@@ -188,52 +227,139 @@
     UIImagePickerController *picker = [UIImagePickerController new];
     picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     picker.delegate = self;
+    if (IS_IPAD) {
+        picker.modalPresentationStyle = UIModalPresentationPopover;
+        picker.popoverPresentationController.sourceView = self.view;
+        picker.popoverPresentationController.sourceRect = CGRectMake(self.view.frame.size.width/2, self.view.frame.size.width/2, 1, 1);
+        
+        PSTableCell *cell = [self cachedCellForSpecifier:specifier];
+        if ([cell.subviews containsObject:[cell viewWithTag:20]]) {
+            picker.popoverPresentationController.sourceView = cell;
+            picker.popoverPresentationController.sourceRect = CGRectMake([cell viewWithTag:20].frame.origin.x, [cell viewWithTag:20].frame.origin.y, 1, 1);
+        }
+    } 
     [self.navigationController presentViewController:picker animated:YES completion:nil];
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
 {
-    NSString *imagePath = [cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.imageID]];
-    NSString *prevImagePath = [cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", self.imageID]];
-    
-    if (![[NSFileManager defaultManager] fileExistsAtPath:cvkFolder]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:cvkFolder withIntermediateDirectories:NO attributes:nil error:nil];
-    }
-    
-    
-    UIImage *newImage = image;
-    newImage = [newImage resizedImageByMagick: [NSString stringWithFormat:@"%fx%f#", [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height]];
-    
-    BOOL success = [UIImagePNGRepresentation(newImage) writeToFile:imagePath atomically:YES];
-    if (success) {
-        UIGraphicsBeginImageContext(CGSizeMake(40, 40));
-        UIImage *preview = image;
-        [preview drawInRect:CGRectMake(0, 0, 40, 40)];
-        preview = UIGraphicsGetImageFromCurrentImageContext();
-        [UIImagePNGRepresentation(preview) writeToFile:prevImagePath atomically:YES];
-        UIGraphicsEndImageContext();
+    LHProgressHUD *hud = [LHProgressHUD showAddedToView:picker.view];
+    hud.backgroundView.blurStyle = LHBlurEffectStyleDark;
+    hud.centerBackgroundView.blurStyle = LHBlurEffectStyleNone;
+    hud.centerBackgroundView.backgroundColor = [UIColor clearColor];
+    [self saveImage:image completionBlock:^(BOOL success, NSString *message) {
+        success?[hud showSuccessWithStatus:@"" animated:YES]:[hud showFailureWithStatus:message animated:YES];
+        [hud hideAfterDelay:1.5 hiddenBlock:^{ [picker dismissViewControllerAnimated:YES completion:nil]; }];
+    }];
+   
+}
+
+
+- (void)saveImage:(UIImage *)image completionBlock:( void(^)(BOOL success, NSString *message) )block
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (![[NSFileManager defaultManager] fileExistsAtPath:self.cvkFolder]) [[NSFileManager defaultManager] createDirectoryAtPath:self.cvkFolder withIntermediateDirectories:NO attributes:nil error:nil];
+        NSString *imagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.imageID]];
+        NSString *prevImagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", self.imageID]];
         
-    } else {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"ERROR", nil, cvkBunlde, nil)
-                                                        message:NSLocalizedStringFromTableInBundle(@"CAN_NOT_SAVE_IMAGE_TRY_AGAIN", nil, cvkBunlde, nil)
-                                                       delegate:nil 
-                                              cancelButtonTitle:@"OK" 
-                                              otherButtonTitles:nil];
-        [alert show];
-    }
+        NSError *error = nil;
+        [UIImagePNGRepresentation(image) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
+        if (!error) {
+            UIGraphicsBeginImageContext(CGSizeMake(40, 40));
+            UIImage *preview = image;
+            [preview drawInRect:CGRectMake(0, 0, 40, 40)];
+            preview = UIGraphicsGetImageFromCurrentImageContext();
+            [UIImagePNGRepresentation(preview) writeToFile:prevImagePath options:NSDataWritingAtomic error:&error];
+            UIGraphicsEndImageContext();
+            
+//            int forParallax = 425;
+            CGSize screenSize = UIScreen.mainScreen.bounds.size;
+            UIImage *recisedImage = [[UIImage imageWithData:[NSData dataWithContentsOfFile:imagePath]] resizedImageByMagick: [NSString stringWithFormat:@"%fx%f#", screenSize.width, screenSize.height]];
+            [UIImagePNGRepresentation(recisedImage) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk.image.update" object:nil userInfo:@{ @"identifier" : self.imageID }];
+            if ([self.imageID isEqualToString:@"menuBackgroundImage"]) {
+                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+            } else if ([self.imageID isEqualToString:@"messagesBackgroundImage"]) {
+                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
+            }    
+            if (block) block(error?NO:YES, error?error.localizedDescription:nil); 
+        });
+    });
+}
+
+- (NSString *)getLastCheckForUpdates:(PSSpecifier *)specifier
+{
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk.image.update" object:nil userInfo:@{@"identifier" : self.imageID}];
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
     
-    if ([self.imageID isEqualToString:@"menuBackgroundImage"]) {
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-    }
+    return prefs[@"lastCheckForUpdates"]?[dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]].timeAgoSinceNow : NSLocalizedStringFromTableInBundle(@"NEVER", nil, self.cvkBunlde, nil);
+}
+
+- (void)checkForUpdates:(id)sender
+{
+    NSString *stringURL = [NSString stringWithFormat:@"http://danpashin.ru/api/v%@/checkUpdates.php?userVers=%@&product=com.daniilpashin.coloredvk2", API_VERSION, kColoredVKVersion];
+#ifndef COMPILE_FOR_JAIL
+    stringURL = [stringURL stringByAppendingString:@"&getIPA=1"];
+#endif
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
     
-    if ([self.imageID isEqualToString:@"messagesBackgroundImage"]) {
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
-    }
-    
-    [picker dismissViewControllerAnimated:YES completion:nil];
-    
-    
+    [NSURLConnection sendAsynchronousRequest:urlRequest 
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                               UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+                               if (!connectionError) {
+                                   NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
+                                   NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                                   if (!responseDict[@"error"]) {
+                                       NSString *skip = NSLocalizedStringFromTableInBundle(@"SKIP_THIS_VERSION_BUTTON_TITLE", nil, self.cvkBunlde, nil);
+                                       NSString *remindLater = NSLocalizedStringFromTableInBundle(@"REMIND_LATER_BUTTON_TITLE", nil, self.cvkBunlde, nil);
+                                       NSString *updateNow = NSLocalizedStringFromTableInBundle(@"UPADTE_BUTTON_TITLE", nil, self.cvkBunlde, nil);
+                                       
+                                       alertController.message = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE", nil, self.cvkBunlde, nil), responseDict[@"version"]];
+                                       [alertController addAction:[UIAlertAction actionWithTitle:skip style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                                           [prefs setValue:responseDict[@"version"] forKey:@"skippedVersion"];
+                                           [prefs writeToFile:self.prefsPath atomically:YES];
+                                       }]];
+                                       [alertController addAction:[UIAlertAction actionWithTitle:remindLater style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
+                                       [alertController addAction:[UIAlertAction actionWithTitle:updateNow style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                           NSURL *url = [NSURL URLWithString:responseDict[@"url"]];
+                                           if ([[UIApplication sharedApplication] canOpenURL:url]) [[UIApplication sharedApplication] openURL:url];
+                                           
+                                       }]];
+                                   } else {
+                                       alertController.message = NSLocalizedStringFromTableInBundle(@"NO_UPDATES_FOUND_BUTTON_TITLE", nil, self.cvkBunlde, nil);
+                                       [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
+                                   }
+                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                       [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+                                   });
+                                   
+                                   NSDateFormatter *dateFormatter = [NSDateFormatter new];
+                                   dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+                                   [prefs setValue:[dateFormatter stringFromDate:[NSDate date]] forKey:@"lastCheckForUpdates"];
+                                   [prefs writeToFile:self.prefsPath atomically:YES];
+                                   [self reloadSpecifiers];
+                               }
+                           }];
+}
+
+- (void)openProfie
+{
+    NSURL *appURL = [NSURL URLWithString:@"vk://vk.com/danpashin"];
+    UIApplication *application = [UIApplication sharedApplication];
+    if ([application canOpenURL:appURL]) [self openURL:appURL];
+    else [self openURL:[NSURL URLWithString:@"https://vk.com/danpashin"]];
+}
+
+- (void)openURL:(NSURL *)url
+{
+    UIApplication *application = [UIApplication sharedApplication];
+    if ([application respondsToSelector:@selector(openURL:options:completionHandler:)]) [application openURL:url options:@{} completionHandler:^(BOOL success) {}];
+    else [application openURL:url];
 }
 @end

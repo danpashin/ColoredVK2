@@ -8,21 +8,8 @@
 
 
 #import <UIKit/UIKit.h>
-#import "NKOColorPickerView.h"
-#import "KLCPopup.h"
 
-@interface ColoredVKColorPicker : UIViewController <UITextFieldDelegate> {
-    NSString *prefsPath;
-    NSBundle *cvkBunlde;
-    
-    BOOL isJailbroken;
-    BOOL isExecutable;
-}
-
-@property (strong, nonatomic) NSString *cellIdentifier;
-@property (strong, nonatomic) UIColor *customColor;
-@property (strong, nonatomic) KLCPopup *popup;
-@property (strong, nonatomic) NKOColorPickerView *colorPickerView;
-
-@property (strong, nonatomic) NSMutableDictionary *prefs;
+@interface ColoredVKColorPicker : UIViewController
+- (instancetype)initWithIdentifier:(NSString *)identifier;
+@property (strong, nonatomic) UIWindow *pickerWindow;
 @end
