@@ -11,17 +11,19 @@
 #import "PrefixHeader.h"
 #import "ColoredVKHeader.h"
 #import "ColoredVKInstaller.h"
+#import "ColoredVKPrefs.h"
 
 @interface ColoredVKPrefsController ()
 @property (strong, nonatomic) NSString *prefsPath;
 @property (strong, nonatomic) NSBundle *cvkBunlde;
+@property (strong, nonatomic) NSString *cvkFolder;
 @end
 
 @implementation ColoredVKPrefsController
 
 - (UIStatusBarStyle) preferredStatusBarStyle
 {
-    if ([NSStringFromClass([UIApplication.sharedApplication.keyWindow.rootViewController class]) isEqualToString:@"DeckController"]) return UIStatusBarStyleLightContent;
+    if ([NSStringFromClass(UIApplication.sharedApplication.keyWindow.rootViewController.class) isEqualToString:@"DeckController"]) return UIStatusBarStyleLightContent;
     else return UIStatusBarStyleDefault;
 }
 
@@ -29,6 +31,7 @@
 {
     self.prefsPath = CVK_PREFS_PATH;
     self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    self.cvkFolder = CVK_FOLDER_PATH;
     
     NSString *plistName = @"Main";
     
@@ -131,5 +134,39 @@
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
     return prefs[@"vkVersion"];
+}
+
+- (void)resetSettings
+{
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBunlde, nil)
+                                                                             message:NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS_QUESTION", nil, self.cvkBunlde, nil) 
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:[NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"ColoredVK", self.cvkBunlde, nil) componentsSeparatedByString:@" "][0] 
+                                                        style:UIAlertActionStyleDestructive 
+                                                      handler:^(UIAlertAction *action) {
+                                                          NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
+                                                          NSArray *keysToExclude = @[@"cvkVersion", @"vkVersion", @"lastCheckForUpdates"];
+                                                          for (NSString *key in prefs.allKeys) {
+                                                              if (![keysToExclude containsObject:key]) [prefs removeObjectForKey:key];
+                                                          }
+                                                          [prefs writeToFile:self.prefsPath atomically:YES];
+                                                          
+                                                          NSFileManager *manager = [NSFileManager defaultManager];
+                                                          NSArray *imageNames = [manager contentsOfDirectoryAtPath:CVK_FOLDER_PATH error:nil];
+                                                          for (NSString *name in imageNames) {
+                                                              if ([name.pathExtension.lowercaseString isEqualToString:@"png"]) [manager removeItemAtPath:[NSString stringWithFormat:@"%@/%@", self.cvkFolder, name] error:nil];
+                                                          }
+                                                          
+                                                          [self reloadSpecifiers];
+                                                          for (id viewController in self.parentViewController.childViewControllers) {
+                                                              if ([viewController respondsToSelector:@selector(reloadSpecifiers)]) { [viewController performSelector:@selector(reloadSpecifiers)]; break; }
+                                                          }
+                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
+                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
+                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
+                                                      }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
 }
 @end

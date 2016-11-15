@@ -11,5 +11,7 @@
 "NAVIGATION_TOOL_BAR" = "Barra de navegación y de herramientas";
 "MENU" = "Menú";
 "MESSAGES" = "Mensajes y Grupos";
+"AUDIO" = "Audio";
 "MISCELLANEOUS" = "Miscelánea";
+"RESET_SETTINGS" = "Restablecimiento de la configuración";
 "ABOUT" = "Sobre el programa";

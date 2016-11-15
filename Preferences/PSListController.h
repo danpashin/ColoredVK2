@@ -1,6 +1,7 @@
 #import "PSViewController.h"
+#import "PSListContainerView.h"
 
-@class PSRootController, PSSpecifier, PSTableCell;
+@class PSRootController, PSSpecifier, PSTableCell, PSListContainerView;
 
 @interface PSListController : PSViewController <UITableViewDelegate, UITableViewDataSource, UIAppearance> {
 	NSArray *_specifiers;
@@ -15,8 +16,8 @@
 @property (NS_NONATOMIC_IOSONLY, readonly) UITableViewStyle tableViewStyle;
 
 @property (nonatomic, retain) UITableView *view;
-@property (nonatomic, retain) UITableView *table; // 3.0 - 6.0
-@property (nonatomic, retain) UITableView *tableView;
+//@property (nonatomic, retain) UITableView *table; // 3.0 - 6.0
+//@property (nonatomic, retain) UITableView *tableView;
 
 - (PSSpecifier *)specifierAtIndex:(NSInteger)index;
 - (PSSpecifier *)specifierAtIndexPath:(NSIndexPath *)indexPath;

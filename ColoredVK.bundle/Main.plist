@@ -62,11 +62,37 @@
 			<key>detail</key>
 			<string>ColoredVKPrefs</string>
 			<key>plistToLoad</key>
+			<string>Audio</string>
+			<key>label</key>
+			<string>AUDIO</string>
+			<key>icon</key>
+			<string>AudioIcon.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKPrefs</string>
+			<key>plistToLoad</key>
 			<string>Misc</string>
 			<key>label</key>
 			<string>MISCELLANEOUS</string>
 			<key>icon</key>
 			<string>ListIcon.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>RESET_SETTINGS</string>
+			<key>action</key>
+			<string>resetSettings</string>
+			<key>textColor</key>
+			<string>1,0,0,1</string>
 		</dict>
 		<dict>
 			<key>cell</key>

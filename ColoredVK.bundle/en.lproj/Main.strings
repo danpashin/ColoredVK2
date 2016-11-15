@@ -11,5 +11,7 @@
 "NAVIGATION_TOOL_BAR" = "Navigation bar and toolbar";
 "MENU" = "Menu";
 "MESSAGES" = "Messages and groups";
+"AUDIO" = "Audio";
 "MISCELLANEOUS" = "Miscellaneous";
+"RESET_SETTINGS" = "Reset settings";
 "ABOUT" = "About";

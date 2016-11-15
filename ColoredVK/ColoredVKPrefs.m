@@ -29,7 +29,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 - (UIStatusBarStyle) preferredStatusBarStyle
 {
-    if ([NSStringFromClass([UIApplication.sharedApplication.keyWindow.rootViewController class]) isEqualToString:@"DeckController"]) return UIStatusBarStyleLightContent;
+    if ([NSStringFromClass(UIApplication.sharedApplication.keyWindow.rootViewController.class) isEqualToString:@"DeckController"]) return UIStatusBarStyleLightContent;
     else return UIStatusBarStyleDefault;
 }
 
@@ -82,7 +82,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 {
     [super viewDidLoad];
     for (UIView *view in self.view.subviews) {
-        if ([NSStringFromClass([view class]) isEqualToString:@"UITableView"]) {
+        if ([view isKindOfClass:NSClassFromString(@"UITableView")]) {
             UITableView *tableView = (UITableView *)view;
             tableView.separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
             break;
@@ -103,6 +103,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 - (id) readPreferenceValue:(PSSpecifier*)specifier
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    if ([specifier.identifier isEqualToString:@"enabledBlackTheme"]) [specifier setProperty:@NO forKey:@"enabled"];
     
     if (!prefs[specifier.properties[@"key"]]) return specifier.properties[@"default"];
     return prefs[specifier.properties[@"key"]];
@@ -115,15 +116,12 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
     
-    NSArray *identificsToReloadMenu = @[@"menuSelectionStyle", @"hideMenuSeparators", @"enabledBlackTheme", @"changeSwitchColor"];
-    if ([identificsToReloadMenu containsObject:specifier.identifier]) {
+    NSArray *identificsToReloadMenu = @[@"menuSelectionStyle", @"hideMenuSeparators", @"enabledBlackTheme", @"changeSwitchColor", @"useMenuParallax"];
+    if ([identificsToReloadMenu containsObject:specifier.identifier])
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-    }
     
-    if ([specifier.identifier isEqualToString:@"enabledBlackTheme"]) {
+    if ([specifier.identifier isEqualToString:@"enabledBlackTheme"])
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
-//        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
-    }
 }
 
 
@@ -274,7 +272,9 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
             [UIImagePNGRepresentation(preview) writeToFile:prevImagePath options:NSDataWritingAtomic error:&error];
             UIGraphicsEndImageContext();
             
-            UIImage *recisedImage = [[UIImage imageWithContentsOfFile:imagePath] resizedImageByMagick: [NSString stringWithFormat:@"%fx%f#", [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height]];
+//            int forParallax = 425;
+            CGSize screenSize = UIScreen.mainScreen.bounds.size;
+            UIImage *recisedImage = [[UIImage imageWithData:[NSData dataWithContentsOfFile:imagePath]] resizedImageByMagick: [NSString stringWithFormat:@"%fx%f#", screenSize.width, screenSize.height]];
             [UIImagePNGRepresentation(recisedImage) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
         }
         

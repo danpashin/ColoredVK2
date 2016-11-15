@@ -57,6 +57,8 @@
 			<string>ENABLED_IMAGE</string>
 			<key>id</key>
 			<string>barImage</string>
+			<key>textColor</key>
+			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
 		<dict>
 			<key>label</key>

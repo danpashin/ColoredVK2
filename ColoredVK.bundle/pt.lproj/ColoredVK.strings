@@ -43,7 +43,14 @@
 "WHITE" = "Branco";
 "SHOW_BAR" = "Sempre mostrar barra de navegação";
 
-"RESET_SETTINGS" = "Repor definições";
+"USE_PARALLAX" = "Use parallax";
+
+
+"AUDIO_BACKGROUND" = "Áudio";
+"AUDIO_PLAYER" = "Player";
+"CHANGE_APPEARANCE" = "Personalizar";
+"MINIMIZE" = "Minimizar";
+
 
 
 // chek updates controller

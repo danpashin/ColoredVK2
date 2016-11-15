@@ -9,13 +9,6 @@
 
 #import <UIKit/UIKit.h>
 #import "PSTableCell.h"
-#import "PSSpecifier.h"
 
-@interface ColoredVKImageCell : PSTableCell {
-    NSString *prefsPath;
-    NSString *cvkFolder;
-}
-
-@property (strong, nonatomic) NSString *key;
-@property (strong, nonatomic) UIImageView *myImageView;
+@interface ColoredVKImageCell : PSTableCell
 @end

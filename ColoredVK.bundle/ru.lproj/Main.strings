@@ -11,5 +11,7 @@
 "NAVIGATION_TOOL_BAR" = "Бар навигации и тулбар";
 "MENU" = "Меню";
 "MESSAGES" = "Сообщения и группы";
+"AUDIO" = "Аудиозаписи";
 "MISCELLANEOUS" = "Разное";
+"RESET_SETTINGS" = "Сбросить настройки";
 "ABOUT" = "О программе";

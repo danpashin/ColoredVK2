@@ -46,6 +46,18 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>USE_PARALLAX</string>
+			<key>key</key>
+			<string>useMessagesParallax</string>
+			<key>id</key>
+			<string>useMessagesParallax</string>
+			<key>default</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>MESSAGES_LIST_BACKGROUND</string>
@@ -87,6 +99,18 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>USE_PARALLAX</string>
+			<key>key</key>
+			<string>useMessagesListParallax</string>
+			<key>id</key>
+			<string>useMessagesListParallax</string>
+			<key>default</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
@@ -122,7 +146,7 @@
 			<key>cellClass</key>
 			<string>ColoredVKStepperPrefsCell</string>
 			<key>id</key>
-			<string>groupsImageBlackout</string>
+			<string>groupsListImageBlackout</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -131,6 +155,18 @@
 			<string>useGroupsListBlur</string>
 			<key>label</key>
 			<string>USE_BLUR</string>
+			<key>default</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>USE_PARALLAX</string>
+			<key>key</key>
+			<string>useGroupsListParallax</string>
+			<key>id</key>
+			<string>useGroupsListParallax</string>
 			<key>default</key>
 			<false/>
 		</dict>

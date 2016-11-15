@@ -17,9 +17,7 @@
 
 + (UIImage *)imageWithColor:(UIColor *)color andSize:(CGSize)size
 {
-    if (CGSizeEqualToSize(CGSizeZero, size)) {
-        size = CGSizeMake(1, 1);
-    }
+    if (CGSizeEqualToSize(CGSizeZero, size)) size = CGSizeMake(1, 1);
     UIView *colorView = [UIView new];
     colorView.frame = (CGRect){{0, 0}, size};
     colorView.backgroundColor = color;

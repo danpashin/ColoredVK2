@@ -15,31 +15,25 @@
 {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier specifier:specifier];
     if (self) {
-        [self updateColorCellForIdentifier:specifier.identifier];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColorCell:) name:@"com.daniilpashin.coloredvk.prefs.colorUpdate" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColorView:) name:@"com.daniilpashin.coloredvk.prefs.colorUpdate" object:nil];
+        [self updateColorViewForIdentifier:specifier.identifier];
     }
     return self;
 }
 
-- (void)updateColorCell:(NSNotification *)notification
+- (void)updateColorView:(NSNotification *)notification
 {
     NSString *identifier = notification.userInfo[@"CVKColorCellIdentifier"];
-	if (identifier == self.specifier.identifier) [self updateColorCellForIdentifier:identifier];
+	if (identifier == self.specifier.identifier) [self updateColorViewForIdentifier:identifier];
 }
 
-- (void)updateColorCellForIdentifier:(NSString *)identifier
+- (void)updateColorViewForIdentifier:(NSString *)identifier
 {	
     UIView *colorPreview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 28, 28)];
     colorPreview.backgroundColor = [UIColor savedColorForIdentifier:identifier]; 
     colorPreview.layer.borderColor = [UIColor darkerColorForColor:colorPreview.backgroundColor].CGColor;
     colorPreview.layer.borderWidth = 1.0f; 
     colorPreview.layer.cornerRadius = colorPreview.frame.size.height / 2;
-    colorPreview.tag = 10;
-    
-    self.opaque = YES;
-    self.contentView.opaque = YES;
-    colorPreview.opaque = YES;
-	
 	self.accessoryView = colorPreview;
 }
 

@@ -42,7 +42,17 @@
 "WHITE" = "White";
 "SHOW_BAR" = "Always show nav bar";
 
-"RESET_SETTINGS" = "Reset settings";
+"USE_PARALLAX" = "Use parallax";
+
+
+"AUDIO_BACKGROUND" = "Audio";
+"AUDIO_PLAYER" = "Player";
+"CHANGE_APPEARANCE" = "Customize";
+"MINIMIZE" = "Minimize";
+
+
+
+
 
 
 // chek updates controller

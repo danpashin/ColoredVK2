@@ -5,6 +5,7 @@
 //  Created by Даниил on 22.04.16.
 //  
 //
+#import <AVFoundation/AVFoundation.h>
 
 
 @interface VKMMainController : UIViewController
@@ -49,9 +50,32 @@
 @end
 
 
+
+@interface VKAudio : NSObject
+@property(retain, nonatomic) NSNumber *lyrics_id;
+@end
+
+@interface AudioPlayer : NSObject
+@property(retain, nonatomic) UIImage *coverImage;
+@property(retain, nonatomic) VKAudio *audio;
+@property(retain) AVPlayerItem *playerItem;
+@property(retain) AVPlayer *player;
+@end
+
 @interface AudioController : UIViewController
 @property(retain, nonatomic) UIButton *pp;
+@property(retain, nonatomic) UILabel *song;
+@property(retain, nonatomic) UILabel *actor;
 @end
+
+
+@interface IOS7AudioController : AudioController
+@property(retain, nonatomic) UIView *hostView;
+@property(retain, nonatomic) UIImageView *cover;
+@end
+
+
+
 
 @interface TextEditController : UIViewController
 @property(retain, nonatomic) UITextView *textView;
@@ -70,6 +94,14 @@
 
 @interface UITableViewCellSelectedBackground : UIView 
 @property (nonatomic, retain) UIColor *selectionTintColor;
+@end
+
+
+
+
+
+@interface VKMScrollViewController : UIViewController
+@property(retain, nonatomic) UIRefreshControl *rptr;
 @end
 
 
@@ -177,6 +209,7 @@
 @property(readonly, retain, nonatomic) UILabel *time;
 @property(readonly, retain, nonatomic) UILabel *name;
 @property(retain, nonatomic) VKDialog *dialog;
+@property(readonly, retain, nonatomic) UILabel *text;
 @end
 
 
@@ -187,7 +220,7 @@
 @interface VKSearchController : UISearchController
 @end
 
-@interface VKMTableController : UIViewController
+@interface VKMTableController : VKMScrollViewController
 @property(retain, nonatomic) VKSearchController *search80;
 @property(retain, nonatomic) VKMSearchController *search;
 @property(retain, nonatomic) UIColor *separatorColor;
@@ -197,6 +230,14 @@
 @property (nonatomic, readonly, strong) id VKMTableCreateSearchBar;
 @end
 
+
+
+@interface VKMImageButton : UIButton
+@end
+
+@interface Component5HostView : UIView
+
+@end
 
 
 @interface DialogsController : VKMTableController
@@ -211,6 +252,8 @@
 @property(retain, nonatomic) UIButton *editForward;
 @property(retain, nonatomic) UIButton *editDelete;
 @property(retain, nonatomic) UIView *editToolbar;
+@property(retain, nonatomic) VKMImageButton *headerImage;
+@property(retain, nonatomic) Component5HostView *componentTitleView;
 @end
 
 
@@ -246,11 +289,6 @@
 @interface DialogsSearchController : VKMSearchController
 @end
 
-@interface Model : NSObject
-@end
-@interface MainModel : Model
-@end
-
 
 @interface VKPPBadge : UIImageView
 @end
@@ -259,13 +297,49 @@
 
 
 @interface VKUser : NSObject
-@property(nonatomic) BOOL verified;
 @property(retain, nonatomic) NSNumber *uid;
 @end
 
 @interface VKProfile : NSObject
 @property(nonatomic) BOOL verified;
-@property(retain, nonatomic) NSString *status;
 @property(retain, nonatomic) VKUser *user; 
+@end
+
+
+
+@interface AudioAlbumController : VKMLiveController
+@end
+
+
+
+
+
+@interface AFURLConnectionOperation : NSOperation
+@property(copy, nonatomic) NSString *responseString;
+@property(retain, nonatomic) NSData *responseData;
+@property(retain, nonatomic) NSError *error;
+@property(retain, nonatomic) NSURLResponse *response;
+@property(retain, nonatomic) NSURLRequest *request;
+@property(retain, nonatomic) NSURLConnection *connection;
+@end
+
+@interface AFHTTPRequestOperation : AFURLConnectionOperation
+@property(retain, nonatomic) NSError *HTTPError;
+@end
+
+@interface AFJSONRequestOperation : AFHTTPRequestOperation
++ (instancetype)JSONRequestOperationWithRequest:(NSURLRequest *)request 
+                              success:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) )success 
+                              failure:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) )failure;
+@end
+
+
+@interface AFImageRequestOperation : AFHTTPRequestOperation
++ (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
+                            imageProcessingBlock:( UIImage *(^)(UIImage *image) )imageProcessingBlock
+                                       cacheName:(NSString *)cacheNameOrNil
+                                         success:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) )success
+                                         failure:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) )failure;
+
 @end
 

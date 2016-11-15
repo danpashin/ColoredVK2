@@ -43,7 +43,14 @@
 "WHITE" = "Белая";
 "SHOW_BAR" = "Всегда показывать бар";
 
-"RESET_SETTINGS" = "Сбросить настройки";
+"USE_PARALLAX" = "Использовать параллакс";
+
+
+"AUDIO_BACKGROUND" = "Аудио";
+"AUDIO_PLAYER" = "Плеер";
+"CHANGE_APPEARANCE" = "Кастомизировать";
+"MINIMIZE" = "Минимизировать";
+
 
 
 // chek updates controller

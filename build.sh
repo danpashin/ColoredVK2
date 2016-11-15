@@ -55,7 +55,7 @@ makeDEB () {
     cp -r ${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle $FOLDER_TO_PACK/Package/Library/PreferenceBundles
     cp ${BUILT_PRODUCTS_DIR}/$PRODUCT.dylib $FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries
     cp ColoredVK-Prefs/$PRODUCT.plist $FOLDER_TO_PACK/Package/Library/PreferenceLoader/Preferences
-    echo "{ Filter = { Bundles = ( \"com.vk.vkclient\" ); }; }" >> $FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/$PRODUCT.plist
+    echo "{ Filter = { Bundles = ( \"com.vk.vkclient\" ); Executables = ( vkclient ); Mode = Any; }; }" >> $FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/$PRODUCT.plist
     cd $FOLDER_TO_PACK
     dpkg-deb -b -Zlzma Package ${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}_${PLATFORM_NAME}-arm.deb
     rm -rf Package

@@ -43,7 +43,14 @@
 "WHITE" = "Blanco";
 "SHOW_BAR" = "Mostrar siempre la barra de navegación";
 
-"RESET_SETTINGS" = "Restablecimiento de la configuración";
+"USE_PARALLAX" = "O uso de paralaxe";
+
+
+"AUDIO_BACKGROUND" = "Audio";
+"AUDIO_PLAYER" = "Jugador";
+"CHANGE_APPEARANCE" = "Personalizar";
+"MINIMIZE" = "Minimizar";
+
 
 
 // chek updates controller
