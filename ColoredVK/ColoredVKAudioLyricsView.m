@@ -7,10 +7,11 @@
 //
 
 #import "ColoredVKAudioLyricsView.h"
+#import "VKMethods.h"
 
 @interface ColoredVKAudioLyricsView ()
 @property (strong, nonatomic) UITextView *textView;
-@property (strong, nonatomic) UIView *hostView;
+@property (assign, nonatomic) BOOL hide;
 @end
 
 @implementation ColoredVKAudioLyricsView
@@ -28,14 +29,13 @@
         blurEffectView.frame = CGRectMake(0, 0, self.frame.size.height, self.frame.size.height - 10);
         blurEffectView.center = CGPointMake(self.frame.size.width/2, self.frame.size.height/2);
         blurEffectView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.1];
-        blurEffectView.layer.cornerRadius = 2;
+        blurEffectView.layer.cornerRadius = 10;
         blurEffectView.layer.masksToBounds = YES;
         
         UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIVibrancyEffect effectForBlurEffect:blurEffect]];
         vibrancyEffectView.frame = CGRectMake(0, 0, blurEffectView.frame.size.width, blurEffectView.frame.size.height);
         [blurEffectView.contentView addSubview:vibrancyEffectView];
         
-        [self resetState];
         self.textView = [UITextView new];
         self.textView.frame = vibrancyEffectView.frame;
         self.textView.text = self.text;
@@ -56,17 +56,16 @@
 - (void)setText:(NSString *)text
 {
     _text = text;
-    if (self.textView) {
-        [UIView transitionWithView:self.textView duration:0.5 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{ self.textView.text = self.text; } 
-                        completion:nil];
-    }
+    if (self.textView) [UIView transitionWithView:self.textView duration:0.5 
+                                          options:UIViewAnimationOptionTransitionCrossDissolve|UIViewAnimationOptionAllowUserInteraction animations:^{ self.textView.text = self.text; } completion:nil];
 }
 
 - (void)setHide:(BOOL)hide
 {
     if (self.text.length > 0) {
         _hide = hide;
-        [UIView transitionWithView:self.hostView duration:0.3 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{ self.hostView.hidden = hide; } completion:nil];
+        [UIView transitionWithView:self.hostView duration:0.3 
+                           options:UIViewAnimationOptionTransitionCrossDissolve|UIViewAnimationOptionAllowUserInteraction animations:^{ self.hostView.hidden = hide; } completion:nil];
     }
 }
 
@@ -79,6 +78,17 @@
 {
     self.hide = YES;
     self.text = @"";
+}
+
+- (void)updateWithLyrycsID:(NSNumber *)lyrics_id andToken:(NSString *)token
+{
+    NSString *const apiVersion = @"5.60";
+    NSString *url = [NSString stringWithFormat:@"https://api.vk.com/method/audio.getLyrics?lyrics_id=%@&access_token=%@&v=%@", lyrics_id, token, apiVersion];
+    [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
+                                JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
+                                success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {                                                 
+                                    if (JSON[@"response"][@"text"]) self.text = JSON[@"response"][@"text"];
+                                } failure:nil] start]; 
 }
 
 @end

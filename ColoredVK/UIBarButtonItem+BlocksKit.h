@@ -3,8 +3,15 @@
 //  BlocksKit
 //
 
-#import "BKDefines.h"
 #import <UIKit/UIKit.h>
+
+#if !defined(BK_INITIALIZER)
+# if __has_attribute(objc_method_family)
+#  define BK_INITIALIZER __attribute__((objc_method_family(init)))
+# else
+#  define BK_INITIALIZER
+# endif
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 

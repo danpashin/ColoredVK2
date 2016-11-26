@@ -11,7 +11,5 @@
 #import "PSTableCell.h"
 #import "PSSpecifier.h"
 
-@interface ColoredVKStepperPrefsCell : PSTableCell {
-    NSString *prefsPath;
-}
+@interface ColoredVKStepperPrefsCell : PSTableCell
 @end

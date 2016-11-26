@@ -8,7 +8,7 @@
 
 
 #import "ColoredVKPrefs.h"
-#import "ColoredVKColorPicker.h"
+#import "ColoredVKColorPickerViewController.h"
 #import "UIImage+ResizeMagick.h"
 #import "PrefixHeader.h"
 #import <MobileCoreServices/MobileCoreServices.h>
@@ -103,7 +103,9 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 - (id) readPreferenceValue:(PSSpecifier*)specifier
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
+#ifndef COMPILE_WITH_BLACK_THEME
     if ([specifier.identifier isEqualToString:@"enabledBlackTheme"]) [specifier setProperty:@NO forKey:@"enabled"];
+#endif
     
     if (!prefs[specifier.properties[@"key"]]) return specifier.properties[@"default"];
     return prefs[specifier.properties[@"key"]];
@@ -111,8 +113,11 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
-{    
-    [self setPrefsValue:value forKey:specifier.properties[@"key"]];
+{
+    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    if (value) [prefs setValue:value forKey:specifier.properties[@"key"]];
+    else [prefs removeObjectForKey:specifier.properties[@"key"]];
+    [prefs writeToFile:self.prefsPath atomically:YES];
     
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
     
@@ -125,21 +130,12 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 }
 
 
-- (void)setPrefsValue:(id)value forKey:(NSString *)key
-{
-    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
-    if (value) [prefs setValue:value forKey:key];
-    else [prefs removeObjectForKey:key];
-    [prefs writeToFile:self.prefsPath atomically:YES];
-}
-
-
 - (PSSpecifier *)footer
 {
-    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.cvkBunlde, nil), [self getTweakVersion], [self getVKVersion] ];
+    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.cvkBunlde, nil), [self getTweakVersion], [self getVKVersion], @"\n\n© Daniil Pashin 2015"];
     
     PSSpecifier *footer = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-    [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2015"] forKey:@"footerText"];
+    [footer setProperty:footerText forKey:@"footerText"];
     [footer setProperty:@"1" forKey:@"footerAlignment"];
     
     return footer;
@@ -157,8 +153,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 - (NSString *)getTweakVersion
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
-    return [prefs[@"cvkVersion"] stringByReplacingOccurrencesOfString:@"-" withString:@" "];
+    return [kColoredVKVersion stringByReplacingOccurrencesOfString:@"-" withString:@" "];
 }
 
 - (NSString *)getVKVersion
@@ -167,55 +162,18 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     return prefs[@"vkVersion"];
 }
 
-- (void)resetSettings
-{
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBunlde, nil)
-                                                                             message:NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS_QUESTION", nil, self.cvkBunlde, nil) 
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:[NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"ColoredVK", self.cvkBunlde, nil) componentsSeparatedByString:@" "][0] 
-                                                        style:UIAlertActionStyleDestructive 
-                                                      handler:^(UIAlertAction *action) {
-                                                          NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
-                                                          NSArray *keysToExclude = @[@"cvkVersion", @"vkVersion", @"lastCheckForUpdates"];
-                                                          for (NSString *key in prefs.allKeys) {
-                                                              if (![keysToExclude containsObject:key]) [prefs removeObjectForKey:key];
-                                                          }
-                                                          [prefs writeToFile:self.prefsPath atomically:YES];
-                                                          
-                                                          NSFileManager *manager = [NSFileManager defaultManager];
-                                                          NSArray *imageNames = [manager contentsOfDirectoryAtPath:CVK_FOLDER_PATH error:nil];
-                                                          for (NSString *name in imageNames) {
-                                                              if ([name.pathExtension.lowercaseString isEqualToString:@"png"]) [manager removeItemAtPath:[NSString stringWithFormat:@"%@/%@", self.cvkFolder, name] error:nil];
-                                                          }
-                                                          
-                                                          [self reloadSpecifiers];
-                                                          for (id viewController in self.parentViewController.childViewControllers) {
-                                                              if ([viewController respondsToSelector:@selector(reloadSpecifiers)]) { [viewController performSelector:@selector(reloadSpecifiers)]; break; }
-                                                          }
-                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
-                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
-                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
-                                                      }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
-}
-
-
 
 - (void)showColorPicker:(PSSpecifier*)specifier
 {
-    ColoredVKColorPicker *picker = [[ColoredVKColorPicker alloc] initWithIdentifier:specifier.identifier];
+    ColoredVKColorPickerViewController *picker = [[ColoredVKColorPickerViewController alloc] initWithIdentifier:specifier.identifier];
     picker.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     self.definesPresentationContext = NO;
     picker.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     picker.view.backgroundColor = [UIColor clearColor];
     
     UIViewController *controller = [UIViewController new];
-    picker.pickerWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    picker.pickerWindow = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
     picker.pickerWindow.rootViewController = controller;
-    picker.pickerWindow.windowLevel = UIWindowLevelNormal;
-    picker.pickerWindow.backgroundColor = [UIColor clearColor];
     [picker.pickerWindow makeKeyAndVisible];
     [controller presentViewController:picker animated:YES completion:nil];
 
@@ -336,7 +294,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
                                        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
                                    }
                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                       [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+                                       [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
                                    });
                                    
                                    NSDateFormatter *dateFormatter = [NSDateFormatter new];

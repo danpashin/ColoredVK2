@@ -49,7 +49,8 @@
 "AUDIO_BACKGROUND" = "Аўдыё";
 "AUDIO_PLAYER" = "Плэер";
 "CHANGE_APPEARANCE" = "Customize";
-"MINIMIZE" = "Мінімізаваць";
+
+"HIDE_NAV_BAR_ITEMS" = "Схаваць элементы навігацыі";
 
 
     // chek updates controller

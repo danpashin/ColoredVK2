@@ -55,7 +55,7 @@
 - (void)beginDownload
 {
     self.exitBlock = ^(UIAlertAction *action) {
-        [[UIApplication sharedApplication] performSelector:@selector(suspend)];
+        [UIApplication.sharedApplication performSelector:@selector(suspend)];
         [NSThread sleepForTimeInterval:0.5];
         exit(0); 
     };

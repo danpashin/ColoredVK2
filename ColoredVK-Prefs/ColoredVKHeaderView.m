@@ -7,25 +7,23 @@
 //
 
 
-#import "ColoredVKHeader.h"
+#import "ColoredVKHeaderView.h"
 
-@implementation ColoredVKHeader
+@implementation ColoredVKHeaderView
 
 + (instancetype)headerForView:(UIView *)rootView
 {
-    return [[ColoredVKHeader alloc] initWithFrame:CGRectMake(0, 0, rootView.frame.size.width, 120)];
+    return [[self alloc] initWithFrame:CGRectMake(0, 0, rootView.frame.size.width, 120)];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
-        self.backgroundColor = [UIColor clearColor];
-        
+    if (self) {        
         UILabel *heading = [[UILabel alloc] initWithFrame:CGRectZero];
         heading.font = [UIFont fontWithName:@"HelveticaNeue" size:35.0];
         heading.text = @"ColoredVK";
-        heading.backgroundColor = [UIColor clearColor];
+        heading.backgroundColor = UIColor.clearColor;
         heading.textColor = [UIColor colorWithRed:70.0/255.0f green:120.0/255.0f blue:177.0/255.0f alpha:1];
         heading.textAlignment = NSTextAlignmentCenter;
         [self addSubview:heading];
@@ -33,8 +31,8 @@
         UILabel *subtitle = [[UILabel alloc] initWithFrame:CGRectZero];
         subtitle.font = [UIFont fontWithName:@"HelveticaNeue" size:14.0];
         subtitle.text = @"Customize your VK App!";
-        subtitle.backgroundColor = [UIColor clearColor];
-        subtitle.textColor = [UIColor grayColor];
+        subtitle.backgroundColor = UIColor.clearColor;
+        subtitle.textColor = UIColor.grayColor;
         subtitle.textAlignment = NSTextAlignmentCenter;
         [self addSubview:subtitle];
         

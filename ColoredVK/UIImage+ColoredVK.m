@@ -42,12 +42,32 @@
 
 - (UIImage *)imageScaledToSize:(CGSize)size
 {
-    CGFloat imageScale = [[UIDevice currentDevice].model isEqualToString:@"iPad"]?2:1;
-    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) UIGraphicsBeginImageContextWithOptions(size, NO, [UIScreen mainScreen].scale*imageScale);
+    CGFloat imageScale = [UIDevice.currentDevice.model isEqualToString:@"iPad"]?2:1;
+    if ([UIScreen.mainScreen respondsToSelector:@selector(scale)]) UIGraphicsBeginImageContextWithOptions(size, NO, UIScreen.mainScreen.scale*imageScale);
     else UIGraphicsBeginImageContext(size);
     [self drawInRect:CGRectMake(0, 0, size.width, size.height)];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();    
     UIGraphicsEndImageContext();
     
     return newImage;
-}@end
+}
+
+- (UIImage *)imageWithTintColor:(UIColor *)tintColor
+{
+    UIGraphicsBeginImageContextWithOptions(self.size, NO, self.scale);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    if (context) {
+        [tintColor setFill];
+        CGContextTranslateCTM(context, 0, self.size.height);
+        CGContextScaleCTM(context, 1.0, -1.0);
+        CGContextClipToMask(context, CGRectMake(0, 0, self.size.width, self.size.height), self.CGImage);
+        CGContextFillRect(context, CGRectMake(0, 0, self.size.width, self.size.height));
+        UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        return newImage;
+    }
+    UIGraphicsEndImageContext();
+    
+    return self;
+}
+@end

@@ -49,6 +49,12 @@
 			<key>identifier</key>
 			<string>groupsListBackgroundImage</string>
 		</dict>
+		<dict>
+			<key>title</key>
+			<string>USE_IN_AUDIO_LIST</string>
+			<key>identifier</key>
+			<string>audioBackgroundImage</string>
+		</dict>
 	</array>
 	<key>Licences</key>
 	<dict>

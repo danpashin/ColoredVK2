@@ -70,4 +70,26 @@
 {
     return [UIColor colorWithRed:0.7 green:0 blue:0 alpha:1.0];
 }
+
++ (UIColor *)colorAtPoint:(CGPoint)point inImage:(UIImage *)image
+{    
+    if (!CGRectContainsPoint(CGRectMake(0.0f, 0.0f, image.size.width, image.size.height), point)) return nil;
+    
+    // Create a 1x1 pixel byte array and bitmap context to draw the pixel into.
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    int bytesPerPixel = 4;
+    int bytesPerRow = bytesPerPixel * 1;
+    NSUInteger bitsPerComponent = 8;
+    unsigned char pixelData[4] = { 0, 0, 0, 0 };
+    CGContextRef context = CGBitmapContextCreate(pixelData, 1, 1, bitsPerComponent, bytesPerRow, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+    CGColorSpaceRelease(colorSpace);
+    CGContextSetBlendMode(context, kCGBlendModeCopy);
+    
+    // Draw the pixel we are interested in onto the bitmap context
+    CGContextTranslateCTM(context, -trunc(point.x), trunc(point.y)-image.size.height);
+    CGContextDrawImage(context, CGRectMake(0.0f, 0.0f, image.size.width, image.size.height), image.CGImage);
+    CGContextRelease(context);
+    
+    return [UIColor colorWithRed:pixelData[0]/255.0f green:pixelData[1]/255.0f blue:pixelData[2]/255.0f alpha:pixelData[3]/255.0f];
+}
 @end

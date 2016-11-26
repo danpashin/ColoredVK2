@@ -9,54 +9,34 @@
 
 #import "ColoredVKStepperPrefsCell.h"
 #import "PrefixHeader.h"
+#import "PPNumberButton.h"
 
 @implementation ColoredVKStepperPrefsCell
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)identifier specifier:(PSSpecifier *)specifier
 {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier specifier:specifier];
-    
     if (self) {
-        prefsPath = CVK_PREFS_PATH;
+        NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];        
         
-        NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:prefsPath];
-        
-        UIStepper *stepper = [UIStepper new];
-        stepper.minimumValue = 0.0;
-        stepper.maximumValue = 0.6;
-        stepper.stepValue = 0.1;
-        stepper.value = [prefs[specifier.identifier] floatValue];
-        stepper.tintColor = [self colorForStepperValue:stepper.value];
-        [stepper addTarget:self action:@selector(updateStepperValue:) forControlEvents:UIControlEventValueChanged];
-        self.accessoryView = stepper;
+        PPNumberButton *numberButton = [PPNumberButton numberButtonWithFrame:CGRectMake(0, 0, 75, 30)];
+        numberButton.shakeAnimation = YES;
+        numberButton.minValue = 0;
+        numberButton.maxValue = 6;
+        numberButton.currentNumber = [NSString stringWithFormat:@"%@", [prefs[specifier.identifier] componentsSeparatedByString:@"."].lastObject];
+        numberButton.increaseTitle = @"＋";
+        numberButton.decreaseTitle = @"－";
+        numberButton.numberBlock = ^(NSString *num) {
+            NSDictionary *tweakSettings = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+            
+            [tweakSettings setValue:[@"0." stringByAppendingString:num] forKey:self.specifier.identifier];
+            [tweakSettings writeToFile:CVK_PREFS_PATH atomically:YES];
+            
+            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
+            if ([self.specifier.identifier isEqualToString:@"menuImageBlackout"])
+                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+        };
+        self.accessoryView = numberButton;
 	}
     return self;
-}
-
-- (void)updateStepperValue:(UIStepper*)stepper
-{
-    stepper.tintColor = [self colorForStepperValue:stepper.value];
-    
-    NSDictionary *tweakSettings = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
-    
-    [tweakSettings setValue:[NSString stringWithFormat:@"%.1f", stepper.value] forKey:self.specifier.identifier];
-    [tweakSettings writeToFile:prefsPath atomically:YES];
-    
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
-    if ([self.specifier.identifier isEqualToString:@"menuImageBlackout"])
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-}
-
-
-- (UIColor *)colorForStepperValue:(double)value
-{
-    int intVal = [[NSString stringWithFormat:@"%.1f", value] componentsSeparatedByString:@"."].lastObject.intValue;
-    if      (intVal == 0) return [UIColor colorWithRed:23.00f/255.0f green:108.0f/255.0f blue:208.0f/255.0f alpha:1];
-    else if (intVal == 1) return [UIColor colorWithRed:50.00f/255.0f green:134.0f/255.0f blue:232.0f/255.0f alpha:1];
-    else if (intVal == 2) return [UIColor colorWithRed:96.00f/255.0f green:161.0f/255.0f blue:237.0f/255.0f alpha:1];
-    else if (intVal == 3) return [UIColor colorWithRed:232.0f/255.0f green:128.0f/255.0f blue:50.00f/255.0f alpha:1];
-    else if (intVal == 4) return [UIColor colorWithRed:232.0f/255.0f green:103.0f/255.0f blue:50.00f/255.0f alpha:1];
-    else if (intVal == 5) return [UIColor colorWithRed:232.0f/255.0f green:57.00f/255.0f blue:50.00f/255.0f alpha:1];
-    else if (intVal == 6) return [UIColor colorWithRed:200.0f/255.0f green:27.00f/255.0f blue:21.00f/255.0f alpha:1];
-    else return [UIColor blackColor];
 }
 @end

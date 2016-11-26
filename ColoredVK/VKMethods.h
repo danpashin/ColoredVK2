@@ -6,12 +6,68 @@
 //  
 //
 #import <AVFoundation/AVFoundation.h>
+#import <UIKit/UIKit.h>
+#import <MediaPlayer/MediaPlayer.h>
+
+@interface AppDelegate : UIResponder
+@property(retain, nonatomic) NSData *apnsToken;
+@end
 
 
-@interface VKMMainController : UIViewController
-{
-    NSArray *_menu;
-}
+@interface VKSession : NSObject
+@property(retain, nonatomic) NSString *APNSToken;
+@property(readonly, copy, nonatomic) NSNumber *userId; 
+@property(copy, nonatomic) NSString *token;
+@end
+
+
+@interface Model : NSObject
+@end
+
+@interface VKMController : UIViewController
+@property(retain, nonatomic) Model *model;
+@property (nonatomic, readonly, strong) id childViewControllerForStatusBarStyle;
+@property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
+@property (nonatomic, readonly) BOOL prefersStatusBarHidden;
+- (void)VKMControllerStatusBarUpdate:(BOOL)arg1;
+- (void)VKMNavigationBarUpdateBackground:(id)arg1;
+- (void)VKMNavigationBarUpdateBackground;
+- (void)VKMNavigationBarUpdate;
+@property (nonatomic, readonly, strong) id VKMNavigationBarTintColor;
+@property (nonatomic, readonly, strong) id VKMNavigationBarBarTintColor;
+@property (nonatomic, readonly, strong) id VKMNavigationBarBackground;
+@property (nonatomic, readonly) long long VKMNavigationBarStyle;
+@property (nonatomic, readonly) long long VKMControllerStatusBarStyle;
+@property (nonatomic, readonly) BOOL VKMControllerStatusBarHidden;
+@property (nonatomic, readonly) BOOL VKMControllerCustomized;
+@property (nonatomic, readonly) unsigned long long supportedInterfaceOrientations;
+@property (nonatomic, readonly) BOOL shouldAutorotate;
+
+@end
+
+@interface VKMScrollViewController : VKMController
+@property(retain, nonatomic) UIRefreshControl *rptr;
+@end
+
+
+@interface VKMSearchController : UISearchDisplayController
+@end
+@interface VKSearchController : UISearchController
+@end
+
+@interface VKMTableController : VKMScrollViewController
+@property(retain, nonatomic) VKSearchController *search80;
+@property(retain, nonatomic) VKMSearchController *search;
+@property(retain, nonatomic) UIColor *separatorColor;
+@property(retain, nonatomic) UITableView *tableView;
+@property (nonatomic, readonly, strong) id VKMTableCreateSearchBar;
+@end
+
+@interface VKMLiveController : VKMTableController
+@end
+
+
+@interface VKMMainController : VKMLiveController
 @property(retain, nonatomic) NSArray *menu;
 @property(retain, nonatomic) UINavigationController *navMain;
 @end
@@ -19,7 +75,7 @@
 
 
 @class MainModel;
-@interface MenuCell : UITableViewCell 
+@interface MenuCell : UITableViewCell
 @property (copy, nonatomic) id(^select)(MainModel *model, id arg2);
 @end
 
@@ -53,19 +109,22 @@
 
 @interface VKAudio : NSObject
 @property(retain, nonatomic) NSNumber *lyrics_id;
+@property(retain, nonatomic) NSString *title;
+@property(retain, nonatomic) NSString *performer;
 @end
 
 @interface AudioPlayer : NSObject
 @property(retain, nonatomic) UIImage *coverImage;
 @property(retain, nonatomic) VKAudio *audio;
-@property(retain) AVPlayerItem *playerItem;
 @property(retain) AVPlayer *player;
+@property(nonatomic) int state;
 @end
 
 @interface AudioController : UIViewController
 @property(retain, nonatomic) UIButton *pp;
 @property(retain, nonatomic) UILabel *song;
 @property(retain, nonatomic) UILabel *actor;
+@property(retain, nonatomic) UISlider *seek;
 @end
 
 
@@ -100,9 +159,6 @@
 
 
 
-@interface VKMScrollViewController : UIViewController
-@property(retain, nonatomic) UIRefreshControl *rptr;
-@end
 
 
 
@@ -215,20 +271,6 @@
 
 
 
-@interface VKMSearchController : UISearchDisplayController
-@end
-@interface VKSearchController : UISearchController
-@end
-
-@interface VKMTableController : VKMScrollViewController
-@property(retain, nonatomic) VKSearchController *search80;
-@property(retain, nonatomic) VKMSearchController *search;
-@property(retain, nonatomic) UIColor *separatorColor;
-@property(retain, nonatomic) UITableView *tableView;
-- (void)redrawSectionFooters;
-- (void)redrawSectionHeaders;
-@property (nonatomic, readonly, strong) id VKMTableCreateSearchBar;
-@end
 
 
 
@@ -266,8 +308,7 @@
 @end
 
 
-@interface VKMLiveController : VKMTableController
-@end
+
 
 
 
@@ -310,6 +351,9 @@
 @interface AudioAlbumController : VKMLiveController
 @end
 
+@interface AudioPlaylistController : VKMLiveController
+@end
+
 
 
 
@@ -325,6 +369,7 @@
 
 @interface AFHTTPRequestOperation : AFURLConnectionOperation
 @property(retain, nonatomic) NSError *HTTPError;
+@property(retain, nonatomic) NSSet *acceptableContentTypes;
 @end
 
 @interface AFJSONRequestOperation : AFHTTPRequestOperation
@@ -340,6 +385,34 @@
                                        cacheName:(NSString *)cacheNameOrNil
                                          success:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) )success
                                          failure:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) )failure;
-
 @end
 
+
+@interface UIImageAsset ()
+@property (nonatomic, copy) NSString *assetName;
+@end
+
+
+@class MPVolumeSlider;
+@interface MPVolumeView ()
+@property (nonatomic) BOOL hidesRouteLabelWhenNoRouteChoice;
+@property (nonatomic, readonly) BOOL isShowingRouteButton;
+@property (nonatomic, readonly) BOOL isVisible;
+@property (nonatomic) BOOL routeButtonShowsTouchWhenHighlighted;
+@property (nonatomic) unsigned int routePopoverPermittedArrowDirections;
+@property (nonatomic, readonly) int style;
+@property (nonatomic, readonly) MPVolumeSlider *volumeSlider;
+@property (nonatomic) BOOL volumeSliderShrinksFromBothEnds;
+@end
+
+
+@interface MPVolumeSlider : UISlider
+@property (setter=_setIsOffScreen:, nonatomic) BOOL _isOffScreen;
+//@property (nonatomic, retain) MPAVController *player;
+//@property (nonatomic, readonly) MPAVRoutingController *routingController;
+@property (nonatomic, readonly) int style;
+@property (nonatomic, readonly) UILayoutGuide *trackLayoutGuide;
+@property (nonatomic, copy) NSString *volumeAudioCategory;
+@property (nonatomic, retain) UIImage *volumeWarningTrackImage;
+@property (nonatomic, readonly) UIView *volumeWarningView;
+@end

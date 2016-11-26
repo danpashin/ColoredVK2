@@ -72,16 +72,6 @@
 			<key>default</key>
 			<false/>
 		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>key</key>
-			<string>minimizeAudioPlayer</string>
-			<key>label</key>
-			<string>MINIMIZE</string>
-			<key>default</key>
-			<false/>
-		</dict>
 	</array>
 	<key>title</key>
 	<string>Audio</string>

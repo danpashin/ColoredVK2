@@ -18,14 +18,14 @@
     if (self.specifier.properties[@"textColor"]) self.titleLabel.textColor = [UIColor colorFromString:self.specifier.properties[@"textColor"]];
     if ([self.specifier.properties[@"shouldCenter"] boolValue]) self.titleLabel.center = self.contentView.center;
     
-    if ([self.accessoryView isKindOfClass:[UISwitch class]]) {
+    if ([self.accessoryView isKindOfClass:UISwitch.class]) {
         UISwitch *switchView = (UISwitch *)self.accessoryView;
         switchView.tintColor = [UIColor colorWithRed:235.0/255.0f green:235.0/255.0f blue:235.0/255.0f alpha:1.0];
         switchView.onTintColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
         switchView.tag = 404;
     }
     
-    if ([self.contentView.subviews[0] isKindOfClass:[UISegmentedControl class]]) {
+    if ([self.contentView.subviews[0] isKindOfClass:UISegmentedControl.class]) {
         UISegmentedControl *segmentedControl = self.contentView.subviews[0];
         segmentedControl.tintColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
     }

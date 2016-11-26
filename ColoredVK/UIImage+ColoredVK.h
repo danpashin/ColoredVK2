@@ -19,4 +19,6 @@
 + (UIImage *)imageWithColor:(UIColor *)color andSize:(CGSize)size;
 
 - (UIImage *)imageScaledToWidth:(CGFloat)width height:(CGFloat)height;
+
+- (UIImage *)imageWithTintColor:(UIColor *)tintColor;
 @end

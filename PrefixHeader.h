@@ -24,14 +24,16 @@
 #define CVK_FOLDER_PATH     [NSHomeDirectory() stringByAppendingString:@"/Documents/ColoredVK2"]
 #endif
 
-#define IS_IPAD  UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
-#define UIKitLocalizedString(key) [[NSBundle bundleWithIdentifier:@"com.apple.UIKit"] localizedStringForKey:key value:@"" table:nil]
-#define CVKLocalizedString(key)   [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] localizedStringForKey:key value:@"" table:nil]
+#define IS_IPAD                               UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+#define UIKitLocalizedString(key)             [[NSBundle bundleWithIdentifier:@"com.apple.UIKit"] localizedStringForKey:key value:@"" table:nil]
 #define CVKLocalizedStringFromTable(key, tbl) [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] localizedStringForKey:key value:@"" table:tbl]
-#define IS_IOS_9_OR_LATER    (UIDevice.currentDevice.systemVersion.floatValue >= 9.0)
-#define IS_IOS_10_OR_LATER    (UIDevice.currentDevice.systemVersion.floatValue >= 10.0)
+#define CVKLocalizedString(key)               CVKLocalizedStringFromTable(key, nil)
+#define SYSTEM_VERSION_MORE_THAN(version)     (UIDevice.currentDevice.systemVersion.floatValue >= version)
+#define IS_IOS_9_OR_LATER                     SYSTEM_VERSION_MORE_THAN(9.0)
+#define IS_IOS_10_OR_LATER                    SYSTEM_VERSION_MORE_THAN(10.0)
+#define CLASS_NAME(obj)                       NSStringFromClass([obj class])
 
-#define kColoredVKVersion @"3.2.1-beta"
+#define kColoredVKVersion @"3.2.1"
 
 #ifdef CHAppName
     #undef CHAppName
@@ -39,3 +41,5 @@
 #define CHAppName "[COLOREDVK 2]"
 
 #define API_VERSION @"1.2"
+
+//#define COMPILE_WITH_BLACK_THEME

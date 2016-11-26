@@ -9,7 +9,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ColoredVKColorPicker : UIViewController
+@interface ColoredVKColorPickerViewController : UIViewController
 - (instancetype)initWithIdentifier:(NSString *)identifier;
 @property (strong, nonatomic) UIWindow *pickerWindow;
 @end

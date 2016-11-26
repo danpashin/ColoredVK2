@@ -9,9 +9,10 @@
 
 #import "ColoredVKPrefsController.h"
 #import "PrefixHeader.h"
-#import "ColoredVKHeader.h"
+#import "ColoredVKHeaderView.h"
 #import "ColoredVKInstaller.h"
 #import "ColoredVKPrefs.h"
+#import "LHProgressHUD.h"
 
 @interface ColoredVKPrefsController ()
 @property (strong, nonatomic) NSString *prefsPath;
@@ -64,7 +65,7 @@
     for (UIView *view in self.view.subviews) {
         if ([NSStringFromClass([view class]) isEqualToString:@"UITableView"]) {
             UITableView *tableView = (UITableView *)view;
-            tableView.tableHeaderView = [ColoredVKHeader headerForView:self.view];
+            tableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.view];
             tableView.separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
             break;
         }
@@ -126,8 +127,7 @@
 
 - (NSString *)getTweakVersion
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
-    return [prefs[@"cvkVersion"] stringByReplacingOccurrencesOfString:@"-" withString:@" "];
+    return [kColoredVKVersion stringByReplacingOccurrencesOfString:@"-" withString:@" "];
 }
 
 - (NSString *)getVKVersion
@@ -141,32 +141,26 @@
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBunlde, nil)
                                                                              message:NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS_QUESTION", nil, self.cvkBunlde, nil) 
                                                                       preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:[NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"ColoredVK", self.cvkBunlde, nil) componentsSeparatedByString:@" "][0] 
+    [alertController addAction:[UIAlertAction actionWithTitle:[NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"Main", self.cvkBunlde, nil) componentsSeparatedByString:@" "].firstObject 
                                                         style:UIAlertActionStyleDestructive 
                                                       handler:^(UIAlertAction *action) {
-                                                          NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
-                                                          NSArray *keysToExclude = @[@"cvkVersion", @"vkVersion", @"lastCheckForUpdates"];
-                                                          for (NSString *key in prefs.allKeys) {
-                                                              if (![keysToExclude containsObject:key]) [prefs removeObjectForKey:key];
-                                                          }
-                                                          [prefs writeToFile:self.prefsPath atomically:YES];
+                                                          LHProgressHUD *hud = [LHProgressHUD showAddedToView:UIApplication.sharedApplication.keyWindow.rootViewController.view];
+                                                          hud.centerBackgroundView.blurStyle = LHBlurEffectStyleLight;
+                                                          hud.infoColor = [UIColor colorWithWhite:0.55 alpha:1];
+                                                          hud.spinnerColor = hud.infoColor;
                                                           
-                                                          NSFileManager *manager = [NSFileManager defaultManager];
-                                                          NSArray *imageNames = [manager contentsOfDirectoryAtPath:CVK_FOLDER_PATH error:nil];
-                                                          for (NSString *name in imageNames) {
-                                                              if ([name.pathExtension.lowercaseString isEqualToString:@"png"]) [manager removeItemAtPath:[NSString stringWithFormat:@"%@/%@", self.cvkFolder, name] error:nil];
-                                                          }
-                                                          
+                                                          NSError *error = nil;
+                                                          [[NSFileManager defaultManager] removeItemAtPath:self.prefsPath error:&error];
+                                                          [[NSFileManager defaultManager] removeItemAtPath:CVK_FOLDER_PATH error:&error];
+                                                          [[NSFileManager defaultManager] removeItemAtPath:[CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"] error:&error];
                                                           [self reloadSpecifiers];
-                                                          for (id viewController in self.parentViewController.childViewControllers) {
-                                                              if ([viewController respondsToSelector:@selector(reloadSpecifiers)]) { [viewController performSelector:@selector(reloadSpecifiers)]; break; }
-                                                          }
                                                           CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
                                                           CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
                                                           CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
+                                                          error?[hud showFailureWithStatus:@"" animated:YES]:[hud showSuccessWithStatus:@"" animated:YES];
+                                                          [hud hideAfterDelay:1.5];
                                                       }]];
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+    [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
 }
 @end

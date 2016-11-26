@@ -140,7 +140,7 @@
     animation.keyPath = @"transform.rotation.z";
     animation.fromValue = @(0.00);
     animation.toValue = @(M_PI * 2);
-    animation.duration = 2.0;
+    animation.duration = 1.7;
     animation.repeatCount = NSIntegerMax;
     animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
     [self.layerFirst addAnimation:animation forKey:@"rotate"];
@@ -151,7 +151,7 @@
     animation.keyPath = @"strokeEnd";
     animation.fromValue = @(0.00);
     animation.toValue = @(1.00);
-    animation.duration = 0.6;
+    animation.duration = 0.5;
     animation.delegate = self;
     animation.removedOnCompletion = NO;
     animation.fillMode = kCAFillModeForwards;
@@ -167,12 +167,12 @@
         self.layerFirst.strokeEnd = 1.00;
     }];
     if (animated) {
-        _layerSecond.path = [self successPath].CGPath;
+        _layerSecond.path = self.successPath.CGPath;
         self.layerSecond.hidden = NO;
         [self animateSecondLayer];
     }else{
         [self transactionUpdate:^{
-            _layerSecond.path = [self successPath].CGPath;
+            _layerSecond.path = self.successPath.CGPath;
             self.layerSecond.hidden = NO;
             self.layerSecond.strokeEnd = 1.0;
         }];

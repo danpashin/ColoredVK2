@@ -181,7 +181,7 @@
 #pragma mark - APIS
 -(void)hide{
     [UIView transitionWithView:self.superview
-                      duration:0.4
+                      duration:0.3
                        options:UIViewAnimationOptionTransitionCrossDissolve
                     animations:^{
                         self.hidden = YES;

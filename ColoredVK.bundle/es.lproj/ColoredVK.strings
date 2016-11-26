@@ -49,7 +49,8 @@
 "AUDIO_BACKGROUND" = "Audio";
 "AUDIO_PLAYER" = "Jugador";
 "CHANGE_APPEARANCE" = "Personalizar";
-"MINIMIZE" = "Minimizar";
+
+"HIDE_NAV_BAR_ITEMS" = "Ocultar la barra de navegación, elementos de";
 
 
 

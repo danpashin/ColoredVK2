@@ -38,7 +38,7 @@
         
         int imageViewSize = 28;
         self.myImageView = [UIImageView new];
-        self.myImageView.frame = CGRectMake([UIScreen mainScreen].bounds.size.width/1.3 - imageViewSize, (self.contentView.frame.size.height - imageViewSize)/2, imageViewSize, imageViewSize);
+        self.myImageView.frame = CGRectMake(UIScreen.mainScreen.bounds.size.width/1.3 - imageViewSize, (self.contentView.frame.size.height - imageViewSize)/2, imageViewSize, imageViewSize);
         self.myImageView.backgroundColor = [UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f];
         self.myImageView.contentMode = UIViewContentModeScaleAspectFill;
         self.myImageView.tag = 20;
@@ -60,7 +60,7 @@
         [self addGestureRecognizer:longPress];
         
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateImage:) name:@"com.daniilpashin.coloredvk.image.update" object:nil];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateImage:) name:@"com.daniilpashin.coloredvk.image.update" object:nil];
         [self updateImageForIdentifier:identifier];
     }
     return self;
@@ -71,8 +71,7 @@
     [[NSBlockOperation blockOperationWithBlock:^{
         UIImage *image = [UIImage imageWithContentsOfFile:[self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identifier]]];
         if (image) {
-            UISwitch *switchView = (UISwitch *)self.accessoryView;
-            switchView.enabled = YES;
+            ((UISwitch *)self.accessoryView).enabled = YES;
             self.myImageView.image = image;
         }
     }] start];
@@ -121,7 +120,7 @@
                                         activityVC.popoverPresentationController.sourceView = self;
                                         activityVC.popoverPresentationController.sourceRect = CGRectMake(self.myImageView.frame.origin.x, self.myImageView.frame.origin.y, 1, 1);
                                     }
-                                    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:activityVC animated:YES completion:nil];
+                                    [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:activityVC animated:YES completion:nil];
                                 }]];
         [alertController addAction:
          [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete")
@@ -138,7 +137,7 @@
                                                                                        NSString *fullImagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]];
                                                                                        
                                                                                        NSError *error = nil;
-                                                                                       NSFileManager *fileManager = [NSFileManager defaultManager];
+                                                                                       NSFileManager *fileManager = NSFileManager.defaultManager;
                                                                                        
                                                                                        if ([fileManager fileExistsAtPath:previewPath]) [fileManager removeItemAtPath:previewPath error:&error];
                                                                                        if ([fileManager fileExistsAtPath:fullImagePath]) [fileManager removeItemAtPath:fullImagePath error:&error];
@@ -154,7 +153,7 @@
                                                                                            [self sendNotifications];
                                                                                        }
                                                                                    }]];
-                                    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:warningAlert animated:YES completion:nil];
+                                    [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:warningAlert animated:YES completion:nil];
                                 }]];
         [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
         
@@ -164,14 +163,14 @@
             alertController.popoverPresentationController.sourceRect = CGRectMake(self.myImageView.frame.origin.x, self.myImageView.frame.origin.y, 1, 1);
         }
         
-        if ([[NSFileManager defaultManager] fileExistsAtPath:[self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]]]) 
-            [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+        if ([NSFileManager.defaultManager fileExistsAtPath:[self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]]]) 
+            [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
     }
 }
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
 

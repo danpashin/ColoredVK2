@@ -2,17 +2,16 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "CoverImage.jpg",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "CoverImage@2x.jpg",
+      "filename" : "CoverImage@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "CoverImage@3x.jpg",
+      "filename" : "CoverImage@3x.png",
       "scale" : "3x"
     }
   ],

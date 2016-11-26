@@ -48,9 +48,8 @@
 "AUDIO_BACKGROUND" = "Audio";
 "AUDIO_PLAYER" = "Player";
 "CHANGE_APPEARANCE" = "Customize";
-"MINIMIZE" = "Minimize";
 
-
+"HIDE_NAV_BAR_ITEMS" = "Hide navbar items";
 
 
 

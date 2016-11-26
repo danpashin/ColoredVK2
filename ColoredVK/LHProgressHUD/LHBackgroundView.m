@@ -52,6 +52,7 @@
     self.effectView.frame = self.bounds;
     self.effectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self addSubview:self.effectView];
+    [self sendSubviewToBack:self.effectView];
 }
 
 - (CGSize)intrinsicContentSize {

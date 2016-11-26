@@ -7,14 +7,14 @@
 //
 
 
-#import "ColoredVKColorPicker.h"
+#import "ColoredVKColorPickerViewController.h"
 #import "PrefixHeader.h"
 #import "KLCPopup.h"
 #import "HRColorMapView.h"
 #import "HRBrightnessSlider.h"
 #import "HRColorInfoView.h"
 
-@interface ColoredVKColorPicker() <UITextFieldDelegate, UIGestureRecognizerDelegate>
+@interface ColoredVKColorPickerViewController () <UITextFieldDelegate, UIGestureRecognizerDelegate>
 @property (strong, nonatomic) NSString *cellIdentifier;
 @property (strong, nonatomic) NSString *prefsPath;
 @property (strong, nonatomic) NSBundle *cvkBunlde;
@@ -29,7 +29,7 @@
 @end
 
 
-@implementation ColoredVKColorPicker
+@implementation ColoredVKColorPickerViewController
 
 - (instancetype)init
 {
@@ -200,8 +200,8 @@
     
     
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShown) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHidden) name:UIKeyboardWillHideNotification object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillShown) name:UIKeyboardWillShowNotification object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHidden) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -408,6 +408,6 @@
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 @end

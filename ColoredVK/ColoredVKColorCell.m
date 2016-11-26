@@ -15,7 +15,7 @@
 {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier specifier:specifier];
     if (self) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColorView:) name:@"com.daniilpashin.coloredvk.prefs.colorUpdate" object:nil];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateColorView:) name:@"com.daniilpashin.coloredvk.prefs.colorUpdate" object:nil];
         [self updateColorViewForIdentifier:specifier.identifier];
     }
     return self;
@@ -39,6 +39,6 @@
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 @end

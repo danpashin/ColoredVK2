@@ -22,6 +22,18 @@
 
 #import "NSDate+DateTools.h"
 
+const long long SECONDS_IN_YEAR = 31556900;
+const NSInteger SECONDS_IN_MONTH_28 = 2419200;
+const NSInteger SECONDS_IN_MONTH_29 = 2505600;
+const NSInteger SECONDS_IN_MONTH_30 = 2592000;
+const NSInteger SECONDS_IN_MONTH_31 = 2678400;
+const NSInteger SECONDS_IN_WEEK = 604800;
+const NSInteger SECONDS_IN_DAY = 86400;
+const NSInteger SECONDS_IN_HOUR = 3600;
+const NSInteger SECONDS_IN_MINUTE = 60;
+const NSInteger MILLISECONDS_IN_DAY = 86400000;
+
+
 typedef NS_ENUM(NSUInteger, DTDateComponent){
     DTDateComponentEra,
     DTDateComponentYear,

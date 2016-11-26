@@ -8,39 +8,45 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface UIColor (ColoredVK)
 /**
  Creates color from string
  */
-+ (UIColor * _Nonnull)colorFromString:(NSString * _Nonnull)string;
++ (UIColor *)colorFromString:(NSString *)string;
 /**
  Creates color from string (only hex strings are allowed)
  */
-+ (UIColor * _Nonnull)colorFromHexString:(NSString * _Nonnull )hexString;
++ (UIColor *)colorFromHexString:(NSString *)hexString;
 /**
  Creates color darker than current
  */
-+ (UIColor * _Nonnull)darkerColorForColor:(UIColor * _Nonnull)color;
++ (UIColor *)darkerColorForColor:(UIColor *)color;
 /**
  Returns saved color for ColoredVK identifiers
  */
-+ ( UIColor * _Nonnull)savedColorForIdentifier:(NSString * _Nonnull)identifier;
++ ( UIColor *)savedColorForIdentifier:(NSString *)identifier;
 /**
  Returns standart color for ColoredVK identifiers
  */
-+ (UIColor * _Nonnull)defaultColorForIdentifier:(NSString * _Nonnull)identifier;
++ (UIColor *)defaultColorForIdentifier:(NSString *)identifier;
 
 
 /**
  Returns color with 20.0 white
  */
-+ (UIColor * _Nonnull)lightBlackColor;
++ (UIColor *)lightBlackColor;
 /**
  Returns color with 10.0 white
  */
-+ (UIColor * _Nonnull)darkBlackColor;
++ (UIColor *)darkBlackColor;
 /**
  Returns color with 178.5 red
  */
-+ (UIColor * _Nonnull)buttonsTintColor;
++ (UIColor *)buttonsTintColor;
+
++ (UIColor *)colorAtPoint:(CGPoint)point inImage:(UIImage *)image;
 @end
+
+NS_ASSUME_NONNULL_END
