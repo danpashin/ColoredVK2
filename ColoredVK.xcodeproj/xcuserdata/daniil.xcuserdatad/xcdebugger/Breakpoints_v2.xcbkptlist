@@ -24,27 +24,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ColoredVK/Tweak.m"
-            timestampString = "501871608.355208"
+            timestampString = "501886382.326973"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1347"
-            endingLineNumber = "1347"
-            landmarkName = "CHOptimizedMethod()"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ColoredVK/Tweak.m"
-            timestampString = "501872475.411219"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1224"
-            endingLineNumber = "1224"
+            startingLineNumber = "1142"
+            endingLineNumber = "1142"
             landmarkName = "CHOptimizedMethod()"
             landmarkType = "9">
          </BreakpointContent>

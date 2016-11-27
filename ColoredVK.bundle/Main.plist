@@ -93,6 +93,8 @@
 			<string>resetSettings</string>
 			<key>textColor</key>
 			<string>1,0,0,1</string>
+			<key>shouldCenter</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>cell</key>

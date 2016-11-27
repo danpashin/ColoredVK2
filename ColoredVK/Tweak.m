@@ -27,6 +27,7 @@
 #import "ColoredVKAudioCoverView.h"
 #import "ColoredVKMainController.h"
 #import "Tweak.h"
+#import "LHProgressHUD.h"
 
 
 
@@ -756,7 +757,7 @@ CHOptimizedMethod(0, self, void, DialogsController, viewWillLayoutSubviews)
 CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, DialogsController, viewWillAppear, animated);
-    dlopen([NSBundle.mainBundle.bundlePath stringByAppendingString:@"/FLEXDylib.dylib"].UTF8String, RTLD_LAZY);
+//    dlopen([NSBundle.mainBundle.bundlePath stringByAppendingString:@"/FLEXDylib.dylib"].UTF8String, RTLD_LAZY);
     if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && enabled) {
         if (enabledBlackTheme) {
             self.tableView.backgroundColor = [UIColor darkBlackColor];
@@ -1001,7 +1002,8 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
         
     } else if (enabled && enabledMenuImage) {
         cell.textLabel.textColor = [UIColor colorWithWhite:1 alpha:0.9];
-        cell.imageView.image = [cell.imageView.image imageWithTintColor:[UIColor colorWithWhite:1 alpha:0.8]];
+        cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        cell.imageView.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
         cell.backgroundColor = [UIColor clearColor];
         cell.contentView.backgroundColor = [UIColor clearColor];
         
@@ -1124,7 +1126,7 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
             }
         } else if (changeAudioPlayerAppearance) {
             if (!cvkCoverView) cvkCoverView = [[ColoredVKAudioCoverView alloc] initWithFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
-            audioTintColor = cvkCoverView.tintColor?cvkCoverView.tintColor:[UIColor blackColor];
+            audioTintColor = cvkCoverView.tintColor?cvkCoverView.tintColor:[UIColor whiteColor];
             
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.topItem.titleView.hidden = YES;
@@ -1151,15 +1153,15 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
             
             UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
             blurEffectView.frame = self.hostView.bounds;
-            blurEffectView.backgroundColor = cvkCoverView.defaultCover?[UIColor colorWithWhite:1 alpha:0.4]:cvkCoverView.backColor;
+            blurEffectView.backgroundColor = cvkCoverView.defaultCover?[UIColor clearColor]:cvkCoverView.backColor;
             [self.hostView addSubview:blurEffectView];
             [self.hostView sendSubviewToBack:blurEffectView];
             
             [NSNotificationCenter.defaultCenter addObserverForName:@"com.daniilpashin.coloredvk.audio.image.changed" object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-                audioTintColor = cvkCoverView.defaultCover?[UIColor blackColor]:cvkCoverView.tintColor;
+                audioTintColor = cvkCoverView.defaultCover?[UIColor whiteColor]:cvkCoverView.tintColor;
                 
                 [UIView animateWithDuration:0.3 animations:^{
-                    blurEffectView.backgroundColor = cvkCoverView.defaultCover?[UIColor colorWithWhite:1 alpha:0.4]:cvkCoverView.backColor;
+                    blurEffectView.backgroundColor = cvkCoverView.defaultCover?[UIColor clearColor]:cvkCoverView.backColor;
                     cvkLyricsView.hostView.subviews[0].backgroundColor = blurEffectView.backgroundColor;
                     [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioTintColor] forState:UIControlStateSelected];
                 }];
@@ -1315,24 +1317,25 @@ CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, a
                                                                                     }
                                                                                 }
                                                                             }
-                                                                            VKHUD *hud = [objc_getClass("VKHUD") hud];
                                                                             BlockActionController *actionController = [objc_getClass("BlockActionController") actionSheetWithTitle:nil];
                                                                             NSArray *info = getInfoForActionController();
                                                                             for (NSDictionary *dict in info) {
-                                                                                [actionController addButtonWithTitle:CVKLocalizedString(dict[@"title"]) 
-                                                                                                               block:(id)^(id arg1) {
-                                                                                                                   NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-                                                                                                                       [ColoredVKMainController downloadImageWithSource:imageSource 
-                                                                                                                                                          identificator:dict[@"identifier"]
-                                                                                                                                                        completionBlock:^(BOOL success, NSString *message) {
-                                                                                                                                                            success?[hud hideWithResult:success]:[hud hideWithResult:success message:message];
-                                                                                                                                                            [hud performSelector:@selector(hide:) withObject:@YES afterDelay:3.0];
-                                                                                                                                                        }];
-                                                                                                                   }];
-                                                                                                                   [hud showForOperation:operation];
-                                                                                                                   [operation start];
-                                                                                                               }];
-
+                                                                                typedef id (^DownloadBlock)(id arg1);
+                                                                                DownloadBlock block = ^id(id arg1) {
+                                                                                    LHProgressHUD *hud = [LHProgressHUD showAddedToView:UIApplication.sharedApplication.keyWindow.rootViewController.view];
+                                                                                    hud.centerBackgroundView.blurStyle = LHBlurEffectStyleExtraLight;
+                                                                                    hud.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.5];
+                                                                                    hud.infoColor = [UIColor colorWithWhite:0.55 alpha:1];
+                                                                                    hud.spinnerColor = hud.infoColor;
+                                                                                    [ColoredVKMainController downloadImageWithSource:imageSource identificator:dict[@"identifier"]
+                                                                                                                     completionBlock:^(BOOL success, NSString *message) {
+                                                                                                                         if (success)[hud showSuccessWithStatus:@"" animated:YES];
+                                                                                                                         else [hud showFailureWithStatus:@"" animated:YES];
+                                                                                                                         [hud hideAfterDelay:3.0];
+                                                                                                                     }];
+                                                                                    return nil;
+                                                                                };
+                                                                                [actionController addButtonWithTitle:CVKLocalizedString(dict[@"title"]) block:block];
                                                                             }
                                                                             [actionController setCancelButtonWithTitle:UIKitLocalizedString(@"Cancel") block:nil];
                                                                             [actionController showInViewController:self];
@@ -1356,23 +1359,26 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
                                                                           style:UIBarButtonItemStylePlain 
                                                                         handler:^(id  _Nonnull sender) {
                                                                             
-                                                                            VKHUD *hud = [objc_getClass("VKHUD") hud];
                                                                             BlockActionController *actionController = [objc_getClass("BlockActionController") actionSheetWithTitle:nil];
                                                                             NSArray *info = getInfoForActionController();
                                                                             for (NSDictionary *dict in info) {
-                                                                                [actionController addButtonWithTitle:CVKLocalizedString(dict[@"title"]) 
-                                                                                                               block:(id)^(id arg1) {
-                                                                                                                   NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-                                                                                                                       [ColoredVKMainController downloadImageWithSource:self.target.url.absoluteString 
-                                                                                                                                                          identificator:dict[@"identifier"]
-                                                                                                                                                        completionBlock:^(BOOL success, NSString *message) {
-                                                                                                                                                            success?[hud hideWithResult:success]:[hud hideWithResult:success message:message];
-                                                                                                                                                            [hud performSelector:@selector(hide:) withObject:@YES afterDelay:3.0];
-                                                                                                                                                        }];
-                                                                                                                   }];
-                                                                                                                   [hud showForOperation:operation];
-                                                                                                                   [operation start];
-                                                                                                               }];
+                                                                                
+                                                                                typedef id (^DownloadBlock)(id arg1);
+                                                                                DownloadBlock block = ^id(id arg1) {
+                                                                                    LHProgressHUD *hud = [LHProgressHUD showAddedToView:UIApplication.sharedApplication.keyWindow.rootViewController.view];
+                                                                                    hud.centerBackgroundView.blurStyle = LHBlurEffectStyleExtraLight;
+                                                                                    hud.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.5];
+                                                                                    hud.infoColor = [UIColor colorWithWhite:0.55 alpha:1];
+                                                                                    hud.spinnerColor = hud.infoColor;
+                                                                                    [ColoredVKMainController downloadImageWithSource:self.target.url.absoluteString identificator:dict[@"identifier"]
+                                                                                                                     completionBlock:^(BOOL success, NSString *message) {
+                                                                                                                         if (success)[hud showSuccessWithStatus:@"" animated:YES];
+                                                                                                                         else [hud showFailureWithStatus:@"" animated:YES];
+                                                                                                                         [hud hideAfterDelay:3.0];
+                                                                                                                     }];
+                                                                                    return nil;
+                                                                                };
+                                                                                [actionController addButtonWithTitle:CVKLocalizedString(dict[@"title"]) block:block];
                                                                             }
                                                                             [actionController setCancelButtonWithTitle:UIKitLocalizedString(@"Cancel") block:nil];
                                                                             [actionController showInViewController:self];
