@@ -74,9 +74,8 @@
 
 
 
-@class MainModel;
 @interface MenuCell : UITableViewCell
-@property (copy, nonatomic) id(^select)(MainModel *model, id arg2);
+@property (copy, nonatomic) id(^select)(id arg1, id arg2);
 @end
 
 
@@ -88,8 +87,6 @@
 @interface VKMNavContext : NSObject 
 + (id)applicationNavRoot;
 - (void)reset:(id)arg1;
-- (void)replace:(id)arg1;
-- (void)push:(id)arg1 animated:(BOOL)arg2;
 @property (readonly, strong) VKMNavContext *rootNavContext;
 @property(retain, nonatomic) UINavigationController *navController;
 @end
@@ -125,6 +122,7 @@
 @property(retain, nonatomic) UILabel *song;
 @property(retain, nonatomic) UILabel *actor;
 @property(retain, nonatomic) UISlider *seek;
+- (void)done:(id)arg;
 @end
 
 
@@ -136,26 +134,24 @@
 
 
 
-@interface TextEditController : UIViewController
-@property(retain, nonatomic) UITextView *textView;
-@end
-
-@interface CountryCallingCodeController : UITableViewController
-@end
-
-@interface VKMSearchBar : UISearchBar
-@end
-
-@interface UITableViewIndex : UIControl
-@property (nonatomic, retain) UIColor *indexBackgroundColor;
-@property (nonatomic, retain) UIColor *indexColor;
-@end
-
-@interface UITableViewCellSelectedBackground : UIView 
-@property (nonatomic, retain) UIColor *selectionTintColor;
-@end
-
-
+//@interface TextEditController : UIViewController
+//@property(retain, nonatomic) UITextView *textView;
+//@end
+//
+//@interface CountryCallingCodeController : UITableViewController
+//@end
+//
+//@interface VKMSearchBar : UISearchBar
+//@end
+//
+//@interface UITableViewIndex : UIControl
+//@property (nonatomic, retain) UIColor *indexBackgroundColor;
+//@property (nonatomic, retain) UIColor *indexColor;
+//@end
+//
+//@interface UITableViewCellSelectedBackground : UIView 
+//@property (nonatomic, retain) UIColor *selectionTintColor;
+//@end
 
 
 
@@ -167,24 +163,22 @@
 
 
 
-@interface VKRenderedText : NSObject
-{
-    NSAttributedString *_text;
-}
-@property(readonly, copy, nonatomic) NSAttributedString *text;
-@end
 
-@interface TextKitLayer : CALayer
-@property(retain, nonatomic) VKRenderedText *text;
-@end
-
-@interface VKRenderedTextAttributeValue : NSObject
-+ (id)attribute:(id)arg1 value:(id)arg2 range:(struct _NSRange)arg3;
-@property(readonly, nonatomic) id value;
-@property(readonly, nonatomic) struct _NSRange range;
-@property(readonly, nonatomic) NSString *attribute;
-- (instancetype)initWithAttribute:(id)arg1 value:(id)arg2 range:(struct _NSRange)arg3;
-@end
+//@class VKRenderedTextSettings;
+//@interface VKRenderedText : NSObject
+//+ (instancetype)renderedText:(id)arg1 minSize:(CGSize)arg2 maxSize:(CGSize)arg3 maxNumberOfLinesRange:(NSRange)arg4 alignment:(long long)arg5;
+//+ (instancetype)renderedText:(id)arg1 minSize:(CGSize)arg2 maxSize:(CGSize)arg3 maxNumberOfLines:(unsigned long long)arg4 alignment:(long long)arg5;
+//+ (instancetype)renderedText:(id)arg1 withSettings:(id)arg2;
+//@property(readonly, copy, nonatomic) NSAttributedString *text;
+//@property(readonly, copy, nonatomic) VKRenderedTextSettings *settings;
+//@end
+//
+//@interface TextKitLayer : CALayer
+//@property(retain, nonatomic) VKRenderedText *text;
+//@end
+//
+//@interface VKRenderedTextSettings : NSObject
+//@end
 
 
 
@@ -222,20 +216,6 @@
 
 @interface VKMBrowserController : UIViewController 
 @property(retain, nonatomic) VKMBrowserTarget *target;
-@end
-
-
-
-
-@interface MBProgressHUD : UIView
-- (void)hide:(BOOL)animated;
-@end
-
-@interface VKHUD : MBProgressHUD
-+ (instancetype)hud;
-- (void)showForOperation:(id)arg1;
-- (void)hideWithResult:(BOOL)arg1 message:(NSString *)arg2;
-- (void)hideWithResult:(BOOL)arg1;
 @end
 
 
@@ -331,8 +311,8 @@
 @end
 
 
-@interface VKPPBadge : UIImageView
-@end
+//@interface VKPPBadge : UIImageView
+//@end
 
 
 
@@ -359,17 +339,9 @@
 
 
 @interface AFURLConnectionOperation : NSOperation
-@property(copy, nonatomic) NSString *responseString;
-@property(retain, nonatomic) NSData *responseData;
-@property(retain, nonatomic) NSError *error;
-@property(retain, nonatomic) NSURLResponse *response;
-@property(retain, nonatomic) NSURLRequest *request;
-@property(retain, nonatomic) NSURLConnection *connection;
 @end
 
 @interface AFHTTPRequestOperation : AFURLConnectionOperation
-@property(retain, nonatomic) NSError *HTTPError;
-@property(retain, nonatomic) NSSet *acceptableContentTypes;
 @end
 
 @interface AFJSONRequestOperation : AFHTTPRequestOperation
@@ -388,31 +360,88 @@
 @end
 
 
+
 @interface UIImageAsset ()
 @property (nonatomic, copy) NSString *assetName;
 @end
 
 
-@class MPVolumeSlider;
-@interface MPVolumeView ()
-@property (nonatomic) BOOL hidesRouteLabelWhenNoRouteChoice;
-@property (nonatomic, readonly) BOOL isShowingRouteButton;
-@property (nonatomic, readonly) BOOL isVisible;
-@property (nonatomic) BOOL routeButtonShowsTouchWhenHighlighted;
-@property (nonatomic) unsigned int routePopoverPermittedArrowDirections;
-@property (nonatomic, readonly) int style;
-@property (nonatomic, readonly) MPVolumeSlider *volumeSlider;
-@property (nonatomic) BOOL volumeSliderShrinksFromBothEnds;
-@end
-
-
 @interface MPVolumeSlider : UISlider
-@property (setter=_setIsOffScreen:, nonatomic) BOOL _isOffScreen;
-//@property (nonatomic, retain) MPAVController *player;
-//@property (nonatomic, readonly) MPAVRoutingController *routingController;
-@property (nonatomic, readonly) int style;
-@property (nonatomic, readonly) UILayoutGuide *trackLayoutGuide;
-@property (nonatomic, copy) NSString *volumeAudioCategory;
-@property (nonatomic, retain) UIImage *volumeWarningTrackImage;
-@property (nonatomic, readonly) UIView *volumeWarningView;
 @end
+@interface MPVolumeView ()
+@property (nonatomic, readonly) MPVolumeSlider *volumeSlider;
+@end
+
+
+
+
+@interface Renderer : NSObject
+@end
+@interface VKMRendererCell : UITableViewCell
+@property(retain, nonatomic) Renderer *renderer;
+@end
+@interface AudioRenderer : Renderer
+@property(retain, nonatomic) UILabel *durationLabel;
+@property(retain, nonatomic) UIButton *playIndicator;
+@property(retain, nonatomic) AudioPlayer *player;
+@end
+
+
+
+@interface FixedNavigationController : UINavigationController
+@end
+@interface VKMNavigationController : FixedNavigationController
+@end
+
+
+@interface VKMViewControllerContainer : VKMController
+@property(retain, nonatomic) UIViewController *currentViewController;
+@end
+@interface VKSelectorContainerController : VKMViewControllerContainer
+@end
+@interface VKSelectorContainerControllerDropdown : VKSelectorContainerController
+@end
+
+
+@interface  VKMLiveSearchController : UISearchDisplayController
+@end
+
+@interface UIApplication ()
+- (void)_updateSnapshotForBackgroundApplication:(BOOL)arg1;
+@end
+
+
+
+
+@interface UISearchBarTextField : UITextField
+@end
+@interface UISearchBar ()
+@property (getter=_searchBarTextField, nonatomic, readonly) UISearchBarTextField *searchBarTextField;
+- (UIView *)_scopeBarBackgroundView;
+- (UIView *)_backgroundView;
+@end
+
+
+@interface UINavigationBar ()
+- (UIView *)_backgroundView;
+@end
+
+@interface UIToolbar ()
+@property (setter=_setBackgroundView:, nonatomic, retain) UIView *_backgroundView;
+@end
+
+
+
+
+@interface BaseUserCell : VKMCell
+@property(readonly, retain, nonatomic) UILabel *last; // @synthesize last=_last;
+@property(readonly, retain, nonatomic) UILabel *first; // @synthesize first=_first;
+@end
+
+@interface SourceCell : BaseUserCell
+@end
+
+
+@interface MessageController : VKMController 
+@end
+

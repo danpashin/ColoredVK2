@@ -35,51 +35,48 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 - (id)specifiers
 {
-    self.prefsPath = CVK_PREFS_PATH;
-    self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    self.cvkFolder = CVK_FOLDER_PATH;
-    
-    
-    NSString *plistName = [@"plists/" stringByAppendingString:self.specifier.properties[@"plistToLoad"]];
-    
-    NSMutableArray *specifiersArray = [NSMutableArray new];
-    if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
-        self.bundle = self.cvkBunlde;
-        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
-    } else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:bundle:)]) {
-        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBunlde] mutableCopy];
-    } 
-    else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
-        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
-    }
-    
-    for (PSSpecifier *specifier in specifiersArray) {
-        specifier.name = NSLocalizedStringFromTableInBundle(specifier.name, @"ColoredVK", self.cvkBunlde, nil);
+    if (!_specifiers) {
+        NSString *plistName = [@"plists/" stringByAppendingString:self.specifier.properties[@"plistToLoad"]];
         
-        if (specifier.properties[@"footerText"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.cvkBunlde, nil) forKey:@"footerText"];
-        if (specifier.properties[@"label"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"label"], @"ColoredVK", self.cvkBunlde, nil) forKey:@"label"];
-        if (specifier.properties[@"validTitles"]) {            
-            NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
-            for (NSString *key in specifier.titleDictionary.allKeys) {
-                [tempDict setValue:NSLocalizedStringFromTableInBundle(specifier.titleDictionary[key], @"ColoredVK", self.cvkBunlde, nil) forKey:key];
-            }
-            specifier.titleDictionary = [tempDict copy];
+        NSMutableArray *specifiersArray = [NSMutableArray new];
+        if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
+            self.bundle = self.cvkBunlde;
+            specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
+        } else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:bundle:)]) {
+            specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBunlde] mutableCopy];
+        } 
+        else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
+            specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
         }
+        
+        for (PSSpecifier *specifier in specifiersArray) {
+            specifier.name = NSLocalizedStringFromTableInBundle(specifier.name, @"ColoredVK", self.cvkBunlde, nil);
+            
+            if (specifier.properties[@"footerText"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.cvkBunlde, nil) forKey:@"footerText"];
+            if (specifier.properties[@"label"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"label"], @"ColoredVK", self.cvkBunlde, nil) forKey:@"label"];
+            if (specifier.properties[@"validTitles"]) {            
+                NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
+                for (NSString *key in specifier.titleDictionary.allKeys) [tempDict setValue:NSLocalizedStringFromTableInBundle(specifier.titleDictionary[key], @"ColoredVK", self.cvkBunlde, nil) forKey:key];
+                specifier.titleDictionary = [tempDict copy];
+            }
+        }
+        
+        if (specifiersArray.count == 0) {
+            specifiersArray = [NSMutableArray new];
+            [specifiersArray addObject:[self errorMessage]];
+        }
+        if ([self.specifier.properties[@"shouldAddFooter"] boolValue]) [specifiersArray addObject:[self footer]];
+        
+        _specifiers = [specifiersArray copy];
     }
-    
-    if (specifiersArray.count == 0) {
-        specifiersArray = [NSMutableArray new];
-        [specifiersArray addObject:[self errorMessage]];
-    }
-    if ([self.specifier.properties[@"shouldAddFooter"] boolValue]) [specifiersArray addObject:[self footer]];
-    
-    _specifiers = [specifiersArray copy];
-    
     return _specifiers;
 }
 
 - (void)viewDidLoad
 {
+    self.prefsPath = CVK_PREFS_PATH;
+    self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    self.cvkFolder = CVK_FOLDER_PATH;
     [super viewDidLoad];
     for (UIView *view in self.view.subviews) {
         if ([view isKindOfClass:NSClassFromString(@"UITableView")]) {
@@ -87,16 +84,6 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
             tableView.separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
             break;
         }
-    }
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    UINavigationBar *navbar = self.navigationController.navigationBar;
-    if ([navbar.subviews containsObject:[navbar viewWithTag:10]]) {
-        [[navbar viewWithTag:10] removeFromSuperview];        
-        [navbar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
     }
 }
 

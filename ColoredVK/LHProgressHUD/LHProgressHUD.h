@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "LHBackgroundView.h"
-#import "LHGifImageView.h"
+//#import "LHGifImageView.h"
 
 typedef NS_ENUM(NSInteger,LHProgressHUDMode){
     LHProgressHUDModeNormal,
@@ -164,10 +164,10 @@ typedef NS_ENUM(NSInteger,LHPRogressHUDSubMode){
  */
 @property (assign,nonatomic)CGFloat xOffset;
 
-/**
- *  Use this to set Gif,this is only useful when mode is LHPRogressHUDModeGif
- */
-@property (strong,nonatomic)LHGifImageView * gifImageView;
+///**
+// *  Use this to set Gif,this is only useful when mode is LHPRogressHUDModeGif
+// */
+//@property (strong,nonatomic)LHGifImageView * gifImageView;
 
 /**
  *  Wheather to be square,in some case when text is short,using square will make animation smoth

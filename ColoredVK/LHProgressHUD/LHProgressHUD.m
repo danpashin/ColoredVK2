@@ -139,11 +139,11 @@
         [self setNeedsUpdateConstraints];
     }
 }
--(void)setGifImageView:(LHGifImageView *)gifImageView{
-    _gifImageView = gifImageView;
-    [self updateSpinner];
-    [self setNeedsUpdateConstraints];
-}
+//-(void)setGifImageView:(LHGifImageView *)gifImageView{
+//    _gifImageView = gifImageView;
+//    [self updateSpinner];
+//    [self setNeedsUpdateConstraints];
+//}
 -(void)setXOffset:(CGFloat)xOffset{
     _xOffset = xOffset;
     [self updateSpinner];
@@ -241,15 +241,16 @@
         self.lhSpinner = self.customView;
         self.lhSpinner.translatesAutoresizingMaskIntoConstraints = NO;
         [_centerBackgroundView addSubview:self.customView];
-    }else if(self.mode == LHPRogressHUDModeGif){
-        if ([self.lhSpinner isKindOfClass:[LHGifImageView class]]) {
-            return;
-        }
-        [self.lhSpinner removeFromSuperview];
-        self.lhSpinner = self.gifImageView;
-        self.lhSpinner.translatesAutoresizingMaskIntoConstraints = NO;
-        [_centerBackgroundView addSubview:self.gifImageView];
     }
+//    else if(self.mode == LHPRogressHUDModeGif){
+//        if ([self.lhSpinner isKindOfClass:[LHGifImageView class]]) {
+//            return;
+//        }
+        [self.lhSpinner removeFromSuperview];
+//        self.lhSpinner = self.gifImageView;
+        self.lhSpinner.translatesAutoresizingMaskIntoConstraints = NO;
+//        [_centerBackgroundView addSubview:self.gifImageView];
+    
 }
 
 -(void)commonInit{

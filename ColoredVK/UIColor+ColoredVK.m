@@ -14,7 +14,7 @@
 {
     NSArray *components = [[string stringByReplacingOccurrencesOfString:@" " withString:@""] componentsSeparatedByString:@","];
     if (components.count > 0) return [UIColor colorWithRed:[components[0] floatValue] green:[components[1] floatValue] blue:[components[2] floatValue] alpha:[components[3] floatValue]];
-    return UIColor.blackColor;
+    return [UIColor blackColor];
 }
 
 + (UIColor *)colorFromHexString:(NSString *)hexString 
@@ -45,20 +45,20 @@
 + (UIColor *)defaultColorForIdentifier:(NSString *)identifier
 {
     if      ([identifier isEqualToString:@"BarBackgroundColor"])       return [UIColor colorWithRed:60.00/255.0f green:112.0/255.0f blue:169.0/255.0f alpha:1];
-    else if ([identifier isEqualToString:@"BarForegroundColor"])       return UIColor.whiteColor;
+    else if ([identifier isEqualToString:@"BarForegroundColor"])       return [UIColor whiteColor];
     else if ([identifier isEqualToString:@"ToolBarBackgroundColor"])   return [UIColor colorWithRed:245.0/255.0f green:245.0/255.0f blue:248.0/255.0f alpha:1];
     else if ([identifier isEqualToString:@"ToolBarForegroundColor"])   return [UIColor colorWithRed:127.0/255.0f green:131.0/255.0f blue:137.0/255.0f alpha:1];
     else if ([identifier isEqualToString:@"MenuSeparatorColor"])       return [UIColor colorWithRed:72.00/255.0f green:86.00/255.0f blue:97.00/255.0f alpha:1];
-    else if ([identifier isEqualToString:@"SBBackgroundColor"])        return UIColor.clearColor;
-    else if ([identifier isEqualToString:@"SBForegroundColor"])        return UIColor.whiteColor;
+    else if ([identifier isEqualToString:@"SBBackgroundColor"])        return [UIColor clearColor];
+    else if ([identifier isEqualToString:@"SBForegroundColor"])        return [UIColor whiteColor];
     else if ([identifier isEqualToString:@"switchesTintColor"])        return nil;
     else if ([identifier isEqualToString:@"switchesOnTintColor"])      return [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
-    else                                                               return UIColor.blackColor;
+    else                                                               return [UIColor blackColor];
 }
 
 + (UIColor *)lightBlackColor
 {
-    return [UIColor colorWithWhite:20/255.0f alpha:1.0];
+    return [UIColor colorWithWhite:40/255.0f alpha:1.0];
 }
 
 + (UIColor *)darkBlackColor
@@ -69,27 +69,5 @@
 + (UIColor *)buttonsTintColor
 {
     return [UIColor colorWithRed:0.7 green:0 blue:0 alpha:1.0];
-}
-
-+ (UIColor *)colorAtPoint:(CGPoint)point inImage:(UIImage *)image
-{    
-    if (!CGRectContainsPoint(CGRectMake(0.0f, 0.0f, image.size.width, image.size.height), point)) return nil;
-    
-    // Create a 1x1 pixel byte array and bitmap context to draw the pixel into.
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    int bytesPerPixel = 4;
-    int bytesPerRow = bytesPerPixel * 1;
-    NSUInteger bitsPerComponent = 8;
-    unsigned char pixelData[4] = { 0, 0, 0, 0 };
-    CGContextRef context = CGBitmapContextCreate(pixelData, 1, 1, bitsPerComponent, bytesPerRow, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
-    CGColorSpaceRelease(colorSpace);
-    CGContextSetBlendMode(context, kCGBlendModeCopy);
-    
-    // Draw the pixel we are interested in onto the bitmap context
-    CGContextTranslateCTM(context, -trunc(point.x), trunc(point.y)-image.size.height);
-    CGContextDrawImage(context, CGRectMake(0.0f, 0.0f, image.size.width, image.size.height), image.CGImage);
-    CGContextRelease(context);
-    
-    return [UIColor colorWithRed:pixelData[0]/255.0f green:pixelData[1]/255.0f blue:pixelData[2]/255.0f alpha:pixelData[3]/255.0f];
 }
 @end

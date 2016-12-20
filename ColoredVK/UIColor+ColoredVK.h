@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-NS_ASSUME_NONNULL_BEGIN
 
 @interface UIColor (ColoredVK)
 /**
@@ -45,8 +44,4 @@ NS_ASSUME_NONNULL_BEGIN
  Returns color with 178.5 red
  */
 + (UIColor *)buttonsTintColor;
-
-+ (UIColor *)colorAtPoint:(CGPoint)point inImage:(UIImage *)image;
 @end
-
-NS_ASSUME_NONNULL_END

@@ -11,6 +11,7 @@
 @interface ColoredVKAudioLyricsView : UIView
 @property (strong, nonatomic) NSString *text;
 @property (strong, nonatomic) UIView *hostView;
+@property (assign, nonatomic) BOOL hide;
 - (void)resetState;
 - (void)updateWithLyrycsID:(NSNumber *)lyrics_id andToken:(NSString *)token;
 @end

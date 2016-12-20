@@ -16,9 +16,8 @@
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip;
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect;
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip parallaxEffect:(BOOL)parallaxEffect;
-+ (void)downloadImageWithSource:(NSString *)source identificator:(NSString *)identificator completionBlock:( void(^)(BOOL success, NSString *message) )block;
 
-- (void)reloadSwitch;
+//- (void)reloadSwitch;
 - (void)switchTriggered:(UISwitch*)switchView;
 @property (strong, nonatomic) MenuCell *cvkCell;
 @end

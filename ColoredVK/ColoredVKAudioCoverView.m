@@ -18,6 +18,8 @@ NSString *const imageName = @"CoverImage";
 @property (strong, nonatomic) UIImageView *topImageView;
 @property (strong, nonatomic) UIImageView *bottomImageView;
 @property (strong, nonatomic) NSOperation *operation;
+@property (strong, nonatomic) UIVisualEffectView *blurEffectView;
+@property (strong, nonatomic) NSString *key;
 @end
 
 @implementation ColoredVKAudioCoverView
@@ -26,19 +28,33 @@ NSString *const imageName = @"CoverImage";
 {
     self = [super initWithFrame:frame];
     if (self) {
+        self.defaultCover = YES;
+        self.manager = [SDWebImageManager sharedManager];
+        
         self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         self.topImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName inBundle:self.cvkBundle compatibleWithTraitCollection:nil]];
-        self.topImageView.frame = CGRectMake(0, 0, frame.size.width, point.y);
-        self.topImageView.backgroundColor = [UIColor whiteColor];
+        self.topImageView.frame = CGRectMake(0, 0, self.frame.size.width, point.y);
+        self.topImageView.backgroundColor = [UIColor blackColor];
+        self.topImageView.contentMode = UIViewContentModeScaleToFill;
         [self addSubview:self.topImageView];
         
-        self.bottomImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName inBundle:self.cvkBundle compatibleWithTraitCollection:nil]];
-        self.bottomImageView.frame = CGRectMake(0, point.y, frame.size.width, frame.size.height-point.y);
-        self.bottomImageView.backgroundColor = [UIColor whiteColor];
+        self.bottomImageView = [UIImageView new];
+        self.bottomImageView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+        self.bottomImageView.backgroundColor = [UIColor blackColor];
+        self.bottomImageView.contentMode = UIViewContentModeScaleAspectFill;
+        
+        self.blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+        self.blurEffectView.frame = self.bottomImageView.bounds;
+        [self.bottomImageView addSubview:self.blurEffectView];
+        
         [self addSubview:self.bottomImageView];
         [self sendSubviewToBack:self.bottomImageView];
         
-        self.defaultCover = YES;
+        CAGradientLayer *gradient = [CAGradientLayer layer];
+        gradient.frame = CGRectMake(0, 0, self.frame.size.width, 79);
+        gradient.colors = @[ (id)[UIColor colorWithWhite:0 alpha:0.5].CGColor, (id)[UIColor clearColor].CGColor ];
+        gradient.locations = @[ @0, @0.95];
+        [self.layer addSublayer:gradient];
     }
     return self;
 }
@@ -52,25 +68,30 @@ NSString *const imageName = @"CoverImage";
         
         [self downloadCoverWithCompletionBlock:^(UIImage *image, BOOL wasDownloaded) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.defaultCover = !wasDownloaded;
+                self.defaultCover = wasDownloaded?NO:YES;
                 
                 UIImage *coverImage = image;
-                if (player.coverImage && (!wasDownloaded && ![player.coverImage.imageAsset.assetName containsString:@"placeholder"])) coverImage = player.coverImage;
+                if (player.coverImage && (!wasDownloaded && ![player.coverImage.imageAsset.assetName containsString:@"placeholder"])) {
+                    coverImage = player.coverImage;
+                    self.defaultCover = NO;
+                }
+                
+                [self changeImageViewImage:self.topImageView toImage:coverImage animated:YES];
+                [self changeImageViewImage:self.bottomImageView toImage:self.defaultCover?nil:coverImage animated:YES];
                 
                 MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
                 NSMutableDictionary *playingInfo = [NSMutableDictionary dictionaryWithDictionary:center.nowPlayingInfo];
                 playingInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:coverImage];
                 center.nowPlayingInfo = [NSDictionary dictionaryWithDictionary:playingInfo];
                 
-                [self changeImageViewImage:self.topImageView toImage:coverImage animated:YES];
-                [self changeImageViewImage:self.bottomImageView toImage:coverImage animated:YES];
-                
                 LEColorPicker *picker = [[LEColorPicker alloc] init];
-                [picker pickColorsFromImage:image onComplete:^(LEColorScheme *colorScheme) {
-                    self.backColor = [colorScheme.backgroundColor colorWithAlphaComponent:0.4];
+                [picker pickColorsFromImage:coverImage onComplete:^(LEColorScheme *colorScheme) {
+                    self.backColor = self.defaultCover?[UIColor clearColor]:[colorScheme.backgroundColor colorWithAlphaComponent:0.4];
                     self.tintColor = colorScheme.secondaryTextColor;
+                    [UIView animateWithDuration:0.3 animations:^{ self.blurEffectView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor; } completion:nil];
                     [NSNotificationCenter.defaultCenter postNotificationName:@"com.daniilpashin.coloredvk.audio.image.changed" object:nil];
                 }];
+//                if (self.inBackground) [[UIApplication sharedApplication] _updateSnapshotForBackgroundApplication:YES];
             });
         }];
     }];
@@ -84,13 +105,6 @@ NSString *const imageName = @"CoverImage";
     else imageView.image = image;
 }
 
-- (void)setContentMode:(UIViewContentMode)contentMode
-{
-    super.contentMode = contentMode;
-    self.topImageView.contentMode = contentMode;
-    self.bottomImageView.contentMode = contentMode;
-}
-
 - (void)downloadCoverWithCompletionBlock:( void(^)(UIImage *image, BOOL wasDownloaded) )block;
 {
     if (self.artist && self.track) {
@@ -99,35 +113,40 @@ NSString *const imageName = @"CoverImage";
         query = [query stringByReplacingOccurrencesOfString:@"|" withString:@" "];
         
         NSError *error = nil;
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(\\(|\\[)+(?:\\w|\\s)+(\\)|\\])" options:NSRegularExpressionCaseInsensitive error:&error];
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(\\(|\\[)+(.*)+(\\)|\\])" options:NSRegularExpressionCaseInsensitive error:&error];
         NSArray *matches = [regex matchesInString:query options:0 range:NSMakeRange(0, query.length)];
         NSString *oldQuery = query.copy;
         for (NSTextCheckingResult *result in matches) query = [query stringByReplacingOccurrencesOfString:[oldQuery substringWithRange:result.range] withString:@""];
         
-        NSCharacterSet *charset = [NSCharacterSet characterSetWithCharactersInString:@" &/-.()[]!&|'`+"];
+        NSCharacterSet *charset = [NSCharacterSet characterSetWithCharactersInString:@" &/-!|\""];
         query = [[query componentsSeparatedByCharactersInSet:charset] componentsJoinedByString:@"+"];
         while ([query containsString:@"++"]) {
             query = [query stringByReplacingOccurrencesOfString:@"+++" withString:@"+"];
             query = [query stringByReplacingOccurrencesOfString:@"++" withString:@"+"];
         }
+        if ([query hasSuffix:@"+"]) query = [query.mutableCopy stringByReplacingCharactersInRange:NSMakeRange(query.length-1, 1) withString:@""].copy;
         
-        NSString *iTunesURL = [NSString stringWithFormat:@"https://itunes.apple.com/search?limit=1&media=music&term=%@", query];
+        self.key = query.lowercaseString;
+        UIImage *image = [self.manager.imageCache imageFromCacheForKey:self.key];
+        if (image) { if (block) block(image, YES); }
+        else {
+            NSString *iTunesURL = [NSString stringWithFormat:@"https://itunes.apple.com/search?limit=1&media=music&term=%@", query];
         [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation") 
                                     JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:iTunesURL]]
                                     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
                                         NSDictionary *responseDict = JSON;
                                         NSArray *items = responseDict[@"results"];
                                         if (items.count > 0) {
-                                            NSString *imageURL = [items[0][@"artworkUrl100"] stringByReplacingOccurrencesOfString:@"100x100bb" withString:@"1024x1024bb"];
-                                            [(AFImageRequestOperation *)[NSClassFromString(@"AFImageRequestOperation") 
-                                                                         imageRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageURL]]
-                                                                         imageProcessingBlock:^UIImage *(UIImage *image) { return image; }
-                                                                         cacheName:@"com.daniilpashin.coloredvk2.covers.cache"
-                                                                         success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) { if (block) block(image, YES); } 
-                                                                         failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) { if (block) block(noCover, NO); }] start];
+                                            NSString *url = [items[0][@"artworkUrl100"] stringByReplacingOccurrencesOfString:@"100x100bb" withString:@"1024x1024bb"];
+                                            [self.manager loadImageWithURL:[NSURL URLWithString:url] options:SDWebImageHighPriority|SDWebImageCacheMemoryOnly progress:nil 
+                                                                 completed:^(UIImage *image, NSData *data, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                                                     if (block) block(image, YES);
+                                                                     [self.manager.imageCache storeImage:image forKey:self.key completion:nil];
+                                                                 }];
                                         } else if (block) block(noCover, NO);
                                     }
                                     failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) { if (block) block(noCover, NO); }] start];
+        }
     }
 }
 @end

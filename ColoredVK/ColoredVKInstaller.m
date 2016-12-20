@@ -11,6 +11,7 @@
 #import <MobileGestalt/MobileGestalt.h>
 #import "PrefixHeader.h"
 #import "NSData+AES.h"
+#import "NSDate+DateTools.h"
 
 @interface ColoredVKInstaller()
 @property (strong, nonatomic) UIAlertController *alertController;
@@ -34,8 +35,20 @@
         licencePath = [licencePath stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"];
         
         if (![[NSFileManager defaultManager] fileExistsAtPath:licencePath]) {
-            if (block) block(YES);
-            [self performSelector:@selector(beginDownload) withObject:nil afterDelay:2.0];
+            NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+            if ([prefs[@"trial"] boolValue]) {
+                NSDateFormatter *dateFormatter = [NSDateFormatter new];
+                dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+                NSString *date = @"2016-11-30T12:00:00+03:00";
+                if ([dateFormatter dateFromString:date].daysAgo <= 7) block(NO);
+                else {
+                    if (block) block(YES);
+                    [self performSelector:@selector(beginDownload) withObject:nil afterDelay:2.0];
+                }
+            } else {
+                if (block) block(YES);
+                [self performSelector:@selector(beginDownload) withObject:nil afterDelay:2.0];
+            }
         }
         else {
             if (self.udid.length > 6) {
@@ -67,6 +80,12 @@
         self.alertController = nil;
         [self performSelectorOnMainThread:@selector(actionLogin) withObject:nil waitUntilDone:NO];
     }]];
+    [self.alertController addAction:[UIAlertAction actionWithTitle:@"Trial" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+        [prefs setValue:@YES forKey:@"trial"];
+        [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
+        self.exitBlock(nil);
+    }]];
 #endif
     if ([self.alertController respondsToSelector:@selector(setPreferredAction:)]) self.alertController.preferredAction = self.cancelAction;
     [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:self.alertController animated:YES completion:nil];
@@ -78,7 +97,7 @@
         request.HTTPMethod = @"POST";
         [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
         NSString *parameters = [NSString stringWithFormat:@"udid=%@&package=org.thebigboss.coloredvk2&version=%@", self.udid, kColoredVKVersion];
-        if (self.login && self.password) parameters = [NSString stringWithFormat:@"%@&login=%@&password=%@", parameters, self.login, [NSString md5StringFromString:self.password]];
+        if (self.login && self.password) parameters = [NSString stringWithFormat:@"%@&login=%@&password=%@", parameters, self.login, self.password.md5String];
         request.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];    
         
         NSHTTPURLResponse *response;
@@ -142,7 +161,7 @@
 
 - (void)textFieldChanged:(NSNotification *)notification
 {
-    if (notification && [notification.object isKindOfClass:NSClassFromString(@"UITextField")]) {
+    if (notification && [notification.object isKindOfClass:UITextField.class]) {
         UITextField *textField = notification.object;
         if (textField.tag == 10) self.login = textField.text;
         else if (textField.tag == 11) self.password = textField.text;

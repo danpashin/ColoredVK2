@@ -30,36 +30,36 @@
 
 - (id)specifiers
 {
-    self.prefsPath = CVK_PREFS_PATH;
-    self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    self.cvkFolder = CVK_FOLDER_PATH;
-    
-    NSString *plistName = @"Main";
-    
-    NSMutableArray *specifiersArray = [NSMutableArray new];
-    if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
-        self.bundle = self.cvkBunlde;
-        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
-    } else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:bundle:)]) {
-        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBunlde] mutableCopy];
-    } 
-    else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
-        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
+    if (!_specifiers) {
+        NSString *plistName = @"Main";
+        NSMutableArray *specifiersArray = [NSMutableArray new];
+        if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
+            self.bundle = self.cvkBunlde;
+            specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
+        } else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:bundle:)]) {
+            specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBunlde] mutableCopy];
+        } 
+        else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
+            specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
+        }
+        
+        if (specifiersArray.count == 0) {
+            specifiersArray = [NSMutableArray new];
+            [specifiersArray addObject:[self errorMessage]];
+        }
+        [specifiersArray addObject:[self footer]];
+        
+        _specifiers = [specifiersArray copy];
     }
-    
-    if (specifiersArray.count == 0) {
-        specifiersArray = [NSMutableArray new];
-        [specifiersArray addObject:[self errorMessage]];
-    }
-    [specifiersArray addObject:[self footer]];
-    
-    _specifiers = [specifiersArray copy];
-    
     return _specifiers;
 }
 
 - (void)viewDidLoad
 {
+    
+    self.prefsPath = CVK_PREFS_PATH;
+    self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    self.cvkFolder = CVK_FOLDER_PATH;
     [super viewDidLoad];
     [[ColoredVKInstaller alloc] startWithCompletionBlock:^(BOOL disableTweak) {}];
     for (UIView *view in self.view.subviews) {
@@ -69,16 +69,6 @@
             tableView.separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
             break;
         }
-    }
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    UINavigationBar *navbar = self.navigationController.navigationBar;
-    if ([navbar.subviews containsObject:[navbar viewWithTag:10]]) {
-        [[navbar viewWithTag:10] removeFromSuperview];        
-        [navbar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
     }
 }
 

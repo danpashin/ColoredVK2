@@ -49,14 +49,4 @@
     
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    UINavigationBar *navbar = self.navigationController.navigationBar;
-    if ([navbar.subviews containsObject:[navbar viewWithTag:10]]) {
-        [[navbar viewWithTag:10] removeFromSuperview];        
-        [navbar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-    }
-}
-
 @end

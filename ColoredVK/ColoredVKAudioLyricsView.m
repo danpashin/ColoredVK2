@@ -11,7 +11,6 @@
 
 @interface ColoredVKAudioLyricsView ()
 @property (strong, nonatomic) UITextView *textView;
-@property (assign, nonatomic) BOOL hide;
 @end
 
 @implementation ColoredVKAudioLyricsView
@@ -26,7 +25,7 @@
         self.hostView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
         UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
         UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-        blurEffectView.frame = CGRectMake(0, 0, self.frame.size.height, self.frame.size.height - 10);
+        blurEffectView.frame = CGRectMake(frame.size.width/8, 0, self.frame.size.height-2*(frame.size.width/8), self.frame.size.height - 10);
         blurEffectView.center = CGPointMake(self.frame.size.width/2, self.frame.size.height/2);
         blurEffectView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.1];
         blurEffectView.layer.cornerRadius = 10;
@@ -42,10 +41,29 @@
         self.textView.editable = NO;
         self.textView.selectable = NO;
         self.textView.textAlignment = NSTextAlignmentCenter;
-        self.textView.showsVerticalScrollIndicator = NO;
+        self.textView.font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+        self.textView.userInteractionEnabled = YES;
         [vibrancyEffectView.contentView addSubview:self.textView];
         [self.hostView addSubview:blurEffectView];
         [self addSubview:self.hostView];
+        
+        blurEffectView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.hostView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-spacing-[blurEffectView]-spacing-|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                     metrics:@{@"spacing": @(frame.size.height/10)} views:NSDictionaryOfVariableBindings(blurEffectView)]];
+        [self.hostView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-spacing-[blurEffectView]-spacing-|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                     metrics:@{@"spacing": @(frame.size.width/8)} views:NSDictionaryOfVariableBindings(blurEffectView)]];
+        
+        vibrancyEffectView.translatesAutoresizingMaskIntoConstraints = NO;
+        [blurEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[vibrancyEffectView]|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                              metrics:nil views:NSDictionaryOfVariableBindings(vibrancyEffectView)]];
+        [blurEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[vibrancyEffectView]|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                              metrics:nil views:NSDictionaryOfVariableBindings(vibrancyEffectView)]];        
+        
+        self.textView.translatesAutoresizingMaskIntoConstraints = NO;
+        [vibrancyEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_textView]|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                                   metrics:nil views:NSDictionaryOfVariableBindings(_textView)]];
+        [vibrancyEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_textView]|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                                   metrics:nil views:NSDictionaryOfVariableBindings(_textView)]];
         
         self.hostView.hidden = YES;
         _hide = YES;

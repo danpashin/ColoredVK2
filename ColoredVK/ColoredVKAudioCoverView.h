@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "VKMethods.h"
+#import "SDWebImageManager.h"
 
 @interface ColoredVKAudioCoverView : UIView
 - (instancetype)initWithFrame:(CGRect)frame andSeparationPoint:(CGPoint)point;
@@ -18,4 +19,5 @@
 @property (strong, nonatomic) UIColor *tintColor;
 @property (strong, nonatomic) UIColor *backColor;
 @property (assign, nonatomic) BOOL defaultCover;
+@property (strong, nonatomic) SDWebImageManager *manager;
 @end

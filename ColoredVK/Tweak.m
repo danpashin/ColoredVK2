@@ -19,7 +19,6 @@
 
 #import "ColoredVKInstaller.h"
 #import "PrefixHeader.h"
-#import "UIBarButtonItem+BlocksKit.h"
 #import "NSDate+DateTools.h"
 #import <dlfcn.h>
 #import "ColoredVKBackgroundImageView.h"
@@ -27,7 +26,8 @@
 #import "ColoredVKAudioCoverView.h"
 #import "ColoredVKMainController.h"
 #import "Tweak.h"
-#import "LHProgressHUD.h"
+#import "ColoredVKBarDownloadButton.h"
+#import "UIGestureRecognizer+BlocksKit.h"
 
 
 
@@ -263,25 +263,31 @@ static void setBlur(id bar, BOOL set)
     if (set) {
         if ([bar isKindOfClass:[UINavigationBar class]]) {
             UINavigationBar *navbar = bar;
+            UIView *backgroundView = [navbar _backgroundView];
             
-            navbar.barTintColor = [UIColor clearColor];
-            UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]];
-            blurEffectView.frame = CGRectMake(0, -20, navbar.frame.size.width, navbar.frame.size.height + 20);
-            blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            blurEffectView.tag = 10;
-            blurEffectView.layer.backgroundColor =  [[UIColor blackColor] colorWithAlphaComponent:0.3].CGColor;
-            blurEffectView.userInteractionEnabled = NO;
-            
-            UIView *borderView = [UIView new];
-            borderView.frame = CGRectMake(0, navbar.frame.size.height + 19, navbar.frame.size.width, 1);
-            borderView.backgroundColor = [UIColor whiteColor];
-            borderView.alpha = 0.1;
-            [blurEffectView addSubview:borderView];
-            
-            if (![navbar.subviews containsObject:[navbar viewWithTag:10]]) {                        
-                [navbar addSubview:blurEffectView];
-                [navbar sendSubviewToBack:blurEffectView];
+            if (![backgroundView.subviews containsObject:[backgroundView viewWithTag:10]]) {
+                navbar.barTintColor = [UIColor clearColor];
                 [navbar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+                navbar.shadowImage = [UIImage new];
+                
+                UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]];
+                blurEffectView.frame = backgroundView.bounds;
+                blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+                blurEffectView.tag = 10;
+                blurEffectView.layer.backgroundColor =  [UIColor colorWithWhite:0 alpha:0.3].CGColor;
+                
+                UIView *borderView = [UIView new];
+                borderView.frame = CGRectMake(0, blurEffectView.frame.size.height - 0.5, blurEffectView.frame.size.width, 0.5);
+                borderView.backgroundColor = [UIColor whiteColor];
+                borderView.alpha = 0.15;
+                [blurEffectView addSubview:borderView];
+                
+                [backgroundView addSubview:blurEffectView];
+                [backgroundView sendSubviewToBack:blurEffectView];
+
+                borderView.translatesAutoresizingMaskIntoConstraints = NO;
+                [blurEffectView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[borderView(0.5)]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(borderView)]];
+                [blurEffectView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[borderView]|"     options:0 metrics:nil views:NSDictionaryOfVariableBindings(borderView)]];
             }
         } 
         else if  ([bar isKindOfClass:[UIToolbar class]]) {
@@ -295,9 +301,9 @@ static void setBlur(id bar, BOOL set)
             blurEffectView.userInteractionEnabled = NO;
             
             UIView *borderView = [UIView new];
-            borderView.frame = CGRectMake(0, 0, toolBar.frame.size.width, 1);
+            borderView.frame = CGRectMake(0, 0, toolBar.frame.size.width, 0.5);
             borderView.backgroundColor = [UIColor whiteColor];
-            borderView.alpha = 0.1;
+            borderView.alpha = 0.15;
             [blurEffectView addSubview:borderView];
             
             if (![toolBar.subviews containsObject:[toolBar viewWithTag:10]]) {                        
@@ -309,8 +315,9 @@ static void setBlur(id bar, BOOL set)
     } else {
         if ([bar isKindOfClass:[UINavigationBar class]]) {
             UINavigationBar *navbar = bar;
-            if ([navbar.subviews containsObject:[navbar viewWithTag:10]]) {
-                [[navbar viewWithTag:10] removeFromSuperview];        
+            UIView *backgroundView = [navbar _backgroundView];
+            if ([backgroundView.subviews containsObject:[backgroundView viewWithTag:10]]) {
+                [[backgroundView viewWithTag:10] removeFromSuperview];        
                 [navbar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
             }
         } else if  ([bar isKindOfClass:[UIToolbar class]]) {
@@ -320,34 +327,9 @@ static void setBlur(id bar, BOOL set)
     }
 }
 
-static void setSearchBar(UISearchBar *searchBar, BOOL reset)
-{
-    if (reset) {
-        for (UIView *field in searchBar.subviews.lastObject.subviews) 
-            if ([field isKindOfClass:UITextField.class]) { field.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1]; break; }
-    } else {
-        for (UIView *field in searchBar.subviews.lastObject.subviews) {
-            if ([field isKindOfClass:UITextField.class]) field.backgroundColor = [UIColor colorWithWhite:1 alpha:1];
-            else if (![field isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) field.hidden = NO;
-            if (enabledBlackTheme && [field isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) field.hidden = YES;
-        }
-    }
-}
-
-static NSArray *getInfoForActionController()
-{
-    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[cvkBunlde pathForResource:@"AdvancedInfo" ofType:@"plist" inDirectory:@"plists"]];
-    if (dict) {
-        NSArray *arr = dict[@"ImagesDLInfo"];
-        if (arr) return arr;
-        else return @[];
-    } else return @[];
-}
-
-
 static void setNavigationBar(UINavigationBar *navBar)
 {
-    if (enabled) {
+    if (enabled && [navBar respondsToSelector:@selector(setBarTintColor:)]) {
         if (enabledBlackTheme) {
             setBlur(navBar, NO);
             navBar.barTintColor = [UIColor darkBlackColor];
@@ -421,6 +403,161 @@ static void setToolBar(UIToolbar *toolbar)
             }
         } 
     } else setBlur(toolbar, NO);
+}
+
+
+static void setupSearchController(UISearchDisplayController *controller, BOOL reset)
+{
+    BOOL shouldCustomize = NO;
+    int tag = (int)controller.searchBar.tag;
+    if ((tag == 1) && enabledMessagesListImage) shouldCustomize = YES;
+    else if ((tag == 2) && enabledGroupsListImage) shouldCustomize = YES;
+    else if ((tag == 3) && enabledAudioImage) shouldCustomize = YES;
+    else if ((tag == 4) && enabledAudioImage) shouldCustomize = YES;
+    else if ((tag == 5) && enabledMenuImage) shouldCustomize = YES;
+    
+    if (enabled && shouldCustomize) {
+        if (reset) {
+            UIView *backgroundView = [controller.searchBar _scopeBarBackgroundView];
+            [UIView animateWithDuration:0.1 animations:^{
+                [[[controller.searchBar _backgroundView] viewWithTag:10] removeFromSuperview];
+                [[backgroundView.superview viewWithTag:10] removeFromSuperview];
+                controller.searchBar.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+            }];
+        } else {
+            UIViewController *parentController = controller.searchContentsController.parentViewController;
+            if ([parentController isKindOfClass:NSClassFromString(@"VKMNavigationController")]) {
+                VKMNavigationController *navigation = (VKMNavigationController *)parentController;
+                if (navigation.childViewControllers.count>0) {
+                    if ([navigation.childViewControllers.firstObject isKindOfClass:NSClassFromString(@"VKSelectorContainerControllerDropdown")]) {
+                        VKSelectorContainerControllerDropdown *dropdown = (VKSelectorContainerControllerDropdown *)navigation.childViewControllers.firstObject;
+                        VKMTableController *tableController = (VKMTableController *)dropdown.currentViewController;
+                        if ([tableController respondsToSelector:@selector(tableView)] && [tableController.tableView.backgroundView isKindOfClass:[ColoredVKBackgroundImageView class]]) {
+                            ColoredVKBackgroundImageView *backView = (ColoredVKBackgroundImageView*)tableController.tableView.backgroundView;
+                            ColoredVKBackgroundImageView *imageView = [[ColoredVKBackgroundImageView alloc] initWithFrame:[UIScreen mainScreen].bounds imageName:backView.name blackout:backView.blackout];
+                            controller.searchResultsTableView.backgroundView = imageView;
+                        }
+                    } else if ([navigation.childViewControllers.firstObject isKindOfClass:NSClassFromString(@"DialogsController")]) {
+                        DialogsController *dialogsController = (DialogsController*)navigation.childViewControllers.firstObject;
+                        ColoredVKBackgroundImageView *backView = (ColoredVKBackgroundImageView*)dialogsController.tableView.backgroundView;
+                        ColoredVKBackgroundImageView *imageView = [[ColoredVKBackgroundImageView alloc] initWithFrame:[UIScreen mainScreen].bounds imageName:backView.name blackout:backView.blackout];
+                        controller.searchResultsTableView.backgroundView = imageView;
+                    }
+                }
+            }
+            
+            controller.searchBar.tintColor = [UIColor whiteColor];
+            controller.searchBar.searchBarTextField.textColor = [UIColor whiteColor];
+            [controller.searchBar setBackgroundImage:[UIImage new] forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+            
+            UIView *backgroundView = [controller.searchBar _backgroundView];
+            UIVisualEffectView *barBlurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]];
+            barBlurEffectView.frame = CGRectMake(0, 0, backgroundView.superview.frame.size.width, backgroundView.superview.frame.size.height+21);
+            barBlurEffectView.tag = 10;
+            [backgroundView addSubview:barBlurEffectView];
+            [backgroundView sendSubviewToBack:barBlurEffectView];
+            
+            if (controller.searchBar.scopeButtonTitles.count >= 2) {
+                UIView *scopeBackgroundView = [controller.searchBar _scopeBarBackgroundView];
+                scopeBackgroundView.hidden = YES;
+                UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]];
+                blurEffectView.frame = scopeBackgroundView.superview.bounds;
+                blurEffectView.tag = 10;
+                [scopeBackgroundView.superview addSubview:blurEffectView];
+                [scopeBackgroundView.superview sendSubviewToBack:blurEffectView];
+            }
+        }
+    }
+}
+
+
+static void setupAudioPlayer(UIView *hostView, UIColor *color)
+{
+    if (!color) color = audioTintColor;
+    for (UIView *view in hostView.subviews) {
+        view.backgroundColor = [UIColor clearColor];
+        if ([view respondsToSelector:@selector(setTextColor:)]) ((UILabel *)view).textColor = color;
+        if ([view respondsToSelector:@selector(setImage:forState:)]) [(UIButton*)view setImage:[[(UIButton*)view imageForState:UIControlStateNormal] imageWithTintColor:color] forState:UIControlStateNormal];
+        if ([view isKindOfClass:MPVolumeView.class]) {
+            MPVolumeSlider *slider = ((MPVolumeView*)view).volumeSlider;
+            for (UIView *subview in slider.subviews) {
+                if ([subview isKindOfClass:UIImageView.class]) {
+                    NSString *assetName = ((UIImageView*)subview).image.imageAsset.assetName;
+                    if ([assetName containsString:@"/"]) assetName = [assetName componentsSeparatedByString:@"/"].lastObject;
+                    NSArray *namesToPass = @[@"volume_min", @"volume_max", @"volume_min_max"];
+                    if ([namesToPass containsObject:assetName]) {
+                        ((UIImageView*)subview).image = [((UIImageView*)subview).image imageWithTintColor:[UIColor darkerColorForColor:color]];
+                        ((UIImageView*)subview).image.imageAsset.assetName = @"volume_min_max";
+                    }
+                }
+            }
+        }
+    }
+}
+
+static void setupCellForSearchController(UITableViewCell *cell, id searchController)
+{
+    BOOL shouldCustomize = NO;
+    int tag = (int)((UISearchController *)searchController).searchBar.tag;
+    if ((tag == 1) && enabledMessagesListImage) shouldCustomize = YES;
+    else if ((tag == 2) && enabledGroupsListImage) shouldCustomize = YES;
+    else if ((tag == 3) && enabledAudioImage) shouldCustomize = YES;
+    else if ((tag == 4) && enabledAudioImage) shouldCustomize = YES;
+    
+    
+    if (enabled && shouldCustomize) {
+        cell.backgroundColor = [UIColor clearColor];
+        
+        if ([cell isKindOfClass:NSClassFromString(@"SourceCell")]) {
+            SourceCell *sourceCell = (SourceCell *)cell;
+            if (enabledBlackTheme) {
+                sourceCell.backgroundColor = [UIColor lightBlackColor]; 
+            } else if (enabledGroupsListImage) {
+                sourceCell.last.textColor = [UIColor colorWithWhite:1 alpha:0.9];
+                sourceCell.last.backgroundColor = [UIColor clearColor];
+                sourceCell.first.textColor = [UIColor colorWithWhite:1 alpha:0.9];
+                sourceCell.first.backgroundColor = [UIColor clearColor];
+            }
+            cell = sourceCell;
+        } else if ([cell isKindOfClass:NSClassFromString(@"NewDialogCell")]) {
+            NewDialogCell *dialogCell = (NewDialogCell *)cell;
+            if (enabledBlackTheme) {
+                dialogCell.backgroundColor = [UIColor lightBlackColor]; 
+            } else if (enabledGroupsListImage) {
+                dialogCell.backgroundView = nil;
+                if (!dialogCell.dialog.head.read_state && dialogCell.unread.hidden) dialogCell.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
+                else dialogCell.contentView.backgroundColor = [UIColor clearColor];
+                
+                dialogCell.name.textColor = [UIColor colorWithWhite:1 alpha:0.9];
+                dialogCell.time.textColor = dialogCell.name.textColor;
+                if ([dialogCell respondsToSelector:@selector(dialogText)]) dialogCell.dialogText.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
+                if ([dialogCell respondsToSelector:@selector(text)]) dialogCell.text.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
+                dialogCell.attach.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
+                
+            }
+            cell = dialogCell;
+        } else if ([cell isKindOfClass:NSClassFromString(@"GroupCell")]) {
+            GroupCell *groupCell = (GroupCell *)cell;
+            if (enabledBlackTheme) {
+                groupCell.backgroundColor = [UIColor lightBlackColor]; 
+            } else if (enabledGroupsListImage) {
+                groupCell.name.textColor = [UIColor colorWithWhite:1 alpha:0.9];
+                groupCell.name.backgroundColor = [UIColor clearColor];
+                groupCell.status.textColor = [UIColor colorWithWhite:0.8 alpha:0.9];
+                groupCell.status.backgroundColor = [UIColor clearColor];
+            }
+            cell = groupCell;
+        } else {
+            cell.textLabel.textColor = [UIColor colorWithWhite:1 alpha:0.9];
+            cell.textLabel.backgroundColor = [UIColor clearColor];
+            cell.detailTextLabel.textColor = [UIColor colorWithWhite:0.8 alpha:0.9];
+            cell.detailTextLabel.backgroundColor = [UIColor clearColor];
+        }
+        
+        UIView *backView = [UIView new];
+        backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
+        cell.selectedBackgroundView = backView;
+    }
 }
 
 
@@ -499,7 +636,6 @@ CHOptimizedMethod(0, self, void, UISwitch, layoutSubviews)
     CHSuper(0, UISwitch, layoutSubviews);
     
     if ([self isKindOfClass:NSClassFromString(@"UISwitch")] && (self.tag != 404)) {
-        
         if (enabled && enabledBlackTheme) {
             self.onTintColor = [UIColor colorWithWhite:0.2 alpha:1.0];
             self.tintColor = [UIColor colorWithWhite:0.5 alpha:1.0];
@@ -525,18 +661,14 @@ CHOptimizedMethod(1, self, void, VKMLiveController, viewWillAppear, BOOL, animat
     CHSuper(1, VKMLiveController, viewWillAppear, animated);
     
     if (enabled && [self.model.description containsString:@"AudioRecommendationsModel"]) {
-       if (enabledAudioImage) {         
-            UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
-            search.backgroundImage = [UIImage new];
-            search.tag = 4;
-            for (UIView *field in search.subviews.lastObject.subviews) {
-                if ([field isKindOfClass:[UITextField class]]) {
-                    field.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
-                    UITextField *textField = (UITextField*)field;
-                    textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:textField.placeholder
-                                                                                      attributes:@{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent:0.7]}];
-                } else if (![field isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) field.hidden = YES;
-            }
+       if (enabledAudioImage) {
+           UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
+           search.backgroundImage = [UIImage new];
+           search.tag = 4;
+           search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+           search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder 
+                                                                                             attributes:@{NSForegroundColorAttributeName: [UIColor colorWithWhite:1 alpha:0.7]}];
+           [search _scopeBarBackgroundView].superview.hidden = YES;
         }
     }
 }
@@ -647,12 +779,6 @@ CHOptimizedMethod(0, self, BOOL, NewsFeedController, VKMScrollViewFullscreenEnab
     if (enabled && showBar) return NO;
     return CHSuper(0, NewsFeedController, VKMScrollViewFullscreenEnabled);
 }
-CHOptimizedMethod(2, self, UITableViewCell*, NewsFeedController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
-{
-    UITableViewCell *cell = CHSuper(2, NewsFeedController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    newsFeedTableView = tableView;
-    return cell;
-}
 
 #pragma mark PhotoFeedController
 CHDeclareClass(PhotoFeedController);
@@ -681,14 +807,9 @@ CHOptimizedMethod(0, self, void, GroupsController, viewWillLayoutSubviews)
             UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;search.backgroundImage = [UIImage new];
             search.scopeBarBackgroundImage = [UIImage new];
             search.tag = 2;
-            for (UIView *field in search.subviews.lastObject.subviews){
-                if ([field isKindOfClass:NSClassFromString(@"UISearchBarTextField")]) {
-                    field.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
-                    UITextField *textField = (UITextField*)field;
-                    textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:textField.placeholder
-                                                                                      attributes:@{NSForegroundColorAttributeName:[[UIColor whiteColor] colorWithAlphaComponent:0.7]}];
-                }
-            }
+            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+            search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder
+                                                                                              attributes:@{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent:0.7]}];
             
             if ([[NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleVersion"] intValue] == 27) 
                 for (UIView *view in self.view.subviews) if ([view isKindOfClass:UIToolbar.class] && useGroupsListBlur) {  setBlur(view, YES); break; }
@@ -757,7 +878,7 @@ CHOptimizedMethod(0, self, void, DialogsController, viewWillLayoutSubviews)
 CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, DialogsController, viewWillAppear, animated);
-//    dlopen([NSBundle.mainBundle.bundlePath stringByAppendingString:@"/FLEXDylib.dylib"].UTF8String, RTLD_LAZY);
+    dlopen([NSBundle.mainBundle.bundlePath stringByAppendingString:@"/FLEXDylib.dylib"].UTF8String, RTLD_LAZY);
     if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && enabled) {
         if (enabledBlackTheme) {
             self.tableView.backgroundColor = [UIColor darkBlackColor];
@@ -769,14 +890,10 @@ CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animat
             UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
             search.backgroundImage = [UIImage new];
             search.tag = 1;
-            for (UIView *field in search.subviews.lastObject.subviews) {
-                if ([field isKindOfClass:UITextField.class]) {
-                    field.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
-                    UITextField *textField = (UITextField*)field;
-                    textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:textField.placeholder
-                                                                                      attributes:@{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent:0.7]}];
-                } else if (![field isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) field.hidden = YES;
-            }
+            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+            search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder
+                                                                                              attributes:@{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent:0.7]}];
+            [search _scopeBarBackgroundView].superview.hidden = YES;
         }
     }
 }
@@ -812,29 +929,6 @@ CHOptimizedMethod(2, self, UITableViewCell*, DialogsController, tableView, UITab
 
 
 #pragma mark VKMSearchController
-CHDeclareClass(VKMSearchController);
-CHOptimizedMethod(1, self, void, VKMSearchController, searchDisplayControllerWillEndSearch, VKMSearchController*, controller)
-{
-    CHSuper(1, VKMSearchController, searchDisplayControllerWillEndSearch, controller);
-    if (enabled) {        
-        int tag = (int)controller.searchBar.tag;
-             if ((tag == 1) && enabledMessagesListImage) setSearchBar(controller.searchBar, YES);
-        else if ((tag == 2) && enabledGroupsListImage) setSearchBar(controller.searchBar, YES);
-        else if ((tag == 3) && enabledAudioImage) setSearchBar(controller.searchBar, YES);
-        else if ((tag == 4) && enabledAudioImage) setSearchBar(controller.searchBar, YES);
-    }
-    
-//    DialogsController - 1
-//    GroupsController  - 2
-//    AudioAlbumController  - 3
-//    VKMLiveController - AudioRecommensationsModel  - 4
-}
-
-CHOptimizedMethod(1, self, void, VKMSearchController, searchDisplayControllerWillBeginSearch, VKMSearchController*, controller)
-{
-    CHSuper(1, VKMSearchController, searchDisplayControllerWillBeginSearch, controller);
-    if (enabled && (controller.searchBar.tag !=0)) setSearchBar(controller.searchBar, NO);
-}
 
 #pragma mark BackgroundView
 CHDeclareClass(BackgroundView);
@@ -1010,7 +1104,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
         if ((indexPath.section == 0) && (indexPath.row == 0)) [ColoredVKMainController setupUISearchBar:(UISearchBar*)tableView.tableHeaderView];
         
         if (![tableView.superview.subviews containsObject: [tableView.superview viewWithTag:23] ]) {
-            UIView *backgrondView = [[ColoredVKBackgroundImageView alloc] imageLayerWithFrame:tableView.superview.frame withImageName:@"menuBackgroundImage" blackout:menuImageBlackout parallaxEffect:useMenuParallax];
+            UIView *backgrondView = [[ColoredVKBackgroundImageView alloc] initWithFrame:tableView.superview.frame imageName:@"menuBackgroundImage" blackout:menuImageBlackout parallaxEffect:useMenuParallax];
             [tableView.superview insertSubview:backgrondView atIndex:0];
             tableView.backgroundColor = [UIColor clearColor];
             tableView.backgroundView = nil;
@@ -1061,13 +1155,13 @@ CHDeclareClass(HintsSearchDisplayController);
 CHOptimizedMethod(1, self, void, HintsSearchDisplayController, searchDisplayControllerWillBeginSearch, UISearchDisplayController*, controller)
 {
     if (enabled && (enabledMenuImage && !enabledBlackTheme)) [ColoredVKMainController resetUISearchBar:controller.searchBar];
-    return CHSuper(1, HintsSearchDisplayController, searchDisplayControllerWillBeginSearch, controller);
+    CHSuper(1, HintsSearchDisplayController, searchDisplayControllerWillBeginSearch, controller);
 }
 
 CHOptimizedMethod(1, self, void, HintsSearchDisplayController, searchDisplayControllerDidEndSearch, UISearchDisplayController*, controller)
 {
     if (enabled && (enabledMenuImage && !enabledBlackTheme)) [ColoredVKMainController setupUISearchBar:controller.searchBar];
-    return CHSuper(1, HintsSearchDisplayController, searchDisplayControllerDidEndSearch, controller);
+    CHSuper(1, HintsSearchDisplayController, searchDisplayControllerDidEndSearch, controller);
 }
 
 
@@ -1080,106 +1174,56 @@ CHOptimizedMethod(0, self, UIStatusBarStyle, IOS7AudioController, preferredStatu
     else return CHSuper(0, IOS7AudioController, preferredStatusBarStyle);
 }
 
-static void setColorsForViewsInView(UIView *hostView)
-{
-    for (UIView *view in hostView.subviews) {
-        view.backgroundColor = [UIColor clearColor];
-        if ([view respondsToSelector:@selector(setTextColor:)]) ((UILabel *)view).textColor = audioTintColor;
-        if ([view respondsToSelector:@selector(setImage:forState:)]) [(UIButton*)view setImage:[[(UIButton*)view imageForState:UIControlStateNormal] imageWithTintColor:audioTintColor] forState:UIControlStateNormal];
-        if ([view isKindOfClass:MPVolumeView.class]) {
-            MPVolumeSlider *slider = ((MPVolumeView*)view).volumeSlider;
-            for (UIView *subview in slider.subviews) {
-                if ([subview isKindOfClass:UIImageView.class]) {
-                    NSString *assetName = ((UIImageView*)subview).image.imageAsset.assetName;
-                    if ([assetName containsString:@"/"]) assetName = [assetName componentsSeparatedByString:@"/"].lastObject;
-                    NSArray *namesToPass = @[@"volume_min", @"volume_max", @"volume_min_max"];
-                    if ([namesToPass containsObject:assetName]) {
-                        ((UIImageView*)subview).image = [((UIImageView*)subview).image imageWithTintColor:[UIColor darkerColorForColor:audioTintColor]];
-                        ((UIImageView*)subview).image.imageAsset.assetName = @"volume_min_max";
-                    }
-                }
-            }
-        }
-    }
-}
-
 CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, IOS7AudioController, viewWillAppear, animated);
     
     if (enabled && [self isKindOfClass:NSClassFromString(@"IOS7AudioController")]) {
         if (enabledBlackTheme) {
-            for (UIView *view in self.view.subviews) {
-                if ([view isKindOfClass:[UIImageView class]]) {
-                    view.backgroundColor = [UIColor blackColor];
-                } else {
-                    view.backgroundColor = [UIColor colorWithWhite:30/255.0f alpha:1.0];
-                    for (id subView in  view.subviews) {
-                        if ([subView respondsToSelector:@selector(setBackgroundColor:)]) [subView setBackgroundColor:[UIColor clearColor]];
-                        if ([subView respondsToSelector:@selector(setImage:forState:)]) {
-                            [subView setImage:[[subView imageForState:UIControlStateNormal] imageWithTintColor:[UIColor buttonsTintColor]] forState:UIControlStateNormal];
-                            [subView setImage:[[subView imageForState:UIControlStateSelected] imageWithTintColor:[UIColor lightGrayColor]] forState:UIControlStateSelected];
-                        }
-                    }
-                    [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:[UIColor buttonsTintColor]] forState:UIControlStateSelected];
-                }
-            }
+            setupAudioPlayer(self.hostView, [UIColor lightGrayColor]);
+            self.cover.backgroundColor = [UIColor blackColor];
+            self.hostView.backgroundColor = [UIColor colorWithWhite:30/255.0f alpha:1.0];
         } else if (changeAudioPlayerAppearance) {
+            if (!cvkLyricsView) cvkLyricsView = [[ColoredVKAudioLyricsView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.hostView.frame.origin.y - 64)];
             if (!cvkCoverView) cvkCoverView = [[ColoredVKAudioCoverView alloc] initWithFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
             audioTintColor = cvkCoverView.tintColor?cvkCoverView.tintColor:[UIColor whiteColor];
             
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.topItem.titleView.hidden = YES;
             navBar.shadowImage = [UIImage new];
-            [navBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];            
-            if (![navBar.subviews containsObject:[navBar viewWithTag:26]]) {
-                UIView *gradientView = [UIView new];
-                gradientView.frame = CGRectMake(0, -20, self.view.frame.size.width, navBar.frame.size.height+35);
-                gradientView.tag = 26;
-                CAGradientLayer *gradient = [CAGradientLayer layer];
-                gradient.frame = gradientView.bounds;
-                gradient.colors = @[ (id)[UIColor colorWithWhite:0 alpha:0.5].CGColor, (id)[UIColor clearColor].CGColor ];
-                gradient.locations = @[ @0.3, @0.8];
-                [gradientView.layer insertSublayer:gradient atIndex:0];
-                
-                [navBar addSubview:gradientView];
-                [navBar sendSubviewToBack:gradientView];
-            }
-            setColorsForViewsInView(self.hostView);
+            [navBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+            navBar.topItem.leftBarButtonItems = @[];
+            
+            UISwipeGestureRecognizer *downSwipe = [[UISwipeGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender) { [self done:nil]; }];
+            downSwipe.maximumDuration = 0.5;
+            downSwipe.direction = UISwipeGestureRecognizerDirectionDown;
+            [self.view addGestureRecognizer:downSwipe];
+            
+            setupAudioPlayer(self.hostView, nil);
             self.cover.hidden = YES;
             self.hostView.backgroundColor = [UIColor clearColor];
             [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioTintColor] forState:UIControlStateSelected];
-            [self.seek setThumbImage:[[self.seek thumbImageForState:UIControlStateNormal] imageWithTintColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+            [self.seek setMinimumTrackImage:[[self.seek minimumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:229/255.0f green:230/255.0f blue:231/255.0f alpha:1]] forState:UIControlStateNormal];
+            [self.seek setMaximumTrackImage:[[self.seek maximumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:200/255.0f green:201/255.0f blue:202/255.0f alpha:1]] forState:UIControlStateNormal];
+            [self.seek setThumbImage:[[self.seek thumbImageForState:UIControlStateNormal] imageWithTintColor:[UIColor blackColor]] forState:UIControlStateNormal];
             
-            UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
-            blurEffectView.frame = self.hostView.bounds;
-            blurEffectView.backgroundColor = cvkCoverView.defaultCover?[UIColor clearColor]:cvkCoverView.backColor;
-            [self.hostView addSubview:blurEffectView];
-            [self.hostView sendSubviewToBack:blurEffectView];
-            
-            [NSNotificationCenter.defaultCenter addObserverForName:@"com.daniilpashin.coloredvk.audio.image.changed" object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+            [NSNotificationCenter.defaultCenter addObserverForName:@"com.daniilpashin.coloredvk.audio.image.changed" object:nil queue:nil usingBlock:^(NSNotification *note) {
                 audioTintColor = cvkCoverView.defaultCover?[UIColor whiteColor]:cvkCoverView.tintColor;
-                
                 [UIView animateWithDuration:0.3 animations:^{
-                    blurEffectView.backgroundColor = cvkCoverView.defaultCover?[UIColor clearColor]:cvkCoverView.backColor;
-                    cvkLyricsView.hostView.subviews[0].backgroundColor = blurEffectView.backgroundColor;
+                    cvkLyricsView.hostView.subviews[0].backgroundColor = cvkCoverView.defaultCover?[UIColor clearColor]:cvkCoverView.backColor;
                     [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioTintColor] forState:UIControlStateSelected];
+                    setupAudioPlayer(self.hostView, nil);
                 }];
-                setColorsForViewsInView(self.hostView);
             }];
             
-            
-            cvkCoverView.contentMode = UIViewContentModeScaleAspectFill;
             [self.view addSubview:cvkCoverView];
             [self.view sendSubviewToBack:cvkCoverView];
-            
-            
-            if (!cvkLyricsView) cvkLyricsView = [[ColoredVKAudioLyricsView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.pp.superview.frame.origin.y - 64)];
             [self.view addSubview:cvkLyricsView];
         }
     }
 }
 
+#pragma mark AudioPlayer
 CHDeclareClass(AudioPlayer);
 CHOptimizedMethod(2, self, void, AudioPlayer, switchTo, int, arg1, force, BOOL, force)
 {
@@ -1196,27 +1240,22 @@ CHOptimizedMethod(2, self, void, AudioPlayer, switchTo, int, arg1, force, BOOL, 
 
 #pragma mark AudioAlbumController
 CHDeclareClass(AudioAlbumController);
-CHOptimizedMethod(1, self, void, AudioAlbumController, viewWillAppear, BOOL, animated)
+CHOptimizedMethod(0, self, void, AudioAlbumController, viewDidLoad)
 {
-    CHSuper(1, AudioAlbumController, viewWillAppear, animated);
+    CHSuper(0, AudioAlbumController, viewDidLoad);
     
     if (enabled && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
         if (enabledBlackTheme) {
             self.tableView.backgroundColor = [UIColor darkBlackColor];
-//            self.tableView.backgroundView = nil;
         } else if (enabledAudioImage) {
             UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
-            if (!search.showsScopeBar) {
+            if (search) {
                 search.backgroundImage = [UIImage new];
                 search.tag = 3;
-                for (UIView *field in search.subviews.lastObject.subviews) {
-                    if ([field isKindOfClass:UITextField.class]) {
-                        field.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
-                        UITextField *textField = (UITextField*)field;
-                        textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:textField.placeholder
-                                                                                          attributes:@{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent:0.7]}];
-                    } else if (![field isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) field.hidden = YES;
-                }
+                search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+                search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder
+                                                                                                  attributes:@{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent:0.7]}];
+                [search _scopeBarBackgroundView].superview.hidden = YES;
             }
         }
     }
@@ -1291,6 +1330,17 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioPlaylistController, tableView,
     return cell;
 }
 
+#pragma mark AudioRenderer
+CHDeclareClass(AudioRenderer);
+CHOptimizedMethod(0, self, UIButton*, AudioRenderer, playIndicator)
+{
+    UIButton *indicator = CHSuper(0, AudioRenderer, playIndicator);
+    if (enabled && enabledAudioImage) {
+        [indicator setImage:[[indicator imageForState:UIControlStateNormal] imageWithTintColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+        [indicator setImage:[[indicator imageForState:UIControlStateSelected] imageWithTintColor:[UIColor whiteColor]] forState:UIControlStateSelected];
+    }
+    return indicator;
+}
 
 
 
@@ -1302,45 +1352,23 @@ CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, a
 {
     CHSuper(1, PhotoBrowserController, viewWillAppear, animated);
     if ([self isKindOfClass:NSClassFromString(@"PhotoBrowserController")]) {
-        UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] bk_initWithImage:[UIImage imageNamed:@"dlIcon" inBundle:cvkBunlde compatibleWithTraitCollection:nil]  
-                                                                          style:UIBarButtonItemStylePlain 
-                                                                        handler:^(id  _Nonnull sender) {
-                                                                            NSString *imageSource = @"";
-                                                                            int indexOfPage = self.paging.contentOffset.x / self.paging.frame.size.width;
-                                                                            VKPhotoSized *photo = [self photoForPage:indexOfPage];
-                                                                            if (photo.variants != nil) {
-                                                                                int maxVariantIndex = 0;
-                                                                                for (VKImageVariant *variant in photo.variants.allValues) {
-                                                                                    if (variant.type > maxVariantIndex) {
-                                                                                        maxVariantIndex = variant.type;
-                                                                                        imageSource = variant.src;
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                            BlockActionController *actionController = [objc_getClass("BlockActionController") actionSheetWithTitle:nil];
-                                                                            NSArray *info = getInfoForActionController();
-                                                                            for (NSDictionary *dict in info) {
-                                                                                typedef id (^DownloadBlock)(id arg1);
-                                                                                DownloadBlock block = ^id(id arg1) {
-                                                                                    LHProgressHUD *hud = [LHProgressHUD showAddedToView:UIApplication.sharedApplication.keyWindow.rootViewController.view];
-                                                                                    hud.centerBackgroundView.blurStyle = LHBlurEffectStyleExtraLight;
-                                                                                    hud.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.5];
-                                                                                    hud.infoColor = [UIColor colorWithWhite:0.55 alpha:1];
-                                                                                    hud.spinnerColor = hud.infoColor;
-                                                                                    [ColoredVKMainController downloadImageWithSource:imageSource identificator:dict[@"identifier"]
-                                                                                                                     completionBlock:^(BOOL success, NSString *message) {
-                                                                                                                         if (success)[hud showSuccessWithStatus:@"" animated:YES];
-                                                                                                                         else [hud showFailureWithStatus:@"" animated:YES];
-                                                                                                                         [hud hideAfterDelay:3.0];
-                                                                                                                     }];
-                                                                                    return nil;
-                                                                                };
-                                                                                [actionController addButtonWithTitle:CVKLocalizedString(dict[@"title"]) block:block];
-                                                                            }
-                                                                            [actionController setCancelButtonWithTitle:UIKitLocalizedString(@"Cancel") block:nil];
-                                                                            [actionController showInViewController:self];
-                                                                        }];
-
+        ColoredVKBarDownloadButton *saveButton = [ColoredVKBarDownloadButton button];
+        saveButton.urlBlock = ^NSString*() {
+            NSString *imageSource = @"";
+            int indexOfPage = self.paging.contentOffset.x / self.paging.frame.size.width;
+            VKPhotoSized *photo = [self photoForPage:indexOfPage];
+            if (photo.variants != nil) {
+                int maxVariantIndex = 0;
+                for (VKImageVariant *variant in photo.variants.allValues) {
+                    if (variant.type > maxVariantIndex) {
+                        maxVariantIndex = variant.type;
+                        imageSource = variant.src;
+                    }
+                }
+            }
+            return imageSource;
+        };
+        saveButton.rootViewController = self;
         NSMutableArray *buttons = [self.navigationItem.rightBarButtonItems mutableCopy];
         if (buttons.count < 2) [buttons addObject:saveButton];
         self.navigationItem.rightBarButtonItems = [buttons copy];
@@ -1355,34 +1383,7 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
 {
     CHSuper(1, VKMBrowserController, viewWillAppear, animated);
     if ([self isKindOfClass:NSClassFromString(@"VKMBrowserController")]) {
-        UIBarButtonItem *saveButton = [[UIBarButtonItem alloc] bk_initWithImage:[UIImage imageNamed:@"dlIcon" inBundle:cvkBunlde compatibleWithTraitCollection:nil]  
-                                                                          style:UIBarButtonItemStylePlain 
-                                                                        handler:^(id  _Nonnull sender) {
-                                                                            
-                                                                            BlockActionController *actionController = [objc_getClass("BlockActionController") actionSheetWithTitle:nil];
-                                                                            NSArray *info = getInfoForActionController();
-                                                                            for (NSDictionary *dict in info) {
-                                                                                
-                                                                                typedef id (^DownloadBlock)(id arg1);
-                                                                                DownloadBlock block = ^id(id arg1) {
-                                                                                    LHProgressHUD *hud = [LHProgressHUD showAddedToView:UIApplication.sharedApplication.keyWindow.rootViewController.view];
-                                                                                    hud.centerBackgroundView.blurStyle = LHBlurEffectStyleExtraLight;
-                                                                                    hud.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.5];
-                                                                                    hud.infoColor = [UIColor colorWithWhite:0.55 alpha:1];
-                                                                                    hud.spinnerColor = hud.infoColor;
-                                                                                    [ColoredVKMainController downloadImageWithSource:self.target.url.absoluteString identificator:dict[@"identifier"]
-                                                                                                                     completionBlock:^(BOOL success, NSString *message) {
-                                                                                                                         if (success)[hud showSuccessWithStatus:@"" animated:YES];
-                                                                                                                         else [hud showFailureWithStatus:@"" animated:YES];
-                                                                                                                         [hud hideAfterDelay:3.0];
-                                                                                                                     }];
-                                                                                    return nil;
-                                                                                };
-                                                                                [actionController addButtonWithTitle:CVKLocalizedString(dict[@"title"]) block:block];
-                                                                            }
-                                                                            [actionController setCancelButtonWithTitle:UIKitLocalizedString(@"Cancel") block:nil];
-                                                                            [actionController showInViewController:self];
-                                                                        }];
+        ColoredVKBarDownloadButton *saveButton = [ColoredVKBarDownloadButton buttonWithURL:self.target.url.absoluteString rootController:self];
         self.navigationItem.rightBarButtonItem = saveButton;
         [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:self.target.url]
                                            queue:[NSOperationQueue mainQueue] 
@@ -1393,11 +1394,7 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
             for (UIView *view in self.navigationItem.titleView.subviews) if ([view respondsToSelector:@selector(setTextColor:)]) ((UILabel*)view).textColor = barForegroundColor;
         }
         
-        UINavigationBar *navbar = self.navigationController.navigationBar;
-        if ([navbar.subviews containsObject:[navbar viewWithTag:10]]) {
-            [[navbar viewWithTag:10] removeFromSuperview];        
-            [navbar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-        }
+        setBlur(self.navigationController.navigationBar, NO);
     }
 }
 
@@ -1410,6 +1407,7 @@ CHOptimizedMethod(0, self, BOOL, VKProfile, verified)
 }
 
 
+#pragma mark VKSession
 CHDeclareClass(VKSession);
 CHOptimizedMethod(0, self, NSString*, VKSession, token)
 {
@@ -1420,6 +1418,76 @@ CHOptimizedMethod(0, self, NSString*, VKSession, token)
 
 
 
+#pragma mark VKMLiveSearchController
+CHDeclareClass(VKMLiveSearchController);
+CHOptimizedMethod(1, self, void, VKMLiveSearchController, searchDisplayControllerWillBeginSearch, UISearchDisplayController*, controller)
+{
+    CHSuper(1, VKMLiveSearchController, searchDisplayControllerWillBeginSearch, controller);
+    setupSearchController(controller, NO);
+}
+
+CHOptimizedMethod(1, self, void, VKMLiveSearchController, searchDisplayControllerWillEndSearch, UISearchDisplayController*, controller)
+{
+    setupSearchController(controller, YES);
+    CHSuper(1, VKMLiveSearchController, searchDisplayControllerWillEndSearch, controller);
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, VKMLiveSearchController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, VKMLiveSearchController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    setupCellForSearchController(cell, self);    
+    return cell;
+}
+
+#pragma mark DialogsSearchController
+CHDeclareClass(DialogsSearchController);
+CHOptimizedMethod(1, self, void, DialogsSearchController, searchDisplayControllerWillBeginSearch, UISearchDisplayController*, controller)
+{
+    CHSuper(1, DialogsSearchController, searchDisplayControllerWillBeginSearch, controller);
+    setupSearchController(controller, NO);
+    if (enabled && enabledMessagesImage) controller.searchResultsTableView.separatorColor = [controller.searchResultsTableView.separatorColor colorWithAlphaComponent:0.2];
+}
+
+CHOptimizedMethod(1, self, void, DialogsSearchController, searchDisplayControllerWillEndSearch, UISearchDisplayController*, controller)
+{
+    setupSearchController(controller, YES);
+    CHSuper(1, DialogsSearchController, searchDisplayControllerWillEndSearch, controller);
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, DialogsSearchController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, DialogsSearchController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    setupCellForSearchController(cell, self);
+    return cell;
+}
+
+
+
+@interface PSListController : UIViewController @end
+CHDeclareClass(PSListController);
+CHOptimizedMethod(1, self, void, PSListController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, PSListController, viewWillAppear, animated);
+    setBlur(self.navigationController.navigationBar, NO);
+}
+
+
+
+
+CHDeclareClass(MessageController);
+CHOptimizedMethod(1, self, void, MessageController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, MessageController, viewWillAppear, animated);
+    setBlur(self.navigationController.navigationBar, NO);
+}
+
+//CHDeclareClass(VKComment);
+//CHOptimizedMethod(0, self, BOOL, VKComment, separatorDisabled)
+//{
+//    return YES;
+//}
+
+
 
 
 
@@ -1427,12 +1495,13 @@ CHOptimizedMethod(0, self, NSString*, VKSession, token)
 static void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
     reloadPrefs();
-    [cvkMainController reloadSwitch];
+//    [cvkMainController reloadSwitch];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk.reload.switch" object:nil userInfo:@{@"enabled" : @(enabled)}];
 }
 
 static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
-    menuTableView.backgroundView = nil;
+//    menuTableView.backgroundView = nil;
     menuTableView.backgroundColor = kMenuCellBackgroundColor;
     for (UIView *view in menuTableView.superview.subviews) if ((view.tag == 25) || (view.tag == 23)) [view removeFromSuperview];
     [ColoredVKMainController resetUISearchBar:(UISearchBar*)menuTableView.tableHeaderView];
@@ -1466,6 +1535,27 @@ CHConstructor
                 CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadMenuNotify, CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
                 CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadTablesNotify, CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
                 
+//                CHLoadLateClass(VKComment);
+//                CHHook(0, VKComment, separatorDisabled);
+                
+                CHLoadLateClass(MessageController);
+                CHHook(1, MessageController, viewWillAppear);
+                
+                CHLoadLateClass(PSListController);
+                CHHook(1, PSListController, viewWillAppear);
+                
+                
+                CHLoadLateClass(VKMLiveSearchController);
+                CHHook(2, VKMLiveSearchController, tableView, cellForRowAtIndexPath);
+                CHHook(1, VKMLiveSearchController, searchDisplayControllerWillBeginSearch);
+                CHHook(1, VKMLiveSearchController, searchDisplayControllerWillEndSearch);
+                
+                
+                CHLoadLateClass(DialogsSearchController);
+                CHHook(2, DialogsSearchController, tableView, cellForRowAtIndexPath);
+                CHHook(1, DialogsSearchController, searchDisplayControllerWillBeginSearch);
+                CHHook(1, DialogsSearchController, searchDisplayControllerWillEndSearch);
+                
                 
                 
                 CHLoadLateClass(VKSession);
@@ -1477,13 +1567,13 @@ CHConstructor
                 
                 
                 CHLoadLateClass(UINavigationBar);
-                if (IS_IOS_10_OR_LATER) CHHook(0, UINavigationBar, setNeedsLayout);
-                else                    CHHook(0, UINavigationBar, layoutSubviews);
+                if (SYSTEM_VERSION_IS_MORE_THAN(10.0)) CHHook(0, UINavigationBar, setNeedsLayout);
+                else                                   CHHook(0, UINavigationBar, layoutSubviews);
                 
                 
                 CHLoadLateClass(UIToolbar);
-                if (IS_IOS_10_OR_LATER) CHHook(0, UIToolbar, setNeedsLayout);
-                else                    CHHook(0, UIToolbar, layoutSubviews);
+                if (SYSTEM_VERSION_IS_MORE_THAN(10.0)) CHHook(0, UIToolbar, setNeedsLayout);
+                else                                   CHHook(0, UIToolbar, layoutSubviews);
                 
                 CHLoadLateClass(UITextInputTraits);
                 CHHook(0, UITextInputTraits, keyboardAppearance);
@@ -1516,11 +1606,6 @@ CHConstructor
                 
                 
                 
-                CHLoadLateClass(VKMSearchController);
-                CHHook(1, VKMSearchController, searchDisplayControllerWillEndSearch);
-                CHHook(1, VKMSearchController, searchDisplayControllerWillBeginSearch);
-                
-                
                 CHLoadLateClass(VKMLiveController);
                 CHHook(2, VKMLiveController, tableView, cellForRowAtIndexPath);
                 CHHook(1, VKMLiveController, viewWillAppear);
@@ -1533,10 +1618,10 @@ CHConstructor
                 
                 CHLoadLateClass(NewsFeedController);
                 CHHook(0, NewsFeedController, VKMScrollViewFullscreenEnabled);
-                CHHook(2, NewsFeedController, tableView, cellForRowAtIndexPath);
                 
                 CHLoadLateClass(PhotoFeedController);
                 CHHook(0, PhotoFeedController, VKMScrollViewFullscreenEnabled);
+                
                 
                 
                 CHLoadLateClass(VKMMainController);
@@ -1568,7 +1653,7 @@ CHConstructor
                 
                 
                 CHLoadLateClass(AudioAlbumController);
-                CHHook(1, AudioAlbumController, viewWillAppear);
+                CHHook(0, AudioAlbumController, viewDidLoad);
                 CHHook(2, AudioAlbumController, tableView, cellForRowAtIndexPath);
                 CHHook(0, AudioAlbumController, viewWillLayoutSubviews);
                 
@@ -1583,6 +1668,9 @@ CHConstructor
                 
                 CHLoadLateClass(AudioPlayer);
                 CHHook(2, AudioPlayer, switchTo, force);
+                
+                CHLoadLateClass(AudioRenderer);
+                CHHook(0, AudioRenderer, playIndicator);
                 
                 VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil)?YES:NO;
                 

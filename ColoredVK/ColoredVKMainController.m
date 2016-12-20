@@ -18,8 +18,6 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 @implementation ColoredVKMainController
 
-static void *const kcvkMenuSwitch = (void*)&kcvkMenuSwitch;
-
 + (void) setupUISearchBar:(UISearchBar*)searchBar
 {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -83,7 +81,10 @@ static void *const kcvkMenuSwitch = (void*)&kcvkMenuSwitch;
         switchView.on = enabled;
         switchView.onTintColor = [UIColor defaultColorForIdentifier:@"switchesOnTintColor"];
         [switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventValueChanged];
-        objc_setAssociatedObject(self, kcvkMenuSwitch, switchView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+//        objc_setAssociatedObject(self, kcvkMenuSwitch, switchView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        [[NSNotificationCenter defaultCenter] addObserverForName:@"com.daniilpashin.coloredvk.reload.switch" object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+            switchView.on = [note.userInfo[@"enabled"] boolValue];
+        }];
         [cell addSubview:switchView];
         
         cell.select = (id)^(id arg1, id arg2) {
@@ -116,10 +117,10 @@ static void *const kcvkMenuSwitch = (void*)&kcvkMenuSwitch;
     });
 }
 
-- (void)reloadSwitch
-{
-    ((UISwitch *)objc_getAssociatedObject(self, kcvkMenuSwitch)).on = enabled;
-}
+//- (void)reloadSwitch
+//{
+//    ((UISwitch *)objc_getAssociatedObject(self, kcvkMenuSwitch)).on = enabled;
+//}
 
 
 + (UIVisualEffectView *) blurForView:(UIView *)view withTag:(int)tag
@@ -130,45 +131,6 @@ static void *const kcvkMenuSwitch = (void*)&kcvkMenuSwitch;
     blurEffectView.tag = tag;
     
     return blurEffectView;
-}
-
-+ (void)downloadImageWithSource:(NSString *)source identificator:(NSString *)identificator completionBlock:( void(^)(BOOL success, NSString *message) )block
-{
-    AFImageRequestOperation *imageOperation = [NSClassFromString(@"AFImageRequestOperation") 
-                                               imageRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:source]]
-                                               imageProcessingBlock:^UIImage *(UIImage *image) { return image; }
-                                               cacheName:nil
-                                               success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                                   NSString *cvkFolderPath = CVK_FOLDER_PATH;
-                                                   if (![[NSFileManager defaultManager] fileExistsAtPath:cvkFolderPath]) [[NSFileManager defaultManager] createDirectoryAtPath:cvkFolderPath withIntermediateDirectories:NO attributes:nil error:nil];
-                                                   NSString *imagePath = [cvkFolderPath stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identificator]];
-                                                   NSString *prevImagePath = [cvkFolderPath stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identificator]];
-                                                   
-                                                   UIImage *newImage = [image resizedImageByMagick: [NSString stringWithFormat:@"%fx%f#", UIScreen.mainScreen.bounds.size.width, UIScreen.mainScreen.bounds.size.height]];
-                                                   
-                                                   NSError *error = nil;
-                                                   [UIImagePNGRepresentation(newImage) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
-                                                   if (!error) {
-                                                       UIGraphicsBeginImageContext(CGSizeMake(40, 40));
-                                                       UIImage *preview = newImage;
-                                                       [preview drawInRect:CGRectMake(0, 0, 40, 40)];
-                                                       preview = UIGraphicsGetImageFromCurrentImageContext();
-                                                       [UIImagePNGRepresentation(preview) writeToFile:prevImagePath options:NSDataWritingAtomic error:&error];
-                                                       UIGraphicsEndImageContext();
-                                                   }
-                                                   
-                                                   [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk.image.update" object:nil userInfo:@{@"identifier" : identificator}];
-                                                   
-                                                   if ([identificator isEqualToString:@"menuBackgroundImage"]) {
-                                                       CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-                                                   }
-                                                   dispatch_async(dispatch_get_main_queue(), ^{ if (block) block(error?NO:YES, error?error.localizedDescription:@"");  });
-                                                   
-                                               } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                                   dispatch_async(dispatch_get_main_queue(), ^{ if (block) block(NO, error.localizedDescription); });
-                                               }];
-    [imageOperation start];
-    
 }
 
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout
@@ -188,7 +150,7 @@ static void *const kcvkMenuSwitch = (void*)&kcvkMenuSwitch;
 
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip  parallaxEffect:(BOOL)parallaxEffect 
 {
-    if (tableView.backgroundView == nil)
-        tableView.backgroundView = [[ColoredVKBackgroundImageView alloc] imageLayerWithFrame:tableView.frame withImageName:name blackout:blackout flip:flip parallaxEffect:parallaxEffect];
+    if ((tableView.backgroundView == nil) || (tableView.backgroundView.tag != 23))
+        tableView.backgroundView = [[ColoredVKBackgroundImageView alloc] initWithFrame:tableView.frame imageName:name blackout:blackout flip:flip parallaxEffect:parallaxEffect];
 }
 @end
