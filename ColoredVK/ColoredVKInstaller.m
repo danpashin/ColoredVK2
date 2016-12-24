@@ -35,20 +35,19 @@
         licencePath = [licencePath stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"];
         
         if (![[NSFileManager defaultManager] fileExistsAtPath:licencePath]) {
-            NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-            if ([prefs[@"trial"] boolValue]) {
-                NSDateFormatter *dateFormatter = [NSDateFormatter new];
-                dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-                NSString *date = @"2016-11-30T12:00:00+03:00";
-                if ([dateFormatter dateFromString:date].daysAgo <= 7) block(NO);
-                else {
-                    if (block) block(YES);
-                    [self performSelector:@selector(beginDownload) withObject:nil afterDelay:2.0];
-                }
-            } else {
+//            NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+//            if ([prefs[@"trial"] boolValue]) {
+//                NSDateFormatter *dateFormatter = [NSDateFormatter new];
+//                dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+//                NSString *date = @"2016-11-30T12:00:00+03:00";
+//                if ([dateFormatter dateFromString:date].daysAgo <= 7) block(NO);
+//                else {
+//                    if (block) block(YES);
+//                    [self performSelector:@selector(beginDownload) withObject:nil afterDelay:2.0];
+//                }
+//            } else {
                 if (block) block(YES);
                 [self performSelector:@selector(beginDownload) withObject:nil afterDelay:2.0];
-            }
         }
         else {
             if (self.udid.length > 6) {
@@ -70,7 +69,7 @@
     self.exitBlock = ^(UIAlertAction *action) {
         [UIApplication.sharedApplication performSelector:@selector(suspend)];
         [NSThread sleepForTimeInterval:0.5];
-        exit(0); 
+        exit(0);
     };
     self.alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:@"Downloading licence..." preferredStyle:UIAlertControllerStyleAlert];
     self.cancelAction = [UIAlertAction actionWithTitle:CVKLocalizedString(@"CLOSE_APP") style:UIAlertActionStyleDefault handler:self.exitBlock];
@@ -80,12 +79,12 @@
         self.alertController = nil;
         [self performSelectorOnMainThread:@selector(actionLogin) withObject:nil waitUntilDone:NO];
     }]];
-    [self.alertController addAction:[UIAlertAction actionWithTitle:@"Trial" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-        [prefs setValue:@YES forKey:@"trial"];
-        [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
-        self.exitBlock(nil);
-    }]];
+//    [self.alertController addAction:[UIAlertAction actionWithTitle:@"Trial" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+//        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+//        [prefs setValue:@YES forKey:@"trial"];
+//        [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
+//        self.exitBlock(nil);
+//    }]];
 #endif
     if ([self.alertController respondsToSelector:@selector(setPreferredAction:)]) self.alertController.preferredAction = self.cancelAction;
     [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:self.alertController animated:YES completion:nil];

@@ -12,7 +12,7 @@
 "THIS_ACTION_CAN_NOT_BE_UNDONE" = "Это действие не может быть отменено";
 "CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Невозможно сохранить изображение. Попробуйте снова или обратитесь к разработчику.";
 
-"YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE" = "Ваш твик устарел. Актуальная версия - %@";
+"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE" = "Доступно обновление твика. (%@) Обновить?";
 "REMIND_LATER_BUTTON_TITLE" = "Напомнить позже";
 "SKIP_THIS_VERSION_BUTTON_TITLE" = "Пропустить эту версию";
 "UPADTE_BUTTON_TITLE" = "Обновить сейчас";
@@ -28,11 +28,9 @@
 "RESET_COLOR_QUESTION" = "Вы действительно хотите сбросить цвет?";
 "RESET_SETTINGS_QUESTION" = "Вы действительно хотите сбросить настройки?";
 
-"USE_IN_MENU" = "Использовать в меню";
-"USE_IN_MESSAGES" = "Использовать в сообщениях";
-"USE_IN_MESSAGE_LIST" = "Использовать в списке сообщений";
-"USE_IN_GROUP_LIST" = "Использовать в списке групп";
-
 "NEVER" = "Никогда";
-"ERROR_DOWNLOADING_LICENCE" = "Ошибка при загрузке лицензии:\n%@\n\nВаш UDID \n%@\n\nПожалуйста, не показывайте его никому кроме разработчика";
+"ERROR_DOWNLOADING_LICENCE" = "Ошибка при загрузке лицензии:\n%@\n\nВаш UDID \n%@\n\nПожалуйста, не показывайте его никому, кроме разработчика";
 "CLOSE_APP" = "Закрыть приложение";
+
+"SET_THIS_IMAGE_TO" = "Установить это изображение в";
+"VKAPP_VERSION_IS_TOO_LOW" = "ColoredVK 2 не поддерживает данную версию приложения (%@).\nПожалуйста, установите VK App %@ или выше";

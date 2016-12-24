@@ -14,6 +14,7 @@
 #import "NSData+ImageContentType.h"
 #import "NSImage+WebCache.h"
 #import "SDImageCacheConfig.h"
+#import "PrefixHeader.h"
 
 // See https://github.com/rs/SDWebImage/pull/1141 for discussion
 @interface AutoPurgeCache : NSCache
@@ -98,12 +99,14 @@ FOUNDATION_STATIC_INLINE NSUInteger SDCacheCostForImage(UIImage *image) {
         _memCache.name = ns;
 
         // Init the disk cache
-        if (directory != nil) {
-            _diskCachePath = directory;
-        } else {
-            NSString *path = [self makeDiskCachePath:ns];
-            _diskCachePath = path;
-        }
+//        if (directory != nil) {
+//            _diskCachePath = directory;
+//        } else {
+//            NSString *path = [self makeDiskCachePath:ns];
+//            _diskCachePath = path;
+//        }
+        if (![[NSFileManager defaultManager] fileExistsAtPath:CVK_CACHE_PATH]) [[NSFileManager defaultManager] createDirectoryAtPath:CVK_CACHE_PATH withIntermediateDirectories:NO attributes:nil error:nil];
+        _diskCachePath = CVK_CACHE_PATH;
 
         dispatch_sync(_ioQueue, ^{
             _fileManager = [NSFileManager new];

@@ -2,12 +2,16 @@
 //  ColoredVK.strings
 //  ColoredVK
 //  
+//  ColoredVK.strings
+//  ColoredVK
+//  
 //  Created by Даниил on 08.04.2015.
 //  Copyright (©) Daniil Pashin 2015. All rights reserved.
 //  
-    
+
 "BLACK_THEME" = "Темная тема";
 "ENABLE_BLACK_THEME" = "Включить";
+
 
 "NAVIGATION_BAR" = "Бар навигации";
 "TOOLBAR" = "Тулбар";
@@ -18,39 +22,39 @@
 "MISCELLANEOUS" = "Разное";
 "STATUS_BAR_COLORS" = "Статус бар";
 "SWITCH_COLORS" = "Переключатели";
+"AUDIO_BACKGROUND" = "Аудио";
+"AUDIO_PLAYER" = "Плеер";
+
 
 "CHANGE_COLORS" = "Изменить цветa";
 "BACKGROUND_COLOR" = "Цвет фона";
 "FOREGROUND_COLOR" = "Основной цвет";
 "ENABLED_IMAGE" = "Изображ. вместо цвета";
-"USE_BLUR" = "Использовать размытие *";
+"USE_BLUR" = "Включить размытие";
 "BLUR_SETTINGS" = "Настройки размытия";
 
 "CHANGE_BACKGROUND" = "Изменить фон";
 "IMAGE_BLACKOUT" = "Затемнение изобр.";
-"SELECTION_STYLE" = "Стиль выбора";
-"NONE" = "Нет";
-"TRANSPARENT" = "Прозрачный";
-"BLURRED" = "Размытый";
+"SELECTION_STYLE" = "Стиль выбранной ячейки";
+"TRANSPARENT" = "Прозрачная";
+"SEMI_TRANSPARENT" = "Полупрозрачная";
+"BLURRED" = "Размытая";
 "SEPARATOR_COLOR" = "Цвет разделителей";
 "HIDE_SEPARATORS" = "Скрыть разделители";
 "HIDE_SEARCH" = "Спрятать поиск *";
 "VKAPP_RESTART_IS_NEEDED" = "* Необходим рестарт VK App";
-"USE_BLUR_FOOTER" = "* Если включено, бар навигации и тулбар будут размыты";
 
 "KEYBOARD_STYLE" = "Стиль клавиатуры";
 "BLACK" = "Черная";
 "WHITE" = "Белая";
 "SHOW_BAR" = "Всегда показывать бар";
 
-"USE_PARALLAX" = "Использовать параллакс";
-
-
-"AUDIO_BACKGROUND" = "Аудио";
-"AUDIO_PLAYER" = "Плеер";
+"HIDE_NAV_BAR_ITEMS" = "Скрыть элементы навигации";
+"USE_PARALLAX" = "Включить параллакс";
 "CHANGE_APPEARANCE" = "Кастомизировать";
 
-"HIDE_NAV_BAR_ITEMS" = "Скрыть элементы навигации";
+"CACHE_COVERS" = "Кэшировать обложки";
+"CLEAR_CACHE" = "Очистить кэш";
 
 
 

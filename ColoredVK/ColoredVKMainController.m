@@ -17,6 +17,8 @@
 OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0);
 
 @implementation ColoredVKMainController
+//static void *const kcvkMenuSwitch = (void*)&kcvkMenuSwitch;
+static NSString *switchViewKey = @"switchViewKey";
 
 + (void) setupUISearchBar:(UISearchBar*)searchBar
 {
@@ -80,11 +82,9 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
         switchView.tag = 405;
         switchView.on = enabled;
         switchView.onTintColor = [UIColor defaultColorForIdentifier:@"switchesOnTintColor"];
-        [switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventValueChanged];
+        [switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventTouchUpInside];
 //        objc_setAssociatedObject(self, kcvkMenuSwitch, switchView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        [[NSNotificationCenter defaultCenter] addObserverForName:@"com.daniilpashin.coloredvk.reload.switch" object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-            switchView.on = [note.userInfo[@"enabled"] boolValue];
-        }];
+        objc_setAssociatedObject(self, (__bridge const void *)(switchViewKey), switchView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         [cell addSubview:switchView];
         
         cell.select = (id)^(id arg1, id arg2) {
@@ -117,10 +117,17 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     });
 }
 
-//- (void)reloadSwitch
-//{
+- (void)reloadSwitch:(BOOL)on
+{
+    UISwitch *switchView = objc_getAssociatedObject(self, (__bridge const void *)(switchViewKey));
+    if (switchView) [switchView setOn:enabled animated:YES];
+    else {
+        NSLog(@"[COLOREDVK 2] There's no such uiswitch. switchViewKey is %@", switchViewKey);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ColoredVK 2" message:[NSString stringWithFormat:@"There's no such uiswitch. switchViewKey is %@", switchViewKey] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+    }
 //    ((UISwitch *)objc_getAssociatedObject(self, kcvkMenuSwitch)).on = enabled;
-//}
+}
 
 
 + (UIVisualEffectView *) blurForView:(UIView *)view withTag:(int)tag

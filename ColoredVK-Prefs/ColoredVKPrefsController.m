@@ -135,9 +135,10 @@
                                                         style:UIAlertActionStyleDestructive 
                                                       handler:^(UIAlertAction *action) {
                                                           LHProgressHUD *hud = [LHProgressHUD showAddedToView:UIApplication.sharedApplication.keyWindow.rootViewController.view];
-                                                          hud.centerBackgroundView.blurStyle = LHBlurEffectStyleLight;
+                                                          hud.centerBackgroundView.blurStyle = LHBlurEffectStyleExtraLight;
+                                                          hud.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
+                                                          hud.centerBackgroundView.layer.cornerRadius = 10;
                                                           hud.infoColor = [UIColor colorWithWhite:0.55 alpha:1];
-                                                          hud.spinnerColor = hud.infoColor;
                                                           
                                                           NSError *error = nil;
                                                           [[NSFileManager defaultManager] removeItemAtPath:self.prefsPath error:&error];

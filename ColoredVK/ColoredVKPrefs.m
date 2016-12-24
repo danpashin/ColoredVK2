@@ -265,7 +265,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
                                        NSString *remindLater = NSLocalizedStringFromTableInBundle(@"REMIND_LATER_BUTTON_TITLE", nil, self.cvkBunlde, nil);
                                        NSString *updateNow = NSLocalizedStringFromTableInBundle(@"UPADTE_BUTTON_TITLE", nil, self.cvkBunlde, nil);
                                        
-                                       alertController.message = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE", nil, self.cvkBunlde, nil), responseDict[@"version"]];
+                                       alertController.message = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE", nil, self.cvkBunlde, nil), responseDict[@"version"]];
                                        [alertController addAction:[UIAlertAction actionWithTitle:skip style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
                                            [prefs setValue:responseDict[@"version"] forKey:@"skippedVersion"];
                                            [prefs writeToFile:self.prefsPath atomically:YES];
@@ -306,5 +306,22 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     UIApplication *application = [UIApplication sharedApplication];
     if ([application respondsToSelector:@selector(openURL:options:completionHandler:)]) [application openURL:url options:@{} completionHandler:^(BOOL success) {}];
     else [application openURL:url];
+}
+
+- (void)clearCoversCache
+{
+    LHProgressHUD *hud = [LHProgressHUD showAddedToView:UIApplication.sharedApplication.keyWindow.rootViewController.view];
+    hud.centerBackgroundView.blurStyle = LHBlurEffectStyleExtraLight;
+    hud.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
+    hud.centerBackgroundView.layer.cornerRadius = 10;
+    hud.infoColor = [UIColor colorWithWhite:0.55 alpha:1];
+    hud.spinnerColor = hud.infoColor;
+    hud.textLabel.textColor = hud.infoColor;
+    NSError *error = nil;
+    BOOL success = [[NSFileManager defaultManager] removeItemAtPath:CVK_CACHE_PATH error:&error];
+    if (success && !error) [hud showSuccessWithStatus:@"" animated:YES];
+    else [hud showFailureWithStatus:[NSString stringWithFormat:@"%@\n%@", error.localizedDescription, error.localizedFailureReason] animated:YES];
+    [hud hideAfterDelay:2.0];
+
 }
 @end

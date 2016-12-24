@@ -30,6 +30,8 @@ NSString *const imageName = @"CoverImage";
     if (self) {
         self.defaultCover = YES;
         self.manager = [SDWebImageManager sharedManager];
+        self.artist = @"";
+        self.track = @"";
         
         self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         self.topImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName inBundle:self.cvkBundle compatibleWithTraitCollection:nil]];
@@ -81,7 +83,8 @@ NSString *const imageName = @"CoverImage";
                 
                 MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
                 NSMutableDictionary *playingInfo = [NSMutableDictionary dictionaryWithDictionary:center.nowPlayingInfo];
-                playingInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:coverImage];
+                if (wasDownloaded) playingInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:coverImage];
+                else [playingInfo removeObjectForKey:MPMediaItemPropertyArtwork];
                 center.nowPlayingInfo = [NSDictionary dictionaryWithDictionary:playingInfo];
                 
                 LEColorPicker *picker = [[LEColorPicker alloc] init];
@@ -124,14 +127,14 @@ NSString *const imageName = @"CoverImage";
             query = [query stringByReplacingOccurrencesOfString:@"+++" withString:@"+"];
             query = [query stringByReplacingOccurrencesOfString:@"++" withString:@"+"];
         }
-        if ([query hasSuffix:@"+"]) query = [query.mutableCopy stringByReplacingCharactersInRange:NSMakeRange(query.length-1, 1) withString:@""].copy;
+        if ([query hasSuffix:@"+"]) query = [query stringByReplacingCharactersInRange:NSMakeRange(query.length-1, 1) withString:@""];
         
         self.key = query.lowercaseString;
         UIImage *image = [self.manager.imageCache imageFromCacheForKey:self.key];
         if (image) { if (block) block(image, YES); }
         else {
             NSString *iTunesURL = [NSString stringWithFormat:@"https://itunes.apple.com/search?limit=1&media=music&term=%@", query];
-        [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation") 
+        [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
                                     JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:iTunesURL]]
                                     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
                                         NSDictionary *responseDict = JSON;
@@ -141,7 +144,9 @@ NSString *const imageName = @"CoverImage";
                                             [self.manager loadImageWithURL:[NSURL URLWithString:url] options:SDWebImageHighPriority|SDWebImageCacheMemoryOnly progress:nil 
                                                                  completed:^(UIImage *image, NSData *data, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                                                      if (block) block(image, YES);
-                                                                     [self.manager.imageCache storeImage:image forKey:self.key completion:nil];
+                                                                     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+                                                                     BOOL cacheCovers = prefs[@"cacheAudioCovers"]?[prefs[@"cacheAudioCovers"] boolValue]:YES;
+                                                                     if (cacheCovers) [self.manager.imageCache storeImage:image forKey:self.key completion:nil];
                                                                  }];
                                         } else if (block) block(noCover, NO);
                                     }

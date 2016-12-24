@@ -12,6 +12,7 @@
 #import "LHProgressHUD.h"
 #import "ColoredVKMainController.h"
 #import "UIImage+ResizeMagick.h"
+#import "PrefixHeader.h"
 
 OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0);
 
@@ -56,29 +57,35 @@ static NSArray *getInfoForActionController()
 
 - (void)download
 {
-    if (self.urlBlock) self.url = self.urlBlock();    
+    if (self.urlBlock) self.url = self.urlBlock();  
     
-    BlockActionController *actionController = [objc_getClass("BlockActionController") actionSheetWithTitle:nil];
+    BOOL shouldUseNewController = (objc_getClass("BlockActionController") != nil);
+    UIAlertController *actionController;
+    if (shouldUseNewController) actionController = [objc_getClass("BlockActionController") actionSheetWithTitle:CVKLocalizedString(@"SET_THIS_IMAGE_TO")];
+    else {
+        actionController = [UIAlertController alertControllerWithTitle:@"" message:CVKLocalizedString(@"SET_THIS_IMAGE_TO") preferredStyle:IS_IPAD?UIAlertControllerStyleAlert:UIAlertControllerStyleActionSheet];
+        [actionController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]]; 
+    }
+    
     NSArray *info = getInfoForActionController();
     for (NSDictionary *dict in info) {
-        [actionController addButtonWithTitle:CVKLocalizedString(dict[@"title"]) block:^id(id arg1) {
+        [actionController addAction:[UIAlertAction actionWithTitle:CVKLocalizedStringFromTable(dict[@"title"], @"ColoredVK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
             LHProgressHUD *hud = [LHProgressHUD showAddedToView:UIApplication.sharedApplication.keyWindow.rootViewController.view];
             hud.centerBackgroundView.blurStyle = LHBlurEffectStyleExtraLight;
             hud.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
             hud.centerBackgroundView.layer.cornerRadius = 10;
             hud.infoColor = [UIColor colorWithWhite:0.55 alpha:1];
             hud.spinnerColor = hud.infoColor;
-            [self downloadImageWithIdentificator:dict[@"identifier"]
-                                 completionBlock:^(BOOL success, NSString *message) {
-                                     if (success)[hud showSuccessWithStatus:@"" animated:YES];
-                                     else [hud showFailureWithStatus:@"" animated:YES];
-                                     [hud hideAfterDelay:1.5];
-                                 }];
-            return nil;
-        }];
+            [self downloadImageWithIdentificator:dict[@"identifier"] completionBlock:^(BOOL success, NSString *message) {
+                success?[hud showSuccessWithStatus:@"" animated:YES]:[hud showFailureWithStatus:@"" animated:YES];
+                [hud hideAfterDelay:1.5];
+            }];
+        }]];
     }
-    [actionController setCancelButtonWithTitle:UIKitLocalizedString(@"Cancel") block:nil];
-    if (self.rootViewController) [actionController showInViewController:self.rootViewController];
+    if (shouldUseNewController) {
+        [(BlockActionController*)actionController setCancelButtonWithTitle:UIKitLocalizedString(@"Cancel") block:nil];
+        if (self.rootViewController) [(BlockActionController*)actionController showInViewController:self.rootViewController];
+    } else if (self.rootViewController) [self.rootViewController presentViewController:actionController animated:YES completion:nil];
 }
 
 

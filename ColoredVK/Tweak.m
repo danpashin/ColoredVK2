@@ -131,7 +131,7 @@ static void checkUpdates()
                                        NSString *version = responseDict[@"version"];
                                        if (![prefs[@"skippedVersion"] isEqualToString:version]) {
                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                               NSString *message = [NSString stringWithFormat:CVKLocalizedString(@"YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE"), version];
+                                               NSString *message = [NSString stringWithFormat:CVKLocalizedString(@"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE"), version];
                                                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];
                                                [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"SKIP_THIS_VERSION_BUTTON_TITLE") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
                                                    [prefs setValue:version forKey:@"skippedVersion"];
@@ -258,11 +258,11 @@ static void showAlertWithMessage(NSString *message)
 }
 
 
-static void setBlur(id bar, BOOL set)
+static void setBlur(UIView *bar, BOOL set)
 {
     if (set) {
         if ([bar isKindOfClass:[UINavigationBar class]]) {
-            UINavigationBar *navbar = bar;
+            UINavigationBar *navbar = (UINavigationBar *)bar;
             UIView *backgroundView = [navbar _backgroundView];
             
             if (![backgroundView.subviews containsObject:[backgroundView viewWithTag:10]]) {
@@ -291,7 +291,7 @@ static void setBlur(id bar, BOOL set)
             }
         } 
         else if  ([bar isKindOfClass:[UIToolbar class]]) {
-            UIToolbar *toolBar = bar;
+            UIToolbar *toolBar = (UIToolbar *)bar;
             
             toolBar.barTintColor = [UIColor clearColor];
             UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]];
@@ -314,14 +314,14 @@ static void setBlur(id bar, BOOL set)
         }
     } else {
         if ([bar isKindOfClass:[UINavigationBar class]]) {
-            UINavigationBar *navbar = bar;
+            UINavigationBar *navbar = (UINavigationBar *)bar;
             UIView *backgroundView = [navbar _backgroundView];
             if ([backgroundView.subviews containsObject:[backgroundView viewWithTag:10]]) {
                 [[backgroundView viewWithTag:10] removeFromSuperview];        
                 [navbar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
             }
         } else if  ([bar isKindOfClass:[UIToolbar class]]) {
-            UIToolbar *toolBar = bar;
+            UIToolbar *toolBar = (UIToolbar *)bar;
             if ([toolBar.subviews containsObject:[toolBar viewWithTag:10]]) [[toolBar viewWithTag:10] removeFromSuperview];
         }
     }
@@ -356,9 +356,7 @@ static void setToolBar(UIToolbar *toolbar)
                 toolbar.tintColor = [UIColor lightGrayColor];
                 toolbar.barTintColor = [UIColor darkBlackColor];
                 for (UIView *subview in toolbar.subviews) {
-                    if (![@"_UIToolbarBackground" isEqualToString:CLASS_NAME(subview)]) {
-                        if ([subview respondsToSelector:@selector(setBackgroundColor:)]) subview.backgroundColor = [UIColor clearColor];
-                    }
+                    if (![@"_UIToolbarBackground" isEqualToString:CLASS_NAME(subview)]) subview.backgroundColor = [UIColor clearColor];
                 }
             }
             for (id view in toolbar.subviews) {
@@ -418,12 +416,12 @@ static void setupSearchController(UISearchDisplayController *controller, BOOL re
     
     if (enabled && shouldCustomize) {
         if (reset) {
-            UIView *backgroundView = [controller.searchBar _scopeBarBackgroundView];
-            [UIView animateWithDuration:0.1 animations:^{
+            void (^removeAllBlur)() = ^void() {
                 [[[controller.searchBar _backgroundView] viewWithTag:10] removeFromSuperview];
-                [[backgroundView.superview viewWithTag:10] removeFromSuperview];
+                [[[controller.searchBar _scopeBarBackgroundView].superview viewWithTag:10] removeFromSuperview];
                 controller.searchBar.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
-            }];
+            };
+            [UIView animateWithDuration:0.1 delay:0 options:0 animations:^{ removeAllBlur(); } completion:^(BOOL finished) { removeAllBlur(); }];
         } else {
             UIViewController *parentController = controller.searchContentsController.parentViewController;
             if ([parentController isKindOfClass:NSClassFromString(@"VKMNavigationController")]) {
@@ -437,9 +435,9 @@ static void setupSearchController(UISearchDisplayController *controller, BOOL re
                             ColoredVKBackgroundImageView *imageView = [[ColoredVKBackgroundImageView alloc] initWithFrame:[UIScreen mainScreen].bounds imageName:backView.name blackout:backView.blackout];
                             controller.searchResultsTableView.backgroundView = imageView;
                         }
-                    } else if ([navigation.childViewControllers.firstObject isKindOfClass:NSClassFromString(@"DialogsController")]) {
-                        DialogsController *dialogsController = (DialogsController*)navigation.childViewControllers.firstObject;
-                        ColoredVKBackgroundImageView *backView = (ColoredVKBackgroundImageView*)dialogsController.tableView.backgroundView;
+                    } else if ([navigation.childViewControllers.firstObject respondsToSelector:@selector(tableView)]) {
+                        VKMTableController *tableController = (VKMTableController*)navigation.childViewControllers.firstObject;
+                        ColoredVKBackgroundImageView *backView = (ColoredVKBackgroundImageView*)tableController.tableView.backgroundView;
                         ColoredVKBackgroundImageView *imageView = [[ColoredVKBackgroundImageView alloc] initWithFrame:[UIScreen mainScreen].bounds imageName:backView.name blackout:backView.blackout];
                         controller.searchResultsTableView.backgroundView = imageView;
                     }
@@ -508,7 +506,7 @@ static void setupCellForSearchController(UITableViewCell *cell, id searchControl
     if (enabled && shouldCustomize) {
         cell.backgroundColor = [UIColor clearColor];
         
-        if ([cell isKindOfClass:NSClassFromString(@"SourceCell")]) {
+        if ([cell isKindOfClass:NSClassFromString(@"SourceCell")] || [cell isKindOfClass:NSClassFromString(@"UserCell")]) {
             SourceCell *sourceCell = (SourceCell *)cell;
             if (enabledBlackTheme) {
                 sourceCell.backgroundColor = [UIColor lightBlackColor]; 
@@ -533,7 +531,6 @@ static void setupCellForSearchController(UITableViewCell *cell, id searchControl
                 if ([dialogCell respondsToSelector:@selector(dialogText)]) dialogCell.dialogText.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
                 if ([dialogCell respondsToSelector:@selector(text)]) dialogCell.text.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
                 dialogCell.attach.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
-                
             }
             cell = dialogCell;
         } else if ([cell isKindOfClass:NSClassFromString(@"GroupCell")]) {
@@ -558,6 +555,14 @@ static void setupCellForSearchController(UITableViewCell *cell, id searchControl
         backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
         cell.selectedBackgroundView = backView;
     }
+}
+
+static NSInteger VKVersion() {
+    NSString *versionString = @"";
+    for (NSString *str in  [[NSString stringWithFormat:@"%@", [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"]] componentsSeparatedByString:@"."]) {
+        versionString = [versionString stringByAppendingString:str];
+    }
+    return [versionString integerValue];
 }
 
 
@@ -774,6 +779,11 @@ CHOptimizedMethod(1, self, void, VKMToolbarController, viewWillAppear, BOOL, ani
 
 #pragma mark NewsFeedController
 CHDeclareClass(NewsFeedController);
+CHOptimizedMethod(0, self, BOOL, NewsFeedController, VKMTableFullscreenEnabled)
+{
+    if (enabled && showBar) return NO; 
+    return CHSuper(0, NewsFeedController, VKMTableFullscreenEnabled);
+}
 CHOptimizedMethod(0, self, BOOL, NewsFeedController, VKMScrollViewFullscreenEnabled)
 {
     if (enabled && showBar) return NO;
@@ -782,6 +792,11 @@ CHOptimizedMethod(0, self, BOOL, NewsFeedController, VKMScrollViewFullscreenEnab
 
 #pragma mark PhotoFeedController
 CHDeclareClass(PhotoFeedController);
+CHOptimizedMethod(0, self, BOOL, PhotoFeedController, VKMTableFullscreenEnabled)
+{
+    if (enabled && showBar) return NO; 
+    return CHSuper(0, PhotoFeedController, VKMTableFullscreenEnabled);
+}
 CHOptimizedMethod(0, self, BOOL, PhotoFeedController, VKMScrollViewFullscreenEnabled)
 {
     if (enabled && showBar) return NO; 
@@ -809,10 +824,9 @@ CHOptimizedMethod(0, self, void, GroupsController, viewWillLayoutSubviews)
             search.tag = 2;
             search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
             search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder
-                                                                                              attributes:@{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent:0.7]}];
-            
-            if ([[NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleVersion"] intValue] == 27) 
-                for (UIView *view in self.view.subviews) if ([view isKindOfClass:UIToolbar.class] && useGroupsListBlur) {  setBlur(view, YES); break; }
+                                                                                              attributes:@{NSForegroundColorAttributeName:[UIColor colorWithWhite:1 alpha:0.7]}];
+            NSInteger version = VKVersion();
+            if ((version>=22) && (version<=25)) for (UIView *view in self.view.subviews) if ([view isKindOfClass:UIToolbar.class] && useGroupsListBlur) {  setBlur(view, YES); break; }
         }
     }
 }
@@ -878,7 +892,7 @@ CHOptimizedMethod(0, self, void, DialogsController, viewWillLayoutSubviews)
 CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, DialogsController, viewWillAppear, animated);
-    dlopen([NSBundle.mainBundle.bundlePath stringByAppendingString:@"/FLEXDylib.dylib"].UTF8String, RTLD_LAZY);
+//    dlopen([NSBundle.mainBundle.bundlePath stringByAppendingString:@"/FLEXDylib.dylib"].UTF8String, RTLD_LAZY);
     if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && enabled) {
         if (enabledBlackTheme) {
             self.tableView.backgroundColor = [UIColor darkBlackColor];
@@ -892,7 +906,7 @@ CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animat
             search.tag = 1;
             search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
             search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder
-                                                                                              attributes:@{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent:0.7]}];
+                                                                                              attributes:@{NSForegroundColorAttributeName:[UIColor colorWithWhite:1 alpha:0.7]}];
             [search _scopeBarBackgroundView].superview.hidden = YES;
         }
     }
@@ -970,7 +984,8 @@ CHOptimizedMethod(0, self, void, ChatController, viewWillLayoutSubviews)
         } else if (enabledMessagesImage) {
             if (hideMessagesNavBarItems) {
                 self.headerImage.hidden = YES;
-                self.componentTitleView.hidden = YES;
+                if ([self respondsToSelector:@selector(componentTitleView)]) self.componentTitleView.hidden = YES;
+                else self.navigationController.navigationBar.topItem.titleView.hidden = YES;
             }
             self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
             [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesBackgroundImage" blackout:chatImageBlackout flip:YES parallaxEffect:useMessagesParallax];
@@ -1385,8 +1400,7 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
     if ([self isKindOfClass:NSClassFromString(@"VKMBrowserController")]) {
         ColoredVKBarDownloadButton *saveButton = [ColoredVKBarDownloadButton buttonWithURL:self.target.url.absoluteString rootController:self];
         self.navigationItem.rightBarButtonItem = saveButton;
-        [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:self.target.url]
-                                           queue:[NSOperationQueue mainQueue] 
+        [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:self.target.url] queue:[NSOperationQueue mainQueue] 
                                completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
                                    if (![[response.MIMEType componentsSeparatedByString:@"/"].firstObject isEqualToString:@"image"]) self.navigationItem.rightBarButtonItem = nil;
                                }];
@@ -1495,8 +1509,7 @@ CHOptimizedMethod(1, self, void, MessageController, viewWillAppear, BOOL, animat
 static void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
     reloadPrefs();
-//    [cvkMainController reloadSwitch];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk.reload.switch" object:nil userInfo:@{@"enabled" : @(enabled)}];
+    [cvkMainController reloadSwitch:enabled];
 }
 
 static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
@@ -1517,165 +1530,165 @@ static void reloadTablesNotify(CFNotificationCenterRef center, void *observer, C
 CHConstructor
 {
     @autoreleasepool {
-            if ([[NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleVersion"] intValue] >= 27) {
-                
-                prefsPath = CVK_PREFS_PATH;
-                cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-                vksBundle = [NSBundle bundleWithPath:VKS_BUNDLE_PATH];
-                cvkFolder = CVK_FOLDER_PATH;
-                cvkMainController = [ColoredVKMainController new];
-                
-                NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:prefsPath];
-                if (![[NSFileManager defaultManager] fileExistsAtPath:prefsPath]) prefs = [NSMutableDictionary new];
-                [prefs setValue:[NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"] forKey:@"vkVersion"];
-                [prefs writeToFile:prefsPath atomically:YES];
-                
-                
-                CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadPrefsNotify, CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        prefsPath = CVK_PREFS_PATH;
+        cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+        vksBundle = [NSBundle bundleWithPath:VKS_BUNDLE_PATH];
+        cvkFolder = CVK_FOLDER_PATH;
+        cvkMainController = [ColoredVKMainController new];
+        
+        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:prefsPath];
+        if (![[NSFileManager defaultManager] fileExistsAtPath:prefsPath]) prefs = [NSMutableDictionary new];
+        NSString *stringVersion = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+        if (![prefs[@"vkVersion"] isEqualToString:stringVersion]) prefs[@"vkVersion"] = stringVersion;
+        [prefs writeToFile:prefsPath atomically:YES];
+        VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil)?YES:NO;
+        
+        
+        if (VKVersion() >= 22) {
+            CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadPrefsNotify, CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
                 CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadMenuNotify, CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
                 CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadTablesNotify, CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
                 
 //                CHLoadLateClass(VKComment);
 //                CHHook(0, VKComment, separatorDisabled);
                 
-                CHLoadLateClass(MessageController);
-                CHHook(1, MessageController, viewWillAppear);
-                
-                CHLoadLateClass(PSListController);
-                CHHook(1, PSListController, viewWillAppear);
-                
-                
-                CHLoadLateClass(VKMLiveSearchController);
-                CHHook(2, VKMLiveSearchController, tableView, cellForRowAtIndexPath);
-                CHHook(1, VKMLiveSearchController, searchDisplayControllerWillBeginSearch);
-                CHHook(1, VKMLiveSearchController, searchDisplayControllerWillEndSearch);
-                
-                
-                CHLoadLateClass(DialogsSearchController);
-                CHHook(2, DialogsSearchController, tableView, cellForRowAtIndexPath);
-                CHHook(1, DialogsSearchController, searchDisplayControllerWillBeginSearch);
-                CHHook(1, DialogsSearchController, searchDisplayControllerWillEndSearch);
-                
-                
-                
-                CHLoadLateClass(VKSession);
-                CHHook(0, VKSession, token);
-                
-                CHLoadLateClass(AppDelegate);
-                CHHook(2,  AppDelegate, application, didFinishLaunchingWithOptions);
-                
-                
-                
-                CHLoadLateClass(UINavigationBar);
-                if (SYSTEM_VERSION_IS_MORE_THAN(10.0)) CHHook(0, UINavigationBar, setNeedsLayout);
-                else                                   CHHook(0, UINavigationBar, layoutSubviews);
-                
-                
-                CHLoadLateClass(UIToolbar);
-                if (SYSTEM_VERSION_IS_MORE_THAN(10.0)) CHHook(0, UIToolbar, setNeedsLayout);
-                else                                   CHHook(0, UIToolbar, layoutSubviews);
-                
-                CHLoadLateClass(UITextInputTraits);
-                CHHook(0, UITextInputTraits, keyboardAppearance);
-                
-                CHLoadLateClass(UISwitch);
-                CHHook(0, UISwitch, layoutSubviews);
-                
-                
-                
-                CHLoadLateClass(VKMTableController);
-                CHHook(1, VKMTableController, viewWillAppear);
-                
-                
-                CHLoadLateClass(ChatController);
-                CHHook(0, ChatController, viewWillLayoutSubviews);
-                CHHook(2, ChatController, tableView, cellForRowAtIndexPath);
-                CHHook(1, ChatController, viewWillAppear);
-                CHHook(0, ChatController, editForward);
-                
-                CHLoadLateClass(MessageCell);
-                CHHook(1, MessageCell, updateBackground);
-                
-                CHLoadLateClass(DialogsController);
-                CHHook(0, DialogsController, viewWillLayoutSubviews);
-                CHHook(1, DialogsController, viewWillAppear);
-                CHHook(2, DialogsController, tableView, cellForRowAtIndexPath);
-                
-                CHLoadLateClass(BackgroundView);
-                CHHook(1, BackgroundView, drawRect);
-                
-                
-                
-                CHLoadLateClass(VKMLiveController);
-                CHHook(2, VKMLiveController, tableView, cellForRowAtIndexPath);
-                CHHook(1, VKMLiveController, viewWillAppear);
-                CHHook(0, VKMLiveController, viewWillLayoutSubviews);
-                
-                
-                CHLoadLateClass(GroupsController);
-                CHHook(0, GroupsController, viewWillLayoutSubviews);
-                CHHook(2, GroupsController, tableView, cellForRowAtIndexPath);
-                
-                CHLoadLateClass(NewsFeedController);
-                CHHook(0, NewsFeedController, VKMScrollViewFullscreenEnabled);
-                
-                CHLoadLateClass(PhotoFeedController);
-                CHHook(0, PhotoFeedController, VKMScrollViewFullscreenEnabled);
-                
-                
-                
-                CHLoadLateClass(VKMMainController);
-                CHHook(2, VKMMainController, tableView, cellForRowAtIndexPath);
-                CHHook(2, VKMMainController, tableView, heightForRowAtIndexPath);
-                CHHook(0, VKMMainController, VKMTableCreateSearchBar);
-                CHHook(0, VKMMainController, menu);
-                
-                CHLoadLateClass(HintsSearchDisplayController);
-                CHHook(1, HintsSearchDisplayController, searchDisplayControllerWillBeginSearch);
-                CHHook(1, HintsSearchDisplayController, searchDisplayControllerDidEndSearch);
-                
-                
-                
-                CHLoadLateClass(PhotoBrowserController);
-                CHHook(1, PhotoBrowserController, viewWillAppear);
-                
-                
-                CHLoadLateClass(VKMBrowserController);
-                CHHook(1, VKMBrowserController, viewWillAppear);
-                
-                CHLoadLateClass(VKMToolbarController);
-                CHHook(1, VKMToolbarController, viewWillAppear);
-                
-                
-                CHLoadLateClass(VKProfile);
-                CHHook(0, VKProfile, verified);
-                
-                
-                
-                CHLoadLateClass(AudioAlbumController);
-                CHHook(0, AudioAlbumController, viewDidLoad);
-                CHHook(2, AudioAlbumController, tableView, cellForRowAtIndexPath);
-                CHHook(0, AudioAlbumController, viewWillLayoutSubviews);
-                
-                CHLoadLateClass(AudioPlaylistController);
-                CHHook(1, AudioPlaylistController, viewWillAppear);
-                CHHook(2, AudioPlaylistController, tableView, cellForRowAtIndexPath);
-                CHHook(0, AudioPlaylistController, preferredStatusBarStyle);
-                
-                CHLoadLateClass(IOS7AudioController);
-                CHHook(1, IOS7AudioController, viewWillAppear);
-                CHHook(0, IOS7AudioController, preferredStatusBarStyle);
-                
-                CHLoadLateClass(AudioPlayer);
-                CHHook(2, AudioPlayer, switchTo, force);
-                
-                CHLoadLateClass(AudioRenderer);
-                CHHook(0, AudioRenderer, playIndicator);
-                
-                VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil)?YES:NO;
-                
-            } else {
-                showAlertWithMessage([NSString stringWithFormat: @"App version (%@) is too low. Please install VK App 2.5 or later or tweak will be disabled",  [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"]]);
-            }
+            CHLoadLateClass(MessageController);
+            CHHook(1, MessageController, viewWillAppear);
+            
+            CHLoadLateClass(PSListController);
+            CHHook(1, PSListController, viewWillAppear);
+            
+            
+            CHLoadLateClass(VKMLiveSearchController);
+            CHHook(2, VKMLiveSearchController, tableView, cellForRowAtIndexPath);
+            CHHook(1, VKMLiveSearchController, searchDisplayControllerWillBeginSearch);
+            CHHook(1, VKMLiveSearchController, searchDisplayControllerWillEndSearch);
+            
+            
+            CHLoadLateClass(DialogsSearchController);
+            CHHook(2, DialogsSearchController, tableView, cellForRowAtIndexPath);
+            CHHook(1, DialogsSearchController, searchDisplayControllerWillBeginSearch);
+            CHHook(1, DialogsSearchController, searchDisplayControllerWillEndSearch);
+            
+            
+            
+            CHLoadLateClass(VKSession);
+            CHHook(0, VKSession, token);
+            
+            CHLoadLateClass(AppDelegate);
+            CHHook(2,  AppDelegate, application, didFinishLaunchingWithOptions);
+            
+            
+            
+            CHLoadLateClass(UINavigationBar);
+            if (SYSTEM_VERSION_IS_MORE_THAN(10.0)) CHHook(0, UINavigationBar, setNeedsLayout);
+            else                                   CHHook(0, UINavigationBar, layoutSubviews);
+            
+            
+            CHLoadLateClass(UIToolbar);
+            if (SYSTEM_VERSION_IS_MORE_THAN(10.0)) CHHook(0, UIToolbar, setNeedsLayout);
+            else                                   CHHook(0, UIToolbar, layoutSubviews);
+            
+            CHLoadLateClass(UITextInputTraits);
+            CHHook(0, UITextInputTraits, keyboardAppearance);
+            
+            CHLoadLateClass(UISwitch);
+            CHHook(0, UISwitch, layoutSubviews);
+            
+            
+            
+            CHLoadLateClass(VKMTableController);
+            CHHook(1, VKMTableController, viewWillAppear);
+            
+            
+            CHLoadLateClass(ChatController);
+            CHHook(0, ChatController, viewWillLayoutSubviews);
+            CHHook(2, ChatController, tableView, cellForRowAtIndexPath);
+            CHHook(1, ChatController, viewWillAppear);
+            CHHook(0, ChatController, editForward);
+            
+            CHLoadLateClass(MessageCell);
+            CHHook(1, MessageCell, updateBackground);
+            
+            CHLoadLateClass(DialogsController);
+            CHHook(0, DialogsController, viewWillLayoutSubviews);
+            CHHook(1, DialogsController, viewWillAppear);
+            CHHook(2, DialogsController, tableView, cellForRowAtIndexPath);
+            
+            CHLoadLateClass(BackgroundView);
+            CHHook(1, BackgroundView, drawRect);
+            
+            
+            
+            CHLoadLateClass(VKMLiveController);
+            CHHook(2, VKMLiveController, tableView, cellForRowAtIndexPath);
+            CHHook(1, VKMLiveController, viewWillAppear);
+            CHHook(0, VKMLiveController, viewWillLayoutSubviews);
+            
+            
+            CHLoadLateClass(GroupsController);
+            CHHook(0, GroupsController, viewWillLayoutSubviews);
+            CHHook(2, GroupsController, tableView, cellForRowAtIndexPath);
+            
+            CHLoadLateClass(NewsFeedController);
+            CHHook(0, NewsFeedController, VKMTableFullscreenEnabled);
+            CHHook(0, NewsFeedController, VKMScrollViewFullscreenEnabled);
+            
+            CHLoadLateClass(PhotoFeedController);
+            CHHook(0, PhotoFeedController, VKMTableFullscreenEnabled);
+            CHHook(0, PhotoFeedController, VKMScrollViewFullscreenEnabled);
+            
+            
+            
+            CHLoadLateClass(VKMMainController);
+            CHHook(2, VKMMainController, tableView, cellForRowAtIndexPath);
+            CHHook(2, VKMMainController, tableView, heightForRowAtIndexPath);
+            CHHook(0, VKMMainController, VKMTableCreateSearchBar);
+            CHHook(0, VKMMainController, menu);
+            
+            CHLoadLateClass(HintsSearchDisplayController);
+            CHHook(1, HintsSearchDisplayController, searchDisplayControllerWillBeginSearch);
+            CHHook(1, HintsSearchDisplayController, searchDisplayControllerDidEndSearch);
+            
+            
+            
+            CHLoadLateClass(PhotoBrowserController);
+            CHHook(1, PhotoBrowserController, viewWillAppear);
+            
+            
+            CHLoadLateClass(VKMBrowserController);
+            CHHook(1, VKMBrowserController, viewWillAppear);
+            
+            CHLoadLateClass(VKMToolbarController);
+            CHHook(1, VKMToolbarController, viewWillAppear);
+            
+            
+            CHLoadLateClass(VKProfile);
+            CHHook(0, VKProfile, verified);
+            
+            
+            
+            CHLoadLateClass(AudioAlbumController);
+            CHHook(0, AudioAlbumController, viewDidLoad);
+            CHHook(2, AudioAlbumController, tableView, cellForRowAtIndexPath);
+            CHHook(0, AudioAlbumController, viewWillLayoutSubviews);
+            
+            CHLoadLateClass(AudioPlaylistController);
+            CHHook(1, AudioPlaylistController, viewWillAppear);
+            CHHook(2, AudioPlaylistController, tableView, cellForRowAtIndexPath);
+            CHHook(0, AudioPlaylistController, preferredStatusBarStyle);
+            
+            CHLoadLateClass(IOS7AudioController);
+            CHHook(1, IOS7AudioController, viewWillAppear);
+            CHHook(0, IOS7AudioController, preferredStatusBarStyle);
+            
+            CHLoadLateClass(AudioPlayer);
+            CHHook(2, AudioPlayer, switchTo, force);
+            
+            CHLoadLateClass(AudioRenderer);
+            CHHook(0, AudioRenderer, playIndicator);
+        } else {
+            showAlertWithMessage([NSString stringWithFormat:CVKLocalizedString(@"VKAPP_VERSION_IS_TOO_LOW"),  stringVersion, @"2.2"]);
+        }
     }
 }

@@ -258,7 +258,6 @@
 @end
 
 @interface Component5HostView : UIView
-
 @end
 
 
@@ -444,4 +443,5 @@
 
 @interface MessageController : VKMController 
 @end
+
 

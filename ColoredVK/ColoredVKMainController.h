@@ -17,7 +17,7 @@
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect;
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip parallaxEffect:(BOOL)parallaxEffect;
 
-//- (void)reloadSwitch;
+- (void)reloadSwitch:(BOOL)on;
 - (void)switchTriggered:(UISwitch*)switchView;
 @property (strong, nonatomic) MenuCell *cvkCell;
 @end

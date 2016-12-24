@@ -12,7 +12,7 @@
 "THIS_ACTION_CAN_NOT_BE_UNDONE" = "Ця дія не може бути скасована";
 "CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Неможливо зберегти зображення. Спробуйте знову або зверніться до розробника.";
 
-"YOUR_COPY_OF_TWEAK_NEEDS_TO_BE_UPGRADED_ALERT_MESSAGE" = "Ваш твік застарів. Актуальна версія - %@";
+"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE" = "Доступно оновлення твіка. (%@) Оновити?";
 "REMIND_LATER_BUTTON_TITLE" = "Нагадати пізніше";
 "SKIP_THIS_VERSION_BUTTON_TITLE" = "Пропустити цю версію";
 "UPADTE_BUTTON_TITLE" = "Оновити зараз";
@@ -28,11 +28,9 @@
 "RESET_COLOR_QUESTION" = "Ви дійсно хочете скинути колір?";
 "RESET_SETTINGS_QUESTION" = "Ви дійсно хочете скинути налаштування?";
 
-"USE_IN_MENU" = "Використовувати в меню";
-"USE_IN_MESSAGES" = "Використовувати в повідомленнях";
-"USE_IN_MESSAGE_LIST" = "Використовувати в списку повідомлень";
-"USE_IN_GROUP_LIST" = "Використовувати в списку групи";
-
 "NEVER" = "Ніколи";
 "ERROR_DOWNLOADING_LICENCE" = "Помилка при скачування ліцензія:\n%@\n\nВаш UDID \n%@\n\nБудь ласка, не показуй його нікому, крім розробника";
 "CLOSE_APP" = "Закриття програми";
+
+"SET_THIS_IMAGE_TO" = "Встановити це зображення";
+"VKAPP_VERSION_IS_TOO_LOW" = "ColoredVK 2 не підтримує цю версію додатка (%@).\nБудь ласка, встановіть VK App %@ або пізнішої версії";

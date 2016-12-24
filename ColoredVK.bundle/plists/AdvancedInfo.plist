@@ -2,56 +2,35 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>blurSettings</key>
-	<array>
-		<dict>
-			<key>label</key>
-			<string>MESSAGES_BACKGROUND</string>
-			<key>key</key>
-			<string>SingleUserChatController.MultiChatController</string>
-		</dict>
-		<dict>
-			<key>label</key>
-			<string>MESSAGES_LIST_BACKGROUND</string>
-			<key>key</key>
-			<string>DialogsController</string>
-		</dict>
-		<dict>
-			<key>label</key>
-			<string>GROUPS</string>
-			<key>GROUPS</key>
-			<string>GroupsController</string>
-		</dict>
-	</array>
 	<key>ImagesDLInfo</key>
 	<array>
 		<dict>
 			<key>title</key>
-			<string>USE_IN_MENU</string>
+			<string>MENU_BACKGROUND</string>
 			<key>identifier</key>
 			<string>menuBackgroundImage</string>
 		</dict>
 		<dict>
 			<key>title</key>
-			<string>USE_IN_MESSAGES</string>
+			<string>MESSAGES_BACKGROUND</string>
 			<key>identifier</key>
 			<string>messagesBackgroundImage</string>
 		</dict>
 		<dict>
 			<key>title</key>
-			<string>USE_IN_MESSAGE_LIST</string>
+			<string>MESSAGES_LIST_BACKGROUND</string>
 			<key>identifier</key>
 			<string>messagesListBackgroundImage</string>
 		</dict>
 		<dict>
 			<key>title</key>
-			<string>USE_IN_GROUP_LIST</string>
+			<string>GROUPS</string>
 			<key>identifier</key>
 			<string>groupsListBackgroundImage</string>
 		</dict>
 		<dict>
 			<key>title</key>
-			<string>USE_IN_AUDIO_LIST</string>
+			<string>AUDIO_BACKGROUND</string>
 			<key>identifier</key>
 			<string>audioBackgroundImage</string>
 		</dict>

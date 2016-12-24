@@ -10,7 +10,8 @@
 "ENABLED" = "Включено";
 "NAVIGATION_TOOL_BAR" = "Бар навігації і тулбар";
 "MENU" = "Меню";
-"MESSAGES" = "Повідомлень і групи";
+"MESSAGES" = "Повідомлень";
+"GROUPS" = "Групи";
 "AUDIO" = "Аудіозаписи";
 "MISCELLANEOUS" = "Різне";
 "RESET_SETTINGS" = "Скидання налаштувань";

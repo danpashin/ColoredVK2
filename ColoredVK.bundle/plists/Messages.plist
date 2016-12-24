@@ -128,68 +128,6 @@
 			<key>label</key>
 			<string>HIDE_SEPARATORS</string>
 		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>GROUPS</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSButtonCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKImageCell</string>
-			<key>action</key>
-			<string>chooseImage:</string>
-			<key>label</key>
-			<string>CHANGE_BACKGROUND</string>
-			<key>id</key>
-			<string>groupsListBackgroundImage</string>
-			<key>textColor</key>
-			<string>0.35, 0.5, 0.7, 1.0</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSTableCell</string>
-			<key>label</key>
-			<string>IMAGE_BLACKOUT</string>
-			<key>cellClass</key>
-			<string>ColoredVKStepperPrefsCell</string>
-			<key>id</key>
-			<string>groupsListImageBlackout</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>key</key>
-			<string>useGroupsListBlur</string>
-			<key>label</key>
-			<string>USE_BLUR</string>
-			<key>default</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>label</key>
-			<string>USE_PARALLAX</string>
-			<key>key</key>
-			<string>useGroupsListParallax</string>
-			<key>id</key>
-			<string>useGroupsListParallax</string>
-			<key>default</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>key</key>
-			<string>hideGroupsListSeparators</string>
-			<key>label</key>
-			<string>HIDE_SEPARATORS</string>
-		</dict>
 	</array>
 	<key>title</key>
 	<string>Messages</string>

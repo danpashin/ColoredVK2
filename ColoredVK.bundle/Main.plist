@@ -62,6 +62,18 @@
 			<key>detail</key>
 			<string>ColoredVKPrefs</string>
 			<key>plistToLoad</key>
+			<string>Groups</string>
+			<key>label</key>
+			<string>GROUPS</string>
+			<key>icon</key>
+			<string>GroupsIcon.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKPrefs</string>
+			<key>plistToLoad</key>
 			<string>Audio</string>
 			<key>label</key>
 			<string>AUDIO</string>
