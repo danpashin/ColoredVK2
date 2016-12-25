@@ -573,6 +573,7 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
 {
     [cvkBunlde load];
     reloadPrefs();
+    cvkMainController.cvkCell = cvkMainController.cvkCell;
     
     CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
     
@@ -1078,7 +1079,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
 {
     UITableViewCell *cell = CHSuper(2, VKMMainController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    menuTableView = tableView;
+    if (!menuTableView) menuTableView = tableView;
     
     NSDictionary *identifiers = @{@"customCell" : @228, @"cvkCell": @405};
     if ([identifiers.allKeys containsObject:cell.reuseIdentifier]) {

@@ -45,7 +45,12 @@
         self.myImageView.userInteractionEnabled = YES;
         self.myImageView.layer.masksToBounds = YES;
         self.myImageView.layer.cornerRadius = 6;
-        if (![self.subviews containsObject: [self viewWithTag:20] ]) [self addSubview:self.myImageView];
+        if (![self.contentView.subviews containsObject: [self.contentView viewWithTag:20] ]) [self.contentView addSubview:self.myImageView];
+        
+        self.myImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        NSDictionary *metrics = @{@"width":@(imageViewSize)};
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_myImageView(width)]-|" options:0 metrics:metrics views:NSDictionaryOfVariableBindings(_myImageView)]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_myImageView(width)]-|" options:0 metrics:metrics views:NSDictionaryOfVariableBindings(_myImageView)]];
         
         NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
         UISwitch *switchView = [UISwitch new];

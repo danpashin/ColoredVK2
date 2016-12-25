@@ -47,7 +47,7 @@
 //                }
 //            } else {
                 if (block) block(YES);
-                [self performSelector:@selector(beginDownload) withObject:nil afterDelay:2.0];
+                [self performSelector:@selector(beginDownload) withObject:nil afterDelay:1.0];
         }
         else {
             if (self.udid.length > 6) {
@@ -55,7 +55,7 @@
                 NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
                 if (![dict[@"UDID"] isEqualToString:self.udid]) {
                     if (block) block(YES);
-                    [self performSelector:@selector(beginDownload) withObject:nil afterDelay:2.0];
+                    [self performSelector:@selector(beginDownload) withObject:nil afterDelay:1.0];
                 } else if (block) block(NO);
             } else if (block) block(NO);
         }

@@ -227,7 +227,6 @@
 		A5D9798A1DAEB8EA00607F06 /* NSString+ColoredVK.h in Headers */ = {isa = PBXBuildFile; fileRef = A58F34131D5A378100838814 /* NSString+ColoredVK.h */; };
 		A5D9798B1DAEB8EA00607F06 /* KLCPopup.h in Headers */ = {isa = PBXBuildFile; fileRef = A55F5FFD1D3B81270099BE4F /* KLCPopup.h */; };
 		A5D9798C1DAEB8EA00607F06 /* UIImage+ResizeMagick.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D84BFE1CCFF312000C13B9 /* UIImage+ResizeMagick.h */; };
-		A5D979B61DAEBED400607F06 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5D979B31DAEBDF800607F06 /* Main.storyboard */; };
 		A5D979B71DAEBED400607F06 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5D979A41DAEBA1000607F06 /* Images.xcassets */; };
 		A5D979BB1DAEC1CB00607F06 /* HRBrightnessCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ADE9091DA7DDC700673F1A /* HRBrightnessCursor.m */; };
 		A5D979BC1DAEC1CB00607F06 /* HRBrightnessSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = A5ADE90B1DA7DDC700673F1A /* HRBrightnessSlider.m */; };
@@ -390,7 +389,6 @@
 		A5D9799D1DAEB96500607F06 /* ColoredVKPrefsController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKPrefsController.h; sourceTree = "<group>"; };
 		A5D9799E1DAEB96500607F06 /* ColoredVKPrefsController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKPrefsController.m; sourceTree = "<group>"; };
 		A5D979A41DAEBA1000607F06 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		A5D979B31DAEBDF800607F06 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		A5DA87BE1D944E1000763B5F /* LHAcvitityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHAcvitityIndicator.h; sourceTree = "<group>"; };
 		A5DA87BF1D944E1000763B5F /* LHAcvitityIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LHAcvitityIndicator.m; sourceTree = "<group>"; };
 		A5DA87C01D944E1000763B5F /* LHBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHBackgroundView.h; sourceTree = "<group>"; };
@@ -690,7 +688,6 @@
 				A504C0821DB011ED006C5FBC /* PSTableCell+ColoredVK.m */,
 				A525E3841D872B7A0015CA59 /* ColoredVKLicencesController.h */,
 				A525E3851D872B7A0015CA59 /* ColoredVKLicencesController.m */,
-				A5D979B31DAEBDF800607F06 /* Main.storyboard */,
 				A5D979A41DAEBA1000607F06 /* Images.xcassets */,
 				A5DD93FE1D3E0F560006E470 /* Supporting Files */,
 			);
@@ -983,7 +980,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A5D979B61DAEBED400607F06 /* Main.storyboard in Resources */,
 				A5D979B71DAEBED400607F06 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

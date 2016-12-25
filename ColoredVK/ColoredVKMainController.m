@@ -17,7 +17,6 @@
 OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0);
 
 @implementation ColoredVKMainController
-//static void *const kcvkMenuSwitch = (void*)&kcvkMenuSwitch;
 static NSString *switchViewKey = @"switchViewKey";
 
 + (void) setupUISearchBar:(UISearchBar*)searchBar
@@ -83,19 +82,16 @@ static NSString *switchViewKey = @"switchViewKey";
         switchView.on = enabled;
         switchView.onTintColor = [UIColor defaultColorForIdentifier:@"switchesOnTintColor"];
         [switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventTouchUpInside];
-//        objc_setAssociatedObject(self, kcvkMenuSwitch, switchView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         objc_setAssociatedObject(self, (__bridge const void *)(switchViewKey), switchView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        [cell addSubview:switchView];
+        [cell.contentView addSubview:switchView];
         
         cell.select = (id)^(id arg1, id arg2) {
             VKMNavContext *mainContext = [[objc_getClass("VKMNavContext") applicationNavRoot] rootNavContext];
-#ifdef COMPILE_FOR_JAILBREAK
-            UIViewController *cvkPrefs = [[UIStoryboard storyboardWithName:@"Main" bundle:cvkBunlde] instantiateInitialViewController];
-            [mainContext reset:cvkPrefs];
-#else
+            
+            NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+            if (!cvkBundle.loaded) [cvkBundle load];
             ColoredVKPrefsController *cvkPrefs = [[objc_getClass("ColoredVKPrefsController") alloc] init];
             [mainContext reset:cvkPrefs];
-#endif
             return nil;
         };
         _cvkCell = cell;
@@ -121,12 +117,6 @@ static NSString *switchViewKey = @"switchViewKey";
 {
     UISwitch *switchView = objc_getAssociatedObject(self, (__bridge const void *)(switchViewKey));
     if (switchView) [switchView setOn:enabled animated:YES];
-    else {
-        NSLog(@"[COLOREDVK 2] There's no such uiswitch. switchViewKey is %@", switchViewKey);
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"ColoredVK 2" message:[NSString stringWithFormat:@"There's no such uiswitch. switchViewKey is %@", switchViewKey] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
-    }
-//    ((UISwitch *)objc_getAssociatedObject(self, kcvkMenuSwitch)).on = enabled;
 }
 
 
