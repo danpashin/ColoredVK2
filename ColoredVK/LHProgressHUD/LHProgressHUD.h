@@ -15,7 +15,7 @@ typedef NS_ENUM(NSInteger,LHProgressHUDMode){
     LHProgressHUDModeActivityIdenticator,
     LHProgressHUDModeCustomView,
     LHProgressHUDModeTextOnly,
-    LHPRogressHUDModeGif,
+//    LHPRogressHUDModeGif,
     
 };
 

@@ -9,10 +9,10 @@
 #import "ColoredVKBarDownloadButton.h"
 #import "PrefixHeader.h"
 #import "VKMethods.h"
-#import "LHProgressHUD.h"
 #import "ColoredVKMainController.h"
 #import "UIImage+ResizeMagick.h"
 #import "PrefixHeader.h"
+#import "ColoredVKHUD.h"
 
 OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0);
 
@@ -70,15 +70,9 @@ static NSArray *getInfoForActionController()
     NSArray *info = getInfoForActionController();
     for (NSDictionary *dict in info) {
         [actionController addAction:[UIAlertAction actionWithTitle:CVKLocalizedStringFromTable(dict[@"title"], @"ColoredVK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
-            LHProgressHUD *hud = [LHProgressHUD showAddedToView:UIApplication.sharedApplication.keyWindow.rootViewController.view];
-            hud.centerBackgroundView.blurStyle = LHBlurEffectStyleExtraLight;
-            hud.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
-            hud.centerBackgroundView.layer.cornerRadius = 10;
-            hud.infoColor = [UIColor colorWithWhite:0.55 alpha:1];
-            hud.spinnerColor = hud.infoColor;
-            [self downloadImageWithIdentificator:dict[@"identifier"] completionBlock:^(BOOL success, NSString *message) {
-                success?[hud showSuccessWithStatus:@"" animated:YES]:[hud showFailureWithStatus:@"" animated:YES];
-                [hud hideAfterDelay:1.5];
+            ColoredVKHUD *hud = [ColoredVKHUD showHUD];
+            hud.operation = [self downloadOperationWithIdentificator:dict[@"identifier"] completionBlock:^(BOOL success) {
+                success?[hud showSuccess]:[hud showFailure];
             }];
         }]];
     }
@@ -89,7 +83,7 @@ static NSArray *getInfoForActionController()
 }
 
 
-- (void)downloadImageWithIdentificator:(NSString *)identificator completionBlock:( void(^)(BOOL success, NSString *message) )block
+- (AFImageRequestOperation *)downloadOperationWithIdentificator:(NSString *)identificator completionBlock:( void(^)(BOOL success) )block
 {
     AFImageRequestOperation *imageOperation = [NSClassFromString(@"AFImageRequestOperation") 
                                                imageRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.url]]
@@ -110,7 +104,7 @@ static NSArray *getInfoForActionController()
                                                        UIImage *preview = newImage;
                                                        [preview drawInRect:CGRectMake(0, 0, 40, 40)];
                                                        preview = UIGraphicsGetImageFromCurrentImageContext();
-                                                       [UIImagePNGRepresentation(preview) writeToFile:prevImagePath options:NSDataWritingAtomic error:&error];
+                                                       [UIImagePNGRepresentation(preview) writeToFile:prevImagePath atomically:YES];
                                                        UIGraphicsEndImageContext();
                                                    }
                                                    
@@ -119,12 +113,10 @@ static NSArray *getInfoForActionController()
                                                    if ([identificator isEqualToString:@"menuBackgroundImage"]) {
                                                        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
                                                    }
-                                                   dispatch_async(dispatch_get_main_queue(), ^{ if (block) block(error?NO:YES, error?error.localizedDescription:@"");  });
+                                                   if (block) block(error?NO:YES);
                                                    
-                                               } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                                   dispatch_async(dispatch_get_main_queue(), ^{ if (block) block(NO, error.localizedDescription); });
-                                               }];
-    [imageOperation start];
+                                               } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) { if (block) block(NO); }];
+    return imageOperation;
     
 }
 

@@ -18,7 +18,6 @@ makeIPA () {
     plutil -convert binary1 ${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/Info.plist
     echo "[->] Compiling additional resources..."
     find ${PROJECT_DIR}/ColoredVK-Prefs -iname '*.xcassets' -exec ${DEVELOPER_BIN_DIR}/actool  --output-format human-readable-text --notices --warnings --compress-pngs --enable-on-demand-resources NO --target-device iphone --target-device ipad --minimum-deployment-target 8.0 --platform ${PLATFORM_NAME} --product-type com.apple.product-type.bundle --compile  ${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle "{}" \;
-#    find ${PROJECT_DIR}/ColoredVK-Prefs -iname '*.storyboard' -exec ${DEVELOPER_BIN_DIR}/ibtool --auto-activate-custom-fonts --target-device iphone --target-device ipad --minimum-deployment-target 8.0 --output-format human-readable-text --compilation-directory ${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle "{}" \;
     
     echo "[->] Copying resources to temp directory..."
     TEMP_FOLDER=${BUILT_PRODUCTS_DIR}/Temp

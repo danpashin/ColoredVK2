@@ -231,12 +231,12 @@ typedef void(^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger tot
 /**
  * Get the size used by the disk cache
  */
-- (NSUInteger)getSize;
+@property (nonatomic, getter=getSize, readonly) NSUInteger size;
 
 /**
  * Get the number of images in the disk cache
  */
-- (NSUInteger)getDiskCount;
+@property (nonatomic, getter=getDiskCount, readonly) NSUInteger diskCount;
 
 /**
  * Asynchronously calculate the disk cache's size.

@@ -416,13 +416,13 @@
 @end
 @interface UISearchBar ()
 @property (getter=_searchBarTextField, nonatomic, readonly) UISearchBarTextField *searchBarTextField;
-- (UIView *)_scopeBarBackgroundView;
-- (UIView *)_backgroundView;
+@property (nonatomic, readonly, strong) UIView *_scopeBarBackgroundView;
+@property (nonatomic, readonly, strong) UIView *_backgroundView;
 @end
 
 
 @interface UINavigationBar ()
-- (UIView *)_backgroundView;
+@property (nonatomic, readonly, strong) UIView *_backgroundView;
 @end
 
 @interface UIToolbar ()

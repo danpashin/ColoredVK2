@@ -12,7 +12,9 @@
 #import "ColoredVKHeaderView.h"
 #import "ColoredVKInstaller.h"
 #import "ColoredVKPrefs.h"
-#import "LHProgressHUD.h"
+#import "NSData+AES.h"
+#import "NSData+AESCrypt.h"
+#import "ColoredVKHUD.h"
 
 @interface ColoredVKPrefsController ()
 @property (strong, nonatomic) NSString *prefsPath;
@@ -24,7 +26,7 @@
 
 - (UIStatusBarStyle) preferredStatusBarStyle
 {
-    if ([NSStringFromClass(UIApplication.sharedApplication.keyWindow.rootViewController.class) isEqualToString:@"DeckController"]) return UIStatusBarStyleLightContent;
+    if ([[NSBundle mainBundle].executablePath.lastPathComponent isEqualToString:@"vkclient"]) return UIStatusBarStyleLightContent;
     else return UIStatusBarStyleDefault;
 }
 
@@ -61,9 +63,9 @@
     self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     self.cvkFolder = CVK_FOLDER_PATH;
     [super viewDidLoad];
-    [[ColoredVKInstaller alloc] startWithCompletionBlock:^(BOOL disableTweak) {}];
+    [[ColoredVKInstaller sharedInstaller] install:^(BOOL disableTweak) {}];
     for (UIView *view in self.view.subviews) {
-        if ([NSStringFromClass([view class]) isEqualToString:@"UITableView"]) {
+        if ([CLASS_NAME(view) isEqualToString:@"UITableView"]) {
             UITableView *tableView = (UITableView *)view;
             tableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.view];
             tableView.separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
@@ -128,30 +130,84 @@
 
 - (void)resetSettings
 {
+    void (^resetSettingsBlock)() = ^{
+        if ([[NSBundle mainBundle].executablePath.lastPathComponent isEqualToString:@"vkclient"]) 
+            self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:60/255.0f green:112/255.0f blue:169/255.0f alpha:1];
+        
+        ColoredVKHUD *hud = [ColoredVKHUD showHUD];
+        hud.operation = [NSBlockOperation blockOperationWithBlock:^{
+            NSError *error = nil;
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            [fileManager removeItemAtPath:self.prefsPath error:&error];
+            [fileManager removeItemAtPath:CVK_FOLDER_PATH error:&error];
+            [fileManager removeItemAtPath:kDRMLicencePath error:&error];
+            [self reloadSpecifiers];
+            CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
+            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
+            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk.reload.menu"),   NULL, NULL, YES);
+            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk.black.theme"),   NULL, NULL, YES);
+            error?[hud showFailure]:[hud showSuccess];
+        }];  
+    };
+        
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBunlde, nil)
                                                                              message:NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS_QUESTION", nil, self.cvkBunlde, nil) 
                                                                       preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:[NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"Main", self.cvkBunlde, nil) componentsSeparatedByString:@" "].firstObject 
-                                                        style:UIAlertActionStyleDestructive 
-                                                      handler:^(UIAlertAction *action) {
-                                                          LHProgressHUD *hud = [LHProgressHUD showAddedToView:UIApplication.sharedApplication.keyWindow.rootViewController.view];
-                                                          hud.centerBackgroundView.blurStyle = LHBlurEffectStyleExtraLight;
-                                                          hud.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
-                                                          hud.centerBackgroundView.layer.cornerRadius = 10;
-                                                          hud.infoColor = [UIColor colorWithWhite:0.55 alpha:1];
-                                                          
-                                                          NSError *error = nil;
-                                                          [[NSFileManager defaultManager] removeItemAtPath:self.prefsPath error:&error];
-                                                          [[NSFileManager defaultManager] removeItemAtPath:CVK_FOLDER_PATH error:&error];
-                                                          [[NSFileManager defaultManager] removeItemAtPath:[CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"] error:&error];
-                                                          [self reloadSpecifiers];
-                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
-                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
-                                                          error?[hud showFailureWithStatus:@"" animated:YES]:[hud showSuccessWithStatus:@"" animated:YES];
-                                                          [hud hideAfterDelay:1.5];
-                                                      }]];
+    
+    NSString *resetTitle = [NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"Main", self.cvkBunlde, nil) componentsSeparatedByString:@" "].firstObject;
+    UIAlertAction *resetAction = [UIAlertAction actionWithTitle:resetTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { resetSettingsBlock(); }];
+    
+    NSData *decryptedData = [[NSData dataWithContentsOfFile:kDRMLicencePath] AES128DecryptedDataWithKey:kDRMLicenceKey];
+    NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
+    if ([dict.allKeys containsObject:@"Login"]) {        
+        resetAction.enabled = NO;
+        alertController.message = [alertController.message stringByAppendingString:@"\nПодтвердите данное действие паролем"];
+        
+        __weak typeof(self) weakSelf = self;
+        [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+            textField.placeholder = UIKitLocalizedString(@"Password");
+            textField.secureTextEntry = YES;
+            [[NSNotificationCenter defaultCenter] addObserver:weakSelf selector:@selector(textFieldChanged:) name:UITextFieldTextDidChangeNotification object:@{@"textField":textField, @"action":resetAction}];
+        }];
+        resetAction = [UIAlertAction actionWithTitle:resetTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {            
+            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kDRMRemoteServerURL]];
+            request.HTTPMethod = @"POST";
+            [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
+            NSString *password = [[alertController.textFields[0].text dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptWithKey:kDRMAuthorizeKey].base64Encoding;
+            NSString *parameters = [NSString stringWithFormat:@"login=%@&password=%@&action=logout&version=%@", dict[@"Login"], password, kDRMPackageVersion];
+            request.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];
+            
+            [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                if (!connectionError) {
+                    NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                    if (!responseDict[@"error"])  resetSettingsBlock();
+                    else [self showAlertWithText:[NSString stringWithFormat:CVKLocalizedString(@"ERROR %@"), responseDict[@"error"]]];
+                } else [self showAlertWithText:[NSString stringWithFormat:CVKLocalizedString(@"ERROR %@"), connectionError.localizedDescription]];
+            }];
+        }];
+    }
+    
+    [alertController addAction:resetAction];
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+    [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)textFieldChanged:(NSNotification *)notification
+{
+    if (notification && ([notification.object isKindOfClass:[NSDictionary class]] && ( ((NSDictionary *)notification.object).allKeys.count == 2)) ) {
+        NSDictionary *dict = notification.object;
+        UITextField *textField = dict[@"textField"];
+        UIAlertAction *resetAction = dict[@"action"];
+        
+        if (textField.text.length > 0) resetAction.enabled = YES;
+        else resetAction.enabled = NO;
+    }
+}
+
+- (void)showAlertWithText:(NSString *)text
+{
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:text preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
     [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
 }
 @end

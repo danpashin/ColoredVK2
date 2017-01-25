@@ -22,13 +22,13 @@
         numberButton.shakeAnimation = YES;
         numberButton.minValue = 0;
         numberButton.maxValue = 6;
-        numberButton.currentNumber = [NSString stringWithFormat:@"%@", [prefs[specifier.identifier] componentsSeparatedByString:@"."].lastObject];
+        numberButton.currentNumber = [prefs[specifier.identifier] componentsSeparatedByString:@"."].lastObject.integerValue;
         numberButton.increaseTitle = @"＋";
         numberButton.decreaseTitle = @"－";
-        numberButton.numberBlock = ^(NSString *num) {
+        numberButton.resultBlock = ^(NSInteger number, BOOL increaseStatus) {
             NSDictionary *tweakSettings = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
             
-            [tweakSettings setValue:[@"0." stringByAppendingString:num] forKey:self.specifier.identifier];
+            [tweakSettings setValue:[NSString stringWithFormat:@"0.%i", (int)number] forKey:self.specifier.identifier];
             [tweakSettings writeToFile:CVK_PREFS_PATH atomically:YES];
             
             CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);

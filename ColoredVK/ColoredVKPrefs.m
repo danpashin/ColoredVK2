@@ -12,7 +12,7 @@
 #import "UIImage+ResizeMagick.h"
 #import "PrefixHeader.h"
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "LHProgressHUD.h"
+#import "ColoredVKHUD.h"
 #import "NSDate+DateTools.h"
 #import "UIImage+ResizeMagick.h"
 
@@ -29,7 +29,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 - (UIStatusBarStyle) preferredStatusBarStyle
 {
-    if ([NSStringFromClass(UIApplication.sharedApplication.keyWindow.rootViewController.class) isEqualToString:@"DeckController"]) return UIStatusBarStyleLightContent;
+    if ([[NSBundle mainBundle].executablePath.lastPathComponent isEqualToString:@"vkclient"]) return UIStatusBarStyleLightContent;
     else return UIStatusBarStyleDefault;
 }
 
@@ -59,6 +59,8 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
                 for (NSString *key in specifier.titleDictionary.allKeys) [tempDict setValue:NSLocalizedStringFromTableInBundle(specifier.titleDictionary[key], @"ColoredVK", self.cvkBunlde, nil) forKey:key];
                 specifier.titleDictionary = [tempDict copy];
             }
+            
+            if ([specifier.identifier isEqualToString:@"checkUpdates"] && [kColoredVKVersion containsString:@"beta"]) [specifier setProperty:@NO forKey:@"enabled"];
         }
         
         if (specifiersArray.count == 0) {
@@ -188,51 +190,46 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
 {
-    LHProgressHUD *hud = [LHProgressHUD showAddedToView:picker.view];
+    ColoredVKHUD *hud = [ColoredVKHUD showAddedToView:picker.view];
     hud.backgroundView.blurStyle = LHBlurEffectStyleDark;
     hud.centerBackgroundView.blurStyle = LHBlurEffectStyleNone;
     hud.centerBackgroundView.backgroundColor = [UIColor clearColor];
-    [self saveImage:image completionBlock:^(BOOL success, NSString *message) {
-        success?[hud showSuccessWithStatus:@"" animated:YES]:[hud showFailureWithStatus:message animated:YES];
-        [hud hideAfterDelay:1.5 hiddenBlock:^{ [picker dismissViewControllerAnimated:YES completion:nil]; }];
-    }];
-   
-}
-
-
-- (void)saveImage:(UIImage *)image completionBlock:( void(^)(BOOL success, NSString *message) )block
-{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if (![[NSFileManager defaultManager] fileExistsAtPath:self.cvkFolder]) [[NSFileManager defaultManager] createDirectoryAtPath:self.cvkFolder withIntermediateDirectories:NO attributes:nil error:nil];
-        NSString *imagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.imageID]];
-        NSString *prevImagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", self.imageID]];
-        
-        NSError *error = nil;
-        [UIImagePNGRepresentation(image) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
-        if (!error) {
-            UIGraphicsBeginImageContext(CGSizeMake(40, 40));
-            UIImage *preview = image;
-            [preview drawInRect:CGRectMake(0, 0, 40, 40)];
-            preview = UIGraphicsGetImageFromCurrentImageContext();
-            [UIImagePNGRepresentation(preview) writeToFile:prevImagePath options:NSDataWritingAtomic error:&error];
-            UIGraphicsEndImageContext();
+    hud.didHiddenBlock = ^{ [picker dismissViewControllerAnimated:YES completion:nil]; };
+    
+    hud.executionBlock = ^(ColoredVKHUD *parentHud) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+            if (![[NSFileManager defaultManager] fileExistsAtPath:self.cvkFolder]) [[NSFileManager defaultManager] createDirectoryAtPath:self.cvkFolder withIntermediateDirectories:NO attributes:nil error:nil];
+            NSString *imagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.imageID]];
+            NSString *prevImagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", self.imageID]];
             
-//            int forParallax = 425;
-            CGSize screenSize = UIScreen.mainScreen.bounds.size;
-            UIImage *recisedImage = [[UIImage imageWithData:[NSData dataWithContentsOfFile:imagePath]] resizedImageByMagick: [NSString stringWithFormat:@"%fx%f#", screenSize.width, screenSize.height]];
-            [UIImagePNGRepresentation(recisedImage) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
-        }
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk.image.update" object:nil userInfo:@{ @"identifier" : self.imageID }];
-            if ([self.imageID isEqualToString:@"menuBackgroundImage"]) {
-                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-            } else if ([self.imageID isEqualToString:@"messagesBackgroundImage"]) {
-                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
-            }    
-            if (block) block(error?NO:YES, error?error.localizedDescription:nil); 
+            NSError *error = nil;
+            [UIImagePNGRepresentation(image) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
+            if (!error) {
+                UIGraphicsBeginImageContext(CGSizeMake(40, 40));
+                UIImage *preview = image;
+                [preview drawInRect:CGRectMake(0, 0, 40, 40)];
+                preview = UIGraphicsGetImageFromCurrentImageContext();
+                [UIImagePNGRepresentation(preview) writeToFile:prevImagePath options:NSDataWritingAtomic error:&error];
+                UIGraphicsEndImageContext();
+                
+                CGSize screenSize = UIScreen.mainScreen.bounds.size;
+                UIImage *recisedImage = [[UIImage imageWithData:[NSData dataWithContentsOfFile:imagePath]] resizedImageByMagick: [NSString stringWithFormat:@"%fx%f#", screenSize.width, screenSize.height]];
+                [UIImagePNGRepresentation(recisedImage) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk.image.update" object:nil userInfo:@{ @"identifier" : self.imageID }];
+                if ([self.imageID isEqualToString:@"menuBackgroundImage"]) {
+                    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+                } else if ([self.imageID isEqualToString:@"messagesBackgroundImage"]) {
+                    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
+                }
+                error?[parentHud showFailureWithStatus:error.localizedDescription animated:YES]:[parentHud showSuccess];
+            });
         });
-    });
+    };
+    
+    hud.executionBlock(hud);
+   
 }
 
 - (NSString *)getLastCheckForUpdates:(PSSpecifier *)specifier
@@ -253,44 +250,42 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 #endif
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
     
-    [NSURLConnection sendAsynchronousRequest:urlRequest 
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                               UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-                               if (!connectionError) {
-                                   NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
-                                   NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-                                   if (!responseDict[@"error"]) {
-                                       NSString *skip = NSLocalizedStringFromTableInBundle(@"SKIP_THIS_VERSION_BUTTON_TITLE", nil, self.cvkBunlde, nil);
-                                       NSString *remindLater = NSLocalizedStringFromTableInBundle(@"REMIND_LATER_BUTTON_TITLE", nil, self.cvkBunlde, nil);
-                                       NSString *updateNow = NSLocalizedStringFromTableInBundle(@"UPADTE_BUTTON_TITLE", nil, self.cvkBunlde, nil);
-                                       
-                                       alertController.message = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE", nil, self.cvkBunlde, nil), responseDict[@"version"]];
-                                       [alertController addAction:[UIAlertAction actionWithTitle:skip style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                                           [prefs setValue:responseDict[@"version"] forKey:@"skippedVersion"];
-                                           [prefs writeToFile:self.prefsPath atomically:YES];
-                                       }]];
-                                       [alertController addAction:[UIAlertAction actionWithTitle:remindLater style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
-                                       [alertController addAction:[UIAlertAction actionWithTitle:updateNow style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                           NSURL *url = [NSURL URLWithString:responseDict[@"url"]];
-                                           if ([[UIApplication sharedApplication] canOpenURL:url]) [[UIApplication sharedApplication] openURL:url];
-                                           
-                                       }]];
-                                   } else {
-                                       alertController.message = NSLocalizedStringFromTableInBundle(@"NO_UPDATES_FOUND_BUTTON_TITLE", nil, self.cvkBunlde, nil);
-                                       [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
-                                   }
-                                   dispatch_async(dispatch_get_main_queue(), ^{
-                                       [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
-                                   });
-                                   
-                                   NSDateFormatter *dateFormatter = [NSDateFormatter new];
-                                   dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-                                   [prefs setValue:[dateFormatter stringFromDate:[NSDate date]] forKey:@"lastCheckForUpdates"];
-                                   [prefs writeToFile:self.prefsPath atomically:YES];
-                                   [self reloadSpecifiers];
-                               }
-                           }];
+    [NSURLConnection sendAsynchronousRequest:urlRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        if (!connectionError) {
+            NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
+            NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+            if (!responseDict[@"error"]) {
+                NSString *skip = NSLocalizedStringFromTableInBundle(@"SKIP_THIS_VERSION_BUTTON_TITLE", nil, self.cvkBunlde, nil);
+                NSString *remindLater = NSLocalizedStringFromTableInBundle(@"REMIND_LATER_BUTTON_TITLE", nil, self.cvkBunlde, nil);
+                NSString *updateNow = NSLocalizedStringFromTableInBundle(@"UPADTE_BUTTON_TITLE", nil, self.cvkBunlde, nil);
+                
+                alertController.message = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE", nil, self.cvkBunlde, nil), responseDict[@"version"]];
+                [alertController addAction:[UIAlertAction actionWithTitle:skip style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                    [prefs setValue:responseDict[@"version"] forKey:@"skippedVersion"];
+                    [prefs writeToFile:self.prefsPath atomically:YES];
+                }]];
+                [alertController addAction:[UIAlertAction actionWithTitle:remindLater style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
+                [alertController addAction:[UIAlertAction actionWithTitle:updateNow style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                    NSURL *url = [NSURL URLWithString:responseDict[@"url"]];
+                    if ([[UIApplication sharedApplication] canOpenURL:url]) [[UIApplication sharedApplication] openURL:url];
+                    
+                }]];
+            } else {
+                alertController.message = NSLocalizedStringFromTableInBundle(@"NO_UPDATES_FOUND_BUTTON_TITLE", nil, self.cvkBunlde, nil);
+                [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+            });
+            
+            NSDateFormatter *dateFormatter = [NSDateFormatter new];
+            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+            [prefs setValue:[dateFormatter stringFromDate:[NSDate date]] forKey:@"lastCheckForUpdates"];
+            [prefs writeToFile:self.prefsPath atomically:YES];
+            [self reloadSpecifiers];
+        }
+    }];
 }
 
 - (void)openProfie
@@ -310,18 +305,12 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 - (void)clearCoversCache
 {
-    LHProgressHUD *hud = [LHProgressHUD showAddedToView:UIApplication.sharedApplication.keyWindow.rootViewController.view];
-    hud.centerBackgroundView.blurStyle = LHBlurEffectStyleExtraLight;
-    hud.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
-    hud.centerBackgroundView.layer.cornerRadius = 10;
-    hud.infoColor = [UIColor colorWithWhite:0.55 alpha:1];
-    hud.spinnerColor = hud.infoColor;
-    hud.textLabel.textColor = hud.infoColor;
-    NSError *error = nil;
-    BOOL success = [[NSFileManager defaultManager] removeItemAtPath:CVK_CACHE_PATH error:&error];
-    if (success && !error) [hud showSuccessWithStatus:@"" animated:YES];
-    else [hud showFailureWithStatus:[NSString stringWithFormat:@"%@\n%@", error.localizedDescription, error.localizedFailureReason] animated:YES];
-    [hud hideAfterDelay:2.0];
-
+    ColoredVKHUD *hud = [ColoredVKHUD showHUD];
+    hud.operation = [NSBlockOperation blockOperationWithBlock:^{
+        NSError *error = nil;
+        BOOL success = [[NSFileManager defaultManager] removeItemAtPath:CVK_CACHE_PATH error:&error];
+        if (success && !error) [hud showSuccess];
+        else [hud showFailureWithStatus:[NSString stringWithFormat:@"%@\n%@", error.localizedDescription, error.localizedFailureReason] animated:YES];
+    }];
 }
 @end

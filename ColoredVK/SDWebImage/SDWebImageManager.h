@@ -242,7 +242,7 @@ SDWebImageManager *manager = [SDWebImageManager sharedManager];
 /**
  * Check one or more operations running
  */
-- (BOOL)isRunning;
+@property (nonatomic, getter=isRunning, readonly) BOOL running;
 
 /**
  *  Async check if image has already been cached

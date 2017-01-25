@@ -33,7 +33,7 @@
 
 - (instancetype)init
 {
-    [[NSException exceptionWithName:NSGenericException reason:@"ColoredVKColorPicker init is forbidden. Use initWithIdentifier:" userInfo:nil] raise];
+    @throw [NSException exceptionWithName:NSGenericException reason:@"ColoredVKColorPicker init is forbidden." userInfo:nil];
     return nil;
 }
 

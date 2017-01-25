@@ -17,7 +17,6 @@ NSString *const imageName = @"CoverImage";
 @property (strong, nonatomic) NSBundle *cvkBundle;
 @property (strong, nonatomic) UIImageView *topImageView;
 @property (strong, nonatomic) UIImageView *bottomImageView;
-@property (strong, nonatomic) NSOperation *operation;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
 @property (strong, nonatomic) NSString *key;
 @end
@@ -62,43 +61,42 @@ NSString *const imageName = @"CoverImage";
 }
 
 - (void)updateCoverForAudioPlayer:(AudioPlayer *)player
-{
-    if (!self.operation.finished) [self.operation cancel];
-    self.operation = [NSBlockOperation blockOperationWithBlock:^{        
-        self.track = player.audio.title;
-        self.artist = player.audio.performer;
-        
-        [self downloadCoverWithCompletionBlock:^(UIImage *image, BOOL wasDownloaded) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.defaultCover = wasDownloaded?NO:YES;
-                
-                UIImage *coverImage = image;
-                if (player.coverImage && (!wasDownloaded && ![player.coverImage.imageAsset.assetName containsString:@"placeholder"])) {
-                    coverImage = player.coverImage;
-                    self.defaultCover = NO;
-                }
-                
-                [self changeImageViewImage:self.topImageView toImage:coverImage animated:YES];
-                [self changeImageViewImage:self.bottomImageView toImage:self.defaultCover?nil:coverImage animated:YES];
-                
-                MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
-                NSMutableDictionary *playingInfo = [NSMutableDictionary dictionaryWithDictionary:center.nowPlayingInfo];
-                if (wasDownloaded) playingInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:coverImage];
-                else [playingInfo removeObjectForKey:MPMediaItemPropertyArtwork];
-                center.nowPlayingInfo = [NSDictionary dictionaryWithDictionary:playingInfo];
-                
-                LEColorPicker *picker = [[LEColorPicker alloc] init];
-                [picker pickColorsFromImage:coverImage onComplete:^(LEColorScheme *colorScheme) {
-                    self.backColor = self.defaultCover?[UIColor clearColor]:[colorScheme.backgroundColor colorWithAlphaComponent:0.4];
-                    self.tintColor = colorScheme.secondaryTextColor;
-                    [UIView animateWithDuration:0.3 animations:^{ self.blurEffectView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor; } completion:nil];
-                    [NSNotificationCenter.defaultCenter postNotificationName:@"com.daniilpashin.coloredvk.audio.image.changed" object:nil];
-                }];
-//                if (self.inBackground) [[UIApplication sharedApplication] _updateSnapshotForBackgroundApplication:YES];
-            });
-        }];
-    }];
-    [self.operation start];
+{      
+    self.track = player.audio.title;
+    self.artist = player.audio.performer;
+    
+    void (^completionBlock)(UIImage *image, BOOL wasDownloaded) = ^(UIImage *image, BOOL wasDownloaded) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.defaultCover = wasDownloaded?NO:YES;
+            
+            UIImage *coverImage = image;
+            if (player.coverImage && (!wasDownloaded && ![player.coverImage.imageAsset.assetName containsString:@"placeholder"])) {
+                coverImage = player.coverImage;
+                self.defaultCover = NO;
+            }
+            
+            [self changeImageViewImage:self.topImageView toImage:coverImage animated:YES];
+            [self changeImageViewImage:self.bottomImageView toImage:self.defaultCover?nil:coverImage animated:YES];
+            
+            MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
+            NSMutableDictionary *playingInfo = [NSMutableDictionary dictionaryWithDictionary:center.nowPlayingInfo];
+            if (wasDownloaded) playingInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:coverImage];
+            else [playingInfo removeObjectForKey:MPMediaItemPropertyArtwork];
+            center.nowPlayingInfo = [NSDictionary dictionaryWithDictionary:playingInfo];
+            
+            LEColorPicker *picker = [[LEColorPicker alloc] init];
+            [picker pickColorsFromImage:coverImage onComplete:^(LEColorScheme *colorScheme) {
+                self.backColor = self.defaultCover?[UIColor clearColor]:[colorScheme.backgroundColor colorWithAlphaComponent:0.4];
+                self.tintColor = colorScheme.secondaryTextColor;
+                [UIView animateWithDuration:0.3 animations:^{ self.blurEffectView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor; } completion:nil];
+                [NSNotificationCenter.defaultCenter postNotificationName:@"com.daniilpashin.coloredvk.audio.image.changed" object:nil];
+            }];
+                //                if (self.inBackground) [[UIApplication sharedApplication] _updateSnapshotForBackgroundApplication:YES];
+        });
+    };
+    NSThread *downloadThread = [[NSThread alloc] initWithTarget:self selector:@selector(downloadCoverWithCompletionBlock:) object:completionBlock];
+    downloadThread.name = @"com.daniilpashin.coloredvk2.audio.cover.download";
+    [downloadThread start];
 }
 
 - (void)changeImageViewImage:(UIImageView *)imageView toImage:(UIImage *)image animated:(BOOL)animated

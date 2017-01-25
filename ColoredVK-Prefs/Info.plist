@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+	<key>CFBundleDisplayName</key>
+	<string>ColoredVK 2</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
@@ -27,6 +29,8 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Choose background for menus</string>
 	<key>NSPrincipalClass</key>
 	<string>ColoredVKPrefsController</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>

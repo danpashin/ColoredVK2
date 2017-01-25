@@ -10,12 +10,7 @@
 // see https://github.com/rpetrich/CaptainHook/
 
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import <MobileGestalt/MobileGestalt.h>
-#import <sys/utsname.h>
 #import "CaptainHook/CaptainHook.h"
-#import "NSData+AES.h"
 
 #import "ColoredVKInstaller.h"
 #import "PrefixHeader.h"
@@ -28,6 +23,7 @@
 #import "Tweak.h"
 #import "ColoredVKBarDownloadButton.h"
 #import "UIGestureRecognizer+BlocksKit.h"
+#import "ColoredVKHUD.h"
 
 
 
@@ -94,6 +90,7 @@ UITableView *newsFeedTableView;
 
 UIColor *menuSeparatorColor;
 UIColor *barBackgroundColor;
+UIColor *barBackColorWithImage;
 UIColor *barForegroundColor;
 UIColor *toolBarBackgroundColor;
 UIColor *toolBarForegroundColor;
@@ -121,39 +118,37 @@ static void checkUpdates()
 #endif
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
     
-    [NSURLConnection sendAsynchronousRequest:urlRequest 
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                               if (!connectionError) {
-                                   NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:prefsPath];
-                                   NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-                                   if (!responseDict[@"error"]) {
-                                       NSString *version = responseDict[@"version"];
-                                       if (![prefs[@"skippedVersion"] isEqualToString:version]) {
-                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                               NSString *message = [NSString stringWithFormat:CVKLocalizedString(@"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE"), version];
-                                               UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];
-                                               [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"SKIP_THIS_VERSION_BUTTON_TITLE") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                                                   [prefs setValue:version forKey:@"skippedVersion"];
-                                                   [prefs writeToFile:prefsPath atomically:YES];
-                                               }]];
-                                               [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"REMIND_LATER_BUTTON_TITLE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
-                                               [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"UPADTE_BUTTON_TITLE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                   NSURL *url = [NSURL URLWithString:responseDict[@"url"]];
-                                                   if ([[UIApplication sharedApplication] canOpenURL:url]) [[UIApplication sharedApplication] openURL:url];
-                                                   
-                                               }]];
-                                               [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
-                                           });
-                                       }
-                                   }
-                                   
-                                   NSDateFormatter *dateFormatter = [NSDateFormatter new];
-                                   dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-                                   [prefs setValue:[dateFormatter stringFromDate:[NSDate date]] forKey:@"lastCheckForUpdates"];
-                                   [prefs writeToFile:prefsPath atomically:YES];
-                               }
-                           }];
+    [NSURLConnection sendAsynchronousRequest:urlRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        if (!connectionError) {
+            NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:prefsPath];
+            NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+            if (!responseDict[@"error"]) {
+                NSString *version = responseDict[@"version"];
+                if (![prefs[@"skippedVersion"] isEqualToString:version]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSString *message = [NSString stringWithFormat:CVKLocalizedString(@"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE"), version];
+                        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];
+                        [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"SKIP_THIS_VERSION_BUTTON_TITLE") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                            [prefs setValue:version forKey:@"skippedVersion"];
+                            [prefs writeToFile:prefsPath atomically:YES];
+                        }]];
+                        [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"REMIND_LATER_BUTTON_TITLE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
+                        [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"UPADTE_BUTTON_TITLE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                            NSURL *url = [NSURL URLWithString:responseDict[@"url"]];
+                            if ([[UIApplication sharedApplication] canOpenURL:url]) [[UIApplication sharedApplication] openURL:url];
+                            
+                        }]];
+                        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+                    });
+                }
+            }
+            
+            NSDateFormatter *dateFormatter = [NSDateFormatter new];
+            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+            [prefs setValue:[dateFormatter stringFromDate:[NSDate date]] forKey:@"lastCheckForUpdates"];
+            [prefs writeToFile:prefsPath atomically:YES];
+        }
+    }];
 }
 
 
@@ -218,6 +213,7 @@ static void reloadPrefs()
         
         menuSeparatorColor = prefs[@"MenuSeparatorColor"]?[UIColor colorFromString:prefs[@"MenuSeparatorColor"]]:[UIColor defaultColorForIdentifier:@"MenuSeparatorColor"];
         barBackgroundColor = prefs[@"BarBackgroundColor"]?[UIColor colorFromString:prefs[@"BarBackgroundColor"]]:[UIColor defaultColorForIdentifier:@"BarBackgroundColor"];
+        barBackColorWithImage = [UIColor colorWithPatternImage:[UIImage imageWithContentsOfFile:[cvkFolder stringByAppendingString:@"/barImage.png"]]];
         barForegroundColor = prefs[@"BarForegroundColor"]?[UIColor colorFromString:prefs[@"BarForegroundColor"]]:[UIColor defaultColorForIdentifier:@"BarForegroundColor"];
         toolBarBackgroundColor = prefs[@"ToolBarBackgroundColor"]?[UIColor colorFromString:prefs[@"ToolBarBackgroundColor"]]:[UIColor defaultColorForIdentifier:@"ToolBarBackgroundColor"];
         toolBarForegroundColor = prefs[@"ToolBarForegroundColor"]?[UIColor colorFromString:prefs[@"ToolBarForegroundColor"]]:[UIColor defaultColorForIdentifier:@"ToolBarForegroundColor"];
@@ -327,23 +323,6 @@ static void setBlur(UIView *bar, BOOL set)
     }
 }
 
-static void setNavigationBar(UINavigationBar *navBar)
-{
-    if (enabled && [navBar respondsToSelector:@selector(setBarTintColor:)]) {
-        if (enabledBlackTheme) {
-            setBlur(navBar, NO);
-            navBar.barTintColor = [UIColor darkBlackColor];
-            navBar.tintColor = [UIColor lightGrayColor];
-            navBar.titleTextAttributes = @{ NSForegroundColorAttributeName : [UIColor lightGrayColor] };
-        }  else if (enabledBarColor) {
-                if (enabledBarImage) navBar.barTintColor = [UIColor colorWithPatternImage:[UIImage imageWithContentsOfFile:[cvkFolder stringByAppendingString:@"/barImage.png"]]];
-                else navBar.barTintColor = barBackgroundColor;
-                navBar.tintColor = barForegroundColor;
-                navBar.titleTextAttributes = @{ NSForegroundColorAttributeName : barForegroundColor };
-            }
-    }
-}
-
 static void setToolBar(UIToolbar *toolbar)
 {
     if (enabled && [toolbar respondsToSelector:@selector(setBarTintColor:)]) {
@@ -367,6 +346,7 @@ static void setToolBar(UIToolbar *toolbar)
                 }
             }
         } else if (enabledToolBarColor) {
+            
             NSArray *controllersToChange = @[@"UIView", @"RootView"];
             if ([controllersToChange containsObject:CLASS_NAME(toolbar.superview)]) {
                 BOOL canUseTint = YES;
@@ -557,12 +537,13 @@ static void setupCellForSearchController(UITableViewCell *cell, id searchControl
     }
 }
 
-static NSInteger VKVersion() {
+static NSInteger VKVersion()
+{
     NSString *versionString = @"";
     for (NSString *str in  [[NSString stringWithFormat:@"%@", [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"]] componentsSeparatedByString:@"."]) {
         versionString = [versionString stringByAppendingString:str];
     }
-    return [versionString integerValue];
+    return versionString.integerValue;
 }
 
 
@@ -577,17 +558,21 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
     
     CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
     
-    [[ColoredVKInstaller alloc] startWithCompletionBlock:^(BOOL disableTweak) {
+    [[ColoredVKInstaller sharedInstaller] install:^(BOOL disableTweak) {
         if (!disableTweak) {
             tweakEnabled = YES;
             reloadPrefs();
         }
     }];
-    if (shouldCheckUpdates) {
+    
+    BOOL beta = [kColoredVKVersion containsString:@"beta"];
+    if (shouldCheckUpdates || beta) {
         NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
         dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-        if (!prefs[@"lastCheckForUpdates"] || ([dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]].daysAgo >= updatesInterval)) checkUpdates();
+        NSInteger daysAgo = [dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]].daysAgo;
+        BOOL allDaysPast = beta?(daysAgo >= 1):(daysAgo >= updatesInterval);
+        if (!prefs[@"lastCheckForUpdates"] || allDaysPast) checkUpdates();
     }
     
     return YES;
@@ -597,18 +582,29 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
 
 #pragma mark UINavigationBar
 CHDeclareClass(UINavigationBar);
-CHOptimizedMethod(0, self, void, UINavigationBar, layoutSubviews)
+CHOptimizedMethod(1, self, void, UINavigationBar, setBarTintColor, UIColor*, barTintColor)
 {
-    CHSuper(0, UINavigationBar, layoutSubviews);
-    setNavigationBar(self);
+    if (enabled && (!enabledBlackTheme && enabledBarColor) ) {
+        if (enabledBarImage) barTintColor = barBackColorWithImage;
+        else barTintColor = barBackgroundColor;
+    }
+    
+    CHSuper(1, UINavigationBar, setBarTintColor, barTintColor);
 }
 
-CHOptimizedMethod(0, self, void, UINavigationBar, setNeedsLayout)
+CHOptimizedMethod(1, self, void, UINavigationBar, setTintColor, UIColor*, tintColor)
 {
-    CHSuper(0, UINavigationBar, setNeedsLayout);
-    setNavigationBar(self);
+    if (enabled && (!enabledBlackTheme && enabledBarColor)) tintColor = barForegroundColor;
+    
+    CHSuper(1, UINavigationBar, setTintColor, tintColor);
 }
 
+CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDictionary*, attributes)
+{
+    if (enabled && (!enabledBlackTheme && enabledBarColor)) attributes = @{ NSForegroundColorAttributeName : barForegroundColor };
+    
+    CHSuper(1, UINavigationBar, setTitleTextAttributes, attributes);
+}
 
 
 #pragma mark UIToolbar
@@ -622,7 +618,9 @@ CHOptimizedMethod(0, self, void, UIToolbar, layoutSubviews)
 CHOptimizedMethod(0, self, void, UIToolbar, setNeedsLayout)
 {
     CHSuper(0, UIToolbar, setNeedsLayout);
-    setToolBar(self);
+    
+    if ((enabled && enabledToolBarColor) && [self respondsToSelector:@selector(setBarTintColor:)])
+        self.barTintColor = toolBarBackgroundColor;
 }
 
 
@@ -692,8 +690,6 @@ CHOptimizedMethod(0, self, void, VKMLiveController, viewWillLayoutSubviews)
         }
     }
 }
-
-
 
 CHOptimizedMethod(2, self, UITableViewCell*, VKMLiveController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
@@ -1209,6 +1205,7 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
             navBar.shadowImage = [UIImage new];
             [navBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
             navBar.topItem.leftBarButtonItems = @[];
+            navBar.tintColor = [UIColor whiteColor];
             
             UISwipeGestureRecognizer *downSwipe = [[UISwipeGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender) { [self done:nil]; }];
             downSwipe.maximumDuration = 0.5;
@@ -1582,13 +1579,18 @@ CHConstructor
             
             
             CHLoadLateClass(UINavigationBar);
-            if (SYSTEM_VERSION_IS_MORE_THAN(10.0)) CHHook(0, UINavigationBar, setNeedsLayout);
-            else                                   CHHook(0, UINavigationBar, layoutSubviews);
+//            if (SYSTEM_VERSION_IS_MORE_THAN(10.0)) CHHook(0, UINavigationBar, setNeedsLayout);
+//            else                                   CHHook(0, UINavigationBar, layoutSubviews);
+            CHHook(1, UINavigationBar, setBarTintColor);
+            CHHook(1, UINavigationBar, setTintColor);
+            CHHook(1, UINavigationBar, setTitleTextAttributes);
+            
             
             
             CHLoadLateClass(UIToolbar);
+            CHHook(0, UIToolbar, layoutSubviews);
             if (SYSTEM_VERSION_IS_MORE_THAN(10.0)) CHHook(0, UIToolbar, setNeedsLayout);
-            else                                   CHHook(0, UIToolbar, layoutSubviews);
+            
             
             CHLoadLateClass(UITextInputTraits);
             CHHook(0, UITextInputTraits, keyboardAppearance);

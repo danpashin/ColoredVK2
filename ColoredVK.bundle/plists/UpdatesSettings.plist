@@ -11,6 +11,8 @@
 			<true/>
 			<key>key</key>
 			<string>checkUpdates</string>
+			<key>id</key>
+			<string>checkUpdates</string>
 			<key>label</key>
 			<string>CHECK_UPDATES</string>
 		</dict>

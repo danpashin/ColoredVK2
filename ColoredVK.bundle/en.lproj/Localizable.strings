@@ -8,6 +8,7 @@
 
 
 "ERROR" = "Error";
+"ERROR %@" = "Error:\n%@";
 "WARNING" = "Warning";
 "THIS_ACTION_CAN_NOT_BE_UNDONE" = "This action can not be undone";
 "CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Can not save image. Try again or contact developer.";
@@ -30,6 +31,7 @@
 
 "NEVER" = "Never";
 "ERROR_DOWNLOADING_LICENCE" = "Error while downloading licence:\n%@\n\nYour UDID is\n%@\n\nPlease don't show it for anyone except developer";
+"ERROR_LOGIN" = "Error while downloading licence:\n%@\n\nYour login \n%@";
 "CLOSE_APP" = "Close app";
 
 "SET_THIS_IMAGE_TO" = "Set this image to";

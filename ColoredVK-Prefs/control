@@ -1,6 +1,6 @@
 Package: com.daniilpashin.coloredvk2
 Name: ColoredVK 2
-Version: 3.2.2
+Version: 3.2.3-beta-1
 Description: Customize your VK App!
 Section: Tweaks
 Depends: firmware (>= 8.0), preferenceloader
