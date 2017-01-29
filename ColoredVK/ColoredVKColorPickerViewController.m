@@ -13,6 +13,7 @@
 #import "HRColorMapView.h"
 #import "HRBrightnessSlider.h"
 #import "HRColorInfoView.h"
+#import "ColoredVKBackgroundImageView.h"
 
 @interface ColoredVKColorPickerViewController () <UITextFieldDelegate, UIGestureRecognizerDelegate>
 @property (strong, nonatomic) NSString *cellIdentifier;
@@ -26,6 +27,7 @@
 @property (strong, nonatomic) HRBrightnessSlider *sliderView;
 @property (strong, nonatomic) HRColorMapView *colorMapView;
 @property (assign, nonatomic) CGFloat brightness;
+@property (assign, nonatomic) BOOL hideStatusBar;
 @end
 
 
@@ -42,13 +44,13 @@
     self = [super init];
     if (self) {
         self.cellIdentifier = identifier;
+        _hideStatusBar = NO;
     }
     return self;
 }
 
-- (UIStatusBarStyle) preferredStatusBarStyle
-{
-    return UIStatusBarStyleLightContent;
+- (BOOL)prefersStatusBarHidden {
+    return self.hideStatusBar;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -64,57 +66,42 @@
     [self.customColor getHue:nil saturation:nil brightness:&_brightness alpha:nil];
     
     
-    UIView *backView = [[UIView alloc] initWithFrame:self.view.frame];
-    backView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
-    backView.tag = 10;
+    UIVisualEffectView *blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+    blurView.frame = self.view.bounds;
+    [self.view addSubview:blurView];
+    
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(writeValues)];
     tap.delegate = self;
-    [backView addGestureRecognizer:tap];
-    [self.view addSubview:backView];
+    [blurView addGestureRecognizer:tap];
     
     
     self.mainView = [UIView new];
-    self.mainView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.6];
+    self.mainView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
     
-    int widthFromEdge = IS_IPAD?20:8;
+    int widthFromEdge = IS_IPAD?20:6;
     self.mainView.frame = (CGRect){{widthFromEdge, 0}, {self.view.frame.size.width - widthFromEdge*2, self.view.frame.size.height - widthFromEdge*10}};
     self.mainView.center = self.view.center;
-    self.mainView.layer.masksToBounds = YES;
-    self.mainView.layer.cornerRadius = 10;
-    
-    UIVisualEffectView *blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
-    blurView.frame = self.mainView.bounds;
-    blurView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [self.mainView addSubview:blurView];
+    self.mainView.layer.cornerRadius = 16;
     
     
-    UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 5, self.mainView.frame.size.width, 32)];
-    topView.backgroundColor = [UIColor clearColor];
+    UINavigationBar *topView = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.mainView.frame.size.width, 44)];
+    [topView setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    topView.shadowImage = [UIImage new];
     [self.mainView addSubview:topView];
     
-    UIButton *resetButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, topView.frame.size.height)];
-    resetButton.center = CGPointMake(resetButton.frame.origin.x + resetButton.frame.size.width/2, resetButton.frame.size.height/2);
-    [resetButton setTitle:@"↻" forState:UIControlStateNormal];
-    resetButton.titleLabel.font = [UIFont systemFontOfSize:24.0];
-    resetButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-    [resetButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-    [resetButton setTitleColor:[UIColor colorWithRed:0.8 green:0 blue:0 alpha:1.0] forState:UIControlStateHighlighted];
-    [resetButton addTarget:self action:@selector(resetColorValue) forControlEvents:UIControlEventTouchUpInside];
-    [topView addSubview:resetButton];
+    UINavigationItem *navItem = [[UINavigationItem alloc] init];
+    UIImage *resetImage = [[UIImage imageNamed:@"ResetIcon" inBundle:self.cvkBunlde compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    navItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:resetImage style:UIBarButtonItemStylePlain target:self action:@selector(resetColorValue)];
     
-    int width = 58;
-    UIButton *doneButton = [[UIButton alloc] initWithFrame:CGRectMake(topView.frame.size.width - width - 5, 0, width, topView.frame.size.height)];
-    doneButton.center = CGPointMake(doneButton.frame.origin.x + doneButton.frame.size.width/2, doneButton.frame.size.height/2);
-    [doneButton setTitle:UIKitLocalizedString(@"Save") forState:UIControlStateNormal];
-    doneButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
-    doneButton.titleLabel.adjustsFontSizeToFitWidth = YES;
-    [doneButton setTitleColor:[UIColor colorWithRed:0 green:122/255.0 blue:1 alpha:1] forState:UIControlStateNormal];
-    [doneButton addTarget:self action:@selector(writeValues) forControlEvents:UIControlEventTouchUpInside];
-    [topView addSubview:doneButton]; 
+    UIImage *closeImage = [[UIImage imageNamed:@"CloseIcon" inBundle:self.cvkBunlde compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    navItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:closeImage style:UIBarButtonItemStylePlain target:self action:@selector(writeValues)];
+    
+    topView.items = @[navItem];
+    
     
     
     self.infoView = [HRColorInfoView new];
-    self.infoView.frame = CGRectMake(10, topView.frame.origin.y + topView.frame.size.height + 10, 60, 80);
+    self.infoView.frame = CGRectMake(10, topView.frame.origin.y + topView.frame.size.height, 60, 80);
     self.infoView.color = self.customColor;
     [self.infoView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showHexWindow)]];
     [self.mainView addSubview:self.infoView];
@@ -135,7 +122,7 @@
     self.colorMapView.tileSize = @1;
     self.colorMapView.brightness = 1;
     self.colorMapView.layer.masksToBounds = YES;
-    self.colorMapView.layer.cornerRadius = 4;
+    self.colorMapView.layer.cornerRadius = self.mainView.layer.cornerRadius/2;
     [self.mainView addSubview:self.colorMapView];
     
     
@@ -148,37 +135,23 @@
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-fromEdge-[_mainView]-fromEdge-|" options:NSLayoutFormatDirectionLeadingToTrailing 
                                                                       metrics:@{ @"fromEdge" : @(widthFromEdge)} views:NSDictionaryOfVariableBindings(_mainView)]];
     
-    backView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[backView]-|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                      metrics:nil views:NSDictionaryOfVariableBindings(backView)]];
+    blurView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[blurView]|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                      metrics:nil views:NSDictionaryOfVariableBindings(blurView)]];
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(-10)-[backView]-(-10)-|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                      metrics:nil views:NSDictionaryOfVariableBindings(backView)]];
-    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[blurView]|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                      metrics:nil views:NSDictionaryOfVariableBindings(blurView)]];
     
     topView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[topView(height)]" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                          metrics:@{@"height":@32} views:NSDictionaryOfVariableBindings(topView, _infoView)]];
+    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topView(height)]" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                          metrics:@{@"height":@44} views:NSDictionaryOfVariableBindings(topView)]];
     
-    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[topView]-|" options:NSLayoutFormatDirectionLeadingToTrailing
+    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[topView]|" options:NSLayoutFormatDirectionLeadingToTrailing
                                                                           metrics:nil views:NSDictionaryOfVariableBindings(topView)]];
-    
-    
-    resetButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [topView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[resetButton(32)]" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                    metrics:nil views:NSDictionaryOfVariableBindings(resetButton)]];
-    
-    doneButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [topView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[doneButton(32)]" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                    metrics:nil views:NSDictionaryOfVariableBindings(doneButton)]];
-    
-    [topView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[resetButton(resetButtonWidth)]-[doneButton]-|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                    metrics:@{@"resetButtonWidth": @(resetButton.frame.size.width)} views:NSDictionaryOfVariableBindings(resetButton, doneButton)]];
-    
     
     self.infoView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromTop-[_infoView(height)]" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                          metrics:@{@"height":@(self.infoView.frame.size.height), @"fromTop": @(topView.frame.origin.y + topView.frame.size.height + 10)} views:NSDictionaryOfVariableBindings(_infoView)]];
+                                                                          metrics:@{@"height":@(self.infoView.frame.size.height), @"fromTop": @(topView.frame.origin.y + topView.frame.size.height)} views:NSDictionaryOfVariableBindings(_infoView)]];
     
     [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_infoView(width)]" options:NSLayoutFormatDirectionLeadingToTrailing
                                                                           metrics:@{@"width" : @(self.infoView.frame.size.width)} views:NSDictionaryOfVariableBindings(_infoView)]];
@@ -198,19 +171,44 @@
                                                                           metrics:nil views:NSDictionaryOfVariableBindings(_colorMapView)]];
     
     
-    
-    
+
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillShown) name:UIKeyboardWillShowNotification object:nil];
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHidden) name:UIKeyboardWillHideNotification object:nil];
+    
+    
+    self.hideStatusBar = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [UIView animateWithDuration:2.0 delay:0.0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-        self.mainView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.5];
-    } completion:nil];
     
+    [self setupMainView];
+}
+
+- (void)setupMainView
+{
+    self.mainView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.mainView.bounds cornerRadius:self.mainView.layer.cornerRadius].CGPath;
+    self.mainView.layer.shadowRadius = 4;
+    self.mainView.layer.shadowOffset = CGSizeMake(0, 3);
+    self.mainView.layer.shadowColor = [UIColor blackColor].CGColor;
+    
+    CGFloat shadowOpacity = 0.1;
+    CABasicAnimation *shadowAnimation = [CABasicAnimation animationWithKeyPath:@"shadowOpacity"];
+    shadowAnimation.fromValue = @0.0;
+    shadowAnimation.toValue = @(shadowOpacity);
+    shadowAnimation.duration = 1.0;
+    [self.mainView.layer addAnimation:shadowAnimation forKey:@"shadowOpacity"];
+    self.mainView.layer.shadowOpacity = shadowOpacity;
+}
+
+- (void)setHideStatusBar:(BOOL)hideStatusBar
+{
+    _hideStatusBar = hideStatusBar;
+    
+    [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+        [self setNeedsStatusBarAppearanceUpdate];
+    } completion:nil];
 }
 
 - (void)updateColorsFromPicker:(BOOL)fromPicker
@@ -281,7 +279,7 @@
 
 - (void)writeValues 
 {
-    self.prefs[self.cellIdentifier] = [NSString stringFromColor:self.customColor];
+    self.prefs[self.cellIdentifier] = self.customColor.stringValue;
     [self.prefs writeToFile:self.prefsPath atomically:YES];
     
     [self dismissPicker];
@@ -295,6 +293,8 @@
     
     NSArray *identificsToReloadMenu = @[@"MenuSeparatorColor", @"switchesTintColor", @"switchesOnTintColor"];
     if ([identificsToReloadMenu containsObject:self.cellIdentifier]) CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+    
+    self.hideStatusBar = NO;
     
     [self dismissViewControllerAnimated:YES completion:^{
         self.pickerWindow.hidden = YES;
@@ -336,7 +336,7 @@
     
     UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, width, height)];
     textField.center = CGPointMake(view.frame .size.width / 2, title.center.y + 35);
-    textField.placeholder = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"EXAMPLE_ALERT_MESSAGE", nil, self.cvkBunlde, nil), [NSString hexStringFromColor:self.customColor] ];
+    textField.placeholder = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"EXAMPLE_ALERT_MESSAGE", nil, self.cvkBunlde, nil), self.customColor.hexStringValue];
     textField.borderStyle = UITextBorderStyleRoundedRect;
     textField.clearButtonMode = UITextFieldViewModeWhileEditing;
     textField.returnKeyType = UIReturnKeyDone;
@@ -386,7 +386,7 @@
 
 - (void)copyHEXValue 
 { 
-    [UIPasteboard generalPasteboard].string = [NSString hexStringFromColor:[UIColor savedColorForIdentifier:self.cellIdentifier]];
+    [UIPasteboard generalPasteboard].string = [UIColor savedColorForIdentifier:self.cellIdentifier].hexStringValue;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -399,7 +399,7 @@
     } else {
         textField.layer.borderColor = [UIColor clearColor].CGColor;
         
-        self.customColor = [UIColor colorFromHexString:textField.text];
+        self.customColor = textField.text.hexColorValue;
         [self updateColorsFromPicker:NO];
     }
     [textField resignFirstResponder];

@@ -45,6 +45,6 @@
     }
     UIGraphicsEndImageContext();
     
-    return self;
+    return [UIImage new];
 }
 @end

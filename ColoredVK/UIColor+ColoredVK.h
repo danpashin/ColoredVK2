@@ -15,17 +15,17 @@
  */
 + (UIColor *)colorFromString:(NSString *)string;
 /**
- Creates color from string (only hex strings are allowed)
- */
-+ (UIColor *)colorFromHexString:(NSString *)hexString;
-/**
  Creates color darker than current
  */
-+ (UIColor *)darkerColorForColor:(UIColor *)color;
+@property (nonatomic, readonly, copy) UIColor *darkerColor;
 /**
  Returns saved color for ColoredVK identifiers
  */
-+ ( UIColor *)savedColorForIdentifier:(NSString *)identifier;
++ (UIColor *)savedColorForIdentifier:(NSString *)identifier;
+/**
+ Returns color from preferences dictionary for ColoredVK identifiers
+ */
++ (UIColor *)savedColorForIdentifier:(NSString *)identifier fromPrefs:(NSDictionary *)prefs;
 /**
  Returns standart color for ColoredVK identifiers
  */
@@ -44,4 +44,8 @@
  Returns color with 178.5 red
  */
 + (UIColor *)buttonsTintColor;
+
+
+@property (nonatomic, readonly, copy) NSString *stringValue;
+@property (nonatomic, readonly, copy) NSString *hexStringValue;
 @end

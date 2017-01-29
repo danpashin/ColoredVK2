@@ -43,10 +43,16 @@
 "HIDE_SEPARATORS" = "Скрыть разделители";
 "HIDE_SEARCH" = "Спрятать поиск *";
 "VKAPP_RESTART_IS_NEEDED" = "* Необходим рестарт VK App";
+"USE_CUSTOM_MESSAGE_UNREAD_COLOR" = "Изменить фон непрочитанных";
+"CHANGE_MESSAGE_BUBBLE_TINT_COLOR" = "Изменить цвет сообщений";
+"MESSAGE_BUBBLE_TINT_COLOR" = "Входящие";
+"MESSAGE_SENT_BUBBLE_TINT_COLOR" = "Отправленные";
+
 
 "KEYBOARD_STYLE" = "Стиль клавиатуры";
-"BLACK" = "Черная";
-"WHITE" = "Белая";
+"DEFAULT" = "По умолчанию";
+"DARK" = "Темная";
+"LIGHT" = "Светлая";
 "SHOW_BAR" = "Всегда показывать бар";
 
 "HIDE_NAV_BAR_ITEMS" = "Скрыть элементы навигации";
@@ -55,6 +61,8 @@
 
 "CACHE_COVERS" = "Кэшировать обложки";
 "CLEAR_CACHE" = "Очистить кэш";
+
+"HIDE_COMMENT_SEPARATORS" = "Скрыть разделители в комментариях";
 
 
 

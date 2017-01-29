@@ -11,18 +11,23 @@
 #import <CommonCrypto/CommonDigest.h>
 
 @implementation NSString (ColoredVK)
-+ (NSString *)stringFromColor:(UIColor*)color
+
+- (UIColor *)colorValue
 {
-    if (color == nil) color = [UIColor blackColor];
-    const CGFloat *components = CGColorGetComponents(color.CGColor);
-    return  [NSString stringWithFormat:@"%.3f, %.3f, %.3f, %.3f", components[0], components[1], components[2], components[3]];
+    NSArray *components = [[self stringByReplacingOccurrencesOfString:@" " withString:@""] componentsSeparatedByString:@","];
+    if (components.count > 0) return [UIColor colorWithRed:[components[0] floatValue] green:[components[1] floatValue] blue:[components[2] floatValue] alpha:[components[3] floatValue]];
+    return [UIColor blackColor];
 }
 
-+ (NSString *)hexStringFromColor:(UIColor *)color
+- (UIColor *)hexColorValue 
 {
-    if (color == nil) color = [UIColor blackColor];
-    const CGFloat *components = CGColorGetComponents(color.CGColor);
-    return [NSString stringWithFormat:@"#%02X%02X%02X", (int)(components[0] * 255), (int)(components[1] * 255), (int)(components[2] * 255)];
+    NSString *hexString = self.copy;
+    if (![hexString hasPrefix:@"#"]) hexString = [@"#" stringByAppendingString:hexString];
+    int red = 0;
+    int green = 0;
+    int blue = 0;
+    sscanf(hexString.UTF8String, "#%02X%02X%02X", &red, &green, &blue);
+    return  [UIColor colorWithRed:red/255.0 green:green/255.0 blue:blue/255.0 alpha:1.0];
 }
 
 - (NSString *)md5String

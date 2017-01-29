@@ -19,6 +19,31 @@
 #define textBackgroundColor [UIColor.redColor colorWithAlphaComponent:0.3]
 #define kNewsTableViewSeparatorColor [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1]
 
+@interface VKPPBadge : UIImageView
+@end
+
+
+@interface TextEditController : UIViewController
+@property(retain, nonatomic) UITextView *textView;
+@end
+
+@interface CountryCallingCodeController : UITableViewController
+@end
+
+@interface VKMSearchBar : UISearchBar
+@end
+
+@interface UITableViewIndex : UIControl
+@property (nonatomic, retain) UIColor *indexBackgroundColor;
+@property (nonatomic, retain) UIColor *indexColor;
+@end
+
+@interface UITableViewCellSelectedBackground : UIView 
+@property (nonatomic, retain) UIColor *selectionTintColor;
+@end
+
+
+
 UIButton *postCreationButton;
 
 static void setPostCreationButtonColor()
@@ -488,8 +513,7 @@ CHOptimizedMethod(0, self, void, VKPPBadge, layoutSubviews)
 CHConstructor
 {
     @autoreleasepool {
-        if ([[NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleVersion"] intValue] >= 27) {
-            
+        if (VKVersion() >= 22) {
             
             CHLoadLateClass(UITableView);
             CHHook(0, UITableView, layoutSubviews);

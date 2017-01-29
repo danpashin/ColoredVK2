@@ -97,5 +97,5 @@ IB_DESIGNABLE
  字符串 nil, @"", @"  ", @"\n" Returns NO;
  其他 Returns YES.
  */
-- (BOOL)pp_isNotBlank;
+@property (nonatomic, readonly) BOOL pp_isNotBlank;
 @end

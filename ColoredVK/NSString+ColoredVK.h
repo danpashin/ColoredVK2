@@ -10,16 +10,7 @@
 #import <Foundation/Foundation.h>
 
 @interface NSString (ColoredVK)
-/**
- Creates string from color
- */
-+ (NSString *)stringFromColor:(UIColor*)color;
-/**
- Creates hex string from color
- */
-+ (NSString *)hexStringFromColor:(UIColor *)color;
-/**
- Creates md5 hash string from string
- */
+@property (nonatomic, readonly, copy) UIColor *colorValue;
+@property (nonatomic, readonly, copy) UIColor *hexColorValue;
 @property (copy, nonatomic, readonly) NSString *md5String;
 @end

@@ -134,36 +134,6 @@
 
 
 
-//@interface TextEditController : UIViewController
-//@property(retain, nonatomic) UITextView *textView;
-//@end
-//
-//@interface CountryCallingCodeController : UITableViewController
-//@end
-//
-//@interface VKMSearchBar : UISearchBar
-//@end
-//
-//@interface UITableViewIndex : UIControl
-//@property (nonatomic, retain) UIColor *indexBackgroundColor;
-//@property (nonatomic, retain) UIColor *indexColor;
-//@end
-//
-//@interface UITableViewCellSelectedBackground : UIView 
-//@property (nonatomic, retain) UIColor *selectionTintColor;
-//@end
-
-
-
-
-
-
-
-
-
-
-
-
 //@class VKRenderedTextSettings;
 //@interface VKRenderedText : NSObject
 //+ (instancetype)renderedText:(id)arg1 minSize:(CGSize)arg2 maxSize:(CGSize)arg3 maxNumberOfLinesRange:(NSRange)arg4 alignment:(long long)arg5;
@@ -224,10 +194,15 @@
 
 @interface VKMessage : NSObject
 @property(nonatomic) BOOL read_state;
+@property(nonatomic) _Bool incoming;
 @end
 
 @interface MessageCell : UITableViewCell
 @property(retain, nonatomic) VKMessage *message;
+@end
+
+@interface ChatCell : MessageCell
+@property (strong, nonatomic) UIImageView *bg;
 @end
 
 
@@ -308,10 +283,6 @@
 
 @interface DialogsSearchController : VKMSearchController
 @end
-
-
-//@interface VKPPBadge : UIImageView
-//@end
 
 
 
@@ -443,5 +414,24 @@
 
 @interface MessageController : VKMController 
 @end
+
+
+@interface _UIScrollsToTopInitiatorView : UIView
+@end
+
+@interface UIStatusBar : _UIScrollsToTopInitiatorView
+
+@property (nonatomic, retain) UIColor *foregroundColor;
+@property (nonatomic) BOOL homeItemsDisabled;
+@property (nonatomic) int legibilityStyle;
+@property (nonatomic) BOOL persistentAnimationsEnabled;
+@property (nonatomic) BOOL serverUpdatesDisabled;
+@property (nonatomic) BOOL simulatesLegacyAppearance;
+@property (nonatomic) UIStatusBarWindow *statusBarWindow;
+@property (nonatomic, readonly) int styleOverrides;
+@property (getter=isTimeHidden, nonatomic) BOOL timeHidden;
+
+@end
+
 
 

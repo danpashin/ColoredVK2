@@ -39,6 +39,20 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>key</key>
+			<string>hideCommentSeparators</string>
+			<key>label</key>
+			<string>HIDE_COMMENT_SEPARATORS</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>STATUS_BAR_COLORS</string>
 		</dict>
@@ -130,16 +144,18 @@
 			<key>key</key>
 			<string>keyboardStyle</string>
 			<key>default</key>
-			<string>1</string>
+			<string>0</string>
 			<key>validTitles</key>
 			<array>
-				<string>WHITE</string>
-				<string>BLACK</string>
+				<string>DEFAULT</string>
+				<string>DARK</string>
+				<string>LIGHT</string>
 			</array>
 			<key>validValues</key>
 			<array>
 				<string>0</string>
 				<string>1</string>
+				<string>2</string>
 			</array>
 		</dict>
 	</array>

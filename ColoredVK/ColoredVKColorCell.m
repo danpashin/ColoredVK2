@@ -31,7 +31,7 @@
 {	
     UIView *colorPreview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 28, 28)];
     colorPreview.backgroundColor = [UIColor savedColorForIdentifier:identifier]; 
-    colorPreview.layer.borderColor = [UIColor darkerColorForColor:colorPreview.backgroundColor].CGColor;
+    colorPreview.layer.borderColor = colorPreview.backgroundColor.darkerColor.CGColor;
     colorPreview.layer.borderWidth = 1.0f; 
     colorPreview.layer.cornerRadius = colorPreview.frame.size.height / 2;
 	self.accessoryView = colorPreview;

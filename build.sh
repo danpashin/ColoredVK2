@@ -39,7 +39,7 @@ makeIPA () {
     zip -9qr bndl.zip ./$PRODUCT.bundle
     
     echo "[->] Copying to destination folder..."
-    mv $TEMP_FOLDER/buffer.ipa ~/Desktop/$PRODUCT.ipa
+    mv $TEMP_FOLDER/buffer.ipa ~/Desktop/${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}.ipa
     mv bndl.zip $FOLDER_TO_PACK/${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}.bundle.zip
     
     echo "[->] Cleaning..."

@@ -89,7 +89,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     }
 }
 
-- (id) readPreferenceValue:(PSSpecifier*)specifier
+- (id)readPreferenceValue:(PSSpecifier*)specifier
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
 #ifndef COMPILE_WITH_BLACK_THEME
@@ -197,7 +197,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     hud.didHiddenBlock = ^{ [picker dismissViewControllerAnimated:YES completion:nil]; };
     
     hud.executionBlock = ^(ColoredVKHUD *parentHud) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
             if (![[NSFileManager defaultManager] fileExistsAtPath:self.cvkFolder]) [[NSFileManager defaultManager] createDirectoryAtPath:self.cvkFolder withIntermediateDirectories:NO attributes:nil error:nil];
             NSString *imagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.imageID]];
             NSString *prevImagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", self.imageID]];
@@ -229,8 +229,8 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     };
     
     hud.executionBlock(hud);
-   
 }
+
 
 - (NSString *)getLastCheckForUpdates:(PSSpecifier *)specifier
 {

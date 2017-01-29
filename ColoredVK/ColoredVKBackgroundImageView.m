@@ -13,57 +13,97 @@ const NSInteger PARALLAX_EFFECT_VALUE = 12;
 
 @implementation ColoredVKBackgroundImageView
 
-- (instancetype)initWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout
++ (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name
 {
-    return [self initWithFrame:frame imageName:name blackout:blackout flip:NO parallaxEffect:NO];
+    return [[self alloc] initWithFrame:frame imageName:name blackout:0 flip:NO parallaxEffect:NO];
 }
 
-- (instancetype)initWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip
++ (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout
 {
-    return [self initWithFrame:frame imageName:name blackout:blackout flip:flip parallaxEffect:NO];
+    return [[self alloc] initWithFrame:frame imageName:name blackout:blackout flip:NO parallaxEffect:NO];
 }
 
-- (instancetype)initWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect 
++ (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip
 {
-    return [self initWithFrame:frame imageName:name blackout:blackout flip:NO parallaxEffect:parallaxEffect];
+    return [[self alloc] initWithFrame:frame imageName:name blackout:blackout flip:flip parallaxEffect:NO];
+}
+
++ (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect 
+{
+    return [[self alloc] initWithFrame:frame imageName:name blackout:blackout flip:NO parallaxEffect:parallaxEffect];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip parallaxEffect:(BOOL)parallaxEffect
 {    
-    self = [super initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+    self = [super initWithFrame:frame];
     if (self) {
         self.tag = 23;
         self.backgroundColor = [UIColor blackColor];
         _name = name;
         _blackout = blackout;
         
-        UIImageView *myImageView = [UIImageView new];
-        myImageView.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
-        myImageView.image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, name]];
-        myImageView.contentMode = UIViewContentModeScaleAspectFill;
-        if (flip) myImageView.transform = CGAffineTransformMakeRotation(180 * M_PI/180);
-        [self addSubview:myImageView];
+        self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
+        self.imageView.image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, name]];
+        self.imageView.contentMode = UIViewContentModeScaleAspectFill;
+        if (flip) self.imageView.transform = CGAffineTransformMakeRotation(180 * M_PI/180);
+        [self addSubview:self.imageView];
         
-        UIView *frontView = [UIView new];
-        frontView.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
-        frontView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:blackout];
-        [self addSubview:frontView];
+        self.frontView = [[UIView alloc] initWithFrame:self.imageView.bounds];
+        self.frontView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:blackout];
+        [self.imageView addSubview:self.frontView];        
         
+        self.imageView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_imageView]|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                     metrics:nil views:NSDictionaryOfVariableBindings(_imageView)]];
+        
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_imageView]|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                     metrics:nil views:NSDictionaryOfVariableBindings(_imageView)]];
+        
+        self.frontView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.imageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_frontView]|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                               metrics:nil views:NSDictionaryOfVariableBindings(_frontView)]];
+        
+        [self.imageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_frontView]|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                               metrics:nil views:NSDictionaryOfVariableBindings(_frontView)]];
+        
+                
         if (parallaxEffect) {
             UIInterpolatingMotionEffect *verticalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y" type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
             verticalMotionEffect.minimumRelativeValue = @(-PARALLAX_EFFECT_VALUE);
             verticalMotionEffect.maximumRelativeValue = @(PARALLAX_EFFECT_VALUE);
-            [myImageView addMotionEffect:verticalMotionEffect];
+            [self.imageView addMotionEffect:verticalMotionEffect];
             UIInterpolatingMotionEffect *horizontalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x" type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
             horizontalMotionEffect.minimumRelativeValue = @(-PARALLAX_EFFECT_VALUE);
             horizontalMotionEffect.maximumRelativeValue = @(PARALLAX_EFFECT_VALUE);
-            [myImageView addMotionEffect:horizontalMotionEffect];
+            [self.imageView addMotionEffect:horizontalMotionEffect];
         }
     }
     
     return self;
 }
 
+- (void)updateViewForKey:(NSString *)key
+{
+    
+    NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
+    CGFloat blackout = [prefs[key] floatValue];
+    
+    self.frontView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:blackout];
+    self.imageView.image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, self.name]];
+}
 
+- (void)addToView:(UIView *)view
+{
+    if (![view.subviews containsObject:[view viewWithTag:self.tag]]) {
+        [view addSubview:self];
+        [view sendSubviewToBack:self];
+        
+        self.translatesAutoresizingMaskIntoConstraints = NO;
+        [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                     metrics:nil views:@{@"view":self}]];
+        [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                     metrics:nil views:@{@"view":self}]];
+    }
+}
 
 @end

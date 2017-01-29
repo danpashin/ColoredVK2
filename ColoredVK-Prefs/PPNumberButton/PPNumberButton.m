@@ -41,15 +41,14 @@
     {
         [self setupUI];
         //整个控件的默认尺寸(和某宝上面的按钮同样大小)
-        if(CGRectIsEmpty(frame)) {self.frame = CGRectMake(0, 0, 110, 30);};
+        if(CGRectIsEmpty(frame)) { self.frame = CGRectMake(0, 0, 110, 30); };
     }
     return self;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
-    if (self = [super initWithCoder:coder])
-    {
+    if (self = [super initWithCoder:coder]) {
         [self setupUI];
     }
     return self;
@@ -72,18 +71,18 @@
     _buttonTitleFont = 17;
     
     //加,减按钮
-    _increaseBtn = [self creatButton];
-    _decreaseBtn = [self creatButton];
-    [self addSubview:_decreaseBtn];
-    [self addSubview:_increaseBtn];
+    self.increaseBtn = [self creatButton];
+    self.decreaseBtn = [self creatButton];
+    [self addSubview:self.decreaseBtn];
+    [self addSubview:self.increaseBtn];
     
     //数量展示/输入框
-    _textField = [[UITextField alloc] init];
-    _textField.delegate = self;
-    _textField.textAlignment = NSTextAlignmentCenter;
-    _textField.keyboardType = UIKeyboardTypeNumberPad;
-    _textField.font = [UIFont systemFontOfSize:_inputFieldFont];
-    _textField.text = [NSString stringWithFormat:@"%ld",_minValue];
+    self.textField = [[UITextField alloc] init];
+    self.textField.delegate = self;
+    self.textField.textAlignment = NSTextAlignmentCenter;
+    self.textField.keyboardType = UIKeyboardTypeNumberPad;
+    self.textField.font = [UIFont systemFontOfSize:self.inputFieldFont];
+    self.textField.text = [NSString stringWithFormat:@"%@", @(self.minValue)];
     
     [self addSubview:_textField];
 }
@@ -92,7 +91,7 @@
 - (UIButton *)creatButton
 {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-    button.titleLabel.font = [UIFont boldSystemFontOfSize:_buttonTitleFont];
+    button.titleLabel.font = [UIFont boldSystemFontOfSize:self.buttonTitleFont];
     [button setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     [button addTarget:self action:@selector(touchDown:) forControlEvents:UIControlEventTouchDown];
     [button addTarget:self action:@selector(touchUp:) forControlEvents:UIControlEventTouchUpOutside|UIControlEventTouchUpInside|UIControlEventTouchCancel];
@@ -104,15 +103,15 @@
 {
     [super layoutSubviews];
     
-    _width =  self.frame.size.width;
-    _height = self.frame.size.height;
-    _textField.frame = CGRectMake(_height, 0, _width - 2*_height, _height);
-    _increaseBtn.frame = CGRectMake(_width - _height, 0, _height, _height);
+    self.width =  self.frame.size.width;
+    self.height = self.frame.size.height;
+    self.textField.frame = CGRectMake(self.height, 0, self.width - 2*self.height, self.height);
+    self.increaseBtn.frame = CGRectMake(self.width - self.height, 0, self.height, self.height);
     
-    if (_decreaseHide && _textField.text.integerValue < _minValue) {
-        _decreaseBtn.frame = CGRectMake(_width-_height, 0, _height, _height);
+    if (self.decreaseHide && self.textField.text.integerValue < self.minValue) {
+        self.decreaseBtn.frame = CGRectMake(self.width-self.height, 0, self.height, self.height);
     } else {
-        _decreaseBtn.frame = CGRectMake(0, 0, _height, _height);
+        self.decreaseBtn.frame = CGRectMake(0, 0, self.height, self.height);
     }
 }
 
@@ -129,14 +128,14 @@
  */
 - (void)touchDown:(UIButton *)sender
 {
-    [_textField resignFirstResponder];
+    [self.textField resignFirstResponder];
     
-    if (sender == _increaseBtn){
-        _timer = [NSTimer scheduledTimerWithTimeInterval:0.1f target:self selector:@selector(increase) userInfo:nil repeats:YES];
+    if (sender == self.increaseBtn) {
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1f target:self selector:@selector(increase) userInfo:nil repeats:YES];
     } else {
-        _timer = [NSTimer scheduledTimerWithTimeInterval:0.1f target:self selector:@selector(decrease) userInfo:nil repeats:YES];
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1f target:self selector:@selector(decrease) userInfo:nil repeats:YES];
     }
-    [_timer fire];
+    [self.timer fire];
 }
 
 /**
@@ -153,26 +152,22 @@
     
     NSInteger number = _textField.text.integerValue + 1;
     
-    if (number <= _maxValue)
-    {
+    if (number <= self.maxValue) {
         // 当按钮为"减号按钮隐藏模式",且输入框值==设定最小值,减号按钮展开
-        if (_decreaseHide && number==_minValue)
-        {
+        if (self.decreaseHide && number == self.minValue) {
             [self rotationAnimationMethod];
             [UIView animateWithDuration:0.3f animations:^{
-                _decreaseBtn.alpha = 1;
-                _decreaseBtn.frame = CGRectMake(0, 0, _height, _height);
+                self.decreaseBtn.alpha = 1;
+                self.decreaseBtn.frame = CGRectMake(0, 0, self.height, self.height);
             } completion:^(BOOL finished) {
-                _textField.hidden = NO;
+                self.textField.hidden = NO;
             }];
         }
-        _textField.text = [NSString stringWithFormat:@"%ld", number];
+        self.textField.text = [NSString stringWithFormat:@"%@", @(number)];
         
         [self buttonClickCallBackWithIncreaseStatus:YES];
-    }
-    else
-    {
-        if (_shakeAnimation) { [self shakeAnimationMethod]; } PPLog(@"已超过最大数量%ld",_maxValue);
+    } else {
+        if (self.shakeAnimation) { [self shakeAnimationMethod]; } PPLog(@"已超过最大数量%ld",_maxValue);
     }
 }
 
@@ -183,32 +178,28 @@
 {
     [self checkTextFieldNumberWithUpdate];
     
-    NSInteger number = [_textField.text integerValue] - 1;
+    NSInteger number = (_textField.text).integerValue - 1;
     
-    if (number >= _minValue)
-    {
-        _textField.text = [NSString stringWithFormat:@"%ld", number];
+    if (number >= self.minValue) {
+        self.textField.text = [NSString stringWithFormat:@"%@", @(number)];
         [self buttonClickCallBackWithIncreaseStatus:NO];
-    }
-    else
-    {
+    } else {
         // 当按钮为"减号按钮隐藏模式",且输入框值 < 设定最小值,减号按钮隐藏
-        if (_decreaseHide && number<_minValue)
-        {
-            _textField.hidden = YES;
-            _textField.text = [NSString stringWithFormat:@"%ld",_minValue-1];
+        if (self.decreaseHide && number < self.minValue) {
+            self.textField.hidden = YES;
+            self.textField.text = [NSString stringWithFormat:@"%@",@(self.minValue-1)];
             
             [self buttonClickCallBackWithIncreaseStatus:NO];
             [self rotationAnimationMethod];
             
             [UIView animateWithDuration:0.3f animations:^{
-                _decreaseBtn.alpha = 0;
-                _decreaseBtn.frame = CGRectMake(_width-_height, 0, _height, _height);
+                self.decreaseBtn.alpha = 0;
+                self.decreaseBtn.frame = CGRectMake(self.width-self.height, 0, self.height, self.height);
             }];
 
             return;
         }
-        if (_shakeAnimation) { [self shakeAnimationMethod]; } PPLog(@"数量不能小于%ld",_minValue);
+        if (self.shakeAnimation) { [self shakeAnimationMethod]; } PPLog(@"数量不能小于%ld",_minValue);
     }
 }
 
@@ -217,9 +208,9 @@
  */
 - (void)buttonClickCallBackWithIncreaseStatus:(BOOL)increaseStatus
 {
-    _resultBlock ? _resultBlock(_textField.text.integerValue, increaseStatus) : nil;
-    if ([_delegate respondsToSelector:@selector(pp_numberButton: number: increaseStatus:)]) {
-        [_delegate pp_numberButton:self number:_textField.text.integerValue increaseStatus:increaseStatus];
+    self.resultBlock ? self.resultBlock(_textField.text.integerValue, increaseStatus) : nil;
+    if ([self.delegate respondsToSelector:@selector(pp_numberButton: number: increaseStatus:)]) {
+        [self.delegate pp_numberButton:self number:self.textField.text.integerValue increaseStatus:increaseStatus];
     }
 }
 
@@ -228,14 +219,13 @@
  */
 - (void)checkTextFieldNumberWithUpdate
 {
-    NSString *minValueString = [NSString stringWithFormat:@"%ld",_minValue];
-    NSString *maxValueString = [NSString stringWithFormat:@"%ld",_maxValue];
+    NSString *minValueString = [NSString stringWithFormat:@"%@", @(self.minValue)];
+    NSString *maxValueString = [NSString stringWithFormat:@"%@", @(self.maxValue)];
     
-    if ([_textField.text pp_isNotBlank] == NO || _textField.text.integerValue < _minValue)
-    {
-        _textField.text = _decreaseHide ? [NSString stringWithFormat:@"%ld",minValueString.integerValue-1]:minValueString;
+    if (!(self.textField.text).pp_isNotBlank || self.textField.text.integerValue < self.minValue) {
+        self.textField.text = self.decreaseHide ? [NSString stringWithFormat:@"%@", @(minValueString.integerValue-1)]:minValueString;
     }
-    _textField.text.integerValue > _maxValue ? _textField.text = maxValueString : nil;
+    self.textField.text.integerValue > self.maxValue ? self.textField.text = maxValueString : nil;
 }
 
 /**
@@ -243,7 +233,10 @@
  */
 - (void)cleanTimer
 {
-    if (_timer.isValid) { [_timer invalidate] ; _timer = nil; }
+    if (self.timer.isValid) {
+        [self.timer invalidate];
+        self.timer = nil;
+    }
 }
 
 #pragma mark - 加减按钮的属性设置
@@ -251,20 +244,16 @@
 - (void)setDecreaseHide:(BOOL)decreaseHide
 {
     // 当按钮为"减号按钮隐藏模式(饿了么/百度外卖/美团外卖按钮样式)"
-    if (decreaseHide)
-    {
-        if (_textField.text.integerValue <= _minValue)
-        {
-            _textField.hidden = YES;
-            _decreaseBtn.alpha = 0;
-            _textField.text = [NSString stringWithFormat:@"%ld",_minValue-1];
-            _decreaseBtn.frame = CGRectMake(_width-_height, 0, _height, _height);
+    if (decreaseHide) {
+        if (self.textField.text.integerValue <= self.minValue) {
+            self.textField.hidden = YES;
+            self.decreaseBtn.alpha = 0;
+            self.textField.text = [NSString stringWithFormat:@"%@", @(self.minValue-1)];
+            self.decreaseBtn.frame = CGRectMake(self.width-self.height, 0, self.height, self.height);
         }
         self.backgroundColor = [UIColor clearColor];
-    }
-    else
-    {
-        _decreaseBtn.frame = CGRectMake(0, 0, _height, _height);
+    } else {
+        self.decreaseBtn.frame = CGRectMake(0, 0, self.height, self.height);
     }
     _decreaseHide = decreaseHide;
 }
@@ -272,13 +261,13 @@
 - (void)setEditing:(BOOL)editing
 {
     _editing = editing;
-    _textField.enabled = editing;
+    self.textField.enabled = editing;
 }
 
 - (void)setMinValue:(NSInteger)minValue
 {
     _minValue = minValue;
-    _textField.text = [NSString stringWithFormat:@"%ld",minValue];
+    self.textField.text = [NSString stringWithFormat:@"%@", @(minValue)];
 }
 
 - (void)setBorderColor:(UIColor *)borderColor
@@ -286,44 +275,44 @@
     _borderColor = borderColor;
     
     self.layer.borderWidth = 0.5;
-    self.layer.borderColor = [borderColor CGColor];
+    self.layer.borderColor = borderColor.CGColor;
     
-    _decreaseBtn.layer.borderWidth = 0.5;
-    _decreaseBtn.layer.borderColor = [borderColor CGColor];
+    self.decreaseBtn.layer.borderWidth = 0.5;
+    self.decreaseBtn.layer.borderColor = borderColor.CGColor;
     
-    _increaseBtn.layer.borderWidth = 0.5;
-    _increaseBtn.layer.borderColor = [borderColor CGColor];
+    self.increaseBtn.layer.borderWidth = 0.5;
+    self.increaseBtn.layer.borderColor = borderColor.CGColor;
 }
 
 - (void)setButtonTitleFont:(CGFloat)buttonTitleFont
 {
-    _buttonTitleFont = buttonTitleFont;
-    _increaseBtn.titleLabel.font = [UIFont boldSystemFontOfSize:buttonTitleFont];
-    _decreaseBtn.titleLabel.font = [UIFont boldSystemFontOfSize:buttonTitleFont];
+    self.buttonTitleFont = buttonTitleFont;
+    self.increaseBtn.titleLabel.font = [UIFont boldSystemFontOfSize:buttonTitleFont];
+    self.decreaseBtn.titleLabel.font = [UIFont boldSystemFontOfSize:buttonTitleFont];
 }
 
 - (void)setIncreaseTitle:(NSString *)increaseTitle
 {
     _increaseTitle = increaseTitle;
-    [_increaseBtn setTitle:increaseTitle forState:UIControlStateNormal];
+    [self.increaseBtn setTitle:increaseTitle forState:UIControlStateNormal];
 }
 
 - (void)setDecreaseTitle:(NSString *)decreaseTitle
 {
     _decreaseTitle = decreaseTitle;
-    [_decreaseBtn setTitle:decreaseTitle forState:UIControlStateNormal];
+    [self.decreaseBtn setTitle:decreaseTitle forState:UIControlStateNormal];
 }
 
 - (void)setIncreaseImage:(UIImage *)increaseImage
 {
     _increaseImage = increaseImage;
-    [_increaseBtn setBackgroundImage:increaseImage forState:UIControlStateNormal];
+    [self.increaseBtn setBackgroundImage:increaseImage forState:UIControlStateNormal];
 }
 
 - (void)setDecreaseImage:(UIImage *)decreaseImage
 {
     _decreaseImage = decreaseImage;
-    [_decreaseBtn setBackgroundImage:decreaseImage forState:UIControlStateNormal];
+    [self.decreaseBtn setBackgroundImage:decreaseImage forState:UIControlStateNormal];
 }
 
 #pragma mark - 输入框中的内容设置
@@ -331,26 +320,23 @@
 
 - (void)setCurrentNumber:(NSInteger)currentNumber
 {
-    if (_decreaseHide && currentNumber < _minValue)
-    {
-        _textField.hidden = YES;
-        _decreaseBtn.alpha = 0;
-        _decreaseBtn.frame = CGRectMake(_width-_height, 0, _height, _height);
+    if (self.decreaseHide && currentNumber < self.minValue) {
+        self.textField.hidden = YES;
+        self.decreaseBtn.alpha = 0;
+        self.decreaseBtn.frame = CGRectMake(self.width-_height, 0, self.height, self.height);
+    } else {
+        self.textField.hidden = NO;
+        self.decreaseBtn.alpha = 1;
+        self.decreaseBtn.frame = CGRectMake(0, 0, self.height, self.height);
     }
-    else
-    {
-        _textField.hidden = NO;
-        _decreaseBtn.alpha = 1;
-        _decreaseBtn.frame = CGRectMake(0, 0, _height, _height);
-    }
-    _textField.text = [NSString stringWithFormat:@"%ld",currentNumber];
+    self.textField.text = [NSString stringWithFormat:@"%@", @(currentNumber)];
     [self checkTextFieldNumberWithUpdate];
 }
 
 - (void)setInputFieldFont:(CGFloat)inputFieldFont
 {
     _inputFieldFont = inputFieldFont;
-    _textField.font = [UIFont systemFontOfSize:inputFieldFont];
+    self.textField.font = [UIFont systemFontOfSize:inputFieldFont];
 }
 #pragma mark - 核心动画
 /**
@@ -376,7 +362,7 @@
     rotationAnimation.duration = 0.3f;
     rotationAnimation.fillMode = kCAFillModeForwards;
     rotationAnimation.removedOnCompletion = NO;
-    [_decreaseBtn.layer addAnimation:rotationAnimation forKey:nil];
+    [self.decreaseBtn.layer addAnimation:rotationAnimation forKey:nil];
 }
 @end
 
@@ -386,11 +372,9 @@
 - (BOOL)pp_isNotBlank
 {
     NSCharacterSet *blank = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-    for (NSInteger i = 0; i < self.length; ++i)
-    {
+    for (NSInteger i = 0; i < self.length; ++i) {
         unichar c = [self characterAtIndex:i];
-        if (![blank characterIsMember:c])
-        {
+        if (![blank characterIsMember:c]) {
             return YES;
         }
     }

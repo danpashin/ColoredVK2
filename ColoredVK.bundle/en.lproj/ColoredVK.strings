@@ -39,10 +39,15 @@
 "HIDE_SEPARATORS" = "Hide separators";
 "HIDE_SEARCH" = "Hide search *";
 "VKAPP_RESTART_IS_NEEDED" = "* VK App restart is needed";
+"USE_CUSTOM_MESSAGE_UNREAD_COLOR" = "Change unread background";
+"CHANGE_MESSAGE_BUBBLE_TINT_COLOR" = "Change message color";
+"MESSAGE_BUBBLE_TINT_COLOR" = "Incoming";
+"MESSAGE_SENT_BUBBLE_TINT_COLOR" = "Sent";
 
 "KEYBOARD_STYLE" = "Keyboard style";
-"BLACK" = "Black";
-"WHITE" = "White";
+"DEFAULT" = "Default";
+"DARK" = "Dark";
+"LIGHT" = "Light";
 "SHOW_BAR" = "Always show nav bar";
 
 
@@ -52,6 +57,8 @@
 
 "CACHE_COVERS" = "Cache covers";
 "CLEAR_CACHE" = "Clear cache";
+
+"HIDE_COMMENT_SEPARATORS" = "Приховати сепаратори в коментарях";
 
 
 
