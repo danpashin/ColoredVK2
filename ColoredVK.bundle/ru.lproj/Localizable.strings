@@ -13,7 +13,7 @@
 "THIS_ACTION_CAN_NOT_BE_UNDONE" = "Это действие не может быть отменено";
 "CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Невозможно сохранить изображение. Попробуйте снова или обратитесь к разработчику.";
 
-"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE" = "Доступно обновление твика. (%@) Обновить?";
+"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE" = "Доступна новая версия твика (%@). Обновить?";
 "REMIND_LATER_BUTTON_TITLE" = "Напомнить позже";
 "SKIP_THIS_VERSION_BUTTON_TITLE" = "Пропустить эту версию";
 "UPADTE_BUTTON_TITLE" = "Обновить сейчас";
@@ -36,3 +36,6 @@
 
 "SET_THIS_IMAGE_TO" = "Установить это изображение в";
 "VKAPP_VERSION_IS_TOO_LOW" = "ColoredVK 2 не поддерживает данную версию приложения (%@).\nПожалуйста, установите VK App %@ или выше";
+
+"CONTINUE" = "Продолжить";
+"GETTING_UDID_ERROR" = "ColoredVK 2 не может автоматически получить UDID Вашего устройства.\nДля продолжения Вам необходимо вручную ввести его в поле ниже.\nУзнать UDID можно на главной странице Cydia снизу.";

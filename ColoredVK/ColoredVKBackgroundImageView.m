@@ -50,7 +50,7 @@ const NSInteger PARALLAX_EFFECT_VALUE = 12;
         
         self.frontView = [[UIView alloc] initWithFrame:self.imageView.bounds];
         self.frontView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:blackout];
-        [self.imageView addSubview:self.frontView];        
+        [self.imageView addSubview:self.frontView];
         
         self.imageView.translatesAutoresizingMaskIntoConstraints = NO;
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_imageView]|" options:NSLayoutFormatDirectionLeadingToTrailing
@@ -84,7 +84,6 @@ const NSInteger PARALLAX_EFFECT_VALUE = 12;
 
 - (void)updateViewForKey:(NSString *)key
 {
-    
     NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
     CGFloat blackout = [prefs[key] floatValue];
     

@@ -434,4 +434,7 @@
 @end
 
 
+@interface DetailController : VKMLiveController
+@property(retain, nonatomic) ExtraInputPanelView *inputPanel;
+@end
 

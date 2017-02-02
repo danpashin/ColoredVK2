@@ -36,3 +36,6 @@
 
 "SET_THIS_IMAGE_TO" = "Set this image to";
 "VKAPP_VERSION_IS_TOO_LOW" = "ColoredVK 2 doesn't support this app version (%@).\nPlease, install VK App %@ or later";
+
+"CONTINUE" = "Continue";
+"GETTING_UDID_ERROR" = "ColoredVK 2 cannot automatically obtain UDID of your device.\nTo continue, you have to enter it manually in the box below.\nYou can find UDID in Cydia's main page at the bottom.";

@@ -163,6 +163,8 @@ static void reloadPrefs()
     enabled = [prefs[@"enabled"] boolValue];
     hideMenuSearch = [prefs[@"hideMenuSearch"] boolValue];
     enabledMenuImage = [prefs[@"enabledMenuImage"] boolValue];
+    menuImageBlackout = [prefs[@"menuImageBlackout"] floatValue];
+    useMenuParallax = [prefs[@"useMenuParallax"] boolValue];
     
     if (prefs && tweakEnabled) {
         enabledBarColor = [prefs[@"enabledBarColor"] boolValue];
@@ -180,7 +182,6 @@ static void reloadPrefs()
         
         hideCommentSeparators = [prefs[@"hideCommentSeparators"] boolValue];
         
-        
         enabledMessagesImage = [prefs[@"enabledMessagesImage"] boolValue];
         enabledMessagesListImage = [prefs[@"enabledMessagesListImage"] boolValue];
         enabledGroupsListImage = [prefs[@"enabledGroupsListImage"] boolValue];
@@ -196,13 +197,11 @@ static void reloadPrefs()
         useGroupsListBlur = [prefs[@"useGroupsListBlur"] boolValue];
         useAudioBlur = [prefs[@"useAudioBlur"] boolValue];
         
-        useMenuParallax = [prefs[@"useMenuParallax"] boolValue];
         useMessagesListParallax = [prefs[@"useMessagesListParallax"] boolValue];
         useMessagesParallax = [prefs[@"useMessagesParallax"] boolValue];
         useGroupsListParallax = [prefs[@"useGroupsListParallax"] boolValue];
         useAudioParallax = [prefs[@"useAudioParallax"] boolValue];
         
-        menuImageBlackout = [prefs[@"menuImageBlackout"] floatValue];
         chatImageBlackout = [prefs[@"chatImageBlackout"] floatValue];
         chatListImageBlackout = [prefs[@"chatListImageBlackout"] floatValue];
         groupsListImageBlackout = [prefs[@"groupsListImageBlackout"] floatValue];
@@ -555,7 +554,7 @@ static void setupMessageBubbleForCell(ChatCell *cell)
                 if (enabledBlackTheme) {
                     cell.bg.image = [cell.bg.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
                     cell.bg.tintColor = [UIColor lightBlackColor];
-                } else if (useMessageBubbleTintColor && enabledMessagesImage) {
+                } else if (useMessageBubbleTintColor) {
                     cell.bg.image = [cell.bg.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
                     cell.bg.tintColor = cell.message.incoming?messageBubbleTintColor:messageBubbleSentTintColor;
                 }
@@ -647,23 +646,6 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDict
     }
     
     CHSuper(1, UINavigationBar, setTitleTextAttributes, attributes);
-}
-
-
-#pragma mark UIToolbar
-CHDeclareClass(UIToolbar);
-CHOptimizedMethod(0, self, void, UIToolbar, layoutSubviews)
-{
-    CHSuper(0, UIToolbar, layoutSubviews);
-    setToolBar(self);
-}
-
-CHOptimizedMethod(0, self, void, UIToolbar, setNeedsLayout)
-{
-    CHSuper(0, UIToolbar, setNeedsLayout);
-    
-    if ((enabled && enabledToolBarColor) && [self respondsToSelector:@selector(setBarTintColor:)])
-        self.barTintColor = toolBarBackgroundColor;
 }
 
 
@@ -806,6 +788,8 @@ CHOptimizedMethod(1, self, void, VKMToolbarController, viewWillAppear, BOOL, ani
 {
     CHSuper(1, VKMToolbarController, viewWillAppear, animated);
     if ([self respondsToSelector:@selector(toolbar)]) {
+        setToolBar(self.toolbar);
+        
         BOOL shouldAddBlur = NO;
         if (enabled) {
             if (enabledBlackTheme) shouldAddBlur = NO;
@@ -960,7 +944,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, DialogsController, tableView, UITab
         } else if (enabledMessagesListImage) {
             cell.backgroundView.hidden = YES;
             cell.backgroundColor = [UIColor clearColor];
-            if (!cell.dialog.head.read_state && cell.unread.hidden) cell.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
+            if (!cell.dialog.head.read_state && cell.unread.hidden) cell.contentView.backgroundColor = useCustomMessageReadColor?messageReadColor:[UIColor defaultColorForIdentifier:@"messageReadColor"];
             else cell.contentView.backgroundColor = [UIColor clearColor];
             
             cell.name.textColor = [UIColor colorWithWhite:1 alpha:0.9];
@@ -979,10 +963,6 @@ CHOptimizedMethod(2, self, UITableViewCell*, DialogsController, tableView, UITab
     return CHSuper(2, DialogsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
 }
 
-
-
-#pragma mark VKMSearchController
-
 #pragma mark BackgroundView
 CHDeclareClass(BackgroundView);
 CHOptimizedMethod(1, self, void, BackgroundView, drawRect, CGRect, rect)
@@ -996,12 +976,22 @@ CHOptimizedMethod(1, self, void, BackgroundView, drawRect, CGRect, rect)
     } else CHSuper(1, BackgroundView, drawRect, rect);
 }
 
+#pragma mark DetailController - тулбар
+CHDeclareClass(DetailController);
+CHOptimizedMethod(1, self, void, DetailController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, DetailController, viewWillAppear, animated);
+    if ([self isKindOfClass:NSClassFromString(@"DetailController")]) setToolBar(self.inputPanel);
+}
 
-#pragma mark ChatController
+
+#pragma mark ChatController (тулбар)
 CHDeclareClass(ChatController);
 CHOptimizedMethod(1, self, void, ChatController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, ChatController, viewWillAppear, animated);
+    
+    setToolBar(self.inputPanel);
     if (enabled) {
         if (enabledBlackTheme) {
             for (UIView *subview in self.inputPanel.subviews) {
@@ -1131,8 +1121,9 @@ CHOptimizedMethod(0, self, void, VKMMainController, viewDidLoad)
 {
     CHSuper(0, VKMMainController, viewDidLoad);
     if (!mainController) mainController = self;
-    if (!mainMenuBackgroundView)
+    if (!mainMenuBackgroundView) {
         mainMenuBackgroundView = [ColoredVKBackgroundImageView viewWithFrame:self.view.frame imageName:@"menuBackgroundImage" blackout:menuImageBlackout parallaxEffect:useMenuParallax];
+    }
     
     if (enabled && enabledMenuImage) {
         [mainMenuBackgroundView addToView:self.view];
@@ -1649,11 +1640,6 @@ CHConstructor
             CHHook(1, UINavigationBar, setTitleTextAttributes);
             
             
-            CHLoadLateClass(UIToolbar);
-            CHHook(0, UIToolbar, layoutSubviews);
-            if (SYSTEM_VERSION_IS_MORE_THAN(10.0)) CHHook(0, UIToolbar, setNeedsLayout);
-            
-            
             
             CHLoadLateClass(UITextInputTraits);
             CHHook(0, UITextInputTraits, keyboardAppearance);
@@ -1763,6 +1749,9 @@ CHConstructor
             
             CHLoadLateClass(VKComment);
             CHHook(0, VKComment, separatorDisabled);
+            
+            CHLoadLateClass(DetailController);
+            CHHook(1, DetailController, viewWillAppear);
 
 
         } else {

@@ -15,7 +15,7 @@
 #define kDRMPackageName         @"ColoredVK 2"
 #define kDRMPackageVersion      kColoredVKVersion
 #define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
-#define kDRMRemoteServerURL     [NSString stringWithFormat:@"http://danpashin.ru/api/v%@/index-new.php", API_VERSION]
+#define kDRMRemoteServerURL     [NSString stringWithFormat:@"http://danpashin.ru/api/v%@/", API_VERSION]
 
 @interface ColoredVKInstaller : NSObject
 - (void)install:( void(^)(BOOL disableTweak) )block;
