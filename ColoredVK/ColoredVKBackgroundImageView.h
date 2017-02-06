@@ -21,6 +21,7 @@ FOUNDATION_EXPORT const NSInteger PARALLAX_EFFECT_VALUE;
 @property (assign, nonatomic, readonly) CGFloat blackout;
 @property (strong, nonatomic) UIImageView *imageView;
 @property (strong, nonatomic) UIView *frontView;
+@property (assign, nonatomic) BOOL parallaxEnabled;
 
 - (void)updateViewForKey:(NSString *)key;
 - (void)addToView:(UIView *)view;

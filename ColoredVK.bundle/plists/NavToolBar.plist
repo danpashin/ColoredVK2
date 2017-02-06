@@ -47,6 +47,10 @@
 			<string>BarBackgroundColor</string>
 		</dict>
 		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
 			<key>cellClass</key>
 			<string>ColoredVKImageCell</string>
 			<key>action</key>
@@ -59,6 +63,16 @@
 			<string>barImage</string>
 			<key>textColor</key>
 			<string>0.35, 0.5, 0.7, 1.0</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>label</key>
+			<string>IMAGE_BLACKOUT</string>
+			<key>cellClass</key>
+			<string>ColoredVKStepperPrefsCell</string>
+			<key>id</key>
+			<string>navbarImageBlackout</string>
 		</dict>
 		<dict>
 			<key>label</key>

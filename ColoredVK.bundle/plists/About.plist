@@ -38,7 +38,7 @@
 		</dict>
 		<dict>
 			<key>label</key>
-			<string>LICENCES</string>
+			<string>USED_LIBRARIES</string>
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>

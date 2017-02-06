@@ -25,7 +25,5 @@ typedef NS_ENUM(NSInteger, CVKCellSelectionStyle) {
 };
 
 extern BOOL enabled;
-extern BOOL enabledBlackTheme;
-extern BOOL blackThemeWasEnabled;
 extern CVKCellSelectionStyle menuSelectionStyle;
 

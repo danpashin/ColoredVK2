@@ -34,7 +34,7 @@
 "BLUR_SETTINGS" = "Настройки размытия";
 
 "CHANGE_BACKGROUND" = "Изменить фон";
-"IMAGE_BLACKOUT" = "Затемнение изобр.";
+"IMAGE_BLACKOUT" = "Затемнение изображ.";
 "SELECTION_STYLE" = "Стиль выбранной ячейки";
 "TRANSPARENT" = "Прозрачная";
 "SEMI_TRANSPARENT" = "Полупрозрачная";
@@ -53,7 +53,7 @@
 "DEFAULT" = "По умолчанию";
 "DARK" = "Темная";
 "LIGHT" = "Светлая";
-"SHOW_BAR" = "Всегда показывать бар";
+"ALWAYS_SHOW_NAVIGATION_BAR" = "Всегда показывать бар навигации";
 
 "HIDE_NAV_BAR_ITEMS" = "Скрыть элементы навигации";
 "USE_PARALLAX" = "Включить параллакс";
@@ -63,6 +63,8 @@
 "CLEAR_CACHE" = "Очистить кэш";
 
 "HIDE_COMMENT_SEPARATORS" = "Скрыть разделители в комментариях";
+"ONLY_WORK_ON_VKAPP_2.9" = "Работает только в VKApp >2.9";
+"DISABLE_COVERS" = "Отключить обложки";
 
 
 
@@ -82,4 +84,4 @@
 "SETTINGS" = "Настройки";
 "DEVELOPER_IN_VK" = "Разработчик в ВК";
 "UPDATES_SETTINGS" = "Настройки обновлений";
-"LICENCES" = "Лицензии";
+"USED_LIBRARIES" = "Используемые библиотеки";

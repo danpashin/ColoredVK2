@@ -49,7 +49,7 @@
 "DEFAULT" = "За замовчуванням";
 "DARK" = "Темна";
 "LIGHT" = "Світла";
-"SHOW_BAR" = "Завжди показувати бар";
+"ALWAYS_SHOW_NAVIGATION_BAR" = "Завжди показувати бар навігації";
 
 "CHANGE_APPEARANCE" = "Налаштування";
 "HIDE_NAV_BAR_ITEMS" = "Приховати елементи навігації";
@@ -59,6 +59,8 @@
 "CLEAR_CACHE" = "Очистити кеш";
 
 "HIDE_COMMENT_SEPARATORS" = "Скрыть разделители в комментариях";
+"ONLY_WORK_ON_VKAPP_2.9" = "Працює тільки на VKApp >2.9";
+"DISABLE_COVERS" = "Відключити кришки";
 
 
 
@@ -79,3 +81,4 @@
 "DEVELOPER_IN_VK" = "Розробник в ВК";
 "UPDATES_SETTINGS" = "Налаштування оновлення";
 "LICENCES" = "Ліцензії";
+"USED_LIBRARIES" = "Використовувані бібліотеки";

@@ -59,6 +59,7 @@ CGFloat chatImageBlackout;
 CGFloat chatListImageBlackout;
 CGFloat groupsListImageBlackout;
 CGFloat audioImageBlackout;
+CGFloat navbarImageBlackout;
 
 BOOL useMessagesBlur;
 BOOL useMessagesListBlur;
@@ -76,14 +77,13 @@ BOOL hideMessagesNavBarItems;
 BOOL hideMenuSearch;
 BOOL changeSwitchColor;
 BOOL changeSBColors;
-BOOL enabledBlackTheme;
-BOOL blackThemeWasEnabled;
 BOOL shouldCheckUpdates;
 
 BOOL useMessageBubbleTintColor;
 BOOL useCustomMessageReadColor;
 
 BOOL hideCommentSeparators;
+BOOL disableGroupCovers;
 
 UIColor *menuSeparatorColor;
 UIColor *barBackgroundColor;
@@ -171,16 +171,12 @@ static void reloadPrefs()
         showBar = [prefs[@"showBar"] boolValue];
         enabledToolBarColor = [prefs[@"enabledToolBarColor"] boolValue];
         enabledBarImage = [prefs[@"enabledBarImage"] boolValue];
-#ifdef COMPILE_WITH_BLACK_THEME
-        enabledBlackTheme = [prefs[@"enabledBlackTheme"] boolValue];
-#else
-        enabledBlackTheme = NO;
-#endif
         shouldCheckUpdates = prefs[@"checkUpdates"]?[prefs[@"checkUpdates"] boolValue]:YES;
         changeSBColors = [prefs[@"changeSBColors"] boolValue];
         changeSwitchColor = [prefs[@"changeSwitchColor"] boolValue];
         
         hideCommentSeparators = [prefs[@"hideCommentSeparators"] boolValue];
+        disableGroupCovers = [prefs[@"disableGroupCovers"] boolValue];
         
         enabledMessagesImage = [prefs[@"enabledMessagesImage"] boolValue];
         enabledMessagesListImage = [prefs[@"enabledMessagesListImage"] boolValue];
@@ -206,6 +202,7 @@ static void reloadPrefs()
         chatListImageBlackout = [prefs[@"chatListImageBlackout"] floatValue];
         groupsListImageBlackout = [prefs[@"groupsListImageBlackout"] floatValue];
         audioImageBlackout = [prefs[@"audioImageBlackout"] floatValue];
+        navbarImageBlackout = [prefs[@"navbarImageBlackout"] floatValue];
         
         hideMessagesNavBarItems = [prefs[@"hideMessagesNavBarItems"] boolValue];
         useMessageBubbleTintColor = [prefs[@"useMessageBubbleTintColor"] boolValue];
@@ -217,9 +214,12 @@ static void reloadPrefs()
         menuSelectionStyle = prefs[@"menuSelectionStyle"]?[prefs[@"menuSelectionStyle"] integerValue]:CVKCellSelectionStyleTransparent;
         keyboardStyle = prefs[@"keyboardStyle"]?[prefs[@"keyboardStyle"] integerValue]:UIKeyboardAppearanceDefault;
         
+        UIImage *navbarImage = [UIImage imageWithContentsOfFile:[cvkFolder stringByAppendingString:@"/barImage.png"]];
+        navbarImage = [navbarImage imageWithOverlayColor:[UIColor colorWithWhite:0 alpha:navbarImageBlackout]];
+        
         menuSeparatorColor =         [UIColor savedColorForIdentifier:@"MenuSeparatorColor"         fromPrefs:prefs];
         barBackgroundColor =         [UIColor savedColorForIdentifier:@"BarBackgroundColor"         fromPrefs:prefs];
-        barBackColorWithImage =      [UIColor colorWithPatternImage:[UIImage imageWithContentsOfFile:[cvkFolder stringByAppendingString:@"/barImage.png"]]];
+        barBackColorWithImage =      [UIColor colorWithPatternImage:navbarImage];
         barForegroundColor =         [UIColor savedColorForIdentifier:@"BarForegroundColor"         fromPrefs:prefs];
         toolBarBackgroundColor =     [UIColor savedColorForIdentifier:@"ToolBarBackgroundColor"     fromPrefs:prefs];
         toolBarForegroundColor =     [UIColor savedColorForIdentifier:@"ToolBarForegroundColor"     fromPrefs:prefs];
@@ -234,21 +234,15 @@ static void reloadPrefs()
         
         UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
         if (statusBar) {
-            if (enabled && (!enabledBlackTheme && changeSBColors)) {
+            if (enabled && changeSBColors) {
                 statusBar.foregroundColor = SBForegroundColor;
                 statusBar.backgroundColor = SBBackgroundColor;
-            } else if (enabled && enabledBlackTheme) {
-                statusBar.foregroundColor = [UIColor lightGrayColor];
-                statusBar.backgroundColor = [UIColor darkBlackColor];
-                
-                blackThemeWasEnabled = YES;  
             } else {
                 statusBar.foregroundColor = nil;
                 statusBar.backgroundColor = nil;
             }
         }
-            
-        if (blackThemeWasEnabled && !enabledBlackTheme) dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(60 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{ blackThemeWasEnabled = NO; });
+        
     }
 }
 
@@ -335,26 +329,7 @@ static void setBlur(UIView *bar, BOOL set)
 static void setToolBar(UIToolbar *toolbar)
 {
     if (enabled && [toolbar respondsToSelector:@selector(setBarTintColor:)]) {
-        if (enabledBlackTheme) {
-            
-            setBlur(toolbar, NO);
-            toolbar.translucent = NO;
-            NSArray *controllersToChange = @[@"UIView", @"RootView"];
-            if ([controllersToChange containsObject:CLASS_NAME(toolbar.superview)]) {
-                toolbar.tintColor = [UIColor lightGrayColor];
-                toolbar.barTintColor = [UIColor darkBlackColor];
-                for (UIView *subview in toolbar.subviews) {
-                    if (![@"_UIToolbarBackground" isEqualToString:CLASS_NAME(subview)]) subview.backgroundColor = [UIColor clearColor];
-                }
-            }
-            for (id view in toolbar.subviews) {
-                if ([view isKindOfClass:UITextView.class]) {
-                    UITextView *textView = view;
-                    textView.backgroundColor = [UIColor lightBlackColor];
-                    textView.textColor = [UIColor lightGrayColor];
-                }
-            }
-        } else if (enabledToolBarColor) {
+        if (enabledToolBarColor) {
             
             NSArray *controllersToChange = @[@"UIView", @"RootView"];
             if ([controllersToChange containsObject:CLASS_NAME(toolbar.superview)]) {
@@ -497,9 +472,7 @@ static void setupCellForSearchController(UITableViewCell *cell, id searchControl
         
         if ([cell isKindOfClass:NSClassFromString(@"SourceCell")] || [cell isKindOfClass:NSClassFromString(@"UserCell")]) {
             SourceCell *sourceCell = (SourceCell *)cell;
-            if (enabledBlackTheme) {
-                sourceCell.backgroundColor = [UIColor lightBlackColor]; 
-            } else if (enabledGroupsListImage) {
+            if (enabledGroupsListImage) {
                 sourceCell.last.textColor = [UIColor colorWithWhite:1 alpha:0.9];
                 sourceCell.last.backgroundColor = [UIColor clearColor];
                 sourceCell.first.textColor = [UIColor colorWithWhite:1 alpha:0.9];
@@ -508,9 +481,7 @@ static void setupCellForSearchController(UITableViewCell *cell, id searchControl
             cell = sourceCell;
         } else if ([cell isKindOfClass:NSClassFromString(@"NewDialogCell")]) {
             NewDialogCell *dialogCell = (NewDialogCell *)cell;
-            if (enabledBlackTheme) {
-                dialogCell.backgroundColor = [UIColor lightBlackColor]; 
-            } else if (enabledGroupsListImage) {
+            if (enabledGroupsListImage) {
                 dialogCell.backgroundView = nil;
                 if (!dialogCell.dialog.head.read_state && dialogCell.unread.hidden) dialogCell.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
                 else dialogCell.contentView.backgroundColor = [UIColor clearColor];
@@ -524,9 +495,7 @@ static void setupCellForSearchController(UITableViewCell *cell, id searchControl
             cell = dialogCell;
         } else if ([cell isKindOfClass:NSClassFromString(@"GroupCell")]) {
             GroupCell *groupCell = (GroupCell *)cell;
-            if (enabledBlackTheme) {
-                groupCell.backgroundColor = [UIColor lightBlackColor]; 
-            } else if (enabledGroupsListImage) {
+            if (enabledGroupsListImage) {
                 groupCell.name.textColor = [UIColor colorWithWhite:1 alpha:0.9];
                 groupCell.name.backgroundColor = [UIColor clearColor];
                 groupCell.status.textColor = [UIColor colorWithWhite:0.8 alpha:0.9];
@@ -548,16 +517,11 @@ static void setupCellForSearchController(UITableViewCell *cell, id searchControl
 
 static void setupMessageBubbleForCell(ChatCell *cell)
 {
-    if (enabled) {
+    if (enabled && useMessageBubbleTintColor) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                if (enabledBlackTheme) {
-                    cell.bg.image = [cell.bg.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                    cell.bg.tintColor = [UIColor lightBlackColor];
-                } else if (useMessageBubbleTintColor) {
-                    cell.bg.image = [cell.bg.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                    cell.bg.tintColor = cell.message.incoming?messageBubbleTintColor:messageBubbleSentTintColor;
-                }
+                cell.bg.image = [cell.bg.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                cell.bg.tintColor = cell.message.incoming?messageBubbleTintColor:messageBubbleSentTintColor;
             } completion:nil];
         });
     }
@@ -584,12 +548,14 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
     
     CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
     
-    [[ColoredVKInstaller sharedInstaller] install:^(BOOL disableTweak) {
+    installerCompletionBlock = ^(BOOL disableTweak) {
         if (!disableTweak) {
             tweakEnabled = YES;
             reloadPrefs();
         }
-    }];
+    };
+    
+    [ColoredVKInstaller startInstall];
     
     BOOL beta = [kColoredVKVersion containsString:@"beta"];
     if (shouldCheckUpdates || beta) {
@@ -611,12 +577,8 @@ CHDeclareClass(UINavigationBar);
 CHOptimizedMethod(1, self, void, UINavigationBar, setBarTintColor, UIColor*, barTintColor)
 {
     if (enabled) {
-        if (enabledBlackTheme) {
-            barTintColor = [UIColor darkBlackColor];
-        } else if (enabledBarColor) {
-            if (enabledBarImage) barTintColor = barBackColorWithImage;
-            else barTintColor = barBackgroundColor;
-        }
+             if (enabledBarImage) barTintColor = barBackColorWithImage;
+        else if (enabledBarColor) barTintColor = barBackgroundColor;
     }
     
     CHSuper(1, UINavigationBar, setBarTintColor, barTintColor);
@@ -624,12 +586,8 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setBarTintColor, UIColor*, bar
 
 CHOptimizedMethod(1, self, void, UINavigationBar, setTintColor, UIColor*, tintColor)
 {
-    if (enabled) {
-        if (enabledBlackTheme) {
-            tintColor = [UIColor lightGrayColor];
-        } else if (enabledBarColor) {
-            tintColor = barForegroundColor;
-        }
+    if (enabled && enabledBarColor) {
+        tintColor = barForegroundColor;
     }
     
     CHSuper(1, UINavigationBar, setTintColor, tintColor);
@@ -637,12 +595,8 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setTintColor, UIColor*, tintCo
 
 CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDictionary*, attributes)
 {
-    if (enabled) {
-        if (enabledBlackTheme) {
-            attributes = @{ NSForegroundColorAttributeName : [UIColor lightGrayColor] };
-        } else if (enabledBarColor) {
+    if (enabled && enabledBarColor) {
             attributes = @{ NSForegroundColorAttributeName : barForegroundColor };
-        }
     }
     
     CHSuper(1, UINavigationBar, setTitleTextAttributes, attributes);
@@ -653,7 +607,7 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDict
 CHDeclareClass(UITextInputTraits);
 CHOptimizedMethod(0, self, UIKeyboardAppearance, UITextInputTraits, keyboardAppearance) 
 {
-    if (enabled) return enabledBlackTheme?UIKeyboardAppearanceDark:keyboardStyle;
+    if (enabled) return keyboardStyle;
     return CHSuper(0, UITextInputTraits, keyboardAppearance);
 }
 
@@ -665,11 +619,7 @@ CHOptimizedMethod(0, self, void, UISwitch, layoutSubviews)
     CHSuper(0, UISwitch, layoutSubviews);
     
     if ([self isKindOfClass:NSClassFromString(@"UISwitch")] && (self.tag != 404)) {
-        if (enabled && enabledBlackTheme) {
-            self.onTintColor = [UIColor colorWithWhite:0.2 alpha:1.0];
-            self.tintColor = [UIColor colorWithWhite:0.5 alpha:1.0];
-            self.thumbTintColor = [UIColor colorWithWhite:0.7 alpha:1.0];
-        } else if (enabled && changeSwitchColor) {
+        if (enabled && changeSwitchColor) {
             self.onTintColor = switchesOnTintColor;
             self.tintColor = switchesTintColor;
             self.thumbTintColor = nil;
@@ -707,7 +657,7 @@ CHOptimizedMethod(0, self, void, VKMLiveController, viewWillLayoutSubviews)
     CHSuper(0, VKMLiveController, viewWillLayoutSubviews);
     
     if ([self isKindOfClass:NSClassFromString(@"VKMLiveController")]) {
-        if ((enabled && (!enabledBlackTheme && enabledAudioImage)) && [self.model.description containsString:@"AudioRecommendationsModel"]) {
+        if ((enabled && enabledAudioImage) && [self.model.description containsString:@"AudioRecommendationsModel"]) {
             [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
             self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2];
             self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
@@ -720,30 +670,8 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMLiveController, tableView, UITab
 {
     UITableViewCell *cell = CHSuper(2, VKMLiveController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && enabledBlackTheme) {
-        cell.backgroundColor = [UIColor lightBlackColor];
-        tableView.separatorColor = [UIColor darkBlackColor];
-        tableView.backgroundColor = [UIColor darkBlackColor];
-        
-        for (UIView *view in cell.contentView.subviews) {
-            if ([view isKindOfClass:UILabel.class]) {
-                UILabel *label = (UILabel *)view;
-                label.backgroundColor = [UIColor clearColor];
-                label.textColor = [UIColor lightGrayColor];
-                
-            }
-        }
-        
-        UIView *selectedBackView = [UIView new];
-        selectedBackView.backgroundColor = [UIColor darkBlackColor];
-        cell.selectedBackgroundView = selectedBackView;
-    } else if (blackThemeWasEnabled) {
-        tableView.separatorColor = kNewsTableViewSeparatorColor;
-        tableView.backgroundColor = kNewsTableViewBackgroundColor;
-        
-    }
-    if ([self isKindOfClass:NSClassFromString(@"VKMLiveController")] && (enabled && [self.model.description containsString:@"AudioRecommendationsModel"])) {
-        if (enabledAudioImage && !enabledBlackTheme) {
+    if ([self isKindOfClass:NSClassFromString(@"VKMLiveController")] && [self.model.description containsString:@"AudioRecommendationsModel"]) {
+        if (enabled && enabledAudioImage) {
             cell.backgroundColor = [UIColor clearColor];
             cell.contentView.backgroundColor = [UIColor clearColor];
             cell.textLabel.textColor = [UIColor colorWithWhite:1 alpha:0.9];
@@ -769,8 +697,7 @@ CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, anima
     CHSuper(1, VKMTableController, viewWillAppear, animated);
     BOOL shouldAddBlur = NO;
     if (enabled) {        
-        if (enabledBlackTheme) shouldAddBlur = NO;
-        else if (useMessagesBlur && ([CLASS_NAME(self) isEqualToString:@"MultiChatController"] || [CLASS_NAME(self) isEqualToString:@"SingleUserChatController"])) shouldAddBlur = YES;
+             if (useMessagesBlur && ([CLASS_NAME(self) isEqualToString:@"MultiChatController"] || [CLASS_NAME(self) isEqualToString:@"SingleUserChatController"])) shouldAddBlur = YES;
         else if (useGroupsListBlur && [CLASS_NAME(self) isEqualToString:@"GroupsController"]) shouldAddBlur = YES;
         else if (useMessagesListBlur && [CLASS_NAME(self) isEqualToString:@"DialogsController"]) shouldAddBlur = YES;
         else if (useAudioBlur && [CLASS_NAME(self) isEqualToString:@"AudioAlbumController"]) shouldAddBlur = YES;
@@ -792,8 +719,7 @@ CHOptimizedMethod(1, self, void, VKMToolbarController, viewWillAppear, BOOL, ani
         
         BOOL shouldAddBlur = NO;
         if (enabled) {
-            if (enabledBlackTheme) shouldAddBlur = NO;
-            else if (useGroupsListBlur && [CLASS_NAME(self) isEqualToString:@"GroupsController"]) shouldAddBlur = YES;
+            if (useGroupsListBlur && [CLASS_NAME(self) isEqualToString:@"GroupsController"]) shouldAddBlur = YES;
             else shouldAddBlur = NO;
         } else shouldAddBlur = NO;
         
@@ -833,11 +759,8 @@ CHDeclareClass(GroupsController);
 CHOptimizedMethod(0, self, void, GroupsController, viewWillLayoutSubviews)
 {
     CHSuper(0, GroupsController, viewWillLayoutSubviews);
-    if (enabled && [self isKindOfClass:NSClassFromString(@"GroupsController")]) {
-        if (enabledBlackTheme) {
-            self.tableView.backgroundColor = [UIColor darkBlackColor];
-            self.tableView.backgroundView = nil;
-        } else if (enabledGroupsListImage) {
+    if ([self isKindOfClass:NSClassFromString(@"GroupsController")]) {
+        if (enabled && enabledGroupsListImage) {
             [ColoredVKMainController setImageToTableView:self.tableView withName:@"groupsListBackgroundImage" blackout:groupsListImageBlackout parallaxEffect:useGroupsListParallax];
             self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
             self.tableView.separatorColor = (enabled && hideGroupsListSeparators)?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
@@ -850,7 +773,13 @@ CHOptimizedMethod(0, self, void, GroupsController, viewWillLayoutSubviews)
             search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder
                                                                                               attributes:@{NSForegroundColorAttributeName:[UIColor colorWithWhite:1 alpha:0.7]}];
             NSInteger version = VKVersion();
-            if ((version>=22) && (version<=25)) for (UIView *view in self.view.subviews) if ([view isKindOfClass:UIToolbar.class] && useGroupsListBlur) {  setBlur(view, YES); break; }
+            if ((version>=22) && (version<=25)) {
+                for (UIView *view in self.view.subviews) {
+                         if ([view isKindOfClass:UIToolbar.class] && useGroupsListBlur) { setBlur(view, YES); break; }
+                    else if ([view isKindOfClass:UIToolbar.class] && enabledToolBarColor) { setToolBar((UIToolbar*)view); break; } 
+                }
+            }
+            
         }
     }
 }
@@ -861,9 +790,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, GroupsController, tableView, UITabl
     if ([self isKindOfClass:NSClassFromString(@"GroupsController")] && enabled) {
         if ([cell isKindOfClass:NSClassFromString(@"GroupCell")]) {
             GroupCell *groupCell = (GroupCell *)cell;
-            if (enabledBlackTheme) {
-                groupCell.backgroundColor = [UIColor lightBlackColor]; 
-            } else if (enabledGroupsListImage) {
+            if (enabledGroupsListImage) {
                 groupCell.backgroundColor =  [UIColor clearColor];
                 groupCell.name.textColor = [UIColor colorWithWhite:1 alpha:0.9];
                 groupCell.name.backgroundColor = [UIColor clearColor];
@@ -876,9 +803,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, GroupsController, tableView, UITabl
             }
             return groupCell;
         } else  if ([cell isKindOfClass:NSClassFromString(@"VKMRendererCell")]) {
-            if (enabledBlackTheme) {
-                cell.backgroundColor = [UIColor lightBlackColor]; 
-            } else if (enabledGroupsListImage) {
+            if (enabledGroupsListImage) {
                 cell.backgroundColor =  [UIColor clearColor];
                 
                 for (UIView *view in cell.contentView.subviews) {
@@ -908,7 +833,7 @@ CHDeclareClass(DialogsController);
 CHOptimizedMethod(0, self, void, DialogsController, viewWillLayoutSubviews)
 {
     CHSuper(0, DialogsController, viewWillLayoutSubviews);
-    if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && (enabled && (!enabledBlackTheme && enabledMessagesListImage)) ) {
+    if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && (enabled && enabledMessagesListImage)) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesListBackgroundImage" blackout:chatListImageBlackout parallaxEffect:useMessagesListParallax];
     }
 }
@@ -916,11 +841,8 @@ CHOptimizedMethod(0, self, void, DialogsController, viewWillLayoutSubviews)
 CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, DialogsController, viewWillAppear, animated);
-    if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && enabled) {
-        if (enabledBlackTheme) {
-            self.tableView.backgroundColor = [UIColor darkBlackColor];
-            self.tableView.backgroundView = nil;
-        } else if (enabledMessagesListImage) {
+    if ([self isKindOfClass:NSClassFromString(@"DialogsController")]) {
+        if (enabled && enabledMessagesListImage) {
             self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
             self.tableView.separatorColor = (enabled && hideMessagesListSeparators)?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
             
@@ -939,9 +861,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, DialogsController, tableView, UITab
 {
     if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && enabled) {
         NewDialogCell *cell = (NewDialogCell *)CHSuper(2, DialogsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-        if (enabledBlackTheme) {
-            cell.contentView.backgroundColor = [UIColor lightBlackColor]; 
-        } else if (enabledMessagesListImage) {
+        if (enabledMessagesListImage) {
             cell.backgroundView.hidden = YES;
             cell.backgroundColor = [UIColor clearColor];
             if (!cell.dialog.head.read_state && cell.unread.hidden) cell.contentView.backgroundColor = useCustomMessageReadColor?messageReadColor:[UIColor defaultColorForIdentifier:@"messageReadColor"];
@@ -970,8 +890,7 @@ CHOptimizedMethod(1, self, void, BackgroundView, drawRect, CGRect, rect)
     if (enabled) {
         self.layer.cornerRadius = self.cornerRadius;
         self.layer.masksToBounds = YES;
-        if (enabledBlackTheme) self.layer.backgroundColor = [UIColor colorWithWhite:0.2 alpha:1].CGColor;
-        else if (enabledMessagesListImage) self.layer.backgroundColor = useCustomMessageReadColor?messageReadColor.CGColor:[UIColor defaultColorForIdentifier:@"messageReadColor"].CGColor;
+        if (enabledMessagesListImage) self.layer.backgroundColor = useCustomMessageReadColor?messageReadColor.CGColor:[UIColor defaultColorForIdentifier:@"messageReadColor"].CGColor;
         else CHSuper(1, BackgroundView, drawRect, rect);
     } else CHSuper(1, BackgroundView, drawRect, rect);
 }
@@ -992,25 +911,15 @@ CHOptimizedMethod(1, self, void, ChatController, viewWillAppear, BOOL, animated)
     CHSuper(1, ChatController, viewWillAppear, animated);
     
     setToolBar(self.inputPanel);
-    if (enabled) {
-        if (enabledBlackTheme) {
-            for (UIView *subview in self.inputPanel.subviews) {
-                if ([subview respondsToSelector:@selector(setBackgroundColor:)]) subview.backgroundColor = [UIColor clearColor];
-            }
-        }
-        else if (useMessagesBlur) setBlur(self.inputPanel, YES);
-    }
+    if (enabled && useMessagesBlur) setBlur(self.inputPanel, YES);
 }
 
 CHOptimizedMethod(0, self, void, ChatController, viewWillLayoutSubviews)
 {
     CHSuper(0, ChatController, viewWillLayoutSubviews);
     
-    if ([self isKindOfClass:NSClassFromString(@"ChatController")] && enabled) {
-        if (enabledBlackTheme) {
-            self.tableView.backgroundColor = [UIColor darkBlackColor];
-            self.tableView.backgroundView = nil;
-        } else if (enabledMessagesImage) {
+    if ([self isKindOfClass:NSClassFromString(@"ChatController")]) {
+        if (enabled && enabledMessagesImage) {
             if (hideMessagesNavBarItems) {
                 self.headerImage.hidden = YES;
                 if ([self respondsToSelector:@selector(componentTitleView)]) self.componentTitleView.hidden = YES;
@@ -1039,7 +948,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, ChatController, tableView, UITableV
 CHOptimizedMethod(0, self, UIButton*, ChatController, editForward)
 {
     UIButton *forwardButton = CHSuper(0, ChatController, editForward);
-    if (enabled && (!enabledBlackTheme && useMessagesBlur)) {
+    if (enabled && useMessagesBlur) {
         [forwardButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [forwardButton setImage:[[forwardButton imageForState:UIControlStateNormal] imageWithTintColor:[UIColor whiteColor]] forState:UIControlStateNormal];
         for (UIView *subview in forwardButton.superview.subviews) if ([subview isKindOfClass:NSClassFromString(@"UIToolbar")]) { setBlur(subview, YES); break; }
@@ -1054,21 +963,18 @@ CHDeclareClass(MessageCell);
 CHOptimizedMethod(1, self, void, MessageCell, updateBackground, BOOL, animated)
 {
     CHSuper(1, MessageCell, updateBackground, animated);
-    if (enabled && (enabledMessagesImage || enabledBlackTheme)) {
+    if (enabled && enabledMessagesImage) {
         self.backgroundView = nil;
-        if (!self.message.read_state) {
-            if (enabledBlackTheme) self.backgroundColor = [UIColor colorWithWhite:40.0/255.0f alpha:1.0];
-            else self.backgroundColor = useCustomMessageReadColor?messageReadColor:[UIColor defaultColorForIdentifier:@"messageReadColor"];
-        }
+        if (!self.message.read_state) self.backgroundColor = useCustomMessageReadColor?messageReadColor:[UIColor defaultColorForIdentifier:@"messageReadColor"];
         else self.backgroundColor = [UIColor clearColor];
     }
 }
 
 #pragma mark ChatCell
 CHDeclareClass(ChatCell);
-CHOptimizedMethod(4, self, ChatCell*, ChatCell, initWithDelegate, id, delegate, multidialog, BOOL, multidialog, selfdialog, BOOL, selfdialog, identifier, NSString*, identifier)
+CHOptimizedMethod(4, self, ChatCell*, ChatCell, initWithDelegate, id, delegate, multidialog, BOOL, arg1, selfdialog, BOOL, arg2, identifier, id, arg3)
 {
-    self = CHSuper(4, ChatCell, initWithDelegate, delegate, multidialog, multidialog, selfdialog, selfdialog, identifier, identifier);
+    self = CHSuper(4, ChatCell, initWithDelegate, delegate, multidialog, arg1, selfdialog, arg2, identifier, arg3);
     setupMessageBubbleForCell(self);
     return self;
 }
@@ -1095,7 +1001,7 @@ CHOptimizedMethod(0, self, NSArray*, VKMMainController, menu)
             index = [tempArray indexOfObject:cell];
             break;
         }
-    }    
+    }
     if (shouldInsert) {
         if (index+1 > tempArray.count) [tempArray addObject:cvkMainController.cvkCell];
         else [tempArray insertObject:cvkMainController.cvkCell atIndex:index+1];
@@ -1122,7 +1028,7 @@ CHOptimizedMethod(0, self, void, VKMMainController, viewDidLoad)
     CHSuper(0, VKMMainController, viewDidLoad);
     if (!mainController) mainController = self;
     if (!mainMenuBackgroundView) {
-        mainMenuBackgroundView = [ColoredVKBackgroundImageView viewWithFrame:self.view.frame imageName:@"menuBackgroundImage" blackout:menuImageBlackout parallaxEffect:useMenuParallax];
+        mainMenuBackgroundView = [ColoredVKBackgroundImageView viewWithFrame:[UIScreen mainScreen].bounds imageName:@"menuBackgroundImage" blackout:menuImageBlackout parallaxEffect:useMenuParallax];
     }
     
     if (enabled && enabledMenuImage) {
@@ -1147,30 +1053,12 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
     else if (enabled && !hideMenuSeparators) tableView.separatorColor = menuSeparatorColor; 
     else tableView.separatorColor = kMenuCellSeparatorColor;
     
-    if (enabled && enabledBlackTheme) {
-        cell.backgroundColor = [UIColor lightBlackColor];
-        cell.contentView.backgroundColor = [UIColor lightBlackColor];
-        cell.textLabel.textColor = [UIColor lightGrayColor];
-        if ((indexPath.section == 1) && (indexPath.row == 0)) cell.backgroundColor = [UIColor darkBlackColor];
-        
-        UIView *selectedBackView = [UIView new];
-        selectedBackView.backgroundColor = [UIColor darkBlackColor];
-        cell.selectedBackgroundView = selectedBackView;
-        
-        if (![tableView.superview.subviews containsObject:[tableView.superview viewWithTag:23]]) {
-            UIView *statusBarBack = [UIView new];
-            statusBarBack.frame = CGRectMake(0, 0, tableView.frame.size.width, 20);
-            statusBarBack.backgroundColor = [UIColor lightBlackColor];
-            statusBarBack.tag = 23;
-            [tableView.superview addSubview:statusBarBack]; 
-        }
-        
-    } else if (enabled && enabledMenuImage) {
+    if (enabled && enabledMenuImage) {
         cell.textLabel.textColor = [UIColor colorWithWhite:1 alpha:0.9];
         cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         cell.imageView.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
         cell.backgroundColor = [UIColor clearColor];
-        cell.contentView.backgroundColor = [UIColor clearColor];  
+        cell.contentView.backgroundColor = [UIColor clearColor];
         
         UIView *selectedBackView = [UIView new];
         if (menuSelectionStyle == CVKCellSelectionStyleTransparent) selectedBackView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
@@ -1216,13 +1104,13 @@ CHOptimizedMethod(0, self, id, VKMMainController, VKMTableCreateSearchBar)
 CHDeclareClass(HintsSearchDisplayController);
 CHOptimizedMethod(1, self, void, HintsSearchDisplayController, searchDisplayControllerWillBeginSearch, UISearchDisplayController*, controller)
 {
-    if (enabled && (enabledMenuImage && !enabledBlackTheme)) [ColoredVKMainController resetUISearchBar:controller.searchBar];
+    if (enabled && enabledMenuImage) [ColoredVKMainController resetUISearchBar:controller.searchBar];
     CHSuper(1, HintsSearchDisplayController, searchDisplayControllerWillBeginSearch, controller);
 }
 
 CHOptimizedMethod(1, self, void, HintsSearchDisplayController, searchDisplayControllerDidEndSearch, UISearchDisplayController*, controller)
 {
-    if (enabled && (enabledMenuImage && !enabledBlackTheme)) [ColoredVKMainController setupUISearchBar:controller.searchBar];
+    if (enabled && enabledMenuImage) [ColoredVKMainController setupUISearchBar:controller.searchBar];
     CHSuper(1, HintsSearchDisplayController, searchDisplayControllerDidEndSearch, controller);
 }
 
@@ -1232,7 +1120,7 @@ CHOptimizedMethod(1, self, void, HintsSearchDisplayController, searchDisplayCont
 CHDeclareClass(IOS7AudioController);
 CHOptimizedMethod(0, self, UIStatusBarStyle, IOS7AudioController, preferredStatusBarStyle)
 {
-    if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")] && ( enabled && (!enabledBlackTheme && (enabledBarColor || enabledAudioImage)))) return UIStatusBarStyleLightContent;
+    if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")] && ( enabled && (enabledBarColor || enabledAudioImage))) return UIStatusBarStyleLightContent;
     else return CHSuper(0, IOS7AudioController, preferredStatusBarStyle);
 }
 
@@ -1240,12 +1128,8 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
 {
     CHSuper(1, IOS7AudioController, viewWillAppear, animated);
     
-    if (enabled && [self isKindOfClass:NSClassFromString(@"IOS7AudioController")]) {
-        if (enabledBlackTheme) {
-            setupAudioPlayer(self.hostView, [UIColor lightGrayColor]);
-            self.cover.backgroundColor = [UIColor blackColor];
-            self.hostView.backgroundColor = [UIColor colorWithWhite:30/255.0f alpha:1.0];
-        } else if (changeAudioPlayerAppearance) {
+    if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")]) {
+        if (enabled && changeAudioPlayerAppearance) {
             if (!cvkLyricsView) cvkLyricsView = [[ColoredVKAudioLyricsView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.hostView.frame.origin.y - 64)];
             if (!cvkCoverView) cvkCoverView = [[ColoredVKAudioCoverView alloc] initWithFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
             audioTintColor = cvkCoverView.tintColor?cvkCoverView.tintColor:[UIColor whiteColor];
@@ -1308,9 +1192,7 @@ CHOptimizedMethod(0, self, void, AudioAlbumController, viewDidLoad)
     CHSuper(0, AudioAlbumController, viewDidLoad);
     
     if (enabled && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
-        if (enabledBlackTheme) {
-            self.tableView.backgroundColor = [UIColor darkBlackColor];
-        } else if (enabledAudioImage) {
+        if (enabledAudioImage) {
             UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
             if (search) {
                 search.backgroundImage = [UIImage new];
@@ -1327,7 +1209,7 @@ CHOptimizedMethod(0, self, void, AudioAlbumController, viewWillLayoutSubviews)
 {
     CHSuper(0, AudioAlbumController, viewWillLayoutSubviews);
     
-    if ((enabled && (!enabledBlackTheme && enabledAudioImage)) && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
+    if ((enabled && enabledAudioImage) && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
         self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2];
         self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
@@ -1339,7 +1221,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioAlbumController, tableView, UI
     UITableViewCell *cell = CHSuper(2, AudioAlbumController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
     if (enabled && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
-        if (enabledAudioImage && !enabledBlackTheme) {
+        if (enabledAudioImage) {
             cell.backgroundColor = [UIColor clearColor];
             cell.contentView.backgroundColor = [UIColor clearColor];
             cell.textLabel.textColor = [UIColor colorWithWhite:1 alpha:0.9];
@@ -1359,14 +1241,14 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioAlbumController, tableView, UI
 CHDeclareClass(AudioPlaylistController);
 CHOptimizedMethod(0, self, UIStatusBarStyle, AudioPlaylistController, preferredStatusBarStyle)
 {
-    if ([self isKindOfClass:NSClassFromString(@"AudioPlaylistController")] && ( enabled && (!enabledBlackTheme && (enabledBarColor || enabledAudioImage)))) return UIStatusBarStyleLightContent;
+    if ([self isKindOfClass:NSClassFromString(@"AudioPlaylistController")] && (enabled && (enabledBarColor || enabledAudioImage))) return UIStatusBarStyleLightContent;
     else return CHSuper(0, AudioPlaylistController, preferredStatusBarStyle);
 }
 CHOptimizedMethod(1, self, void, AudioPlaylistController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, AudioPlaylistController, viewWillAppear, animated);
     
-    if ((enabled && (!enabledBlackTheme && enabledAudioImage)) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistController")]) {
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
         self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2];
         setBlur(self.navigationController.navigationBar, YES);
@@ -1378,7 +1260,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioPlaylistController, tableView,
     UITableViewCell *cell = CHSuper(2, AudioPlaylistController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
     if (enabled && [self isKindOfClass:NSClassFromString(@"AudioPlaylistController")]) {
-        if (enabledAudioImage && !enabledBlackTheme) {
+        if (enabledAudioImage) {
             cell.backgroundColor = [UIColor clearColor];
             cell.contentView.backgroundColor = [UIColor clearColor];
             cell.textLabel.textColor = [UIColor colorWithWhite:1 alpha:0.9];
@@ -1524,7 +1406,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, DialogsSearchController, tableView,
 }
 
 
-
+#pragma mark PSListController
 @interface PSListController : UIViewController @end
 CHDeclareClass(PSListController);
 CHOptimizedMethod(1, self, void, PSListController, viewWillAppear, BOOL, animated)
@@ -1536,7 +1418,7 @@ CHOptimizedMethod(1, self, void, PSListController, viewWillAppear, BOOL, animate
 
 
 
-
+#pragma mark MessageController
 CHDeclareClass(MessageController);
 CHOptimizedMethod(1, self, void, MessageController, viewWillAppear, BOOL, animated)
 {
@@ -1546,11 +1428,21 @@ CHOptimizedMethod(1, self, void, MessageController, viewWillAppear, BOOL, animat
 
 
 
+#pragma mark VKComment
 CHDeclareClass(VKComment);
 CHOptimizedMethod(0, self, BOOL, VKComment, separatorDisabled)
 {
     if (enabled) return hideCommentSeparators;
     return CHSuper(0, VKComment, separatorDisabled);
+}
+
+
+
+CHDeclareClass(ProfileCoverInfo);
+CHOptimizedMethod(0, self, BOOL, ProfileCoverInfo, enabled)
+{
+    if (enabled && disableGroupCovers) return NO;
+    return CHSuper(0, ProfileCoverInfo, enabled);
 }
 
 
@@ -1566,20 +1458,22 @@ static void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CF
 
 static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
-    for (UIView *view in mainController.view.subviews) if (view.tag == 25) { [view removeFromSuperview]; break; }
-    [mainController.tableView reloadData];
-    
-    BOOL shouldShow = (enabled && (!enabledBlackTheme && enabledMenuImage));
-    
-    mainMenuBackgroundView.hidden = shouldShow?NO:YES;
-    mainController.tableView.backgroundColor = shouldShow?[UIColor clearColor]:kMenuCellBackgroundColor;
-    UISearchBar *searchBar = (UISearchBar *)mainController.tableView.tableHeaderView;
-    shouldShow?[ColoredVKMainController setupUISearchBar:searchBar]:[ColoredVKMainController resetUISearchBar:searchBar];
-    
-    if (shouldShow) {
-        [mainMenuBackgroundView updateViewForKey:@"menuImageBlackout"];
-        [mainMenuBackgroundView addToView:mainController.view];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        for (UIView *view in mainController.view.subviews) if (view.tag == 25) { [view removeFromSuperview]; break; }
+        BOOL shouldShow = (enabled && enabledMenuImage);
+        UISearchBar *searchBar = (UISearchBar *)mainController.tableView.tableHeaderView;
+        shouldShow?[ColoredVKMainController setupUISearchBar:searchBar]:[ColoredVKMainController resetUISearchBar:searchBar];
+        [mainController.tableView reloadData];
+        [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            mainMenuBackgroundView.alpha = shouldShow?1:0;
+            mainController.tableView.backgroundColor = shouldShow?[UIColor clearColor]:[UIColor colorWithRed:56.0/255.0f green:69.0/255.0f blue:84.0/255.0f alpha:1];
+        } completion:nil];
+        mainMenuBackgroundView.parallaxEnabled = useMenuParallax;
+        if (shouldShow) {
+            [mainMenuBackgroundView updateViewForKey:@"menuImageBlackout"];
+            [mainMenuBackgroundView addToView:mainController.view];
+        }
+    });
 }
 
 CHConstructor
@@ -1596,7 +1490,7 @@ CHConstructor
         NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:prefsPath];
         if (![[NSFileManager defaultManager] fileExistsAtPath:prefsPath]) prefs = [NSMutableDictionary new];
         NSString *stringVersion = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-        prefs[@"vkVersion"] = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+        prefs[@"vkVersion"] = stringVersion;
         [prefs writeToFile:prefsPath atomically:YES];
         VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil)?YES:NO;
         
@@ -1742,17 +1636,23 @@ CHConstructor
             CHHook(0, AudioRenderer, playIndicator);
             
             
-            CHLoadLateClass(ChatCell);
-            CHHook(4, ChatCell, initWithDelegate, multidialog, selfdialog, identifier);
-            CHHook(0, ChatCell, prepareForReuse);
+            if (VKVersion() >= 29) {
+                CHLoadLateClass(ChatCell);
+                CHHook(4, ChatCell, initWithDelegate, multidialog, selfdialog, identifier);
+                CHHook(0, ChatCell, prepareForReuse);
+            }
             
             
             CHLoadLateClass(VKComment);
             CHHook(0, VKComment, separatorDisabled);
             
+            
             CHLoadLateClass(DetailController);
             CHHook(1, DetailController, viewWillAppear);
-
+            
+            
+            CHLoadLateClass(ProfileCoverInfo);
+            CHHook(0, ProfileCoverInfo, enabled);
 
         } else {
             showAlertWithMessage([NSString stringWithFormat:CVKLocalizedString(@"VKAPP_VERSION_IS_TOO_LOW"),  stringVersion, @"2.2"]);

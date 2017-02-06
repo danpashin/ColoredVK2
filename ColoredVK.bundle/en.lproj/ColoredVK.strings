@@ -48,7 +48,7 @@
 "DEFAULT" = "Default";
 "DARK" = "Dark";
 "LIGHT" = "Light";
-"SHOW_BAR" = "Always show nav bar";
+"ALWAYS_SHOW_NAVIGATION_BAR" = "Always show nav bar";
 
 
 "CHANGE_APPEARANCE" = "Customize";
@@ -59,6 +59,8 @@
 "CLEAR_CACHE" = "Clear cache";
 
 "HIDE_COMMENT_SEPARATORS" = "Hide separators in comments";
+"ONLY_WORK_ON_VKAPP_2.9" = "Works only on VKApp >2.9";
+"DISABLE_COVERS" = "Disable covers";
 
 
 
@@ -78,4 +80,4 @@
 "SETTINGS" = "Settings";
 "DEVELOPER_IN_VK" = "Developer in VK";
 "UPDATES_SETTINGS" = "Updates settings";
-"LICENCES" = "Licences";
+"USED_LIBRARIES" = "Used libraries";

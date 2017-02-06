@@ -183,11 +183,6 @@
 {
     [super viewDidAppear:animated];
     
-    [self setupMainView];
-}
-
-- (void)setupMainView
-{
     self.mainView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.mainView.bounds cornerRadius:self.mainView.layer.cornerRadius].CGPath;
     self.mainView.layer.shadowRadius = 4;
     self.mainView.layer.shadowOffset = CGSizeMake(0, 3);
@@ -303,7 +298,7 @@
 }
 
 
-- (void) showHexWindow 
+- (void)showHexWindow 
 {
     UIView *view = [UIView new];
     view.backgroundColor = [UIColor whiteColor];
@@ -360,9 +355,9 @@
     [valueButton setTitleColor:[UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1] forState:UIControlStateNormal];
     [valueButton setTitleColor:[UIColor colorWithRed:60.0/255.0f green:82.0/255.0f blue:131.0/255.0f alpha:1] forState:UIControlStateHighlighted];
     valueButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    [valueButton addTarget:self action:@selector(highlightButtonBorder:) forControlEvents:UIControlEventTouchDown];
-    [valueButton addTarget:self action:@selector(unHighlightButtonBorder:) forControlEvents:UIControlEventTouchUpOutside | UIControlEventTouchUpInside];
-    [valueButton addTarget:self action:@selector(copyHEXValue) forControlEvents:UIControlEventTouchUpInside];
+    [valueButton addTarget:self action:@selector(highlightButtonBorder:) forControlEvents:UIControlEventTouchDragEnter];
+    [valueButton addTarget:self action:@selector(unHighlightButtonBorder:) forControlEvents:UIControlEventTouchDragExit];
+    [valueButton addTarget:self action:@selector(copyColorHexValue:) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:valueButton];
     
     self.popup = [KLCPopup popupWithContentView:view 
@@ -384,8 +379,9 @@
     button.layer.borderColor = [UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1].CGColor;
 }
 
-- (void)copyHEXValue 
-{ 
+- (void)copyColorHexValue:(UIButton *)button
+{
+    button.layer.borderColor = [UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1].CGColor;
     [UIPasteboard generalPasteboard].string = [UIColor savedColorForIdentifier:self.cellIdentifier].hexStringValue;
 }
 

@@ -91,11 +91,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 - (id)readPreferenceValue:(PSSpecifier*)specifier
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
-#ifndef COMPILE_WITH_BLACK_THEME
-    if ([specifier.identifier isEqualToString:@"enabledBlackTheme"]) [specifier setProperty:@NO forKey:@"enabled"];
-#endif
-    
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];    
     if (!prefs[specifier.properties[@"key"]]) return specifier.properties[@"default"];
     return prefs[specifier.properties[@"key"]];
 }
@@ -110,12 +106,9 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
     
-    NSArray *identificsToReloadMenu = @[@"menuSelectionStyle", @"hideMenuSeparators", @"enabledBlackTheme", @"changeSwitchColor", @"useMenuParallax"];
+    NSArray *identificsToReloadMenu = @[@"menuSelectionStyle", @"hideMenuSeparators", @"changeSwitchColor", @"useMenuParallax"];
     if ([identificsToReloadMenu containsObject:specifier.identifier])
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-    
-    if ([specifier.identifier isEqualToString:@"enabledBlackTheme"])
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
 }
 
 

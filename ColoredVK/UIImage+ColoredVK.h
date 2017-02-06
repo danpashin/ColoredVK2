@@ -19,4 +19,6 @@
 + (UIImage *)imageWithColor:(UIColor *)color andSize:(CGSize)size;
 
 - (UIImage *)imageWithTintColor:(UIColor *)tintColor;
+
+- (UIImage *)imageWithOverlayColor:(UIColor *)overlayColor;
 @end

@@ -5,28 +5,6 @@
 	<key>items</key>
 	<array>
 		<dict>
-			<key>label</key>
-			<string>BLACK_THEME</string>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>label</key>
-			<string>ENABLE_BLACK_THEME</string>
-			<key>key</key>
-			<string>enabledBlackTheme</string>
-			<key>id</key>
-			<string>enabledBlackTheme</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-		</dict>
-		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
@@ -34,7 +12,7 @@
 			<key>key</key>
 			<string>showBar</string>
 			<key>label</key>
-			<string>SHOW_BAR</string>
+			<string>ALWAYS_SHOW_NAVIGATION_BAR</string>
 		</dict>
 		<dict>
 			<key>cell</key>

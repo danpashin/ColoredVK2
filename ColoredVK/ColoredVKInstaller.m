@@ -22,13 +22,14 @@
 @property (strong, nonatomic) UIAlertAction *continueAction;
 @property (strong, nonatomic) NSString *login;
 @property (strong, nonatomic) NSString *password;
-@property (copy, nonatomic, nullable) void(^exitBlock)(UIAlertAction *action);
-@property (copy, nonatomic, nullable) NSString *udid;
+@property (copy, nonatomic) NSString *udid;
 @end
 
 @implementation ColoredVKInstaller
 
-+ (instancetype)sharedInstaller
+void(^installerCompletionBlock)(BOOL disableTweak);
+
++ (instancetype)startInstall
 {
     static dispatch_once_t once;
     static id instance;
@@ -42,36 +43,37 @@
 {
     self = [super init];
     if (self) {
-        self.exitBlock = ^(UIAlertAction *action) {
+        self.cancelAction = [UIAlertAction actionWithTitle:CVKLocalizedString(@"CLOSE_APP") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
             [UIApplication.sharedApplication performSelector:@selector(suspend)];
             [NSThread sleepForTimeInterval:0.5];
             exit(0);
-        };
-        self.cancelAction = [UIAlertAction actionWithTitle:CVKLocalizedString(@"CLOSE_APP") style:UIAlertActionStyleCancel handler:self.exitBlock];
+        }];
         self.udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(CFSTR("UniqueDeviceID"))];
+        
+        void (^downloadBlock)() = ^{
+            if (installerCompletionBlock) installerCompletionBlock(YES);
+            [self beginDownload];
+        };
+        
+        if (![[NSFileManager defaultManager] fileExistsAtPath:kDRMLicencePath]) downloadBlock();
+        else {            
+            NSData *decryptedData = [[NSData dataWithContentsOfFile:kDRMLicencePath] AES128DecryptedDataWithKey:kDRMLicenceKeyOld];
+            NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
+            if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0)) downloadBlock();
+            else {
+                NSData *decryptedData = [[NSData dataWithContentsOfFile:kDRMLicencePath] AES128DecryptedDataWithKey:kDRMLicenceKey];
+                NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
+                if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0)) {
+                    if (self.udid.length > 6) {
+                        if (![dict[@"UDID"] isEqualToString:self.udid]) {
+                            downloadBlock();
+                        } else if (installerCompletionBlock) installerCompletionBlock(NO);
+                    } else if (installerCompletionBlock) installerCompletionBlock(NO);
+                } else downloadBlock();
+            }
+        }
     }
     return self;
-}
-
-- (void)install:( void(^)(BOOL disableTweak) )completionBlock 
-{
-    void (^downloadBlock)() = ^{
-        if (completionBlock) completionBlock(YES);
-        [self beginDownload];
-    };
-    
-    if (![[NSFileManager defaultManager] fileExistsAtPath:kDRMLicencePath]) downloadBlock();
-    else {
-        NSData *decryptedData = [[NSData dataWithContentsOfFile:kDRMLicencePath] AES128DecryptedDataWithKey:kDRMLicenceKey];
-        NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
-        if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0)) {
-            if (self.udid.length > 6) {
-                if (![dict[@"UDID"] isEqualToString:self.udid]) {
-                    downloadBlock();
-                } else if (completionBlock) completionBlock(NO);
-            } else if (completionBlock) completionBlock(NO);
-        } else downloadBlock();
-    }
 }
 
 - (void)showAlertWithText:(NSString *)text
@@ -93,7 +95,11 @@
 
 - (void)beginDownload
 {
-    if (self.udid.length <= 6) {
+    BOOL isJailed = YES;
+#ifndef COMPILE_FOR_JAIL
+    isJailed = NO;
+#endif
+    if ((self.udid.length <= 6) && isJailed) {
         self.alertController = [UIAlertController alertControllerWithTitle:kDRMPackageName message:CVKLocalizedString(@"GETTING_UDID_ERROR") preferredStyle:UIAlertControllerStyleAlert];
         __weak typeof(self) weakSelf = self;
         [self.alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
@@ -114,6 +120,9 @@
         [self presentViewController:self.alertController];
         
         return;
+    } else if (!isJailed) {
+        [self actionLogin];
+        return;
     } else {
         [self showAlertWithText:@"Downloading licence..."];
     }
@@ -121,7 +130,11 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kDRMRemoteServerURL]];
     request.HTTPMethod = @"POST";
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
-    NSString *parameters = [NSString stringWithFormat:@"udid=%@&package=org.thebigboss.coloredvk2&version=%@", self.udid, kDRMPackageVersion];
+    
+    NSString *package = [[@"org.thebigboss.coloredvk2" dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptWithKey:kDRMAuthorizeKey].base64Encoding;
+    NSString *udid = [[self.udid dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptWithKey:kDRMAuthorizeKey].base64Encoding;
+    
+    NSString *parameters = [NSString stringWithFormat:@"udid=%@&package=%@&version=%@", udid, package,kDRMPackageVersion];
     request.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];
     [self downloadLicenceWithRequest:request saveLogin:NO];
 }
@@ -134,6 +147,8 @@
         textField.placeholder = UIKitLocalizedString(@"Name");
         textField.tag = 10;
         [[NSNotificationCenter defaultCenter] addObserver:weakSelf selector:@selector(textFieldChanged:) name:UITextFieldTextDidChangeNotification object:textField];
+        
+        if (weakSelf.login) textField.text = weakSelf.login;
     }];
     [self.alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.placeholder = UIKitLocalizedString(@"Password");
@@ -161,7 +176,7 @@
     }];
     self.loginAction.enabled = NO;
     [self.alertController addAction:self.loginAction];
-    [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:self.alertController animated:YES completion:nil];
+    [self presentViewController:self.alertController];
 }
 
 - (void)downloadLicenceWithRequest:(NSURLRequest *)request saveLogin:(BOOL)saveLogin
@@ -173,8 +188,12 @@
     
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         if (!connectionError) {
-            NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-            if (responseDict && !responseDict[@"error"]) {            
+            NSData *decrypted = [data AES256DecryptWithKey:kDRMAuthorizeKey];
+            NSString *decryptedString = [[NSString alloc] initWithData:decrypted encoding:NSUTF8StringEncoding];
+            decryptedString = [decryptedString stringByReplacingOccurrencesOfString:@"\0" withString:@""];
+            
+            NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:[decryptedString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+            if (responseDict && !responseDict[@"error"]) {               
                 if ([responseDict[@"Status"] isEqualToString:saveLogin?self.password:self.udid]) {
                     NSError *writingError = nil;
                     NSMutableDictionary *dict = @{@"UDID":self.udid}.mutableCopy;
@@ -182,14 +201,17 @@
                     NSData *encrypterdData = [[NSKeyedArchiver archivedDataWithRootObject:dict.copy] AES128EncryptedDataWithKey:kDRMLicenceKey];
                     [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
                     
-                    if (!writingError)  self.exitBlock(nil);
-                    else                showAlertBlock([NSString stringWithFormat:@"%@\n%@", CVKLocalizedString(@"ERROR"), writingError.localizedDescription]);
+                    if (!writingError) {
+                        [UIApplication.sharedApplication performSelector:@selector(suspend)];
+                        [NSThread sleepForTimeInterval:0.5];
+                        exit(0);
+                    }
+                    else showAlertBlock([NSString stringWithFormat:@"%@\n%@", CVKLocalizedString(@"ERROR"), writingError.localizedDescription]);
                     
                 } else showAlertBlock(@"Unknown error (-1)");
                 
             } else showAlertBlock(responseDict?responseDict[@"error"]:@"Unknown error (-2)");
         } else showAlertBlock(connectionError.localizedDescription);
-        self.login = nil;
         self.password = nil;
     }];
 

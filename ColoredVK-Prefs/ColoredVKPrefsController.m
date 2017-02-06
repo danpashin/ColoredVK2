@@ -63,7 +63,7 @@
     self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     self.cvkFolder = CVK_FOLDER_PATH;
     [super viewDidLoad];
-    [[ColoredVKInstaller sharedInstaller] install:^(BOOL disableTweak) {}];
+    [ColoredVKInstaller startInstall];
     for (UIView *view in self.view.subviews) {
         if ([CLASS_NAME(view) isEqualToString:@"UITableView"]) {
             UITableView *tableView = (UITableView *)view;
@@ -93,7 +93,6 @@
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
     if ([specifier.identifier isEqualToString:@"enabled"]) {
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.black.theme"), NULL, NULL, YES);
     }
 }
 
@@ -140,12 +139,10 @@
             NSFileManager *fileManager = [NSFileManager defaultManager];
             [fileManager removeItemAtPath:self.prefsPath error:&error];
             [fileManager removeItemAtPath:CVK_FOLDER_PATH error:&error];
-            [fileManager removeItemAtPath:kDRMLicencePath error:&error];
             [self reloadSpecifiers];
             CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
             CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
             CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk.reload.menu"),   NULL, NULL, YES);
-            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk.black.theme"),   NULL, NULL, YES);
             error?[hud showFailure]:[hud showSuccess];
         }];  
     };
@@ -154,40 +151,8 @@
                                                                              message:NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS_QUESTION", nil, self.cvkBunlde, nil) 
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     
-    NSString *resetTitle = [NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"Main", self.cvkBunlde, nil) componentsSeparatedByString:@" "].firstObject;
-    UIAlertAction *resetAction = [UIAlertAction actionWithTitle:resetTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { resetSettingsBlock(); }];
-    
-    NSData *decryptedData = [[NSData dataWithContentsOfFile:kDRMLicencePath] AES128DecryptedDataWithKey:kDRMLicenceKey];
-    NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
-    if ([dict.allKeys containsObject:@"Login"]) {        
-        resetAction.enabled = NO;
-        alertController.message = [alertController.message stringByAppendingString:@"\nПодтвердите данное действие паролем"];
-        
-        __weak typeof(self) weakSelf = self;
-        [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-            textField.placeholder = UIKitLocalizedString(@"Password");
-            textField.secureTextEntry = YES;
-            [[NSNotificationCenter defaultCenter] addObserver:weakSelf selector:@selector(textFieldChanged:) name:UITextFieldTextDidChangeNotification object:@{@"textField":textField, @"action":resetAction}];
-        }];
-        resetAction = [UIAlertAction actionWithTitle:resetTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {            
-            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kDRMRemoteServerURL]];
-            request.HTTPMethod = @"POST";
-            [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
-            NSString *password = [[alertController.textFields[0].text dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptWithKey:kDRMAuthorizeKey].base64Encoding;
-            NSString *parameters = [NSString stringWithFormat:@"login=%@&password=%@&action=logout&version=%@", dict[@"Login"], password, kDRMPackageVersion];
-            request.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];
-            
-            [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                if (!connectionError) {
-                    NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-                    if (!responseDict[@"error"])  resetSettingsBlock();
-                    else [self showAlertWithText:[NSString stringWithFormat:CVKLocalizedString(@"ERROR %@"), responseDict[@"error"]]];
-                } else [self showAlertWithText:[NSString stringWithFormat:CVKLocalizedString(@"ERROR %@"), connectionError.localizedDescription]];
-            }];
-        }];
-    }
-    
-    [alertController addAction:resetAction];
+    NSString *resetTitle = [NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"Main", self.cvkBunlde, nil) componentsSeparatedByString:@" "].firstObject;    
+    [alertController addAction:[UIAlertAction actionWithTitle:resetTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { resetSettingsBlock(); }]];
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
 }

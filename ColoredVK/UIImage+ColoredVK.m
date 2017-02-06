@@ -47,4 +47,20 @@
     
     return [UIImage new];
 }
+
+- (UIImage *)imageWithOverlayColor:(UIColor *)overlayColor
+{
+    UIGraphicsBeginImageContextWithOptions(self.size, NO, self.scale);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    if (context) {
+        [self drawInRect:CGRectMake(0, 0, self.size.width, self.size.height)];
+        [[UIImage imageWithColor:overlayColor] drawInRect:CGRectMake(0, 0, self.size.width, self.size.height)];
+        UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        return newImage;
+    }
+    UIGraphicsEndImageContext();
+    
+    return [UIImage new];
+}
 @end
