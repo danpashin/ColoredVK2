@@ -36,7 +36,7 @@
 #define SYSTEM_VERSION_IS_LESS_THAN(version)  SYSTEM_VERSION <= version
 #define CLASS_NAME(obj)                       NSStringFromClass([obj class])
 
-#define kColoredVKVersion @"3.2.5"
+#define kColoredVKVersion @"3.2.5.1"
 
 #ifdef CHAppName
     #undef CHAppName

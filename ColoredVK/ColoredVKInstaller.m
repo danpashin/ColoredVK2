@@ -56,18 +56,23 @@ void(^installerCompletionBlock)(BOOL disableTweak);
         };
         
         if (![[NSFileManager defaultManager] fileExistsAtPath:kDRMLicencePath]) downloadBlock();
-        else {            
-            NSData *decryptedData = [[NSData dataWithContentsOfFile:kDRMLicencePath] AES128DecryptedDataWithKey:kDRMLicenceKeyOld];
-            NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
-            if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0)) downloadBlock();
+        else {
+            NSData *licenceData = [NSData dataWithContentsOfFile:kDRMLicencePath];
+            NSData *decryptedDataOld = [licenceData AES128DecryptedDataWithKey:kDRMLicenceKeyOld];
+            NSDictionary *dictOld = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedDataOld];
+            if ([dictOld isKindOfClass:[NSDictionary class]] && (dictOld.allKeys.count>0)) {
+                NSError *error = nil;
+                [[NSFileManager defaultManager] removeItemAtPath:kDRMLicencePath error:&error];
+                if (error) NSLog(@"[COLOREDVK 2] %@", error);
+                downloadBlock();
+            }
             else {
-                NSData *decryptedData = [[NSData dataWithContentsOfFile:kDRMLicencePath] AES128DecryptedDataWithKey:kDRMLicenceKey];
+                NSData *decryptedData = [licenceData AES256DecryptWithKey:kDRMLicenceKey];
                 NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
                 if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0)) {
                     if (self.udid.length > 6) {
-                        if (![dict[@"UDID"] isEqualToString:self.udid]) {
-                            downloadBlock();
-                        } else if (installerCompletionBlock) installerCompletionBlock(NO);
+                        if (![dict[@"UDID"] isEqualToString:self.udid]) downloadBlock();
+                        else if (installerCompletionBlock) installerCompletionBlock(NO);
                     } else if (installerCompletionBlock) installerCompletionBlock(NO);
                 } else downloadBlock();
             }
@@ -198,7 +203,7 @@ void(^installerCompletionBlock)(BOOL disableTweak);
                     NSError *writingError = nil;
                     NSMutableDictionary *dict = @{@"UDID":self.udid}.mutableCopy;
                     if (saveLogin) [dict setValue:self.login forKey:@"Login"];
-                    NSData *encrypterdData = [[NSKeyedArchiver archivedDataWithRootObject:dict.copy] AES128EncryptedDataWithKey:kDRMLicenceKey];
+                    NSData *encrypterdData = [[NSKeyedArchiver archivedDataWithRootObject:dict.copy] AES256EncryptWithKey:kDRMLicenceKey];
                     [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
                     
                     if (!writingError) {

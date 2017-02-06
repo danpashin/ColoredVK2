@@ -136,9 +136,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1451"
-            endingLineNumber = "1451"
-            landmarkName = "reloadPrefsNotify()"
-            landmarkType = "9">
+            endingLineNumber = "1451">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
