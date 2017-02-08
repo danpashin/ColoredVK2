@@ -12,8 +12,6 @@
 #import "ColoredVKHeaderView.h"
 #import "ColoredVKInstaller.h"
 #import "ColoredVKPrefs.h"
-#import "NSData+AES.h"
-#import "NSData+AESCrypt.h"
 #import "ColoredVKHUD.h"
 
 @interface ColoredVKPrefsController ()
