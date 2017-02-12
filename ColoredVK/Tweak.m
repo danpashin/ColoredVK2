@@ -98,7 +98,7 @@ UIColor *switchesOnTintColor;
 
 UIColor *messageBubbleTintColor;
 UIColor *messageBubbleSentTintColor;
-UIColor *messageReadColor;
+UIColor *messageUnreadColor;
 
 
 CVKCellSelectionStyle menuSelectionStyle;
@@ -229,17 +229,17 @@ static void reloadPrefs()
         switchesOnTintColor =        [UIColor savedColorForIdentifier:@"switchesOnTintColor"        fromPrefs:prefs];
         messageBubbleTintColor =     [UIColor savedColorForIdentifier:@"messageBubbleTintColor"     fromPrefs:prefs];
         messageBubbleSentTintColor = [UIColor savedColorForIdentifier:@"messageBubbleSentTintColor" fromPrefs:prefs];
-        messageReadColor =          [[UIColor savedColorForIdentifier:@"messageReadColor"           fromPrefs:prefs] colorWithAlphaComponent:0.2];
+        messageUnreadColor =          [[UIColor savedColorForIdentifier:@"messageReadColor"           fromPrefs:prefs] colorWithAlphaComponent:0.2];
         
         
-        UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
-        if (statusBar) {
+        id statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
+        if (statusBar != nil) {
             if (enabled && changeSBColors) {
-                statusBar.foregroundColor = SBForegroundColor;
-                statusBar.backgroundColor = SBBackgroundColor;
+                [statusBar performSelector:@selector(setForegroundColor:) withObject:SBForegroundColor];
+                [statusBar performSelector:@selector(setBackgroundColor:) withObject:SBBackgroundColor];
             } else {
-                statusBar.foregroundColor = nil;
-                statusBar.backgroundColor = nil;
+                [statusBar performSelector:@selector(setForegroundColor:) withObject:nil];
+                [statusBar performSelector:@selector(setBackgroundColor:) withObject:nil];
             }
         }
         
@@ -457,8 +457,9 @@ static void setupAudioPlayer(UIView *hostView, UIColor *color)
     }
 }
 
-static void setupCellForSearchController(UITableViewCell *cell, id searchController)
+static void setupCellForSearchController(UITableViewCell *cell, UISearchDisplayController *searchController)
 {
+    if (![searchController.searchResultsTableView.backgroundView isKindOfClass:[ColoredVKBackgroundImageView class]]) return;
     BOOL shouldCustomize = NO;
     int tag = (int)((UISearchController *)searchController).searchBar.tag;
     if ((tag == 1) && enabledMessagesListImage) shouldCustomize = YES;
@@ -536,6 +537,54 @@ static NSInteger VKVersion()
     return versionString.integerValue;
 }
 
+UIVisualEffectView *blurForView(UIView *view, int tag)
+{
+    UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+    blurEffectView.frame = view.bounds;
+    blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    blurEffectView.tag = tag;
+    
+    return blurEffectView;
+}
+
+
+static void setupUISearchBar(UISearchBar *searchBar)
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIView *barBackground = searchBar.subviews[0].subviews[0];
+        if (menuSelectionStyle == CVKCellSelectionStyleBlurred) {
+            searchBar.backgroundColor = [UIColor clearColor];
+            if (![barBackground.subviews containsObject: [barBackground viewWithTag:102] ]) [barBackground addSubview:blurForView(barBackground, 102)];
+        } else if (menuSelectionStyle == CVKCellSelectionStyleTransparent) {
+            if ([barBackground.subviews containsObject: [barBackground viewWithTag:102]]) [[barBackground viewWithTag:102] removeFromSuperview];
+            searchBar.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
+        } else searchBar.backgroundColor = [UIColor clearColor];
+        
+        UIView *subviews = searchBar.subviews.lastObject;
+        UITextField *barTextField = subviews.subviews[1];
+        if ([barTextField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+            barTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:barTextField.placeholder  
+                                                                                 attributes:@{NSForegroundColorAttributeName:[UIColor colorWithWhite:1 alpha:0.5]}];
+        }
+    });
+}
+
+static void resetUISearchBar(UISearchBar *searchBar)
+{
+    searchBar.backgroundColor = kMenuCellBackgroundColor;
+    
+    UIView *barBackground = searchBar.subviews[0].subviews[0];
+    if ([barBackground.subviews containsObject: [barBackground viewWithTag:102] ]) [[barBackground viewWithTag:102] removeFromSuperview];
+    
+    UIView *subviews = searchBar.subviews.lastObject;
+    UITextField *barTextField = subviews.subviews[1];
+    if ([barTextField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        barTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:barTextField.placeholder
+                                                                             attributes:@{NSForegroundColorAttributeName:[UIColor colorWithRed:162/255.0f green:168/255.0f blue:173/255.0f alpha:1]}];
+    }
+}
+
+
 
 
 #pragma mark - AppDelegate
@@ -596,7 +645,14 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setTintColor, UIColor*, tintCo
 CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDictionary*, attributes)
 {
     if (enabled && enabledBarColor) {
+        @try {
             attributes = @{ NSForegroundColorAttributeName : barForegroundColor };
+        } @catch (NSException *exception) {
+            CHLog(@"%@", exception);
+            abort();
+        } @finally {
+            
+        }
     }
     
     CHSuper(1, UINavigationBar, setTitleTextAttributes, attributes);
@@ -864,7 +920,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, DialogsController, tableView, UITab
         if (enabledMessagesListImage) {
             cell.backgroundView.hidden = YES;
             cell.backgroundColor = [UIColor clearColor];
-            if (!cell.dialog.head.read_state && cell.unread.hidden) cell.contentView.backgroundColor = useCustomMessageReadColor?messageReadColor:[UIColor defaultColorForIdentifier:@"messageReadColor"];
+            if (!cell.dialog.head.read_state && cell.unread.hidden) cell.contentView.backgroundColor = useCustomMessageReadColor?messageUnreadColor:[UIColor defaultColorForIdentifier:@"messageReadColor"];
             else cell.contentView.backgroundColor = [UIColor clearColor];
             
             cell.name.textColor = [UIColor colorWithWhite:1 alpha:0.9];
@@ -890,7 +946,7 @@ CHOptimizedMethod(1, self, void, BackgroundView, drawRect, CGRect, rect)
     if (enabled) {
         self.layer.cornerRadius = self.cornerRadius;
         self.layer.masksToBounds = YES;
-        if (enabledMessagesListImage) self.layer.backgroundColor = useCustomMessageReadColor?messageReadColor.CGColor:[UIColor defaultColorForIdentifier:@"messageReadColor"].CGColor;
+        if (enabledMessagesListImage) self.layer.backgroundColor = useCustomMessageReadColor?messageUnreadColor.CGColor:[UIColor defaultColorForIdentifier:@"messageReadColor"].CGColor;
         else CHSuper(1, BackgroundView, drawRect, rect);
     } else CHSuper(1, BackgroundView, drawRect, rect);
 }
@@ -965,7 +1021,7 @@ CHOptimizedMethod(1, self, void, MessageCell, updateBackground, BOOL, animated)
     CHSuper(1, MessageCell, updateBackground, animated);
     if (enabled && enabledMessagesImage) {
         self.backgroundView = nil;
-        if (!self.message.read_state) self.backgroundColor = useCustomMessageReadColor?messageReadColor:[UIColor defaultColorForIdentifier:@"messageReadColor"];
+        if (!self.message.read_state) self.backgroundColor = useCustomMessageReadColor?messageUnreadColor:[UIColor defaultColorForIdentifier:@"messageReadColor"];
         else self.backgroundColor = [UIColor clearColor];
     }
 }
@@ -1012,16 +1068,21 @@ CHOptimizedMethod(0, self, NSArray*, VKMMainController, menu)
     return origMenu;
 }
 
+#ifdef __LP64__
 CHOptimizedMethod(2, self, CGFloat, VKMMainController, tableView, UITableView*, tableView, heightForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     CGFloat height = CHSuper(2, VKMMainController, tableView, tableView, heightForRowAtIndexPath, indexPath);
     if ([self isKindOfClass:NSClassFromString(@"VKMMainController")] && (self.menu.count > 0)) {
         UITableViewCell *cell = self.menu[indexPath.row];
-        if ([cell.textLabel.text isEqualToString:@"ColoredVK"]) height = 44;
-        if ([cell.textLabel.text isEqualToString:NSLocalizedStringFromTableInBundle(@"GroupsAndPeople", nil, vksBundle, nil)]) height = 35;
+        if ([cell isKindOfClass:[UITableViewCell class]]) {
+            if ([cell.textLabel.text isEqualToString:@"ColoredVK"]) height = 44;
+            if ([cell.textLabel.text isEqualToString:NSLocalizedStringFromTableInBundle(@"GroupsAndPeople", nil, vksBundle, nil)]) height = 35;
+        }
     }
     return height;
 }
+#endif
+
 
 CHOptimizedMethod(0, self, void, VKMMainController, viewDidLoad)
 {
@@ -1033,7 +1094,7 @@ CHOptimizedMethod(0, self, void, VKMMainController, viewDidLoad)
     
     if (enabled && enabledMenuImage) {
         [mainMenuBackgroundView addToView:self.view];
-        [ColoredVKMainController setupUISearchBar:(UISearchBar*)self.tableView.tableHeaderView];
+        setupUISearchBar((UISearchBar*)self.tableView.tableHeaderView);
         self.tableView.backgroundColor = [UIColor clearColor];
     }
 }
@@ -1064,7 +1125,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
         if (menuSelectionStyle == CVKCellSelectionStyleTransparent) selectedBackView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
         else if (menuSelectionStyle == CVKCellSelectionStyleBlurred) {
             selectedBackView.backgroundColor = [UIColor clearColor];
-            if (![selectedBackView.subviews containsObject: [selectedBackView viewWithTag:100] ]) [selectedBackView addSubview:[ColoredVKMainController blurForView:selectedBackView withTag:100]];
+            if (![selectedBackView.subviews containsObject: [selectedBackView viewWithTag:100] ]) [selectedBackView addSubview:blurForView(selectedBackView, 100)];
             
         } else selectedBackView.backgroundColor = [UIColor clearColor];
         cell.selectedBackgroundView = selectedBackView;
@@ -1104,13 +1165,13 @@ CHOptimizedMethod(0, self, id, VKMMainController, VKMTableCreateSearchBar)
 CHDeclareClass(HintsSearchDisplayController);
 CHOptimizedMethod(1, self, void, HintsSearchDisplayController, searchDisplayControllerWillBeginSearch, UISearchDisplayController*, controller)
 {
-    if (enabled && enabledMenuImage) [ColoredVKMainController resetUISearchBar:controller.searchBar];
+    if (enabled && enabledMenuImage) resetUISearchBar(controller.searchBar);
     CHSuper(1, HintsSearchDisplayController, searchDisplayControllerWillBeginSearch, controller);
 }
 
 CHOptimizedMethod(1, self, void, HintsSearchDisplayController, searchDisplayControllerDidEndSearch, UISearchDisplayController*, controller)
 {
-    if (enabled && enabledMenuImage) [ColoredVKMainController setupUISearchBar:controller.searchBar];
+    if (enabled && enabledMenuImage) setupUISearchBar(controller.searchBar);
     CHSuper(1, HintsSearchDisplayController, searchDisplayControllerDidEndSearch, controller);
 }
 
@@ -1462,7 +1523,7 @@ static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFS
         for (UIView *view in mainController.view.subviews) if (view.tag == 25) { [view removeFromSuperview]; break; }
         BOOL shouldShow = (enabled && enabledMenuImage);
         UISearchBar *searchBar = (UISearchBar *)mainController.tableView.tableHeaderView;
-        shouldShow?[ColoredVKMainController setupUISearchBar:searchBar]:[ColoredVKMainController resetUISearchBar:searchBar];
+        shouldShow?setupUISearchBar(searchBar):resetUISearchBar(searchBar);
         [mainController.tableView reloadData];
         [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
             mainMenuBackgroundView.alpha = shouldShow?1:0;
@@ -1588,7 +1649,9 @@ CHConstructor
             
             CHLoadLateClass(VKMMainController);
             CHHook(2, VKMMainController, tableView, cellForRowAtIndexPath);
+#ifdef __LP64__
             CHHook(2, VKMMainController, tableView, heightForRowAtIndexPath);
+#endif
             CHHook(0, VKMMainController, VKMTableCreateSearchBar);
             CHHook(0, VKMMainController, menu);
             CHHook(0, VKMMainController, viewDidLoad);

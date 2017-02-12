@@ -13,7 +13,7 @@
 
 + (instancetype)headerForView:(UIView *)rootView
 {
-    return [[self alloc] initWithFrame:CGRectMake(0, 0, rootView.frame.size.width, 120)];
+    return [[self alloc] initWithFrame:CGRectMake(0, 0, rootView.frame.size.width, 160)];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -21,19 +21,19 @@
     self = [super initWithFrame:frame];
     if (self) {        
         UILabel *heading = [[UILabel alloc] initWithFrame:CGRectZero];
-        heading.font = [UIFont fontWithName:@"HelveticaNeue" size:35.0];
-        heading.text = @"ColoredVK";
-        heading.backgroundColor = UIColor.clearColor;
+        heading.font = [UIFont systemFontOfSize:42.0];
+        heading.text = @"ColoredVK 2";
+        heading.backgroundColor = [UIColor clearColor];
         heading.textColor = [UIColor colorWithRed:70.0/255.0f green:120.0/255.0f blue:177.0/255.0f alpha:1];
         heading.textAlignment = NSTextAlignmentCenter;
         [self addSubview:heading];
         
         UILabel *subtitle = [[UILabel alloc] initWithFrame:CGRectZero];
-        subtitle.font = [UIFont fontWithName:@"HelveticaNeue" size:14.0];
+        subtitle.font = [UIFont systemFontOfSize:14.0];
         subtitle.text = @"Customize your VK App!";
-        subtitle.backgroundColor = UIColor.clearColor;
-        subtitle.textColor = UIColor.grayColor;
-        subtitle.textAlignment = NSTextAlignmentCenter;
+        subtitle.backgroundColor = [UIColor clearColor];
+        subtitle.textColor = [UIColor grayColor];
+        subtitle.textAlignment = heading.textAlignment;
         [self addSubview:subtitle];
         
         heading.translatesAutoresizingMaskIntoConstraints = NO;

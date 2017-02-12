@@ -19,46 +19,6 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 @implementation ColoredVKMainController
 static NSString *switchViewKey = @"switchViewKey";
 
-+ (void) setupUISearchBar:(UISearchBar*)searchBar
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIView *barBackground = searchBar.subviews[0].subviews[0];
-        if (menuSelectionStyle == CVKCellSelectionStyleBlurred) {
-            searchBar.backgroundColor = [UIColor clearColor];
-            if (![barBackground.subviews containsObject: [barBackground viewWithTag:102] ]) [barBackground addSubview:[self blurForView:barBackground withTag:102]];
-        } else if (menuSelectionStyle == CVKCellSelectionStyleTransparent) {
-            if ([barBackground.subviews containsObject: [barBackground viewWithTag:102]]) [[barBackground viewWithTag:102] removeFromSuperview];
-            searchBar.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
-        } else searchBar.backgroundColor = [UIColor clearColor];
-        
-        UIView *subviews = searchBar.subviews.lastObject;
-        UITextField *barTextField = subviews.subviews[1];
-        if ([barTextField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-            barTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:barTextField.placeholder  
-                                                                                 attributes: @{ NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent:0.5] }];
-        }
-    });
-    
-}
-
-
-+ (void)resetUISearchBar:(UISearchBar*)searchBar
-{
-    searchBar.backgroundColor = kMenuCellBackgroundColor;
-    
-    UIView *barBackground = searchBar.subviews[0].subviews[0];
-    if ([barBackground.subviews containsObject: [barBackground viewWithTag:102] ]) [[barBackground viewWithTag:102] removeFromSuperview];
-    
-    UIView *subviews = searchBar.subviews.lastObject;
-    UITextField *barTextField = subviews.subviews[1];
-    if ([barTextField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-        barTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:barTextField.placeholder
-                                                                             attributes:@{
-                                                                                          NSForegroundColorAttributeName : [UIColor colorWithRed:162/255.0f green:168/255.0f blue:173/255.0f alpha:1]
-                                                                                          }];
-    }
-}
-
 - (MenuCell *)cvkCell
 {
     if (!_cvkCell) {
@@ -66,7 +26,7 @@ static NSString *switchViewKey = @"switchViewKey";
         cell.backgroundColor = kMenuCellBackgroundColor;
         cell.contentView.backgroundColor = [UIColor clearColor];
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-        cell.textLabel.text = @"ColoredVK";
+        cell.textLabel.text = @"ColoredVK 2";
         cell.textLabel.textColor = kMenuCellTextColor;
         cell.textLabel.backgroundColor = [UIColor clearColor];
         cell.textLabel.font = [UIFont systemFontOfSize:17.0];
@@ -77,7 +37,7 @@ static NSString *switchViewKey = @"switchViewKey";
         cell.selectedBackgroundView = backgroundView;
         
         UISwitch *switchView = [UISwitch new];
-        switchView.frame = CGRectMake(UIScreen.mainScreen.bounds.size.width/1.2 - switchView.frame.size.width, (cell.contentView.frame.size.height - switchView.frame.size.height)/2, 0, 0);
+        switchView.frame = CGRectMake([UIScreen mainScreen].bounds.size.width/1.2 - switchView.frame.size.width, (cell.contentView.frame.size.height - switchView.frame.size.height)/2, 0, 0);
         switchView.tag = 405;
         switchView.on = enabled;
         switchView.onTintColor = [UIColor defaultColorForIdentifier:@"switchesOnTintColor"];
@@ -116,17 +76,6 @@ static NSString *switchViewKey = @"switchViewKey";
 {
     UISwitch *switchView = objc_getAssociatedObject(self, (__bridge const void *)(switchViewKey));
     if (switchView) [switchView setOn:enabled animated:YES];
-}
-
-
-+ (UIVisualEffectView *) blurForView:(UIView *)view withTag:(int)tag
-{
-    UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
-    blurEffectView.frame = view.bounds;
-    blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    blurEffectView.tag = tag;
-    
-    return blurEffectView;
 }
 
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout

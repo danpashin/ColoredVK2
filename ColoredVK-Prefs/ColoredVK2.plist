@@ -5,6 +5,6 @@
 		detail = "ColoredVKPrefsController";
 		icon = "Icon.png";
 		isController = 1;
-		label = ColoredVK;
+		label = "ColoredVK 2";
 	};
 }

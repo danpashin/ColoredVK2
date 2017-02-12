@@ -121,6 +121,7 @@ NSString *key;
     if (self) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(CFSTR("UniqueDeviceID"))];
+            key = AES256EncryptString([[NSProcessInfo processInfo] globallyUniqueString], kDRMAuthorizeKey).base64Encoding;
             
             void (^downloadBlock)() = ^{
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -168,7 +169,7 @@ NSString *key;
 
 
 - (void)beginDownload
-{    
+{
     BOOL isJailed = YES;
 #ifndef COMPILE_FOR_JAIL
     isJailed = NO;
@@ -210,7 +211,6 @@ NSString *key;
     
     NSString *package = AES256EncryptString(@"org.thebigboss.coloredvk2", kDRMAuthorizeKey).base64Encoding;
     NSString *encryptedUDID = AES256EncryptString(udid, kDRMAuthorizeKey).base64Encoding;
-    key = AES256EncryptString([[NSProcessInfo processInfo] globallyUniqueString], kDRMAuthorizeKey).base64Encoding;
     
     NSString *parameters = [NSString stringWithFormat:@"udid=%@&package=%@&version=%@&key=%@", encryptedUDID, package, kDRMPackageVersion, key];
     request.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];
@@ -248,7 +248,7 @@ NSString *key;
         [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
         password = AES256EncryptString(password, kDRMAuthorizeKey).base64Encoding;
         NSString *device = [NSString stringWithFormat:@"%@(%@)", [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];
-        NSString *parameters = [NSString stringWithFormat:@"login=%@&password=%@&action=login&version=%@&device=%@", login, password, kDRMPackageVersion, device];
+        NSString *parameters = [NSString stringWithFormat:@"login=%@&password=%@&action=login&version=%@&device=%@&key=%@", login, password, kDRMPackageVersion, device, key];
         request.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];
         download(request, YES);
     }];

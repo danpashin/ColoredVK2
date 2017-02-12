@@ -328,6 +328,7 @@
 		A53D41671DD0AC2600584B13 /* ColoredVKBackgroundImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKBackgroundImageView.m; sourceTree = "<group>"; };
 		A53D91961CCA82B400E45A49 /* Tweak.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tweak.m; sourceTree = "<group>"; };
 		A53D91991CCA82B400E45A49 /* VKMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VKMethods.h; sourceTree = "<group>"; };
+		A53FDE511E4CC95100AA3031 /* Icon-big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-big.png"; path = "ColoredVK.bundle/Icon-big.png"; sourceTree = SOURCE_ROOT; };
 		A542494C1E0522560018D3E3 /* NSData+ImageContentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+ImageContentType.h"; sourceTree = "<group>"; };
 		A542494D1E0522560018D3E3 /* NSData+ImageContentType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+ImageContentType.m"; sourceTree = "<group>"; };
 		A542494E1E0522560018D3E3 /* NSImage+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+WebCache.h"; sourceTree = "<group>"; };
@@ -703,6 +704,7 @@
 				A52CDBAA1E33EB2400D69AD3 /* ColoredVKHUD.h */,
 				A52CDBAB1E33EB2400D69AD3 /* ColoredVKHUD.m */,
 				A5D979A41DAEBA1000607F06 /* Images.xcassets */,
+				A53FDE511E4CC95100AA3031 /* Icon-big.png */,
 				A5DD93FE1D3E0F560006E470 /* Supporting Files */,
 			);
 			path = "ColoredVK-Prefs";
@@ -1188,7 +1190,7 @@
 		A5D979A51DAEBAD300607F06 /* Release_DEB */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = 3.2.5.2;
+				APP_VERSION = 3.2.5.3;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -1260,7 +1262,7 @@
 		A5D979A81DAEBAD900607F06 /* Release_IPA */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = 3.2.5.2;
+				APP_VERSION = 3.2.5.3;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;

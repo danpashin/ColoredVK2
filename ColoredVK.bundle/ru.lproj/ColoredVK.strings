@@ -35,7 +35,7 @@
 
 "CHANGE_BACKGROUND" = "Изменить фон";
 "IMAGE_BLACKOUT" = "Затемнение изображ.";
-"SELECTION_STYLE" = "Стиль выбранной ячейки";
+"SELECTION_STYLE" = "Стиль выбранной вкладки";
 "TRANSPARENT" = "Прозрачная";
 "SEMI_TRANSPARENT" = "Полупрозрачная";
 "BLURRED" = "Размытая";

@@ -154,23 +154,4 @@
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
 }
-
-- (void)textFieldChanged:(NSNotification *)notification
-{
-    if (notification && ([notification.object isKindOfClass:[NSDictionary class]] && ( ((NSDictionary *)notification.object).allKeys.count == 2)) ) {
-        NSDictionary *dict = notification.object;
-        UITextField *textField = dict[@"textField"];
-        UIAlertAction *resetAction = dict[@"action"];
-        
-        if (textField.text.length > 0) resetAction.enabled = YES;
-        else resetAction.enabled = NO;
-    }
-}
-
-- (void)showAlertWithText:(NSString *)text
-{
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:text preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
-    [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
-}
 @end
