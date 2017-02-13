@@ -26,7 +26,7 @@
 			<key>action</key>
 			<string>showColorPicker:</string>
 			<key>label</key>
-			<string>FOREGROUND_COLOR</string>
+			<string>TEXT_COLOR</string>
 			<key>cellClass</key>
 			<string>ColoredVKColorCell</string>
 			<key>cell</key>
@@ -96,7 +96,7 @@
 			<key>action</key>
 			<string>showColorPicker:</string>
 			<key>label</key>
-			<string>FOREGROUND_COLOR</string>
+			<string>TEXT_COLOR</string>
 			<key>cellClass</key>
 			<string>ColoredVKColorCell</string>
 			<key>cell</key>

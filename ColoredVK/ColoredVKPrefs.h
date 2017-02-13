@@ -12,4 +12,9 @@
 
 @interface ColoredVKPrefs : PSListController 
 
+@property (nonatomic, readonly) PSSpecifier *footer;
+@property (nonatomic, readonly) PSSpecifier *errorMessage;
+@property (nonatomic, readonly, getter=getTweakVersion) NSString *tweakVersion;
+@property (nonatomic, readonly, getter=getVKVersion) NSString *VKVersion;
+
 @end

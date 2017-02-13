@@ -18,12 +18,14 @@
 #define CVK_PREFS_PATH      @"/var/mobile/Library/Preferences/com.daniilpashin.coloredvk2.plist"
 #define CVK_FOLDER_PATH     @"/var/mobile/Library/Preferences/ColoredVK2"
 #define CVK_CACHE_PATH      @"/var/mobile/Library/Preferences/ColoredVK2/Cache"
+#define CVK_BACKUP_PATH     @"/var/mobile/Documents/ColoredVK2_Backups"
 #else
 #define CVK_BUNDLE_PATH     [[NSBundle mainBundle] pathForResource: @"ColoredVK2" ofType: @"bundle"]
 #define VKS_BUNDLE_PATH     [[NSBundle mainBundle] pathForResource: @"vksprefs" ofType: @"bundle"]
 #define CVK_PREFS_PATH      [NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.daniilpashin.coloredvk2.plist"]
 #define CVK_FOLDER_PATH     [NSHomeDirectory() stringByAppendingString:@"/Documents/ColoredVK2"]
 #define CVK_CACHE_PATH      [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/ColoredVK2/Cache"]
+#define CVK_BACKUP_PATH     [NSHomeDirectory() stringByAppendingString:@"/Documents/ColoredVK2_Backups"]
 #endif
 
 #define IS_IPAD                               UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
@@ -36,7 +38,7 @@
 #define SYSTEM_VERSION_IS_LESS_THAN(version)  SYSTEM_VERSION <= version
 #define CLASS_NAME(obj)                       NSStringFromClass([obj class])
 
-#define kColoredVKVersion @"3.2.5.3"
+#define kColoredVKVersion @"3.2.6"
 
 #ifdef CHAppName
     #undef CHAppName

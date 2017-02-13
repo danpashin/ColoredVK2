@@ -15,6 +15,7 @@
 #import "ColoredVKHUD.h"
 #import "NSDate+DateTools.h"
 #import "UIImage+ResizeMagick.h"
+#import "SSZipArchive.h"
 
 OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0);
 
@@ -33,7 +34,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     else return UIStatusBarStyleDefault;
 }
 
-- (id)specifiers
+- (NSArray *)specifiers
 {
     if (!_specifiers) {
         NSString *plistName = [@"plists/" stringByAppendingString:self.specifier.properties[@"plistToLoad"]];
@@ -81,7 +82,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     self.cvkFolder = CVK_FOLDER_PATH;
     [super viewDidLoad];
     for (UIView *view in self.view.subviews) {
-        if ([view isKindOfClass:NSClassFromString(@"UITableView")]) {
+        if ([view isKindOfClass:[UITableView class]]) {
             UITableView *tableView = (UITableView *)view;
             tableView.separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
             break;
@@ -106,7 +107,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
     
-    NSArray *identificsToReloadMenu = @[@"menuSelectionStyle", @"hideMenuSeparators", @"changeSwitchColor", @"useMenuParallax"];
+    NSArray *identificsToReloadMenu = @[@"menuSelectionStyle", @"hideMenuSeparators", @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor"];
     if ([identificsToReloadMenu containsObject:specifier.identifier])
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
 }
@@ -166,18 +167,13 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     self.imageID = specifier.identifier;
     UIImagePickerController *picker = [UIImagePickerController new];
     picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    picker.delegate = self;
+    picker.delegate = self;    
     if (IS_IPAD) {
         picker.modalPresentationStyle = UIModalPresentationPopover;
+        picker.popoverPresentationController.permittedArrowDirections = 0;
         picker.popoverPresentationController.sourceView = self.view;
-        picker.popoverPresentationController.sourceRect = CGRectMake(self.view.frame.size.width/2, self.view.frame.size.width/2, 1, 1);
-        
-        PSTableCell *cell = [self cachedCellForSpecifier:specifier];
-        if ([cell.subviews containsObject:[cell viewWithTag:20]]) {
-            picker.popoverPresentationController.sourceView = cell;
-            picker.popoverPresentationController.sourceRect = CGRectMake([cell viewWithTag:20].frame.origin.x, [cell viewWithTag:20].frame.origin.y, 1, 1);
-        }
-    } 
+        picker.popoverPresentationController.sourceRect = self.view.bounds;
+    }
     [self.navigationController presentViewController:picker animated:YES completion:nil];
 }
 
@@ -216,7 +212,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
                 } else if ([self.imageID isEqualToString:@"messagesBackgroundImage"]) {
                     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.messages"), NULL, NULL, YES);
                 }
-                error?[parentHud showFailureWithStatus:error.localizedDescription animated:YES]:[parentHud showSuccess];
+                error?[parentHud showFailureWithStatus:error.localizedDescription]:[parentHud showSuccess];
             });
         });
     };
@@ -305,5 +301,135 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
         if (success && !error) [hud showSuccess];
         else [hud showFailureWithStatus:[NSString stringWithFormat:@"%@\n%@", error.localizedDescription, error.localizedFailureReason] animated:YES];
     }];
+}
+
+- (void)resetSettings
+{
+    void (^resetSettingsBlock)() = ^{
+        if ([[NSBundle mainBundle].executablePath.lastPathComponent isEqualToString:@"vkclient"]) 
+            self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:60/255.0f green:112/255.0f blue:169/255.0f alpha:1];
+        
+        ColoredVKHUD *hud = [ColoredVKHUD showHUD];
+        hud.operation = [NSBlockOperation blockOperationWithBlock:^{
+            NSError *error = nil;
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            [fileManager removeItemAtPath:self.prefsPath error:&error];
+            [fileManager removeItemAtPath:self.cvkFolder error:&error];
+            [self reloadSpecifiers];
+            CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
+            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
+            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk.reload.menu"),   NULL, NULL, YES);
+            error?[hud showFailure]:[hud showSuccess];
+        }];  
+    };
+    
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBunlde, nil)
+                                                                             message:NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS_QUESTION", nil, self.cvkBunlde, nil) 
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    
+    NSString *resetTitle = [NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"ColoredVK", self.cvkBunlde, nil) componentsSeparatedByString:@" "].firstObject;    
+    [alertController addAction:[UIAlertAction actionWithTitle:resetTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { resetSettingsBlock(); }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+    [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)backupSettings
+{
+    ColoredVKHUD *hud = [ColoredVKHUD showHUD];
+    hud.operation = [NSBlockOperation blockOperationWithBlock:^{
+        NSMutableArray *files = @[self.prefsPath].mutableCopy;
+        
+        NSFileManager *filemaneger = [NSFileManager defaultManager];
+        if (![filemaneger fileExistsAtPath:CVK_BACKUP_PATH]) [filemaneger createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
+        
+        for (NSString *fileName in [filemaneger contentsOfDirectoryAtPath:self.cvkFolder error:nil]) {
+            if (![fileName containsString:@"Cache"]) [files addObject:[NSString stringWithFormat:@"%@/%@", self.cvkFolder, fileName]];
+        }
+        
+        NSDateFormatter *dateFormatter = [NSDateFormatter new];
+        dateFormatter.dateFormat = @"yyyy-MM-dd_HH:mm";
+        NSString *backupName = [@"com.daniilpashin.coloredvk2_" stringByAppendingString:[dateFormatter stringFromDate:[NSDate date]]];
+        NSString *backupPath = [NSString stringWithFormat:@"%@/%@.zip", CVK_BACKUP_PATH, backupName];
+        
+        [SSZipArchive createZipFileAtPath:backupPath withFilesAtPaths:files];
+        [hud showSuccess];
+    }];
+}
+
+- (void)restoreSettings
+{    
+    NSMutableArray *files = [NSMutableArray array];
+    
+    NSFileManager *filemanager = [NSFileManager defaultManager];    
+    for (NSString *filename in [filemanager contentsOfDirectoryAtPath:CVK_BACKUP_PATH error:nil]) {
+        if ([filename containsString:@"com.daniilpashin.coloredvk2"]) [files addObject:filename];
+    }
+    
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:NSLocalizedStringFromTableInBundle(@"CHOOSE_BACKUP", @"ColoredVK", self.cvkBunlde, nil) 
+                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    if (files.count > 0) {
+        [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+        for (NSString *filename in files) {
+            UIAlertAction *alertAction = [UIAlertAction actionWithTitle:filename style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                [self restoreSettingsFromFile:filename];
+            }];
+            [alertController addAction:alertAction];
+        }
+    } else {
+        alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:NSLocalizedStringFromTableInBundle(@"NO_FILES_TO_RESTORE", @"ColoredVK", self.cvkBunlde, nil) 
+                                                       preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+    }
+    
+    if (IS_IPAD) {
+        alertController.popoverPresentationController.permittedArrowDirections = 0;
+        alertController.popoverPresentationController.sourceView = self.view;
+        alertController.popoverPresentationController.sourceRect = self.view.bounds;
+    }
+    [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+    
+}
+
+- (void)restoreSettingsFromFile:(NSString *)file
+{
+    ColoredVKHUD *hud = [ColoredVKHUD showHUD];
+    hud.executionBlock = ^(ColoredVKHUD *parentHud){
+        NSString *backupPath = [NSString stringWithFormat:@"%@/%@", CVK_BACKUP_PATH, file];
+        NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingString:@"coloredvk2"];
+        
+        [SSZipArchive unzipFileAtPath:backupPath toDestination:tmpPath progressHandler:^(NSString *entry, unz_file_info zipInfo, long entryNumber, long total){} 
+                    completionHandler:^(NSString *path, BOOL succeeded, NSError *error) {
+                        if (succeeded && !error) {
+                            NSFileManager *filemanager = [NSFileManager defaultManager];
+                            
+                            [filemanager removeItemAtPath:self.prefsPath error:nil];
+                            [filemanager removeItemAtPath:self.cvkFolder error:nil];
+                            [filemanager createDirectoryAtPath:self.cvkFolder withIntermediateDirectories:NO attributes:nil error:nil];
+                            
+                            NSError *movingError = nil;
+                            for (NSString *filename in [filemanager contentsOfDirectoryAtPath:tmpPath error:nil]) {
+                                NSString *filePath = [NSString stringWithFormat:@"%@/%@", tmpPath, filename];
+                                if ([filename containsString:@"Image"]) {
+                                    [filemanager copyItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", self.cvkFolder, filename] error:&error];
+                                } else if ([filename containsString:@"plist"]) {
+                                    [filemanager copyItemAtPath:filePath toPath:self.prefsPath error:&error];
+                                }                                
+                                if (movingError) break;
+                            }
+                            [filemanager removeItemAtPath:tmpPath error:nil];
+                            
+                            movingError?[parentHud showFailureWithStatus:movingError.localizedDescription]:[parentHud showSuccess];
+                            
+                            [self reloadSpecifiers];
+                            CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
+                            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
+                            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk.reload.menu"),   NULL, NULL, YES);
+                            
+                        } else [parentHud showFailureWithStatus:error.localizedDescription];
+                    }];
+    };
+    hud.executionBlock(hud);
+    
 }
 @end

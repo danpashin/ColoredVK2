@@ -88,11 +88,11 @@
     });
 }
 
--(void)showFailureWithStatus:(NSString *)status animated:(BOOL)animated
+- (void)showFailureWithStatus:(NSString *)status
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [super showFailureWithStatus:status animated:animated];
-        [super hideAfterDelay:1.5];
+        [super showFailureWithStatus:status animated:YES];
+        [super hideAfterDelay:2.0];
     });
 }
 

@@ -26,6 +26,8 @@
 "CHANGE_COLORS" = "Зміна кольору";
 "BACKGROUND_COLOR" = "Колір фону";
 "FOREGROUND_COLOR" = "Основний колір";
+"CHANGE_TEXT_COLOR" = "Зміна кольору тексту";
+"TEXT_COLOR" = "Тексту колір";
 "ENABLED_IMAGE" = "Зображення замість кольору";
 "USE_BLUR" = "Використовуйте розмиття";
 "BLUR_SETTINGS" = "Налаштування розмиття";
@@ -62,6 +64,12 @@
 "ONLY_WORK_ON_VKAPP_2.9" = "Працює тільки на VKApp >2.9";
 "DISABLE_COVERS" = "Відключити кришки";
 
+"RESET_SETTINGS" = "Скидання налаштувань";
+"BACKUP_SETTINGS" = "Зробити резервну копію налаштувань";
+"RESTORE_SETTINGS" = "Відновити налаштування з бекапа";
+"BACKUPS" = "Резервні копії";
+"CHOOSE_BACKUP" = "Виберіть резервну копію для відновлення";
+"NO_FILES_TO_RESTORE" = "Немає файлів для відновлення";
 
 
 // chek updates controller

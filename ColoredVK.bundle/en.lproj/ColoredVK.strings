@@ -26,6 +26,8 @@
 "CHANGE_COLORS" = "Change colors";
 "BACKGROUND_COLOR" = "Background color";
 "FOREGROUND_COLOR" = "Foreground color";
+"TEXT_COLOR" = "Text color";
+"CHANGE_TEXT_COLOR" = "Change text color";
 "ENABLED_IMAGE" = "Use image instead";
 "USE_BLUR" = "Enable blur";
 
@@ -61,6 +63,13 @@
 "HIDE_COMMENT_SEPARATORS" = "Hide separators in comments";
 "ONLY_WORK_ON_VKAPP_2.9" = "Works only on VKApp >2.9";
 "DISABLE_COVERS" = "Disable covers";
+
+"RESET_SETTINGS" = "Reset settings";
+"BACKUP_SETTINGS" = "Make settings backup";
+"RESTORE_SETTINGS" = "Restore settings from backup";
+"BACKUPS" = "Backups";
+"CHOOSE_BACKUP" = "Choose backup to restore";
+"NO_FILES_TO_RESTORE" = "No files to restore";
 
 
 

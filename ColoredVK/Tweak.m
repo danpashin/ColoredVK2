@@ -1,5 +1,5 @@
 //
-//  ColoredVK.mm
+//  Tweak.m
 //  ColoredVK
 //
 //  Created by Даниил on 21.04.16.
@@ -85,6 +85,12 @@ BOOL useCustomMessageReadColor;
 BOOL hideCommentSeparators;
 BOOL disableGroupCovers;
 
+BOOL changeMenuTextColor;
+BOOL changeMessagesListTextColor;
+BOOL changeMessagesTextColor;
+BOOL changeGroupsListTextColor;
+BOOL changeAudiosTextColor;
+
 UIColor *menuSeparatorColor;
 UIColor *barBackgroundColor;
 UIColor *barBackColorWithImage;
@@ -99,6 +105,12 @@ UIColor *switchesOnTintColor;
 UIColor *messageBubbleTintColor;
 UIColor *messageBubbleSentTintColor;
 UIColor *messageUnreadColor;
+
+UIColor *menuTextColor;
+UIColor *messagesListTextColor;
+UIColor *messagesTextColor;
+UIColor *groupsListTextColor;
+UIColor *audiosTextColor;
 
 
 CVKCellSelectionStyle menuSelectionStyle;
@@ -165,6 +177,8 @@ static void reloadPrefs()
     enabledMenuImage = [prefs[@"enabledMenuImage"] boolValue];
     menuImageBlackout = [prefs[@"menuImageBlackout"] floatValue];
     useMenuParallax = [prefs[@"useMenuParallax"] boolValue];
+    SBBackgroundColor = [UIColor savedColorForIdentifier:@"SBBackgroundColor" fromPrefs:prefs];
+    SBForegroundColor = [UIColor savedColorForIdentifier:@"SBForegroundColor" fromPrefs:prefs];
     
     if (prefs && tweakEnabled) {
         enabledBarColor = [prefs[@"enabledBarColor"] boolValue];
@@ -208,6 +222,12 @@ static void reloadPrefs()
         useMessageBubbleTintColor = [prefs[@"useMessageBubbleTintColor"] boolValue];
         useCustomMessageReadColor = [prefs[@"useCustomMessageReadColor"] boolValue];
         
+        changeMenuTextColor = [prefs[@"changeMenuTextColor"] boolValue];
+        changeMessagesTextColor = [prefs[@"changeMessagesTextColor"] boolValue];
+        changeMessagesListTextColor = [prefs[@"changeMessagesListTextColor"] boolValue];
+        changeGroupsListTextColor = [prefs[@"changeGroupsListTextColor"] boolValue];
+        changeAudiosTextColor = [prefs[@"changeAudiosTextColor"] boolValue];
+        
         
         
         updatesInterval = prefs[@"updatesInterval"]?[prefs[@"updatesInterval"] doubleValue]:1.0;
@@ -223,26 +243,28 @@ static void reloadPrefs()
         barForegroundColor =         [UIColor savedColorForIdentifier:@"BarForegroundColor"         fromPrefs:prefs];
         toolBarBackgroundColor =     [UIColor savedColorForIdentifier:@"ToolBarBackgroundColor"     fromPrefs:prefs];
         toolBarForegroundColor =     [UIColor savedColorForIdentifier:@"ToolBarForegroundColor"     fromPrefs:prefs];
-        SBBackgroundColor =          [UIColor savedColorForIdentifier:@"SBBackgroundColor"          fromPrefs:prefs];
-        SBForegroundColor =          [UIColor savedColorForIdentifier:@"SBForegroundColor"          fromPrefs:prefs];
         switchesTintColor =          [UIColor savedColorForIdentifier:@"switchesTintColor"          fromPrefs:prefs];
         switchesOnTintColor =        [UIColor savedColorForIdentifier:@"switchesOnTintColor"        fromPrefs:prefs];
         messageBubbleTintColor =     [UIColor savedColorForIdentifier:@"messageBubbleTintColor"     fromPrefs:prefs];
         messageBubbleSentTintColor = [UIColor savedColorForIdentifier:@"messageBubbleSentTintColor" fromPrefs:prefs];
-        messageUnreadColor =          [[UIColor savedColorForIdentifier:@"messageReadColor"           fromPrefs:prefs] colorWithAlphaComponent:0.2];
+        messageUnreadColor =        [[UIColor savedColorForIdentifier:@"messageReadColor"           fromPrefs:prefs] colorWithAlphaComponent:0.2];
+        menuTextColor =              [UIColor savedColorForIdentifier:@"menuTextColor"              fromPrefs:prefs];
+        messagesTextColor =          [UIColor savedColorForIdentifier:@"messagesTextColor"          fromPrefs:prefs];
+        messagesListTextColor =      [UIColor savedColorForIdentifier:@"messagesListTextColor"      fromPrefs:prefs];
+        groupsListTextColor =        [UIColor savedColorForIdentifier:@"groupsListTextColor"        fromPrefs:prefs];
+        audiosTextColor =            [UIColor savedColorForIdentifier:@"audiosTextColor"            fromPrefs:prefs];
         
-        
-        id statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
-        if (statusBar != nil) {
-            if (enabled && changeSBColors) {
-                [statusBar performSelector:@selector(setForegroundColor:) withObject:SBForegroundColor];
-                [statusBar performSelector:@selector(setBackgroundColor:) withObject:SBBackgroundColor];
-            } else {
-                [statusBar performSelector:@selector(setForegroundColor:) withObject:nil];
-                [statusBar performSelector:@selector(setBackgroundColor:) withObject:nil];
-            }
+    }
+    
+    id statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
+    if (statusBar != nil) {
+        if (enabled && changeSBColors) {
+            [statusBar performSelector:@selector(setForegroundColor:) withObject:SBForegroundColor];
+            [statusBar performSelector:@selector(setBackgroundColor:) withObject:SBBackgroundColor];
+        } else {
+            [statusBar performSelector:@selector(setForegroundColor:) withObject:nil];
+            [statusBar performSelector:@selector(setBackgroundColor:) withObject:nil];
         }
-        
     }
 }
 
@@ -531,7 +553,7 @@ static void setupMessageBubbleForCell(ChatCell *cell)
 static NSInteger VKVersion()
 {
     NSString *versionString = @"";
-    for (NSString *str in  [[NSString stringWithFormat:@"%@", [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"]] componentsSeparatedByString:@"."]) {
+    for (NSString *str in  [[NSString stringWithFormat:@"%@", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]] componentsSeparatedByString:@"."]) {
         versionString = [versionString stringByAppendingString:str];
     }
     return versionString.integerValue;
@@ -558,13 +580,16 @@ static void setupUISearchBar(UISearchBar *searchBar)
         } else if (menuSelectionStyle == CVKCellSelectionStyleTransparent) {
             if ([barBackground.subviews containsObject: [barBackground viewWithTag:102]]) [[barBackground viewWithTag:102] removeFromSuperview];
             searchBar.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
-        } else searchBar.backgroundColor = [UIColor clearColor];
+        } else {
+            if ([barBackground.subviews containsObject: [barBackground viewWithTag:102]]) [[barBackground viewWithTag:102] removeFromSuperview];
+            searchBar.backgroundColor = [UIColor clearColor];
+        }
         
         UIView *subviews = searchBar.subviews.lastObject;
         UITextField *barTextField = subviews.subviews[1];
         if ([barTextField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
             barTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:barTextField.placeholder  
-                                                                                 attributes:@{NSForegroundColorAttributeName:[UIColor colorWithWhite:1 alpha:0.5]}];
+                                                                                 attributes:@{NSForegroundColorAttributeName:changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1 alpha:0.5]}];
         }
     });
 }
@@ -646,13 +671,8 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDict
 {
     if (enabled && enabledBarColor) {
         @try {
-            attributes = @{ NSForegroundColorAttributeName : barForegroundColor };
-        } @catch (NSException *exception) {
-            CHLog(@"%@", exception);
-            abort();
-        } @finally {
-            
-        }
+            attributes = @{NSForegroundColorAttributeName:barForegroundColor};
+        } @catch (NSException *exception) { CHLog(@"%@", exception); } @finally { }
     }
     
     CHSuper(1, UINavigationBar, setTitleTextAttributes, attributes);
@@ -674,7 +694,7 @@ CHOptimizedMethod(0, self, void, UISwitch, layoutSubviews)
 {
     CHSuper(0, UISwitch, layoutSubviews);
     
-    if ([self isKindOfClass:NSClassFromString(@"UISwitch")] && (self.tag != 404)) {
+    if ([self isKindOfClass:[UISwitch class]] && (self.tag != 404)) {
         if (enabled && changeSwitchColor) {
             self.onTintColor = switchesOnTintColor;
             self.tintColor = switchesTintColor;
@@ -701,8 +721,9 @@ CHOptimizedMethod(1, self, void, VKMLiveController, viewWillAppear, BOOL, animat
            search.backgroundImage = [UIImage new];
            search.tag = 4;
            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+           NSDictionary *attributes = @{NSForegroundColorAttributeName:changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
            search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder 
-                                                                                             attributes:@{NSForegroundColorAttributeName: [UIColor colorWithWhite:1 alpha:0.7]}];
+                                                                                             attributes:attributes];
            search._scopeBarBackgroundView.superview.hidden = YES;
         }
     }
@@ -826,8 +847,9 @@ CHOptimizedMethod(0, self, void, GroupsController, viewWillLayoutSubviews)
             search.scopeBarBackgroundImage = [UIImage new];
             search.tag = 2;
             search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+            NSDictionary *attributes = @{NSForegroundColorAttributeName:changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
             search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder
-                                                                                              attributes:@{NSForegroundColorAttributeName:[UIColor colorWithWhite:1 alpha:0.7]}];
+                                                                                              attributes:attributes];
             NSInteger version = VKVersion();
             if ((version>=22) && (version<=25)) {
                 for (UIView *view in self.view.subviews) {
@@ -848,9 +870,9 @@ CHOptimizedMethod(2, self, UITableViewCell*, GroupsController, tableView, UITabl
             GroupCell *groupCell = (GroupCell *)cell;
             if (enabledGroupsListImage) {
                 groupCell.backgroundColor =  [UIColor clearColor];
-                groupCell.name.textColor = [UIColor colorWithWhite:1 alpha:0.9];
+                groupCell.name.textColor = changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1 alpha:0.9];
                 groupCell.name.backgroundColor = [UIColor clearColor];
-                groupCell.status.textColor = [UIColor colorWithWhite:0.8 alpha:0.9];
+                groupCell.status.textColor = changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:0.8 alpha:0.9];
                 groupCell.status.backgroundColor = [UIColor clearColor];
                 
                 UIView *backView = [UIView new];
@@ -906,8 +928,9 @@ CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animat
             search.backgroundImage = [UIImage new];
             search.tag = 1;
             search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+            NSDictionary *attributes = @{NSForegroundColorAttributeName:changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
             search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder
-                                                                                              attributes:@{NSForegroundColorAttributeName:[UIColor colorWithWhite:1 alpha:0.7]}];
+                                                                                              attributes:attributes];
             search._scopeBarBackgroundView.superview.hidden = YES;
         }
     }
@@ -923,11 +946,11 @@ CHOptimizedMethod(2, self, UITableViewCell*, DialogsController, tableView, UITab
             if (!cell.dialog.head.read_state && cell.unread.hidden) cell.contentView.backgroundColor = useCustomMessageReadColor?messageUnreadColor:[UIColor defaultColorForIdentifier:@"messageReadColor"];
             else cell.contentView.backgroundColor = [UIColor clearColor];
             
-            cell.name.textColor = [UIColor colorWithWhite:1 alpha:0.9];
+            cell.name.textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1 alpha:0.9];
             cell.time.textColor = cell.name.textColor;
-            if ([cell respondsToSelector:@selector(dialogText)]) cell.dialogText.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
-            if ([cell respondsToSelector:@selector(text)]) cell.text.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
-            cell.attach.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
+            cell.attach.textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:0.95 alpha:0.9];
+            if ([cell respondsToSelector:@selector(dialogText)]) cell.dialogText.textColor = cell.attach.textColor;
+            if ([cell respondsToSelector:@selector(text)]) cell.text.textColor = cell.attach.textColor;
             
             UIView *backView = [UIView new];
             backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
@@ -993,7 +1016,9 @@ CHOptimizedMethod(2, self, UITableViewCell*, ChatController, tableView, UITableV
     
     if (enabled) {
         if (enabledMessagesImage) {
-            for (id view in cell.contentView.subviews) { if ([view respondsToSelector:@selector(setTextColor:)]) [view setTextColor:[UIColor colorWithWhite:1 alpha:0.7]]; }
+            for (id view in cell.contentView.subviews) { 
+                if ([view respondsToSelector:@selector(setTextColor:)]) [view setTextColor:changeMessagesTextColor?messagesTextColor:[UIColor colorWithWhite:1 alpha:0.7]]; 
+            }
         }
         if ([CLASS_NAME(cell) isEqualToString:@"UITableViewCell"]) cell.backgroundColor = [UIColor clearColor];
     }
@@ -1007,7 +1032,7 @@ CHOptimizedMethod(0, self, UIButton*, ChatController, editForward)
     if (enabled && useMessagesBlur) {
         [forwardButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [forwardButton setImage:[[forwardButton imageForState:UIControlStateNormal] imageWithTintColor:[UIColor whiteColor]] forState:UIControlStateNormal];
-        for (UIView *subview in forwardButton.superview.subviews) if ([subview isKindOfClass:NSClassFromString(@"UIToolbar")]) { setBlur(subview, YES); break; }
+        for (UIView *subview in forwardButton.superview.subviews) if ([subview isKindOfClass:[UIToolbar class]]) { setBlur(subview, YES); break; }
     }
     return forwardButton;
 }
@@ -1106,7 +1131,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
     NSDictionary *identifiers = @{@"customCell" : @228, @"cvkCell": @405};
     if ([identifiers.allKeys containsObject:cell.reuseIdentifier]) {
         UISwitch *switchView = [cell viewWithTag:[identifiers[cell.reuseIdentifier] integerValue]];
-        if ([CLASS_NAME(switchView) isEqualToString:@"UISwitch"]) [switchView layoutSubviews];
+        if ([switchView isKindOfClass:[UISwitch class]]) [switchView layoutSubviews];
     }
     
     
@@ -1115,9 +1140,9 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
     else tableView.separatorColor = kMenuCellSeparatorColor;
     
     if (enabled && enabledMenuImage) {
-        cell.textLabel.textColor = [UIColor colorWithWhite:1 alpha:0.9];
+        cell.textLabel.textColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1 alpha:0.9];
         cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        cell.imageView.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        cell.imageView.tintColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1 alpha:0.8];
         cell.backgroundColor = [UIColor clearColor];
         cell.contentView.backgroundColor = [UIColor clearColor];
         
@@ -1135,7 +1160,16 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
                 cell.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
         }
         
+        if ([cell respondsToSelector:@selector(badge)]) {
+            [[cell valueForKeyPath:@"badge"] setTitleColor:changeMenuTextColor?menuTextColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        }
+        
     } else {
+        if ([cell respondsToSelector:@selector(badge)]) {
+            [[cell valueForKeyPath:@"badge"] setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        }
+        
+        cell.imageView.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
         cell.backgroundColor = kMenuCellBackgroundColor;
         cell.contentView.backgroundColor = kMenuCellBackgroundColor;
         cell.textLabel.textColor = kMenuCellTextColor;
@@ -1181,7 +1215,7 @@ CHOptimizedMethod(1, self, void, HintsSearchDisplayController, searchDisplayCont
 CHDeclareClass(IOS7AudioController);
 CHOptimizedMethod(0, self, UIStatusBarStyle, IOS7AudioController, preferredStatusBarStyle)
 {
-    if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")] && ( enabled && (enabledBarColor || enabledAudioImage))) return UIStatusBarStyleLightContent;
+    if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")] && ( enabled && (enabledBarColor || changeAudioPlayerAppearance))) return UIStatusBarStyleLightContent;
     else return CHSuper(0, IOS7AudioController, preferredStatusBarStyle);
 }
 
@@ -1259,8 +1293,9 @@ CHOptimizedMethod(0, self, void, AudioAlbumController, viewDidLoad)
                 search.backgroundImage = [UIImage new];
                 search.tag = 3;
                 search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+                NSDictionary *attributes = @{NSForegroundColorAttributeName: changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
                 search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder
-                                                                                                  attributes:@{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent:0.7]}];
+                                                                                                  attributes:attributes];
                 search._scopeBarBackgroundView.superview.hidden = YES;
             }
         }
@@ -1285,8 +1320,8 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioAlbumController, tableView, UI
         if (enabledAudioImage) {
             cell.backgroundColor = [UIColor clearColor];
             cell.contentView.backgroundColor = [UIColor clearColor];
-            cell.textLabel.textColor = [UIColor colorWithWhite:1 alpha:0.9];
-            cell.detailTextLabel.textColor = [UIColor colorWithWhite:0.8 alpha:0.9];
+            cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.9];
+            cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:0.8 alpha:0.9];
             
             UIView *backView = [UIView new];
             backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];

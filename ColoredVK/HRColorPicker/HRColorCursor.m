@@ -58,7 +58,8 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
-        [self setUserInteractionEnabled:FALSE];
+//        [self setUserInteractionEnabled:FALSE];
+        self.userInteractionEnabled = NO;
         self.color = [UIColor whiteColor];
 
         CGRect backFrame = (CGRect) {.origin = CGPointZero, .size = self.frame.size};

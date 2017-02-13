@@ -98,15 +98,15 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSButtonCell</string>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKPrefs</string>
+			<key>plistToLoad</key>
+			<string>ManageSettings</string>
 			<key>label</key>
-			<string>RESET_SETTINGS</string>
-			<key>action</key>
-			<string>resetSettings</string>
-			<key>textColor</key>
-			<string>1,0,0,1</string>
-			<key>shouldCenter</key>
-			<true/>
+			<string>MANAGE_SETTINGS</string>
+			<key>icon</key>
+			<string>RestoreIcon.png</string>
 		</dict>
 		<dict>
 			<key>cell</key>

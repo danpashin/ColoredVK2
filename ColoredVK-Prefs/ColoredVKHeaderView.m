@@ -13,7 +13,7 @@
 
 + (instancetype)headerForView:(UIView *)rootView
 {
-    return [[self alloc] initWithFrame:CGRectMake(0, 0, rootView.frame.size.width, 160)];
+    return [[self alloc] initWithFrame:CGRectMake(0, 0, rootView.frame.size.width, 140)];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -24,7 +24,7 @@
         heading.font = [UIFont systemFontOfSize:42.0];
         heading.text = @"ColoredVK 2";
         heading.backgroundColor = [UIColor clearColor];
-        heading.textColor = [UIColor colorWithRed:70.0/255.0f green:120.0/255.0f blue:177.0/255.0f alpha:1];
+        heading.textColor = [UIColor colorWithRed:90.0/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1];
         heading.textAlignment = NSTextAlignmentCenter;
         [self addSubview:heading];
         

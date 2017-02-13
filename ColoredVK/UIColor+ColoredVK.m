@@ -50,6 +50,7 @@
     else if ([identifier isEqualToString:@"messageBubbleTintColor"])   return [UIColor whiteColor];
     else if ([identifier isEqualToString:@"messageBubbleSentTintColor"]) return [UIColor colorWithRed:205/255.0f green:226/255.0f blue:250/255.0f alpha:1];
     else if ([identifier isEqualToString:@"messageReadColor"])         return [UIColor colorWithWhite:1 alpha:0.15];
+    else if ([identifier containsString:@"TextColor"])                 return [UIColor colorWithWhite:1 alpha:0.9];
     else                                                               return [UIColor blackColor];
 }
 

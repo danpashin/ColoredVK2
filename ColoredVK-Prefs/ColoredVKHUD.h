@@ -18,5 +18,6 @@
 
 - (void)showSuccess;
 - (void)showFailure;
+- (void)showFailureWithStatus:(NSString *)status;
 
 @end

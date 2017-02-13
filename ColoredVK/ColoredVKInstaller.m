@@ -121,7 +121,7 @@ NSString *key;
     if (self) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(CFSTR("UniqueDeviceID"))];
-            key = AES256EncryptString([[NSProcessInfo processInfo] globallyUniqueString], kDRMAuthorizeKey).base64Encoding;
+            key = AES256EncryptString([NSProcessInfo processInfo].globallyUniqueString, kDRMAuthorizeKey).base64Encoding;
             
             void (^downloadBlock)() = ^{
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -139,9 +139,8 @@ NSString *key;
                     else {
                         struct utsname systemInfo;
                         uname(&systemInfo);
-                        NSString *device = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
                         
-                        if (![dict[@"Device"] isEqualToString:device]) downloadBlock();
+                        if (![dict[@"Device"] isEqualToString:@(systemInfo.machine)]) downloadBlock();
                         else {
                             if (udid.length > 6) {
                                 NSString *newUDID = [NSString stringWithFormat:@"%@", MGCopyAnswer(CFSTR("UniqueDeviceID"))];
@@ -276,8 +275,8 @@ static void download(NSURLRequest *request,BOOL authorise)
                     if ([responseDict[@"key"] isEqualToString:key]) {
                         struct utsname systemInfo;
                         uname(&systemInfo);
-                        NSString *device = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
-                        NSString *key = [[NSProcessInfo processInfo] globallyUniqueString];
+                        NSString *device = @(systemInfo.machine);
+                        NSString *key = [NSProcessInfo processInfo].globallyUniqueString;
                         
                         NSMutableDictionary *dict = @{@"UDID":udid, @"Device":device, @"key":key}.mutableCopy;
                         if (authorise) [dict setValue:login forKey:@"Login"];

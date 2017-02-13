@@ -29,6 +29,8 @@
 "CHANGE_COLORS" = "Изменить цветa";
 "BACKGROUND_COLOR" = "Цвет фона";
 "FOREGROUND_COLOR" = "Основной цвет";
+"CHANGE_TEXT_COLOR" = "Изменить цвет текста";
+"TEXT_COLOR" = "Цвет текста";
 "ENABLED_IMAGE" = "Изображ. вместо цвета";
 "USE_BLUR" = "Включить размытие";
 "BLUR_SETTINGS" = "Настройки размытия";
@@ -65,6 +67,13 @@
 "HIDE_COMMENT_SEPARATORS" = "Скрыть разделители в комментариях";
 "ONLY_WORK_ON_VKAPP_2.9" = "Работает только в VKApp >2.9";
 "DISABLE_COVERS" = "Отключить обложки";
+
+"RESET_SETTINGS" = "Сбросить настройки";
+"BACKUP_SETTINGS" = "Сделать резервную копию настроек";
+"RESTORE_SETTINGS" = "Восстановить настройки из бекапа";
+"BACKUPS" = "Резервные копии";
+"CHOOSE_BACKUP" = "Выберите резервную копию для восстановления";
+"NO_FILES_TO_RESTORE" = "Нет файлов для восстановления";
 
 
 

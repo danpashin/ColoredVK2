@@ -28,7 +28,7 @@
     else return UIStatusBarStyleDefault;
 }
 
-- (id)specifiers
+- (NSArray *)specifiers
 {
     if (!_specifiers) {
         NSString *plistName = @"Main";
@@ -56,14 +56,13 @@
 
 - (void)viewDidLoad
 {
-    
     self.prefsPath = CVK_PREFS_PATH;
     self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     self.cvkFolder = CVK_FOLDER_PATH;
     [super viewDidLoad];
     [ColoredVKInstaller startInstall];
     for (UIView *view in self.view.subviews) {
-        if ([CLASS_NAME(view) isEqualToString:@"UITableView"]) {
+        if ([view isKindOfClass:[UITableView class]]) {
             UITableView *tableView = (UITableView *)view;
             tableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.view];
             tableView.separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
@@ -123,35 +122,5 @@
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
     return prefs[@"vkVersion"];
-}
-
-- (void)resetSettings
-{
-    void (^resetSettingsBlock)() = ^{
-        if ([[NSBundle mainBundle].executablePath.lastPathComponent isEqualToString:@"vkclient"]) 
-            self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:60/255.0f green:112/255.0f blue:169/255.0f alpha:1];
-        
-        ColoredVKHUD *hud = [ColoredVKHUD showHUD];
-        hud.operation = [NSBlockOperation blockOperationWithBlock:^{
-            NSError *error = nil;
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            [fileManager removeItemAtPath:self.prefsPath error:&error];
-            [fileManager removeItemAtPath:CVK_FOLDER_PATH error:&error];
-            [self reloadSpecifiers];
-            CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
-            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk.reload.menu"),   NULL, NULL, YES);
-            error?[hud showFailure]:[hud showSuccess];
-        }];  
-    };
-        
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBunlde, nil)
-                                                                             message:NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS_QUESTION", nil, self.cvkBunlde, nil) 
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
-    
-    NSString *resetTitle = [NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"Main", self.cvkBunlde, nil) componentsSeparatedByString:@" "].firstObject;    
-    [alertController addAction:[UIAlertAction actionWithTitle:resetTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { resetSettingsBlock(); }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-    [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
 }
 @end
