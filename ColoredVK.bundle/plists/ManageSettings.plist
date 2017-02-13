@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>RESET_SETTINGS</string>
+			<key>action</key>
+			<string>resetSettings</string>
+			<key>textColor</key>
+			<string>1,0,0,1</string>
+			<key>shouldCenter</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>BACKUP_SETTINGS</string>
+			<key>action</key>
+			<string>backupSettings</string>
+			<key>shouldCenter</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>RESTORE_SETTINGS</string>
+			<key>action</key>
+			<string>restoreSettings</string>
+			<key>shouldCenter</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKBackupController</string>
+			<key>label</key>
+			<string>BACKUPS</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string></string>
+</dict>
+</plist>
