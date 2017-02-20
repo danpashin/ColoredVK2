@@ -11,7 +11,6 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "LEColorPicker.h"
 
-NSString *const imageName = @"CoverImage";
 
 @interface ColoredVKAudioCoverView ()
 @property (strong, nonatomic) NSBundle *cvkBundle;
@@ -20,6 +19,7 @@ NSString *const imageName = @"CoverImage";
 @property (strong, nonatomic) NSOperation *operation;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
 @property (strong, nonatomic) NSString *key;
+@property (strong, nonatomic) UIImage *noCover;
 @end
 
 @implementation ColoredVKAudioCoverView
@@ -34,7 +34,8 @@ NSString *const imageName = @"CoverImage";
         self.track = @"";
         
         self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-        self.topImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName inBundle:self.cvkBundle compatibleWithTraitCollection:nil]];
+        self.noCover = [UIImage imageNamed:@"CoverImage" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+        self.topImageView = [[UIImageView alloc] initWithImage:self.noCover];
         self.topImageView.frame = CGRectMake(0, 0, self.frame.size.width, point.y);
         self.topImageView.backgroundColor = [UIColor blackColor];
         self.topImageView.contentMode = UIViewContentModeScaleToFill;
@@ -92,7 +93,7 @@ NSString *const imageName = @"CoverImage";
                     self.backColor = self.defaultCover?[UIColor clearColor]:[colorScheme.backgroundColor colorWithAlphaComponent:0.4];
                     self.tintColor = colorScheme.secondaryTextColor;
                     [UIView animateWithDuration:0.3 animations:^{ self.blurEffectView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor; } completion:nil];
-                    [NSNotificationCenter.defaultCenter postNotificationName:@"com.daniilpashin.coloredvk.audio.image.changed" object:nil];
+                    [NSNotificationCenter.defaultCenter postNotificationName:@"com.daniilpashin.coloredvk2.audio.image.changed" object:nil];
                 }];
                     //                if (self.inBackground) [[UIApplication sharedApplication] _updateSnapshotForBackgroundApplication:YES];
             });
@@ -110,7 +111,6 @@ NSString *const imageName = @"CoverImage";
 - (void)downloadCoverWithCompletionBlock:( void(^)(UIImage *image, BOOL wasDownloaded) )block;
 {
     if (self.artist && self.track) {
-        UIImage *noCover = [UIImage imageNamed:imageName inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
         __block NSString *query = [NSString stringWithFormat:@"%@+%@", self.artist, self.track];
         query = [query stringByReplacingOccurrencesOfString:@"|" withString:@" "];
         
@@ -150,9 +150,9 @@ NSString *const imageName = @"CoverImage";
                                                                      BOOL cacheCovers = prefs[@"cacheAudioCovers"]?[prefs[@"cacheAudioCovers"] boolValue]:YES;
                                                                      if (cacheCovers) [self.manager.imageCache storeImage:image forKey:self.key completion:nil];
                                                                  }];
-                                        } else if (block) block(noCover, NO);
+                                        } else if (block) block(self.noCover, NO);
                                     }
-                                    failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) { if (block) block(noCover, NO); }] start];
+                                    failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) { if (block) block(self.noCover, NO); }] start];
         }
     }
 }

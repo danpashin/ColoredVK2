@@ -13,7 +13,7 @@
 "THIS_ACTION_CAN_NOT_BE_UNDONE" = "This action can not be undone";
 "CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Can not save image. Try again or contact developer.";
 
-"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE" = "Tweak's update is available. (%@) Update?";
+"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE" = "Tweak's update is available (%@).\n\nChangelog:\n%@\n\nUpdate?";
 "REMIND_LATER_BUTTON_TITLE" = "Remind later";
 "SKIP_THIS_VERSION_BUTTON_TITLE" = "Skip this version";
 "UPADTE_BUTTON_TITLE" = "Update now";

@@ -1,10 +1,21 @@
-{
-	entry = {
-		bundle = ColoredVK2;
-		cell = PSLinkCell;
-		detail = "ColoredVKPrefsController";
-		icon = "Icon.png";
-		isController = 1;
-		label = "ColoredVK 2";
-	};
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>entry</key>
+	<dict>
+		<key>bundle</key>
+		<string>ColoredVK2</string>
+		<key>cell</key>
+		<string>PSLinkCell</string>
+		<key>detail</key>
+		<string>ColoredVKPrefsController</string>
+		<key>icon</key>
+		<string>Icon.png</string>
+		<key>isController</key>
+		<string>1</string>
+		<key>label</key>
+		<string>ColoredVK 2</string>
+	</dict>
+</dict>
+</plist>

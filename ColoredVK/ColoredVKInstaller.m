@@ -280,15 +280,15 @@ static void download(NSURLRequest *request,BOOL authorise)
                         
                         NSMutableDictionary *dict = @{@"UDID":udid, @"Device":device, @"key":key}.mutableCopy;
                         if (authorise) [dict setValue:login forKey:@"Login"];
-                        NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict.copy], kDRMLicenceKey);
+                        NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
                         
                         NSError *writingError = nil;
                         [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
                         
                         if (!writingError) {
                             [alertController dismissViewControllerAnimated:YES completion:nil];
-                            installerCompletionBlock(NO);
-                            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+                            if (installerCompletionBlock) installerCompletionBlock(NO);
+                            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
                         }
                         else showAlertBlock([NSString stringWithFormat:@"%@\n%@", CVKLocalizedString(@"ERROR"), writingError.localizedDescription]);
                         

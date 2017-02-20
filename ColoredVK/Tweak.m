@@ -142,7 +142,7 @@ static void checkUpdates()
                 NSString *version = responseDict[@"version"];
                 if (![prefs[@"skippedVersion"] isEqualToString:version]) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        NSString *message = [NSString stringWithFormat:CVKLocalizedString(@"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE"), version];
+                        NSString *message = [NSString stringWithFormat:CVKLocalizedString(@"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE"), version, responseDict[@"changelog"]];
                         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];
                         [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"SKIP_THIS_VERSION_BUTTON_TITLE") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
                             [prefs setValue:version forKey:@"skippedVersion"];
@@ -177,8 +177,7 @@ static void reloadPrefs()
     enabledMenuImage = [prefs[@"enabledMenuImage"] boolValue];
     menuImageBlackout = [prefs[@"menuImageBlackout"] floatValue];
     useMenuParallax = [prefs[@"useMenuParallax"] boolValue];
-    SBBackgroundColor = [UIColor savedColorForIdentifier:@"SBBackgroundColor" fromPrefs:prefs];
-    SBForegroundColor = [UIColor savedColorForIdentifier:@"SBForegroundColor" fromPrefs:prefs];
+    barForegroundColor = [UIColor savedColorForIdentifier:@"BarForegroundColor" fromPrefs:prefs];
     
     if (prefs && tweakEnabled) {
         enabledBarColor = [prefs[@"enabledBarColor"] boolValue];
@@ -240,7 +239,6 @@ static void reloadPrefs()
         menuSeparatorColor =         [UIColor savedColorForIdentifier:@"MenuSeparatorColor"         fromPrefs:prefs];
         barBackgroundColor =         [UIColor savedColorForIdentifier:@"BarBackgroundColor"         fromPrefs:prefs];
         barBackColorWithImage =      [UIColor colorWithPatternImage:navbarImage];
-        barForegroundColor =         [UIColor savedColorForIdentifier:@"BarForegroundColor"         fromPrefs:prefs];
         toolBarBackgroundColor =     [UIColor savedColorForIdentifier:@"ToolBarBackgroundColor"     fromPrefs:prefs];
         toolBarForegroundColor =     [UIColor savedColorForIdentifier:@"ToolBarForegroundColor"     fromPrefs:prefs];
         switchesTintColor =          [UIColor savedColorForIdentifier:@"switchesTintColor"          fromPrefs:prefs];
@@ -253,19 +251,23 @@ static void reloadPrefs()
         messagesListTextColor =      [UIColor savedColorForIdentifier:@"messagesListTextColor"      fromPrefs:prefs];
         groupsListTextColor =        [UIColor savedColorForIdentifier:@"groupsListTextColor"        fromPrefs:prefs];
         audiosTextColor =            [UIColor savedColorForIdentifier:@"audiosTextColor"            fromPrefs:prefs];
+        SBBackgroundColor =          [UIColor savedColorForIdentifier:@"SBBackgroundColor"          fromPrefs:prefs];
+        SBForegroundColor =          [UIColor savedColorForIdentifier:@"SBForegroundColor"          fromPrefs:prefs];
         
-    }
-    
-    id statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
-    if (statusBar != nil) {
-        if (enabled && changeSBColors) {
-            [statusBar performSelector:@selector(setForegroundColor:) withObject:SBForegroundColor];
-            [statusBar performSelector:@selector(setBackgroundColor:) withObject:SBBackgroundColor];
-        } else {
-            [statusBar performSelector:@selector(setForegroundColor:) withObject:nil];
-            [statusBar performSelector:@selector(setBackgroundColor:) withObject:nil];
+        
+        UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
+        if (statusBar) {
+            if (enabled && changeSBColors) {
+                statusBar.foregroundColor = SBForegroundColor;
+                statusBar.backgroundColor = SBBackgroundColor;
+            } else {
+                statusBar.foregroundColor = nil;
+                statusBar.backgroundColor = nil;
+            }
         }
     }
+    
+    
 }
 
 
@@ -553,8 +555,11 @@ static void setupMessageBubbleForCell(ChatCell *cell)
 static NSInteger VKVersion()
 {
     NSString *versionString = @"";
-    for (NSString *str in  [[NSString stringWithFormat:@"%@", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]] componentsSeparatedByString:@"."]) {
-        versionString = [versionString stringByAppendingString:str];
+    NSArray <NSString *> *array = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"] componentsSeparatedByString:@"."];
+    
+    for (int i = 0; i<array.count; i++) {
+        if ((i == array.count-1) && (array[i].length < 2)) break;
+        versionString = [versionString stringByAppendingString:array[i]];
     }
     return versionString.integerValue;
 }
@@ -661,22 +666,24 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setBarTintColor, UIColor*, bar
 CHOptimizedMethod(1, self, void, UINavigationBar, setTintColor, UIColor*, tintColor)
 {
     if (enabled && enabledBarColor) {
+        self.barTintColor = [UIColor clearColor];
         tintColor = barForegroundColor;
+        self.titleTextAttributes = @{NSForegroundColorAttributeName:barForegroundColor};
     }
     
     CHSuper(1, UINavigationBar, setTintColor, tintColor);
 }
 
-CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDictionary*, attributes)
-{
-    if (enabled && enabledBarColor) {
-        @try {
-            attributes = @{NSForegroundColorAttributeName:barForegroundColor};
-        } @catch (NSException *exception) { CHLog(@"%@", exception); } @finally { }
-    }
-    
-    CHSuper(1, UINavigationBar, setTitleTextAttributes, attributes);
-}
+//CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDictionary*, attributes)
+//{
+//    if (enabled && enabledBarColor) {
+////        @try {
+//            if (self.barTintColor) attributes = @{NSForegroundColorAttributeName:barForegroundColor};
+////        } @catch (NSException *exception) { CHLog(@"%@", exception); } @finally { }
+//    }
+//    
+//    CHSuper(1, UINavigationBar, setTitleTextAttributes, attributes);
+//}
 
 
 #pragma mark UITextInputTraits
@@ -848,13 +855,12 @@ CHOptimizedMethod(0, self, void, GroupsController, viewWillLayoutSubviews)
             search.tag = 2;
             search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
             NSDictionary *attributes = @{NSForegroundColorAttributeName:changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
-            search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder
-                                                                                              attributes:attributes];
+            search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder attributes:attributes];
             NSInteger version = VKVersion();
             if ((version>=22) && (version<=25)) {
                 for (UIView *view in self.view.subviews) {
-                         if ([view isKindOfClass:UIToolbar.class] && useGroupsListBlur) { setBlur(view, YES); break; }
-                    else if ([view isKindOfClass:UIToolbar.class] && enabledToolBarColor) { setToolBar((UIToolbar*)view); break; } 
+                         if ([view isKindOfClass:[UIToolbar class]] && useGroupsListBlur) { setBlur(view, YES); break; }
+                    else if ([view isKindOfClass:[UIToolbar class]] && enabledToolBarColor) { setToolBar((UIToolbar*)view); break; } 
                 }
             }
             
@@ -885,7 +891,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, GroupsController, tableView, UITabl
                 cell.backgroundColor =  [UIColor clearColor];
                 
                 for (UIView *view in cell.contentView.subviews) {
-                    if ([view isKindOfClass:NSClassFromString(@"UILabel")]) {
+                    if ([view isKindOfClass:[UILabel class]]) {
                         UILabel *label = (UILabel *)view;
                         label.textColor = [UIColor colorWithWhite:1 alpha:0.9];
                         label.backgroundColor = [UIColor clearColor];
@@ -1083,31 +1089,12 @@ CHOptimizedMethod(0, self, NSArray*, VKMMainController, menu)
             break;
         }
     }
-    if (shouldInsert) {
-        if (index+1 > tempArray.count) [tempArray addObject:cvkMainController.cvkCell];
-        else [tempArray insertObject:cvkMainController.cvkCell atIndex:index+1];
-    } else {
-        [tempArray addObject:cvkMainController.cvkCell];
-    }
+    if (shouldInsert) [tempArray insertObject:cvkMainController.cvkCell atIndex:index];
+    else [tempArray addObject:cvkMainController.cvkCell];
+    
     origMenu = [tempArray copy];
     return origMenu;
 }
-
-#ifdef __LP64__
-CHOptimizedMethod(2, self, CGFloat, VKMMainController, tableView, UITableView*, tableView, heightForRowAtIndexPath, NSIndexPath*, indexPath)
-{
-    CGFloat height = CHSuper(2, VKMMainController, tableView, tableView, heightForRowAtIndexPath, indexPath);
-    if ([self isKindOfClass:NSClassFromString(@"VKMMainController")] && (self.menu.count > 0)) {
-        UITableViewCell *cell = self.menu[indexPath.row];
-        if ([cell isKindOfClass:[UITableViewCell class]]) {
-            if ([cell.textLabel.text isEqualToString:@"ColoredVK"]) height = 44;
-            if ([cell.textLabel.text isEqualToString:NSLocalizedStringFromTableInBundle(@"GroupsAndPeople", nil, vksBundle, nil)]) height = 35;
-        }
-    }
-    return height;
-}
-#endif
-
 
 CHOptimizedMethod(0, self, void, VKMMainController, viewDidLoad)
 {
@@ -1249,7 +1236,7 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
             [self.seek setMaximumTrackImage:[[self.seek maximumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:200/255.0f green:201/255.0f blue:202/255.0f alpha:1]] forState:UIControlStateNormal];
             [self.seek setThumbImage:[[self.seek thumbImageForState:UIControlStateNormal] imageWithTintColor:[UIColor blackColor]] forState:UIControlStateNormal];
             
-            [NSNotificationCenter.defaultCenter addObserverForName:@"com.daniilpashin.coloredvk.audio.image.changed" object:nil queue:nil usingBlock:^(NSNotification *note) {
+            [NSNotificationCenter.defaultCenter addObserverForName:@"com.daniilpashin.coloredvk2.audio.image.changed" object:nil queue:nil usingBlock:^(NSNotification *note) {
                 audioTintColor = cvkCoverView.defaultCover?[UIColor whiteColor]:cvkCoverView.tintColor;
                 [UIView animateWithDuration:0.3 animations:^{
                     cvkLyricsView.hostView.subviews[0].backgroundColor = cvkCoverView.defaultCover?[UIColor clearColor]:cvkCoverView.backColor;
@@ -1590,11 +1577,11 @@ CHConstructor
         [prefs writeToFile:prefsPath atomically:YES];
         VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil)?YES:NO;
         
-        
-        if (VKVersion() >= 22) {
+        NSInteger vkVersion = VKVersion();
+        if (vkVersion >= 22) {
             CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-            CFNotificationCenterAddObserver(center, NULL, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-            CFNotificationCenterAddObserver(center, NULL, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk.reload.menu"),   NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+            CFNotificationCenterAddObserver(center, NULL, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+            CFNotificationCenterAddObserver(center, NULL, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
                 
                 
             CHLoadLateClass(MessageController);
@@ -1627,7 +1614,7 @@ CHConstructor
             CHLoadLateClass(UINavigationBar);
             CHHook(1, UINavigationBar, setBarTintColor);
             CHHook(1, UINavigationBar, setTintColor);
-            CHHook(1, UINavigationBar, setTitleTextAttributes);
+//            CHHook(1, UINavigationBar, setTitleTextAttributes);
             
             
             
@@ -1684,9 +1671,6 @@ CHConstructor
             
             CHLoadLateClass(VKMMainController);
             CHHook(2, VKMMainController, tableView, cellForRowAtIndexPath);
-#ifdef __LP64__
-            CHHook(2, VKMMainController, tableView, heightForRowAtIndexPath);
-#endif
             CHHook(0, VKMMainController, VKMTableCreateSearchBar);
             CHHook(0, VKMMainController, menu);
             CHHook(0, VKMMainController, viewDidLoad);
@@ -1734,7 +1718,7 @@ CHConstructor
             CHHook(0, AudioRenderer, playIndicator);
             
             
-            if (VKVersion() >= 29) {
+            if (vkVersion >= 29) {
                 CHLoadLateClass(ChatCell);
                 CHHook(4, ChatCell, initWithDelegate, multidialog, selfdialog, identifier);
                 CHHook(0, ChatCell, prepareForReuse);

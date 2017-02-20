@@ -100,7 +100,7 @@
 
 - (void)updateWithLyrycsID:(NSNumber *)lyrics_id andToken:(NSString *)token
 {
-    NSString *const apiVersion = @"5.60";
+    NSString *const apiVersion = @"5.62";
     NSString *url = [NSString stringWithFormat:@"https://api.vk.com/method/audio.getLyrics?lyrics_id=%@&access_token=%@&v=%@", lyrics_id, token, apiVersion];
     [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
                                 JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]

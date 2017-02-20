@@ -31,9 +31,9 @@
             [tweakSettings setValue:[NSString stringWithFormat:@"0.%i", (int)number] forKey:self.specifier.identifier];
             [tweakSettings writeToFile:CVK_PREFS_PATH atomically:YES];
             
-            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
+            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
             if ([self.specifier.identifier isEqualToString:@"menuImageBlackout"])
-                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
         };
         self.accessoryView = numberButton;
 	}

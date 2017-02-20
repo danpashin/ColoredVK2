@@ -65,7 +65,7 @@
         [self addGestureRecognizer:longPress];
         
         
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateImage:) name:@"com.daniilpashin.coloredvk.image.update" object:nil];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateImage:) name:@"com.daniilpashin.coloredvk2.image.update" object:nil];
         [self updateImageForIdentifier:identifier];
     }
     return self;
@@ -104,6 +104,8 @@
     NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     NSString *identifier = recognizer.accessibilityElements.lastObject;
     if (recognizer.state == UIGestureRecognizerStateBegan && [identifier isEqualToString:self.specifier.identifier]) {
+        UIViewController *viewControllerToShowIn = UIApplication.sharedApplication.keyWindow.rootViewController;
+        
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         [alertController addAction:
          [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Save to Camera Roll") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -116,15 +118,14 @@
             UIImage *image = [UIImage imageWithContentsOfFile:[self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]]];
             UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[image] applicationActivities:nil];
             if (IS_IPAD) {
-                activityVC.popoverPresentationController.permittedArrowDirections = 0;
-                activityVC.popoverPresentationController.sourceView = self;
-                activityVC.popoverPresentationController.sourceRect = self.bounds;
+                alertController.popoverPresentationController.permittedArrowDirections = 0;
+                alertController.popoverPresentationController.sourceView = viewControllerToShowIn.view;
+                alertController.popoverPresentationController.sourceRect = viewControllerToShowIn.view.bounds;
             }
-            [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:activityVC animated:YES completion:nil];
+            [viewControllerToShowIn presentViewController:activityVC animated:YES completion:nil];
         }]];
         
-        [alertController addAction:
-         [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
             UIAlertController *warningAlert = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, cvkBundle, nil)  
                                                                                   message:NSLocalizedStringFromTableInBundle(@"THIS_ACTION_CAN_NOT_BE_UNDONE", nil, cvkBundle, nil) 
                                                                            preferredStyle:UIAlertControllerStyleAlert];
@@ -150,18 +151,18 @@
                     [self sendNotifications];
                 }
             }]];
-            [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:warningAlert animated:YES completion:nil];
+            [viewControllerToShowIn presentViewController:warningAlert animated:YES completion:nil];
         }]];
         [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];        
         
         if (IS_IPAD) {
             alertController.popoverPresentationController.permittedArrowDirections = 0;
-            alertController.popoverPresentationController.sourceView = self;
-            alertController.popoverPresentationController.sourceRect = self.bounds;
+            alertController.popoverPresentationController.sourceView = viewControllerToShowIn.view;
+            alertController.popoverPresentationController.sourceRect = viewControllerToShowIn.view.bounds;
         }
         
         if ([NSFileManager.defaultManager fileExistsAtPath:[self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]]]) 
-            [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+            [viewControllerToShowIn presentViewController:alertController animated:YES completion:nil];
     }
 }
 
@@ -173,10 +174,10 @@
 
 - (void)sendNotifications
 {
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
     
     if ([self.key isEqualToString:@"enabledMenuImage"]) {
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
     }
 
 }

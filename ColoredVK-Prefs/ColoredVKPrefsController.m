@@ -15,9 +15,13 @@
 #import "ColoredVKHUD.h"
 
 @interface ColoredVKPrefsController ()
-@property (strong, nonatomic) NSString *prefsPath;
-@property (strong, nonatomic) NSBundle *cvkBunlde;
-@property (strong, nonatomic) NSString *cvkFolder;
+@property (strong, nonatomic, readonly) NSString *prefsPath;
+@property (strong, nonatomic, readonly) NSBundle *cvkBunlde;
+@property (strong, nonatomic, readonly) NSString *cvkFolder;
+@property (strong, nonatomic, readonly) PSSpecifier *errorMessage;
+@property (strong, nonatomic, readonly) PSSpecifier *footer;
+@property (strong, nonatomic, readonly) NSString *tweakVersion;
+@property (strong, nonatomic, readonly) NSString *vkAppVersion;
 @end
 
 @implementation ColoredVKPrefsController
@@ -45,9 +49,9 @@
         
         if (specifiersArray.count == 0) {
             specifiersArray = [NSMutableArray new];
-            [specifiersArray addObject:[self errorMessage]];
+            [specifiersArray addObject:self.errorMessage];
         }
-        [specifiersArray addObject:[self footer]];
+        [specifiersArray addObject:self.footer];
         
         _specifiers = [specifiersArray copy];
     }
@@ -56,9 +60,6 @@
 
 - (void)viewDidLoad
 {
-    self.prefsPath = CVK_PREFS_PATH;
-    self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    self.cvkFolder = CVK_FOLDER_PATH;
     [super viewDidLoad];
     [ColoredVKInstaller startInstall];
     for (UIView *view in self.view.subviews) {
@@ -87,21 +88,18 @@
     [prefs setValue:value forKey:specifier.properties[@"key"]];
     [prefs writeToFile:self.prefsPath atomically:YES];
     
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
     if ([specifier.identifier isEqualToString:@"enabled"]) {
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
     }
 }
 
-
 - (PSSpecifier *)footer
 {
-    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.cvkBunlde, nil), [self getTweakVersion], [self getVKVersion] ];
-    
+    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.cvkBunlde, nil), self.tweakVersion, self.vkAppVersion ];
     PSSpecifier *footer = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
     [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2015"] forKey:@"footerText"];
     [footer setProperty:@"1" forKey:@"footerAlignment"];
-    
     return footer;
 }
 
@@ -113,14 +111,29 @@
     return errorMessage;
 }
 
-- (NSString *)getTweakVersion
+- (NSString *)tweakVersion
 {
     return [kColoredVKVersion stringByReplacingOccurrencesOfString:@"-" withString:@" "];
 }
 
-- (NSString *)getVKVersion
+- (NSString *)vkAppVersion
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
     return prefs[@"vkVersion"];
+}
+
+- (NSBundle *)cvkBunlde
+{
+    return [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+}
+
+- (NSString *)cvkFolder
+{
+    return CVK_FOLDER_PATH;
+}
+
+- (NSString *)prefsPath
+{
+    return CVK_PREFS_PATH;
 }
 @end

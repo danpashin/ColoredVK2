@@ -14,7 +14,6 @@
 #import "PrefixHeader.h"
 #import "ColoredVKHUD.h"
 
-OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0);
 
 @implementation ColoredVKBarDownloadButton
 
@@ -30,7 +29,7 @@ static NSArray *getInfoForActionController()
 
 + (instancetype)button
 {
-    return [[self alloc] initWithURL:@"" rootController:nil];
+    return [[self alloc] initWithURL:nil rootController:nil];
 }
 
 + (instancetype)buttonWithURL:(NSString *)url
@@ -46,26 +45,21 @@ static NSArray *getInfoForActionController()
 
 - (instancetype)initWithURL:(NSString *)url rootController:(UIViewController *)controller
 {
-    self = [super initWithImage:[UIImage imageNamed:@"dlIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil]
+    self = [super initWithImage:[UIImage imageNamed:@"downloadCloudIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil]
                           style:UIBarButtonItemStylePlain target:self action:@selector(download)];
     if (self)  {
         self.url = url;
-        if (controller) self.rootViewController = controller;
+        self.rootViewController = controller;
     }
     return self;
 }
 
 - (void)download
 {
-    if (self.urlBlock) self.url = self.urlBlock();  
+    if (self.urlBlock && !self.url) self.url = self.urlBlock();  
     
-    BOOL shouldUseNewController = (objc_getClass("BlockActionController") != nil);
-    UIAlertController *actionController;
-    if (shouldUseNewController) actionController = [objc_getClass("BlockActionController") actionSheetWithTitle:CVKLocalizedString(@"SET_THIS_IMAGE_TO")];
-    else {
-        actionController = [UIAlertController alertControllerWithTitle:@"" message:CVKLocalizedString(@"SET_THIS_IMAGE_TO") preferredStyle:IS_IPAD?UIAlertControllerStyleAlert:UIAlertControllerStyleActionSheet];
-        [actionController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]]; 
-    }
+    UIAlertController *actionController = [UIAlertController alertControllerWithTitle:@"" message:CVKLocalizedString(@"SET_THIS_IMAGE_TO") preferredStyle:UIAlertControllerStyleActionSheet];
+    [actionController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     
     NSArray *info = getInfoForActionController();
     for (NSDictionary *dict in info) {
@@ -76,10 +70,15 @@ static NSArray *getInfoForActionController()
             }];
         }]];
     }
-    if (shouldUseNewController) {
-        [(BlockActionController*)actionController setCancelButtonWithTitle:UIKitLocalizedString(@"Cancel") block:nil];
-        if (self.rootViewController) [(BlockActionController*)actionController showInViewController:self.rootViewController];
-    } else if (self.rootViewController) [self.rootViewController presentViewController:actionController animated:YES completion:nil];
+    
+    if (IS_IPAD) {
+        actionController.modalPresentationStyle = UIModalPresentationPopover;
+        actionController.popoverPresentationController.permittedArrowDirections = 0;
+        actionController.popoverPresentationController.sourceView = self.rootViewController.view;
+        actionController.popoverPresentationController.sourceRect = self.rootViewController.view.bounds;
+    }
+    
+    [self.rootViewController presentViewController:actionController animated:YES completion:nil];
 }
 
 
@@ -95,7 +94,8 @@ static NSArray *getInfoForActionController()
                                                    NSString *imagePath = [cvkFolderPath stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identificator]];
                                                    NSString *prevImagePath = [cvkFolderPath stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identificator]];
                                                    
-                                                   UIImage *newImage = [image resizedImageByMagick: [NSString stringWithFormat:@"%fx%f#", UIScreen.mainScreen.bounds.size.width, UIScreen.mainScreen.bounds.size.height]];
+                                                   CGSize size = [UIScreen mainScreen].bounds.size;
+                                                   UIImage *newImage = [image resizedImageByMagick:[NSString stringWithFormat:@"%fx%f#", size.width, size.height]];
                                                    
                                                    NSError *error = nil;
                                                    [UIImagePNGRepresentation(newImage) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
@@ -108,10 +108,10 @@ static NSArray *getInfoForActionController()
                                                        UIGraphicsEndImageContext();
                                                    }
                                                    
-                                                   [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk.image.update" object:nil userInfo:@{@"identifier" : identificator}];
+                                                   [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{@"identifier" : identificator}];
                                                    
                                                    if ([identificator isEqualToString:@"menuBackgroundImage"]) {
-                                                       CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+                                                       CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
                                                    }
                                                    if (block) block(error?NO:YES);
                                                    

@@ -68,6 +68,7 @@
     
     UIVisualEffectView *blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
     blurView.frame = self.view.bounds;
+    blurView.alpha = IS_IPAD?0.95:1.0;
     [self.view addSubview:blurView];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(writeValues)];
@@ -133,7 +134,7 @@
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromEdge-[_mainView]-fromEdge-|" options:NSLayoutFormatDirectionLeadingToTrailing
                                                                       metrics:@{ @"fromEdge" : @(widthFromEdge*4)} views:NSDictionaryOfVariableBindings(_mainView)]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-fromEdge-[_mainView]-fromEdge-|" options:NSLayoutFormatDirectionLeadingToTrailing 
-                                                                      metrics:@{ @"fromEdge" : @(widthFromEdge)} views:NSDictionaryOfVariableBindings(_mainView)]];
+                                                                      metrics:@{ @"fromEdge" : IS_IPAD?@(widthFromEdge*3):@(widthFromEdge)} views:NSDictionaryOfVariableBindings(_mainView)]];
     
     blurView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[blurView]|" options:NSLayoutFormatDirectionLeadingToTrailing
@@ -260,13 +261,11 @@
                                                                           message:NSLocalizedStringFromTableInBundle(@"RESET_COLOR_QUESTION", nil, self.cvkBunlde, nil) 
                                                                    preferredStyle:UIAlertControllerStyleAlert];
     [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-    [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete")
-                                                     style:UIAlertActionStyleDestructive 
-                                                   handler:^(UIAlertAction *action) { 
-                                                       if (self.prefs[self.cellIdentifier]) [self.prefs removeObjectForKey:self.cellIdentifier];
-                                                       [self.prefs writeToFile:self.prefsPath atomically:YES];
-                                                       [self dismissPicker];
-                                                   }]];
+    [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { 
+        if (self.prefs[self.cellIdentifier]) [self.prefs removeObjectForKey:self.cellIdentifier];
+        [self.prefs writeToFile:self.prefsPath atomically:YES];
+        [self dismissPicker];
+    }]];
     [self presentViewController:warningAlert animated:YES completion:nil];
     
 }
@@ -283,11 +282,11 @@
 - (void)dismissPicker 
 {
     [self.popup dismiss:YES];
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.prefs.changed"), NULL, NULL, YES);
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk.prefs.colorUpdate" object:nil userInfo:@{ @"CVKColorCellIdentifier" : self.cellIdentifier }];
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.prefs.colorUpdate" object:nil userInfo:@{@"identifier":self.cellIdentifier}];
     
     NSArray *identificsToReloadMenu = @[@"MenuSeparatorColor", @"switchesTintColor", @"switchesOnTintColor", @"menuTextColor"];
-    if ([identificsToReloadMenu containsObject:self.cellIdentifier]) CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk.reload.menu"), NULL, NULL, YES);
+    if ([identificsToReloadMenu containsObject:self.cellIdentifier]) CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
     
     self.hideStatusBar = NO;
     
