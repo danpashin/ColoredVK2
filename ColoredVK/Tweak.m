@@ -558,7 +558,7 @@ static NSInteger VKVersion()
     NSArray <NSString *> *array = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"] componentsSeparatedByString:@"."];
     
     for (int i = 0; i<array.count; i++) {
-        if ((i == array.count-1) && (array[i].length < 2)) break;
+        if ((i >= 2) && (array[i].length < 2)) break;
         versionString = [versionString stringByAppendingString:array[i]];
     }
     return versionString.integerValue;
@@ -666,24 +666,23 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setBarTintColor, UIColor*, bar
 CHOptimizedMethod(1, self, void, UINavigationBar, setTintColor, UIColor*, tintColor)
 {
     if (enabled && enabledBarColor) {
-        self.barTintColor = [UIColor clearColor];
+        self.barTintColor = nil;
         tintColor = barForegroundColor;
-        self.titleTextAttributes = @{NSForegroundColorAttributeName:barForegroundColor};
     }
     
     CHSuper(1, UINavigationBar, setTintColor, tintColor);
 }
 
-//CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDictionary*, attributes)
-//{
-//    if (enabled && enabledBarColor) {
-////        @try {
-//            if (self.barTintColor) attributes = @{NSForegroundColorAttributeName:barForegroundColor};
-////        } @catch (NSException *exception) { CHLog(@"%@", exception); } @finally { }
-//    }
-//    
-//    CHSuper(1, UINavigationBar, setTitleTextAttributes, attributes);
-//}
+CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDictionary*, attributes)
+{
+    if (enabled && enabledBarColor) {
+        @try {
+            attributes = @{NSForegroundColorAttributeName:barForegroundColor};
+        } @catch (NSException *exception) { CHLog(@"%@", exception); } @finally { }
+    }
+    
+    CHSuper(1, UINavigationBar, setTitleTextAttributes, attributes);
+}
 
 
 #pragma mark UITextInputTraits
@@ -1025,8 +1024,8 @@ CHOptimizedMethod(2, self, UITableViewCell*, ChatController, tableView, UITableV
             for (id view in cell.contentView.subviews) { 
                 if ([view respondsToSelector:@selector(setTextColor:)]) [view setTextColor:changeMessagesTextColor?messagesTextColor:[UIColor colorWithWhite:1 alpha:0.7]]; 
             }
+            if ([CLASS_NAME(cell) isEqualToString:@"UITableViewCell"]) cell.backgroundColor = [UIColor clearColor];
         }
-        if ([CLASS_NAME(cell) isEqualToString:@"UITableViewCell"]) cell.backgroundColor = [UIColor clearColor];
     }
     
     return cell;
@@ -1614,7 +1613,7 @@ CHConstructor
             CHLoadLateClass(UINavigationBar);
             CHHook(1, UINavigationBar, setBarTintColor);
             CHHook(1, UINavigationBar, setTintColor);
-//            CHHook(1, UINavigationBar, setTitleTextAttributes);
+            CHHook(1, UINavigationBar, setTitleTextAttributes);
             
             
             

@@ -103,6 +103,7 @@ NSString *login;
 NSString *password;
 NSString *udid;
 NSString *key;
+struct utsname systemInfo;
 
 
 + (instancetype)startInstall
@@ -122,6 +123,7 @@ NSString *key;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(CFSTR("UniqueDeviceID"))];
             key = AES256EncryptString([NSProcessInfo processInfo].globallyUniqueString, kDRMAuthorizeKey).base64Encoding;
+            uname(&systemInfo);
             
             void (^downloadBlock)() = ^{
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -136,10 +138,7 @@ NSString *key;
                 NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
                 if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0)) {
                     if (!dict[@"Device"] || !dict[@"key"]) downloadBlock();
-                    else {
-                        struct utsname systemInfo;
-                        uname(&systemInfo);
-                        
+                    else {                        
                         if (![dict[@"Device"] isEqualToString:@(systemInfo.machine)]) downloadBlock();
                         else {
                             if (udid.length > 6) {
@@ -246,7 +245,7 @@ NSString *key;
         request.HTTPMethod = @"POST";
         [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
         password = AES256EncryptString(password, kDRMAuthorizeKey).base64Encoding;
-        NSString *device = [NSString stringWithFormat:@"%@(%@)", [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];
+        NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", @(systemInfo.machine), [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];
         NSString *parameters = [NSString stringWithFormat:@"login=%@&password=%@&action=login&version=%@&device=%@&key=%@", login, password, kDRMPackageVersion, device, key];
         request.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];
         download(request, YES);
@@ -273,12 +272,9 @@ static void download(NSURLRequest *request,BOOL authorise)
             if (responseDict && !responseDict[@"error"]) {
                 if ([responseDict[@"Status"] isEqualToString:authorise?password:udid]) {
                     if ([responseDict[@"key"] isEqualToString:key]) {
-                        struct utsname systemInfo;
-                        uname(&systemInfo);
-                        NSString *device = @(systemInfo.machine);
                         NSString *key = [NSProcessInfo processInfo].globallyUniqueString;
                         
-                        NSMutableDictionary *dict = @{@"UDID":udid, @"Device":device, @"key":key}.mutableCopy;
+                        NSMutableDictionary *dict = @{@"UDID":udid, @"Device":@(systemInfo.machine), @"key":key}.mutableCopy;
                         if (authorise) [dict setValue:login forKey:@"Login"];
                         NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
                         

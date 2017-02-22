@@ -71,7 +71,7 @@
         
         [self downloadCoverWithCompletionBlock:^(UIImage *image, BOOL wasDownloaded) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.defaultCover = wasDownloaded?NO:YES;
+                self.defaultCover = (wasDownloaded && image)?NO:YES;
                 
                 UIImage *coverImage = image;
                 if (player.coverImage && (!wasDownloaded && ![player.coverImage.imageAsset.assetName containsString:@"placeholder"])) {
@@ -83,10 +83,10 @@
                 [self changeImageViewImage:self.bottomImageView toImage:self.defaultCover?nil:coverImage animated:YES];
                 
                 MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
-                NSMutableDictionary *playingInfo = [NSMutableDictionary dictionaryWithDictionary:center.nowPlayingInfo];
-                if (wasDownloaded) playingInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:coverImage];
+                NSMutableDictionary *playingInfo = [center.nowPlayingInfo mutableCopy];
+                if (!self.defaultCover) playingInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:coverImage];
                 else [playingInfo removeObjectForKey:MPMediaItemPropertyArtwork];
-                center.nowPlayingInfo = [NSDictionary dictionaryWithDictionary:playingInfo];
+                center.nowPlayingInfo = [playingInfo copy];
                 
                 LEColorPicker *picker = [[LEColorPicker alloc] init];
                 [picker pickColorsFromImage:coverImage onComplete:^(LEColorScheme *colorScheme) {

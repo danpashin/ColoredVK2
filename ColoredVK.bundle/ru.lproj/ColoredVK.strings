@@ -9,20 +9,16 @@
 //  Copyright (©) Daniil Pashin 2015. All rights reserved.
 //  
 
-"BLACK_THEME" = "Темная тема";
-"ENABLE_BLACK_THEME" = "Включить";
-
-
 "NAVIGATION_BAR" = "Бар навигации";
 "TOOLBAR" = "Тулбар";
-"MENU_BACKGROUND" = "Меню";
-"MESSAGES_BACKGROUND" = "Сообщения";
-"MESSAGES_LIST_BACKGROUND" = "Список сообщений";
+"MENU" = "Меню";
+"MESSAGES" = "Сообщения";
+"MESSAGES_LIST" = "Список сообщений";
 "GROUPS" = "Группы";
 "MISCELLANEOUS" = "Разное";
-"STATUS_BAR_COLORS" = "Статус бар";
+"STATUS_BAR" = "Статус бар";
 "SWITCH_COLORS" = "Переключатели";
-"AUDIO_BACKGROUND" = "Аудио";
+"AUDIO" = "Аудио";
 "AUDIO_PLAYER" = "Плеер";
 
 

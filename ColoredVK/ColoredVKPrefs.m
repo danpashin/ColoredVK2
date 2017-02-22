@@ -23,7 +23,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 @property (strong, nonatomic) NSString *prefsPath;
 @property (strong, nonatomic) NSBundle *cvkBunlde;
 @property (strong, nonatomic) NSString *cvkFolder;
-@property (strong, nonatomic) NSString *imageID;
+@property (strong, nonatomic) NSString *lastImageIdentifier;
 @end
 
 @implementation ColoredVKPrefs
@@ -66,9 +66,9 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
         
         if (specifiersArray.count == 0) {
             specifiersArray = [NSMutableArray new];
-            [specifiersArray addObject:[self errorMessage]];
+            [specifiersArray addObject:self.errorMessage];
         }
-        if ([self.specifier.properties[@"shouldAddFooter"] boolValue]) [specifiersArray addObject:[self footer]];
+        if ([self.specifier.properties[@"shouldAddFooter"] boolValue]) [specifiersArray addObject:self.footer];
         
         _specifiers = [specifiersArray copy];
     }
@@ -173,7 +173,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
 
 - (void)chooseImage:(PSSpecifier*)specifier
 {
-    self.imageID = specifier.identifier;
+    self.lastImageIdentifier = specifier.identifier;
     UIImagePickerController *picker = [UIImagePickerController new];
     picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     picker.delegate = self;    
@@ -197,8 +197,8 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     hud.executionBlock = ^(ColoredVKHUD *parentHud) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
             if (![[NSFileManager defaultManager] fileExistsAtPath:self.cvkFolder]) [[NSFileManager defaultManager] createDirectoryAtPath:self.cvkFolder withIntermediateDirectories:NO attributes:nil error:nil];
-            NSString *imagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.imageID]];
-            NSString *prevImagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", self.imageID]];
+            NSString *imagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.lastImageIdentifier]];
+            NSString *prevImagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", self.lastImageIdentifier]];
             
             NSError *error = nil;
             [UIImagePNGRepresentation(image) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
@@ -215,10 +215,10 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
                 [UIImagePNGRepresentation(recisedImage) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
             }
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{ @"identifier" : self.imageID }];
-                if ([self.imageID isEqualToString:@"menuBackgroundImage"]) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{ @"identifier" : self.lastImageIdentifier }];
+                if ([self.lastImageIdentifier isEqualToString:@"menuBackgroundImage"]) {
                     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-                } else if ([self.imageID isEqualToString:@"messagesBackgroundImage"]) {
+                } else if ([self.lastImageIdentifier isEqualToString:@"messagesBackgroundImage"]) {
                     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.messages"), NULL, NULL, YES);
                 }
                 error?[parentHud showFailureWithStatus:error.localizedDescription]:[parentHud showSuccess];

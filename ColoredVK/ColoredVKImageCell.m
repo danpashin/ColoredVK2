@@ -16,7 +16,7 @@
 @property (strong, nonatomic) NSString *prefsPath;
 @property (strong, nonatomic) NSString *cvkFolder;
 @property (strong, nonatomic) NSString *key;
-@property (strong, nonatomic) UIImageView *myImageView;
+@property (strong, nonatomic) UIImageView *previewImageView;
 @end
 
 @implementation ColoredVKImageCell
@@ -36,21 +36,21 @@
         if ([identifier isEqualToString:@"groupsListBackgroundImage"]) self.key = @"enabledGroupsListImage";
         if ([identifier isEqualToString:@"audioBackgroundImage"]) self.key = @"enabledAudioImage";
         
-        int imageViewSize = 28;
-        self.myImageView = [UIImageView new];
-        self.myImageView.frame = CGRectMake(UIScreen.mainScreen.bounds.size.width/1.3 - imageViewSize, (self.contentView.frame.size.height - imageViewSize)/2, imageViewSize, imageViewSize);
-        self.myImageView.backgroundColor = [UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f];
-        self.myImageView.contentMode = UIViewContentModeScaleAspectFill;
-        self.myImageView.tag = 20;
-        self.myImageView.userInteractionEnabled = YES;
-        self.myImageView.layer.masksToBounds = YES;
-        self.myImageView.layer.cornerRadius = 6;
-        if (![self.contentView.subviews containsObject: [self.contentView viewWithTag:20] ]) [self.contentView addSubview:self.myImageView];
+        int imageViewSize = 30;
+        self.previewImageView = [UIImageView new];
+        self.previewImageView.frame = CGRectMake(UIScreen.mainScreen.bounds.size.width/1.3 - imageViewSize, (self.contentView.frame.size.height - imageViewSize)/2, imageViewSize, imageViewSize);
+        self.previewImageView.backgroundColor = [UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f];
+        self.previewImageView.contentMode = UIViewContentModeScaleAspectFill;
+        self.previewImageView.tag = 20;
+        self.previewImageView.userInteractionEnabled = YES;
+        self.previewImageView.layer.masksToBounds = YES;
+        self.previewImageView.layer.cornerRadius = 7;
+        if (![self.contentView.subviews containsObject: [self.contentView viewWithTag:20] ]) [self.contentView addSubview:self.previewImageView];
         
-        self.myImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.previewImageView.translatesAutoresizingMaskIntoConstraints = NO;
         NSDictionary *metrics = @{@"width":@(imageViewSize)};
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_myImageView(width)]-|" options:0 metrics:metrics views:NSDictionaryOfVariableBindings(_myImageView)]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_myImageView(width)]-|" options:0 metrics:metrics views:NSDictionaryOfVariableBindings(_myImageView)]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_previewImageView(width)]-|" options:0 metrics:metrics views:NSDictionaryOfVariableBindings(_previewImageView)]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_previewImageView(width)]-|" options:0 metrics:metrics views:NSDictionaryOfVariableBindings(_previewImageView)]];
         
         NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
         UISwitch *switchView = [UISwitch new];
@@ -77,7 +77,7 @@
         UIImage *image = [UIImage imageWithContentsOfFile:[self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identifier]]];
         if (image) {
             ((UISwitch *)self.accessoryView).enabled = YES;
-            self.myImageView.image = image;
+            self.previewImageView.image = image;
         }
     }] start];
 }
@@ -141,7 +141,7 @@
                 if ([fileManager fileExistsAtPath:fullImagePath]) [fileManager removeItemAtPath:fullImagePath error:&error];
                 
                 if (!error) {
-                    self.myImageView.image = nil;
+                    self.previewImageView.image = nil;
                     UISwitch *switchView = (UISwitch *)self.accessoryView;
                     [switchView setOn:NO animated:YES];
                     switchView.enabled = NO;

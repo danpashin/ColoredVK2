@@ -6,20 +6,16 @@
 //  Copyright (©) Daniil Pashin 2015. All rights reserved.
 //  
 
-"BLACK_THEME" = "Black theme";
-"ENABLE_BLACK_THEME" = "Enable";
-
-
 "NAVIGATION_BAR" = "Navigation bar";
 "TOOLBAR" = "Toolbar";
-"MENU_BACKGROUND" = "Menu";
-"MESSAGES_BACKGROUND" = "Messages";
-"MESSAGES_LIST_BACKGROUND" = "Messages list";
+"MENU" = "Menu";
+"MESSAGES" = "Messages";
+"MESSAGES_LIST" = "Messages list";
 "GROUPS" = "Groups";
 "MISCELLANEOUS" = "Miscellaneous";
 "STATUS_BAR_COLORS" = "Status bar";
 "SWITCH_COLORS" = "Switches";
-"AUDIO_BACKGROUND" = "Audio";
+"AUDIO" = "Audio";
 "AUDIO_PLAYER" = "Player";
 
 

@@ -14,10 +14,8 @@
 #import "UIImage+ResizeMagick.h"
 #import "ColoredVKBackgroundImageView.h"
 
-OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0);
-
 @implementation ColoredVKMainController
-static NSString *switchViewKey = @"switchViewKey";
+static NSString const *switchViewKey = @"cvkCellSwitchKey";
 
 - (MenuCell *)cvkCell
 {
@@ -50,7 +48,7 @@ static NSString *switchViewKey = @"switchViewKey";
             
             NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
             if (!cvkBundle.loaded) [cvkBundle load];
-            ColoredVKPrefsController *cvkPrefs = [[objc_getClass("ColoredVKPrefsController") alloc] init];
+            ColoredVKPrefsController *cvkPrefs = [[NSClassFromString(@"ColoredVKPrefsController") alloc] init];
             [mainContext reset:cvkPrefs];
             return nil;
         };

@@ -5,21 +5,17 @@
 //  Created by Даниил on 08.04.2015.
 //  Copyright (©) Daniil Pashin 2015. All rights reserved.
 //  
-    
-"BLACK_THEME" = "Чорна тема";
-"ENABLE_BLACK_THEME" = "Включити";
-
 
 "NAVIGATION_BAR" = "Бар навігації";
 "TOOLBAR" = "Тулбар";
-"MENU_BACKGROUND" = "Меню";
-"MESSAGES_BACKGROUND" = "Повідомлення";
-"MESSAGES_LIST_BACKGROUND" = "Список повідомлень";
+"MENU" = "Меню";
+"MESSAGES" = "Повідомлення";
+"MESSAGES_LIST" = "Список повідомлень";
 "GROUPS" = "Групи";
 "MISCELLANEOUS" = "Різне";
 "STATUS_BAR_COLORS" = "Рядок стану";
 "SWITCH_COLORS" = "Перемикачі";
-"AUDIO_BACKGROUND" = "Аудіо";
+"AUDIO" = "Аудіо";
 "AUDIO_PLAYER" = "Плеєр";
 
 

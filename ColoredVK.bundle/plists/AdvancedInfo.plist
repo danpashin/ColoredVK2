@@ -6,19 +6,19 @@
 	<array>
 		<dict>
 			<key>title</key>
-			<string>MENU_BACKGROUND</string>
+			<string>MENU</string>
 			<key>identifier</key>
 			<string>menuBackgroundImage</string>
 		</dict>
 		<dict>
 			<key>title</key>
-			<string>MESSAGES_BACKGROUND</string>
+			<string>MESSAGES</string>
 			<key>identifier</key>
 			<string>messagesBackgroundImage</string>
 		</dict>
 		<dict>
 			<key>title</key>
-			<string>MESSAGES_LIST_BACKGROUND</string>
+			<string>MESSAGES_LIST</string>
 			<key>identifier</key>
 			<string>messagesListBackgroundImage</string>
 		</dict>
@@ -30,7 +30,7 @@
 		</dict>
 		<dict>
 			<key>title</key>
-			<string>AUDIO_BACKGROUND</string>
+			<string>AUDIO</string>
 			<key>identifier</key>
 			<string>audioBackgroundImage</string>
 		</dict>

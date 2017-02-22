@@ -8,7 +8,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>MENU_BACKGROUND</string>
+			<string>MENU</string>
 		</dict>
 		<dict>
 			<key>cellClass</key>
