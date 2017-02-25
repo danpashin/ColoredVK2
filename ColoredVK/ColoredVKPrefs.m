@@ -16,13 +16,12 @@
 #import "NSDate+DateTools.h"
 #import "UIImage+ResizeMagick.h"
 #import "SSZipArchive.h"
+//#import "YMSPhotoPickerViewController.h"
 
-OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0);
-
-@interface ColoredVKPrefs () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
-@property (strong, nonatomic) NSString *prefsPath;
-@property (strong, nonatomic) NSBundle *cvkBunlde;
-@property (strong, nonatomic) NSString *cvkFolder;
+@interface ColoredVKPrefs () <UIImagePickerControllerDelegate, UINavigationControllerDelegate> // YMSPhotoPickerViewControllerDelegate
+@property (strong, nonatomic, readonly) NSString *prefsPath;
+@property (strong, nonatomic, readonly) NSBundle *cvkBunlde;
+@property (strong, nonatomic, readonly) NSString *cvkFolder;
 @property (strong, nonatomic) NSString *lastImageIdentifier;
 @end
 
@@ -176,17 +175,39 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     self.lastImageIdentifier = specifier.identifier;
     UIImagePickerController *picker = [UIImagePickerController new];
     picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    picker.delegate = self;    
-    if (IS_IPAD) {
-        picker.modalPresentationStyle = UIModalPresentationPopover;
-        picker.popoverPresentationController.permittedArrowDirections = 0;
-        picker.popoverPresentationController.sourceView = self.view;
-        picker.popoverPresentationController.sourceRect = self.view.bounds;
-    }
-    [self.navigationController presentViewController:picker animated:YES completion:nil];
+    picker.delegate = self;
+    [self presentViewController:picker];
 }
 
+//- (void)chooseImageWithNewPicker:(PSSpecifier*)specifier
+//{
+//    self.lastImageIdentifier = specifier.identifier;
+//    YMSPhotoPickerViewController *picker = [YMSPhotoPickerViewController new];
+//    picker.delegate = self;
+//    [self presentViewController:picker];
+//}
+//
+//- (void)photoPickerViewControllerDidReceivePhotoAlbumAccessDenied:(YMSPhotoPickerViewController *)picker
+//{
+//    NSString *message = [NSString stringWithFormat:@"ColoredVK 2 doesn't have rights to your album.\n%@", UIKitLocalizedString(@"You can enable access in Privacy Settings.")];
+//    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];
+//    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) { }]];
+//    [self presentViewController:alertController];
+//}
+//
+//- (void)photoPickerViewController:(YMSPhotoPickerViewController *)picker didFinishPickingImage:(UIImage *)image
+//{
+//    [self saveImage:image fromPickerViewController:picker];
+//}
+
+
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
+{
+    [self saveImage:image fromPickerViewController:picker]; 
+}
+
+
+- (void)saveImage:(UIImage *)image fromPickerViewController:(UIViewController *)picker
 {
     ColoredVKHUD *hud = [ColoredVKHUD showAddedToView:picker.view];
     hud.backgroundView.blurStyle = LHBlurEffectStyleDark;
@@ -274,7 +295,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
                 alertController.message = NSLocalizedStringFromTableInBundle(@"NO_UPDATES_FOUND_BUTTON_TITLE", nil, self.cvkBunlde, nil);
                 [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
             }
-            dispatch_async(dispatch_get_main_queue(), ^{ [self presentViewController:alertController animated:YES completion:nil]; });
+            [self presentViewController:alertController];
             
             NSDateFormatter *dateFormatter = [NSDateFormatter new];
             dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
@@ -307,15 +328,13 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
         NSError *error = nil;
         BOOL success = [[NSFileManager defaultManager] removeItemAtPath:CVK_CACHE_PATH error:&error];
         if (success && !error) [hud showSuccess];
-        else [hud showFailureWithStatus:[NSString stringWithFormat:@"%@\n%@", error.localizedDescription, error.localizedFailureReason] animated:YES];
+        else [hud showFailureWithStatus:[NSString stringWithFormat:@"%@\n%@", error.localizedDescription, error.localizedFailureReason]];
     }];
 }
 
 - (void)resetSettings
 {
     void (^resetSettingsBlock)() = ^{
-        if ([[NSBundle mainBundle].executablePath.lastPathComponent isEqualToString:@"vkclient"]) 
-            self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:60/255.0f green:112/255.0f blue:169/255.0f alpha:1];
         
         ColoredVKHUD *hud = [ColoredVKHUD showHUD];
         hud.operation = [NSBlockOperation blockOperationWithBlock:^{
@@ -327,6 +346,10 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
             CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
             CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
             CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, NULL, YES);
+            
+            if ([[NSBundle mainBundle].executablePath.lastPathComponent isEqualToString:@"vkclient"]) 
+                self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:60/255.0f green:112/255.0f blue:169/255.0f alpha:1];
+            
             error?[hud showFailure]:[hud showSuccess];
         }];  
     };
@@ -338,7 +361,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     NSString *resetTitle = [NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"ColoredVK", self.cvkBunlde, nil) componentsSeparatedByString:@" "].firstObject;    
     [alertController addAction:[UIAlertAction actionWithTitle:resetTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { resetSettingsBlock(); }]];
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-    [self presentViewController:alertController animated:YES completion:nil];
+    [self presentViewController:alertController];
 }
 
 - (void)backupSettings
@@ -390,12 +413,7 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
         [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     }
     
-    if (IS_IPAD) {
-        alertController.popoverPresentationController.permittedArrowDirections = 0;
-        alertController.popoverPresentationController.sourceView = self.view;
-        alertController.popoverPresentationController.sourceRect = self.view.bounds;
-    }
-    [self presentViewController:alertController animated:YES completion:nil];
+    [self presentViewController:alertController];
     
 }
 
@@ -439,5 +457,18 @@ OBJC_EXPORT Class objc_getClass(const char *name) OBJC_AVAILABLE(10.0, 2.0, 9.0,
     };
     hud.executionBlock(hud);
     
+}
+
+- (void)presentViewController:(UIViewController *)controller
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (IS_IPAD) {
+            controller.modalPresentationStyle = UIModalPresentationPopover;
+            controller.popoverPresentationController.permittedArrowDirections = 0;
+            controller.popoverPresentationController.sourceView = self.view;
+            controller.popoverPresentationController.sourceRect = self.view.bounds;
+        }
+        [self.navigationController presentViewController:controller animated:YES completion:nil];
+    });
 }
 @end

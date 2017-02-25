@@ -552,16 +552,38 @@ static void setupMessageBubbleForCell(ChatCell *cell)
     }
 }
 
-static NSInteger VKVersion()
-{
-    NSString *versionString = @"";
-    NSArray <NSString *> *array = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"] componentsSeparatedByString:@"."];
+/**
+ returns -1  if  first_version < second_version
+ returns  1  if  first_version > second_version
+ returns  0  if  first_version = second_version
+ */
+static NSInteger compareVersions(NSString *first_version, NSString *second_version) {
     
-    for (int i = 0; i<array.count; i++) {
-        if ((i >= 2) && (array[i].length < 2)) break;
-        versionString = [versionString stringByAppendingString:array[i]];
+    if ([first_version isEqualToString:second_version]) return 0;
+    
+    NSArray *first_version_components = [first_version componentsSeparatedByString:@"."];
+    NSArray *second_version_components = [second_version componentsSeparatedByString:@"."];
+    NSInteger length = MIN(first_version_components.count, second_version_components.count);
+    
+    
+    for (int i = 0; i < length; i++) {
+        NSInteger first_component = [first_version_components[i] integerValue];
+        NSInteger second_component = [second_version_components[i] integerValue];
+        
+        if (first_component > second_component) return 1;
+        if (first_component < second_component) return -1;
     }
-    return versionString.integerValue;
+    
+    
+    if (first_version_components.count > second_version_components.count) return 1;
+    if (first_version_components.count < second_version_components.count) return -1;
+    
+    return 0;
+}
+
+static NSString *VKVersion()
+{    
+    return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
 }
 
 UIVisualEffectView *blurForView(UIView *view, int tag)
@@ -678,7 +700,7 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDict
     if (enabled && enabledBarColor) {
         @try {
             attributes = @{NSForegroundColorAttributeName:barForegroundColor};
-        } @catch (NSException *exception) { CHLog(@"%@", exception); } @finally { }
+        } @catch (NSException *exception) { CHLog(@"%@", exception); }
     }
     
     CHSuper(1, UINavigationBar, setTitleTextAttributes, attributes);
@@ -855,8 +877,8 @@ CHOptimizedMethod(0, self, void, GroupsController, viewWillLayoutSubviews)
             search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
             NSDictionary *attributes = @{NSForegroundColorAttributeName:changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
             search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder attributes:attributes];
-            NSInteger version = VKVersion();
-            if ((version>=22) && (version<=25)) {
+            NSString *version = VKVersion();
+            if (compareVersions(version, @"2.5") <= 0) {
                 for (UIView *view in self.view.subviews) {
                          if ([view isKindOfClass:[UIToolbar class]] && useGroupsListBlur) { setBlur(view, YES); break; }
                     else if ([view isKindOfClass:[UIToolbar class]] && enabledToolBarColor) { setToolBar((UIToolbar*)view); break; } 
@@ -1571,13 +1593,12 @@ CHConstructor
         
         NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:prefsPath];
         if (![[NSFileManager defaultManager] fileExistsAtPath:prefsPath]) prefs = [NSMutableDictionary new];
-        NSString *stringVersion = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-        prefs[@"vkVersion"] = stringVersion;
+        NSString *vkVersion = VKVersion();
+        prefs[@"vkVersion"] = vkVersion;
         [prefs writeToFile:prefsPath atomically:YES];
         VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil)?YES:NO;
         
-        NSInteger vkVersion = VKVersion();
-        if (vkVersion >= 22) {
+        if (compareVersions(vkVersion, @"2.2") >= 0) {
             CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
             CFNotificationCenterAddObserver(center, NULL, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             CFNotificationCenterAddObserver(center, NULL, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
@@ -1717,7 +1738,7 @@ CHConstructor
             CHHook(0, AudioRenderer, playIndicator);
             
             
-            if (vkVersion >= 29) {
+            if (compareVersions(vkVersion, @"2.9") >= 0) {
                 CHLoadLateClass(ChatCell);
                 CHHook(4, ChatCell, initWithDelegate, multidialog, selfdialog, identifier);
                 CHHook(0, ChatCell, prepareForReuse);
@@ -1736,7 +1757,7 @@ CHConstructor
             CHHook(0, ProfileCoverInfo, enabled);
 
         } else {
-            showAlertWithMessage([NSString stringWithFormat:CVKLocalizedString(@"VKAPP_VERSION_IS_TOO_LOW"),  stringVersion, @"2.2"]);
+            showAlertWithMessage([NSString stringWithFormat:CVKLocalizedString(@"VKAPP_VERSION_IS_TOO_LOW"),  vkVersion, @"2.2"]);
         }
     }
 }

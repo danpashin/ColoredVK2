@@ -24,12 +24,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ColoredVK/Tweak.m"
-            timestampString = "509314122.299671"
+            timestampString = "509400463.963865"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1535"
-            endingLineNumber = "1535"
-            landmarkName = "reloadPrefsNotify()"
+            startingLineNumber = "680"
+            endingLineNumber = "680"
+            landmarkName = "CHOptimizedMethod()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -40,11 +40,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ColoredVK/Tweak.m"
-            timestampString = "509400463.963865"
+            timestampString = "509701864.611183"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "680"
-            endingLineNumber = "680"
+            startingLineNumber = "568"
+            endingLineNumber = "568"
+            landmarkName = "compareVersions()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ColoredVK/Tweak.m"
+            timestampString = "509739056.831477"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "882"
+            endingLineNumber = "882"
             landmarkName = "CHOptimizedMethod()"
             landmarkType = "9">
          </BreakpointContent>
