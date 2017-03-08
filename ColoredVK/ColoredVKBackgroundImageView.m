@@ -9,7 +9,7 @@
 #import "ColoredVKBackgroundImageView.h"
 #import "PrefixHeader.h"
 
-const NSInteger PARALLAX_EFFECT_VALUE = 12; 
+const NSInteger PARALLAX_EFFECT_VALUE = 14; 
 
 @implementation ColoredVKBackgroundImageView
 
@@ -42,13 +42,14 @@ const NSInteger PARALLAX_EFFECT_VALUE = 12;
         _name = name;
         _blackout = blackout;
         
-        self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
+        self.imageView = [[UIImageView alloc] initWithFrame:frame];
         self.imageView.image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, name]];
         self.imageView.contentMode = UIViewContentModeScaleAspectFill;
+        self.imageView.layer.masksToBounds = YES;
         if (flip) self.imageView.transform = CGAffineTransformMakeRotation(180 * M_PI/180);
         [self addSubview:self.imageView];
         
-        self.frontView = [[UIView alloc] initWithFrame:self.imageView.bounds];
+        self.frontView = [[UIView alloc] initWithFrame:frame];
         self.frontView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:blackout];
         [self.imageView addSubview:self.frontView];
         
@@ -99,15 +100,65 @@ const NSInteger PARALLAX_EFFECT_VALUE = 12;
 
 - (void)addToView:(UIView *)view
 {
-    if (![view.subviews containsObject:[view viewWithTag:self.tag]]) {
-        [view addSubview:self];
-        [view sendSubviewToBack:self];
-        
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (![view.subviews containsObject:[view viewWithTag:self.tag]] && view) {
+            [view addSubview:self];
+            
+            [self updateConstraints];
+        }
+    });
+}
+
+- (void)addToBack:(UIView *)view
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (![view.subviews containsObject:[view viewWithTag:self.tag]] && view) {
+            [view addSubview:self];
+            [view sendSubviewToBack:self];
+            
+            [self updateConstraints];
+        }
+    });
+}
+
+- (void)addToFront:(UIView *)view
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (![view.subviews containsObject:[view viewWithTag:self.tag]] && view) {
+            [view addSubview:self];
+            [view bringSubviewToFront:self];
+            
+            [self updateConstraints];
+        }
+    });
+}
+
+- (void)updateConstraints
+{
+    [super updateConstraints];
+    
+    if (self.superview) {
         self.translatesAutoresizingMaskIntoConstraints = NO;
-        [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                     metrics:nil views:@{@"view":self}]];
-        [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                     metrics:nil views:@{@"view":self}]];
+        [self.superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                               metrics:nil views:@{@"view":self}]];
+        [self.superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                               metrics:nil views:@{@"view":self}]];
+        
+        
+        NSDictionary *views = @{@"imageView":self.imageView, @"frontView":self.frontView};
+        self.imageView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[imageView]|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[imageView]|" options:0 metrics:nil views:views]];
+        self.frontView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.imageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[frontView]|" options:0 metrics:nil views:views]];
+        [self.imageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[frontView]|" options:0 metrics:nil views:views]];
+    }
+}
+
+- (void)removeFromView:(UIView *)superview
+{
+    if (superview && [superview.subviews containsObject:[superview viewWithTag:self.tag]]) {
+        [self removeFromSuperview];
     }
 }
 

@@ -17,8 +17,9 @@
 #define VKS_BUNDLE_PATH     @"/Library/PreferenceBundles/vksprefs.bundle"
 #define CVK_PREFS_PATH      @"/var/mobile/Library/Preferences/com.daniilpashin.coloredvk2.plist"
 #define CVK_FOLDER_PATH     @"/var/mobile/Library/Preferences/ColoredVK2"
-#define CVK_CACHE_PATH      @"/var/mobile/Library/Preferences/ColoredVK2/Cache"
-#define CVK_BACKUP_PATH     @"/var/mobile/Documents/ColoredVK2_Backups"
+#define CVK_CACHE_PATH      @"/var/mobile/Library/Caches/com.daniilpashin.coloredvk2/"
+#define CVK_CACHE_PATH_OLD  @"/var/mobile/Library/Preferences/ColoredVK2/Cache"
+#define CVK_BACKUP_PATH     @"/var/mobile/Documents/ColoredVK2_Backups/"
 #else
 #define CVK_BUNDLE_PATH     [[NSBundle mainBundle] pathForResource: @"ColoredVK2" ofType: @"bundle"]
 #define VKS_BUNDLE_PATH     [[NSBundle mainBundle] pathForResource: @"vksprefs" ofType: @"bundle"]
@@ -38,7 +39,7 @@
 #define SYSTEM_VERSION_IS_LESS_THAN(version)  SYSTEM_VERSION <= version
 #define CLASS_NAME(obj)                       NSStringFromClass([obj class])
 
-#define kColoredVKVersion @"3.2.6.1"
+#define kColoredVKVersion @"3.2.7-beta-1"
 
 #ifdef CHAppName
     #undef CHAppName

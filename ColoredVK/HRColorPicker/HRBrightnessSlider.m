@@ -189,9 +189,9 @@
     _brightnessCursor.color = self.color;
 }
 
-- (void)setFrame:(CGRect)frame {
-    super.frame = frame;
-}
+//- (void)setFrame:(CGRect)frame {
+//    super.frame = frame;
+//}
 
 #pragma mark AutoLayout
 

@@ -27,7 +27,7 @@
             switchView.tag = 404;
         }
         
-        if ([self.contentView.subviews[0] isKindOfClass:UISegmentedControl.class]) {
+        if ((self.contentView.subviews.count > 0) && [self.contentView.subviews[0] isKindOfClass:[UISegmentedControl class]]) {
             UISegmentedControl *segmentedControl = self.contentView.subviews[0];
             segmentedControl.tintColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
         }

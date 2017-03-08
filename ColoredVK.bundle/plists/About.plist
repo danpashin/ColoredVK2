@@ -19,6 +19,22 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>SEND_STATISTICS_DETAIL_INFO</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>key</key>
+			<string>sendStatistics</string>
+			<key>label</key>
+			<string>SEND_STATISTICS</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
 		</dict>
 		<dict>
 			<key>label</key>
@@ -29,6 +45,82 @@
 			<string>PSTableCell</string>
 			<key>action</key>
 			<string>openProfie</string>
+			<key>textColor</key>
+			<string>0.35, 0.5, 0.7, 1.0</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Огромное спасибо этим людям за помощь в тестировании и разработке твика! [■ツ■]</string>
+			<key>footerText</key>
+			<string>А так же спасибо всем тем, кто пользуется твиком и предлагает новые идеи! </string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Максим Гончарук</string>
+			<key>id</key>
+			<string>testerCell</string>
+			<key>url</key>
+			<string>honcharuk_makc</string>
+			<key>icon</key>
+			<string>honcharuk_makc</string>
+			<key>action</key>
+			<string>openTesterPage:</string>
+			<key>textColor</key>
+			<string>0.35, 0.5, 0.7, 1.0</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Дмитро Гуменюк</string>
+			<key>id</key>
+			<string>testerCell</string>
+			<key>url</key>
+			<string>dimaaaaaaaaaaaaaaaaaaaaaaaaaaaa</string>
+			<key>icon</key>
+			<string>dimaaaaaaaaaaaaaaaaaaaaaaaaaaaa</string>
+			<key>action</key>
+			<string>openTesterPage:</string>
+			<key>textColor</key>
+			<string>0.35, 0.5, 0.7, 1.0</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Андрей Кот</string>
+			<key>id</key>
+			<string>testerCell</string>
+			<key>url</key>
+			<string>big_catz</string>
+			<key>icon</key>
+			<string>big_catz</string>
+			<key>action</key>
+			<string>openTesterPage:</string>
+			<key>textColor</key>
+			<string>0.35, 0.5, 0.7, 1.0</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Сергей Мельников</string>
+			<key>id</key>
+			<string>testerCell</string>
+			<key>url</key>
+			<string>id188888433</string>
+			<key>action</key>
+			<string>openTesterPage:</string>
+			<key>icon</key>
+			<string>id188888433</string>
 			<key>textColor</key>
 			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>

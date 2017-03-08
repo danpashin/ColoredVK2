@@ -10,10 +10,10 @@
 "TOOLBAR" = "Toolbar";
 "MENU" = "Menu";
 "MESSAGES" = "Messages";
-"MESSAGES_LIST" = "Messages list";
+"MESSAGES_LIST" = "Dialogs list";
 "GROUPS" = "Groups";
 "MISCELLANEOUS" = "Miscellaneous";
-"STATUS_BAR_COLORS" = "Status bar";
+"STATUS_BAR" = "Status bar";
 "SWITCH_COLORS" = "Switches";
 "AUDIO" = "Audio";
 "AUDIO_PLAYER" = "Player";
@@ -22,10 +22,12 @@
 "CHANGE_COLORS" = "Change colors";
 "BACKGROUND_COLOR" = "Background color";
 "FOREGROUND_COLOR" = "Foreground color";
+"BACKGROUND_TONE" = "Background tone";
 "TEXT_COLOR" = "Text color";
 "CHANGE_TEXT_COLOR" = "Change text color";
 "ENABLED_IMAGE" = "Use image instead";
 "USE_BLUR" = "Enable blur";
+"BLUR_STYLE" = "Blur style";
 
 "CHANGE_BACKGROUND" = "Change background";
 "IMAGE_BLACKOUT" = "Image blackout";
@@ -66,6 +68,9 @@
 "BACKUPS" = "Backups";
 "CHOOSE_BACKUP" = "Choose backup to restore";
 "NO_FILES_TO_RESTORE" = "No files to restore";
+
+"SEND_STATISTICS" = "Send statistics";
+"SEND_STATISTICS_DETAIL_INFO" = "This information does NOT include any private info, only general information about device.";
 
 
 

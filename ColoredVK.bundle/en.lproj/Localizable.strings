@@ -28,9 +28,11 @@
 "EXAMPLE_ALERT_MESSAGE" = "Like %@";
 "RESET_COLOR_QUESTION" = "Do you really want to reset color?";
 "RESET_SETTINGS_QUESTION" = "Do you really want to reset settings?";
+"RESTORE_BACKUP_QUESTION" = "Do you sure you want to restore this backup?\n\n%@";
+"YES_I_AM_SURE" = "Yeah, I'm sure";
 
 "NEVER" = "Never";
-"ERROR_DOWNLOADING_LICENCE" = "Error while downloading licence:\n%@\n\nYour UDID is\n%@\n\nPlease don't show it for anyone except developer";
+"ERROR_DOWNLOADING_LICENCE" = "Error while downloading licence:\n%@";
 "ERROR_LOGIN" = "Error while downloading licence:\n%@\n\nYour login \n%@";
 "CLOSE_APP" = "Close app";
 
@@ -38,4 +40,6 @@
 "VKAPP_VERSION_IS_TOO_LOW" = "ColoredVK 2 doesn't support this app version (%@).\nPlease, install VK App %@ or later";
 
 "CONTINUE" = "Continue";
-"GETTING_UDID_ERROR" = "ColoredVK 2 cannot automatically obtain UDID of your device.\nTo continue, you have to enter it manually in the box below.\nYou can find UDID in Cydia's main page at the bottom.";
+"GETTING_UDID_ERROR" = "ColoredVK 2 cannot automatically obtain UDID of your device.\nTo continue, enter it manually in the box below.\nYou can find UDID in Cydia's main page at the bottom.";
+"OPEN_PREFERENCES" = "Go to Preferences";
+"GETTING_PRIVATE_INFO_ERROR" = "ColoredVK 2 cannot automatically obtain info of your device. If you have Xcon or other similar tweaks installed, I recommend to remove them.\n\nTo continue, go to ColoredVK 2 settings via Preferences app and re-open VK App.";

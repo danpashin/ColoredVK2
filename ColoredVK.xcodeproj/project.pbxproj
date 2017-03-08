@@ -118,6 +118,8 @@
 		A54249C81E0526C60018D3E3 /* UIImage+MultiFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = A54249C41E0526C60018D3E3 /* UIImage+MultiFormat.m */; };
 		A54249CA1E052A930018D3E3 /* ColoredVKAudioCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = A54249C91E052A930018D3E3 /* ColoredVKAudioCoverView.m */; };
 		A54249CB1E052A930018D3E3 /* ColoredVKAudioCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = A54249C91E052A930018D3E3 /* ColoredVKAudioCoverView.m */; };
+		A55434FB1E636B19003B4256 /* Tweak.h in Headers */ = {isa = PBXBuildFile; fileRef = A55434FA1E636B19003B4256 /* Tweak.h */; };
+		A55434FC1E636B19003B4256 /* Tweak.h in Headers */ = {isa = PBXBuildFile; fileRef = A55434FA1E636B19003B4256 /* Tweak.h */; };
 		A576D1801DC621B90039884F /* UIImage+ResizeMagick.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D84BFF1CCFF312000C13B9 /* UIImage+ResizeMagick.m */; };
 		A576D1811DC621B90039884F /* Tweak.m in Sources */ = {isa = PBXBuildFile; fileRef = A53D91961CCA82B400E45A49 /* Tweak.m */; };
 		A576D1821DC621B90039884F /* ColoredVKInstaller.m in Sources */ = {isa = PBXBuildFile; fileRef = A52743671D8ADDE20063B78F /* ColoredVKInstaller.m */; };
@@ -189,8 +191,6 @@
 		A57B184D1E24F3E500A2A622 /* NSData+AESCrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = A57B18481E24F3D500A2A622 /* NSData+AESCrypt.m */; };
 		A589F66B1DE1B2F100467138 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A589F66A1DE1B2F100467138 /* MediaPlayer.framework */; };
 		A589F66C1DE1B2F800467138 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A589F66A1DE1B2F100467138 /* MediaPlayer.framework */; };
-		A589F6711DE1DB3200467138 /* Tweak.h in Headers */ = {isa = PBXBuildFile; fileRef = A589F6701DE1DB3200467138 /* Tweak.h */; };
-		A589F6721DE1DB3200467138 /* Tweak.h in Headers */ = {isa = PBXBuildFile; fileRef = A589F6701DE1DB3200467138 /* Tweak.h */; };
 		A5AD46771DD38AF200740E30 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5AD46761DD38AF200740E30 /* MapKit.framework */; };
 		A5B1E2511E505632001B8442 /* aes.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B1E22C1E505632001B8442 /* aes.h */; };
 		A5B1E2521E505632001B8442 /* aes.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B1E22C1E505632001B8442 /* aes.h */; };
@@ -260,10 +260,10 @@
 		A5B1E2951E505633001B8442 /* SSZipCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B1E24F1E505632001B8442 /* SSZipCommon.h */; };
 		A5B1E2991E505698001B8442 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A5B1E2981E505698001B8442 /* libz.tbd */; };
 		A5B1E29B1E5056AB001B8442 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A5B1E2981E505698001B8442 /* libz.tbd */; };
-		A5B1E29E1E509246001B8442 /* ColoredVKBackupController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B1E29C1E509246001B8442 /* ColoredVKBackupController.h */; };
-		A5B1E29F1E509246001B8442 /* ColoredVKBackupController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B1E29C1E509246001B8442 /* ColoredVKBackupController.h */; };
-		A5B1E2A01E509246001B8442 /* ColoredVKBackupController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B1E29D1E509246001B8442 /* ColoredVKBackupController.m */; };
-		A5B1E2A11E509246001B8442 /* ColoredVKBackupController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B1E29D1E509246001B8442 /* ColoredVKBackupController.m */; };
+		A5B1E29E1E509246001B8442 /* ColoredVKSettingsController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B1E29C1E509246001B8442 /* ColoredVKSettingsController.h */; };
+		A5B1E29F1E509246001B8442 /* ColoredVKSettingsController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B1E29C1E509246001B8442 /* ColoredVKSettingsController.h */; };
+		A5B1E2A01E509246001B8442 /* ColoredVKSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B1E29D1E509246001B8442 /* ColoredVKSettingsController.m */; };
+		A5B1E2A11E509246001B8442 /* ColoredVKSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B1E29D1E509246001B8442 /* ColoredVKSettingsController.m */; };
 		A5B6ED071D3D659800383425 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FB51CC92157005B9693 /* Foundation.framework */; };
 		A5B6ED081D3D659800383425 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FCA1CC9261B005B9693 /* UIKit.framework */; };
 		A5B6ED451D3D68F000383425 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A50731D41CD535130088EF9F /* QuartzCore.framework */; };
@@ -425,6 +425,7 @@
 		A54249C31E0526C60018D3E3 /* UIImage+MultiFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+MultiFormat.h"; sourceTree = "<group>"; };
 		A54249C41E0526C60018D3E3 /* UIImage+MultiFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+MultiFormat.m"; sourceTree = "<group>"; };
 		A54249C91E052A930018D3E3 /* ColoredVKAudioCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKAudioCoverView.m; sourceTree = "<group>"; };
+		A55434FA1E636B19003B4256 /* Tweak.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tweak.h; sourceTree = "<group>"; };
 		A55F5FFD1D3B81270099BE4F /* KLCPopup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KLCPopup.h; sourceTree = "<group>"; };
 		A55F5FFE1D3B81270099BE4F /* KLCPopup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KLCPopup.m; sourceTree = "<group>"; };
 		A56C4D851E56165800BEB2B1 /* ColoredVK2-dylib.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ColoredVK2-dylib.plist"; sourceTree = "<group>"; };
@@ -439,7 +440,6 @@
 		A58732FD1D1E960D003A2807 /* ColoredVKStepperPrefsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ColoredVKStepperPrefsCell.m; path = ../ColoredVK/ColoredVKStepperPrefsCell.m; sourceTree = "<group>"; };
 		A58732FE1D1E960D003A2807 /* ColoredVKStepperPrefsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ColoredVKStepperPrefsCell.h; path = ../ColoredVK/ColoredVKStepperPrefsCell.h; sourceTree = "<group>"; };
 		A589F66A1DE1B2F100467138 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
-		A589F6701DE1DB3200467138 /* Tweak.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tweak.h; sourceTree = "<group>"; };
 		A58F34101D5A378100838814 /* UIColor+ColoredVK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+ColoredVK.m"; sourceTree = "<group>"; };
 		A58F34111D5A378100838814 /* UIColor+ColoredVK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+ColoredVK.h"; sourceTree = "<group>"; };
 		A58F34121D5A378100838814 /* NSString+ColoredVK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ColoredVK.m"; sourceTree = "<group>"; };
@@ -495,8 +495,8 @@
 		A5B1E24E1E505632001B8442 /* SSZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSZipArchive.m; sourceTree = "<group>"; };
 		A5B1E24F1E505632001B8442 /* SSZipCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSZipCommon.h; sourceTree = "<group>"; };
 		A5B1E2981E505698001B8442 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
-		A5B1E29C1E509246001B8442 /* ColoredVKBackupController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKBackupController.h; sourceTree = "<group>"; };
-		A5B1E29D1E509246001B8442 /* ColoredVKBackupController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKBackupController.m; sourceTree = "<group>"; };
+		A5B1E29C1E509246001B8442 /* ColoredVKSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKSettingsController.h; sourceTree = "<group>"; };
+		A5B1E29D1E509246001B8442 /* ColoredVKSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKSettingsController.m; sourceTree = "<group>"; };
 		A5B6ED061D3D659800383425 /* ColoredVK2.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ColoredVK2.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5B6ED691D3D703600383425 /* ColoredVK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ColoredVK.bundle; sourceTree = "<group>"; };
 		A5C5FAB31E41168D0032A8AF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -692,7 +692,7 @@
 			isa = PBXGroup;
 			children = (
 				A53D12911D467016009567B5 /* PrefixHeader.h */,
-				A589F6701DE1DB3200467138 /* Tweak.h */,
+				A55434FA1E636B19003B4256 /* Tweak.h */,
 				A53D91961CCA82B400E45A49 /* Tweak.m */,
 				A528D8821DE9FCAF00B299C1 /* ColoredVKMainController.h */,
 				A528D8831DE9FCAF00B299C1 /* ColoredVKMainController.m */,
@@ -871,8 +871,8 @@
 				A525E3851D872B7A0015CA59 /* ColoredVKLicencesController.m */,
 				A52CDBAA1E33EB2400D69AD3 /* ColoredVKHUD.h */,
 				A52CDBAB1E33EB2400D69AD3 /* ColoredVKHUD.m */,
-				A5B1E29C1E509246001B8442 /* ColoredVKBackupController.h */,
-				A5B1E29D1E509246001B8442 /* ColoredVKBackupController.m */,
+				A5B1E29C1E509246001B8442 /* ColoredVKSettingsController.h */,
+				A5B1E29D1E509246001B8442 /* ColoredVKSettingsController.m */,
 				A5D979A41DAEBA1000607F06 /* Images.xcassets */,
 				A53FDE511E4CC95100AA3031 /* Icon-big.png */,
 				A5DD93FE1D3E0F560006E470 /* Supporting Files */,
@@ -960,10 +960,10 @@
 				A5ED14531DE873BE00138A65 /* UIColor+YUVSpace.h in Headers */,
 				A5363B0D1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.h in Headers */,
 				A54249991E0522560018D3E3 /* SDWebImageManager.h in Headers */,
-				A589F6711DE1DB3200467138 /* Tweak.h in Headers */,
 				A542499D1E0522560018D3E3 /* SDWebImageOperation.h in Headers */,
 				A5D9796E1DAEB88F00607F06 /* UIImage+ColoredVK.h in Headers */,
 				A542499F1E0522560018D3E3 /* SDWebImagePrefetcher.h in Headers */,
+				A55434FB1E636B19003B4256 /* Tweak.h in Headers */,
 				A5D9796F1DAEB88F00607F06 /* UIColor+ColoredVK.h in Headers */,
 				A53D41681DD0AC2600584B13 /* ColoredVKBackgroundImageView.h in Headers */,
 			);
@@ -1001,11 +1001,12 @@
 				A576D1C81DC6222C0039884F /* ColoredVKStepperPrefsCell.h in Headers */,
 				A576D1C91DC6222C0039884F /* PSTableCell+ColoredVK.h in Headers */,
 				A576D1CA1DC6222C0039884F /* ColoredVKLicencesController.h in Headers */,
-				A5B1E29F1E509246001B8442 /* ColoredVKBackupController.h in Headers */,
+				A5B1E29F1E509246001B8442 /* ColoredVKSettingsController.h in Headers */,
 				A5B1E2891E505633001B8442 /* unzip.h in Headers */,
 				A576D1D11DC6222C0039884F /* KLCPopup.h in Headers */,
 				A576D1D21DC6222C0039884F /* HRBrightnessCursor.h in Headers */,
 				A576D1D31DC6222C0039884F /* HRBrightnessSlider.h in Headers */,
+				A55434FC1E636B19003B4256 /* Tweak.h in Headers */,
 				A576D1D41DC6222C0039884F /* HRColorCursor.h in Headers */,
 				A528D8851DE9FCAF00B299C1 /* ColoredVKMainController.h in Headers */,
 				A54249921E0522560018D3E3 /* SDWebImageDownloader.h in Headers */,
@@ -1029,7 +1030,6 @@
 				A53D41691DD0AC2600584B13 /* ColoredVKBackgroundImageView.h in Headers */,
 				A576D1DA1DC6222C0039884F /* LHBackgroundView.h in Headers */,
 				A576D1DC1DC6222C0039884F /* LHProgressHUD.h in Headers */,
-				A589F6721DE1DB3200467138 /* Tweak.h in Headers */,
 				A576D1941DC621B90039884F /* UIImage+ResizeMagick.h in Headers */,
 				A5B1E2621E505632001B8442 /* brg_types.h in Headers */,
 				A576D1951DC621B90039884F /* PrefixHeader.h in Headers */,
@@ -1092,7 +1092,7 @@
 				A5D979841DAEB8EA00607F06 /* LHBackgroundView.h in Headers */,
 				A5B1E25F1E505632001B8442 /* brg_endian.h in Headers */,
 				A5D979861DAEB8EA00607F06 /* LHProgressHUD.h in Headers */,
-				A5B1E29E1E509246001B8442 /* ColoredVKBackupController.h in Headers */,
+				A5B1E29E1E509246001B8442 /* ColoredVKSettingsController.h in Headers */,
 				A5D979881DAEB8EA00607F06 /* UIImage+ColoredVK.h in Headers */,
 				A5D979891DAEB8EA00607F06 /* UIColor+ColoredVK.h in Headers */,
 				A5B1E2711E505632001B8442 /* prng.h in Headers */,
@@ -1303,7 +1303,7 @@
 				A576D1A81DC6220C0039884F /* ColoredVKColorCell.m in Sources */,
 				A576D1A91DC6220C0039884F /* ColoredVKImageCell.m in Sources */,
 				A5B1E2561E505632001B8442 /* aescrypt.c in Sources */,
-				A5B1E2A11E509246001B8442 /* ColoredVKBackupController.m in Sources */,
+				A5B1E2A11E509246001B8442 /* ColoredVKSettingsController.m in Sources */,
 				A576D1AA1DC6220C0039884F /* ColoredVKStepperPrefsCell.m in Sources */,
 				A542498C1E0522560018D3E3 /* SDWebImageCompat.m in Sources */,
 				A52CDBB11E33EB2400D69AD3 /* ColoredVKHUD.m in Sources */,
@@ -1366,7 +1366,7 @@
 				A5D979C21DAEC1CB00607F06 /* LHAcvitityIndicator.m in Sources */,
 				A5D979C31DAEC1CB00607F06 /* LHBackgroundView.m in Sources */,
 				A5D979C51DAEC1CB00607F06 /* LHProgressHUD.m in Sources */,
-				A5B1E2A01E509246001B8442 /* ColoredVKBackupController.m in Sources */,
+				A5B1E2A01E509246001B8442 /* ColoredVKSettingsController.m in Sources */,
 				A5D979C71DAEC1CB00607F06 /* UIImage+ColoredVK.m in Sources */,
 				A5B1E26B1E505632001B8442 /* hmac.c in Sources */,
 				A5D979C81DAEC1CB00607F06 /* UIColor+ColoredVK.m in Sources */,
@@ -1442,7 +1442,7 @@
 		A5D979A51DAEBAD300607F06 /* Release_DEB */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = 3.2.6.1;
+				APP_VERSION = "3.2.7-beta-1";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -1518,7 +1518,7 @@
 		A5D979A81DAEBAD900607F06 /* Release_IPA */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = 3.2.6.1;
+				APP_VERSION = "3.2.7-beta-1";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;

@@ -38,20 +38,21 @@
 
 + (UIColor *)defaultColorForIdentifier:(NSString *)identifier
 {
-    if      ([identifier isEqualToString:@"BarBackgroundColor"])       return [UIColor colorWithRed:60.00/255.0f green:112.0/255.0f blue:169.0/255.0f alpha:1];
-    else if ([identifier isEqualToString:@"BarForegroundColor"])       return [UIColor whiteColor];
-    else if ([identifier isEqualToString:@"ToolBarBackgroundColor"])   return [UIColor colorWithRed:245.0/255.0f green:245.0/255.0f blue:248.0/255.0f alpha:1];
-    else if ([identifier isEqualToString:@"ToolBarForegroundColor"])   return [UIColor colorWithRed:127.0/255.0f green:131.0/255.0f blue:137.0/255.0f alpha:1];
-    else if ([identifier isEqualToString:@"MenuSeparatorColor"])       return [UIColor colorWithRed:72.00/255.0f green:86.00/255.0f blue:97.00/255.0f alpha:1];
-    else if ([identifier isEqualToString:@"SBBackgroundColor"])        return [UIColor clearColor];
-    else if ([identifier isEqualToString:@"SBForegroundColor"])        return [UIColor whiteColor];
-    else if ([identifier isEqualToString:@"switchesTintColor"])        return nil;
-    else if ([identifier isEqualToString:@"switchesOnTintColor"])      return [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
-    else if ([identifier isEqualToString:@"messageBubbleTintColor"])   return [UIColor whiteColor];
+    if      ([identifier isEqualToString:@"BarBackgroundColor"])         return [UIColor colorWithRed:60.00/255.0f green:112.0/255.0f blue:169.0/255.0f alpha:1];
+    else if ([identifier isEqualToString:@"BarForegroundColor"])         return [UIColor whiteColor];
+    else if ([identifier isEqualToString:@"ToolBarBackgroundColor"])     return [UIColor colorWithRed:245.0/255.0f green:245.0/255.0f blue:248.0/255.0f alpha:1];
+    else if ([identifier isEqualToString:@"ToolBarForegroundColor"])     return [UIColor colorWithRed:127.0/255.0f green:131.0/255.0f blue:137.0/255.0f alpha:1];
+    else if ([identifier isEqualToString:@"MenuSeparatorColor"])         return [UIColor colorWithRed:72.00/255.0f green:86.00/255.0f blue:97.00/255.0f alpha:1];
+    else if ([identifier isEqualToString:@"SBBackgroundColor"])          return [UIColor clearColor];
+    else if ([identifier isEqualToString:@"SBForegroundColor"])          return [UIColor whiteColor];
+    else if ([identifier isEqualToString:@"switchesTintColor"])          return nil;
+    else if ([identifier isEqualToString:@"switchesOnTintColor"])        return [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
+    else if ([identifier isEqualToString:@"messageBubbleTintColor"])     return [UIColor whiteColor];
     else if ([identifier isEqualToString:@"messageBubbleSentTintColor"]) return [UIColor colorWithRed:205/255.0f green:226/255.0f blue:250/255.0f alpha:1];
-    else if ([identifier isEqualToString:@"messageReadColor"])         return [UIColor colorWithWhite:1 alpha:0.15];
-    else if ([identifier containsString:@"TextColor"])                 return [UIColor colorWithWhite:1 alpha:0.9];
-    else                                                               return [UIColor blackColor];
+    else if ([identifier isEqualToString:@"messageReadColor"])           return [UIColor colorWithWhite:1 alpha:0.15];
+    else if ([identifier containsString:@"TextColor"])                   return [UIColor colorWithWhite:1 alpha:0.9];
+    else if ([identifier isEqualToString:@"blurBackgroundTone"])         return [UIColor clearColor];
+    else                                                                 return [UIColor blackColor];
 }
 
 + (UIColor *)lightBlackColor

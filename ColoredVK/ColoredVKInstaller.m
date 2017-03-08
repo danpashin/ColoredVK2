@@ -121,7 +121,7 @@ struct utsname systemInfo;
     self = [super init];
     if (self) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            udid = [NSString stringWithFormat:@"%@", MGCopyAnswer(CFSTR("UniqueDeviceID"))];
+            udid = [NSString stringWithFormat:@"%@", CFBridgingRelease(MGCopyAnswer(CFSTR("UniqueDeviceID")))];
             key = AES256EncryptString([NSProcessInfo processInfo].globallyUniqueString, kDRMAuthorizeKey).base64Encoding;
             uname(&systemInfo);
             
@@ -135,32 +135,75 @@ struct utsname systemInfo;
             if (![[NSFileManager defaultManager] fileExistsAtPath:kDRMLicencePath]) downloadBlock();
             else {
                 NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
-                NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
+                NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
                 if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0)) {
-                    if (!dict[@"Device"] || !dict[@"key"]) downloadBlock();
+                    if (dict[@"key"]) { 
+                        [dict removeObjectForKey:@"key"];
+                        NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
+                        [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
+                    }
+                    
+                    if (!dict[@"Device"]) downloadBlock();
                     else {                        
                         if (![dict[@"Device"] isEqualToString:@(systemInfo.machine)]) downloadBlock();
                         else {
                             if (udid.length > 6) {
-                                NSString *newUDID = [NSString stringWithFormat:@"%@", MGCopyAnswer(CFSTR("UniqueDeviceID"))];
-                                if (![dict[@"UDID"] isEqualToString:newUDID]) downloadBlock();
+                                if (![dict[@"UDID"] isEqualToString:udid]) downloadBlock();
                                 else if (installerCompletionBlock) installerCompletionBlock(NO);
                             } else if (installerCompletionBlock) installerCompletionBlock(NO);
                         }
                     }
                 } else downloadBlock();
             }
+            
+            [self setupFiles];
+            [self sendStats];
         });
         
     }
     return self;
 }
 
+- (void)setupFiles
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager]; 
+#ifdef COMPILE_FOR_JAIL
+    if ([fileManager fileExistsAtPath:CVK_CACHE_PATH_OLD]) [fileManager removeItemAtPath:CVK_CACHE_PATH_OLD error:nil];
+#endif
+    if (![fileManager fileExistsAtPath:CVK_FOLDER_PATH])  [fileManager createDirectoryAtPath:CVK_FOLDER_PATH withIntermediateDirectories:NO attributes:nil error:nil];
+    if (![fileManager fileExistsAtPath:CVK_CACHE_PATH])   [fileManager createDirectoryAtPath:CVK_CACHE_PATH  withIntermediateDirectories:NO attributes:nil error:nil];
+    if (![fileManager fileExistsAtPath:CVK_BACKUP_PATH])  [fileManager createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
+}
+
+
+- (void)sendStats
+{
+    if ([[NSBundle mainBundle].executablePath.lastPathComponent containsString:@"vkclient"]) {
+        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+        BOOL sendStatistics = prefs[@"sendStatistics"]?[prefs[@"sendStatistics"] boolValue]:YES;
+        if (sendStatistics) {
+            UIDevice *device = [UIDevice currentDevice];
+            NSString *stringURL = [NSString stringWithFormat:@"http://danpashin.ru/api/v%@/stats/?product=%@&version=%@&device=%@&ios_version=%@&device_language=%@&vk_version=%@&identifier=%@", 
+                                   API_VERSION, kDRMPackage, kDRMPackageVersion, @(systemInfo.machine), 
+                                   device.systemVersion, [NSLocale preferredLanguages].firstObject, prefs[@"vkVersion"], device.identifierForVendor.UUIDString];
+            
+            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]] 
+                                               queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {}];
+        }
+    }
+}
+
+
 - (void)showAlertWithText:(NSString *)text
 {
     alertController = [UIAlertController alertControllerWithTitle:kDRMPackageName message:text preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Login") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self performSelectorOnMainThread:@selector(actionLogin) withObject:nil waitUntilDone:NO];
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"CLOSE_APP") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        [UIApplication.sharedApplication performSelector:@selector(suspend)];
+        [NSThread sleepForTimeInterval:0.5];
+        exit(0);
     }]];
     [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
 }
@@ -173,26 +216,37 @@ struct utsname systemInfo;
     isJailed = NO;
 #endif
     if ((udid.length <= 6) && isJailed) {
-        alertController = [UIAlertController alertControllerWithTitle:kDRMPackageName message:CVKLocalizedString(@"GETTING_UDID_ERROR") preferredStyle:UIAlertControllerStyleAlert];
-        __weak typeof(self) weakSelf = self;
-        [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-            textField.placeholder = @"UDID";
-            textField.tag = 9;
-            [[NSNotificationCenter defaultCenter] addObserver:weakSelf selector:@selector(textFieldChanged:) name:UITextFieldTextDidChangeNotification object:textField];
-        }];
+        alertController = [UIAlertController alertControllerWithTitle:kDRMPackageName message:CVKLocalizedString(@"GETTING_PRIVATE_INFO_ERROR") preferredStyle:UIAlertControllerStyleAlert];
         
         [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"CLOSE_APP") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
             [UIApplication.sharedApplication performSelector:@selector(suspend)];
             [NSThread sleepForTimeInterval:0.5];
             exit(0);
         }]];
-        [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Login") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self performSelectorOnMainThread:@selector(actionLogin) withObject:nil waitUntilDone:NO];
-        }]];
-        continueAction = [UIAlertAction actionWithTitle:CVKLocalizedString(@"CONTINUE") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self beginDownload];
-        }];
-        [alertController addAction:continueAction];
+        
+        if ([[NSBundle mainBundle].executablePath.lastPathComponent containsString:@"vk"]) {
+            [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OPEN_PREFERENCES") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:"]];
+                [self showAlertWithText:@"Downloading licence..."];
+            }]];
+        } else {
+            alertController.message = CVKLocalizedString(@"GETTING_UDID_ERROR");
+            __weak typeof(self) weakSelf = self;
+            [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+                textField.placeholder = @"UDID";
+                textField.tag = 9;
+                [[NSNotificationCenter defaultCenter] addObserver:weakSelf selector:@selector(textFieldChanged:) name:UITextFieldTextDidChangeNotification object:textField];
+            }];
+            
+            [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Login") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                [self performSelectorOnMainThread:@selector(actionLogin) withObject:nil waitUntilDone:NO];
+            }]];
+            continueAction = [UIAlertAction actionWithTitle:CVKLocalizedString(@"CONTINUE") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                [self beginDownload];
+            }];
+            [alertController addAction:continueAction];
+        }
+        
         [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
         
         return;
@@ -259,7 +313,7 @@ static void download(NSURLRequest *request,BOOL authorise)
 {
     void (^showAlertBlock)(NSString *error) = ^(NSString *error) {
         if (authorise) [[ColoredVKInstaller alloc] showAlertWithText:[NSString stringWithFormat:CVKLocalizedString(@"ERROR_LOGIN"), error, login]];
-        else            alertController.message = [NSString stringWithFormat:CVKLocalizedString(@"ERROR_DOWNLOADING_LICENCE"), error, udid];
+        else            alertController.message = [NSString stringWithFormat:CVKLocalizedString(@"ERROR_DOWNLOADING_LICENCE"), error];
     };
     
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {

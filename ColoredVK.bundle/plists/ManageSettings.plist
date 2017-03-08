@@ -6,15 +6,11 @@
 	<array>
 		<dict>
 			<key>cell</key>
-			<string>PSButtonCell</string>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKSettingsController</string>
 			<key>label</key>
-			<string>RESET_SETTINGS</string>
-			<key>action</key>
-			<string>resetSettings</string>
-			<key>textColor</key>
-			<string>1,0,0,1</string>
-			<key>shouldCenter</key>
-			<true/>
+			<string>BACKUPS</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -28,21 +24,19 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSButtonCell</string>
-			<key>label</key>
-			<string>RESTORE_SETTINGS</string>
-			<key>action</key>
-			<string>restoreSettings</string>
-			<key>shouldCenter</key>
-			<true/>
+			<string>PSGroupCell</string>
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>detail</key>
-			<string>ColoredVKBackupController</string>
+			<string>PSButtonCell</string>
 			<key>label</key>
-			<string>BACKUPS</string>
+			<string>RESET_SETTINGS</string>
+			<key>action</key>
+			<string>resetSettings</string>
+			<key>textColor</key>
+			<string>1,0,0,1</string>
+			<key>shouldCenter</key>
+			<true/>
 		</dict>
 	</array>
 	<key>title</key>

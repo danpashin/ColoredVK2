@@ -15,12 +15,12 @@
 #import "ColoredVKHUD.h"
 #import "NSDate+DateTools.h"
 #import "UIImage+ResizeMagick.h"
-#import "SSZipArchive.h"
+#import "ColoredVKSettingsController.h"
 //#import "YMSPhotoPickerViewController.h"
 
 @interface ColoredVKPrefs () <UIImagePickerControllerDelegate, UINavigationControllerDelegate> // YMSPhotoPickerViewControllerDelegate
 @property (strong, nonatomic, readonly) NSString *prefsPath;
-@property (strong, nonatomic, readonly) NSBundle *cvkBunlde;
+@property (strong, nonatomic, readonly) NSBundle *cvkBundle;
 @property (strong, nonatomic, readonly) NSString *cvkFolder;
 @property (strong, nonatomic) NSString *lastImageIdentifier;
 @end
@@ -40,23 +40,23 @@
         
         NSMutableArray *specifiersArray = [NSMutableArray new];
         if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
-            self.bundle = self.cvkBunlde;
+            self.bundle = self.cvkBundle;
             specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
         } else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:bundle:)]) {
-            specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBunlde] mutableCopy];
+            specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBundle] mutableCopy];
         } 
         else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
             specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
         }
         
         for (PSSpecifier *specifier in specifiersArray) {
-            specifier.name = NSLocalizedStringFromTableInBundle(specifier.name, @"ColoredVK", self.cvkBunlde, nil);
+            specifier.name = NSLocalizedStringFromTableInBundle(specifier.name, @"ColoredVK", self.cvkBundle, nil);
             
-            if (specifier.properties[@"footerText"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.cvkBunlde, nil) forKey:@"footerText"];
-            if (specifier.properties[@"label"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"label"], @"ColoredVK", self.cvkBunlde, nil) forKey:@"label"];
+            if (specifier.properties[@"footerText"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.cvkBundle, nil) forKey:@"footerText"];
+            if (specifier.properties[@"label"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"label"], @"ColoredVK", self.cvkBundle, nil) forKey:@"label"];
             if (specifier.properties[@"validTitles"]) {            
                 NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
-                for (NSString *key in specifier.titleDictionary.allKeys) [tempDict setValue:NSLocalizedStringFromTableInBundle(specifier.titleDictionary[key], @"ColoredVK", self.cvkBunlde, nil) forKey:key];
+                for (NSString *key in specifier.titleDictionary.allKeys) [tempDict setValue:NSLocalizedStringFromTableInBundle(specifier.titleDictionary[key], @"ColoredVK", self.cvkBundle, nil) forKey:key];
                 specifier.titleDictionary = [tempDict copy];
             }
             
@@ -86,7 +86,7 @@
     }
 }
 
-- (id)readPreferenceValue:(PSSpecifier*)specifier
+- (id)readPreferenceValue:(PSSpecifier *)specifier
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];    
     if (!prefs[specifier.properties[@"key"]]) return specifier.properties[@"default"];
@@ -112,7 +112,7 @@
 
 - (PSSpecifier *)footer
 {
-    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.cvkBunlde, nil), self.tweakVersion, self.vkAppVersion ];
+    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.cvkBundle, nil), self.tweakVersion, self.vkAppVersion ];
     PSSpecifier *footer = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
     [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2015"] forKey:@"footerText"];
     [footer setProperty:@"1" forKey:@"footerAlignment"];
@@ -122,7 +122,7 @@
 - (PSSpecifier *)errorMessage
 {
     PSSpecifier *errorMessage = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-    [errorMessage setProperty:[NSLocalizedStringFromTableInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", nil, self.cvkBunlde, nil) stringByAppendingString:@"\n\nhttps://vk.com/danpashin"] forKey:@"footerText"];
+    [errorMessage setProperty:[NSLocalizedStringFromTableInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", nil, self.cvkBundle, nil) stringByAppendingString:@"\n\nhttps://vk.com/danpashin"] forKey:@"footerText"];
     [errorMessage setProperty:@"1" forKey:@"footerAlignment"];
     return errorMessage;
 }
@@ -138,7 +138,7 @@
     return prefs[@"vkVersion"];
 }
 
-- (NSBundle *)cvkBunlde
+- (NSBundle *)cvkBundle
 {
     return [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
 }
@@ -176,7 +176,7 @@
     UIImagePickerController *picker = [UIImagePickerController new];
     picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     picker.delegate = self;
-    [self presentViewController:picker];
+    [self presentPopover:picker];
 }
 
 //- (void)chooseImageWithNewPicker:(PSSpecifier*)specifier
@@ -258,7 +258,7 @@
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
     
-    return prefs[@"lastCheckForUpdates"]?[dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]].timeAgoSinceNow : NSLocalizedStringFromTableInBundle(@"NEVER", nil, self.cvkBunlde, nil);
+    return prefs[@"lastCheckForUpdates"]?[dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]].timeAgoSinceNow : NSLocalizedStringFromTableInBundle(@"NEVER", nil, self.cvkBundle, nil);
 }
 
 - (void)checkForUpdates:(id)sender
@@ -275,11 +275,11 @@
             NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
             NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
             if (!responseDict[@"error"]) {
-                NSString *skip = NSLocalizedStringFromTableInBundle(@"SKIP_THIS_VERSION_BUTTON_TITLE", nil, self.cvkBunlde, nil);
-                NSString *remindLater = NSLocalizedStringFromTableInBundle(@"REMIND_LATER_BUTTON_TITLE", nil, self.cvkBunlde, nil);
-                NSString *updateNow = NSLocalizedStringFromTableInBundle(@"UPADTE_BUTTON_TITLE", nil, self.cvkBunlde, nil);
+                NSString *skip = NSLocalizedStringFromTableInBundle(@"SKIP_THIS_VERSION_BUTTON_TITLE", nil, self.cvkBundle, nil);
+                NSString *remindLater = NSLocalizedStringFromTableInBundle(@"REMIND_LATER_BUTTON_TITLE", nil, self.cvkBundle, nil);
+                NSString *updateNow = NSLocalizedStringFromTableInBundle(@"UPADTE_BUTTON_TITLE", nil, self.cvkBundle, nil);
                 
-                alertController.message = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE", nil, self.cvkBunlde, nil),
+                alertController.message = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE", nil, self.cvkBundle, nil),
                                            responseDict[@"version"], responseDict[@"changelog"]];
                 [alertController addAction:[UIAlertAction actionWithTitle:skip style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
                     [prefs setValue:responseDict[@"version"] forKey:@"skippedVersion"];
@@ -292,10 +292,10 @@
                     
                 }]];
             } else {
-                alertController.message = NSLocalizedStringFromTableInBundle(@"NO_UPDATES_FOUND_BUTTON_TITLE", nil, self.cvkBunlde, nil);
+                alertController.message = NSLocalizedStringFromTableInBundle(@"NO_UPDATES_FOUND_BUTTON_TITLE", nil, self.cvkBundle, nil);
                 [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
             }
-            [self presentViewController:alertController];
+            [self presentViewController:alertController animated:YES completion:nil];
             
             NSDateFormatter *dateFormatter = [NSDateFormatter new];
             dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
@@ -312,6 +312,14 @@
     UIApplication *application = [UIApplication sharedApplication];
     if ([application canOpenURL:appURL]) [self openURL:appURL];
     else [self openURL:[NSURL URLWithString:@"https://vk.com/danpashin"]];
+}
+
+- (void)openTesterPage:(PSSpecifier *)specifier
+{
+    NSURL *appURL = [NSURL URLWithString:[NSString stringWithFormat:@"vk://vk.com/%@", specifier.properties[@"url"]]];
+    UIApplication *application = [UIApplication sharedApplication];
+    if ([application canOpenURL:appURL]) [self openURL:appURL];
+    else [self openURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://vk.com/%@", specifier.properties[@"url"]]]];
 }
 
 - (void)openURL:(NSURL *)url
@@ -334,132 +342,15 @@
 
 - (void)resetSettings
 {
-    void (^resetSettingsBlock)() = ^{
-        
-        ColoredVKHUD *hud = [ColoredVKHUD showHUD];
-        hud.operation = [NSBlockOperation blockOperationWithBlock:^{
-            NSError *error = nil;
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            [fileManager removeItemAtPath:self.prefsPath error:&error];
-            [fileManager removeItemAtPath:self.cvkFolder error:&error];
-            [self reloadSpecifiers];
-            CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
-            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, NULL, YES);
-            
-            if ([[NSBundle mainBundle].executablePath.lastPathComponent isEqualToString:@"vkclient"]) 
-                self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:60/255.0f green:112/255.0f blue:169/255.0f alpha:1];
-            
-            error?[hud showFailure]:[hud showSuccess];
-        }];  
-    };
-    
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBunlde, nil)
-                                                                             message:NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS_QUESTION", nil, self.cvkBunlde, nil) 
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
-    
-    NSString *resetTitle = [NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"ColoredVK", self.cvkBunlde, nil) componentsSeparatedByString:@" "].firstObject;    
-    [alertController addAction:[UIAlertAction actionWithTitle:resetTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { resetSettingsBlock(); }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-    [self presentViewController:alertController];
+    [[ColoredVKSettingsController alloc] actionReset];
 }
 
 - (void)backupSettings
 {
-    ColoredVKHUD *hud = [ColoredVKHUD showHUD];
-    hud.operation = [NSBlockOperation blockOperationWithBlock:^{
-        NSMutableArray *files = @[self.prefsPath].mutableCopy;
-        
-        NSFileManager *filemaneger = [NSFileManager defaultManager];
-        if (![filemaneger fileExistsAtPath:CVK_BACKUP_PATH]) [filemaneger createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
-        
-        for (NSString *fileName in [filemaneger contentsOfDirectoryAtPath:self.cvkFolder error:nil]) {
-            if (![fileName containsString:@"Cache"]) [files addObject:[NSString stringWithFormat:@"%@/%@", self.cvkFolder, fileName]];
-        }
-        
-        NSDateFormatter *dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"yyyy-MM-dd_HH:mm";
-        NSString *backupName = [@"com.daniilpashin.coloredvk2_" stringByAppendingString:[dateFormatter stringFromDate:[NSDate date]]];
-        NSString *backupPath = [NSString stringWithFormat:@"%@/%@.zip", CVK_BACKUP_PATH, backupName];
-        
-        [SSZipArchive createZipFileAtPath:backupPath withFilesAtPaths:files];
-        [hud showSuccess];
-    }];
+    [[ColoredVKSettingsController alloc] actionBackup];
 }
 
-- (void)restoreSettings
-{    
-    NSMutableArray *files = [NSMutableArray array];
-    
-    NSFileManager *filemanager = [NSFileManager defaultManager];    
-    for (NSString *filename in [filemanager contentsOfDirectoryAtPath:CVK_BACKUP_PATH error:nil]) {
-        if ([filename containsString:@"com.daniilpashin.coloredvk2"]) [files addObject:filename];
-    }
-    
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:NSLocalizedStringFromTableInBundle(@"CHOOSE_BACKUP", @"ColoredVK", self.cvkBunlde, nil) 
-                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    if (files.count > 0) {
-        [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-        for (NSString *filename in files) {
-            UIAlertAction *alertAction = [UIAlertAction actionWithTitle:filename style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                [self restoreSettingsFromFile:filename];
-            }];
-            [alertController addAction:alertAction];
-        }
-    } else {
-        alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:NSLocalizedStringFromTableInBundle(@"NO_FILES_TO_RESTORE", @"ColoredVK", self.cvkBunlde, nil) 
-                                                       preferredStyle:UIAlertControllerStyleAlert];
-        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-    }
-    
-    [self presentViewController:alertController];
-    
-}
-
-- (void)restoreSettingsFromFile:(NSString *)file
-{
-    ColoredVKHUD *hud = [ColoredVKHUD showHUD];
-    hud.executionBlock = ^(ColoredVKHUD *parentHud){
-        NSString *backupPath = [NSString stringWithFormat:@"%@/%@", CVK_BACKUP_PATH, file];
-        NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingString:@"coloredvk2"];
-        
-        [SSZipArchive unzipFileAtPath:backupPath toDestination:tmpPath progressHandler:^(NSString *entry, unz_file_info zipInfo, long entryNumber, long total){} 
-                    completionHandler:^(NSString *path, BOOL succeeded, NSError *error) {
-                        if (succeeded && !error) {
-                            NSFileManager *filemanager = [NSFileManager defaultManager];
-                            
-                            [filemanager removeItemAtPath:self.prefsPath error:nil];
-                            [filemanager removeItemAtPath:self.cvkFolder error:nil];
-                            [filemanager createDirectoryAtPath:self.cvkFolder withIntermediateDirectories:NO attributes:nil error:nil];
-                            
-                            NSError *movingError = nil;
-                            for (NSString *filename in [filemanager contentsOfDirectoryAtPath:tmpPath error:nil]) {
-                                NSString *filePath = [NSString stringWithFormat:@"%@/%@", tmpPath, filename];
-                                if ([filename containsString:@"Image"]) {
-                                    [filemanager copyItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", self.cvkFolder, filename] error:&error];
-                                } else if ([filename containsString:@"plist"]) {
-                                    [filemanager copyItemAtPath:filePath toPath:self.prefsPath error:&error];
-                                }                                
-                                if (movingError) break;
-                            }
-                            [filemanager removeItemAtPath:tmpPath error:nil];
-                            
-                            movingError?[parentHud showFailureWithStatus:movingError.localizedDescription]:[parentHud showSuccess];
-                            
-                            [self reloadSpecifiers];
-                            CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-                            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
-                            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, NULL, YES);
-                            
-                        } else [parentHud showFailureWithStatus:error.localizedDescription];
-                    }];
-    };
-    hud.executionBlock(hud);
-    
-}
-
-- (void)presentViewController:(UIViewController *)controller
+- (void)presentPopover:(UIViewController *)controller
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (IS_IPAD) {

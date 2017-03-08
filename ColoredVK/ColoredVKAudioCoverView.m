@@ -20,6 +20,7 @@
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
 @property (strong, nonatomic) NSString *key;
 @property (strong, nonatomic) UIImage *noCover;
+@property (strong, nonatomic, readonly) NSDictionary *prefs;
 @end
 
 @implementation ColoredVKAudioCoverView
@@ -34,17 +35,18 @@
         self.track = @"";
         
         self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-        self.noCover = [UIImage imageNamed:@"CoverImage" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
         self.topImageView = [[UIImageView alloc] initWithImage:self.noCover];
         self.topImageView.frame = CGRectMake(0, 0, self.frame.size.width, point.y);
         self.topImageView.backgroundColor = [UIColor blackColor];
-        self.topImageView.contentMode = UIViewContentModeScaleToFill;
+        self.topImageView.contentMode = UIViewContentModeScaleAspectFill;
+        self.topImageView.layer.masksToBounds = YES;
         [self addSubview:self.topImageView];
         
         self.bottomImageView = [UIImageView new];
         self.bottomImageView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
         self.bottomImageView.backgroundColor = [UIColor blackColor];
         self.bottomImageView.contentMode = UIViewContentModeScaleAspectFill;
+        if ([self.prefs[@"enabledAudioCustomCover"] boolValue]) self.bottomImageView.image = self.noCover;
         
         self.blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
         self.blurEffectView.frame = self.bottomImageView.bounds;
@@ -58,6 +60,8 @@
         gradient.colors = @[ (id)[UIColor colorWithWhite:0 alpha:0.5].CGColor, (id)[UIColor clearColor].CGColor ];
         gradient.locations = @[ @0, @0.95];
         [self.layer addSublayer:gradient];
+        
+         [self updateColorSchemeForImage:self.noCover];
     }
     return self;
 }
@@ -80,7 +84,10 @@
                 }
                 
                 [self changeImageViewImage:self.topImageView toImage:coverImage animated:YES];
-                [self changeImageViewImage:self.bottomImageView toImage:self.defaultCover?nil:coverImage animated:YES];
+                if (self.defaultCover)
+                    [self changeImageViewImage:self.bottomImageView toImage:[self.prefs[@"enabledAudioCustomCover"] boolValue]?self.noCover:nil animated:YES];
+                else
+                    [self changeImageViewImage:self.bottomImageView toImage:coverImage animated:YES];
                 
                 MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
                 NSMutableDictionary *playingInfo = [center.nowPlayingInfo mutableCopy];
@@ -88,13 +95,7 @@
                 else [playingInfo removeObjectForKey:MPMediaItemPropertyArtwork];
                 center.nowPlayingInfo = [playingInfo copy];
                 
-                LEColorPicker *picker = [[LEColorPicker alloc] init];
-                [picker pickColorsFromImage:coverImage onComplete:^(LEColorScheme *colorScheme) {
-                    self.backColor = self.defaultCover?[UIColor clearColor]:[colorScheme.backgroundColor colorWithAlphaComponent:0.4];
-                    self.tintColor = colorScheme.secondaryTextColor;
-                    [UIView animateWithDuration:0.3 animations:^{ self.blurEffectView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor; } completion:nil];
-                    [NSNotificationCenter.defaultCenter postNotificationName:@"com.daniilpashin.coloredvk2.audio.image.changed" object:nil];
-                }];
+                [self updateColorSchemeForImage:coverImage];
                     //                if (self.inBackground) [[UIApplication sharedApplication] _updateSnapshotForBackgroundApplication:YES];
             });
         }];
@@ -155,5 +156,31 @@
                                     failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) { if (block) block(self.noCover, NO); }] start];
         }
     }
+}
+
+- (void)updateColorSchemeForImage:(UIImage *)image
+{
+    LEColorPicker *picker = [[LEColorPicker alloc] init];
+    [picker pickColorsFromImage:image onComplete:^(LEColorScheme *colorScheme) {
+        self.backColor = self.defaultCover?[UIColor clearColor]:[colorScheme.backgroundColor colorWithAlphaComponent:0.4];
+        self.tintColor = colorScheme.secondaryTextColor;
+        [UIView animateWithDuration:0.3 animations:^{ self.blurEffectView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor; } completion:nil];
+        [NSNotificationCenter.defaultCenter postNotificationName:@"com.daniilpashin.coloredvk2.audio.image.changed" object:nil];
+    }];
+}
+
+- (UIImage *)noCover
+{
+    if ([self.prefs[@"enabledAudioCustomCover"] boolValue]) {
+        _noCover = [UIImage imageWithContentsOfFile:[CVK_FOLDER_PATH stringByAppendingString:@"/audioCoverImage.png"]];
+    } else
+        _noCover = [UIImage imageNamed:@"CoverImage" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    
+    return _noCover;
+}
+
+- (NSDictionary *)prefs
+{
+    return [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
 }
 @end

@@ -9,13 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <MediaPlayer/MediaPlayer.h>
 
-@interface AppDelegate : UIResponder
-@property(retain, nonatomic) NSData *apnsToken;
-@end
-
 
 @interface VKSession : NSObject
-@property(retain, nonatomic) NSString *APNSToken;
 @property(readonly, copy, nonatomic) NSNumber *userId; 
 @property(copy, nonatomic) NSString *token;
 @end
@@ -26,23 +21,6 @@
 
 @interface VKMController : UIViewController
 @property(retain, nonatomic) Model *model;
-@property (nonatomic, readonly, strong) id childViewControllerForStatusBarStyle;
-@property (nonatomic, readonly) UIStatusBarStyle preferredStatusBarStyle;
-@property (nonatomic, readonly) BOOL prefersStatusBarHidden;
-- (void)VKMControllerStatusBarUpdate:(BOOL)arg1;
-- (void)VKMNavigationBarUpdateBackground:(id)arg1;
-- (void)VKMNavigationBarUpdateBackground;
-- (void)VKMNavigationBarUpdate;
-@property (nonatomic, readonly, strong) id VKMNavigationBarTintColor;
-@property (nonatomic, readonly, strong) id VKMNavigationBarBarTintColor;
-@property (nonatomic, readonly, strong) id VKMNavigationBarBackground;
-@property (nonatomic, readonly) long long VKMNavigationBarStyle;
-@property (nonatomic, readonly) long long VKMControllerStatusBarStyle;
-@property (nonatomic, readonly) BOOL VKMControllerStatusBarHidden;
-@property (nonatomic, readonly) BOOL VKMControllerCustomized;
-@property (nonatomic, readonly) unsigned long long supportedInterfaceOrientations;
-@property (nonatomic, readonly) BOOL shouldAutorotate;
-
 @end
 
 @interface VKMScrollViewController : VKMController
@@ -92,17 +70,6 @@
 @end
 
 
-@interface VKMAccessibilityTableView : UITableView
-@end
-
-
-@interface ProfileView : UIView
-@end
-
-@interface VKMGroupedCell : UITableViewCell
-@end
-
-
 
 @interface VKAudio : NSObject
 @property(retain, nonatomic) NSNumber *lyrics_id;
@@ -131,43 +98,6 @@
 @property(retain, nonatomic) UIImageView *cover;
 @end
 
-
-
-
-//@class VKRenderedTextSettings;
-//@interface VKRenderedText : NSObject
-//+ (instancetype)renderedText:(id)arg1 minSize:(CGSize)arg2 maxSize:(CGSize)arg3 maxNumberOfLinesRange:(NSRange)arg4 alignment:(long long)arg5;
-//+ (instancetype)renderedText:(id)arg1 minSize:(CGSize)arg2 maxSize:(CGSize)arg3 maxNumberOfLines:(unsigned long long)arg4 alignment:(long long)arg5;
-//+ (instancetype)renderedText:(id)arg1 withSettings:(id)arg2;
-//@property(readonly, copy, nonatomic) NSAttributedString *text;
-//@property(readonly, copy, nonatomic) VKRenderedTextSettings *settings;
-//@end
-//
-//@interface TextKitLayer : CALayer
-//@property(retain, nonatomic) VKRenderedText *text;
-//@end
-//
-//@interface VKRenderedTextSettings : NSObject
-//@end
-
-
-
-
-
-@interface BlockActionController : UIAlertController
-+ (id)actionSheetWithTitle:(NSString *)title;
-- (void)showInViewController:(id)arg1;
-- (void)addButtonWithTitle:(NSString *)title block:(id)arg2;
-- (void)setCancelButtonWithTitle:(NSString *)title block:(id)arg2;
-@end
-
-
-@class VKPhotoSized;
-@interface PhotoBrowserController : UIViewController
-@property(retain, nonatomic) UIScrollView *paging;
-- (VKPhotoSized *)photoForPage:(NSInteger)page;
-@end
-
 @interface VKImageVariant : NSObject
 @property(nonatomic) int type;
 @property(retain, nonatomic) NSString *src; 
@@ -176,8 +106,12 @@
 @interface VKPhoto : NSObject
 @property(retain, nonatomic) NSMutableDictionary *variants;
 @end
-
 @interface VKPhotoSized : VKPhoto
+@end
+
+@interface PhotoBrowserController : UIViewController
+@property(retain, nonatomic) UIScrollView *paging;
+- (VKPhotoSized *)photoForPage:(NSInteger)page;
 @end
 
 @interface VKMBrowserTarget : NSObject
@@ -187,8 +121,6 @@
 @interface VKMBrowserController : UIViewController 
 @property(retain, nonatomic) VKMBrowserTarget *target;
 @end
-
-
 
 
 
@@ -224,11 +156,6 @@
 @end
 
 
-
-
-
-
-
 @interface VKMImageButton : UIButton
 @end
 
@@ -262,10 +189,6 @@
 @end
 
 
-
-
-
-
 @interface VKMEditableController : VKMLiveController
 @end
 @interface VKMToolbarController : VKMEditableController
@@ -280,11 +203,8 @@
 @end
 
 
-
 @interface DialogsSearchController : VKMSearchController
 @end
-
-
 
 
 @interface VKUser : NSObject
@@ -303,9 +223,6 @@
 
 @interface AudioPlaylistController : VKMLiveController
 @end
-
-
-
 
 
 @interface AFURLConnectionOperation : NSOperation
@@ -358,9 +275,8 @@
 
 
 
-@interface FixedNavigationController : UINavigationController
-@end
-@interface VKMNavigationController : FixedNavigationController
+
+@interface VKMNavigationController : UINavigationController
 @end
 
 
@@ -375,11 +291,6 @@
 
 @interface  VKMLiveSearchController : UISearchDisplayController
 @end
-
-@interface UIApplication ()
-- (void)_updateSnapshotForBackgroundApplication:(BOOL)arg1;
-@end
-
 
 
 
@@ -401,11 +312,9 @@
 @end
 
 
-
-
 @interface BaseUserCell : VKMCell
-@property(readonly, retain, nonatomic) UILabel *last; // @synthesize last=_last;
-@property(readonly, retain, nonatomic) UILabel *first; // @synthesize first=_first;
+@property(readonly, retain, nonatomic) UILabel *last;
+@property(readonly, retain, nonatomic) UILabel *first;
 @end
 
 @interface SourceCell : BaseUserCell
@@ -416,21 +325,8 @@
 @end
 
 
-@interface _UIScrollsToTopInitiatorView : UIView
-@end
-
-@interface UIStatusBar : _UIScrollsToTopInitiatorView
-
+@interface UIStatusBar : UIView
 @property (nonatomic, retain) UIColor *foregroundColor;
-@property (nonatomic) BOOL homeItemsDisabled;
-@property (nonatomic) int legibilityStyle;
-@property (nonatomic) BOOL persistentAnimationsEnabled;
-@property (nonatomic) BOOL serverUpdatesDisabled;
-@property (nonatomic) BOOL simulatesLegacyAppearance;
-@property (nonatomic) UIStatusBarWindow *statusBarWindow;
-@property (nonatomic, readonly) int styleOverrides;
-@property (getter=isTimeHidden, nonatomic) BOOL timeHidden;
-
 @end
 
 

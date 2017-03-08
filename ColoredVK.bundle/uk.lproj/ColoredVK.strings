@@ -10,10 +10,10 @@
 "TOOLBAR" = "Тулбар";
 "MENU" = "Меню";
 "MESSAGES" = "Повідомлення";
-"MESSAGES_LIST" = "Список повідомлень";
+"MESSAGES_LIST" = "Список діалогів";
 "GROUPS" = "Групи";
 "MISCELLANEOUS" = "Різне";
-"STATUS_BAR_COLORS" = "Рядок стану";
+"STATUS_BAR" = "Рядок стану";
 "SWITCH_COLORS" = "Перемикачі";
 "AUDIO" = "Аудіо";
 "AUDIO_PLAYER" = "Плеєр";
@@ -22,11 +22,12 @@
 "CHANGE_COLORS" = "Зміна кольору";
 "BACKGROUND_COLOR" = "Колір фону";
 "FOREGROUND_COLOR" = "Основний колір";
+"BACKGROUND_TONE" = "Відтінок фону";
 "CHANGE_TEXT_COLOR" = "Зміна кольору тексту";
 "TEXT_COLOR" = "Тексту колір";
 "ENABLED_IMAGE" = "Зображення замість кольору";
 "USE_BLUR" = "Використовуйте розмиття";
-"BLUR_SETTINGS" = "Налаштування розмиття";
+"BLUR_STYLE" = "Стиль розмиття";
 
 "CHANGE_BACKGROUND" = "Змінити фон";
 "IMAGE_BLACKOUT" = "Затемнення зображення";
@@ -45,9 +46,10 @@
 
 "KEYBOARD_STYLE" = "Стиль клавіатури";
 "DEFAULT" = "За замовчуванням";
-"DARK" = "Темна";
-"LIGHT" = "Світла";
+"DARK" = "Темний";
+"LIGHT" = "Світлий";
 "ALWAYS_SHOW_NAVIGATION_BAR" = "Завжди показувати бар навігації";
+
 
 "CHANGE_APPEARANCE" = "Налаштування";
 "HIDE_NAV_BAR_ITEMS" = "Приховати елементи навігації";
@@ -66,6 +68,9 @@
 "BACKUPS" = "Резервні копії";
 "CHOOSE_BACKUP" = "Виберіть резервну копію для відновлення";
 "NO_FILES_TO_RESTORE" = "Немає файлів для відновлення";
+
+"SEND_STATISTICS" = "Відправляти статистику";
+"SEND_STATISTICS_DETAIL_INFO" = "Ця інформація НЕ включає будь-яку приватну інформацію, лише загальну інформацію про пристрої.";
 
 
 // chek updates controller

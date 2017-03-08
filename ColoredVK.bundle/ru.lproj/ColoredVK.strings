@@ -2,9 +2,6 @@
 //  ColoredVK.strings
 //  ColoredVK
 //  
-//  ColoredVK.strings
-//  ColoredVK
-//  
 //  Created by Даниил on 08.04.2015.
 //  Copyright (©) Daniil Pashin 2015. All rights reserved.
 //  
@@ -13,7 +10,7 @@
 "TOOLBAR" = "Тулбар";
 "MENU" = "Меню";
 "MESSAGES" = "Сообщения";
-"MESSAGES_LIST" = "Список сообщений";
+"MESSAGES_LIST" = "Список диалогов";
 "GROUPS" = "Группы";
 "MISCELLANEOUS" = "Разное";
 "STATUS_BAR" = "Статус бар";
@@ -25,11 +22,11 @@
 "CHANGE_COLORS" = "Изменить цветa";
 "BACKGROUND_COLOR" = "Цвет фона";
 "FOREGROUND_COLOR" = "Основной цвет";
+"BACKGROUND_TONE" = "Оттенок фона";
 "CHANGE_TEXT_COLOR" = "Изменить цвет текста";
 "TEXT_COLOR" = "Цвет текста";
 "ENABLED_IMAGE" = "Изображ. вместо цвета";
 "USE_BLUR" = "Включить размытие";
-"BLUR_SETTINGS" = "Настройки размытия";
 
 "CHANGE_BACKGROUND" = "Изменить фон";
 "IMAGE_BLACKOUT" = "Затемнение изображ.";
@@ -47,10 +44,11 @@
 "MESSAGE_SENT_BUBBLE_TINT_COLOR" = "Отправленные";
 
 
+"BLUR_STYLE" = "Стиль размытия";
 "KEYBOARD_STYLE" = "Стиль клавиатуры";
 "DEFAULT" = "По умолчанию";
-"DARK" = "Темная";
-"LIGHT" = "Светлая";
+"DARK" = "Темный";
+"LIGHT" = "Светлый";
 "ALWAYS_SHOW_NAVIGATION_BAR" = "Всегда показывать бар навигации";
 
 "HIDE_NAV_BAR_ITEMS" = "Скрыть элементы навигации";
@@ -70,6 +68,9 @@
 "BACKUPS" = "Резервные копии";
 "CHOOSE_BACKUP" = "Выберите резервную копию для восстановления";
 "NO_FILES_TO_RESTORE" = "Нет файлов для восстановления";
+
+"SEND_STATISTICS" = "Отправлять статистику";
+"SEND_STATISTICS_DETAIL_INFO" = "Данная информация НЕ включает в себя какие-либо приватные данные, только общую информацию об устройстве.";
 
 
 

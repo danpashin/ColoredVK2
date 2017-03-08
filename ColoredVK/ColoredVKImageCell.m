@@ -35,6 +35,7 @@
         if ([identifier isEqualToString:@"messagesListBackgroundImage"]) self.key = @"enabledMessagesListImage";
         if ([identifier isEqualToString:@"groupsListBackgroundImage"]) self.key = @"enabledGroupsListImage";
         if ([identifier isEqualToString:@"audioBackgroundImage"]) self.key = @"enabledAudioImage";
+        if ([identifier isEqualToString:@"audioCoverImage"]) self.key = @"enabledAudioCustomCover";
         
         int imageViewSize = 30;
         self.previewImageView = [UIImageView new];

@@ -34,6 +34,12 @@
 			<key>identifier</key>
 			<string>audioBackgroundImage</string>
 		</dict>
+		<dict>
+			<key>title</key>
+			<string>NAVIGATION_BAR</string>
+			<key>identifier</key>
+			<string>barImage</string>
+		</dict>
 	</array>
 	<key>Licences</key>
 	<dict>

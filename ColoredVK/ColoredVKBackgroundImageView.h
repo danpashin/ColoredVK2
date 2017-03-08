@@ -25,4 +25,7 @@ FOUNDATION_EXPORT const NSInteger PARALLAX_EFFECT_VALUE;
 
 - (void)updateViewForKey:(NSString *)key;
 - (void)addToView:(UIView *)view;
+- (void)addToBack:(UIView *)view;
+- (void)addToFront:(UIView *)view;
+- (void)removeFromView:(UIView *)superview;
 @end

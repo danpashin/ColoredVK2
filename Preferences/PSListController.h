@@ -12,8 +12,8 @@
 - (NSArray *)loadSpecifiersFromPlistName:(NSString *)name target:(PSListController *)target;
 - (NSArray *)loadSpecifiersFromPlistName:(NSString *)name target:(PSListController *)target bundle:(NSBundle *)bundle;
 
-@property (NS_NONATOMIC_IOSONLY, readonly, strong) Class tableViewClass;
-@property (NS_NONATOMIC_IOSONLY, readonly) UITableViewStyle tableViewStyle;
+@property (nonatomic, readonly, strong) Class tableViewClass;
+@property (nonatomic, readonly) UITableViewStyle tableViewStyle;
 
 @property (nonatomic, retain) UITableView *view;
 //@property (nonatomic, retain) UITableView *table; // 3.0 - 6.0

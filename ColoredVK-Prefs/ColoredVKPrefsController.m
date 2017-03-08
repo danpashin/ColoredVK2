@@ -16,7 +16,7 @@
 
 @interface ColoredVKPrefsController ()
 @property (strong, nonatomic, readonly) NSString *prefsPath;
-@property (strong, nonatomic, readonly) NSBundle *cvkBunlde;
+@property (strong, nonatomic, readonly) NSBundle *cvkBundle;
 @property (strong, nonatomic, readonly) NSString *cvkFolder;
 @property (strong, nonatomic, readonly) PSSpecifier *errorMessage;
 @property (strong, nonatomic, readonly) PSSpecifier *footer;
@@ -38,10 +38,10 @@
         NSString *plistName = @"Main";
         NSMutableArray *specifiersArray = [NSMutableArray new];
         if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
-            self.bundle = self.cvkBunlde;
+            self.bundle = self.cvkBundle;
             specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
         } else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:bundle:)]) {
-            specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBunlde] mutableCopy];
+            specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBundle] mutableCopy];
         } 
         else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
             specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
@@ -96,7 +96,7 @@
 
 - (PSSpecifier *)footer
 {
-    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.cvkBunlde, nil), self.tweakVersion, self.vkAppVersion ];
+    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.cvkBundle, nil), self.tweakVersion, self.vkAppVersion ];
     PSSpecifier *footer = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
     [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2015"] forKey:@"footerText"];
     [footer setProperty:@"1" forKey:@"footerAlignment"];
@@ -106,7 +106,7 @@
 - (PSSpecifier *)errorMessage
 {
     PSSpecifier *errorMessage = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-    [errorMessage setProperty:[NSLocalizedStringFromTableInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", nil, self.cvkBunlde, nil) stringByAppendingString:@"\n\nhttps://vk.com/danpashin"] forKey:@"footerText"];
+    [errorMessage setProperty:[NSLocalizedStringFromTableInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", nil, self.cvkBundle, nil) stringByAppendingString:@"\n\nhttps://vk.com/danpashin"] forKey:@"footerText"];
     [errorMessage setProperty:@"1" forKey:@"footerAlignment"];
     return errorMessage;
 }
@@ -122,7 +122,7 @@
     return prefs[@"vkVersion"];
 }
 
-- (NSBundle *)cvkBunlde
+- (NSBundle *)cvkBundle
 {
     return [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
 }

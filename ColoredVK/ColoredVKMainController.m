@@ -44,7 +44,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         [cell.contentView addSubview:switchView];
         
         cell.select = (id)^(id arg1, id arg2) {
-            VKMNavContext *mainContext = [[objc_getClass("VKMNavContext") applicationNavRoot] rootNavContext];
+            VKMNavContext *mainContext = [[NSClassFromString(@"VKMNavContext") applicationNavRoot] rootNavContext];
             
             NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
             if (!cvkBundle.loaded) [cvkBundle load];

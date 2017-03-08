@@ -17,10 +17,10 @@ makeIPA () {
     cp "${PROJECT_DIR}/${INFOPLIST_FILE}" "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle"
     plutil -convert binary1 "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/Info.plist"
     echo "[->] Compiling additional resources..."
-    find "${PROJECT_DIR}/ColoredVK-Prefs" -iname '*.xcassets' -exec "${DEVELOPER_BIN_DIR}/actool" --minimum-deployment-target 8.0 --platform ${PLATFORM_NAME} --compile ${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle "{}" \;
+    ${DEVELOPER_BIN_DIR}/actool --minimum-deployment-target ${IPHONEOS_DEPLOYMENT_TARGET} --platform ${PLATFORM_NAME} --compile "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" "${PROJECT_DIR}/ColoredVK-Prefs/Images.xcassets"
     
     echo "[->] Copying resources to temp directory..."
-    TEMP_FOLDER="${BUILT_PRODUCTS_DIR}/Temp"
+    TEMP_FOLDER="${BUILT_PRODUCTS_DIR}/Temp"Assets.car
     mkdir "$TEMP_FOLDER"
     cp -r "$FOLDER_TO_PACK/vkUnarch/Payload" "$TEMP_FOLDER"
     cp -r "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" "$TEMP_FOLDER/Payload/$APP_NAME"
