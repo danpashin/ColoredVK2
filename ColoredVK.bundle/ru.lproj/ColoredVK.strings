@@ -55,6 +55,7 @@
 "USE_PARALLAX" = "Включить параллакс";
 "CHANGE_APPEARANCE" = "Кастомизировать";
 
+"CUSTOM_COVER" = "Выбрать обложку";
 "CACHE_COVERS" = "Кэшировать обложки";
 "CLEAR_CACHE" = "Очистить кэш";
 

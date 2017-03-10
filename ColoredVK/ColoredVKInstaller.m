@@ -137,11 +137,11 @@ struct utsname systemInfo;
                 NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
                 NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
                 if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0)) {
-                    if (dict[@"key"]) { 
-                        [dict removeObjectForKey:@"key"];
-                        NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
-                        [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
-                    }
+//                    if (dict[@"key"]) { 
+//                        [dict removeObjectForKey:@"key"];
+//                        NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
+//                        [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
+//                    }
                     
                     if (!dict[@"Device"]) downloadBlock();
                     else {                        
@@ -211,9 +211,9 @@ struct utsname systemInfo;
 
 - (void)beginDownload
 {
-    BOOL isJailed = YES;
-#ifndef COMPILE_FOR_JAIL
-    isJailed = NO;
+    BOOL isJailed = NO;
+#ifdef COMPILE_FOR_JAIL
+    isJailed = YES;
 #endif
     if ((udid.length <= 6) && isJailed) {
         alertController = [UIAlertController alertControllerWithTitle:kDRMPackageName message:CVKLocalizedString(@"GETTING_PRIVATE_INFO_ERROR") preferredStyle:UIAlertControllerStyleAlert];
@@ -224,24 +224,22 @@ struct utsname systemInfo;
             exit(0);
         }]];
         
-        if ([[NSBundle mainBundle].executablePath.lastPathComponent containsString:@"vk"]) {
-            [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OPEN_PREFERENCES") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        if ([[NSBundle mainBundle].executablePath.lastPathComponent containsString:@"vkclient"]) {
+            [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OPEN_PREFERENCES") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:"]];
                 [self showAlertWithText:@"Downloading licence..."];
             }]];
         } else {
             alertController.message = CVKLocalizedString(@"GETTING_UDID_ERROR");
-            __weak typeof(self) weakSelf = self;
-            [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+            [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
                 textField.placeholder = @"UDID";
-                textField.tag = 9;
-                [[NSNotificationCenter defaultCenter] addObserver:weakSelf selector:@selector(textFieldChanged:) name:UITextFieldTextDidChangeNotification object:textField];
             }];
             
-            [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Login") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Login") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 [self performSelectorOnMainThread:@selector(actionLogin) withObject:nil waitUntilDone:NO];
             }]];
-            continueAction = [UIAlertAction actionWithTitle:CVKLocalizedString(@"CONTINUE") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            continueAction = [UIAlertAction actionWithTitle:CVKLocalizedString(@"CONTINUE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                udid = alertController.textFields[0].text;
                 [self beginDownload];
             }];
             [alertController addAction:continueAction];
@@ -272,19 +270,13 @@ struct utsname systemInfo;
 - (void)actionLogin
 {
     alertController = [UIAlertController alertControllerWithTitle:kDRMPackageName message:UIKitLocalizedString(@"Login") preferredStyle:UIAlertControllerStyleAlert];
-    __weak typeof(self) weakSelf = self;
-    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
         textField.placeholder = UIKitLocalizedString(@"Name");
-        textField.tag = 10;
-        [[NSNotificationCenter defaultCenter] addObserver:weakSelf selector:@selector(textFieldChanged:) name:UITextFieldTextDidChangeNotification object:textField];
-        
         if (login) textField.text = login;
     }];
-    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
         textField.placeholder = UIKitLocalizedString(@"Password");
-        textField.tag = 11;
         textField.secureTextEntry = YES;
-        [[NSNotificationCenter defaultCenter] addObserver:weakSelf selector:@selector(textFieldChanged:) name:UITextFieldTextDidChangeNotification object:textField];
     }];
     
     [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"CLOSE_APP") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
@@ -293,7 +285,10 @@ struct utsname systemInfo;
         exit(0);
     }]];
     
-    loginAction = [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Login") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    loginAction = [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Login") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        
+        login = alertController.textFields[0].text;
+        password = alertController.textFields[1].text;
         
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kDRMRemoteServerURL]];
         request.HTTPMethod = @"POST";
@@ -304,16 +299,17 @@ struct utsname systemInfo;
         request.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];
         download(request, YES);
     }];
-    loginAction.enabled = NO;
     [alertController addAction:loginAction];
     [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
 }
 
 static void download(NSURLRequest *request,BOOL authorise)
 {
-    void (^showAlertBlock)(NSString *error) = ^(NSString *error) {
-        if (authorise) [[ColoredVKInstaller alloc] showAlertWithText:[NSString stringWithFormat:CVKLocalizedString(@"ERROR_LOGIN"), error, login]];
-        else            alertController.message = [NSString stringWithFormat:CVKLocalizedString(@"ERROR_DOWNLOADING_LICENCE"), error];
+    void (^showAlertBlock)(NSError *error) = ^(NSError *error) {
+        NSString *text = [NSString stringWithFormat:CVKLocalizedString(@"ERROR_DOWNLOADING_LICENCE"), error.localizedDescription];
+        if (error.localizedRecoverySuggestion.length > 6) text = [NSString stringWithFormat:@"%@\n\n%@", text, error.localizedRecoverySuggestion];
+        if (authorise) [[ColoredVKInstaller alloc] showAlertWithText:text];
+        else            alertController.message = text;
     };
     
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
@@ -327,7 +323,6 @@ static void download(NSURLRequest *request,BOOL authorise)
                 if ([responseDict[@"Status"] isEqualToString:authorise?password:udid]) {
                     if ([responseDict[@"key"] isEqualToString:key]) {
                         NSString *key = [NSProcessInfo processInfo].globallyUniqueString;
-                        
                         NSMutableDictionary *dict = @{@"UDID":udid, @"Device":@(systemInfo.machine), @"key":key}.mutableCopy;
                         if (authorise) [dict setValue:login forKey:@"Login"];
                         NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
@@ -340,31 +335,19 @@ static void download(NSURLRequest *request,BOOL authorise)
                             if (installerCompletionBlock) installerCompletionBlock(NO);
                             CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
                         }
-                        else showAlertBlock([NSString stringWithFormat:@"%@\n%@", CVKLocalizedString(@"ERROR"), writingError.localizedDescription]);
+                        else showAlertBlock(writingError);
                         
-                    } else showAlertBlock(@"Unknown error (-0)");
-                } else showAlertBlock(@"Unknown error (-1)");
+                    } else showAlertBlock([NSError errorWithDomain:@"" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error (-0)"}]);
+                } else showAlertBlock([NSError errorWithDomain:@"" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error (-1)"}]);
                 
-            } else showAlertBlock(responseDict?responseDict[@"error"]:@"Unknown error (-2)");
-        } else showAlertBlock(connectionError.localizedDescription);
+            } else {
+                NSString *errorMessages = responseDict?responseDict[@"error"]:@"Unknown error (-2)";
+                showAlertBlock([NSError errorWithDomain:@"" code:0 userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);
+            }
+        } else showAlertBlock(connectionError);
         password = nil;
     }]; 
 
 }
 
-- (void)textFieldChanged:(NSNotification *)notification
-{
-    if (notification && [notification.object isKindOfClass:UITextField.class]) {
-        UITextField *textField = notification.object;
-        if (textField.tag == 9) udid = textField.text;
-        else if (textField.tag == 10) login = textField.text;
-        else if (textField.tag == 11) password = textField.text;
-        
-        if ((login.length > 0) && (password.length > 0)) loginAction.enabled = YES;
-        else loginAction.enabled = NO;
-        
-        if (udid.length > 0) continueAction.enabled = YES;
-        else continueAction.enabled = NO;
-    }
-}
 @end

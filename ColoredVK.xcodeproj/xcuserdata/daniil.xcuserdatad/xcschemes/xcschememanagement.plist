@@ -14,6 +14,11 @@
 			<key>orderHint</key>
 			<integer>1</integer>
 		</dict>
+		<key>ColoredVK-Prefs-App.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
 		<key>ColoredVK.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -65,6 +70,11 @@
 			<true/>
 		</dict>
 		<key>A5B6ED051D3D659800383425</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>A5D56A561E70427300A8FFB5</key>
 		<dict>
 			<key>primary</key>
 			<true/>

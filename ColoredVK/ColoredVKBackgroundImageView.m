@@ -9,7 +9,8 @@
 #import "ColoredVKBackgroundImageView.h"
 #import "PrefixHeader.h"
 
-const NSInteger PARALLAX_EFFECT_VALUE = 14; 
+const NSInteger PARALLAX_EFFECT_VALUE = 14;
+const NSTimeInterval ANIMATION_DURANTION = 0.2;
 
 @implementation ColoredVKBackgroundImageView
 
@@ -98,61 +99,71 @@ const NSInteger PARALLAX_EFFECT_VALUE = 14;
     });
 }
 
-- (void)addToView:(UIView *)view
+- (void)addToView:(UIView *)view animated:(BOOL)animated
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![view.subviews containsObject:[view viewWithTag:self.tag]] && view) {
-            [view addSubview:self];
-            
-            [self updateConstraints];
+            void (^block)() = ^{
+                self.alpha = 0;
+                [view addSubview:self];
+                [self setupConstraints];
+                self.alpha = 1;
+            };
+            if (animated) [UIView transitionWithView:view duration:ANIMATION_DURANTION options:UIViewAnimationOptionAllowUserInteraction animations:block completion:nil];
+            else          block();
         }
     });
 }
 
-- (void)addToBack:(UIView *)view
+- (void)addToBack:(UIView *)view animated:(BOOL)animated
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![view.subviews containsObject:[view viewWithTag:self.tag]] && view) {
-            [view addSubview:self];
-            [view sendSubviewToBack:self];
-            
-            [self updateConstraints];
+            void (^block)() = ^{
+                self.alpha = 0;
+                [view addSubview:self];
+                [view sendSubviewToBack:self];
+                [self setupConstraints];
+                self.alpha = 1;
+            };
+            if (animated) [UIView transitionWithView:view duration:ANIMATION_DURANTION options:UIViewAnimationOptionAllowUserInteraction animations:block completion:nil];
+            else          block();
         }
     });
 }
 
-- (void)addToFront:(UIView *)view
+- (void)addToFront:(UIView *)view animated:(BOOL)animated
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![view.subviews containsObject:[view viewWithTag:self.tag]] && view) {
-            [view addSubview:self];
-            [view bringSubviewToFront:self];
-            
-            [self updateConstraints];
+            void (^block)() = ^{
+                self.alpha = 0;
+                [view addSubview:self];
+                [view bringSubviewToFront:self];
+                [self setupConstraints];
+                self.alpha = 1;
+            };
+            if (animated) [UIView transitionWithView:view duration:ANIMATION_DURANTION options:UIViewAnimationOptionAllowUserInteraction animations:block completion:nil];
+            else          block();
         }
     });
 }
 
-- (void)updateConstraints
+- (void)setupConstraints
 {
-    [super updateConstraints];
-    
     if (self.superview) {
         self.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                               metrics:nil views:@{@"view":self}]];
-        [self.superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                               metrics:nil views:@{@"view":self}]];
-        
-        
-        NSDictionary *views = @{@"imageView":self.imageView, @"frontView":self.frontView};
-        self.imageView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[imageView]|" options:0 metrics:nil views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[imageView]|" options:0 metrics:nil views:views]];
-        self.frontView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.imageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[frontView]|" options:0 metrics:nil views:views]];
-        [self.imageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[frontView]|" options:0 metrics:nil views:views]];
+        [self.superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self}]];
+        [self.superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view":self}]];
     }
+    
+    self.imageView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[imageView]|" options:0 metrics:nil views:@{@"imageView":self.imageView}]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[imageView]|" options:0 metrics:nil views:@{@"imageView":self.imageView}]];
+    
+    self.frontView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.imageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[frontView]|" options:0 metrics:nil views:@{@"frontView":self.frontView}]];
+    [self.imageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[frontView]|" options:0 metrics:nil views:@{@"frontView":self.frontView}]];
 }
 
 - (void)removeFromView:(UIView *)superview

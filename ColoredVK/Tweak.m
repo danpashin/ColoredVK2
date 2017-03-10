@@ -637,7 +637,6 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
 {
     [cvkBunlde load];
     reloadPrefs();
-    cvkMainController.cvkCell = cvkMainController.cvkCell;
     
     CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
     
@@ -684,7 +683,7 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setBarTintColor, UIColor*, bar
                         cvkMainController.navBarImageView.tag = 24;
                         cvkMainController.navBarImageView.backgroundColor = [UIColor clearColor];
                     }
-                    [cvkMainController.navBarImageView addToView:self._backgroundView];
+                    [cvkMainController.navBarImageView addToView:self._backgroundView animated:YES];
                 
                 } else if (containsBlur) [cvkMainController.navBarImageView removeFromView:self._backgroundView];
             });
@@ -713,7 +712,7 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDict
     if (enabled && enabledBarColor) {
         @try {
             attributes = @{NSForegroundColorAttributeName:barForegroundColor};
-        } @catch (NSException *exception) { CHLog(@"%@", exception); }
+        } @catch (NSException *exception) {  }
     }
     
     CHSuper(1, UINavigationBar, setTitleTextAttributes, attributes);
@@ -1125,8 +1124,8 @@ CHOptimizedMethod(0, self, NSArray*, VKMMainController, menu)
             break;
         }
     }
-    if (shouldInsert) [tempArray insertObject:cvkMainController.cvkCell atIndex:index];
-    else [tempArray addObject:cvkMainController.cvkCell];
+    if (shouldInsert) [tempArray insertObject:cvkMainController.menuCell atIndex:index];
+    else [tempArray addObject:cvkMainController.menuCell];
     
     origMenu = [tempArray copy];
     return origMenu;
@@ -1136,15 +1135,16 @@ CHOptimizedMethod(0, self, void, VKMMainController, viewDidLoad)
 {
     CHSuper(0, VKMMainController, viewDidLoad);
     if (!mainController) mainController = self;
-    if (!cvkMainController.mainMenuBackgroundView) {
+    if (!cvkMainController.menuBackgroundView) {
         CGRect bounds = [UIScreen mainScreen].bounds;
         CGFloat width = (bounds.size.width > bounds.size.height)?bounds.size.height:bounds.size.width;
         CGFloat height = (bounds.size.width < bounds.size.height)?bounds.size.height:bounds.size.width;
-        cvkMainController.mainMenuBackgroundView = [ColoredVKBackgroundImageView viewWithFrame:CGRectMake(0, 0, width, height) imageName:@"menuBackgroundImage" blackout:menuImageBlackout parallaxEffect:useMenuParallax];
+        cvkMainController.menuBackgroundView = [ColoredVKBackgroundImageView viewWithFrame:CGRectMake(0, 0, width, height) 
+                                                                                 imageName:@"menuBackgroundImage" blackout:menuImageBlackout parallaxEffect:useMenuParallax];
     }
     
     if (enabled && enabledMenuImage) {
-        [cvkMainController.mainMenuBackgroundView addToBack:self.view];
+        [cvkMainController.menuBackgroundView addToBack:self.view animated:NO];
         setupUISearchBar((UISearchBar*)self.tableView.tableHeaderView);
         self.tableView.backgroundColor = [UIColor clearColor];
     }
@@ -1199,7 +1199,8 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
         cell.backgroundColor = kMenuCellBackgroundColor;
         cell.contentView.backgroundColor = kMenuCellBackgroundColor;
         cell.textLabel.textColor = kMenuCellTextColor;
-        if (((indexPath.section == 1) && (indexPath.row == 0)) || (VKSettingsEnabled && [cell.textLabel.text isEqualToString:NSLocalizedStringFromTableInBundle(@"GroupsAndPeople", nil, vksBundle, nil)])) {
+        if (((indexPath.section == 1) && (indexPath.row == 0)) || 
+            (VKSettingsEnabled && [cell.textLabel.text isEqualToString:NSLocalizedStringFromTableInBundle(@"GroupsAndPeople", nil, vksBundle, nil)])) {
             cell.backgroundColor = kMenuCellSelectedColor; 
             cell.contentView.backgroundColor = kMenuCellSelectedColor; 
         }
@@ -1251,9 +1252,10 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
     
     if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")]) {
         if (enabled && changeAudioPlayerAppearance) {
-            if (!cvkMainController.cvkLyricsView) cvkMainController.cvkLyricsView = [[ColoredVKAudioLyricsView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.hostView.frame.origin.y - 64)];
-            if (!cvkMainController.cvkCoverView) cvkMainController.cvkCoverView = [[ColoredVKAudioCoverView alloc] initWithFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
-            audioTintColor = cvkMainController.cvkCoverView.tintColor?cvkMainController.cvkCoverView.tintColor:[UIColor whiteColor];
+            if (!cvkMainController.audioLyricsView) 
+                cvkMainController.audioLyricsView = [[ColoredVKAudioLyricsView alloc] initWithFrame:CGRectMake(0, 24, self.view.frame.size.width, self.hostView.frame.origin.y - 24)];
+            if (!cvkMainController.coverView) cvkMainController.coverView = [[ColoredVKAudioCoverView alloc] initWithFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
+            audioTintColor = cvkMainController.coverView.tintColor?cvkMainController.coverView.tintColor:[UIColor whiteColor];
             
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.topItem.titleView.hidden = YES;
@@ -1261,6 +1263,8 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
             [navBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
             navBar.topItem.leftBarButtonItems = @[];
             navBar.tintColor = [UIColor whiteColor];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{ [cvkMainController.navBarImageView removeFromView:navBar._backgroundView]; });
             
             UISwipeGestureRecognizer *downSwipe = [[UISwipeGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender) { [self done:nil]; }];
             downSwipe.maximumDuration = 0.5;
@@ -1276,17 +1280,17 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
             [self.seek setThumbImage:[[self.seek thumbImageForState:UIControlStateNormal] imageWithTintColor:[UIColor blackColor]] forState:UIControlStateNormal];
             
             [NSNotificationCenter.defaultCenter addObserverForName:@"com.daniilpashin.coloredvk2.audio.image.changed" object:nil queue:nil usingBlock:^(NSNotification *note) {
-                audioTintColor = cvkMainController.cvkCoverView.defaultCover?[UIColor whiteColor]:cvkMainController.cvkCoverView.tintColor;
+                audioTintColor = cvkMainController.coverView.defaultCover?[UIColor whiteColor]:cvkMainController.coverView.tintColor;
                 [UIView animateWithDuration:0.3 animations:^{
-                    cvkMainController.cvkLyricsView.hostView.subviews[0].backgroundColor = cvkMainController.cvkCoverView.defaultCover?[UIColor clearColor]:cvkMainController.cvkCoverView.backColor;
+                    cvkMainController.audioLyricsView.blurView.backgroundColor = cvkMainController.coverView.defaultCover?[UIColor clearColor]:cvkMainController.coverView.backColor;
                     [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioTintColor] forState:UIControlStateSelected];
                     setupAudioPlayer(self.hostView, nil);
                 }];
             }];
             
-            [self.view addSubview:cvkMainController.cvkCoverView];
-            [self.view sendSubviewToBack:cvkMainController.cvkCoverView];
-            [self.view addSubview:cvkMainController.cvkLyricsView];
+            [self.view addSubview:cvkMainController.coverView];
+            [self.view sendSubviewToBack:cvkMainController.coverView];
+            [self.view addSubview:cvkMainController.audioLyricsView];
         }
     }
 }
@@ -1296,10 +1300,10 @@ CHDeclareClass(AudioPlayer);
 CHOptimizedMethod(2, self, void, AudioPlayer, switchTo, int, arg1, force, BOOL, force)
 {
     if (enabled && changeAudioPlayerAppearance) {
-        if (self.state == 1 && (![cvkMainController.cvkCoverView.artist isEqualToString:self.audio.performer] || ![cvkMainController.cvkCoverView.track isEqualToString:self.audio.title]))
-            [cvkMainController.cvkCoverView updateCoverForAudioPlayer:self];
-        if (self.audio.lyrics_id) [cvkMainController.cvkLyricsView updateWithLyrycsID:self.audio.lyrics_id andToken:userToken];
-        else [cvkMainController.cvkLyricsView resetState];
+        if (self.state == 1 && (![cvkMainController.coverView.artist isEqualToString:self.audio.performer] || ![cvkMainController.coverView.track isEqualToString:self.audio.title]))
+            [cvkMainController.coverView updateCoverForAudioPlayer:self];
+        if (self.audio.lyrics_id) [cvkMainController.audioLyricsView updateWithLyrycsID:self.audio.lyrics_id andToken:userToken];
+        else [cvkMainController.audioLyricsView resetState];
     }
     CHSuper(2, AudioPlayer, switchTo, arg1, force, force);
 }
@@ -1611,13 +1615,13 @@ static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFS
         shouldShow?setupUISearchBar(searchBar):resetUISearchBar(searchBar);
         [mainController.tableView reloadData];
         [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-            cvkMainController.mainMenuBackgroundView.alpha = shouldShow?1:0;
+            cvkMainController.menuBackgroundView.alpha = shouldShow?1:0;
             mainController.tableView.backgroundColor = shouldShow?[UIColor clearColor]:[UIColor colorWithRed:56.0/255.0f green:69.0/255.0f blue:84.0/255.0f alpha:1];
         } completion:nil];
-        cvkMainController.mainMenuBackgroundView.parallaxEnabled = useMenuParallax;
+        cvkMainController.menuBackgroundView.parallaxEnabled = useMenuParallax;
         if (shouldShow) {
-            [cvkMainController.mainMenuBackgroundView updateViewForKey:@"menuImageBlackout"];
-            [cvkMainController.mainMenuBackgroundView addToBack:mainController.view];
+            [cvkMainController.menuBackgroundView updateViewForKey:@"menuImageBlackout"];
+            [cvkMainController.menuBackgroundView addToBack:mainController.view animated:NO];
         }
     });
 }
@@ -1626,7 +1630,7 @@ CHConstructor
 {
     @autoreleasepool {
 //        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{ dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW); });
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{ dlopen(@"/var/mobile/FLEXDylib.dylib".UTF8String, RTLD_NOW); });
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{ dlopen(@"/var/mobile/FLEXDylib.dylib".UTF8String, RTLD_NOW); });
         
         prefsPath = CVK_PREFS_PATH;
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];

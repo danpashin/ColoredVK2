@@ -61,7 +61,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+//#ifndef COMPILE_APP
     [ColoredVKInstaller startInstall];
+//#endif
     for (UIView *view in self.view.subviews) {
         if ([view isKindOfClass:[UITableView class]]) {
             UITableView *tableView = (UITableView *)view;

@@ -51,10 +51,11 @@
 "ALWAYS_SHOW_NAVIGATION_BAR" = "Завжди показувати бар навігації";
 
 
-"CHANGE_APPEARANCE" = "Налаштування";
 "HIDE_NAV_BAR_ITEMS" = "Приховати елементи навігації";
 "USE_PARALLAX" = "Включити паралакс";
+"CHANGE_APPEARANCE" = "Налаштування";
 
+"CUSTOM_COVER" = "Вибрати обкладинку";
 "CACHE_COVERS" = "Кешувати обкладинки";
 "CLEAR_CACHE" = "Очистити кеш";
 

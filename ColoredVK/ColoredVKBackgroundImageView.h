@@ -24,8 +24,8 @@ FOUNDATION_EXPORT const NSInteger PARALLAX_EFFECT_VALUE;
 @property (assign, nonatomic) BOOL parallaxEnabled;
 
 - (void)updateViewForKey:(NSString *)key;
-- (void)addToView:(UIView *)view;
-- (void)addToBack:(UIView *)view;
-- (void)addToFront:(UIView *)view;
+- (void)addToView:(UIView *)view animated:(BOOL)animated;
+- (void)addToBack:(UIView *)view animated:(BOOL)animated;
+- (void)addToFront:(UIView *)view animated:(BOOL)animated;
 - (void)removeFromView:(UIView *)superview;
 @end

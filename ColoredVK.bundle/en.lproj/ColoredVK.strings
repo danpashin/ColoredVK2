@@ -55,6 +55,7 @@
 "HIDE_NAV_BAR_ITEMS" = "Hide navbar items";
 "USE_PARALLAX" = "Enable parallax";
 
+"CUSTOM_COVER" = "Choose cover";
 "CACHE_COVERS" = "Cache covers";
 "CLEAR_CACHE" = "Clear cache";
 

@@ -17,9 +17,9 @@
 @implementation ColoredVKMainController
 static NSString const *switchViewKey = @"cvkCellSwitchKey";
 
-- (MenuCell *)cvkCell
+- (MenuCell *)menuCell
 {
-    if (!_cvkCell) {
+    if (!_menuCell) {
         MenuCell *cell = [[objc_getClass("MenuCell") alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cvkCell"];
         cell.backgroundColor = kMenuCellBackgroundColor;
         cell.contentView.backgroundColor = [UIColor clearColor];
@@ -52,10 +52,10 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
             [mainContext reset:cvkPrefs];
             return nil;
         };
-        _cvkCell = cell;
+        _menuCell = cell;
     }
     
-    return _cvkCell;
+    return _menuCell;
 }
 
 - (void)switchTriggered:(UISwitch *)switchView

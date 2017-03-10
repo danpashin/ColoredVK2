@@ -32,8 +32,7 @@
 "YES_I_AM_SURE" = "Yeah, I'm sure";
 
 "NEVER" = "Never";
-"ERROR_DOWNLOADING_LICENCE" = "Error while downloading licence:\n%@";
-"ERROR_LOGIN" = "Error while downloading licence:\n%@\n\nYour login \n%@";
+"ERROR_DOWNLOADING_LICENCE" = "Error while downloading licence:\n%@\n\n%@";
 "CLOSE_APP" = "Close app";
 
 "SET_THIS_IMAGE_TO" = "Set this image to";

@@ -8,6 +8,7 @@
 
 #import "ColoredVKAudioLyricsView.h"
 #import "VKMethods.h"
+#import "UIGestureRecognizer+BlocksKit.h"
 
 @interface ColoredVKAudioLyricsView ()
 @property (strong, nonatomic) UITextView *textView;
@@ -18,54 +19,48 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.text = @"";
-        [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapRecognized:)]];
+        [self addGestureRecognizer:[[UITapGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender) {
+            if (sender.state == UIGestureRecognizerStateRecognized) self.hide = !self.hide;
+        }]];
         
-        self.hostView = [UIView new];
-        self.hostView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
         UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-        UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-        blurEffectView.frame = CGRectMake(frame.size.width/8, 0, self.frame.size.height-2*(frame.size.width/8), self.frame.size.height - 10);
-        blurEffectView.center = CGPointMake(self.frame.size.width/2, self.frame.size.height/2);
-        blurEffectView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.1];
-        blurEffectView.layer.cornerRadius = 10;
-        blurEffectView.layer.masksToBounds = YES;
+        self.blurView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        self.blurView.frame = CGRectMake(self.frame.size.width/12, self.frame.size.height/14, self.frame.size.width-2*(self.frame.size.width/12), self.frame.size.height-2*(self.frame.size.height/14));
+        self.blurView.layer.cornerRadius = 14;
+        self.blurView.layer.masksToBounds = YES;
+        [self addSubview:self.blurView];
         
         UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIVibrancyEffect effectForBlurEffect:blurEffect]];
-        vibrancyEffectView.frame = CGRectMake(0, 0, blurEffectView.frame.size.width, blurEffectView.frame.size.height);
-        [blurEffectView.contentView addSubview:vibrancyEffectView];
+        vibrancyEffectView.frame = CGRectMake(0, 0, self.blurView.frame.size.width, self.blurView.frame.size.height);
+        [self.blurView.contentView addSubview:vibrancyEffectView];
         
         self.textView = [UITextView new];
         self.textView.frame = vibrancyEffectView.frame;
-        self.textView.text = self.text;
         self.textView.editable = NO;
         self.textView.selectable = NO;
         self.textView.textAlignment = NSTextAlignmentCenter;
         self.textView.font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
-        self.textView.userInteractionEnabled = YES;
         [vibrancyEffectView.contentView addSubview:self.textView];
-        [self.hostView addSubview:blurEffectView];
-        [self addSubview:self.hostView];
         
-        blurEffectView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.hostView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-spacing-[blurEffectView]-spacing-|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                     metrics:@{@"spacing": @(frame.size.height/10)} views:NSDictionaryOfVariableBindings(blurEffectView)]];
-        [self.hostView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-spacing-[blurEffectView]-spacing-|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                     metrics:@{@"spacing": @(frame.size.width/8)} views:NSDictionaryOfVariableBindings(blurEffectView)]];
+        self.blurView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-spacing-[_blurView]-spacing-|" options:0
+                                                                         metrics:@{@"spacing": @(frame.size.height/14)} views:NSDictionaryOfVariableBindings(_blurView)]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-spacing-[_blurView]-spacing-|" options:0
+                                                                         metrics:@{@"spacing": @(frame.size.width/12)} views:NSDictionaryOfVariableBindings(_blurView)]];
         
         vibrancyEffectView.translatesAutoresizingMaskIntoConstraints = NO;
-        [blurEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[vibrancyEffectView]|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                              metrics:nil views:NSDictionaryOfVariableBindings(vibrancyEffectView)]];
-        [blurEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[vibrancyEffectView]|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                              metrics:nil views:NSDictionaryOfVariableBindings(vibrancyEffectView)]];        
+        [self.blurView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[vibrancyEffectView]|" options:0
+                                                                                          metrics:nil views:NSDictionaryOfVariableBindings(vibrancyEffectView)]];
+        [self.blurView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[vibrancyEffectView]|" options:0
+                                                                                          metrics:nil views:NSDictionaryOfVariableBindings(vibrancyEffectView)]];        
         
         self.textView.translatesAutoresizingMaskIntoConstraints = NO;
-        [vibrancyEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_textView]|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                                   metrics:nil views:NSDictionaryOfVariableBindings(_textView)]];
-        [vibrancyEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_textView]|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                                   metrics:nil views:NSDictionaryOfVariableBindings(_textView)]];
+        [vibrancyEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_textView]|" options:0 
+                                                                                               metrics:nil views:NSDictionaryOfVariableBindings(_textView)]];
+        [vibrancyEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_textView]|" options:0
+                                                                                               metrics:nil views:NSDictionaryOfVariableBindings(_textView)]];
         
-        self.hostView.hidden = YES;
+        self.blurView.alpha = 0.0;
         _hide = YES;
     }
     return self;
@@ -82,14 +77,8 @@
 {
     if (self.text.length > 0) {
         _hide = hide;
-        [UIView transitionWithView:self.hostView duration:0.3 
-                           options:UIViewAnimationOptionTransitionCrossDissolve|UIViewAnimationOptionAllowUserInteraction animations:^{ self.hostView.hidden = hide; } completion:nil];
+        [UIView transitionWithView:self.blurView duration:0.3 options:UIViewAnimationOptionAllowUserInteraction animations:^{ self.blurView.alpha = hide?0:1; } completion:nil];
     }
-}
-
-- (void)tapRecognized:(UITapGestureRecognizer *)recognizer
-{    
-    if (recognizer.state == UIGestureRecognizerStateRecognized) self.hide = !self.hide;
 }
 
 - (void)resetState
