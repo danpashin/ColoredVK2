@@ -26,9 +26,9 @@
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Copy current hex value";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Enter a hexadecimal color code\n(Symbol # is not necessary)";
 "EXAMPLE_ALERT_MESSAGE" = "Like %@";
-"RESET_COLOR_QUESTION" = "Do you really want to reset color?";
-"RESET_SETTINGS_QUESTION" = "Do you really want to reset settings?";
-"RESTORE_BACKUP_QUESTION" = "Do you sure you want to restore this backup?\n\n%@";
+"RESET_COLOR_QUESTION" = "Are you really want to reset color?";
+"RESET_SETTINGS_QUESTION" = "Are you really want to reset settings?";
+"RESTORE_BACKUP_QUESTION" = "Are you sure you want to restore this backup?\n\n%@";
 "YES_I_AM_SURE" = "Yeah, I'm sure";
 
 "NEVER" = "Never";
