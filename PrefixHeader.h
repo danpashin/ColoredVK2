@@ -45,10 +45,10 @@
 #define UIKitLocalizedString(key)             [[NSBundle bundleWithIdentifier:@"com.apple.UIKit"] localizedStringForKey:key value:@"" table:nil]
 #define CVKLocalizedStringFromTable(key, tbl) [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] localizedStringForKey:key value:@"" table:tbl]
 #define CVKLocalizedString(key)               CVKLocalizedStringFromTable(key, nil)
-#define SYSTEM_VERSION                        [UIDevice currentDevice].systemVersion.floatValue
-#define SYSTEM_VERSION_IS_MORE_THAN(version)  SYSTEM_VERSION >= version
-#define SYSTEM_VERSION_IS_EQUAL(version)      SYSTEM_VERSION == version
-#define SYSTEM_VERSION_IS_LESS_THAN(version)  SYSTEM_VERSION <= version
+#define SYSTEM_VERSION                        [UIDevice currentDevice].systemVersion
+#define SYSTEM_VERSION_IS_MORE_THAN(version)  ([SYSTEM_VERSION compare:version options:NSNumericSearch] != NSOrderedAscending)
+#define SYSTEM_VERSION_IS_EQUAL(version)      ([SYSTEM_VERSION compare:version options:NSNumericSearch] == NSOrderedSame)
+#define SYSTEM_VERSION_IS_LESS_THAN(version)  ([SYSTEM_VERSION compare:version options:NSNumericSearch] != NSOrderedDescending)
 #define CLASS_NAME(obj)                       NSStringFromClass([obj class])
 
 #define kColoredVKVersion @"3.2.7-beta-1"

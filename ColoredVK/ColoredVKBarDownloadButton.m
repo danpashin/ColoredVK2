@@ -90,22 +90,20 @@ static NSArray *getInfoForActionController()
                                                cacheName:nil
                                                success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                                    NSString *cvkFolderPath = CVK_FOLDER_PATH;
-                                                   if (![[NSFileManager defaultManager] fileExistsAtPath:cvkFolderPath]) [[NSFileManager defaultManager] createDirectoryAtPath:cvkFolderPath withIntermediateDirectories:NO attributes:nil error:nil];
                                                    NSString *imagePath = [cvkFolderPath stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identificator]];
                                                    NSString *prevImagePath = [cvkFolderPath stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identificator]];
                                                    
-                                                   CGSize size = [UIScreen mainScreen].bounds.size;
-                                                   UIImage *newImage = [image resizedImageByMagick:[NSString stringWithFormat:@"%fx%f#", size.width, size.height]];
-                                                   
                                                    NSError *error = nil;
-                                                   [UIImagePNGRepresentation(newImage) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
+                                                   [UIImageJPEGRepresentation(image, 1.0) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
                                                    if (!error) {
-                                                       UIGraphicsBeginImageContext(CGSizeMake(40, 40));
-                                                       UIImage *preview = newImage;
-                                                       [preview drawInRect:CGRectMake(0, 0, 40, 40)];
-                                                       preview = UIGraphicsGetImageFromCurrentImageContext();
-                                                       [UIImagePNGRepresentation(preview) writeToFile:prevImagePath atomically:YES];
-                                                       UIGraphicsEndImageContext();
+                                                       UIImage *imageToResize = [UIImage imageWithData:[NSData dataWithContentsOfFile:imagePath]];
+                                                       UIImage *preview = [imageToResize resizedImageByMagick:@"40x40#"];
+                                                       [UIImageJPEGRepresentation(preview, 1.0) writeToFile:prevImagePath options:NSDataWritingAtomic error:&error];
+                                                       
+                                                       CGSize screenSize = [UIScreen mainScreen].bounds.size;
+                                                       if ([identificator isEqualToString:@"barImage"]) screenSize.height = 64;
+                                                       UIImage *recizedImage = [imageToResize resizedImageByMagick:[NSString stringWithFormat:@"%fx%f#", screenSize.width, screenSize.height]];
+                                                       [UIImageJPEGRepresentation(recizedImage, 1.0) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
                                                    }
                                                    
                                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{@"identifier" : identificator}];

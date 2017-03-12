@@ -45,6 +45,14 @@
  */
 + (UIColor *)buttonsTintColor;
 
+typedef NS_ENUM (NSUInteger, UIGradientStyle) {
+    UIGradientStyleLeftToRight,
+    UIGradientStyleRadial,
+    UIGradientStyleTopToBottom
+};
+
++ (UIColor *)colorWithGradientStyle:(UIGradientStyle)gradientStyle withFrame:(CGRect)frame andColors:(NSArray<UIColor *> *)colors;
+
 
 @property (nonatomic, readonly, copy) NSString *stringValue;
 @property (nonatomic, readonly, copy) NSString *hexStringValue;

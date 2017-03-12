@@ -115,7 +115,7 @@
     self.sliderView.brightnessLowerLimit = @0;
     [self.mainView addSubview:self.sliderView];    
     
-    CGRect pickerRect = CGRectMake(10, topView.frame.origin.y + topView.frame.size.height + 120, self.mainView.frame.size.width-20, 
+    CGRect pickerRect = CGRectMake(10, topView.frame.origin.y + topView.frame.size.height + self.infoView.frame.size.height + 10, self.mainView.frame.size.width-20, 
                                    self.mainView.frame.size.height - (topView.frame.origin.y + topView.frame.size.height + 120));    
     self.colorMapView = [HRColorMapView colorMapWithFrame:pickerRect saturationUpperLimit:0.9];
     [self.colorMapView addTarget:self action:@selector(setColor:) forControlEvents:UIControlEventValueChanged];
