@@ -126,7 +126,7 @@
 			<key>detail</key>
 			<string>ColoredVKPrefs</string>
 			<key>plistToLoad</key>
-			<string>ManageSettings</string>
+			<string>ManageAccount</string>
 			<key>label</key>
 			<string>MANAGE_ACCOUNT</string>
 			<key>icon</key>
@@ -142,7 +142,7 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>ColoredVKPrefs</string>
+			<string>ColoredVKAboutController</string>
 			<key>plistToLoad</key>
 			<string>About</string>
 			<key>label</key>

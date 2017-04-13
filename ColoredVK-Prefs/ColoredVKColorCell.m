@@ -11,6 +11,7 @@
 #import "PrefixHeader.h"
 
 @implementation ColoredVKColorCell
+
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)identifier specifier:(PSSpecifier *)specifier
 {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier specifier:specifier];
@@ -41,4 +42,5 @@
 {
     [NSNotificationCenter.defaultCenter removeObserver:self];
 }
+
 @end

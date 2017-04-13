@@ -10,7 +10,7 @@
 #import "Tweak.h"
 #import "PrefixHeader.h"
 #import <objc/runtime.h>
-#import "ColoredVKPrefsController.h"
+#import "ColoredVKMainPrefsController.h"
 #import "UIImage+ResizeMagick.h"
 #import "ColoredVKBackgroundImageView.h"
 
@@ -48,7 +48,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
             
             NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
             if (!cvkBundle.loaded) [cvkBundle load];
-            ColoredVKPrefsController *cvkPrefs = [[NSClassFromString(@"ColoredVKPrefsController") alloc] init];
+            ColoredVKMainPrefsController *cvkPrefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
             [mainContext reset:cvkPrefs];
             return nil;
         };

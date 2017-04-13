@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16E175b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="7X9-52-JaQ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16F54b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="7X9-52-JaQ">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Navigation Controller-->
         <scene sceneID="KAg-X9-P9J">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="gkK-GP-BRq" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController id="7X9-52-JaQ" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="i1m-DO-RuL">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -22,13 +21,14 @@
                         <segue destination="Isj-fP-5E7" kind="relationship" relationship="rootViewController" id="siO-WR-3RH"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gkK-GP-BRq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-804" y="99"/>
         </scene>
-        <!--ColoredVK Prefs Controller-->
+        <!--ColoredVK Main Prefs Controller-->
         <scene sceneID="oUJ-Hh-k0M">
             <objects>
-                <viewController id="Isj-fP-5E7" customClass="ColoredVKPrefsController" sceneMemberID="viewController">
+                <viewController id="Isj-fP-5E7" customClass="ColoredVKMainPrefsController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="fNL-P9-mnn"/>
                         <viewControllerLayoutGuide type="bottom" id="7Fq-UB-IS1"/>

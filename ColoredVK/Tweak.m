@@ -177,16 +177,18 @@ void reloadPrefs()
     SBBackgroundColor = [UIColor savedColorForIdentifier:@"SBBackgroundColor" fromPrefs:prefs];
     SBForegroundColor = [UIColor savedColorForIdentifier:@"SBForegroundColor" fromPrefs:prefs];
     
-    UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
-    if (statusBar != nil) {
-        if (enabled && changeSBColors) {
-            statusBar.foregroundColor = SBForegroundColor;
-            statusBar.backgroundColor = SBBackgroundColor;
-        } else {
-            statusBar.foregroundColor = nil;
-            statusBar.backgroundColor = nil;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
+        if (statusBar != nil) {
+            if (enabled && changeSBColors) {
+                statusBar.foregroundColor = SBForegroundColor;
+                statusBar.backgroundColor = SBBackgroundColor;
+            } else {
+                statusBar.foregroundColor = nil;
+                statusBar.backgroundColor = nil;
+            }
         }
-    }
+    });
     
     if (prefs && tweakEnabled) {
         enabledBarColor = [prefs[@"enabledBarColor"] boolValue];

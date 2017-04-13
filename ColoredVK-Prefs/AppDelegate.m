@@ -6,7 +6,7 @@
 //
 
 #import "AppDelegate.h"
-#import "ColoredVKPrefsController.h"
+#import "ColoredVKMainPrefsController.h"
 
 
 @implementation AppDelegate

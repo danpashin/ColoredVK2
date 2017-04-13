@@ -10,24 +10,17 @@
 #import "ColoredVKPrefs.h"
 #import "ColoredVKColorPickerViewController.h"
 #import "UIImage+ResizeMagick.h"
-#import "PrefixHeader.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "ColoredVKHUD.h"
-#import "NSDate+DateTools.h"
 #import "UIImage+ResizeMagick.h"
-#import "ColoredVKSettingsController.h"
 //#import "YMSPhotoPickerViewController.h"
 
 @interface ColoredVKPrefs () <UIImagePickerControllerDelegate, UINavigationControllerDelegate> // YMSPhotoPickerViewControllerDelegate
-@property (strong, nonatomic, readonly) NSString *prefsPath;
-@property (strong, nonatomic, readonly) NSBundle *cvkBundle;
-@property (strong, nonatomic, readonly) NSString *cvkFolder;
-@property (strong, nonatomic) NSString *lastImageIdentifier;
 @end
 
 @implementation ColoredVKPrefs
 
-- (UIStatusBarStyle) preferredStatusBarStyle
+- (UIStatusBarStyle)preferredStatusBarStyle
 {
     if ([[NSBundle mainBundle].executablePath.lastPathComponent isEqualToString:@"vkclient"]) return UIStatusBarStyleLightContent;
     else return UIStatusBarStyleDefault;
@@ -79,8 +72,8 @@
     [super viewDidLoad];
     for (UIView *view in self.view.subviews) {
         if ([view isKindOfClass:[UITableView class]]) {
-            UITableView *tableView = (UITableView *)view;
-            tableView.separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
+            self.prefsTableView = (UITableView *)view;
+            self.prefsTableView.separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
             break;
         }
     }
@@ -88,7 +81,9 @@
 
 - (id)readPreferenceValue:(PSSpecifier *)specifier
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];    
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    if (prefs == nil) { prefs = [NSMutableDictionary new]; [prefs writeToFile:self.prefsPath atomically:YES]; }
+    
     if (!prefs[specifier.properties[@"key"]]) return specifier.properties[@"default"];
     return prefs[specifier.properties[@"key"]];
 }
@@ -103,11 +98,10 @@
     
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
     
-    NSArray *identificsToReloadMenu = @[@"menuSelectionStyle", @"hideMenuSeparators", @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor"];
+    NSArray *identificsToReloadMenu = @[@"enabled", @"menuSelectionStyle", @"hideMenuSeparators", @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor"];
     if ([identificsToReloadMenu containsObject:specifier.identifier])
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
 }
-
 
 
 - (PSSpecifier *)footer
@@ -244,78 +238,6 @@
     
     hud.executionBlock(hud);
 }
-
-
-- (NSString *)getLastCheckForUpdates
-{
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
-    
-    NSDateFormatter *dateFormatter = [NSDateFormatter new];
-    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-    
-    return prefs[@"lastCheckForUpdates"]?[dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]].timeAgoSinceNow : NSLocalizedStringFromTableInBundle(@"NEVER", nil, self.cvkBundle, nil);
-}
-
-- (void)checkForUpdates
-{
-    NSString *stringURL = [NSString stringWithFormat:@"http://danpashin.ru/api/v%@/checkUpdates.php?userVers=%@&product=com.daniilpashin.coloredvk2", API_VERSION, kColoredVKVersion];
-#ifndef COMPILE_FOR_JAIL
-    stringURL = [stringURL stringByAppendingString:@"&getIPA=1"];
-#endif
-    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
-    
-    [NSURLConnection sendAsynchronousRequest:urlRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-        if (!connectionError) {
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-            NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
-            NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-            
-            if (!responseDict[@"error"]) {
-                NSString *skip = NSLocalizedStringFromTableInBundle(@"SKIP_THIS_VERSION_BUTTON_TITLE", nil, self.cvkBundle, nil);
-                NSString *remindLater = NSLocalizedStringFromTableInBundle(@"REMIND_LATER_BUTTON_TITLE", nil, self.cvkBundle, nil);
-                NSString *updateNow = NSLocalizedStringFromTableInBundle(@"UPADTE_BUTTON_TITLE", nil, self.cvkBundle, nil);
-                
-                alertController.message = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE", nil, self.cvkBundle, nil),
-                                           responseDict[@"version"], responseDict[@"changelog"]];
-                [alertController addAction:[UIAlertAction actionWithTitle:skip style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                    [prefs setValue:responseDict[@"version"] forKey:@"skippedVersion"];
-                    [prefs writeToFile:self.prefsPath atomically:YES];
-                }]];
-                [alertController addAction:[UIAlertAction actionWithTitle:remindLater style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
-                [alertController addAction:[UIAlertAction actionWithTitle:updateNow style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                    [self openURL:[NSURL URLWithString:responseDict[@"url"]]];
-                }]];
-            } else {
-                alertController.message = NSLocalizedStringFromTableInBundle(@"NO_UPDATES_FOUND_BUTTON_TITLE", nil, self.cvkBundle, nil);
-                [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
-            }
-            [self presentViewController:alertController animated:YES completion:nil];
-            
-            NSDateFormatter *dateFormatter = [NSDateFormatter new];
-            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-            [prefs setValue:[dateFormatter stringFromDate:[NSDate date]] forKey:@"lastCheckForUpdates"];
-            [prefs writeToFile:self.prefsPath atomically:YES];
-            [self reloadSpecifiers];
-        }
-    }];
-}
-
-- (void)openProfie
-{
-    NSURL *appURL = [NSURL URLWithString:@"vk://vk.com/danpashin"];
-    UIApplication *application = [UIApplication sharedApplication];
-    if ([application canOpenURL:appURL]) [self openURL:appURL];
-    else [self openURL:[NSURL URLWithString:@"https://vk.com/danpashin"]];
-}
-
-- (void)openTesterPage:(PSSpecifier *)specifier
-{
-    NSURL *appURL = [NSURL URLWithString:[NSString stringWithFormat:@"vk://vk.com/%@", specifier.properties[@"url"]]];
-    UIApplication *application = [UIApplication sharedApplication];
-    if ([application canOpenURL:appURL]) [self openURL:appURL];
-    else [self openURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://vk.com/%@", specifier.properties[@"url"]]]];
-}
-
 - (void)openURL:(NSURL *)url
 {
     UIApplication *application = [UIApplication sharedApplication];
@@ -324,27 +246,6 @@
         if ([application respondsToSelector:@selector(openURL:options:completionHandler:)]) [application openURL:url options:@{} completionHandler:^(BOOL success) {}];
         else [application openURL:url];
     }
-}
-
-- (void)clearCoversCache
-{
-    ColoredVKHUD *hud = [ColoredVKHUD showHUD];
-    hud.operation = [NSBlockOperation blockOperationWithBlock:^{
-        NSError *error = nil;
-        BOOL success = [[NSFileManager defaultManager] removeItemAtPath:CVK_CACHE_PATH error:&error];
-        if (success && !error) [hud showSuccess];
-        else [hud showFailureWithStatus:[NSString stringWithFormat:@"%@\n%@", error.localizedDescription, error.localizedFailureReason]];
-    }];
-}
-
-- (void)resetSettings
-{
-    [[ColoredVKSettingsController alloc] actionReset];
-}
-
-- (void)backupSettings
-{
-    [[ColoredVKSettingsController alloc] actionBackup];
 }
 
 - (void)presentPopover:(UIViewController *)controller
