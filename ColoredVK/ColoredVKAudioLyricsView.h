@@ -7,10 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "_UIBackdropView.h"
 
 @interface ColoredVKAudioLyricsView : UIView
 @property (strong, nonatomic) NSString *text;
-@property (strong, nonatomic) UIVisualEffectView *blurView;
+@property (strong, nonatomic) UIColor *textColor;
+@property (strong, nonatomic) _UIBackdropView *blurView;
 @property (assign, nonatomic) BOOL hide;
 - (void)resetState;
 - (void)updateWithLyrycsID:(NSNumber *)lyrics_id andToken:(NSString *)token;

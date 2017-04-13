@@ -54,7 +54,7 @@
 			<key>label</key>
 			<string>MESSAGES</string>
 			<key>icon</key>
-			<string>MessagesIcon.png</string>
+			<string>DialogsIcon.png</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -66,7 +66,7 @@
 			<key>label</key>
 			<string>DIALOGS</string>
 			<key>icon</key>
-			<string>DialogsIcon.png</string>
+			<string>MessagesIcon.png</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -119,6 +119,20 @@
 			<string>MANAGE_SETTINGS</string>
 			<key>icon</key>
 			<string>RestoreIcon.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKPrefs</string>
+			<key>plistToLoad</key>
+			<string>ManageSettings</string>
+			<key>label</key>
+			<string>MANAGE_ACCOUNT</string>
+			<key>icon</key>
+			<string>userIcon.png</string>
+			<key>id</key>
+			<string>manageAccount</string>
 		</dict>
 		<dict>
 			<key>cell</key>

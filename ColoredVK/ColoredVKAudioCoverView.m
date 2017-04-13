@@ -19,7 +19,7 @@
 @property (strong, nonatomic) NSOperation *operation;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
 @property (strong, nonatomic) NSString *key;
-@property (strong, nonatomic) UIImage *noCover;
+@property (strong, nonatomic, readonly) UIImage *noCover;
 @property (strong, nonatomic, readonly) NSDictionary *prefs;
 @end
 
@@ -33,8 +33,10 @@
         self.manager = [SDWebImageManager sharedManager];
         self.artist = @"";
         self.track = @"";
-        
+        self.tintColor = [UIColor whiteColor];
         self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+        [self updateCoverInfo];
+        
         self.topImageView = [[UIImageView alloc] initWithImage:self.noCover];
         self.topImageView.frame = CGRectMake(0, 0, self.frame.size.width, point.y);
         self.topImageView.backgroundColor = [UIColor blackColor];
@@ -46,7 +48,7 @@
         self.bottomImageView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
         self.bottomImageView.backgroundColor = [UIColor blackColor];
         self.bottomImageView.contentMode = UIViewContentModeScaleAspectFill;
-        if ([self.prefs[@"enabledAudioCustomCover"] boolValue]) self.bottomImageView.image = self.noCover;
+        if (self.customCover) self.bottomImageView.image = self.noCover;
         
         self.blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
         self.blurEffectView.frame = self.bottomImageView.bounds;
@@ -55,15 +57,27 @@
         [self addSubview:self.bottomImageView];
         [self sendSubviewToBack:self.bottomImageView];
         
+        self.audioLyricsView = [[ColoredVKAudioLyricsView alloc] initWithFrame:CGRectMake(0, 24, frame.size.width, point.y - 24)];
+        [self addSubview:self.audioLyricsView];
+        
         CAGradientLayer *gradient = [CAGradientLayer layer];
         gradient.frame = CGRectMake(0, 0, self.frame.size.width, 79);
         gradient.colors = @[ (id)[UIColor colorWithWhite:0 alpha:0.5].CGColor, (id)[UIColor clearColor].CGColor ];
         gradient.locations = @[ @0, @0.95];
-        [self.layer addSublayer:gradient];
+        [self.topImageView.layer addSublayer:gradient];
         
-         [self updateColorSchemeForImage:self.noCover];
+        [self updateColorSchemeForImage:self.noCover];
+        
+        
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateNoCover:) name:@"com.daniilpashin.coloredvk2.image.update" object:nil];
     }
     return self;
+}
+
+- (void)addToView:(UIView *)view
+{
+    [view addSubview:self];
+    [view sendSubviewToBack:self];
 }
 
 - (void)updateCoverForAudioPlayer:(AudioPlayer *)player
@@ -85,7 +99,7 @@
                 
                 [self changeImageViewImage:self.topImageView toImage:coverImage animated:YES];
                 if (self.defaultCover)
-                    [self changeImageViewImage:self.bottomImageView toImage:[self.prefs[@"enabledAudioCustomCover"] boolValue]?self.noCover:nil animated:YES];
+                    [self changeImageViewImage:self.bottomImageView toImage:self.customCover?self.noCover:nil animated:YES];
                 else
                     [self changeImageViewImage:self.bottomImageView toImage:coverImage animated:YES];
                 
@@ -115,14 +129,11 @@
         __block NSString *query = [NSString stringWithFormat:@"%@+%@", self.artist, self.track];
         query = [query stringByReplacingOccurrencesOfString:@"|" withString:@" "];
         
-        NSError *error = nil;
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(\\(|\\[)+([\\s\\S])+(\\)|\\])" options:NSRegularExpressionCaseInsensitive error:&error];
-        if (!error) {
-            NSString *oldQuery = query.copy;
-            [regex enumerateMatchesInString:query options:0 range:NSMakeRange(0, query.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-                query = [query stringByReplacingOccurrencesOfString:[oldQuery substringWithRange:result.range] withString:@""];
-            }];
-        }
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(\\(|\\[)+([\\s\\S])+(\\)|\\])" options:0 error:nil];
+        NSString *oldQuery = query.copy;
+        [regex enumerateMatchesInString:query options:0 range:NSMakeRange(0, query.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+            query = [query stringByReplacingOccurrencesOfString:[oldQuery substringWithRange:result.range] withString:@""];
+        }];
         
         NSCharacterSet *charset = [NSCharacterSet characterSetWithCharactersInString:@" &/-!|\""];
         query = [[query componentsSeparatedByCharactersInSet:charset] componentsJoinedByString:@"+"];
@@ -164,23 +175,29 @@
     [picker pickColorsFromImage:image onComplete:^(LEColorScheme *colorScheme) {
         self.backColor = self.defaultCover?[UIColor clearColor]:[colorScheme.backgroundColor colorWithAlphaComponent:0.4];
         self.tintColor = colorScheme.secondaryTextColor;
-        [UIView animateWithDuration:0.3 animations:^{ self.blurEffectView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor; } completion:nil];
+        self.audioLyricsView.textColor = self.tintColor;
+        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            self.blurEffectView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor;
+            self.audioLyricsView.blurView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor;
+        } completion:nil];
         [NSNotificationCenter.defaultCenter postNotificationName:@"com.daniilpashin.coloredvk2.audio.image.changed" object:nil];
     }];
 }
 
 - (UIImage *)noCover
 {
-    if ([self.prefs[@"enabledAudioCustomCover"] boolValue]) {
-        _noCover = [UIImage imageWithContentsOfFile:[CVK_FOLDER_PATH stringByAppendingString:@"/audioCoverImage.png"]];
-    } else
-        _noCover = [UIImage imageNamed:@"CoverImage" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
-    
-    return _noCover;
+    if (self.customCover) return [UIImage imageWithContentsOfFile:[CVK_FOLDER_PATH stringByAppendingString:@"/audioCoverImage.png"]];
+    else                  return [UIImage imageNamed:@"CoverImage" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
 }
 
-- (NSDictionary *)prefs
+- (void)updateNoCover:(NSNotification *)notification
 {
-    return [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+    if ([notification.userInfo[@"identifier"] isEqualToString:@""]) [self updateCoverInfo];
+}
+
+- (void)updateCoverInfo
+{
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+    self.customCover = [prefs[@"enabledAudioCustomCover"] boolValue];
 }
 @end

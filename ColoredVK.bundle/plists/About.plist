@@ -84,9 +84,9 @@
 			<key>id</key>
 			<string>testerCell</string>
 			<key>url</key>
-			<string>dimaaaaaaaaaaaaaaaaaaaaaaaaaaaa</string>
+			<string>md.furman</string>
 			<key>icon</key>
-			<string>dimaaaaaaaaaaaaaaaaaaaaaaaaaaaa</string>
+			<string>md.furman</string>
 			<key>action</key>
 			<string>openTesterPage:</string>
 			<key>textColor</key>

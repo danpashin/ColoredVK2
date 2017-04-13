@@ -51,7 +51,7 @@
 #define SYSTEM_VERSION_IS_LESS_THAN(version)  ([SYSTEM_VERSION compare:version options:NSNumericSearch] != NSOrderedDescending)
 #define CLASS_NAME(obj)                       NSStringFromClass([obj class])
 
-#define kColoredVKVersion @"3.2.7-beta-1"
+#define kColoredVKVersion @"3.2.7-beta-2"
 
 #ifdef CHAppName
     #undef CHAppName

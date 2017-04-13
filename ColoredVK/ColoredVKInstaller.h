@@ -20,5 +20,7 @@
 FOUNDATION_EXPORT void(^installerCompletionBlock)(BOOL disableTweak);
 
 @interface ColoredVKInstaller : NSObject
-+ (instancetype)startInstall;
+FOUNDATION_EXPORT BOOL licenceContainsKey(NSString *key);
+FOUNDATION_EXPORT id licenceValueForKey(NSString *key);
++ (instancetype)sharedInstaller;
 @end

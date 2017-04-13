@@ -107,7 +107,6 @@ UIColor *messagesListTextColor;
 UIColor *messagesTextColor;
 UIColor *groupsListTextColor;
 UIColor *audiosTextColor;
-UIColor *audioTintColor;
 
 UIColor *blurBackgroundTone;
 
@@ -451,7 +450,6 @@ void setupSearchController(UISearchDisplayController *controller, BOOL reset)
 
 void setupAudioPlayer(UIView *hostView, UIColor *color)
 {
-    if (!color) color = audioTintColor;
     for (UIView *view in hostView.subviews) {
         view.backgroundColor = [UIColor clearColor];
         if ([view respondsToSelector:@selector(setTextColor:)]) ((UILabel *)view).textColor = color;
@@ -545,9 +543,9 @@ void setupMessageBubbleForCell(ChatCell *cell)
 }
 
 /**
- returns -1  if  first_version < second_version
- returns  1  if  first_version > second_version
- returns  0  if  first_version = second_version
+ * Returns -1  if  (first_version < second_version).
+ * Returns  1  if  (first_version > second_version).
+ * Returns  0  if  (first_version = second_version).
  */
 NSInteger compareVersions(NSString *first_version, NSString *second_version)
 {
@@ -647,7 +645,7 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
         }
     };
     
-    [ColoredVKInstaller startInstall];
+    [ColoredVKInstaller sharedInstaller];
     
     BOOL beta = [kColoredVKVersion containsString:@"beta"];
     if (shouldCheckUpdates || beta) {
@@ -1252,10 +1250,7 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
     
     if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")]) {
         if (enabled && changeAudioPlayerAppearance) {
-            if (!cvkMainController.audioLyricsView) 
-                cvkMainController.audioLyricsView = [[ColoredVKAudioLyricsView alloc] initWithFrame:CGRectMake(0, 24, self.view.frame.size.width, self.hostView.frame.origin.y - 24)];
             if (!cvkMainController.coverView) cvkMainController.coverView = [[ColoredVKAudioCoverView alloc] initWithFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
-            audioTintColor = cvkMainController.coverView.tintColor?cvkMainController.coverView.tintColor:[UIColor whiteColor];
             
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.topItem.titleView.hidden = YES;
@@ -1267,30 +1262,26 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
             dispatch_async(dispatch_get_main_queue(), ^{ [cvkMainController.navBarImageView removeFromView:navBar._backgroundView]; });
             
             UISwipeGestureRecognizer *downSwipe = [[UISwipeGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender) { [self done:nil]; }];
-            downSwipe.maximumDuration = 0.5;
             downSwipe.direction = UISwipeGestureRecognizerDirectionDown;
             [self.view addGestureRecognizer:downSwipe];
             
             setupAudioPlayer(self.hostView, nil);
             self.cover.hidden = YES;
             self.hostView.backgroundColor = [UIColor clearColor];
-            [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioTintColor] forState:UIControlStateSelected];
+            [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:cvkMainController.coverView.tintColor] forState:UIControlStateSelected];
             [self.seek setMinimumTrackImage:[[self.seek minimumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:229/255.0f green:230/255.0f blue:231/255.0f alpha:1]] forState:UIControlStateNormal];
             [self.seek setMaximumTrackImage:[[self.seek maximumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:200/255.0f green:201/255.0f blue:202/255.0f alpha:1]] forState:UIControlStateNormal];
             [self.seek setThumbImage:[[self.seek thumbImageForState:UIControlStateNormal] imageWithTintColor:[UIColor blackColor]] forState:UIControlStateNormal];
             
             [NSNotificationCenter.defaultCenter addObserverForName:@"com.daniilpashin.coloredvk2.audio.image.changed" object:nil queue:nil usingBlock:^(NSNotification *note) {
-                audioTintColor = cvkMainController.coverView.defaultCover?[UIColor whiteColor]:cvkMainController.coverView.tintColor;
+                UIColor *tintColor = cvkMainController.coverView.tintColor;
                 [UIView animateWithDuration:0.3 animations:^{
-                    cvkMainController.audioLyricsView.blurView.backgroundColor = cvkMainController.coverView.defaultCover?[UIColor clearColor]:cvkMainController.coverView.backColor;
-                    [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioTintColor] forState:UIControlStateSelected];
-                    setupAudioPlayer(self.hostView, nil);
+                    [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:tintColor] forState:UIControlStateSelected];
+                    setupAudioPlayer(self.hostView, tintColor);
                 }];
             }];
             
-            [self.view addSubview:cvkMainController.coverView];
-            [self.view sendSubviewToBack:cvkMainController.coverView];
-            [self.view addSubview:cvkMainController.audioLyricsView];
+            [cvkMainController.coverView addToView:self.view];
         }
     }
 }
@@ -1302,8 +1293,8 @@ CHOptimizedMethod(2, self, void, AudioPlayer, switchTo, int, arg1, force, BOOL, 
     if (enabled && changeAudioPlayerAppearance) {
         if (self.state == 1 && (![cvkMainController.coverView.artist isEqualToString:self.audio.performer] || ![cvkMainController.coverView.track isEqualToString:self.audio.title]))
             [cvkMainController.coverView updateCoverForAudioPlayer:self];
-        if (self.audio.lyrics_id) [cvkMainController.audioLyricsView updateWithLyrycsID:self.audio.lyrics_id andToken:userToken];
-        else [cvkMainController.audioLyricsView resetState];
+        if (self.audio.lyrics_id) [cvkMainController.coverView.audioLyricsView updateWithLyrycsID:self.audio.lyrics_id andToken:userToken];
+        else [cvkMainController.coverView.audioLyricsView resetState];
     }
     CHSuper(2, AudioPlayer, switchTo, arg1, force, force);
 }

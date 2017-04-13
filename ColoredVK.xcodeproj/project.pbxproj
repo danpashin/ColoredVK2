@@ -133,7 +133,6 @@
 		A576D18E1DC621B90039884F /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A517D7991D78A25700DD153E /* MobileCoreServices.framework */; };
 		A576D18F1DC621B90039884F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A50731D41CD535130088EF9F /* QuartzCore.framework */; };
 		A576D1901DC621B90039884F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FCA1CC9261B005B9693 /* UIKit.framework */; };
-		A576D1911DC621B90039884F /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A53D11D71D462022009567B5 /* Preferences.framework */; };
 		A576D1921DC621B90039884F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FB51CC92157005B9693 /* Foundation.framework */; };
 		A576D1941DC621B90039884F /* UIImage+ResizeMagick.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D84BFE1CCFF312000C13B9 /* UIImage+ResizeMagick.h */; };
 		A576D1951DC621B90039884F /* PrefixHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = A53D12911D467016009567B5 /* PrefixHeader.h */; };
@@ -191,6 +190,8 @@
 		A57B184D1E24F3E500A2A622 /* NSData+AESCrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = A57B18481E24F3D500A2A622 /* NSData+AESCrypt.m */; };
 		A589F66B1DE1B2F100467138 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A589F66A1DE1B2F100467138 /* MediaPlayer.framework */; };
 		A589F66C1DE1B2F800467138 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A589F66A1DE1B2F100467138 /* MediaPlayer.framework */; };
+		A59F45891E917F44002D01F6 /* _UIBackdropView.h in Headers */ = {isa = PBXBuildFile; fileRef = A59F45881E917F44002D01F6 /* _UIBackdropView.h */; };
+		A59F458A1E917F44002D01F6 /* _UIBackdropView.h in Headers */ = {isa = PBXBuildFile; fileRef = A59F45881E917F44002D01F6 /* _UIBackdropView.h */; };
 		A5AD46771DD38AF200740E30 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5AD46761DD38AF200740E30 /* MapKit.framework */; };
 		A5B1E2511E505632001B8442 /* aes.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B1E22C1E505632001B8442 /* aes.h */; };
 		A5B1E2521E505632001B8442 /* aes.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B1E22C1E505632001B8442 /* aes.h */; };
@@ -556,6 +557,7 @@
 		A58F34131D5A378100838814 /* NSString+ColoredVK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ColoredVK.h"; sourceTree = "<group>"; };
 		A58F341C1D5A3BBA00838814 /* UIImage+ColoredVK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ColoredVK.h"; sourceTree = "<group>"; };
 		A58F341D1D5A3BBA00838814 /* UIImage+ColoredVK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ColoredVK.m"; sourceTree = "<group>"; };
+		A59F45881E917F44002D01F6 /* _UIBackdropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _UIBackdropView.h; sourceTree = "<group>"; };
 		A5AD46761DD38AF200740E30 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		A5ADE9081DA7DDC700673F1A /* HRBrightnessCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HRBrightnessCursor.h; sourceTree = "<group>"; };
 		A5ADE9091DA7DDC700673F1A /* HRBrightnessCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HRBrightnessCursor.m; sourceTree = "<group>"; };
@@ -678,7 +680,6 @@
 				A576D18E1DC621B90039884F /* MobileCoreServices.framework in Frameworks */,
 				A576D18F1DC621B90039884F /* QuartzCore.framework in Frameworks */,
 				A576D1901DC621B90039884F /* UIKit.framework in Frameworks */,
-				A576D1911DC621B90039884F /* Preferences.framework in Frameworks */,
 				A576D1921DC621B90039884F /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -849,6 +850,7 @@
 		A53D919D1CCA82C000E45A49 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				A59F45881E917F44002D01F6 /* _UIBackdropView.h */,
 				A54249461E0522560018D3E3 /* SDWebImage */,
 				A5363B0A1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit */,
 				A5ED144A1DE873BE00138A65 /* LEColorPicker */,
@@ -1113,6 +1115,7 @@
 				A55434FB1E636B19003B4256 /* Tweak.h in Headers */,
 				A5D9796F1DAEB88F00607F06 /* UIColor+ColoredVK.h in Headers */,
 				A53D41681DD0AC2600584B13 /* ColoredVKBackgroundImageView.h in Headers */,
+				A59F45891E917F44002D01F6 /* _UIBackdropView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1177,6 +1180,7 @@
 				A53D41691DD0AC2600584B13 /* ColoredVKBackgroundImageView.h in Headers */,
 				A576D1DA1DC6222C0039884F /* LHBackgroundView.h in Headers */,
 				A576D1DC1DC6222C0039884F /* LHProgressHUD.h in Headers */,
+				A59F458A1E917F44002D01F6 /* _UIBackdropView.h in Headers */,
 				A576D1941DC621B90039884F /* UIImage+ResizeMagick.h in Headers */,
 				A5B1E2621E505632001B8442 /* brg_types.h in Headers */,
 				A576D1951DC621B90039884F /* PrefixHeader.h in Headers */,
@@ -1391,7 +1395,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = ColoredVK;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0830;
 				TargetAttributes = {
 					A5079FB11CC92157005B9693 = {
 						CreatedOnToolsVersion = 7.3;
@@ -1764,6 +1768,7 @@
 				DEVELOPMENT_TEAM = VW97WHTS78;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(iOSOpenDevPath)/frameworks/**",
@@ -1781,6 +1786,7 @@
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.daniilpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;

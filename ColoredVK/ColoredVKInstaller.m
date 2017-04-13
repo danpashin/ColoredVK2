@@ -106,7 +106,7 @@ NSString *key;
 struct utsname systemInfo;
 
 
-+ (instancetype)startInstall
++ (instancetype)sharedInstaller
 {
     static dispatch_once_t once;
     static id instance;
@@ -348,6 +348,27 @@ static void download(NSURLRequest *request,BOOL authorise)
         password = nil;
     }]; 
 
+}
+
+
+BOOL licenceContainsKey(NSString *key)
+{
+    NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
+    NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
+    if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0))
+        return [dict.allKeys containsObject:key];
+    else
+        return NO;
+}
+
+id licenceValueForKey(NSString *key)
+{
+    NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
+    NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
+    if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0))
+        return dict[key];
+    else
+        return nil;
 }
 
 @end

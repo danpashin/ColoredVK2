@@ -21,7 +21,6 @@
 - (void)switchTriggered:(UISwitch*)switchView;
 @property (strong, nonatomic) MenuCell *menuCell;
 
-@property (strong, nonatomic) ColoredVKAudioLyricsView *audioLyricsView;
 @property (strong, nonatomic) ColoredVKAudioCoverView *coverView;
 @property (strong, nonatomic) ColoredVKBackgroundImageView *menuBackgroundView;
 @property (strong, nonatomic) ColoredVKBackgroundImageView *navBarImageView;

@@ -53,6 +53,12 @@
         }
         [specifiersArray addObject:self.footer];
         
+//        for (PSSpecifier *specifier in specifiersArray) {
+//            if ([specifier.identifier isEqualToString:@"manageAccount"]) {
+//                if (!licenceContainsKey(@"login")) [specifier setProperty:@NO forKey:@"enabled"];
+//            }
+//        }
+        
         _specifiers = [specifiersArray copy];
     }
     return _specifiers;
@@ -62,7 +68,7 @@
 {
     [super viewDidLoad];
 #ifndef COMPILE_APP
-    [ColoredVKInstaller startInstall];
+    [ColoredVKInstaller sharedInstaller];
 #endif
     for (UIView *view in self.view.subviews) {
         if ([view isKindOfClass:[UITableView class]]) {
@@ -74,8 +80,8 @@
     }
 }
 
-- (id) readPreferenceValue:(PSSpecifier*)specifier
-{    
+- (id)readPreferenceValue:(PSSpecifier*)specifier
+{
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
     if (prefs == nil) { prefs = [NSMutableDictionary new]; [prefs writeToFile:self.prefsPath atomically:YES]; }
     

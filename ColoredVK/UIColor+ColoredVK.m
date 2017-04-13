@@ -95,7 +95,7 @@
         //To simplfy formatting, we'll iterate through our colors array and create a mutable array with their CG counterparts
     NSMutableArray *cgColors = [[NSMutableArray alloc] init];
     for (UIColor *color in colors) {
-        [cgColors addObject:(id)[color CGColor]];
+        [cgColors addObject:(id)color.CGColor];
     }
     switch (gradientStyle) {
         case UIGradientStyleLeftToRight: {
@@ -104,8 +104,8 @@
             backgroundGradientLayer.colors = cgColors;
             
                 //Specify the direction our gradient will take
-            [backgroundGradientLayer setStartPoint:CGPointMake(0.0, 0.5)];
-            [backgroundGradientLayer setEndPoint:CGPointMake(1.0, 0.5)];
+            backgroundGradientLayer.startPoint = CGPointMake(0.0, 0.5);
+            backgroundGradientLayer.endPoint = CGPointMake(1.0, 0.5);
             
                 //Convert our CALayer to a UIImage object
             UIGraphicsBeginImageContextWithOptions(backgroundGradientLayer.bounds.size,NO, [UIScreen mainScreen].scale);
