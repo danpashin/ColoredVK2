@@ -50,16 +50,12 @@ typedef NS_ENUM(NSUInteger, ColoredVKBlurStyle) {
         [self addSubview:self.blurView];
         
         self.blurView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-spacing-[_blurView]-spacing-|" options:0
-                                                                         metrics:@{@"spacing": @(frame.size.height/14)} views:NSDictionaryOfVariableBindings(_blurView)]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-spacing-[_blurView]-spacing-|" options:0
-                                                                         metrics:@{@"spacing": @(frame.size.width/12)} views:NSDictionaryOfVariableBindings(_blurView)]];  
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-spacing-[view]-spacing-|" options:0 metrics:@{@"spacing":@(frame.size.height/14)} views:@{@"view":self.blurView}]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-spacing-[view]-spacing-|" options:0 metrics:@{@"spacing":@(frame.size.width/12)}  views:@{@"view":self.blurView}]];  
         
         self.textView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.blurView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_textView]|" options:0
-                                                                              metrics:nil views:NSDictionaryOfVariableBindings(_textView)]];
-        [self.blurView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_textView]|" options:0
-                                                                              metrics:nil views:NSDictionaryOfVariableBindings(_textView)]];
+        [self.blurView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self.textView}]];
+        [self.blurView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view":self.textView}]];
         
         self.blurView.alpha = 0.0;
         _hide = YES;

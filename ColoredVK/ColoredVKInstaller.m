@@ -361,7 +361,6 @@ BOOL licenceContainsKey(NSString *key)
 
 id licenceValueForKey(NSString *key)
 {
-    if ([key isEqualToString:@"Login"]) return @"danpashin";
     NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
     NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
     if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0))

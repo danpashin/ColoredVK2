@@ -92,7 +92,7 @@
 {
     [[UIApplication sharedApplication] sendAction:@selector(resignFirstResponder) to:nil from:nil forEvent:nil];
     
-    NSString *login = @"danpashin";
+    NSString *login = licenceValueForKey(@"Login");
     NSString *currentPass = AES256EncryptString(self.currentPassCell.textField.text, kDRMAuthorizeKey).base64Encoding;
     NSString *newPass = AES256EncryptString(self.passNewCell.textField.text, kDRMAuthorizeKey).base64Encoding;
     

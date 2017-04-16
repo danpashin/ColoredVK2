@@ -8,7 +8,7 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>ColoredVKPrefs</string>
+			<string>ColoredVKAboutController</string>
 			<key>plistToLoad</key>
 			<string>UpdatesSettings</string>
 			<key>icon</key>
