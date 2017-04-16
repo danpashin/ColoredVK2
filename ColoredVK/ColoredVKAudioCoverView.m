@@ -174,8 +174,8 @@
     LEColorPicker *picker = [[LEColorPicker alloc] init];
     [picker pickColorsFromImage:image onComplete:^(LEColorScheme *colorScheme) {
         self.backColor = self.defaultCover?[UIColor clearColor]:[colorScheme.backgroundColor colorWithAlphaComponent:0.4];
-        self.tintColor = colorScheme.secondaryTextColor;
-        self.audioLyricsView.textColor = self.tintColor;
+        self.color = colorScheme.secondaryTextColor;
+        self.audioLyricsView.textColor = self.color;
         [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
             self.blurEffectView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor;
             self.audioLyricsView.blurView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor;

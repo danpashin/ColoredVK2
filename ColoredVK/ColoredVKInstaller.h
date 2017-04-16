@@ -19,6 +19,10 @@
 
 FOUNDATION_EXPORT void(^installerCompletionBlock)(BOOL disableTweak);
 
+FOUNDATION_EXPORT NSData *AES256Encrypt(NSData *data, NSString *key);
+FOUNDATION_EXPORT NSData *AES256Decrypt(NSData *data, NSString *key);
+FOUNDATION_EXPORT NSData *AES256EncryptString(NSString *string, NSString *key);
+
 @interface ColoredVKInstaller : NSObject
 FOUNDATION_EXPORT BOOL licenceContainsKey(NSString *key);
 FOUNDATION_EXPORT id licenceValueForKey(NSString *key);

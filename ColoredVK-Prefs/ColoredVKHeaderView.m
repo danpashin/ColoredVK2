@@ -50,7 +50,7 @@
                                                                      metrics:nil views:NSDictionaryOfVariableBindings(subtitle)]];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-//            heading.textColor = [UIColor colorWithGradientStyle:UIGradientStyleTopToBottom withFrame:heading.bounds andColors:@[@"26D0CE".hexColorValue, @"1A2980".hexColorValue]];
+            heading.textColor = [UIColor colorWithGradientStyle:UIGradientStyleTopToBottom withFrame:heading.bounds andColors:@[@"26D0CE".hexColorValue, @"1A2980".hexColorValue]];
             subtitle.textColor = @"348AC7".hexColorValue;
         });
     }

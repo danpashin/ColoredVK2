@@ -107,6 +107,7 @@ UIColor *messagesListTextColor;
 UIColor *messagesTextColor;
 UIColor *groupsListTextColor;
 UIColor *audiosTextColor;
+UIColor *audioPlayerTintColor;
 
 UIColor *blurBackgroundTone;
 
@@ -452,6 +453,7 @@ void setupSearchController(UISearchDisplayController *controller, BOOL reset)
 
 void setupAudioPlayer(UIView *hostView, UIColor *color)
 {
+    if (!color) color = audioPlayerTintColor;
     for (UIView *view in hostView.subviews) {
         view.backgroundColor = [UIColor clearColor];
         if ([view respondsToSelector:@selector(setTextColor:)]) ((UILabel *)view).textColor = color;
@@ -742,7 +744,7 @@ CHOptimizedMethod(0, self, void, UISwitch, layoutSubviews)
         } else {
             self.tintColor = nil;
             self.thumbTintColor = nil;
-            if ((self.tag == 405) || (self.tag == 228)) self.onTintColor = [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1.0];
+            if ((self.tag == 405) || (self.tag == 228)) self.onTintColor = CVKMainColor;
             else self.onTintColor = nil;
         }
     }
@@ -1253,6 +1255,7 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
     if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")]) {
         if (enabled && changeAudioPlayerAppearance) {
             if (!cvkMainController.coverView) cvkMainController.coverView = [[ColoredVKAudioCoverView alloc] initWithFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
+            audioPlayerTintColor = cvkMainController.coverView.color?cvkMainController.coverView.color:[UIColor whiteColor];
             
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.topItem.titleView.hidden = YES;
@@ -1267,19 +1270,19 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
             downSwipe.direction = UISwipeGestureRecognizerDirectionDown;
             [self.view addGestureRecognizer:downSwipe];
             
-            setupAudioPlayer(self.hostView, nil);
+            setupAudioPlayer(self.hostView, audioPlayerTintColor);
             self.cover.hidden = YES;
             self.hostView.backgroundColor = [UIColor clearColor];
-            [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:cvkMainController.coverView.tintColor] forState:UIControlStateSelected];
+            [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
             [self.seek setMinimumTrackImage:[[self.seek minimumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:229/255.0f green:230/255.0f blue:231/255.0f alpha:1]] forState:UIControlStateNormal];
             [self.seek setMaximumTrackImage:[[self.seek maximumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:200/255.0f green:201/255.0f blue:202/255.0f alpha:1]] forState:UIControlStateNormal];
             [self.seek setThumbImage:[[self.seek thumbImageForState:UIControlStateNormal] imageWithTintColor:[UIColor blackColor]] forState:UIControlStateNormal];
             
             [NSNotificationCenter.defaultCenter addObserverForName:@"com.daniilpashin.coloredvk2.audio.image.changed" object:nil queue:nil usingBlock:^(NSNotification *note) {
-                UIColor *tintColor = cvkMainController.coverView.tintColor;
+                audioPlayerTintColor = cvkMainController.coverView.color;
                 [UIView animateWithDuration:0.3 animations:^{
-                    [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:tintColor] forState:UIControlStateSelected];
-                    setupAudioPlayer(self.hostView, tintColor);
+                    [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
+                    setupAudioPlayer(self.hostView, audioPlayerTintColor);
                 }];
             }];
             

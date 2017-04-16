@@ -14,10 +14,13 @@
 @property (nonatomic, copy) void (^executionBlock)(ColoredVKHUD *parentHud);
 
 + (instancetype)showHUD;
++ (instancetype)showHUDForView:(UIView *)view;
 + (instancetype)showHUDForOperation:(NSOperation *)operation;
++ (instancetype)showHUDForOperation:(NSOperation *)operation andView:(UIView *)view;
 
 - (void)showSuccess;
 - (void)showFailure;
 - (void)showFailureWithStatus:(NSString *)status;
+- (void)showSuccessWithStatus:(NSString *)status;
 
 @end

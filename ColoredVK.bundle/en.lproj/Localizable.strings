@@ -42,3 +42,10 @@
 "GETTING_UDID_ERROR" = "ColoredVK 2 cannot automatically obtain UDID of your device.\nTo continue, enter it manually in the box below.\nYou can find UDID in Cydia's main page at the bottom.";
 "OPEN_PREFERENCES" = "Go to Preferences";
 "GETTING_PRIVATE_INFO_ERROR" = "ColoredVK 2 cannot automatically obtain info of your device. If you have Xcon or other similar tweaks installed, I recommend to remove them.\n\nTo continue, go to ColoredVK 2 settings via Preferences app and re-open VK App.";
+
+
+"PASSWORD" = "Password";
+"CURRENT" = "Current";
+"NEW" = "New";
+"CONFIRM" = "Confirm";
+"PASSWORD_WARNING" = "The password must contain only letters and numbers and be at least 6 characters.";

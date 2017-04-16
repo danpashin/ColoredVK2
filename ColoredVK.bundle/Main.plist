@@ -24,7 +24,7 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>ColoredVKPrefs</string>
+			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
 			<string>NavToolBar</string>
 			<key>label</key>
@@ -36,7 +36,7 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>ColoredVKPrefs</string>
+			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
 			<string>Menu</string>
 			<key>label</key>
@@ -48,7 +48,7 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>ColoredVKPrefs</string>
+			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
 			<string>Messages</string>
 			<key>label</key>
@@ -60,7 +60,7 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>ColoredVKPrefs</string>
+			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
 			<string>Dialogs</string>
 			<key>label</key>
@@ -72,7 +72,7 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>ColoredVKPrefs</string>
+			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
 			<string>Groups</string>
 			<key>label</key>
@@ -84,7 +84,7 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>ColoredVKPrefs</string>
+			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
 			<string>Audio</string>
 			<key>label</key>
@@ -96,7 +96,7 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>ColoredVKPrefs</string>
+			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
 			<string>Misc</string>
 			<key>label</key>
@@ -112,7 +112,7 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>ColoredVKPrefs</string>
+			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
 			<string>ManageSettings</string>
 			<key>label</key>
@@ -124,13 +124,13 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>ColoredVKPrefs</string>
+			<string>ColoredVKAccountController</string>
 			<key>plistToLoad</key>
 			<string>ManageAccount</string>
 			<key>label</key>
 			<string>MANAGE_ACCOUNT</string>
 			<key>icon</key>
-			<string>userIcon.png</string>
+			<string>UserIcon.png</string>
 			<key>id</key>
 			<string>manageAccount</string>
 		</dict>

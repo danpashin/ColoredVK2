@@ -32,7 +32,7 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Choose background for menus</string>
 	<key>NSPrincipalClass</key>
-	<string>ColoredVKPrefsController</string>
+	<string>ColoredVKMainPrefsController</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 </dict>

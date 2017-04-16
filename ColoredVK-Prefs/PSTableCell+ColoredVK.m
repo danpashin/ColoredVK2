@@ -9,6 +9,7 @@
 #import "PSTableCell+ColoredVK.h"
 #import "UIColor+ColoredVK.h"
 #import "PSSpecifier.h"
+#import "PrefixHeader.h"
 
 @implementation PSTableCell (ColoredVK)
 
@@ -23,13 +24,13 @@
         if ([self.accessoryView isKindOfClass:UISwitch.class]) {
             UISwitch *switchView = (UISwitch *)self.accessoryView;
             switchView.tintColor = [UIColor colorWithRed:235.0/255.0f green:235.0/255.0f blue:235.0/255.0f alpha:1.0];
-            switchView.onTintColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
+            switchView.onTintColor = CVKMainColor;
             switchView.tag = 404;
         }
         
         if ((self.contentView.subviews.count > 0) && [self.contentView.subviews[0] isKindOfClass:[UISegmentedControl class]]) {
             UISegmentedControl *segmentedControl = self.contentView.subviews[0];
-            segmentedControl.tintColor = [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
+            segmentedControl.tintColor = CVKMainColor;
         }
     }
 }

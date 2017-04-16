@@ -6,17 +6,8 @@
 //  Copyright (c) 2016 Daniil Pashin. All rights reserved.
 //
 
-
 #import "ColoredVKPrefs.h"
-#import "ColoredVKColorPickerViewController.h"
-#import "UIImage+ResizeMagick.h"
-#import <MobileCoreServices/MobileCoreServices.h>
-#import "ColoredVKHUD.h"
-#import "UIImage+ResizeMagick.h"
-//#import "YMSPhotoPickerViewController.h"
 
-@interface ColoredVKPrefs () <UIImagePickerControllerDelegate, UINavigationControllerDelegate> // YMSPhotoPickerViewControllerDelegate
-@end
 
 @implementation ColoredVKPrefs
 
@@ -73,7 +64,7 @@
     for (UIView *view in self.view.subviews) {
         if ([view isKindOfClass:[UITableView class]]) {
             self.prefsTableView = (UITableView *)view;
-            self.prefsTableView.separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
+            self.prefsTableView.separatorColor = CVKTableViewSeparatorColor;
             break;
         }
     }
@@ -147,97 +138,6 @@
     return CVK_PREFS_PATH;
 }
 
-
-- (void)showColorPicker:(PSSpecifier*)specifier
-{
-    ColoredVKColorPickerViewController *picker = [[ColoredVKColorPickerViewController alloc] initWithIdentifier:specifier.identifier];
-    picker.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    self.definesPresentationContext = NO;
-    picker.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    picker.view.backgroundColor = [UIColor clearColor];
-    
-    UIViewController *controller = [UIViewController new];
-    picker.pickerWindow = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-    picker.pickerWindow.rootViewController = controller;
-    [picker.pickerWindow makeKeyAndVisible];
-    [controller presentViewController:picker animated:YES completion:nil];
-
-}
-
-- (void)chooseImage:(PSSpecifier*)specifier
-{
-    self.lastImageIdentifier = specifier.identifier;
-    UIImagePickerController *picker = [UIImagePickerController new];
-    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    picker.delegate = self;
-    [self presentPopover:picker];
-}
-
-//- (void)chooseImageWithNewPicker:(PSSpecifier*)specifier
-//{
-//    self.lastImageIdentifier = specifier.identifier;
-//    YMSPhotoPickerViewController *picker = [YMSPhotoPickerViewController new];
-//    picker.delegate = self;
-//    [self presentViewController:picker];
-//}
-//
-//- (void)photoPickerViewControllerDidReceivePhotoAlbumAccessDenied:(YMSPhotoPickerViewController *)picker
-//{
-//    NSString *message = [NSString stringWithFormat:@"ColoredVK 2 doesn't have rights to your album.\n%@", UIKitLocalizedString(@"You can enable access in Privacy Settings.")];
-//    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];
-//    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) { }]];
-//    [self presentViewController:alertController];
-//}
-//
-//- (void)photoPickerViewController:(YMSPhotoPickerViewController *)picker didFinishPickingImage:(UIImage *)image
-//{
-//    [self saveImage:image fromPickerViewController:picker];
-//}
-
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
-{
-    [self saveImage:image fromPickerViewController:picker]; 
-}
-
-
-- (void)saveImage:(UIImage *)image fromPickerViewController:(UIViewController *)picker
-{
-    ColoredVKHUD *hud = [ColoredVKHUD showAddedToView:picker.view];
-    hud.backgroundView.blurStyle = LHBlurEffectStyleDark;
-    hud.centerBackgroundView.blurStyle = LHBlurEffectStyleNone;
-    hud.centerBackgroundView.backgroundColor = [UIColor clearColor];
-    hud.didHiddenBlock = ^{ [picker dismissViewControllerAnimated:YES completion:nil]; };
-    
-    hud.executionBlock = ^(ColoredVKHUD *parentHud) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-            NSString *imagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.lastImageIdentifier]];
-            NSString *prevImagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", self.lastImageIdentifier]];
-            
-            NSError *error = nil;
-            [UIImageJPEGRepresentation(image, 1.0) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
-            if (!error) {
-                UIImage *imageToResize = [UIImage imageWithData:[NSData dataWithContentsOfFile:imagePath]];
-                UIImage *preview = [imageToResize resizedImageByMagick:@"40x40#"];
-                [UIImageJPEGRepresentation(preview, 1.0) writeToFile:prevImagePath options:NSDataWritingAtomic error:&error];
-                
-                CGSize screenSize = [UIScreen mainScreen].bounds.size;
-                if ([self.lastImageIdentifier isEqualToString:@"barImage"]) screenSize.height = 64;
-                UIImage *recizedImage = [imageToResize resizedImageByMagick:[NSString stringWithFormat:@"%fx%f#", screenSize.width, screenSize.height]];
-                [UIImageJPEGRepresentation(recizedImage, 1.0) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{ @"identifier" : self.lastImageIdentifier }];
-                if ([self.lastImageIdentifier isEqualToString:@"menuBackgroundImage"]) {
-                    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-                }
-                error?[parentHud showFailureWithStatus:error.localizedDescription]:[parentHud showSuccess];
-            });
-        });
-    };
-    
-    hud.executionBlock(hud);
-}
 - (void)openURL:(NSURL *)url
 {
     UIApplication *application = [UIApplication sharedApplication];

@@ -18,17 +18,28 @@
 
 + (instancetype)showHUD
 {
-    return [[self alloc] initHUDWithOperation:nil];
+    return [[self alloc] initHUDWithOperation:nil andView:nil];
+}
+
++ (instancetype)showHUDForView:(UIView *)view
+{
+    return [[self alloc] initHUDWithOperation:nil andView:view];
 }
 
 + (instancetype)showHUDForOperation:(NSOperation *)operation
 {
-    return [[self alloc] initHUDWithOperation:operation];
+    return [[self alloc] initHUDWithOperation:operation andView:nil];
 }
 
-- (instancetype)initHUDWithOperation:(NSOperation *)operation
++ (instancetype)showHUDForOperation:(NSOperation *)operation andView:(UIView *)view
 {
-    UIView *view = UIApplication.sharedApplication.keyWindow.rootViewController.view;
+    return [[self alloc] initHUDWithOperation:operation andView:view];
+}
+
+- (instancetype)initHUDWithOperation:(NSOperation *)operation andView:(UIView *)view
+{
+    if (!view) view = UIApplication.sharedApplication.keyWindow.rootViewController.view;
+//    UIWindow *hudWindow = [[UIWindow alloc] initWithFrame:view.bounds]
     self = [super initWithAttachedView:view mode:LHProgressHUDModeNormal subMode:LHProgressHUDSubModeAnimating animated:YES];
     if (self) {
         self.operation = operation;
@@ -77,6 +88,14 @@
     dispatch_async(dispatch_get_main_queue(), ^{ 
         [super showSuccessWithStatus:@"" animated:YES];
         [super hideAfterDelay:1.5];
+    });
+}
+
+- (void)showSuccessWithStatus:(NSString *)status
+{
+    dispatch_async(dispatch_get_main_queue(), ^{ 
+        [super showSuccessWithStatus:status animated:YES];
+        [super hideAfterDelay:2.5];
     });
 }
 

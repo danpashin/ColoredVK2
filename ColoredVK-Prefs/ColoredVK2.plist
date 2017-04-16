@@ -9,7 +9,7 @@
 		<key>cell</key>
 		<string>PSLinkCell</string>
 		<key>detail</key>
-		<string>ColoredVKPrefsController</string>
+		<string>ColoredVKMainPrefsController</string>
 		<key>icon</key>
 		<string>Icon.png</string>
 		<key>isController</key>

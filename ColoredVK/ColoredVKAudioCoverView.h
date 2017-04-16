@@ -18,7 +18,7 @@
 
 @property (strong, nonatomic) NSString *track;
 @property (strong, nonatomic) NSString *artist;
-@property (strong, nonatomic) UIColor *tintColor;
+@property (strong, nonatomic) UIColor *color;
 @property (strong, nonatomic) UIColor *backColor;
 @property (assign, nonatomic) BOOL defaultCover;
 @property (assign, nonatomic) BOOL customCover;

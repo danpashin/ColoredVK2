@@ -16,7 +16,7 @@
 #import <sys/utsname.h>
 
 
-static NSData *AES256Decrypt(NSData *data, NSString *key)
+NSData *AES256Decrypt(NSData *data, NSString *key)
 {
         // 'key' should be 32 bytes for AES256, will be null-padded otherwise
     char keyPtr[kCCKeySizeAES256+1]; // room for terminator (unused)
@@ -218,12 +218,6 @@ struct utsname systemInfo;
     if ((udid.length <= 6) && isJailed) {
         alertController = [UIAlertController alertControllerWithTitle:kDRMPackageName message:CVKLocalizedString(@"GETTING_PRIVATE_INFO_ERROR") preferredStyle:UIAlertControllerStyleAlert];
         
-        [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"CLOSE_APP") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-            [UIApplication.sharedApplication performSelector:@selector(suspend)];
-            [NSThread sleepForTimeInterval:0.5];
-            exit(0);
-        }]];
-        
         if ([[NSBundle mainBundle].executablePath.lastPathComponent containsString:@"vkclient"]) {
             [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OPEN_PREFERENCES") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:"]];
@@ -234,7 +228,11 @@ struct utsname systemInfo;
             [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
                 textField.placeholder = @"UDID";
             }];
-            
+            [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"CLOSE_APP") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                [UIApplication.sharedApplication performSelector:@selector(suspend)];
+                [NSThread sleepForTimeInterval:0.5];
+                exit(0);
+            }]];            
             [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Login") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 [self performSelectorOnMainThread:@selector(actionLogin) withObject:nil waitUntilDone:NO];
             }]];
@@ -363,6 +361,7 @@ BOOL licenceContainsKey(NSString *key)
 
 id licenceValueForKey(NSString *key)
 {
+    if ([key isEqualToString:@"Login"]) return @"danpashin";
     NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
     NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
     if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0))

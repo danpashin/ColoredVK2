@@ -9,7 +9,6 @@
 #import "ColoredVKAboutController.h"
 #import "ColoredVKHUD.h"
 #import "NSDate+DateTools.h"
-#import "ColoredVKSettingsController.h"
 
 
 @implementation ColoredVKAboutController
@@ -82,28 +81,6 @@
     UIApplication *application = [UIApplication sharedApplication];
     if ([application canOpenURL:appURL]) [self openURL:appURL];
     else [self openURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://vk.com/%@", specifier.properties[@"url"]]]];
-}
-
-
-- (void)clearCoversCache
-{
-    ColoredVKHUD *hud = [ColoredVKHUD showHUD];
-    hud.operation = [NSBlockOperation blockOperationWithBlock:^{
-        NSError *error = nil;
-        BOOL success = [[NSFileManager defaultManager] removeItemAtPath:CVK_CACHE_PATH error:&error];
-        if (success && !error) [hud showSuccess];
-        else [hud showFailureWithStatus:[NSString stringWithFormat:@"%@\n%@", error.localizedDescription, error.localizedFailureReason]];
-    }];
-}
-
-- (void)resetSettings
-{
-    [[ColoredVKSettingsController alloc] actionReset];
-}
-
-- (void)backupSettings
-{
-    [[ColoredVKSettingsController alloc] actionBackup];
 }
 @end
 

@@ -43,13 +43,17 @@
 
 #define IS_IPAD                               (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 #define UIKitLocalizedString(key)             [[NSBundle bundleWithIdentifier:@"com.apple.UIKit"] localizedStringForKey:key value:@"" table:nil]
-#define CVKLocalizedStringFromTable(key, tbl) [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] localizedStringForKey:key value:@"" table:tbl]
+#define CVKLocalizedStringFromTableInBundle(key, tbl, bndl) [bndl localizedStringForKey:key value:@"" table:tbl]
+#define CVKLocalizedStringFromTable(key, tbl) CVKLocalizedStringFromTableInBundle(key, tbl, [NSBundle bundleWithPath:CVK_BUNDLE_PATH])
 #define CVKLocalizedString(key)               CVKLocalizedStringFromTable(key, nil)
 #define SYSTEM_VERSION                        [UIDevice currentDevice].systemVersion
 #define SYSTEM_VERSION_IS_MORE_THAN(version)  ([SYSTEM_VERSION compare:version options:NSNumericSearch] != NSOrderedAscending)
 #define SYSTEM_VERSION_IS_EQUAL(version)      ([SYSTEM_VERSION compare:version options:NSNumericSearch] == NSOrderedSame)
 #define SYSTEM_VERSION_IS_LESS_THAN(version)  ([SYSTEM_VERSION compare:version options:NSNumericSearch] != NSOrderedDescending)
 #define CLASS_NAME(obj)                       NSStringFromClass([obj class])
+
+#define CVKTableViewSeparatorColor [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1]
+#define CVKMainColor [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1]
 
 #define kColoredVKVersion @"3.2.7-beta-2"
 

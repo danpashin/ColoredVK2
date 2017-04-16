@@ -13,7 +13,7 @@
 
 typedef NS_ENUM(NSUInteger, ColoredVKBlurStyle) {
     ColoredVKBlurStyleDark = 1,
-    ColoredVKBlurStyleLight = 2060 // 2010
+    ColoredVKBlurStyleLight = 0 // 2060
 };
 
 

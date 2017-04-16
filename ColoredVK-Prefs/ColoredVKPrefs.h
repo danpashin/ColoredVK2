@@ -21,7 +21,6 @@
 @property (strong, nonatomic, readonly) NSString *prefsPath;
 @property (strong, nonatomic, readonly) NSBundle *cvkBundle;
 @property (strong, nonatomic, readonly) NSString *cvkFolder;
-@property (strong, nonatomic) NSString *lastImageIdentifier;
 
 @property (strong, nonatomic) UITableView *prefsTableView;
 
