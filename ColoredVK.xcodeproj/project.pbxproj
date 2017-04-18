@@ -324,6 +324,7 @@
 		A5B6ED071D3D659800383425 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FB51CC92157005B9693 /* Foundation.framework */; };
 		A5B6ED081D3D659800383425 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FCA1CC9261B005B9693 /* UIKit.framework */; };
 		A5B6ED451D3D68F000383425 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A50731D41CD535130088EF9F /* QuartzCore.framework */; };
+		A5BB10F11EA3FABC00B05EE2 /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5BB10F01EA3FAB200B05EE2 /* Preferences.framework */; };
 		A5C5FAB41E41168D0032A8AF /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5FAB31E41168D0032A8AF /* AVFoundation.framework */; };
 		A5C5FAB51E4116A30032A8AF /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5FAB31E41168D0032A8AF /* AVFoundation.framework */; };
 		A5C5FAB61E4116A80032A8AF /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5C5FAB31E41168D0032A8AF /* AVFoundation.framework */; };
@@ -656,6 +657,7 @@
 		A5B1E29D1E509246001B8442 /* ColoredVKSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKSettingsController.m; sourceTree = "<group>"; };
 		A5B6ED061D3D659800383425 /* ColoredVK2.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ColoredVK2.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5B6ED691D3D703600383425 /* ColoredVK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ColoredVK.bundle; sourceTree = "<group>"; };
+		A5BB10F01EA3FAB200B05EE2 /* Preferences.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Preferences.framework; sourceTree = "<group>"; };
 		A5C5FAB31E41168D0032A8AF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A5D2DFB31DE741CF00DCDC84 /* ColoredVKAudioCoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKAudioCoverView.h; sourceTree = "<group>"; };
 		A5D56AC71E70427300A8FFB5 /* ColoredVK-Prefs copy.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "ColoredVK-Prefs copy.bundle"; path = ColoredVK2.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -711,6 +713,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5BB10F11EA3FABC00B05EE2 /* Preferences.framework in Frameworks */,
 				A5B1E2991E505698001B8442 /* libz.tbd in Frameworks */,
 				A5C5FAB41E41168D0032A8AF /* AVFoundation.framework in Frameworks */,
 				A5ED14581DE874DA00138A65 /* OpenGLES.framework in Frameworks */,
@@ -798,6 +801,7 @@
 		A5079FB41CC92157005B9693 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A5BB10F01EA3FAB200B05EE2 /* Preferences.framework */,
 				A5B1E2981E505698001B8442 /* libz.tbd */,
 				A5C5FAB31E41168D0032A8AF /* AVFoundation.framework */,
 				A5ED14571DE874DA00138A65 /* OpenGLES.framework */,
@@ -1807,6 +1811,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 			};
@@ -1816,6 +1824,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 			};
@@ -1846,7 +1858,7 @@
 		A5D56AD61E70442900A8FFB5 /* Debug_APP */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.2.7-beta-2";
+				APP_VERSION = "3.2.7-beta-3";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -1921,6 +1933,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 			};
@@ -1940,7 +1956,7 @@
 		A5D979A51DAEBAD300607F06 /* Release_DEB */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.2.7-beta-2";
+				APP_VERSION = "3.2.7-beta-3";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -2006,7 +2022,7 @@
 		A5D979A81DAEBAD900607F06 /* Release_IPA */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.2.7-beta-2";
+				APP_VERSION = "3.2.7-beta-3";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;

@@ -51,8 +51,8 @@
 "ALWAYS_SHOW_NAVIGATION_BAR" = "Always show nav bar";
 
 
-"CHANGE_APPEARANCE" = "Customize";
-"HIDE_NAV_BAR_ITEMS" = "Hide navbar items";
+"NEW_DESIGN" = "New design";
+"HIDE_MESSAGE_NAV_BAR_ITEMS" = "Hide navbar items";
 "USE_PARALLAX" = "Enable parallax";
 
 "CUSTOM_COVER" = "Choose cover";
@@ -60,8 +60,7 @@
 "CLEAR_CACHE" = "Clear cache";
 
 "HIDE_COMMENT_SEPARATORS" = "Hide separators in comments";
-"ONLY_WORK_ON_VKAPP_2.9" = "Works only on VKApp >2.9";
-"DISABLE_COVERS" = "Disable covers";
+"DISABLE_GROUP_COVERS" = "Disable covers";
 
 "RESET_SETTINGS" = "Reset settings";
 "BACKUP_SETTINGS" = "Make settings backup";
@@ -71,7 +70,6 @@
 "NO_FILES_TO_RESTORE" = "No files to restore";
 
 "SEND_STATISTICS" = "Send statistics";
-"SEND_STATISTICS_DETAIL_INFO" = "This information does NOT include any private info, only general information about device.";
 
 
 
@@ -96,3 +94,21 @@
 
 
 "CHANGE_PASSWORD" = "Change password";
+
+
+
+/*
+ 
+ FOOTERS
+ 
+ */
+"SEND_STATISTICS_FOOTER" = "This information does NOT include any private info, only general information about device.";
+"MANAGE_SETTINGS_FOOTER" = "Backups are stored in /var/mobile/Documents/ColoredVK2_Backups. When you restore the device in iTunes they will be removed.";
+"CUSTOM_COVER_FOOTER" = "If you don't like ColoredVK 2 standard cover, you can change it to your.";
+"CACHE_COVERS_FOOTER" = "Caching of covers will help to reduce the load time, but will require more space on the device.";
+"NEW_PLAYER_DESIGN_FOOTER" = "This option will make the player more minimalist - cover will vary depending on the song, and the colors will be more readable. Also, a window with the song lyrics will be added. Just click the cover! And to close the player, perform the swipe down.";
+"ALWAYS_SHOW_NAVIGATION_BAR_FOOTER" = "By default VK App hides the navigation bar in the news when scrolling. This function disables this concealment.";
+"MESSAGE_BUBBLE_COLOR_FOOTER" = "This function changes the color of the message bubble. Will only work in VK App 2.9 and later.";
+"HIDE_MESSAGE_NAV_BAR_ITEMS_FOOTER" = "Will hide the person's name and avatar from the navigation bar. It would be very useful if you don't want others to see who you write.";
+"DISABLE_GROUP_COVERS_FOOTER" = "Disabling of covers gives an increase in speed and time of opening of groups.";
+

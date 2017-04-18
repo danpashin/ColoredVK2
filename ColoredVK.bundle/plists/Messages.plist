@@ -36,6 +36,18 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>USE_PARALLAX</string>
+			<key>key</key>
+			<string>useMessagesParallax</string>
+			<key>id</key>
+			<string>useMessagesParallax</string>
+			<key>default</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSGroupCell</string>
 		</dict>
 		<dict>
@@ -78,15 +90,9 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>label</key>
-			<string>USE_PARALLAX</string>
-			<key>key</key>
-			<string>useMessagesParallax</string>
-			<key>id</key>
-			<string>useMessagesParallax</string>
-			<key>default</key>
-			<false/>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>HIDE_MESSAGE_NAV_BAR_ITEMS_FOOTER</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -96,13 +102,13 @@
 			<key>key</key>
 			<string>hideMessagesNavBarItems</string>
 			<key>label</key>
-			<string>HIDE_NAV_BAR_ITEMS</string>
+			<string>HIDE_MESSAGE_NAV_BAR_ITEMS</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>ONLY_WORK_ON_VKAPP_2.9</string>
+			<string>MESSAGE_BUBBLE_COLOR_FOOTER</string>
 		</dict>
 		<dict>
 			<key>cell</key>

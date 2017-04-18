@@ -32,19 +32,6 @@
 + (UIColor *)defaultColorForIdentifier:(NSString *)identifier;
 
 
-/**
- Returns color with 20.0 white
- */
-+ (UIColor *)lightBlackColor;
-/**
- Returns color with 10.0 white
- */
-+ (UIColor *)darkBlackColor;
-/**
- Returns color with 178.5 red
- */
-+ (UIColor *)buttonsTintColor;
-
 typedef NS_ENUM (NSUInteger, UIGradientStyle) {
     UIGradientStyleLeftToRight,
     UIGradientStyleRadial,

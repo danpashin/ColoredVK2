@@ -16,7 +16,7 @@
 @property (strong, nonatomic) NSBundle *cvkBundle;
 @property (strong, nonatomic) UIImageView *topImageView;
 @property (strong, nonatomic) UIImageView *bottomImageView;
-@property (strong, nonatomic) NSOperation *operation;
+//@property (strong, nonatomic) NSOperation *operation;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
 @property (strong, nonatomic) NSString *key;
 @property (strong, nonatomic, readonly) UIImage *noCover;
@@ -33,7 +33,7 @@
         self.manager = [SDWebImageManager sharedManager];
         self.artist = @"";
         self.track = @"";
-        self.tintColor = [UIColor whiteColor];
+        self.color = [UIColor whiteColor];
         self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         [self updateCoverInfo];
         
@@ -57,7 +57,7 @@
         [self addSubview:self.bottomImageView];
         [self sendSubviewToBack:self.bottomImageView];
         
-        self.audioLyricsView = [[ColoredVKAudioLyricsView alloc] initWithFrame:CGRectMake(0, 24, frame.size.width, point.y - 24)];
+        self.audioLyricsView = [[ColoredVKAudioLyricsView alloc] initWithFrame:self.topImageView.bounds];
         [self addSubview:self.audioLyricsView];
         
         CAGradientLayer *gradient = [CAGradientLayer layer];
@@ -82,39 +82,43 @@
 
 - (void)updateCoverForAudioPlayer:(AudioPlayer *)player
 {
-    if (!self.operation.finished) [self.operation cancel];
-    self.operation = [NSBlockOperation blockOperationWithBlock:^{        
-        self.track = player.audio.title;
-        self.artist = player.audio.performer;
-        
-        [self downloadCoverWithCompletionBlock:^(UIImage *image, BOOL wasDownloaded) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.defaultCover = (wasDownloaded && image)?NO:YES;
-                
-                UIImage *coverImage = image;
-                if (player.coverImage && (!wasDownloaded && ![player.coverImage.imageAsset.assetName containsString:@"placeholder"])) {
-                    coverImage = player.coverImage;
-                    self.defaultCover = NO;
-                }
-                
-                [self changeImageViewImage:self.topImageView toImage:coverImage animated:YES];
-                if (self.defaultCover)
-                    [self changeImageViewImage:self.bottomImageView toImage:self.customCover?self.noCover:nil animated:YES];
-                else
-                    [self changeImageViewImage:self.bottomImageView toImage:coverImage animated:YES];
-                
-                MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
-                NSMutableDictionary *playingInfo = [center.nowPlayingInfo mutableCopy];
-                if (!self.defaultCover) playingInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:coverImage];
-                else [playingInfo removeObjectForKey:MPMediaItemPropertyArtwork];
-                center.nowPlayingInfo = [playingInfo copy];
-                
-                [self updateColorSchemeForImage:coverImage];
-                    //                if (self.inBackground) [[UIApplication sharedApplication] _updateSnapshotForBackgroundApplication:YES];
-            });
-        }];
-    }];
-    [self.operation start];
+//    if (!self.operation.finished) [self.operation cancel];
+//    self.operation = [NSBlockOperation blockOperationWithBlock:^{
+    @synchronized (self) {
+        dispatch_async(dispatch_queue_create("com.daniilpashin.coloredvk2.download.queue", DISPATCH_QUEUE_SERIAL), ^{
+            self.track = player.audio.title;
+            self.artist = player.audio.performer;
+            
+            [self downloadCoverWithCompletionBlock:^(UIImage *image, BOOL wasDownloaded) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.defaultCover = (wasDownloaded && image)?NO:YES;
+                    
+                    UIImage *coverImage = image;
+                    if (player.coverImage && (!wasDownloaded && ![player.coverImage.imageAsset.assetName containsString:@"placeholder"])) {
+                        coverImage = player.coverImage;
+                        self.defaultCover = NO;
+                    }
+                    
+                    [self changeImageViewImage:self.topImageView toImage:coverImage animated:YES];
+                    if (self.defaultCover)
+                        [self changeImageViewImage:self.bottomImageView toImage:self.customCover?self.noCover:nil animated:YES];
+                    else
+                        [self changeImageViewImage:self.bottomImageView toImage:coverImage animated:YES];
+                    
+                    MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
+                    NSMutableDictionary *playingInfo = [center.nowPlayingInfo mutableCopy];
+                    if (!self.defaultCover) playingInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:coverImage];
+                    else [playingInfo removeObjectForKey:MPMediaItemPropertyArtwork];
+                    center.nowPlayingInfo = [playingInfo copy];
+                    
+                    [self updateColorSchemeForImage:coverImage];
+                        //                if (self.inBackground) [[UIApplication sharedApplication] _updateSnapshotForBackgroundApplication:YES];
+                });
+            }];
+        });
+    }
+//    }];
+//    [self.operation start];
 }
 - (void)changeImageViewImage:(UIImageView *)imageView toImage:(UIImage *)image animated:(BOOL)animated
 {
@@ -192,7 +196,7 @@
 
 - (void)updateNoCover:(NSNotification *)notification
 {
-    if ([notification.userInfo[@"identifier"] isEqualToString:@""]) [self updateCoverInfo];
+    if ([notification.userInfo[@"identifier"] isEqualToString:@"audioCoverImage"]) [self updateCoverInfo];
 }
 
 - (void)updateCoverInfo

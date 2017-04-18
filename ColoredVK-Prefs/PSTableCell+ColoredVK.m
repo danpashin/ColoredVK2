@@ -10,6 +10,7 @@
 #import "UIColor+ColoredVK.h"
 #import "PSSpecifier.h"
 #import "PrefixHeader.h"
+#import "ColoredVKPrefs.h"
 
 @implementation PSTableCell (ColoredVK)
 
@@ -17,7 +18,7 @@
 {
     [super layoutSubviews];
     
-    if ([NSStringFromClass([self.cellTarget class]) containsString:@"ColoredVK"]) {
+    if ([self.cellTarget isKindOfClass:[ColoredVKPrefs class]]) {
         if (self.specifier.properties[@"textColor"]) self.titleLabel.textColor = [UIColor colorFromString:self.specifier.properties[@"textColor"]];
         if ([self.specifier.properties[@"shouldCenter"] boolValue]) self.titleLabel.center = self.contentView.center;
         
@@ -34,25 +35,4 @@
         }
     }
 }
-
-- (NSString *)cellStringType
-{
-    if (self.type == PSGroupCell)          return @"PSGroupCell";
-    if (self.type == PSLinkCell)           return @"PSLinkCell";
-    if (self.type == PSLinkListCell)       return @"PSLinkListCell";
-    if (self.type == PSListItemCell)       return @"PSListItemCell";
-    if (self.type == PSTitleValueCell)     return @"PSTitleValueCell";
-    if (self.type == PSSliderCell)         return @"PSSliderCell";
-    if (self.type == PSSwitchCell)         return @"PSSwitchCell";
-    if (self.type == PSStaticTextCell)     return @"PSStaticTextCell";
-    if (self.type == PSEditTextCell)       return @"PSEditTextCell";
-    if (self.type == PSSegmentCell)        return @"PSSegmentCell";
-    if (self.type == PSGiantIconCell)      return @"PSGiantIconCell";
-    if (self.type == PSGiantCell)          return @"PSGiantCell";
-    if (self.type == PSSecureEditTextCell) return @"PSSecureEditTextCell";
-    if (self.type == PSButtonCell)         return @"PSButtonCell";
-    if (self.type == PSEditTextViewCell)   return @"PSEditTextViewCell";
-    return @"Unknown";
-}
-
 @end

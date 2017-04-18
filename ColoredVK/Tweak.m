@@ -108,6 +108,7 @@ UIColor *messagesTextColor;
 UIColor *groupsListTextColor;
 UIColor *audiosTextColor;
 UIColor *audioPlayerTintColor;
+UIColor *menuSelectionColor;
 
 UIColor *blurBackgroundTone;
 
@@ -261,6 +262,7 @@ void reloadPrefs()
         groupsListTextColor =        [UIColor savedColorForIdentifier:@"groupsListTextColor"        fromPrefs:prefs];
         audiosTextColor =            [UIColor savedColorForIdentifier:@"audiosTextColor"            fromPrefs:prefs];
         blurBackgroundTone =        [[UIColor savedColorForIdentifier:@"blurBackgroundTone"         fromPrefs:prefs] colorWithAlphaComponent:0.2];
+        menuSelectionColor =        [[UIColor savedColorForIdentifier:@"menuSelectionColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
         
         
         if (cvkMainController.navBarImageView) [cvkMainController.navBarImageView updateViewForKey:@"navbarImageBlackout"];
@@ -1175,7 +1177,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
         cell.contentView.backgroundColor = [UIColor clearColor];
         
         UIView *selectedBackView = [UIView new];
-        if (menuSelectionStyle == CVKCellSelectionStyleTransparent) selectedBackView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
+        if (menuSelectionStyle == CVKCellSelectionStyleTransparent) selectedBackView.backgroundColor = menuSelectionColor;
         else if (menuSelectionStyle == CVKCellSelectionStyleBlurred) {
             selectedBackView.backgroundColor = [UIColor clearColor];
             if (![selectedBackView.subviews containsObject: [selectedBackView viewWithTag:100] ]) [selectedBackView addSubview:blurForView(selectedBackView, 100)];
@@ -1255,7 +1257,7 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
     if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")]) {
         if (enabled && changeAudioPlayerAppearance) {
             if (!cvkMainController.coverView) cvkMainController.coverView = [[ColoredVKAudioCoverView alloc] initWithFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
-            audioPlayerTintColor = cvkMainController.coverView.color?cvkMainController.coverView.color:[UIColor whiteColor];
+            audioPlayerTintColor = cvkMainController.coverView.color;
             
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.topItem.titleView.hidden = YES;
@@ -1540,6 +1542,16 @@ CHOptimizedMethod(1, self, void, PSListController, viewWillAppear, BOOL, animate
     setBlur(self.navigationController.navigationBar, NO);
 }
 
+#pragma mark SelectAccountTableViewController
+@interface SelectAccountTableViewController : UITableViewController @end
+CHDeclareClass(SelectAccountTableViewController);
+CHOptimizedMethod(1, self, void, SelectAccountTableViewController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, SelectAccountTableViewController, viewWillAppear, animated);
+    setBlur(self.navigationController.navigationBar, NO);
+}
+
+
 
 
 #pragma mark MessageController
@@ -1645,7 +1657,9 @@ CHConstructor
             CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
             CFNotificationCenterAddObserver(center, NULL, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             CFNotificationCenterAddObserver(center, NULL, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-                
+            
+            CHLoadLateClass(SelectAccountTableViewController);
+            CHHook(1, SelectAccountTableViewController, viewWillAppear);
                 
             CHLoadLateClass(MessageController);
             CHHook(1, MessageController, viewWillAppear);

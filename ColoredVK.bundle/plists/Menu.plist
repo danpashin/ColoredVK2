@@ -107,6 +107,18 @@
 			</array>
 		</dict>
 		<dict>
+			<key>action</key>
+			<string>showColorPicker:</string>
+			<key>label</key>
+			<string>CHANGE_COLOR</string>
+			<key>cellClass</key>
+			<string>ColoredVKColorCell</string>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>id</key>
+			<string>menuSelectionColor</string>
+		</dict>
+		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>

@@ -19,8 +19,11 @@ makeIPA () {
     echo "[->] Compiling additional resources..."
     ${DEVELOPER_BIN_DIR}/actool --minimum-deployment-target ${IPHONEOS_DEPLOYMENT_TARGET} --platform ${PLATFORM_NAME} --compile "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" "${PROJECT_DIR}/ColoredVK-Prefs/Images.xcassets"
     
+    find ${PROJECT_DIR} -iname '*.xib' -exec sh -c 'FULL_XIB=$(basename {}); XIB_NAME="${FULL_XIB%.*}"; ${DEVELOPER_BIN_DIR}/ibtool --compile "${BUILT_PRODUCTS_DIR}/$XIB_NAME.nib" {}' \;
+    mv ${BUILT_PRODUCTS_DIR}/*.nib "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/"
+    
     echo "[->] Copying resources to temp directory..."
-    TEMP_FOLDER="${BUILT_PRODUCTS_DIR}/Temp"Assets.car
+    TEMP_FOLDER="${BUILT_PRODUCTS_DIR}/Temp"
     mkdir "$TEMP_FOLDER"
     cp -r "$FOLDER_TO_PACK/vkUnarch/Payload" "$TEMP_FOLDER"
     cp -r "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" "$TEMP_FOLDER/Payload/$APP_NAME"

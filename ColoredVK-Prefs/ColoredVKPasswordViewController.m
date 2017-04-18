@@ -45,11 +45,20 @@
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|"   options:0 metrics:nil views:@{@"view":self.tableView}]];
     
     
+        
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 60)];
     
-    UILabel *footerView = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.tableView.frame.size.width - 20, 40)];
-    footerView.text = CVKLocalizedStringFromTableInBundle(@"PASSWORD_WARNING", nil, self.cvkBundle);
-    footerView.numberOfLines = 0;
-    footerView.font = [UIFont systemFontOfSize:IS_IPAD?[UIFont systemFontSize]:[UIFont smallSystemFontSize]];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, footerView.frame.size.width - 20, footerView.frame.size.height)];
+    label.text = CVKLocalizedStringFromTableInBundle(@"PASSWORD_WARNING", nil, self.cvkBundle);
+    label.numberOfLines = 0;
+    label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+    label.textColor = [UIColor colorWithRed:0.427 green:0.427 blue:0.447 alpha:1.0];
+    [footerView addSubview:label];
+    
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    [footerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":label}]];
+    [footerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[view]-|" options:0 metrics:nil views:@{@"view":label}]];
+
     self.tableView.tableFooterView = footerView;
     
     
