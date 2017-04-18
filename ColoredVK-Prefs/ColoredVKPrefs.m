@@ -68,6 +68,7 @@
             break;
         }
     }
+    self.navigationItem.title = self.specifier?self.specifier.name:@"";
 }
 
 - (id)readPreferenceValue:(PSSpecifier *)specifier

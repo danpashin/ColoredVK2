@@ -52,5 +52,6 @@
     [ColoredVKInstaller sharedInstaller];
 #endif
     self.prefsTableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.view];
+    self.navigationItem.title = @"";
 }
 @end
