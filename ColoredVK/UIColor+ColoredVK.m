@@ -11,6 +11,7 @@
 #import "PrefixHeader.h"
 
 @implementation UIColor (ColoredVK)
+
 + (UIColor *)colorFromString:(NSString *)string
 {
     return string.colorValue;
@@ -20,7 +21,7 @@
 {
     CGFloat r, g, b, a;
     [self getRed:&r green:&g blue:&b alpha:&a];
-    return [UIColor colorWithRed:MAX(r - 0.2, 0.0) green:MAX(g - 0.2, 0.0) blue:MAX(b - 0.2, 0.0)  alpha:a];
+    return [UIColor colorWithRed:MAX(r - 0.2, 0.0) green:MAX(g - 0.2, 0.0) blue:MAX(b - 0.2, 0.0) alpha:a];
 }
 
 
@@ -51,7 +52,7 @@
     else if ([identifier isEqualToString:@"messageBubbleSentTintColor"]) return [UIColor colorWithRed:205/255.0f green:226/255.0f blue:250/255.0f alpha:1];
     else if ([identifier isEqualToString:@"messageReadColor"])           return [UIColor colorWithWhite:1 alpha:0.15];
     else if ([identifier containsString:@"TextColor"])                   return [UIColor colorWithWhite:1 alpha:0.9];
-    else if ([identifier isEqualToString:@"blurBackgroundTone"])         return [UIColor clearColor];
+    else if ([identifier containsString:@"BlurTone"])                    return [UIColor clearColor];
     else if ([identifier isEqualToString:@"menuSelectionColor"])         return [UIColor whiteColor];
     else                                                                 return [UIColor blackColor];
 }

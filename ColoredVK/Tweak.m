@@ -58,10 +58,6 @@ CGFloat groupsListImageBlackout;
 CGFloat audioImageBlackout;
 CGFloat navbarImageBlackout;
 
-BOOL useMessagesBlur;
-BOOL useMessagesListBlur;
-BOOL useGroupsListBlur;
-BOOL useAudioBlur;
 
 BOOL useMenuParallax;
 BOOL useMessagesListParallax;
@@ -110,13 +106,27 @@ UIColor *audiosTextColor;
 UIColor *audioPlayerTintColor;
 UIColor *menuSelectionColor;
 
-UIColor *blurBackgroundTone;
+
+UIColor *messagesBlurTone;
+UIColor *messagesListBlurTone;
+UIColor *groupsListBlurTone;
+UIColor *audiosBlurTone;
+
+BOOL messagesUseBlur;
+BOOL messagesListUseBlur;
+BOOL groupsListUseBlur;
+BOOL audiosUseBlur;
+
 
 NSString *userToken;
 
 CVKCellSelectionStyle menuSelectionStyle;
 UIKeyboardAppearance keyboardStyle;
-UIBlurEffectStyle blurStyle;
+
+UIBlurEffectStyle messagesBlurStyle;
+UIBlurEffectStyle messagesListBlurStyle;
+UIBlurEffectStyle groupsListBlurStyle;
+UIBlurEffectStyle audiosBlurStyle;
 
 ColoredVKMainController *cvkMainController;
 VKMMainController *mainController;
@@ -213,10 +223,10 @@ void reloadPrefs()
         hideMessagesListSeparators = [prefs[@"hideMessagesListSeparators"] boolValue];
         hideGroupsListSeparators = [prefs[@"hideGroupsListSeparators"] boolValue];
         
-        useMessagesBlur = [prefs[@"useMessagesBlur"] boolValue];
-        useMessagesListBlur = [prefs[@"useMessagesListBlur"] boolValue];
-        useGroupsListBlur = [prefs[@"useGroupsListBlur"] boolValue];
-        useAudioBlur = [prefs[@"useAudioBlur"] boolValue];
+        messagesUseBlur = [prefs[@"messagesUseBlur"] boolValue];
+        messagesListUseBlur = [prefs[@"messagesListUseBlur"] boolValue];
+        groupsListUseBlur = [prefs[@"groupsListUseBlur"] boolValue];
+        audiosUseBlur = [prefs[@"audiosUseBlur"] boolValue];
         
         useMessagesListParallax = [prefs[@"useMessagesListParallax"] boolValue];
         useMessagesParallax = [prefs[@"useMessagesParallax"] boolValue];
@@ -244,7 +254,11 @@ void reloadPrefs()
         updatesInterval = prefs[@"updatesInterval"]?[prefs[@"updatesInterval"] doubleValue]:1.0;
         menuSelectionStyle = prefs[@"menuSelectionStyle"]?[prefs[@"menuSelectionStyle"] integerValue]:CVKCellSelectionStyleTransparent;
         keyboardStyle = prefs[@"keyboardStyle"]?[prefs[@"keyboardStyle"] integerValue]:UIKeyboardAppearanceDefault;
-        blurStyle = prefs[@"blurStyle"]?[prefs[@"blurStyle"] integerValue]:UIBlurEffectStyleLight;
+        
+        messagesBlurStyle = prefs[@"messagesBlurStyle"]?[prefs[@"messagesBlurStyle"] integerValue]:UIBlurEffectStyleLight;
+        messagesListBlurStyle = prefs[@"messagesListBlurStyle"]?[prefs[@"messagesListBlurStyle"] integerValue]:UIBlurEffectStyleLight;
+        groupsListBlurStyle = prefs[@"groupsListBlurStyle"]?[prefs[@"groupsListBlurStyle"] integerValue]:UIBlurEffectStyleLight;
+        audiosBlurStyle = prefs[@"audiosBlurStyle"]?[prefs[@"audiosBlurStyle"] integerValue]:UIBlurEffectStyleLight;
         
         
         menuSeparatorColor =         [UIColor savedColorForIdentifier:@"MenuSeparatorColor"         fromPrefs:prefs];
@@ -261,7 +275,10 @@ void reloadPrefs()
         messagesListTextColor =      [UIColor savedColorForIdentifier:@"messagesListTextColor"      fromPrefs:prefs];
         groupsListTextColor =        [UIColor savedColorForIdentifier:@"groupsListTextColor"        fromPrefs:prefs];
         audiosTextColor =            [UIColor savedColorForIdentifier:@"audiosTextColor"            fromPrefs:prefs];
-        blurBackgroundTone =        [[UIColor savedColorForIdentifier:@"blurBackgroundTone"         fromPrefs:prefs] colorWithAlphaComponent:0.2];
+        messagesBlurTone =          [[UIColor savedColorForIdentifier:@"messagesBlurTone"           fromPrefs:prefs] colorWithAlphaComponent:0.3];
+        messagesListBlurTone =      [[UIColor savedColorForIdentifier:@"messagesListBlurTone"       fromPrefs:prefs] colorWithAlphaComponent:0.3];
+        groupsListBlurTone =        [[UIColor savedColorForIdentifier:@"groupsListBlurTone"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
+        audiosBlurTone =            [[UIColor savedColorForIdentifier:@"audiosBlurTone"             fromPrefs:prefs] colorWithAlphaComponent:0.3];
         menuSelectionColor =        [[UIColor savedColorForIdentifier:@"menuSelectionColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
         
         
@@ -281,13 +298,13 @@ void showAlertWithMessage(NSString *message)
 }
 
 
-void setBlur(UIView *bar, BOOL set)
+void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
 {
     if (set) {
-        UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:blurStyle]];
+        UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:style]];
         blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         blurEffectView.tag = 10;
-        blurEffectView.backgroundColor = blurBackgroundTone;
+        blurEffectView.backgroundColor = color;
         
         UIView *borderView = [UIView new];
         borderView.backgroundColor = [UIColor whiteColor];
@@ -379,19 +396,35 @@ void setToolBar(UIToolbar *toolbar)
                 
             }
         } 
-    } else setBlur(toolbar, NO);
+    } else setBlur(toolbar, NO, nil, 0);
 }
 
 
 void setupSearchController(UISearchDisplayController *controller, BOOL reset)
 {
     BOOL shouldCustomize = NO;
+    UIColor *blurColor = [UIColor clearColor];
+    UIBlurEffectStyle blurStyle = 0;
     int tag = (int)controller.searchBar.tag;
-    if ((tag == 1) && enabledMessagesListImage) shouldCustomize = YES;
-    else if ((tag == 2) && enabledGroupsListImage) shouldCustomize = YES;
-    else if ((tag == 3) && enabledAudioImage) shouldCustomize = YES;
-    else if ((tag == 4) && enabledAudioImage) shouldCustomize = YES;
-    else if ((tag == 5) && enabledMenuImage) shouldCustomize = YES;
+    if ((tag == 1) && enabledMessagesListImage) {
+        shouldCustomize = YES;
+        blurColor = messagesListBlurTone;
+        blurStyle = messagesListBlurStyle;
+    } else if ((tag == 2) && enabledGroupsListImage) {
+        shouldCustomize = YES;
+        blurColor = groupsListBlurTone;
+        blurStyle = groupsListBlurStyle;
+    }    else if ((tag == 3) && enabledAudioImage) {
+        shouldCustomize = YES;
+        blurColor = audiosBlurTone;
+        blurStyle = audiosBlurStyle;
+    } else if ((tag == 4) && enabledAudioImage) {
+        shouldCustomize = YES;
+        blurColor = audiosBlurTone;
+        blurStyle = audiosBlurStyle;
+    }  else if ((tag == 5) && enabledMenuImage) {
+        shouldCustomize = YES;
+    }
     
     if (enabled && shouldCustomize) {
         if (reset) {
@@ -429,7 +462,7 @@ void setupSearchController(UISearchDisplayController *controller, BOOL reset)
             
             UIView *backgroundView = (controller.searchBar)._backgroundView;
             UIVisualEffectView *barBlurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:blurStyle]];
-            barBlurEffectView.backgroundColor = blurBackgroundTone;
+            barBlurEffectView.backgroundColor = blurColor;
             barBlurEffectView.frame = CGRectMake(0, 0, backgroundView.superview.frame.size.width, backgroundView.superview.frame.size.height+21);
             barBlurEffectView.tag = 10;
             [backgroundView addSubview:barBlurEffectView];
@@ -441,7 +474,7 @@ void setupSearchController(UISearchDisplayController *controller, BOOL reset)
                     scopeBackgroundView.hidden = YES;
                     UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:blurStyle]];
                     blurEffectView.frame = scopeBackgroundView.superview.bounds;
-                    blurEffectView.backgroundColor = blurBackgroundTone;
+                    blurEffectView.backgroundColor = blurColor;
                     blurEffectView.tag = 10;
                     [scopeBackgroundView.superview addSubview:blurEffectView];
                     [scopeBackgroundView.superview sendSubviewToBack:blurEffectView];
@@ -782,7 +815,7 @@ CHOptimizedMethod(0, self, void, VKMLiveController, viewWillLayoutSubviews)
             [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
             self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2];
             self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
-            setBlur(self.navigationController.navigationBar, useAudioBlur);
+            setBlur(self.navigationController.navigationBar, audiosUseBlur, audiosBlurTone, audiosBlurStyle);
         }
     }
 }
@@ -817,16 +850,30 @@ CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, anima
 {
     CHSuper(1, VKMTableController, viewWillAppear, animated);
     BOOL shouldAddBlur = NO;
-    if (enabled) {        
-             if (useMessagesBlur && ([CLASS_NAME(self) isEqualToString:@"MultiChatController"] || [CLASS_NAME(self) isEqualToString:@"SingleUserChatController"])) shouldAddBlur = YES;
-        else if (useGroupsListBlur && [CLASS_NAME(self) isEqualToString:@"GroupsController"]) shouldAddBlur = YES;
-        else if (useMessagesListBlur && [CLASS_NAME(self) isEqualToString:@"DialogsController"]) shouldAddBlur = YES;
-        else if (useAudioBlur && [CLASS_NAME(self) isEqualToString:@"AudioAlbumController"]) shouldAddBlur = YES;
-        else if (useAudioBlur && [CLASS_NAME(self) isEqualToString:@"AudioAlbumsController"]) shouldAddBlur = YES;
-        else shouldAddBlur = NO;
+    UIColor *blurColor = [UIColor clearColor];
+    UIBlurEffectStyle blurStyle = 0;
+    if (enabled) {
+        if (messagesUseBlur && ([CLASS_NAME(self) isEqualToString:@"MultiChatController"] || [CLASS_NAME(self) isEqualToString:@"SingleUserChatController"])) {
+            shouldAddBlur = YES;
+            blurColor = messagesBlurTone;
+            blurStyle = messagesBlurStyle;
+        } else if (groupsListUseBlur && [CLASS_NAME(self) isEqualToString:@"GroupsController"]) {
+            shouldAddBlur = YES;
+            blurColor = groupsListBlurTone;
+            blurStyle = groupsListBlurStyle;
+        } else if (messagesListUseBlur && [CLASS_NAME(self) isEqualToString:@"DialogsController"]) {
+            shouldAddBlur = YES;
+            blurColor = messagesListBlurTone;
+            blurStyle = messagesListBlurStyle;
+        } else if (audiosUseBlur && ([CLASS_NAME(self) isEqualToString:@"AudioAlbumController"] || [CLASS_NAME(self) isEqualToString:@"AudioAlbumsController"])) {
+            shouldAddBlur = YES;
+            blurColor = audiosBlurTone;
+            blurStyle = audiosBlurStyle;
+        } else shouldAddBlur = NO;
     } else shouldAddBlur = NO;
     
-    setBlur(self.navigationController.navigationBar, shouldAddBlur);
+    setBlur(self.navigationController.navigationBar, NO, nil, 0);
+    setBlur(self.navigationController.navigationBar, shouldAddBlur, blurColor, blurStyle);
 }
 
 #pragma mark VKMToolbarController
@@ -839,12 +886,17 @@ CHOptimizedMethod(1, self, void, VKMToolbarController, viewWillAppear, BOOL, ani
         setToolBar(self.toolbar);
         
         BOOL shouldAddBlur = NO;
+        UIColor *blurColor = [UIColor clearColor];
+        UIBlurEffectStyle blurStyle = 0;
         if (enabled) {
-            if (useGroupsListBlur && [CLASS_NAME(self) isEqualToString:@"GroupsController"]) shouldAddBlur = YES;
-            else shouldAddBlur = NO;
+            if (groupsListUseBlur && [CLASS_NAME(self) isEqualToString:@"GroupsController"]) {
+                shouldAddBlur = YES;
+                blurColor = groupsListBlurTone;
+                blurStyle = groupsListBlurStyle;
+            } else shouldAddBlur = NO;
         } else shouldAddBlur = NO;
         
-        setBlur(self.toolbar, shouldAddBlur);
+        setBlur(self.toolbar, shouldAddBlur, blurColor, blurStyle);
     }
 }
 
@@ -896,7 +948,7 @@ CHOptimizedMethod(0, self, void, GroupsController, viewWillLayoutSubviews)
             NSString *version = VKVersion();
             if (compareVersions(version, @"2.5") <= 0) {
                 for (UIView *view in self.view.subviews) {
-                         if ([view isKindOfClass:[UIToolbar class]] && useGroupsListBlur) { setBlur(view, YES); break; }
+                         if ([view isKindOfClass:[UIToolbar class]] && groupsListUseBlur) { setBlur(view, YES, groupsListBlurTone, groupsListBlurStyle); break; }
                     else if ([view isKindOfClass:[UIToolbar class]] && enabledToolBarColor) { setToolBar((UIToolbar*)view); break; } 
                 }
             }
@@ -1034,7 +1086,7 @@ CHOptimizedMethod(1, self, void, ChatController, viewWillAppear, BOOL, animated)
     
     if ([self isKindOfClass:NSClassFromString(@"ChatController")]) {
         setToolBar(self.inputPanel);
-        if (enabled && useMessagesBlur) setBlur(self.inputPanel, YES);
+        if (enabled && messagesUseBlur) setBlur(self.inputPanel, YES, messagesBlurTone, messagesBlurStyle);
     }
 }
 
@@ -1074,10 +1126,10 @@ CHOptimizedMethod(2, self, UITableViewCell*, ChatController, tableView, UITableV
 CHOptimizedMethod(0, self, UIButton*, ChatController, editForward)
 {
     UIButton *forwardButton = CHSuper(0, ChatController, editForward);
-    if (enabled && useMessagesBlur) {
+    if (enabled && messagesUseBlur) {
         [forwardButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [forwardButton setImage:[[forwardButton imageForState:UIControlStateNormal] imageWithTintColor:[UIColor whiteColor]] forState:UIControlStateNormal];
-        for (UIView *subview in forwardButton.superview.subviews) if ([subview isKindOfClass:[UIToolbar class]]) { setBlur(subview, YES); break; }
+        for (UIView *subview in forwardButton.superview.subviews) if ([subview isKindOfClass:[UIToolbar class]]) { setBlur(subview, YES, messagesBlurTone, messagesBlurStyle); break; }
     }
     return forwardButton;
 }
@@ -1376,7 +1428,7 @@ CHOptimizedMethod(1, self, void, AudioPlaylistController, viewWillAppear, BOOL, 
     if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
         self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2];
-        setBlur(self.navigationController.navigationBar, YES);
+        setBlur(self.navigationController.navigationBar, YES, audiosBlurTone, audiosBlurStyle);
     }
 }
 
@@ -1463,7 +1515,7 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
             for (UIView *view in self.navigationItem.titleView.subviews) if ([view respondsToSelector:@selector(setTextColor:)]) ((UILabel*)view).textColor = barForegroundColor;
         }
         
-        setBlur(self.navigationController.navigationBar, NO);
+        setBlur(self.navigationController.navigationBar, NO, nil, 0);
     }
 }
 
@@ -1539,7 +1591,7 @@ CHOptimizedMethod(1, self, void, PSListController, viewWillAppear, BOOL, animate
 {
     CHSuper(1, PSListController, viewWillAppear, animated);
     self.navigationController.navigationBar._backgroundView.alpha = 1.0;
-    setBlur(self.navigationController.navigationBar, NO);
+    setBlur(self.navigationController.navigationBar, NO, nil, 0);
 }
 
 #pragma mark SelectAccountTableViewController
@@ -1548,7 +1600,7 @@ CHDeclareClass(SelectAccountTableViewController);
 CHOptimizedMethod(1, self, void, SelectAccountTableViewController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, SelectAccountTableViewController, viewWillAppear, animated);
-    setBlur(self.navigationController.navigationBar, NO);
+    setBlur(self.navigationController.navigationBar, NO, nil, 0);
 }
 
 
@@ -1559,7 +1611,7 @@ CHDeclareClass(MessageController);
 CHOptimizedMethod(1, self, void, MessageController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, MessageController, viewWillAppear, animated);
-    setBlur(self.navigationController.navigationBar, NO);
+    setBlur(self.navigationController.navigationBar, NO, nil, 0);
 }
 
 

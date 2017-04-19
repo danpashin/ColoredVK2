@@ -48,7 +48,7 @@
 			<key>cell</key>
 			<string>PSTableCell</string>
 			<key>id</key>
-			<string>BlurBackgroundTone</string>
+			<string>BlurTone</string>
 		</dict>
 	</array>
 </dict>
