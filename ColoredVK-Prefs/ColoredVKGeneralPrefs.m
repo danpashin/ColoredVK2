@@ -112,7 +112,19 @@
         BOOL success = [[NSFileManager defaultManager] removeItemAtPath:CVK_CACHE_PATH error:&error];
         if (success && !error) [hud showSuccess];
         else [hud showFailureWithStatus:[NSString stringWithFormat:@"%@\n%@", error.localizedDescription, error.localizedFailureReason]];
+        [self reloadSpecifiers];
     }];
+}
+
+- (NSString *)cacheSize
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    float size = 0;
+    for (NSString *fileName in [fileManager subpathsOfDirectoryAtPath:CVK_CACHE_PATH error:nil]) {
+        size += [[fileManager attributesOfItemAtPath:[CVK_CACHE_PATH stringByAppendingPathComponent:fileName] error:nil][NSFileSize] floatValue];
+    }
+    size = size / 1024.0f / 1024.0f;
+    return [NSString stringWithFormat:@"%.1f MB", size];
 }
 
 - (void)resetSettings
