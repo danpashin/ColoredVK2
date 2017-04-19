@@ -21,6 +21,7 @@
     if ([self.cellTarget isKindOfClass:[ColoredVKPrefs class]]) {
         if (self.specifier.properties[@"textColor"]) self.titleLabel.textColor = [UIColor colorFromString:self.specifier.properties[@"textColor"]];
         if ([self.specifier.properties[@"shouldCenter"] boolValue]) self.titleLabel.center = self.contentView.center;
+        if ([self.specifier.properties[@"addDisclosureIndicator"] boolValue]) self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
         if ([self.accessoryView isKindOfClass:UISwitch.class]) {
             UISwitch *switchView = (UISwitch *)self.accessoryView;

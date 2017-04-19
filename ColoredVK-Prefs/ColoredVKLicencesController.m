@@ -23,30 +23,24 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];    
+    [super viewDidLoad];
+    self.view.backgroundColor = [UIColor whiteColor];
     
-    NSString *path = [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] pathForResource:@"AdvancedInfo" ofType:@"plist" inDirectory:@"plists"];
-    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:path][@"Licences"];
+    NSString *path = [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] pathForResource:@"Libraries" ofType:@"txt" inDirectory:@"plists"];
     
-    NSString *text = @"";
-    
-    for (NSString *key in [dict.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]) {
-        text = [text stringByAppendingFormat:@"%@\n\n%@\n\n\n", key, [dict valueForKey:key]];
-    }
-    
-    UITextView *textView = [UITextView new];
-    textView.frame = CGRectMake(0, self.navigationController.navigationBar.frame.size.height + 20, 
-                                self.navigationController.view.frame.size.width, 
-                                self.navigationController.view.frame.size.height - 20);
+    UITextView *textView = [[UITextView alloc] initWithFrame:self.view.bounds];
     textView.backgroundColor = [UIColor clearColor];
     textView.userInteractionEnabled = YES;
     textView.scrollEnabled = YES;
     textView.editable = NO;
-    textView.text = text;
+    textView.text = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
     [self.view addSubview:textView];
     
-    self.navigationItem.title = @"Licences";
+    textView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[view]|" options:0 metrics:nil views:@{@"view":textView}]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view":textView}]];
     
+    self.navigationItem.title = @"Licences";
 }
 
 @end

@@ -132,11 +132,15 @@
 			<key>label</key>
 			<string>USED_LIBRARIES</string>
 			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>detail</key>
-			<string>ColoredVKLicencesController</string>
+			<string>PSButtonCell</string>
+			<key>action</key>
+			<string>showUsedLibraries</string>
 			<key>icon</key>
 			<string>CopyrightIcon.png</string>
+			<key>textColor</key>
+			<string>0,0,0,1</string>
+			<key>addDisclosureIndicator</key>
+			<true/>
 		</dict>
 	</array>
 </dict>

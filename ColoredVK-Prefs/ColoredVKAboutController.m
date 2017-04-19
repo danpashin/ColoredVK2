@@ -9,7 +9,7 @@
 #import "ColoredVKAboutController.h"
 #import "ColoredVKHUD.h"
 #import "NSDate+DateTools.h"
-
+#import "ColoredVKLicencesController.h"
 
 @implementation ColoredVKAboutController
 
@@ -81,6 +81,12 @@
     UIApplication *application = [UIApplication sharedApplication];
     if ([application canOpenURL:appURL]) [self openURL:appURL];
     else [self openURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://vk.com/%@", specifier.properties[@"url"]]]];
+}
+
+- (void)showUsedLibraries
+{
+    ColoredVKLicencesController *controller = [ColoredVKLicencesController new];
+    [self.navigationController pushViewController:controller animated:YES];
 }
 @end
 

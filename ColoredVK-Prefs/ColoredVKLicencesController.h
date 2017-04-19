@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PSListController.h"
 
-@interface ColoredVKLicencesController : PSListController
+@interface ColoredVKLicencesController : UIViewController
 @end
