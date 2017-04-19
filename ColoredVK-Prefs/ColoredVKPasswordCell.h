@@ -19,6 +19,8 @@
 
 @interface ColoredVKPasswordCell : UITableViewCell <UITextFieldDelegate>
 
++ (ColoredVKPasswordCell *)cellForViewController:(UIViewController *)viewController;
+
 @property (strong, nonatomic) IBOutlet UITextField *textField;
 @property (strong, nonatomic) IBOutlet UILabel *label;
 @property (strong, nonatomic) NSString *identifier;

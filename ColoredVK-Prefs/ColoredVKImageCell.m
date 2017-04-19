@@ -42,16 +42,16 @@
         self.previewImageView.frame = CGRectMake(UIScreen.mainScreen.bounds.size.width/1.3 - imageViewSize, (self.contentView.frame.size.height - imageViewSize)/2, imageViewSize, imageViewSize);
         self.previewImageView.backgroundColor = [UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f];
         self.previewImageView.contentMode = UIViewContentModeScaleAspectFill;
-        self.previewImageView.tag = 20;
         self.previewImageView.userInteractionEnabled = YES;
         self.previewImageView.layer.masksToBounds = YES;
-        self.previewImageView.layer.cornerRadius = 7;
-        if (![self.contentView.subviews containsObject: [self.contentView viewWithTag:20] ]) [self.contentView addSubview:self.previewImageView];
+        self.previewImageView.layer.cornerRadius = CGRectGetHeight(self.previewImageView.frame) / 4;
+        [self.contentView addSubview:self.previewImageView];
         
         self.previewImageView.translatesAutoresizingMaskIntoConstraints = NO;
         NSDictionary *metrics = @{@"width":@(imageViewSize)};
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_previewImageView(width)]-|" options:0 metrics:metrics views:NSDictionaryOfVariableBindings(_previewImageView)]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_previewImageView(width)]-|" options:0 metrics:metrics views:NSDictionaryOfVariableBindings(_previewImageView)]];
+        NSDictionary *views = @{@"view":self.previewImageView};
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[view(width)]-|" options:0 metrics:metrics views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[view(width)]-|"   options:0 metrics:metrics views:views]];
         
         NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
         UISwitch *switchView = [UISwitch new];

@@ -7,8 +7,14 @@
 //
 
 #import "ColoredVKPasswordCell.h"
+#import "PrefixHeader.h"
 
 @implementation ColoredVKPasswordCell
+
++ (ColoredVKPasswordCell *)cellForViewController:(UIViewController *)viewController
+{
+    return [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] loadNibNamed:NSStringFromClass([ColoredVKPasswordCell class]) owner:viewController options:nil].firstObject;
+}
 
 - (void)awakeFromNib {
     [super awakeFromNib];

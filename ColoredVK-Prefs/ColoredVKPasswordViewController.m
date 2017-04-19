@@ -38,6 +38,7 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.separatorColor = CVKTableViewSeparatorColor;
+    self.tableView.allowsSelection = NO;
     [self.view addSubview:self.tableView];
     
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -61,18 +62,17 @@
 
     self.tableView.tableFooterView = footerView;
     
-    
-    self.currentPassCell = [self.cvkBundle loadNibNamed:@"ColoredVKPasswordCell" owner:self options:nil][0];
+    self.currentPassCell = [ColoredVKPasswordCell cellForViewController:self];
     self.currentPassCell.label.text = CVKLocalizedStringFromTableInBundle(@"CURRENT", nil, self.cvkBundle);
     self.currentPassCell.textField.placeholder = CVKLocalizedStringFromTableInBundle(@"PASSWORD", nil, self.cvkBundle);
     self.currentPassCell.delegate = self;
     
-    self.passNewCell = [self.cvkBundle loadNibNamed:@"ColoredVKPasswordCell" owner:self options:nil][0];
+    self.passNewCell = [ColoredVKPasswordCell cellForViewController:self];
     self.passNewCell.label.text = CVKLocalizedStringFromTableInBundle(@"NEW", nil, self.cvkBundle);
     self.passNewCell.textField.placeholder = CVKLocalizedStringFromTableInBundle(@"PASSWORD", nil, self.cvkBundle);
     self.passNewCell.delegate = self;
     
-    self.confirmCell = [self.cvkBundle loadNibNamed:@"ColoredVKPasswordCell" owner:self options:nil][0];
+    self.confirmCell = [ColoredVKPasswordCell cellForViewController:self];
     self.confirmCell.label.text = CVKLocalizedStringFromTableInBundle(@"CONFIRM", nil, self.cvkBundle);
     self.confirmCell.textField.placeholder = CVKLocalizedStringFromTableInBundle(@"PASSWORD", nil, self.cvkBundle);
     self.confirmCell.delegate = self;
