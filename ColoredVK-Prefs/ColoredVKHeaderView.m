@@ -34,19 +34,18 @@
         subtitle.font = [UIFont systemFontOfSize:14.0];
         subtitle.text = @"Change your VK App sense!";
         subtitle.backgroundColor = [UIColor clearColor];
-        subtitle.textColor = [UIColor grayColor];
+        subtitle.textColor = @"348AC7".hexColorValue;
         subtitle.textAlignment = heading.textAlignment;
         [self addSubview:subtitle];
         
         heading.translatesAutoresizingMaskIntoConstraints = NO;
         subtitle.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[heading]-(-10)-[subtitle]-20-|" options:0 metrics:nil views:@{@"heading":heading, @"subtitle":subtitle}]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[heading]-(-10)-[subtitle]-20-|" options:0 metrics:nil views:@{@"heading":heading, @"subtitle":subtitle}]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[heading]-|" options:0 metrics:nil views:@{@"heading":heading}]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[subtitle]-|" options:0 metrics:nil views:@{@"subtitle":subtitle}]];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             heading.textColor = [UIColor colorWithGradientStyle:UIGradientStyleTopToBottom withFrame:heading.bounds andColors:@[@"26D0CE".hexColorValue, @"1A2980".hexColorValue]];
-            subtitle.textColor = @"348AC7".hexColorValue;
         });
     }
     

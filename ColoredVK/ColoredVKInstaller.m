@@ -352,6 +352,7 @@ static void download(NSURLRequest *request,BOOL authorise)
 BOOL licenceContainsKey(NSString *key)
 {
     NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
+    if (decryptedData.length == 0) return NO;
     NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
     if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0))
         return [dict.allKeys containsObject:key];
@@ -362,6 +363,7 @@ BOOL licenceContainsKey(NSString *key)
 id licenceValueForKey(NSString *key)
 {
     NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
+    if (decryptedData.length == 0) return nil;
     NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
     if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0))
         return dict[key];

@@ -36,18 +36,6 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>label</key>
-			<string>USE_PARALLAX</string>
-			<key>key</key>
-			<string>useMessagesParallax</string>
-			<key>id</key>
-			<string>useMessagesParallax</string>
-			<key>default</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>cell</key>
 			<string>PSGroupCell</string>
 		</dict>
 		<dict>
@@ -80,11 +68,23 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>key</key>
-			<string>useMessagesBlur</string>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKBlurPrefsController</string>
+			<key>prefix</key>
+			<string>messages</string>
 			<key>label</key>
-			<string>USE_BLUR</string>
+			<string>BLUR_SETTINGS</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>USE_PARALLAX</string>
+			<key>key</key>
+			<string>useMessagesParallax</string>
+			<key>id</key>
+			<string>useMessagesParallax</string>
 			<key>default</key>
 			<false/>
 		</dict>
@@ -171,7 +171,5 @@
 			<string>messageReadColor</string>
 		</dict>
 	</array>
-	<key>title</key>
-	<string>Messages</string>
 </dict>
 </plist>

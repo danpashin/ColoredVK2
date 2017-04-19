@@ -71,7 +71,5 @@
 			<string>getLastCheckForUpdates</string>
 		</dict>
 	</array>
-	<key>title</key>
-	<string>Updates Settings</string>
 </dict>
 </plist>

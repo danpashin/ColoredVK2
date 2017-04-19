@@ -9,15 +9,12 @@
 #import "ColoredVKLicencesController.h"
 #import "PrefixHeader.h"
 
-@interface ColoredVKLicencesController ()
-
-@end
 
 @implementation ColoredVKLicencesController
 
-- (UIStatusBarStyle) preferredStatusBarStyle
+- (UIStatusBarStyle)preferredStatusBarStyle
 {
-    if ([NSStringFromClass(UIApplication.sharedApplication.keyWindow.rootViewController.class) isEqualToString:@"DeckController"]) return UIStatusBarStyleLightContent;
+    if ([[NSBundle mainBundle].executablePath.lastPathComponent isEqualToString:@"vkclient"]) return UIStatusBarStyleLightContent;
     else return UIStatusBarStyleDefault;
 }
 
@@ -39,8 +36,6 @@
     textView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[view]|" options:0 metrics:nil views:@{@"view":textView}]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view":textView}]];
-    
-    self.navigationItem.title = @"Licences";
 }
 
 @end

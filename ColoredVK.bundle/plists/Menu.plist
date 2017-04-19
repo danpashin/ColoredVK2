@@ -110,7 +110,7 @@
 			<key>action</key>
 			<string>showColorPicker:</string>
 			<key>label</key>
-			<string>CHANGE_COLOR</string>
+			<string>BACKGROUND_COLOR</string>
 			<key>cellClass</key>
 			<string>ColoredVKColorCell</string>
 			<key>cell</key>
@@ -161,7 +161,5 @@
 			<string>HIDE_SEARCH</string>
 		</dict>
 	</array>
-	<key>title</key>
-	<string>Menu</string>
 </dict>
 </plist>

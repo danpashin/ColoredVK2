@@ -7,6 +7,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>CHANGE_PASSWORD_FOOTER</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -17,9 +19,11 @@
 			<string>changePassword</string>
 			<key>shouldCenter</key>
 			<true/>
+			<key>icon</key>
+			<string>LockIcon.png</string>
+			<key>textColor</key>
+			<string>0.35,0.5,0.7,1</string>
 		</dict>
 	</array>
-	<key>title</key>
-	<string></string>
 </dict>
 </plist>

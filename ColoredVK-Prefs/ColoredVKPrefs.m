@@ -21,18 +21,25 @@
 {
     if (!_specifiers) {
         NSString *plistName = [@"plists/" stringByAppendingString:self.specifier.properties[@"plistToLoad"]];
-        
-        NSMutableArray *specifiersArray = [NSMutableArray new];
-        if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
-            self.bundle = self.cvkBundle;
-            specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
-        } else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:bundle:)]) {
-            specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBundle] mutableCopy];
-        } 
-        else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
-            specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
-        }
-        
+        _specifiers = [self specifiersForPlistName:plistName localize:YES];
+    }
+    return _specifiers;
+}
+
+- (NSArray *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize
+{
+    NSMutableArray *specifiersArray = [NSMutableArray new];
+    if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
+        self.bundle = self.cvkBundle;
+        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
+    } else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:bundle:)]) {
+        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBundle] mutableCopy];
+    } 
+    else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
+        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
+    }
+    
+    if (localize) {
         for (PSSpecifier *specifier in specifiersArray) {
             specifier.name = NSLocalizedStringFromTableInBundle(specifier.name, @"ColoredVK", self.bundle, nil);
             
@@ -46,16 +53,15 @@
             
             if ([specifier.identifier isEqualToString:@"checkUpdates"]) [specifier setProperty:@([kColoredVKVersion containsString:@"beta"]) forKey:@"enabled"];
         }
-        
-        if (specifiersArray.count == 0) {
-            specifiersArray = [NSMutableArray new];
-            [specifiersArray addObject:self.errorMessage];
-        }
-        if ([self.specifier.properties[@"shouldAddFooter"] boolValue]) [specifiersArray addObject:self.footer];
-        
-        _specifiers = [specifiersArray copy];
     }
-    return _specifiers;
+    
+    if (specifiersArray.count == 0) {
+        specifiersArray = [NSMutableArray new];
+        [specifiersArray addObject:self.errorMessage];
+    }
+    if ([self.specifier.properties[@"shouldAddFooter"] boolValue]) [specifiersArray addObject:self.footer];
+    
+    return [specifiersArray copy];
 }
 
 - (void)viewDidLoad

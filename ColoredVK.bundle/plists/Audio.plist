@@ -66,13 +66,13 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>key</key>
-			<string>useAudioBlur</string>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKBlurPrefsController</string>
+			<key>prefix</key>
+			<string>audios</string>
 			<key>label</key>
-			<string>USE_BLUR</string>
-			<key>default</key>
-			<false/>
+			<string>BLUR_SETTINGS</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -161,7 +161,5 @@
 			<true/>
 		</dict>
 	</array>
-	<key>title</key>
-	<string>Audio</string>
 </dict>
 </plist>

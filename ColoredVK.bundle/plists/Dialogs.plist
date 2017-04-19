@@ -68,13 +68,13 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>key</key>
-			<string>useMessagesListBlur</string>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKBlurPrefsController</string>
+			<key>prefix</key>
+			<string>messagesList</string>
 			<key>label</key>
-			<string>USE_BLUR</string>
-			<key>default</key>
-			<false/>
+			<string>BLUR_SETTINGS</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -99,7 +99,5 @@
 			<string>HIDE_SEPARATORS</string>
 		</dict>
 	</array>
-	<key>title</key>
-	<string>Messages</string>
 </dict>
 </plist>

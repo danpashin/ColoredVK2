@@ -26,8 +26,6 @@
 "TEXT_COLOR" = "Text color";
 "CHANGE_TEXT_COLOR" = "Change text color";
 "ENABLED_IMAGE" = "Use image instead";
-"USE_BLUR" = "Enable blur";
-"BLUR_STYLE" = "Blur style";
 
 "CHANGE_BACKGROUND" = "Change background";
 "IMAGE_BLACKOUT" = "Image blackout";
@@ -43,6 +41,12 @@
 "CHANGE_MESSAGE_BUBBLE_TINT_COLOR" = "Change message color";
 "MESSAGE_BUBBLE_TINT_COLOR" = "Incoming";
 "MESSAGE_SENT_BUBBLE_TINT_COLOR" = "Sent";
+
+
+"BLUR_SETTINGS" = "Blur settings";
+"USE_BLUR" = "Enable blur";
+"BLUR_STYLE" = "Blur style";
+
 
 "KEYBOARD_STYLE" = "Keyboard style";
 "DEFAULT" = "Default";
@@ -112,4 +116,5 @@
 "MESSAGE_BUBBLE_COLOR_FOOTER" = "This function changes the color of the message bubble. Will only work in VK App 2.9 and later.";
 "HIDE_MESSAGE_NAV_BAR_ITEMS_FOOTER" = "Will hide the person's name and avatar from the navigation bar. It would be very useful if you don't want others to see who you write.";
 "DISABLE_GROUP_COVERS_FOOTER" = "Disabling of covers gives an increase in speed and time of opening of groups.";
+"CHANGE_PASSWORD_FOOTER" = "If you are logged in with your account, in this menu you can change the password.";
 

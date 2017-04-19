@@ -66,13 +66,13 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>key</key>
-			<string>useGroupsListBlur</string>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKBlurPrefsController</string>
+			<key>prefix</key>
+			<string>groupsList</string>
 			<key>label</key>
-			<string>USE_BLUR</string>
-			<key>default</key>
-			<false/>
+			<string>BLUR_SETTINGS</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -113,7 +113,5 @@
 			<string>DISABLE_GROUP_COVERS</string>
 		</dict>
 	</array>
-	<key>title</key>
-	<string>Groups</string>
 </dict>
 </plist>

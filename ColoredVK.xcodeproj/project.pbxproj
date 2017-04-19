@@ -118,6 +118,12 @@
 		A54249C81E0526C60018D3E3 /* UIImage+MultiFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = A54249C41E0526C60018D3E3 /* UIImage+MultiFormat.m */; };
 		A54249CA1E052A930018D3E3 /* ColoredVKAudioCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = A54249C91E052A930018D3E3 /* ColoredVKAudioCoverView.m */; };
 		A54249CB1E052A930018D3E3 /* ColoredVKAudioCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = A54249C91E052A930018D3E3 /* ColoredVKAudioCoverView.m */; };
+		A54E41F51EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */ = {isa = PBXBuildFile; fileRef = A54E41F31EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h */; };
+		A54E41F61EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */ = {isa = PBXBuildFile; fileRef = A54E41F31EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h */; };
+		A54E41F71EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */ = {isa = PBXBuildFile; fileRef = A54E41F31EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h */; };
+		A54E41F81EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */; };
+		A54E41F91EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */; };
+		A54E41FA1EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */; };
 		A55434FB1E636B19003B4256 /* Tweak.h in Headers */ = {isa = PBXBuildFile; fileRef = A55434FA1E636B19003B4256 /* Tweak.h */; };
 		A55434FC1E636B19003B4256 /* Tweak.h in Headers */ = {isa = PBXBuildFile; fileRef = A55434FA1E636B19003B4256 /* Tweak.h */; };
 		A56147B71EA0140900B3D8C8 /* ColoredVKAboutController.h in Headers */ = {isa = PBXBuildFile; fileRef = A56147B51EA0140900B3D8C8 /* ColoredVKAboutController.h */; };
@@ -563,6 +569,8 @@
 		A54249C31E0526C60018D3E3 /* UIImage+MultiFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+MultiFormat.h"; sourceTree = "<group>"; };
 		A54249C41E0526C60018D3E3 /* UIImage+MultiFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+MultiFormat.m"; sourceTree = "<group>"; };
 		A54249C91E052A930018D3E3 /* ColoredVKAudioCoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKAudioCoverView.m; sourceTree = "<group>"; };
+		A54E41F31EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKBlurPrefsController.h; sourceTree = "<group>"; };
+		A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKBlurPrefsController.m; sourceTree = "<group>"; };
 		A55434FA1E636B19003B4256 /* Tweak.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tweak.h; sourceTree = "<group>"; };
 		A55F5FFD1D3B81270099BE4F /* KLCPopup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KLCPopup.h; sourceTree = "<group>"; };
 		A55F5FFE1D3B81270099BE4F /* KLCPopup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KLCPopup.m; sourceTree = "<group>"; };
@@ -960,6 +968,8 @@
 				A56147BE1EA0157400B3D8C8 /* ColoredVKPrefs.m */,
 				A599A82C1EA140F600D747D7 /* ColoredVKGeneralPrefs.h */,
 				A599A82D1EA140F600D747D7 /* ColoredVKGeneralPrefs.m */,
+				A54E41F31EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h */,
+				A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */,
 				A5D9799D1DAEB96500607F06 /* ColoredVKMainPrefsController.h */,
 				A5D9799E1DAEB96500607F06 /* ColoredVKMainPrefsController.m */,
 				A56147B51EA0140900B3D8C8 /* ColoredVKAboutController.h */,
@@ -1214,6 +1224,7 @@
 				A52CDBAE1E33EB2400D69AD3 /* ColoredVKHUD.h in Headers */,
 				A5739D5E1EA015A900367595 /* ColoredVKLicencesController.h in Headers */,
 				A576D1C91DC6222C0039884F /* PSTableCell+ColoredVK.h in Headers */,
+				A54E41F61EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */,
 				A5B1E29F1E509246001B8442 /* ColoredVKSettingsController.h in Headers */,
 				A5B1E2891E505633001B8442 /* unzip.h in Headers */,
 				A576D1D11DC6222C0039884F /* KLCPopup.h in Headers */,
@@ -1280,6 +1291,7 @@
 				A5B1E2691E505632001B8442 /* fileenc.h in Headers */,
 				A5D979D71DAEC1E600607F06 /* ColoredVKHeaderView.h in Headers */,
 				A52CDBAD1E33EB2400D69AD3 /* ColoredVKHUD.h in Headers */,
+				A54E41F51EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */,
 				A5B1E2531E505632001B8442 /* aes_via_ace.h in Headers */,
 				A5D979731DAEB8EA00607F06 /* PrefixHeader.h in Headers */,
 				A5739D551EA0159700367595 /* ColoredVKColorPickerViewController.h in Headers */,
@@ -1338,6 +1350,7 @@
 			files = (
 				A5D56A581E70427300A8FFB5 /* crypt.h in Headers */,
 				A5D56A591E70427300A8FFB5 /* ColoredVKMainPrefsController.h in Headers */,
+				A54E41F71EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */,
 				A5D56AD31E70440600A8FFB5 /* AppDelegate.h in Headers */,
 				A5D56A5A1E70427300A8FFB5 /* fileenc.h in Headers */,
 				A5D56A5B1E70427300A8FFB5 /* ColoredVKHeaderView.h in Headers */,
@@ -1625,6 +1638,7 @@
 				A576D1A31DC6220C0039884F /* NSString+ColoredVK.m in Sources */,
 				A5B1E2581E505632001B8442 /* aeskey.c in Sources */,
 				A5B1E26C1E505632001B8442 /* hmac.c in Sources */,
+				A54E41F91EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */,
 				A5739D711EA015BB00367595 /* ColoredVKImageCell.m in Sources */,
 				A54249A21E0522560018D3E3 /* SDWebImagePrefetcher.m in Sources */,
 				A5ED14561DE873BE00138A65 /* UIColor+YUVSpace.m in Sources */,
@@ -1721,6 +1735,7 @@
 				A5D979C81DAEC1CB00607F06 /* UIColor+ColoredVK.m in Sources */,
 				A5739D601EA015A900367595 /* ColoredVKLicencesController.m in Sources */,
 				A5D979C91DAEC1CB00607F06 /* NSString+ColoredVK.m in Sources */,
+				A54E41F81EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */,
 				A5B1E26F1E505632001B8442 /* prng.c in Sources */,
 				A50D222B1DB15E54007F195C /* ColoredVKInstaller.m in Sources */,
 				A5D979CA1DAEC1CB00607F06 /* KLCPopup.m in Sources */,
@@ -1791,6 +1806,7 @@
 				A5D56AD41E70440600A8FFB5 /* AppDelegate.m in Sources */,
 				A5D56AA81E70427300A8FFB5 /* ioapi.c in Sources */,
 				A5D56AA91E70427300A8FFB5 /* NSData+AESCrypt.m in Sources */,
+				A54E41FA1EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */,
 				A5D56AAB1E70427300A8FFB5 /* SSZipArchive.m in Sources */,
 				A5739D5A1EA0159700367595 /* ColoredVKColorPickerViewController.m in Sources */,
 				A5D56AAF1E70427300A8FFB5 /* PSTableCell+ColoredVK.m in Sources */,

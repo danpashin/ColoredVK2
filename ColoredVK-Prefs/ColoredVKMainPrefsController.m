@@ -16,31 +16,15 @@
 - (NSArray *)specifiers
 {
     if (!_specifiers) {
-        NSString *plistName = @"Main";
-        NSMutableArray *specifiersArray = [NSMutableArray new];
-        if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
-            self.bundle = self.cvkBundle;
-            specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
-        } else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:bundle:)]) {
-            specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBundle] mutableCopy];
-        } 
-        else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
-            specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
+        NSArray *specifiersArray = [self specifiersForPlistName:@"Main" localize:YES];
+        
+        for (PSSpecifier *specifier in specifiersArray) {
+            if ([specifier.identifier isEqualToString:@"manageAccount"]) {
+                if (!licenceContainsKey(@"login")) [specifier setProperty:@NO forKey:@"enabled"];
+            }
         }
         
-        if (specifiersArray.count == 0) {
-            specifiersArray = [NSMutableArray new];
-            [specifiersArray addObject:self.errorMessage];
-        }
-        [specifiersArray addObject:self.footer];
-        
-//        for (PSSpecifier *specifier in specifiersArray) {
-//            if ([specifier.identifier isEqualToString:@"manageAccount"]) {
-//                if (!licenceContainsKey(@"login")) [specifier setProperty:@NO forKey:@"enabled"];
-//            }
-//        }
-        
-        _specifiers = [specifiersArray copy];
+        _specifiers = specifiersArray;
     }
     return _specifiers;
 }

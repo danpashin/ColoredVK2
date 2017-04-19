@@ -20,7 +20,7 @@
 "NO_UPDATES_FOUND_BUTTON_TITLE" = "Обновлений не найдено";
 
 "TWEAK_FOOTER_TEXT" = "Версия твика: %@\nВерсия VK App: %@";
-"LOADING_TWEAK_FILES_ERROR_MESSAGE" = "При загрузке файлов произошла ошибка.\nПроверьте  их наличие или обратитесь к разработчику.";
+"LOADING_TWEAK_FILES_ERROR_MESSAGE" = "При загрузке файлов произошла ошибка.\nПроверьте их наличие или обратитесь к разработчику.";
 
 "SELECT_COLOR_TITLE" = "Выбрать цвет";
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Скопировать текущее значение hex";

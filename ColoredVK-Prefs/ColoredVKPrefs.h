@@ -26,5 +26,6 @@
 
 - (void)openURL:(NSURL *)url;
 - (void)presentPopover:(UIViewController *)controller;
+- (NSArray *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize;
 
 @end
