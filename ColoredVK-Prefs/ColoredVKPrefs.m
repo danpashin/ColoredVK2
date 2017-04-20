@@ -21,12 +21,12 @@
 {
     if (!_specifiers) {
         NSString *plistName = [@"plists/" stringByAppendingString:self.specifier.properties[@"plistToLoad"]];
-        _specifiers = [self specifiersForPlistName:plistName localize:YES];
+        _specifiers = [self specifiersForPlistName:plistName localize:YES addFooter:NO];
     }
     return _specifiers;
 }
 
-- (NSArray *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize
+- (NSArray *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize addFooter:(BOOL)addFooter
 {
     NSMutableArray *specifiersArray = [NSMutableArray new];
     if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
@@ -59,7 +59,7 @@
         specifiersArray = [NSMutableArray new];
         [specifiersArray addObject:self.errorMessage];
     }
-    if ([self.specifier.properties[@"shouldAddFooter"] boolValue]) [specifiersArray addObject:self.footer];
+    if (addFooter) [specifiersArray addObject:self.footer];
     
     return [specifiersArray copy];
 }

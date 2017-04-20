@@ -16,7 +16,7 @@
 - (NSArray *)specifiers
 {
     if (!_specifiers) {
-        NSArray *specifiersArray = [self specifiersForPlistName:@"Main" localize:YES];
+        NSArray *specifiersArray = [self specifiersForPlistName:@"Main" localize:YES addFooter:YES];
         
         for (PSSpecifier *specifier in specifiersArray) {
             if ([specifier.identifier isEqualToString:@"manageAccount"]) {

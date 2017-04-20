@@ -715,14 +715,13 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setBarTintColor, UIColor*, bar
                 
                 if (!containsBlur && !containsImageView && !isAudioController) {
                     if (!cvkMainController.navBarImageView) {
-                        CGRect frame = CGRectMake(0, 0, self._backgroundView.frame.size.width, self._backgroundView.frame.size.height);
-                        cvkMainController.navBarImageView = [ColoredVKBackgroundImageView viewWithFrame:frame imageName:@"barImage" blackout:navbarImageBlackout];
+                        cvkMainController.navBarImageView = [ColoredVKBackgroundImageView viewWithFrame:self._backgroundView.bounds imageName:@"barImage" blackout:navbarImageBlackout];
                         cvkMainController.navBarImageView.tag = 24;
                         cvkMainController.navBarImageView.backgroundColor = [UIColor clearColor];
                     }
                     [cvkMainController.navBarImageView addToView:self._backgroundView animated:YES];
                 
-                } else if (containsBlur) [cvkMainController.navBarImageView removeFromView:self._backgroundView];
+                } else if (containsBlur || isAudioController) [cvkMainController.navBarImageView removeFromView:self._backgroundView];
             });
         }
         else if (enabledBarColor) {
@@ -1302,9 +1301,9 @@ CHOptimizedMethod(0, self, UIStatusBarStyle, IOS7AudioController, preferredStatu
     else return CHSuper(0, IOS7AudioController, preferredStatusBarStyle);
 }
 
-CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, animated)
+CHOptimizedMethod(0, self, void, IOS7AudioController, viewDidLoad)
 {
-    CHSuper(1, IOS7AudioController, viewWillAppear, animated);
+    CHSuper(0, IOS7AudioController, viewDidLoad);
     
     if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")]) {
         if (enabled && changeAudioPlayerAppearance) {
@@ -1312,13 +1311,12 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
             audioPlayerTintColor = cvkMainController.coverView.color;
             
             UINavigationBar *navBar = self.navigationController.navigationBar;
+            navBar.tag = 26;
             navBar.topItem.titleView.hidden = YES;
             navBar.shadowImage = [UIImage new];
             [navBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
             navBar.topItem.leftBarButtonItems = @[];
             navBar.tintColor = [UIColor whiteColor];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{ [cvkMainController.navBarImageView removeFromView:navBar._backgroundView]; });
             
             UISwipeGestureRecognizer *downSwipe = [[UISwipeGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender) { [self done:nil]; }];
             downSwipe.direction = UISwipeGestureRecognizerDirectionDown;
@@ -1428,7 +1426,7 @@ CHOptimizedMethod(1, self, void, AudioPlaylistController, viewWillAppear, BOOL, 
     if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
         self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2];
-        setBlur(self.navigationController.navigationBar, YES, audiosBlurTone, audiosBlurStyle);
+        setBlur(self.navigationController.navigationBar, audiosUseBlur, audiosBlurTone, audiosBlurStyle);
     }
 }
 
@@ -1837,7 +1835,7 @@ CHConstructor
             CHHook(0, AudioPlaylistController, preferredStatusBarStyle);
             
             CHLoadLateClass(IOS7AudioController);
-            CHHook(1, IOS7AudioController, viewWillAppear);
+            CHHook(0, IOS7AudioController, viewDidLoad);
             CHHook(0, IOS7AudioController, preferredStatusBarStyle);
             
             CHLoadLateClass(AudioPlayer);
