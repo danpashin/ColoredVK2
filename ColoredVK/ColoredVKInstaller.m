@@ -136,13 +136,7 @@ struct utsname systemInfo;
             else {
                 NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
                 NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
-                if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0)) {
-//                    if (dict[@"key"]) { 
-//                        [dict removeObjectForKey:@"key"];
-//                        NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
-//                        [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
-//                    }
-                    
+                if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0)) {                    
                     if (!dict[@"Device"]) downloadBlock();
                     else {                        
                         if (![dict[@"Device"] isEqualToString:@(systemInfo.machine)]) downloadBlock();
@@ -320,8 +314,7 @@ static void download(NSURLRequest *request,BOOL authorise)
             if (responseDict && !responseDict[@"error"]) {
                 if ([responseDict[@"Status"] isEqualToString:authorise?password:udid]) {
                     if ([responseDict[@"key"] isEqualToString:key]) {
-                        NSString *key = [NSProcessInfo processInfo].globallyUniqueString;
-                        NSMutableDictionary *dict = @{@"UDID":udid, @"Device":@(systemInfo.machine), @"key":key}.mutableCopy;
+                        NSMutableDictionary *dict = @{@"UDID":udid, @"Device":@(systemInfo.machine)}.mutableCopy;
                         if (authorise) [dict setValue:login forKey:@"Login"];
                         NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
                         

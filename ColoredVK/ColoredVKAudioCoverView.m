@@ -25,6 +25,11 @@
 
 @implementation ColoredVKAudioCoverView
 
+void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{@"identifier":@"audioCoverImage"}];
+}
+
 - (instancetype)initWithFrame:(CGRect)frame andSeparationPoint:(CGPoint)point
 {
     self = [super initWithFrame:frame];
@@ -70,6 +75,7 @@
         
         
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateNoCover:) name:@"com.daniilpashin.coloredvk2.image.update" object:nil];
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
     }
     return self;
 }
@@ -82,8 +88,6 @@
 
 - (void)updateCoverForAudioPlayer:(AudioPlayer *)player
 {
-//    if (!self.operation.finished) [self.operation cancel];
-//    self.operation = [NSBlockOperation blockOperationWithBlock:^{
     @synchronized (self) {
         dispatch_async(dispatch_queue_create("com.daniilpashin.coloredvk2.download.queue", DISPATCH_QUEUE_SERIAL), ^{
             self.track = player.audio.title;
@@ -117,8 +121,6 @@
             }];
         });
     }
-//    }];
-//    [self.operation start];
 }
 - (void)changeImageViewImage:(UIImageView *)imageView toImage:(UIImage *)image animated:(BOOL)animated
 {
