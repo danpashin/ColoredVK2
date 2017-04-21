@@ -311,9 +311,11 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
         borderView.alpha = 0.15;
         [blurEffectView addSubview:borderView];
         
+        NSString *verticalFormat = @"";
         if ([bar isKindOfClass:[UINavigationBar class]]) {
             UINavigationBar *navbar = (UINavigationBar *)bar;
             UIView *backgroundView = navbar._backgroundView;
+            verticalFormat = @"V:[view(0.5)]|";
             
             if (![backgroundView.subviews containsObject:[backgroundView viewWithTag:10]]) {
                 [navbar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
@@ -324,25 +326,27 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
                 
                 [backgroundView addSubview:blurEffectView];
                 [backgroundView sendSubviewToBack:blurEffectView];
-
-                borderView.translatesAutoresizingMaskIntoConstraints = NO;
-                [blurEffectView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[borderView(0.5)]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(borderView)]];
-                [blurEffectView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[borderView]|"     options:0 metrics:nil views:NSDictionaryOfVariableBindings(borderView)]];
+                
             }
         } 
         else if  ([bar isKindOfClass:[UIToolbar class]]) {
             UIToolbar *toolBar = (UIToolbar *)bar;
+            verticalFormat = @"V:|[view(0.5)]";
             
             if (![toolBar.subviews containsObject:[toolBar viewWithTag:10]]) {
                 toolBar.barTintColor = [UIColor clearColor];
                 blurEffectView.frame = CGRectMake(0, 0, toolBar.frame.size.width, toolBar.frame.size.height);
-                borderView.frame = CGRectMake(0, 0, toolBar.frame.size.width, 0.5);    
+                borderView.frame = CGRectMake(0, 0, toolBar.frame.size.width, 0.5);
                 
                 [toolBar addSubview:blurEffectView];
                 [toolBar sendSubviewToBack:blurEffectView];
                 [toolBar setBackgroundImage:[UIImage new] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
             }
         }
+        
+        borderView.translatesAutoresizingMaskIntoConstraints = NO;
+        [blurEffectView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:verticalFormat options:0 metrics:nil views:@{@"view":borderView}]];
+        [blurEffectView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|"  options:0 metrics:nil views:@{@"view":borderView}]];
     } else {
         if ([bar isKindOfClass:[UINavigationBar class]]) {
             UINavigationBar *navbar = (UINavigationBar *)bar;

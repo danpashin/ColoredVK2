@@ -41,8 +41,8 @@
         heading.translatesAutoresizingMaskIntoConstraints = NO;
         subtitle.translatesAutoresizingMaskIntoConstraints = NO;
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[heading]-(-10)-[subtitle]-20-|" options:0 metrics:nil views:@{@"heading":heading, @"subtitle":subtitle}]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[heading]-|" options:0 metrics:nil views:@{@"heading":heading}]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[subtitle]-|" options:0 metrics:nil views:@{@"subtitle":subtitle}]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[heading]|" options:0 metrics:nil views:@{@"heading":heading}]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[subtitle]|" options:0 metrics:nil views:@{@"subtitle":subtitle}]];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             heading.textColor = [UIColor colorWithGradientStyle:UIGradientStyleTopToBottom withFrame:heading.bounds andColors:@[@"26D0CE".hexColorValue, @"1A2980".hexColorValue]];

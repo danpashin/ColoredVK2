@@ -7,14 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PSListController.h"
+#import "ColoredVKPrefs.h"
 
-@interface ColoredVKSettingsController : PSListController
-
-@property (readonly, nonatomic) PSSpecifier *errorMessage;
-@property (strong, nonatomic, readonly) NSBundle *cvkBundle;
-@property (strong, nonatomic, readonly) NSString *prefsPath;
-@property (strong, nonatomic, readonly) NSString *cvkFolder;
+@interface ColoredVKSettingsController : ColoredVKPrefs
 
 - (void)actionBackup;
 - (void)actionReset;

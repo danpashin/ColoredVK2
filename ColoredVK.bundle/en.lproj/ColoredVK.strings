@@ -108,7 +108,7 @@
  
  */
 "SEND_STATISTICS_FOOTER" = "This information does NOT include any private info, only general information about device.";
-"MANAGE_SETTINGS_FOOTER" = "Backups are stored in /var/mobile/Documents/ColoredVK2_Backups. When you restore the device in iTunes they will be removed.";
+"MANAGE_SETTINGS_FOOTER" = "Backups are stored in %@. When you restore the device in iTunes they will be removed.";
 "CUSTOM_COVER_FOOTER" = "If you don't like ColoredVK 2 standard cover, you can change it to your.";
 "CACHE_COVERS_FOOTER" = "Caching of covers will help to reduce the load time, but will require more space on the device.";
 "NEW_PLAYER_DESIGN_FOOTER" = "This option will make the player more minimalist - cover will vary depending on the song, and the colors will be more readable. Also, a window with the song lyrics will be added. Just click the cover! And to close the player, perform the swipe down.";

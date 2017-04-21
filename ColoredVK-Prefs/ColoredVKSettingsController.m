@@ -15,12 +15,6 @@
 
 @implementation ColoredVKSettingsController
 
-- (UIStatusBarStyle) preferredStatusBarStyle
-{
-    if ([[NSBundle mainBundle].executablePath.lastPathComponent isEqualToString:@"vkclient"]) return UIStatusBarStyleLightContent;
-    else return UIStatusBarStyleDefault;
-}
-
 - (NSArray *)specifiers
 {
     if (!_specifiers) {
@@ -59,29 +53,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    for (UIView *view in self.view.subviews) {
-        if ([view isKindOfClass:[UITableView class]]) {
-            UITableView *tableView = (UITableView *)view;
-            tableView.separatorColor = [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1];
-            tableView.allowsMultipleSelectionDuringEditing = NO;
-            break;
-        }
-    }
-}
-
-- (NSBundle *)cvkBundle
-{
-    return [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-}
-
-- (NSString *)cvkFolder
-{
-    return CVK_FOLDER_PATH;
-}
-
-- (NSString *)prefsPath
-{
-    return CVK_PREFS_PATH;
+    self.prefsTableView.allowsMultipleSelectionDuringEditing = NO;
 }
 
 - (PSSpecifier *)errorMessage
@@ -257,20 +229,5 @@
     [alertController addAction:[UIAlertAction actionWithTitle:resetTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { resetSettingsBlock(); }]];
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
-}
-
-
-- (void)presentPopover:(UIViewController *)controller
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIViewController *viewCotroller = [UIApplication sharedApplication].keyWindow.rootViewController;
-        if (IS_IPAD) {
-            controller.modalPresentationStyle = UIModalPresentationPopover;
-            controller.popoverPresentationController.permittedArrowDirections = 0;
-            controller.popoverPresentationController.sourceView = viewCotroller.view;
-            controller.popoverPresentationController.sourceRect = viewCotroller.view.bounds;
-        }
-        [viewCotroller presentViewController:controller animated:YES completion:nil];
-    });
 }
 @end

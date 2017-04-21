@@ -12,9 +12,10 @@
 #import "PPNumberButton.h"
 
 @implementation ColoredVKStepperPrefsCell
+
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)identifier specifier:(PSSpecifier *)specifier
 {
-    self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier specifier:specifier];
+    self = [super initWithStyle:style reuseIdentifier:identifier specifier:specifier];
     if (self) {
         NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];        
         
@@ -22,13 +23,13 @@
         numberButton.shakeAnimation = YES;
         numberButton.minValue = 0;
         numberButton.maxValue = 6;
-        numberButton.currentNumber = [prefs[specifier.identifier] componentsSeparatedByString:@"."].lastObject.integerValue;
+        numberButton.currentNumber = [prefs[self.specifier.identifier] componentsSeparatedByString:@"."].lastObject.integerValue;
         numberButton.increaseTitle = @"＋";
         numberButton.decreaseTitle = @"－";
         numberButton.resultBlock = ^(NSInteger number, BOOL increaseStatus) {
-            NSDictionary *tweakSettings = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+            NSMutableDictionary *tweakSettings = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
             
-            [tweakSettings setValue:[NSString stringWithFormat:@"0.%i", (int)number] forKey:self.specifier.identifier];
+            tweakSettings[self.specifier.identifier] = [NSString stringWithFormat:@"0.%i", (int)number];
             [tweakSettings writeToFile:CVK_PREFS_PATH atomically:YES];
             
             CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
@@ -39,4 +40,5 @@
 	}
     return self;
 }
+
 @end

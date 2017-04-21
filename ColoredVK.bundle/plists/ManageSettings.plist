@@ -9,6 +9,8 @@
 			<string>PSGroupCell</string>
 			<key>footerText</key>
 			<string>MANAGE_SETTINGS_FOOTER</string>
+			<key>id</key>
+			<string>manageSettingsFooter</string>
 		</dict>
 		<dict>
 			<key>cell</key>

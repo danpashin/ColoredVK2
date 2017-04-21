@@ -16,11 +16,11 @@
 - (NSArray *)specifiers
 {
     if (!_specifiers) {
-        NSArray *specifiersArray = [self specifiersForPlistName:@"Main" localize:YES addFooter:YES];
+        NSArray *specifiersArray = [self specifiersForPlistName:@"Main" localize:NO addFooter:YES];
         
         for (PSSpecifier *specifier in specifiersArray) {
             if ([specifier.identifier isEqualToString:@"manageAccount"]) {
-                if (!licenceContainsKey(@"login")) [specifier setProperty:@NO forKey:@"enabled"];
+                if (!licenceContainsKey(@"Login")) [specifier setProperty:@NO forKey:@"enabled"];
             }
         }
         

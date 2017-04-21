@@ -56,7 +56,7 @@
         NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
         UISwitch *switchView = [UISwitch new];
         [switchView addTarget:self action:@selector(switchTriggerred:) forControlEvents:UIControlEventValueChanged];
-        switchView.on = [prefs[self.key] boolValue];
+        switchView.on = prefs?[prefs[self.key] boolValue]:NO;
         switchView.enabled = NO;
         self.accessoryView = switchView;
         
@@ -85,9 +85,10 @@
 
 - (void)switchTriggerred:(UISwitch *)switchView
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    if (!prefs) prefs = [NSMutableDictionary new];
     
-    [prefs setValue:@(switchView.on) forKey:self.key];
+    prefs[self.key] = @(switchView.on);
     [prefs writeToFile:self.prefsPath atomically:YES];
     
     [self sendNotifications];
@@ -146,8 +147,8 @@
                     UISwitch *switchView = (UISwitch *)self.accessoryView;
                     [switchView setOn:NO animated:YES];
                     switchView.enabled = NO;
-                    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
-                    [prefs setValue:@NO forKey:self.key];
+                    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
+                    prefs[self.key] = @NO;
                     [prefs writeToFile:self.prefsPath atomically:YES];
                     [self sendNotifications];
                 }
