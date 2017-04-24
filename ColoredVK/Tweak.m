@@ -1305,9 +1305,9 @@ CHOptimizedMethod(0, self, UIStatusBarStyle, IOS7AudioController, preferredStatu
     else return CHSuper(0, IOS7AudioController, preferredStatusBarStyle);
 }
 
-CHOptimizedMethod(0, self, void, IOS7AudioController, viewDidLoad)
+CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, animated)
 {
-    CHSuper(0, IOS7AudioController, viewDidLoad);
+    CHSuper(1, IOS7AudioController, viewWillAppear, animated);
     
     if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")]) {
         if (enabled && changeAudioPlayerAppearance) {
@@ -1354,8 +1354,9 @@ CHOptimizedMethod(2, self, void, AudioPlayer, switchTo, int, arg1, force, BOOL, 
     if (enabled && changeAudioPlayerAppearance) {
         if (self.state == 1 && (![cvkMainController.coverView.artist isEqualToString:self.audio.performer] || ![cvkMainController.coverView.track isEqualToString:self.audio.title]))
             [cvkMainController.coverView updateCoverForAudioPlayer:self];
-        if (self.audio.lyrics_id) [cvkMainController.coverView.audioLyricsView updateWithLyrycsID:self.audio.lyrics_id andToken:userToken];
-        else [cvkMainController.coverView.audioLyricsView resetState];
+//        if (self.audio.lyrics_id) [cvkMainController.coverView.audioLyricsView updateWithLyrycsID:self.audio.lyrics_id andToken:userToken];
+//        else [cvkMainController.coverView.audioLyricsView resetState];
+//        [cvkMainController.coverView.audioLyricsView updateLyrycsForArtist:self.audio.performer title:self.audio.title];
     }
     CHSuper(2, AudioPlayer, switchTo, arg1, force, force);
 }
@@ -1503,6 +1504,13 @@ CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, a
 
 #pragma mark VKMBrowserController
 CHDeclareClass(VKMBrowserController);
+
+CHOptimizedMethod(0, self, UIStatusBarStyle, VKMBrowserController, preferredStatusBarStyle)
+{
+    if ([self isKindOfClass:NSClassFromString(@"VKMBrowserController")] && (enabled && enabledBarColor)) return UIStatusBarStyleLightContent;
+    else return CHSuper(0, VKMBrowserController, preferredStatusBarStyle);
+}
+
 CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, VKMBrowserController, viewWillAppear, animated);
@@ -1645,15 +1653,14 @@ CHOptimizedMethod(0, self, UIView *, ProfileCoverImageView, overlayView)
     UIView *overlayView = CHSuper(0, ProfileCoverImageView, overlayView);
     if (enabled) {
         if (enabledBarImage) {
-            if (![overlayView.subviews containsObject:[overlayView viewWithTag:24]]) {
+            if (![overlayView.subviews containsObject:[overlayView viewWithTag:23]]) {
                 ColoredVKBackgroundImageView *overlayImageView  = [ColoredVKBackgroundImageView viewWithFrame:overlayView.bounds imageName:@"barImage" blackout:navbarImageBlackout];
-                overlayImageView.tag = 24;
                 [overlayView addSubview:overlayImageView];
             }
         }
         else if (enabledBarColor) {
             overlayView.backgroundColor = barBackgroundColor;
-           if ([overlayView.subviews containsObject:[overlayView viewWithTag:24]]) [[overlayView viewWithTag:24] removeFromSuperview];
+           if ([overlayView.subviews containsObject:[overlayView viewWithTag:23]]) [[overlayView viewWithTag:23] removeFromSuperview];
         }
     }
     
@@ -1692,7 +1699,7 @@ CHConstructor
 {
     @autoreleasepool {
 //        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{ dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW); });
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{ dlopen(@"/var/mobile/FLEXDylib.dylib".UTF8String, RTLD_NOW); });
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{ dlopen(@"/var/mobile/FLEXDylib.dylib".UTF8String, RTLD_NOW); });
         
         prefsPath = CVK_PREFS_PATH;
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
@@ -1817,6 +1824,7 @@ CHConstructor
             
             
             CHLoadLateClass(VKMBrowserController);
+            CHHook(0, VKMBrowserController, preferredStatusBarStyle);
             CHHook(1, VKMBrowserController, viewWillAppear);
             
             CHLoadLateClass(VKMToolbarController);
@@ -1839,7 +1847,7 @@ CHConstructor
             CHHook(0, AudioPlaylistController, preferredStatusBarStyle);
             
             CHLoadLateClass(IOS7AudioController);
-            CHHook(0, IOS7AudioController, viewDidLoad);
+            CHHook(1, IOS7AudioController, viewWillAppear);
             CHHook(0, IOS7AudioController, preferredStatusBarStyle);
             
             CHLoadLateClass(AudioPlayer);

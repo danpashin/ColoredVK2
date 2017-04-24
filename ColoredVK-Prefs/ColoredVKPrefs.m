@@ -51,7 +51,7 @@
                 specifier.titleDictionary = [tempDict copy];
             }
             
-            if ([specifier.identifier isEqualToString:@"checkUpdates"]) [specifier setProperty:@([kColoredVKVersion containsString:@"beta"]) forKey:@"enabled"];
+            if ([specifier.identifier isEqualToString:@"checkUpdates"] && [kColoredVKVersion containsString:@"beta"]) [specifier setProperty:@NO forKey:@"enabled"];
             if ([specifier.identifier isEqualToString:@"manageSettingsFooter"] && specifier.properties[@"footerText"])
                  [specifier setProperty:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil), CVK_BACKUP_PATH] forKey:@"footerText"];
         }

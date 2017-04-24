@@ -11,12 +11,6 @@
 #import "UIGestureRecognizer+BlocksKit.h"
 
 
-typedef NS_ENUM(NSUInteger, ColoredVKBlurStyle) {
-    ColoredVKBlurStyleDark = 1,
-    ColoredVKBlurStyleLight = 0 // 2060
-};
-
-
 @interface ColoredVKAudioLyricsView ()
 @property (strong, nonatomic) UITextView *textView;
 @end
@@ -30,7 +24,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKBlurStyle) {
             if (sender.state == UIGestureRecognizerStateRecognized) self.hide = !self.hide;
         }]];
         
-        self.blurView = [[_UIBackdropView alloc] initWithSettings:[_UIBackdropViewSettings settingsForStyle:ColoredVKBlurStyleLight]];
+        self.blurView = [[_UIBackdropView alloc] initWithSettings:[_UIBackdropViewSettings settingsForStyle:_UIBackdropViewStyleLight]];
         self.blurView.frame = CGRectMake(self.frame.size.width/12, self.frame.size.height/14, self.frame.size.width-2*(self.frame.size.width/12), self.frame.size.height-2*(self.frame.size.height/14));
         self.blurView.layer.cornerRadius = 14;
         self.blurView.layer.masksToBounds = YES;
@@ -91,14 +85,37 @@ typedef NS_ENUM(NSUInteger, ColoredVKBlurStyle) {
     self.text = @"";
 }
 
-- (void)updateWithLyrycsID:(NSNumber *)lyrics_id andToken:(NSString *)token
+//- (void)updateWithLyrycsID:(NSNumber *)lyrics_id andToken:(NSString *)token
+//{
+//    NSString *const apiVersion = @"5.62";
+//    NSString *url = [NSString stringWithFormat:@"https://api.vk.com/method/audio.getLyrics?lyrics_id=%@&access_token=%@&v=%@", lyrics_id, token, apiVersion];
+//    [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
+//                                JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
+//                                success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {                                                 
+//                                    if (JSON[@"response"][@"text"]) self.text = JSON[@"response"][@"text"];
+//                                } failure:nil] start]; 
+//}
+
+- (void)updateLyrycsForArtist:(NSString *)artist title:(NSString *)title
 {
-    NSString *const apiVersion = @"5.62";
-    NSString *url = [NSString stringWithFormat:@"https://api.vk.com/method/audio.getLyrics?lyrics_id=%@&access_token=%@&v=%@", lyrics_id, token, apiVersion];
+    if ([artist hasPrefix:@"+"]) artist = [artist substringFromIndex:1];
+    if ([artist hasSuffix:@"+"]) artist = [artist substringToIndex:artist.length - 1];
+    if ([title hasPrefix:@"+"]) title = [title substringFromIndex:1];
+    if ([title hasSuffix:@"+"]) artist = [title substringToIndex:title.length - 1];
+    NSString *url = [NSString stringWithFormat:@"http://danpashin.ru/api/v1.2/lyrics.php?artist=%@&title=%@", artist, title];
+    url = [url stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+    NSLog(@"[COLOREDVK 2] %@", url);
     [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
                                 JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
-                                success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {                                                 
-                                    if (JSON[@"response"][@"text"]) self.text = JSON[@"response"][@"text"];
+                                success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+                                    NSLog(@"[COLOREDVK 2]: response: %@", JSON);
+                                    if (JSON[@"response"]) {
+                                        NSData *responseData = [JSON[@"response"] dataUsingEncoding:NSUTF8StringEncoding];
+                                        NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
+                                        if (response[@"lyrics"]) self.text = response[@"lyrics"];
+                                        else [self resetState];
+                                    }
+                                    else [self resetState];
                                 } failure:nil] start]; 
 }
 @end

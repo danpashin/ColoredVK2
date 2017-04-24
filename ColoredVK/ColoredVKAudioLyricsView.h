@@ -15,5 +15,6 @@
 @property (strong, nonatomic) _UIBackdropView *blurView;
 @property (assign, nonatomic) BOOL hide;
 - (void)resetState;
-- (void)updateWithLyrycsID:(NSNumber *)lyrics_id andToken:(NSString *)token;
+//- (void)updateWithLyrycsID:(NSNumber *)lyrics_id andToken:(NSString *)token;
+- (void)updateLyrycsForArtist:(NSString *)artist title:(NSString *)title;
 @end

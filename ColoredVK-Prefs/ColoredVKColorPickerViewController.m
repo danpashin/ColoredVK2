@@ -49,8 +49,9 @@
     return self;
 }
 
-- (BOOL)prefersStatusBarHidden {
-    return self.hideStatusBar;
+- (BOOL)prefersStatusBarHidden
+{
+    return YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -68,7 +69,6 @@
     
     UIVisualEffectView *blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
     blurView.frame = self.view.bounds;
-    blurView.alpha = IS_IPAD?0.95:1.0;
     [self.view addSubview:blurView];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(writeValues)];

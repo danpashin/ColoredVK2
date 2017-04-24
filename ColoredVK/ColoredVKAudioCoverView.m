@@ -132,7 +132,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
 - (void)downloadCoverWithCompletionBlock:( void(^)(UIImage *image, BOOL wasDownloaded) )block;
 {
     if (self.artist && self.track) {
-        __block NSString *query = [NSString stringWithFormat:@"%@+%@", self.artist, self.track];
+        __block NSString *query = [NSString stringWithFormat:@"%@_%@", self.artist, self.track];
         query = [query stringByReplacingOccurrencesOfString:@"|" withString:@" "];
         
         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(\\(|\\[)+([\\s\\S])+(\\)|\\])" options:0 error:nil];
@@ -150,6 +150,10 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         if ([query hasSuffix:@"+"]) query = [query stringByReplacingCharactersInRange:NSMakeRange(query.length-1, 1) withString:@""];
         
         self.key = query.lowercaseString;
+        NSArray *components = [self.key componentsSeparatedByString:@"_"];
+        if (components.count == 2) [self.audioLyricsView updateLyrycsForArtist:components[0] title:components[1]];
+        else [self.audioLyricsView resetState];
+
         UIImage *image = [self.manager.imageCache imageFromCacheForKey:self.key];
         if (image) { if (block) block(image, YES); }
         else {
