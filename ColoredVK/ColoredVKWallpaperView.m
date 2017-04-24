@@ -1,18 +1,18 @@
 //
-//  ColoredVKBackgroundImageView.m
+//  ColoredVKWallpaperView.m
 //  ColoredVK
 //
 //  Created by Даниил on 07/11/16.
 //
 //
 
-#import "ColoredVKBackgroundImageView.h"
+#import "ColoredVKWallpaperView.h"
 #import "PrefixHeader.h"
 
 const NSInteger PARALLAX_EFFECT_VALUE = 14;
 const NSTimeInterval ANIMATION_DURANTION = 0.2;
 
-@implementation ColoredVKBackgroundImageView
+@implementation ColoredVKWallpaperView
 
 + (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name
 {

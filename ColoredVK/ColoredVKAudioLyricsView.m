@@ -85,37 +85,4 @@
     self.text = @"";
 }
 
-//- (void)updateWithLyrycsID:(NSNumber *)lyrics_id andToken:(NSString *)token
-//{
-//    NSString *const apiVersion = @"5.62";
-//    NSString *url = [NSString stringWithFormat:@"https://api.vk.com/method/audio.getLyrics?lyrics_id=%@&access_token=%@&v=%@", lyrics_id, token, apiVersion];
-//    [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
-//                                JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
-//                                success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {                                                 
-//                                    if (JSON[@"response"][@"text"]) self.text = JSON[@"response"][@"text"];
-//                                } failure:nil] start]; 
-//}
-
-- (void)updateLyrycsForArtist:(NSString *)artist title:(NSString *)title
-{
-    if ([artist hasPrefix:@"+"]) artist = [artist substringFromIndex:1];
-    if ([artist hasSuffix:@"+"]) artist = [artist substringToIndex:artist.length - 1];
-    if ([title hasPrefix:@"+"]) title = [title substringFromIndex:1];
-    if ([title hasSuffix:@"+"]) artist = [title substringToIndex:title.length - 1];
-    NSString *url = [NSString stringWithFormat:@"http://danpashin.ru/api/v1.2/lyrics.php?artist=%@&title=%@", artist, title];
-    url = [url stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-    NSLog(@"[COLOREDVK 2] %@", url);
-    [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
-                                JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
-                                success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-                                    NSLog(@"[COLOREDVK 2]: response: %@", JSON);
-                                    if (JSON[@"response"]) {
-                                        NSData *responseData = [JSON[@"response"] dataUsingEncoding:NSUTF8StringEncoding];
-                                        NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
-                                        if (response[@"lyrics"]) self.text = response[@"lyrics"];
-                                        else [self resetState];
-                                    }
-                                    else [self resetState];
-                                } failure:nil] start]; 
-}
 @end

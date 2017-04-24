@@ -55,11 +55,13 @@
 #define CVKTableViewSeparatorColor [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1]
 #define CVKMainColor [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1]
 
-#define kColoredVKVersion @"3.3"
 
 #ifdef CHAppName
     #undef CHAppName
 #endif 
 #define CHAppName "[COLOREDVK 2]"
 
-#define API_VERSION @"1.2"
+
+#define kColoredVKVersion @"3.3.1-beta-1"
+#define kColoredVKAPIVersion @"1.2"
+#define kColoredVKAPIURL [NSString stringWithFormat:@"http://danpashin.ru/api/v%@", kColoredVKAPIVersion]

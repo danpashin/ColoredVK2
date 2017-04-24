@@ -13,7 +13,6 @@
 #import "HRColorMapView.h"
 #import "HRBrightnessSlider.h"
 #import "HRColorInfoView.h"
-#import "ColoredVKBackgroundImageView.h"
 
 @interface ColoredVKColorPickerViewController () <UITextFieldDelegate, UIGestureRecognizerDelegate>
 @property (strong, nonatomic) NSString *cellIdentifier;

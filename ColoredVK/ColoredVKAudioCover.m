@@ -1,29 +1,32 @@
 //
-//  ColoredVKAudioCoverView.m
+//  ColoredVKAudioCover.m
 //  ColoredVK
 //
 //  Created by Даниил on 24/11/16.
 //
 //
 
-#import "ColoredVKAudioCoverView.h"
+#import "ColoredVKAudioCover.h"
 #import "PrefixHeader.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "LEColorPicker.h"
 
 
-@interface ColoredVKAudioCoverView ()
+@interface ColoredVKAudioCover ()
+
+@property (strong, nonatomic, readonly) UIView *view;
 @property (strong, nonatomic) NSBundle *cvkBundle;
 @property (strong, nonatomic) UIImageView *topImageView;
 @property (strong, nonatomic) UIImageView *bottomImageView;
-//@property (strong, nonatomic) NSOperation *operation;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
 @property (strong, nonatomic) NSString *key;
 @property (strong, nonatomic, readonly) UIImage *noCover;
 @property (strong, nonatomic, readonly) NSDictionary *prefs;
+@property (strong, nonatomic) SDWebImageManager *manager;
+
 @end
 
-@implementation ColoredVKAudioCoverView
+@implementation ColoredVKAudioCover
 
 void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
@@ -32,8 +35,10 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
 
 - (instancetype)initWithFrame:(CGRect)frame andSeparationPoint:(CGPoint)point
 {
-    self = [super initWithFrame:frame];
+    self = [super init];
     if (self) {
+        _view = [[UIView alloc] initWithFrame:frame];
+        
         self.defaultCover = YES;
         self.manager = [SDWebImageManager sharedManager];
         self.artist = @"";
@@ -43,14 +48,14 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         [self updateCoverInfo];
         
         self.topImageView = [[UIImageView alloc] initWithImage:self.noCover];
-        self.topImageView.frame = CGRectMake(0, 0, self.frame.size.width, point.y);
+        self.topImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, point.y);
         self.topImageView.backgroundColor = [UIColor blackColor];
         self.topImageView.contentMode = UIViewContentModeScaleAspectFill;
         self.topImageView.layer.masksToBounds = YES;
-        [self addSubview:self.topImageView];
+        [self.view addSubview:self.topImageView];
         
         self.bottomImageView = [UIImageView new];
-        self.bottomImageView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+        self.bottomImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
         self.bottomImageView.backgroundColor = [UIColor blackColor];
         self.bottomImageView.contentMode = UIViewContentModeScaleAspectFill;
         if (self.customCover) self.bottomImageView.image = self.noCover;
@@ -59,14 +64,14 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         self.blurEffectView.frame = self.bottomImageView.bounds;
         [self.bottomImageView addSubview:self.blurEffectView];
         
-        [self addSubview:self.bottomImageView];
-        [self sendSubviewToBack:self.bottomImageView];
+        [self.view addSubview:self.bottomImageView];
+        [self.view sendSubviewToBack:self.bottomImageView];
         
         self.audioLyricsView = [[ColoredVKAudioLyricsView alloc] initWithFrame:self.topImageView.bounds];
-        [self addSubview:self.audioLyricsView];
+        [self.view addSubview:self.audioLyricsView];
         
         CAGradientLayer *gradient = [CAGradientLayer layer];
-        gradient.frame = CGRectMake(0, 0, self.frame.size.width, 79);
+        gradient.frame = CGRectMake(0, 0, self.topImageView.frame.size.width, 79);
         gradient.colors = @[ (id)[UIColor colorWithWhite:0 alpha:0.5].CGColor, (id)[UIColor clearColor].CGColor ];
         gradient.locations = @[ @0, @0.95];
         [self.topImageView.layer addSublayer:gradient];
@@ -82,8 +87,8 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
 
 - (void)addToView:(UIView *)view
 {
-    [view addSubview:self];
-    [view sendSubviewToBack:self];
+    [view addSubview:self.view];
+    [view sendSubviewToBack:self.view];
 }
 
 - (void)updateCoverForAudioPlayer:(AudioPlayer *)player
@@ -141,7 +146,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
             query = [query stringByReplacingOccurrencesOfString:[oldQuery substringWithRange:result.range] withString:@""];
         }];
         
-        NSCharacterSet *charset = [NSCharacterSet characterSetWithCharactersInString:@" &/-!|\""];
+        NSCharacterSet *charset = [NSCharacterSet characterSetWithCharactersInString:@" /-!|\""];
         query = [[query componentsSeparatedByCharactersInSet:charset] componentsJoinedByString:@"+"];
         while ([query containsString:@"++"]) {
             query = [query stringByReplacingOccurrencesOfString:@"+++" withString:@"+"];
@@ -150,18 +155,22 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         if ([query hasSuffix:@"+"]) query = [query stringByReplacingCharactersInRange:NSMakeRange(query.length-1, 1) withString:@""];
         
         self.key = query.lowercaseString;
+        
         NSArray *components = [self.key componentsSeparatedByString:@"_"];
-        if (components.count == 2) [self.audioLyricsView updateLyrycsForArtist:components[0] title:components[1]];
+        if (components.count == 2) [self updateLyrycsForArtist:components[0] title:components[1]];
         else [self.audioLyricsView resetState];
+        
+        self.key = [self.key stringByReplacingOccurrencesOfString:@"_" withString:@"+"];
 
         UIImage *image = [self.manager.imageCache imageFromCacheForKey:self.key];
         if (image) { if (block) block(image, YES); }
         else {
-            NSString *iTunesURL = [NSString stringWithFormat:@"https://itunes.apple.com/search?limit=1&media=music&term=%@", query];
+            NSString *iTunesURL = [NSString stringWithFormat:@"https://itunes.apple.com/search?limit=1&media=music&term=%@", self.key];
         [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
                                     JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:iTunesURL]]
                                     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
                                         NSDictionary *responseDict = JSON;
+                                        NSLog(@"[COLOREDVK] image response: %@", responseDict);
                                         NSArray *items = responseDict[@"results"];
                                         if (items.count > 0) {
                                             NSString *url = [items[0][@"artworkUrl100"] stringByReplacingOccurrencesOfString:@"100x100bb" withString:@"1024x1024bb"];
@@ -209,5 +218,26 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     self.customCover = [prefs[@"enabledAudioCustomCover"] boolValue];
+}
+
+- (void)updateLyrycsForArtist:(NSString *)artist title:(NSString *)title
+{
+    if ([artist hasPrefix:@"+"]) artist = [artist substringFromIndex:1];
+    if ([artist hasSuffix:@"+"]) artist = [artist substringToIndex:artist.length - 1];
+    if ([title hasPrefix:@"+"]) title = [title substringFromIndex:1];
+    if ([title hasSuffix:@"+"]) artist = [title substringToIndex:title.length - 1];
+    NSString *url = [NSString stringWithFormat:@"%@/lyrics.php?artist=%@&title=%@",  kColoredVKAPIURL, artist, title];
+    url = [url stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+    [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
+                                JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
+                                success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+                                    if (JSON[@"response"]) {
+                                        NSData *responseData = [JSON[@"response"] dataUsingEncoding:NSUTF8StringEncoding];
+                                        NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
+                                        if (response[@"lyrics"]) self.audioLyricsView.text = response[@"lyrics"];
+                                        else [self.audioLyricsView resetState];
+                                    }
+                                    else [self.audioLyricsView resetState];
+                                } failure:nil] start]; 
 }
 @end

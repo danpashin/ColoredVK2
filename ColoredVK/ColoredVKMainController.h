@@ -8,8 +8,8 @@
 
 #import "VKMethods.h"
 #import "ColoredVKAudioLyricsView.h"
-#import "ColoredVKAudioCoverView.h"
-#import "ColoredVKBackgroundImageView.h"
+#import "ColoredVKAudioCover.h"
+#import "ColoredVKWallpaperView.h"
 
 @interface ColoredVKMainController : NSObject
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout;
@@ -21,8 +21,8 @@
 - (void)switchTriggered:(UISwitch*)switchView;
 @property (strong, nonatomic) MenuCell *menuCell;
 
-@property (strong, nonatomic) ColoredVKAudioCoverView *coverView;
-@property (strong, nonatomic) ColoredVKBackgroundImageView *menuBackgroundView;
-@property (strong, nonatomic) ColoredVKBackgroundImageView *navBarImageView;
+@property (strong, nonatomic) ColoredVKAudioCover *coverView;
+@property (strong, nonatomic) ColoredVKWallpaperView *menuBackgroundView;
+@property (strong, nonatomic) ColoredVKWallpaperView *navBarImageView;
 
 @end

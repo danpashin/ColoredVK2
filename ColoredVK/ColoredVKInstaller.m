@@ -16,6 +16,15 @@
 #import <sys/utsname.h>
 
 
+#define kDRMLicenceKey          @"1D074B10BBA106699DD7D4AED9E595FA"
+#define kDRMAuthorizeKey        @"ACBEBB5F70D0883E875DAA6E1C5C59ED"
+#define kDRMPackage             @"org.thebigboss.coloredvk2"
+#define kDRMPackageName         @"ColoredVK 2"
+#define kDRMPackageVersion      kColoredVKVersion
+#define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
+#define kDRMRemoteServerURL     [NSString stringWithFormat:@"%@/index-new.php", kColoredVKAPIURL]
+
+
 NSData *AES256Decrypt(NSData *data, NSString *key)
 {
         // 'key' should be 32 bytes for AES256, will be null-padded otherwise
@@ -89,6 +98,11 @@ NSData *AES256EncryptString(NSString *string, NSString *key)
     return AES256Encrypt(data, key);
 }
 
+NSData *AES256EncryptStringForAPI(NSString *string)
+{
+    return AES256EncryptString(string, kDRMAuthorizeKey);
+}
+
 
 @interface ColoredVKInstaller()
 @end
@@ -122,7 +136,7 @@ struct utsname systemInfo;
     if (self) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             udid = [NSString stringWithFormat:@"%@", CFBridgingRelease(MGCopyAnswer(CFSTR("UniqueDeviceID")))];
-            key = AES256EncryptString([NSProcessInfo processInfo].globallyUniqueString, kDRMAuthorizeKey).base64Encoding;
+            key = AES256EncryptStringForAPI([NSProcessInfo processInfo].globallyUniqueString).base64Encoding;
             uname(&systemInfo);
             
             void (^downloadBlock)() = ^{
@@ -177,8 +191,8 @@ struct utsname systemInfo;
         BOOL sendStatistics = prefs[@"sendStatistics"]?[prefs[@"sendStatistics"] boolValue]:YES;
         if (sendStatistics) {
             UIDevice *device = [UIDevice currentDevice];
-            NSString *stringURL = [NSString stringWithFormat:@"http://danpashin.ru/api/v%@/stats/?product=%@&version=%@&device=%@&ios_version=%@&device_language=%@&vk_version=%@&identifier=%@", 
-                                   API_VERSION, kDRMPackage, kDRMPackageVersion, @(systemInfo.machine), 
+            NSString *stringURL = [NSString stringWithFormat:@"%@/stats/?product=%@&version=%@&device=%@&ios_version=%@&device_language=%@&vk_version=%@&identifier=%@", 
+                                   kColoredVKAPIURL, kDRMPackage, kDRMPackageVersion, @(systemInfo.machine), 
                                    device.systemVersion, [NSLocale preferredLanguages].firstObject, prefs[@"vkVersion"], device.identifierForVendor.UUIDString];
             
             [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]] 
@@ -251,8 +265,8 @@ struct utsname systemInfo;
     request.HTTPMethod = @"POST";
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
     
-    NSString *package = AES256EncryptString(@"org.thebigboss.coloredvk2", kDRMAuthorizeKey).base64Encoding;
-    NSString *encryptedUDID = AES256EncryptString(udid, kDRMAuthorizeKey).base64Encoding;
+    NSString *package = AES256EncryptStringForAPI(@"org.thebigboss.coloredvk2").base64Encoding;
+    NSString *encryptedUDID = AES256EncryptStringForAPI(udid).base64Encoding;
     
     NSString *parameters = [NSString stringWithFormat:@"udid=%@&package=%@&version=%@&key=%@", encryptedUDID, package, kDRMPackageVersion, key];
     request.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];
@@ -285,7 +299,7 @@ struct utsname systemInfo;
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kDRMRemoteServerURL]];
         request.HTTPMethod = @"POST";
         [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
-        password = AES256EncryptString(password, kDRMAuthorizeKey).base64Encoding;
+        password = AES256EncryptStringForAPI(password).base64Encoding;
         NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", @(systemInfo.machine), [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];
         NSString *parameters = [NSString stringWithFormat:@"login=%@&password=%@&action=login&version=%@&device=%@&key=%@", login, password, kDRMPackageVersion, device, key];
         request.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];

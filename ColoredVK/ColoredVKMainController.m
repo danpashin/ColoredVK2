@@ -12,7 +12,7 @@
 #import <objc/runtime.h>
 #import "ColoredVKMainPrefsController.h"
 #import "UIImage+ResizeMagick.h"
-#import "ColoredVKBackgroundImageView.h"
+#import "ColoredVKWallpaperView.h"
 
 @implementation ColoredVKMainController
 static NSString const *switchViewKey = @"cvkCellSwitchKey";
@@ -94,6 +94,6 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip  parallaxEffect:(BOOL)parallaxEffect 
 {
     if ((tableView.backgroundView == nil) || (tableView.backgroundView.tag != 23))
-        tableView.backgroundView = [[ColoredVKBackgroundImageView alloc] initWithFrame:tableView.frame imageName:name blackout:blackout flip:flip parallaxEffect:parallaxEffect];
+        tableView.backgroundView = [[ColoredVKWallpaperView alloc] initWithFrame:tableView.frame imageName:name blackout:blackout flip:flip parallaxEffect:parallaxEffect];
 }
 @end

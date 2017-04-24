@@ -25,7 +25,7 @@
 
 - (void)checkForUpdates
 {
-    NSString *stringURL = [NSString stringWithFormat:@"http://danpashin.ru/api/v%@/checkUpdates.php?userVers=%@&product=com.daniilpashin.coloredvk2", API_VERSION, kColoredVKVersion];
+    NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php?userVers=%@&product=com.daniilpashin.coloredvk2", kColoredVKAPIURL, kColoredVKVersion];
 #ifndef COMPILE_FOR_JAIL
     stringURL = [stringURL stringByAppendingString:@"&getIPA=1"];
 #endif

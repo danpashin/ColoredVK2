@@ -1,5 +1,5 @@
 //
-//  ColoredVKBackgroundImageView.h
+//  ColoredVKWallpaperView.h
 //  ColoredVK
 //
 //  Created by Даниил on 07/11/16.
@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-FOUNDATION_EXPORT const NSInteger PARALLAX_EFFECT_VALUE;
 
-@interface ColoredVKBackgroundImageView : UIView
+@interface ColoredVKWallpaperView : UIView
+
 + (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name;
 + (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout;
 + (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip;
@@ -28,4 +28,5 @@ FOUNDATION_EXPORT const NSInteger PARALLAX_EFFECT_VALUE;
 - (void)addToBack:(UIView *)view animated:(BOOL)animated;
 - (void)addToFront:(UIView *)view animated:(BOOL)animated;
 - (void)removeFromView:(UIView *)superview;
+
 @end

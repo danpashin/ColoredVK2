@@ -102,12 +102,12 @@
     [[UIApplication sharedApplication] sendAction:@selector(resignFirstResponder) to:nil from:nil forEvent:nil];
     
     NSString *login = licenceValueForKey(@"Login");
-    NSString *currentPass = AES256EncryptString(self.currentPassCell.textField.text, kDRMAuthorizeKey).base64Encoding;
-    NSString *newPass = AES256EncryptString(self.passNewCell.textField.text, kDRMAuthorizeKey).base64Encoding;
+    NSString *currentPass = AES256EncryptStringForAPI(self.currentPassCell.textField.text).base64Encoding;
+    NSString *newPass = AES256EncryptStringForAPI(self.passNewCell.textField.text).base64Encoding;
     
     self.hud = [ColoredVKHUD showHUDForView:self.view];
     
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://danpashin.ru/api/v1.2/changePassword.php"]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/changePassword.php", kColoredVKAPIURL]]];
     request.HTTPMethod = @"POST";
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
     NSString *parameters = [NSString stringWithFormat:@"login=%@&password=%@&new_password=%@", login, currentPass, newPass];

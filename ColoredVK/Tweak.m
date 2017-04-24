@@ -135,7 +135,7 @@ VKMMainController *mainController;
 #pragma mark Static methods
 void checkUpdates()
 {
-    NSString *stringURL = [NSString stringWithFormat:@"http://danpashin.ru/api/v%@/checkUpdates.php?userVers=%@&product=com.daniilpashin.coloredvk2", API_VERSION, kColoredVKVersion];
+    NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php?userVers=%@&product=com.daniilpashin.coloredvk2", kColoredVKAPIURL, kColoredVKVersion];
 #ifndef COMPILE_FOR_JAIL
     stringURL = [stringURL stringByAppendingString:@"&getIPA=1"];
 #endif
@@ -446,15 +446,15 @@ void setupSearchController(UISearchDisplayController *controller, BOOL reset)
                     if ([navigation.childViewControllers.firstObject isKindOfClass:NSClassFromString(@"VKSelectorContainerControllerDropdown")]) {
                         VKSelectorContainerControllerDropdown *dropdown = (VKSelectorContainerControllerDropdown *)navigation.childViewControllers.firstObject;
                         VKMTableController *tableController = (VKMTableController *)dropdown.currentViewController;
-                        if ([tableController respondsToSelector:@selector(tableView)] && [tableController.tableView.backgroundView isKindOfClass:[ColoredVKBackgroundImageView class]]) {
-                            ColoredVKBackgroundImageView *backView = (ColoredVKBackgroundImageView*)tableController.tableView.backgroundView;
-                            ColoredVKBackgroundImageView *imageView = [ColoredVKBackgroundImageView viewWithFrame:[UIScreen mainScreen].bounds imageName:backView.name blackout:backView.blackout];
+                        if ([tableController respondsToSelector:@selector(tableView)] && [tableController.tableView.backgroundView isKindOfClass:[ColoredVKWallpaperView class]]) {
+                            ColoredVKWallpaperView *backView = (ColoredVKWallpaperView*)tableController.tableView.backgroundView;
+                            ColoredVKWallpaperView *imageView = [ColoredVKWallpaperView viewWithFrame:[UIScreen mainScreen].bounds imageName:backView.name blackout:backView.blackout];
                             controller.searchResultsTableView.backgroundView = imageView;
                         }
                     } else if ([navigation.childViewControllers.firstObject respondsToSelector:@selector(tableView)]) {
                         VKMTableController *tableController = (VKMTableController*)navigation.childViewControllers.firstObject;
-                        ColoredVKBackgroundImageView *backView = (ColoredVKBackgroundImageView*)tableController.tableView.backgroundView;
-                        ColoredVKBackgroundImageView *imageView = [ColoredVKBackgroundImageView viewWithFrame:[UIScreen mainScreen].bounds imageName:backView.name blackout:backView.blackout];
+                        ColoredVKWallpaperView *backView = (ColoredVKWallpaperView*)tableController.tableView.backgroundView;
+                        ColoredVKWallpaperView *imageView = [ColoredVKWallpaperView viewWithFrame:[UIScreen mainScreen].bounds imageName:backView.name blackout:backView.blackout];
                         controller.searchResultsTableView.backgroundView = imageView;
                     }
                 }
@@ -516,7 +516,7 @@ void setupAudioPlayer(UIView *hostView, UIColor *color)
 
 void setupCellForSearchController(UITableViewCell *cell, UISearchDisplayController *searchController)
 {
-    if (![searchController.searchResultsTableView.backgroundView isKindOfClass:[ColoredVKBackgroundImageView class]]) return;
+    if (![searchController.searchResultsTableView.backgroundView isKindOfClass:[ColoredVKWallpaperView class]]) return;
     BOOL shouldCustomize = NO;
     int tag = (int)((UISearchController *)searchController).searchBar.tag;
     if ((tag == 1) && enabledMessagesListImage) shouldCustomize = YES;
@@ -719,7 +719,7 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setBarTintColor, UIColor*, bar
                 
                 if (!containsBlur && !containsImageView && !isAudioController) {
                     if (!cvkMainController.navBarImageView) {
-                        cvkMainController.navBarImageView = [ColoredVKBackgroundImageView viewWithFrame:self._backgroundView.bounds imageName:@"barImage" blackout:navbarImageBlackout];
+                        cvkMainController.navBarImageView = [ColoredVKWallpaperView viewWithFrame:self._backgroundView.bounds imageName:@"barImage" blackout:navbarImageBlackout];
                         cvkMainController.navBarImageView.tag = 24;
                         cvkMainController.navBarImageView.backgroundColor = [UIColor clearColor];
                     }
@@ -1198,7 +1198,7 @@ CHOptimizedMethod(0, self, void, VKMMainController, viewDidLoad)
         CGRect bounds = [UIScreen mainScreen].bounds;
         CGFloat width = (bounds.size.width > bounds.size.height)?bounds.size.height:bounds.size.width;
         CGFloat height = (bounds.size.width < bounds.size.height)?bounds.size.height:bounds.size.width;
-        cvkMainController.menuBackgroundView = [ColoredVKBackgroundImageView viewWithFrame:CGRectMake(0, 0, width, height) 
+        cvkMainController.menuBackgroundView = [ColoredVKWallpaperView viewWithFrame:CGRectMake(0, 0, width, height) 
                                                                                  imageName:@"menuBackgroundImage" blackout:menuImageBlackout parallaxEffect:useMenuParallax];
     }
     
@@ -1311,7 +1311,7 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
     
     if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")]) {
         if (enabled && changeAudioPlayerAppearance) {
-            if (!cvkMainController.coverView) cvkMainController.coverView = [[ColoredVKAudioCoverView alloc] initWithFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
+            if (!cvkMainController.coverView) cvkMainController.coverView = [[ColoredVKAudioCover alloc] initWithFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
             audioPlayerTintColor = cvkMainController.coverView.color;
             
             UINavigationBar *navBar = self.navigationController.navigationBar;
@@ -1354,9 +1354,6 @@ CHOptimizedMethod(2, self, void, AudioPlayer, switchTo, int, arg1, force, BOOL, 
     if (enabled && changeAudioPlayerAppearance) {
         if (self.state == 1 && (![cvkMainController.coverView.artist isEqualToString:self.audio.performer] || ![cvkMainController.coverView.track isEqualToString:self.audio.title]))
             [cvkMainController.coverView updateCoverForAudioPlayer:self];
-//        if (self.audio.lyrics_id) [cvkMainController.coverView.audioLyricsView updateWithLyrycsID:self.audio.lyrics_id andToken:userToken];
-//        else [cvkMainController.coverView.audioLyricsView resetState];
-//        [cvkMainController.coverView.audioLyricsView updateLyrycsForArtist:self.audio.performer title:self.audio.title];
     }
     CHSuper(2, AudioPlayer, switchTo, arg1, force, force);
 }
@@ -1654,7 +1651,7 @@ CHOptimizedMethod(0, self, UIView *, ProfileCoverImageView, overlayView)
     if (enabled) {
         if (enabledBarImage) {
             if (![overlayView.subviews containsObject:[overlayView viewWithTag:23]]) {
-                ColoredVKBackgroundImageView *overlayImageView  = [ColoredVKBackgroundImageView viewWithFrame:overlayView.bounds imageName:@"barImage" blackout:navbarImageBlackout];
+                ColoredVKWallpaperView *overlayImageView  = [ColoredVKWallpaperView viewWithFrame:overlayView.bounds imageName:@"barImage" blackout:navbarImageBlackout];
                 [overlayView addSubview:overlayImageView];
             }
         }
@@ -1665,6 +1662,17 @@ CHOptimizedMethod(0, self, UIView *, ProfileCoverImageView, overlayView)
     }
     
     return overlayView;
+}
+
+
+#pragma mark PostEditController
+@interface PostEditController : UIViewController
+@end
+CHDeclareClass(PostEditController);
+CHOptimizedMethod(0, self, UIStatusBarStyle, PostEditController, preferredStatusBarStyle)
+{
+    if ([self isKindOfClass:NSClassFromString(@"PostEditController")] && (enabled && enabledBarColor)) return UIStatusBarStyleLightContent;
+    else return CHSuper(0, PostEditController, preferredStatusBarStyle);
 }
 
 
@@ -1877,6 +1885,10 @@ CHConstructor
             
             CHLoadLateClass(ProfileCoverImageView);
             CHHook(0, ProfileCoverImageView, overlayView);
+            
+            
+            CHLoadLateClass(PostEditController);
+            CHHook(0, PostEditController, preferredStatusBarStyle);
 
         } else {
             showAlertWithMessage([NSString stringWithFormat:CVKLocalizedString(@"VKAPP_VERSION_IS_TOO_LOW"),  vkVersion, @"2.2"]);
