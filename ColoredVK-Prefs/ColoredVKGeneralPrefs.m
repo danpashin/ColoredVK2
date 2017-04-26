@@ -37,28 +37,6 @@
     [self presentPopover:picker];
 }
 
-//- (void)chooseImageWithNewPicker:(PSSpecifier*)specifier
-//{
-//    self.lastImageIdentifier = specifier.identifier;
-//    YMSPhotoPickerViewController *picker = [YMSPhotoPickerViewController new];
-//    picker.delegate = self;
-//    [self presentViewController:picker];
-//}
-//
-//- (void)photoPickerViewControllerDidReceivePhotoAlbumAccessDenied:(YMSPhotoPickerViewController *)picker
-//{
-//    NSString *message = [NSString stringWithFormat:@"ColoredVK 2 doesn't have rights to your album.\n%@", UIKitLocalizedString(@"You can enable access in Privacy Settings.")];
-//    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];
-//    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) { }]];
-//    [self presentViewController:alertController];
-//}
-//
-//- (void)photoPickerViewController:(YMSPhotoPickerViewController *)picker didFinishPickingImage:(UIImage *)image
-//{
-//    [self saveImage:image fromPickerViewController:picker];
-//}
-
-
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
 {
     [self saveImage:image fromPickerViewController:picker]; 

@@ -1322,7 +1322,11 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
             navBar.topItem.leftBarButtonItems = @[];
             navBar.tintColor = [UIColor whiteColor];
             
-            UISwipeGestureRecognizer *downSwipe = [[UISwipeGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender) { [self done:nil]; }];
+            UISwipeGestureRecognizer *downSwipe = [[UISwipeGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender) {
+                CGPoint location = [sender locationInView:sender.view];
+                UIView *view = [sender.view hitTest:location withEvent:nil];
+                if (![view isKindOfClass:[UITextView class]]) [self done:nil];
+            }];
             downSwipe.direction = UISwipeGestureRecognizerDirectionDown;
             [self.view addGestureRecognizer:downSwipe];
             

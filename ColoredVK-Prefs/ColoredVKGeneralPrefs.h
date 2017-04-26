@@ -13,10 +13,9 @@
 #import "ColoredVKHUD.h"
 #import "UIImage+ResizeMagick.h"
 #import "ColoredVKSettingsController.h"
-//#import "YMSPhotoPickerViewController.h"
 
 
-@interface ColoredVKGeneralPrefs : ColoredVKPrefs  <UIImagePickerControllerDelegate, UINavigationControllerDelegate> // YMSPhotoPickerViewControllerDelegate
+@interface ColoredVKGeneralPrefs : ColoredVKPrefs  <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (strong, nonatomic) NSString *lastImageIdentifier;
 

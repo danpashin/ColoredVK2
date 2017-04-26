@@ -60,9 +60,11 @@
 - (void)setText:(NSString *)text
 {
     _text = text;
-    [UIView transitionWithView:self.textView duration:0.5 
-                       options:UIViewAnimationOptionTransitionCrossDissolve|UIViewAnimationOptionAllowUserInteraction
-                    animations:^{ self.textView.text = self.text; } completion:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIView transitionWithView:self.textView duration:0.5 
+                           options:UIViewAnimationOptionTransitionCrossDissolve|UIViewAnimationOptionAllowUserInteraction
+                        animations:^{ self.textView.text = self.text; } completion:nil];
+    });
 }
 
 - (void)setTextColor:(UIColor *)textColor
@@ -75,7 +77,9 @@
 {
     if (self.text.length > 0) {
         _hide = hide;
-        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{ self.blurView.alpha = hide?0:1; } completion:nil];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{ self.blurView.alpha = hide?0:1; } completion:nil];
+        });
     }
 }
 

@@ -10,6 +10,8 @@
 #import "PrefixHeader.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "LEColorPicker.h"
+#import "ColoredVKCoreData.h"
+#import "ColoredVKAudioEntity.h"
 
 
 @interface ColoredVKAudioCover ()
@@ -19,10 +21,10 @@
 @property (strong, nonatomic) UIImageView *topImageView;
 @property (strong, nonatomic) UIImageView *bottomImageView;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
-@property (strong, nonatomic) NSString *key;
 @property (strong, nonatomic, readonly) UIImage *noCover;
 @property (strong, nonatomic, readonly) NSDictionary *prefs;
 @property (strong, nonatomic) SDWebImageManager *manager;
+@property (strong, nonatomic) ColoredVKCoreData *coredata;
 
 @end
 
@@ -41,6 +43,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         
         self.defaultCover = YES;
         self.manager = [SDWebImageManager sharedManager];
+        self.coredata = [ColoredVKCoreData new];
         self.artist = @"";
         self.track = @"";
         self.color = [UIColor whiteColor];
@@ -138,7 +141,6 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
 {
     if (self.artist && self.track) {
         __block NSString *query = [NSString stringWithFormat:@"%@_%@", self.artist, self.track];
-        query = [query stringByReplacingOccurrencesOfString:@"|" withString:@" "];
         
         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"(\\(|\\[)+([\\s\\S])+(\\)|\\])" options:0 error:nil];
         NSString *oldQuery = query.copy;
@@ -146,31 +148,22 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
             query = [query stringByReplacingOccurrencesOfString:[oldQuery substringWithRange:result.range] withString:@""];
         }];
         
-        NSCharacterSet *charset = [NSCharacterSet characterSetWithCharactersInString:@" /-!|\""];
-        query = [[query componentsSeparatedByCharactersInSet:charset] componentsJoinedByString:@"+"];
-        while ([query containsString:@"++"]) {
-            query = [query stringByReplacingOccurrencesOfString:@"+++" withString:@"+"];
-            query = [query stringByReplacingOccurrencesOfString:@"++" withString:@"+"];
-        }
-        if ([query hasSuffix:@"+"]) query = [query stringByReplacingCharactersInRange:NSMakeRange(query.length-1, 1) withString:@""];
         
-        self.key = query.lowercaseString;
-        
-        NSArray *components = [self.key componentsSeparatedByString:@"_"];
+        NSArray *components = [query componentsSeparatedByString:@"_"];
         if (components.count == 2) [self updateLyrycsForArtist:components[0] title:components[1]];
         else [self.audioLyricsView resetState];
         
-        self.key = [self.key stringByReplacingOccurrencesOfString:@"_" withString:@"+"];
+        query = [self convertStringToURLSafe:query];
+        query = [query.lowercaseString stringByReplacingOccurrencesOfString:@"_" withString:@"+"];
 
-        UIImage *image = [self.manager.imageCache imageFromCacheForKey:self.key];
+        UIImage *image = [self.manager.imageCache imageFromCacheForKey:query];
         if (image) { if (block) block(image, YES); }
         else {
-            NSString *iTunesURL = [NSString stringWithFormat:@"https://itunes.apple.com/search?limit=1&media=music&term=%@", self.key];
+            NSString *iTunesURL = [NSString stringWithFormat:@"https://itunes.apple.com/search?limit=1&media=music&term=%@", query];
         [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
                                     JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:iTunesURL]]
                                     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
                                         NSDictionary *responseDict = JSON;
-                                        NSLog(@"[COLOREDVK] image response: %@", responseDict);
                                         NSArray *items = responseDict[@"results"];
                                         if (items.count > 0) {
                                             NSString *url = [items[0][@"artworkUrl100"] stringByReplacingOccurrencesOfString:@"100x100bb" withString:@"1024x1024bb"];
@@ -179,7 +172,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
                                                                      if (block) block(image, YES);
                                                                      NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
                                                                      BOOL cacheCovers = prefs[@"cacheAudioCovers"]?[prefs[@"cacheAudioCovers"] boolValue]:YES;
-                                                                     if (cacheCovers) [self.manager.imageCache storeImage:image forKey:self.key completion:nil];
+                                                                     if (cacheCovers) [self.manager.imageCache storeImage:image forKey:query completion:nil];
                                                                  }];
                                         } else if (block) block(self.noCover, NO);
                                     }
@@ -222,22 +215,67 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
 
 - (void)updateLyrycsForArtist:(NSString *)artist title:(NSString *)title
 {
+    [self.audioLyricsView resetState];
+    
     if ([artist hasPrefix:@"+"]) artist = [artist substringFromIndex:1];
     if ([artist hasSuffix:@"+"]) artist = [artist substringToIndex:artist.length - 1];
     if ([title hasPrefix:@"+"]) title = [title substringFromIndex:1];
     if ([title hasSuffix:@"+"]) artist = [title substringToIndex:title.length - 1];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"ColoredVKAudioEntity"];
+    NSString *cdArtist = [artist stringByReplacingOccurrencesOfString:@"+" withString:@""];
+    NSString *cdTitle = [title stringByReplacingOccurrencesOfString:@"+" withString:@""];
+    request.predicate = [NSPredicate predicateWithFormat:@"artist == %@ && title == %@", cdArtist, cdTitle];
+    
+    NSError *requestError = nil;
+    NSArray *resultArray = [self.coredata.managedContext executeFetchRequest:request error:&requestError];
+    if (!requestError && resultArray.count > 0) {
+        ColoredVKAudioEntity *entity = resultArray.firstObject;
+        self.audioLyricsView.text = entity.lyrics;
+        return;
+    }
+
+    title = [self convertStringToURLSafe:title];
+    artist = [self convertStringToURLSafe:artist];
+    
     NSString *url = [NSString stringWithFormat:@"%@/lyrics.php?artist=%@&title=%@",  kColoredVKAPIURL, artist, title];
-    url = [url stringByReplacingOccurrencesOfString:@" " withString:@"+"];
     [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
                                 JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
                                 success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
                                     if (JSON[@"response"]) {
                                         NSData *responseData = [JSON[@"response"] dataUsingEncoding:NSUTF8StringEncoding];
                                         NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
-                                        if (response[@"lyrics"]) self.audioLyricsView.text = response[@"lyrics"];
-                                        else [self.audioLyricsView resetState];
+                                        if (response[@"lyrics"]) {
+                                            self.audioLyricsView.text = response[@"lyrics"];
+                                            NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+                                            BOOL cacheCovers = prefs[@"cacheAudioCovers"]?[prefs[@"cacheAudioCovers"] boolValue]:YES;
+                                            
+                                            if ((self.audioLyricsView.text.length > 0) && cacheCovers) {
+                                                ColoredVKAudioEntity *audioEntity = [NSEntityDescription insertNewObjectForEntityForName:@"ColoredVKAudioEntity" inManagedObjectContext:self.coredata.managedContext];
+                                                audioEntity.artist = cdArtist;
+                                                audioEntity.title = cdTitle;
+                                                audioEntity.lyrics = response[@"lyrics"];
+                                                [self.coredata saveContext];
+                                            }
+                                        }
                                     }
-                                    else [self.audioLyricsView resetState];
-                                } failure:nil] start]; 
+                                } failure:nil] start];
+}
+
+- (NSString *)convertStringToURLSafe:(NSString *)string
+{
+    NSString *newString = [string stringByReplacingOccurrencesOfString:@"|" withString:@" "];
+        
+    NSCharacterSet *charset = [NSCharacterSet characterSetWithCharactersInString:@" /\\-|\""];
+    newString = [[newString componentsSeparatedByCharactersInSet:charset] componentsJoinedByString:@"+"];
+    while ([newString containsString:@"++"]) {
+        newString = [newString stringByReplacingOccurrencesOfString:@"+++" withString:@"+"];
+        newString = [newString stringByReplacingOccurrencesOfString:@"++" withString:@"+"];
+    }
+    if ([newString hasSuffix:@"+"]) newString = [newString stringByReplacingCharactersInRange:NSMakeRange(newString.length-1, 1) withString:@""];
+    if ([newString hasPrefix:@"+"]) newString = [newString stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:@""];
+    
+    
+    return newString;
 }
 @end

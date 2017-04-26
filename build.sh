@@ -9,6 +9,7 @@ cd ${PROJECT_DIR}
 
 echo "[->] Copying resources to temp directory..."
 cp -r "ColoredVK.bundle/." "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle"
+mv "${BUILT_PRODUCTS_DIR}/$PRODUCT.mom"  "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/"
 find "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" -iname '*.strings' -exec plutil -convert binary1 "{}" \;
 find "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" -iname '*.plist'   -exec plutil -convert binary1 "{}" \;
 
