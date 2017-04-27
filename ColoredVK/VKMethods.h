@@ -334,3 +334,19 @@
 @property(retain, nonatomic) ExtraInputPanelView *inputPanel;
 @end
 
+
+@interface ProfileFriendsController : VKMMultiIndexController
+@end
+
+@interface FriendsBDaysController : VKMLiveController
+@end
+
+@interface FriendBdayCell : VKMCell
+@property(retain, nonatomic) UILabel *status;
+@property(retain, nonatomic) UILabel *name;
+@end
+
+@interface FriendsAllRequestsController : VKMToolbarController
+@end
+
+

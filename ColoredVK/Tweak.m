@@ -45,11 +45,15 @@ BOOL enabledMenuImage;
 BOOL hideMenuSeparators;
 BOOL hideMessagesListSeparators;
 BOOL hideGroupsListSeparators;
+BOOL hideAudiosSeparators;
+BOOL hideFriendsSeparators;
+
 BOOL enabledMessagesImage;
 BOOL enabledMessagesListImage;
 BOOL enabledGroupsListImage;
 BOOL enabledAudioImage;
 BOOL changeAudioPlayerAppearance;
+BOOL enabledFriendsImage;
 
 CGFloat menuImageBlackout;
 CGFloat chatImageBlackout;
@@ -57,6 +61,7 @@ CGFloat chatListImageBlackout;
 CGFloat groupsListImageBlackout;
 CGFloat audioImageBlackout;
 CGFloat navbarImageBlackout;
+CGFloat friendsBlackout;
 
 
 BOOL useMenuParallax;
@@ -64,6 +69,7 @@ BOOL useMessagesListParallax;
 BOOL useMessagesParallax;
 BOOL useGroupsListParallax;
 BOOL useAudioParallax;
+BOOL useFriendsParallax;
 
 BOOL hideMessagesNavBarItems;
 
@@ -83,6 +89,7 @@ BOOL changeMessagesListTextColor;
 BOOL changeMessagesTextColor;
 BOOL changeGroupsListTextColor;
 BOOL changeAudiosTextColor;
+BOOL changeFriendsTextColor;
 
 UIColor *menuSeparatorColor;
 UIColor *barBackgroundColor;
@@ -103,6 +110,8 @@ UIColor *messagesListTextColor;
 UIColor *messagesTextColor;
 UIColor *groupsListTextColor;
 UIColor *audiosTextColor;
+UIColor *friendsTextColor;
+
 UIColor *audioPlayerTintColor;
 UIColor *menuSelectionColor;
 
@@ -111,11 +120,13 @@ UIColor *messagesBlurTone;
 UIColor *messagesListBlurTone;
 UIColor *groupsListBlurTone;
 UIColor *audiosBlurTone;
+UIColor *friendsBlurTone;
 
 BOOL messagesUseBlur;
 BOOL messagesListUseBlur;
 BOOL groupsListUseBlur;
 BOOL audiosUseBlur;
+BOOL friendsUseBlur;
 
 
 NSString *userToken;
@@ -127,6 +138,7 @@ UIBlurEffectStyle messagesBlurStyle;
 UIBlurEffectStyle messagesListBlurStyle;
 UIBlurEffectStyle groupsListBlurStyle;
 UIBlurEffectStyle audiosBlurStyle;
+UIBlurEffectStyle friendsBlurStyle;
 
 ColoredVKMainController *cvkMainController;
 VKMMainController *mainController;
@@ -218,26 +230,32 @@ void reloadPrefs()
         enabledGroupsListImage = [prefs[@"enabledGroupsListImage"] boolValue];
         enabledAudioImage = [prefs[@"enabledAudioImage"] boolValue];
         changeAudioPlayerAppearance = [prefs[@"changeAudioPlayerAppearance"] boolValue];
+        enabledFriendsImage = [prefs[@"enabledFriendsImage"] boolValue];
         
         hideMenuSeparators = [prefs[@"hideMenuSeparators"] boolValue];
         hideMessagesListSeparators = [prefs[@"hideMessagesListSeparators"] boolValue];
         hideGroupsListSeparators = [prefs[@"hideGroupsListSeparators"] boolValue];
+        hideAudiosSeparators = [prefs[@"hideAudiosSeparators"] boolValue];
+        hideFriendsSeparators = [prefs[@"hideFriendsSeparators"] boolValue];
         
         messagesUseBlur = [prefs[@"messagesUseBlur"] boolValue];
         messagesListUseBlur = [prefs[@"messagesListUseBlur"] boolValue];
         groupsListUseBlur = [prefs[@"groupsListUseBlur"] boolValue];
         audiosUseBlur = [prefs[@"audiosUseBlur"] boolValue];
+        friendsUseBlur = [prefs[@"friendsUseBlur"] boolValue];
         
         useMessagesListParallax = [prefs[@"useMessagesListParallax"] boolValue];
         useMessagesParallax = [prefs[@"useMessagesParallax"] boolValue];
         useGroupsListParallax = [prefs[@"useGroupsListParallax"] boolValue];
         useAudioParallax = [prefs[@"useAudioParallax"] boolValue];
+        useFriendsParallax = [prefs[@"useFriendsParallax"] boolValue];
         
         chatImageBlackout = [prefs[@"chatImageBlackout"] floatValue];
         chatListImageBlackout = [prefs[@"chatListImageBlackout"] floatValue];
         groupsListImageBlackout = [prefs[@"groupsListImageBlackout"] floatValue];
         audioImageBlackout = [prefs[@"audioImageBlackout"] floatValue];
         navbarImageBlackout = [prefs[@"navbarImageBlackout"] floatValue];
+        friendsBlackout = [prefs[@"friendsBlackout"] floatValue];
         
         hideMessagesNavBarItems = [prefs[@"hideMessagesNavBarItems"] boolValue];
         useMessageBubbleTintColor = [prefs[@"useMessageBubbleTintColor"] boolValue];
@@ -248,6 +266,7 @@ void reloadPrefs()
         changeMessagesListTextColor = [prefs[@"changeMessagesListTextColor"] boolValue];
         changeGroupsListTextColor = [prefs[@"changeGroupsListTextColor"] boolValue];
         changeAudiosTextColor = [prefs[@"changeAudiosTextColor"] boolValue];
+        changeFriendsTextColor = [prefs[@"changeFriendsTextColor"] boolValue];
         
         
         
@@ -259,9 +278,11 @@ void reloadPrefs()
         messagesListBlurStyle = prefs[@"messagesListBlurStyle"]?[prefs[@"messagesListBlurStyle"] integerValue]:UIBlurEffectStyleLight;
         groupsListBlurStyle = prefs[@"groupsListBlurStyle"]?[prefs[@"groupsListBlurStyle"] integerValue]:UIBlurEffectStyleLight;
         audiosBlurStyle = prefs[@"audiosBlurStyle"]?[prefs[@"audiosBlurStyle"] integerValue]:UIBlurEffectStyleLight;
+        friendsBlurStyle = prefs[@"friendsBlurStyle"]?[prefs[@"friendsBlurStyle"] integerValue]:UIBlurEffectStyleLight;
         
         
         menuSeparatorColor =         [UIColor savedColorForIdentifier:@"MenuSeparatorColor"         fromPrefs:prefs];
+        menuSelectionColor =        [[UIColor savedColorForIdentifier:@"menuSelectionColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
         barBackgroundColor =         [UIColor savedColorForIdentifier:@"BarBackgroundColor"         fromPrefs:prefs];
         toolBarBackgroundColor =     [UIColor savedColorForIdentifier:@"ToolBarBackgroundColor"     fromPrefs:prefs];
         toolBarForegroundColor =     [UIColor savedColorForIdentifier:@"ToolBarForegroundColor"     fromPrefs:prefs];
@@ -270,16 +291,20 @@ void reloadPrefs()
         messageBubbleTintColor =     [UIColor savedColorForIdentifier:@"messageBubbleTintColor"     fromPrefs:prefs];
         messageBubbleSentTintColor = [UIColor savedColorForIdentifier:@"messageBubbleSentTintColor" fromPrefs:prefs];
         messageUnreadColor =        [[UIColor savedColorForIdentifier:@"messageReadColor"           fromPrefs:prefs] colorWithAlphaComponent:0.2];
+        
         menuTextColor =              [UIColor savedColorForIdentifier:@"menuTextColor"              fromPrefs:prefs];
         messagesTextColor =          [UIColor savedColorForIdentifier:@"messagesTextColor"          fromPrefs:prefs];
         messagesListTextColor =      [UIColor savedColorForIdentifier:@"messagesListTextColor"      fromPrefs:prefs];
         groupsListTextColor =        [UIColor savedColorForIdentifier:@"groupsListTextColor"        fromPrefs:prefs];
         audiosTextColor =            [UIColor savedColorForIdentifier:@"audiosTextColor"            fromPrefs:prefs];
+        friendsTextColor =           [UIColor savedColorForIdentifier:@"friendsTextColor"           fromPrefs:prefs];
+        
         messagesBlurTone =          [[UIColor savedColorForIdentifier:@"messagesBlurTone"           fromPrefs:prefs] colorWithAlphaComponent:0.3];
         messagesListBlurTone =      [[UIColor savedColorForIdentifier:@"messagesListBlurTone"       fromPrefs:prefs] colorWithAlphaComponent:0.3];
         groupsListBlurTone =        [[UIColor savedColorForIdentifier:@"groupsListBlurTone"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
         audiosBlurTone =            [[UIColor savedColorForIdentifier:@"audiosBlurTone"             fromPrefs:prefs] colorWithAlphaComponent:0.3];
-        menuSelectionColor =        [[UIColor savedColorForIdentifier:@"menuSelectionColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
+        friendsBlurTone =           [[UIColor savedColorForIdentifier:@"friendsBlurTone"            fromPrefs:prefs] colorWithAlphaComponent:0.3];
+        
         
         
         if (cvkMainController.navBarImageView) [cvkMainController.navBarImageView updateViewForKey:@"navbarImageBlackout"];
@@ -428,6 +453,10 @@ void setupSearchController(UISearchDisplayController *controller, BOOL reset)
         blurStyle = audiosBlurStyle;
     }  else if ((tag == 5) && enabledMenuImage) {
         shouldCustomize = YES;
+    } else if ((tag == 6) && enabledFriendsImage) {
+        shouldCustomize = YES;
+        blurColor = friendsBlurTone;
+        blurStyle = friendsBlurStyle;
     }
     
     if (enabled && shouldCustomize) {
@@ -439,6 +468,7 @@ void setupSearchController(UISearchDisplayController *controller, BOOL reset)
             };
             [UIView animateWithDuration:0.1 delay:0 options:0 animations:^{ removeAllBlur(); } completion:^(BOOL finished) { removeAllBlur(); }];
         } else {
+            controller.searchResultsTableView.tag = 21;
             UIViewController *parentController = controller.searchContentsController.parentViewController;
             if ([parentController isKindOfClass:NSClassFromString(@"VKMNavigationController")]) {
                 VKMNavigationController *navigation = (VKMNavigationController *)parentController;
@@ -523,6 +553,7 @@ void setupCellForSearchController(UITableViewCell *cell, UISearchDisplayControll
     else if ((tag == 2) && enabledGroupsListImage) shouldCustomize = YES;
     else if ((tag == 3) && enabledAudioImage) shouldCustomize = YES;
     else if ((tag == 4) && enabledAudioImage) shouldCustomize = YES;
+    else if ((tag == 6) && enabledFriendsImage)  shouldCustomize = YES;
     
     
     if (enabled && shouldCustomize) {
@@ -530,36 +561,27 @@ void setupCellForSearchController(UITableViewCell *cell, UISearchDisplayControll
         
         if ([cell isKindOfClass:NSClassFromString(@"SourceCell")] || [cell isKindOfClass:NSClassFromString(@"UserCell")]) {
             SourceCell *sourceCell = (SourceCell *)cell;
-            if (enabledGroupsListImage) {
-                sourceCell.last.textColor = [UIColor colorWithWhite:1 alpha:0.9];
-                sourceCell.last.backgroundColor = [UIColor clearColor];
-                sourceCell.first.textColor = [UIColor colorWithWhite:1 alpha:0.9];
-                sourceCell.first.backgroundColor = [UIColor clearColor];
-            }
-            cell = sourceCell;
+            sourceCell.last.textColor = [UIColor colorWithWhite:1 alpha:0.9];
+            sourceCell.last.backgroundColor = [UIColor clearColor];
+            sourceCell.first.textColor = [UIColor colorWithWhite:1 alpha:0.9];
+            sourceCell.first.backgroundColor = [UIColor clearColor];
         } else if ([cell isKindOfClass:NSClassFromString(@"NewDialogCell")]) {
             NewDialogCell *dialogCell = (NewDialogCell *)cell;
-            if (enabledGroupsListImage) {
-                dialogCell.backgroundView = nil;
-                if (!dialogCell.dialog.head.read_state && dialogCell.unread.hidden) dialogCell.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
-                else dialogCell.contentView.backgroundColor = [UIColor clearColor];
-                
-                dialogCell.name.textColor = [UIColor colorWithWhite:1 alpha:0.9];
-                dialogCell.time.textColor = dialogCell.name.textColor;
-                if ([dialogCell respondsToSelector:@selector(dialogText)]) dialogCell.dialogText.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
-                if ([dialogCell respondsToSelector:@selector(text)]) dialogCell.text.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
-                dialogCell.attach.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
-            }
-            cell = dialogCell;
+            dialogCell.backgroundView = nil;
+            if (!dialogCell.dialog.head.read_state && dialogCell.unread.hidden) dialogCell.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
+            else dialogCell.contentView.backgroundColor = [UIColor clearColor];
+            
+            dialogCell.name.textColor = [UIColor colorWithWhite:1 alpha:0.9];
+            dialogCell.time.textColor = dialogCell.name.textColor;
+            if ([dialogCell respondsToSelector:@selector(dialogText)]) dialogCell.dialogText.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
+            if ([dialogCell respondsToSelector:@selector(text)]) dialogCell.text.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
+            dialogCell.attach.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
         } else if ([cell isKindOfClass:NSClassFromString(@"GroupCell")]) {
             GroupCell *groupCell = (GroupCell *)cell;
-            if (enabledGroupsListImage) {
-                groupCell.name.textColor = [UIColor colorWithWhite:1 alpha:0.9];
-                groupCell.name.backgroundColor = [UIColor clearColor];
-                groupCell.status.textColor = [UIColor colorWithWhite:0.8 alpha:0.9];
-                groupCell.status.backgroundColor = [UIColor clearColor];
-            }
-            cell = groupCell;
+            groupCell.name.textColor = [UIColor colorWithWhite:1 alpha:0.9];
+            groupCell.name.backgroundColor = [UIColor clearColor];
+            groupCell.status.textColor = [UIColor colorWithWhite:0.8 alpha:0.9];
+            groupCell.status.backgroundColor = [UIColor clearColor];
         } else {
             cell.textLabel.textColor = [UIColor colorWithWhite:1 alpha:0.9];
             cell.textLabel.backgroundColor = [UIColor clearColor];
@@ -667,6 +689,16 @@ void resetUISearchBar(UISearchBar *searchBar)
         barTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:barTextField.placeholder
                                                                              attributes:@{NSForegroundColorAttributeName:[UIColor colorWithRed:162/255.0f green:168/255.0f blue:173/255.0f alpha:1]}];
     }
+}
+
+void performInitialCellSetup(UITableViewCell *cell)
+{
+    cell.backgroundColor = [UIColor clearColor];
+    cell.contentView.backgroundColor = [UIColor clearColor];
+    
+    UIView *backView = [UIView new];
+    backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
+    cell.selectedBackgroundView = backView;
 }
 
 
@@ -829,14 +861,9 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMLiveController, tableView, UITab
     
     if ([self isKindOfClass:NSClassFromString(@"VKMLiveController")] && [self.model.description containsString:@"AudioRecommendationsModel"]) {
         if (enabled && enabledAudioImage) {
-            cell.backgroundColor = [UIColor clearColor];
-            cell.contentView.backgroundColor = [UIColor clearColor];
+            performInitialCellSetup(cell);
             cell.textLabel.textColor = [UIColor colorWithWhite:1 alpha:0.9];
             cell.detailTextLabel.textColor = [UIColor colorWithWhite:0.8 alpha:0.9];
-            
-            UIView *backView = [UIView new];
-            backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
-            cell.selectedBackgroundView = backView;
         }
     }
     return cell;
@@ -872,6 +899,11 @@ CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, anima
             shouldAddBlur = YES;
             blurColor = audiosBlurTone;
             blurStyle = audiosBlurStyle;
+        } 
+        else if (friendsUseBlur && ([CLASS_NAME(self) isEqualToString:@"ProfileFriendsController"] || [CLASS_NAME(self) isEqualToString:@"FriendsBDaysController"] || [CLASS_NAME(self) isEqualToString:@"FriendsAllRequestsController"])) {
+            shouldAddBlur = YES;
+            blurColor = friendsBlurTone;
+            blurStyle = friendsBlurStyle;
         } else shouldAddBlur = NO;
     } else shouldAddBlur = NO;
     
@@ -967,20 +999,15 @@ CHOptimizedMethod(2, self, UITableViewCell*, GroupsController, tableView, UITabl
         if ([cell isKindOfClass:NSClassFromString(@"GroupCell")]) {
             GroupCell *groupCell = (GroupCell *)cell;
             if (enabledGroupsListImage) {
-                groupCell.backgroundColor =  [UIColor clearColor];
+                performInitialCellSetup(groupCell);
                 groupCell.name.textColor = changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1 alpha:0.9];
                 groupCell.name.backgroundColor = [UIColor clearColor];
                 groupCell.status.textColor = changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:0.8 alpha:0.9];
                 groupCell.status.backgroundColor = [UIColor clearColor];
-                
-                UIView *backView = [UIView new];
-                backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
-                groupCell.selectedBackgroundView = backView;
             }
-            return groupCell;
         } else  if ([cell isKindOfClass:NSClassFromString(@"VKMRendererCell")]) {
             if (enabledGroupsListImage) {
-                cell.backgroundColor =  [UIColor clearColor];
+                performInitialCellSetup(cell);
                 
                 for (UIView *view in cell.contentView.subviews) {
                     if ([view isKindOfClass:[UILabel class]]) {
@@ -989,10 +1016,6 @@ CHOptimizedMethod(2, self, UITableViewCell*, GroupsController, tableView, UITabl
                         label.backgroundColor = [UIColor clearColor];
                     }
                 }
-                
-                UIView *backView = [UIView new];
-                backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
-                cell.selectedBackgroundView = backView;
             }
         }
         
@@ -1039,8 +1062,9 @@ CHOptimizedMethod(2, self, UITableViewCell*, DialogsController, tableView, UITab
     if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && enabled) {
         NewDialogCell *cell = (NewDialogCell *)CHSuper(2, DialogsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
         if (enabledMessagesListImage) {
+            performInitialCellSetup(cell);
             cell.backgroundView.hidden = YES;
-            cell.backgroundColor = [UIColor clearColor];
+            
             if (!cell.dialog.head.read_state && cell.unread.hidden) cell.contentView.backgroundColor = useCustomMessageReadColor?messageUnreadColor:[UIColor defaultColorForIdentifier:@"messageReadColor"];
             else cell.contentView.backgroundColor = [UIColor clearColor];
             
@@ -1049,11 +1073,6 @@ CHOptimizedMethod(2, self, UITableViewCell*, DialogsController, tableView, UITab
             cell.attach.textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:0.95 alpha:0.9];
             if ([cell respondsToSelector:@selector(dialogText)]) cell.dialogText.textColor = cell.attach.textColor;
             if ([cell respondsToSelector:@selector(text)]) cell.text.textColor = cell.attach.textColor;
-            
-            UIView *backView = [UIView new];
-            backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
-            cell.selectedBackgroundView = backView;
-
         }
         return cell;
     }
@@ -1392,7 +1411,7 @@ CHOptimizedMethod(0, self, void, AudioAlbumController, viewWillLayoutSubviews)
     
     if ((enabled && enabledAudioImage) && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
-        self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2];
+        self.tableView.separatorColor =  hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
         self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
     }
 }
@@ -1403,14 +1422,10 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioAlbumController, tableView, UI
     
     if (enabled && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
         if (enabledAudioImage) {
-            cell.backgroundColor = [UIColor clearColor];
-            cell.contentView.backgroundColor = [UIColor clearColor];
+            performInitialCellSetup(cell);
+            
             cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.9];
             cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:0.8 alpha:0.9];
-            
-            UIView *backView = [UIView new];
-            backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
-            cell.selectedBackgroundView = backView;
         }
     }
     
@@ -1431,7 +1446,7 @@ CHOptimizedMethod(1, self, void, AudioPlaylistController, viewWillAppear, BOOL, 
     
     if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
-        self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2];
+        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
         setBlur(self.navigationController.navigationBar, audiosUseBlur, audiosBlurTone, audiosBlurStyle);
     }
 }
@@ -1442,14 +1457,10 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioPlaylistController, tableView,
     
     if (enabled && [self isKindOfClass:NSClassFromString(@"AudioPlaylistController")]) {
         if (enabledAudioImage) {
-            cell.backgroundColor = [UIColor clearColor];
-            cell.contentView.backgroundColor = [UIColor clearColor];
+            performInitialCellSetup(cell);
+            
             cell.textLabel.textColor = [UIColor colorWithWhite:1 alpha:0.9];
             cell.detailTextLabel.textColor = [UIColor colorWithWhite:0.8 alpha:0.9];
-            
-            UIView *backView = [UIView new];
-            backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
-            cell.selectedBackgroundView = backView;
         }
     }
     
@@ -1680,6 +1691,141 @@ CHOptimizedMethod(0, self, UIStatusBarStyle, PostEditController, preferredStatus
 }
 
 
+
+#pragma mark ProfileFriendsController
+CHDeclareClass(ProfileFriendsController);
+CHOptimizedMethod(1, self, void, ProfileFriendsController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, ProfileFriendsController, viewWillAppear, animated);
+    
+    if ((enabled && enabledFriendsImage) && [self isKindOfClass:NSClassFromString(@"ProfileFriendsController")]) {
+        [ColoredVKMainController setImageToTableView:self.tableView withName:@"friendsBackgroundImage" blackout:friendsBlackout parallaxEffect:useFriendsParallax];
+        self.tableView.separatorColor = hideFriendsSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
+        self.tableView.sectionIndexColor = UITableViewCellTextColor;
+        self.tableView.tag = 22;
+        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        setBlur(self.toolbar, friendsUseBlur, friendsBlurTone, friendsBlurStyle);
+        
+        UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
+        if (search) {
+            search.backgroundImage = [UIImage new];
+            search.tag = 6;
+            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+            NSDictionary *attributes = @{NSForegroundColorAttributeName: changeFriendsTextColor?friendsTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
+            search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder attributes:attributes];
+            search._scopeBarBackgroundView.superview.hidden = YES;
+        }
+    }
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, ProfileFriendsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, ProfileFriendsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    
+    if ((enabled && enabledFriendsImage) && [self isKindOfClass:NSClassFromString(@"ProfileFriendsController")]) {
+        performInitialCellSetup(cell);
+            
+        SourceCell *sourceCell = (SourceCell *)cell;
+        sourceCell.last.textColor = changeFriendsTextColor?friendsTextColor:UITableViewCellTextColor;
+        sourceCell.last.backgroundColor = UITableViewCellBackgroundColor;
+        sourceCell.first.textColor = changeFriendsTextColor?friendsTextColor:UITableViewCellTextColor;
+        sourceCell.first.backgroundColor = UITableViewCellBackgroundColor;
+    }
+    
+    return cell;
+}
+
+
+#pragma mark FriendsBDaysController
+CHDeclareClass(FriendsBDaysController);
+CHOptimizedMethod(1, self, void, FriendsBDaysController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, FriendsBDaysController, viewWillAppear, animated);
+    
+    if ((enabled && enabledFriendsImage) && [self isKindOfClass:NSClassFromString(@"FriendsBDaysController")]) {
+        [ColoredVKMainController setImageToTableView:self.tableView withName:@"friendsBackgroundImage" blackout:friendsBlackout parallaxEffect:useFriendsParallax];
+        self.tableView.separatorColor = hideFriendsSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
+        self.tableView.tag = 22;
+        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+    }
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, FriendsBDaysController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, FriendsBDaysController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    
+    if ((enabled && enabledFriendsImage) && [self isKindOfClass:NSClassFromString(@"FriendsBDaysController")]) {
+        performInitialCellSetup(cell);
+        
+        FriendBdayCell *sourceCell = (FriendBdayCell *)cell;
+        sourceCell.name.textColor = changeFriendsTextColor?friendsTextColor:UITableViewCellTextColor;
+        sourceCell.name.backgroundColor = UITableViewCellBackgroundColor;
+        sourceCell.status.textColor = changeFriendsTextColor?friendsTextColor.darkerColor:UITableViewCellDetailedTextColor;
+        sourceCell.status.backgroundColor = UITableViewCellBackgroundColor;
+    }
+    
+    return cell;
+}
+
+
+#pragma mark FriendsAllRequestsController
+CHDeclareClass(FriendsAllRequestsController);
+CHOptimizedMethod(1, self, void, FriendsAllRequestsController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, FriendsAllRequestsController, viewWillAppear, animated);
+    
+    if ((enabled && enabledFriendsImage) && [self isKindOfClass:NSClassFromString(@"FriendsAllRequestsController")]) {
+        [ColoredVKMainController setImageToTableView:self.tableView withName:@"friendsBackgroundImage" blackout:friendsBlackout parallaxEffect:useFriendsParallax];
+        self.tableView.separatorColor = hideFriendsSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
+        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        setBlur(self.toolbar, friendsUseBlur, friendsBlurTone, friendsBlurStyle);
+    }
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, FriendsAllRequestsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, FriendsAllRequestsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    
+    if ((enabled && enabledFriendsImage) && [self isKindOfClass:NSClassFromString(@"FriendsAllRequestsController")]) {
+        performInitialCellSetup(cell);
+        
+        for (UIView *view in cell.contentView.subviews) {
+            view.backgroundColor = [UIColor clearColor];
+            if ([view isKindOfClass:[UILabel class]]) ((UILabel*)view).textColor = changeFriendsTextColor?friendsTextColor:UITableViewCellTextColor;
+        }
+    }
+    
+    return cell;
+}
+
+
+
+
+#pragma mark UITableView
+CHDeclareClass(UITableView);
+CHOptimizedMethod(6, self, UITableViewHeaderFooterView*, UITableView, _sectionHeaderView, BOOL, arg1, withFrame, CGRect, frame, forSection, NSInteger, section, floating, BOOL, floating, reuseViewIfPossible, BOOL, reuse, willDisplay, BOOL, display)
+{
+    UITableViewHeaderFooterView *view = CHSuper(6, UITableView, _sectionHeaderView, arg1, withFrame, frame, forSection, section, floating, floating, reuseViewIfPossible, reuse, willDisplay, display);
+    
+    void (^setColors)() = ^{
+        view.contentView.backgroundColor = [UIColor clearColor];
+        view.backgroundView.backgroundColor = [UIColor clearColor];
+        view.textLabel.backgroundColor = [UIColor clearColor];
+        view.textLabel.textColor = UITableViewCellTextColor;  
+    };
+    if (self.tag == 21) {
+        setColors();
+       UIVisualEffectView *blurView = blurForView(view, 5);
+        if (![view.contentView.subviews containsObject:[view.contentView viewWithTag:5]]) [view.contentView addSubview:blurView];
+    } else if (self.tag == 22) {
+        setColors();
+        view.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+        
+    }
+    return view;
+}
+
+
 #pragma mark Static methods
 static void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
@@ -1711,7 +1857,7 @@ CHConstructor
 {
     @autoreleasepool {
 //        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{ dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW); });
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{ dlopen(@"/var/mobile/FLEXDylib.dylib".UTF8String, RTLD_NOW); });
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{ dlopen(@"/var/mobile/FLEXDylib.dylib".UTF8String, RTLD_NOW); });
         
         prefsPath = CVK_PREFS_PATH;
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
@@ -1893,6 +2039,26 @@ CHConstructor
             
             CHLoadLateClass(PostEditController);
             CHHook(0, PostEditController, preferredStatusBarStyle);
+            
+            
+            CHLoadLateClass(ProfileFriendsController);
+            CHHook(1, ProfileFriendsController, viewWillAppear);
+            CHHook(2, ProfileFriendsController, tableView, cellForRowAtIndexPath);
+            
+            
+            CHLoadLateClass(FriendsBDaysController);
+            CHHook(1, FriendsBDaysController, viewWillAppear);
+            CHHook(2, FriendsBDaysController, tableView, cellForRowAtIndexPath);
+            
+            
+            CHLoadLateClass(FriendsAllRequestsController);
+            CHHook(1, FriendsAllRequestsController, viewWillAppear);
+            CHHook(2, FriendsAllRequestsController, tableView, cellForRowAtIndexPath);
+            
+            
+            
+            CHLoadLateClass(UITableView);
+            CHHook(6, UITableView, _sectionHeaderView, withFrame, forSection, floating, reuseViewIfPossible, willDisplay);
 
         } else {
             showAlertWithMessage([NSString stringWithFormat:CVKLocalizedString(@"VKAPP_VERSION_IS_TOO_LOW"),  vkVersion, @"2.2"]);

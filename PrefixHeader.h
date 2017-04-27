@@ -52,8 +52,11 @@
 #define SYSTEM_VERSION_IS_LESS_THAN(version)  ([SYSTEM_VERSION compare:version options:NSNumericSearch] != NSOrderedDescending)
 #define CLASS_NAME(obj)                       NSStringFromClass([obj class])
 
-#define CVKTableViewSeparatorColor [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1]
-#define CVKMainColor [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1]
+#define CVKTableViewSeparatorColor       [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1]
+#define CVKMainColor                     [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1]
+#define UITableViewCellTextColor         [UIColor colorWithWhite:1 alpha:0.9]
+#define UITableViewCellDetailedTextColor [UIColor colorWithWhite:0.8 alpha:0.9]
+#define UITableViewCellBackgroundColor   [UIColor clearColor]
 
 
 #define CVKLog(args...)			NSLog(@"[COLOREDVK2]: %@", [NSString stringWithFormat:args])

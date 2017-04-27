@@ -74,6 +74,18 @@
 			<key>detail</key>
 			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
+			<string>Friends</string>
+			<key>label</key>
+			<string>FRIENDS</string>
+			<key>icon</key>
+			<string>FriendsIcon.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKGeneralPrefs</string>
+			<key>plistToLoad</key>
 			<string>Groups</string>
 			<key>label</key>
 			<string>GROUPS</string>

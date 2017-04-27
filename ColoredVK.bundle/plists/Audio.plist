@@ -88,6 +88,16 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>key</key>
+			<string>hideAudiosSeparators</string>
+			<key>label</key>
+			<string>HIDE_SEPARATORS</string>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>AUDIO_PLAYER</string>

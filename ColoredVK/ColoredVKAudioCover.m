@@ -105,25 +105,19 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.defaultCover = (wasDownloaded && image)?NO:YES;
                     
-                    UIImage *coverImage = image;
-                    if (player.coverImage && (!wasDownloaded && ![player.coverImage.imageAsset.assetName containsString:@"placeholder"])) {
-                        coverImage = player.coverImage;
-                        self.defaultCover = NO;
-                    }
-                    
-                    [self changeImageViewImage:self.topImageView toImage:coverImage animated:YES];
+                    [self changeImageViewImage:self.topImageView toImage:image animated:YES];
                     if (self.defaultCover)
                         [self changeImageViewImage:self.bottomImageView toImage:self.customCover?self.noCover:nil animated:YES];
                     else
-                        [self changeImageViewImage:self.bottomImageView toImage:coverImage animated:YES];
+                        [self changeImageViewImage:self.bottomImageView toImage:image animated:YES];
                     
                     MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
                     NSMutableDictionary *playingInfo = [center.nowPlayingInfo mutableCopy];
-                    if (!self.defaultCover) playingInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:coverImage];
+                    if (!self.defaultCover) playingInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:image];
                     else [playingInfo removeObjectForKey:MPMediaItemPropertyArtwork];
                     center.nowPlayingInfo = [playingInfo copy];
                     
-                    [self updateColorSchemeForImage:coverImage];
+                    [self updateColorSchemeForImage:image];
                         //                if (self.inBackground) [[UIApplication sharedApplication] _updateSnapshotForBackgroundApplication:YES];
                 });
             }];
@@ -160,6 +154,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         if (image) { if (block) block(image, YES); }
         else {
             NSString *iTunesURL = [NSString stringWithFormat:@"https://itunes.apple.com/search?limit=1&media=music&term=%@", query];
+            iTunesURL = [iTunesURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
                                     JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:iTunesURL]]
                                     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
@@ -239,6 +234,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
     artist = [self convertStringToURLSafe:artist];
     
     NSString *url = [NSString stringWithFormat:@"%@/lyrics.php?artist=%@&title=%@",  kColoredVKAPIURL, artist, title];
+    url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
                                 JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
                                 success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
@@ -247,10 +243,8 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
                                         NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
                                         if (response[@"lyrics"]) {
                                             self.audioLyricsView.text = response[@"lyrics"];
-                                            NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-                                            BOOL cacheCovers = prefs[@"cacheAudioCovers"]?[prefs[@"cacheAudioCovers"] boolValue]:YES;
                                             
-                                            if ((self.audioLyricsView.text.length > 0) && cacheCovers) {
+                                            if (self.audioLyricsView.text.length > 0) {
                                                 ColoredVKAudioEntity *audioEntity = [NSEntityDescription insertNewObjectForEntityForName:@"ColoredVKAudioEntity" inManagedObjectContext:self.coredata.managedContext];
                                                 audioEntity.artist = cdArtist;
                                                 audioEntity.title = cdTitle;
@@ -274,7 +268,6 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
     }
     if ([newString hasSuffix:@"+"]) newString = [newString stringByReplacingCharactersInRange:NSMakeRange(newString.length-1, 1) withString:@""];
     if ([newString hasPrefix:@"+"]) newString = [newString stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:@""];
-    
     
     return newString;
 }
