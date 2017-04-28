@@ -44,7 +44,6 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
         _blackout = blackout;
         
         self.imageView = [[UIImageView alloc] initWithFrame:frame];
-        self.imageView.image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, name]];
         self.imageView.contentMode = UIViewContentModeScaleAspectFill;
         self.imageView.layer.masksToBounds = YES;
         if (flip) self.imageView.transform = CGAffineTransformMakeRotation(180 * M_PI/180);
@@ -55,6 +54,9 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
         [self.imageView addSubview:self.frontView];
         
         self.parallaxEnabled = parallaxEffect;
+        
+        [self updateView];
+        [self setupConstraints];
     }
     
     return self;
@@ -171,6 +173,11 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
     if (superview && [superview.subviews containsObject:[superview viewWithTag:self.tag]]) {
         [self removeFromSuperview];
     }
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"%@: Image name %@, blackout %.2f, parallax %@", NSStringFromClass([self class]), self.name, self.blackout, @(self.parallaxEnabled)];
 }
 
 @end

@@ -98,6 +98,18 @@
 			<key>detail</key>
 			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
+			<string>Videos</string>
+			<key>label</key>
+			<string>VIDEOS</string>
+			<key>icon</key>
+			<string>VideosIcon.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKGeneralPrefs</string>
+			<key>plistToLoad</key>
 			<string>Audio</string>
 			<key>label</key>
 			<string>AUDIO</string>

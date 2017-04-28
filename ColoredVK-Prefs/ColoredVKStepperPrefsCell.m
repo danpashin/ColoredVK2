@@ -23,17 +23,16 @@
         numberButton.shakeAnimation = YES;
         numberButton.minValue = 0;
         numberButton.maxValue = 6;
-        numberButton.currentNumber = [prefs[self.specifier.identifier] componentsSeparatedByString:@"."].lastObject.integerValue;
+        numberButton.currentNumber = [prefs[specifier.identifier] componentsSeparatedByString:@"."].lastObject.integerValue;
         numberButton.increaseTitle = @"＋";
         numberButton.decreaseTitle = @"－";
         numberButton.resultBlock = ^(NSInteger number, BOOL increaseStatus) {
             NSMutableDictionary *tweakSettings = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-            
-            tweakSettings[self.specifier.identifier] = [NSString stringWithFormat:@"0.%i", (int)number];
+            tweakSettings[specifier.identifier] = [NSString stringWithFormat:@"0.%i", (int)number];
             [tweakSettings writeToFile:CVK_PREFS_PATH atomically:YES];
             
             CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
-            if ([self.specifier.identifier isEqualToString:@"menuImageBlackout"])
+            if ([specifier.identifier isEqualToString:@"menuImageBlackout"])
                 CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
         };
         self.accessoryView = numberButton;

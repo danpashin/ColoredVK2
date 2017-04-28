@@ -16,15 +16,15 @@
 - (NSArray *)specifiers
 {
     if (!_specifiers) {
-        NSArray *specifiersArray = [self specifiersForPlistName:@"Main" localize:NO addFooter:YES];
+        NSMutableArray *specifiersArray = [self specifiersForPlistName:@"Main" localize:NO addFooter:YES].mutableCopy;
         
         for (PSSpecifier *specifier in specifiersArray) {
             if ([specifier.identifier isEqualToString:@"manageAccount"]) {
-                if (!licenceContainsKey(@"Login")) [specifier setProperty:@NO forKey:@"enabled"];
+                if (!licenceContainsKey(@"Login")) [specifiersArray removeObject:specifier];
             }
         }
         
-        _specifiers = specifiersArray;
+        _specifiers = specifiersArray.copy;
     }
     return _specifiers;
 }

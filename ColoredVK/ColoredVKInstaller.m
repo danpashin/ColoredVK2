@@ -19,10 +19,10 @@
 #define kDRMLicenceKey          @"1D074B10BBA106699DD7D4AED9E595FA"
 #define kDRMAuthorizeKey        @"ACBEBB5F70D0883E875DAA6E1C5C59ED"
 #define kDRMPackage             @"org.thebigboss.coloredvk2"
-#define kDRMPackageName         @"ColoredVK 2"
-#define kDRMPackageVersion      kColoredVKVersion
+#define kDRMPackageName         kPackageName
+#define kDRMPackageVersion      kPackageVersion
 #define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
-#define kDRMRemoteServerURL     [NSString stringWithFormat:@"%@/index-new.php", kColoredVKAPIURL]
+#define kDRMRemoteServerURL     [NSString stringWithFormat:@"%@/index-new.php", kPackageAPIURL]
 
 
 NSData *AES256Decrypt(NSData *data, NSString *key)
@@ -174,7 +174,7 @@ struct utsname systemInfo;
 
 - (void)setupFiles
 {
-    NSFileManager *fileManager = [NSFileManager defaultManager]; 
+    NSFileManager *fileManager = [NSFileManager defaultManager];
 #ifdef COMPILE_FOR_JAIL
     if ([fileManager fileExistsAtPath:CVK_CACHE_PATH_OLD]) [fileManager removeItemAtPath:CVK_CACHE_PATH_OLD error:nil];
 #endif
@@ -192,8 +192,9 @@ struct utsname systemInfo;
         if (sendStatistics) {
             UIDevice *device = [UIDevice currentDevice];
             NSString *stringURL = [NSString stringWithFormat:@"%@/stats/?product=%@&version=%@&device=%@&ios_version=%@&device_language=%@&vk_version=%@&identifier=%@", 
-                                   kColoredVKAPIURL, kDRMPackage, kDRMPackageVersion, @(systemInfo.machine), 
-                                   device.systemVersion, [NSLocale preferredLanguages].firstObject, prefs[@"vkVersion"], device.identifierForVendor.UUIDString];
+                                   kPackageAPIURL, kDRMPackage, kDRMPackageVersion, @(systemInfo.machine), 
+                                   device.systemVersion, [NSLocale preferredLanguages].firstObject, [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], 
+                                   device.identifierForVendor.UUIDString];
             
             [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]] 
                                                queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {}];

@@ -10,6 +10,7 @@
 #import "UIColor+ColoredVK.h"
 #import "UIImage+ColoredVK.h"
 
+#import "CaptainHook/CaptainHook.h"
 
 
 #ifdef  COMPILE_FOR_JAIL
@@ -62,6 +63,9 @@
 #define CVKLog(args...)			NSLog(@"[COLOREDVK2]: %@", [NSString stringWithFormat:args])
 #define CVKLogSource(args...)	NSLog(@"[COLOREDVK2]: @ " CHStringify(__LINE__) " in %s: %@", __FUNCTION__, [NSString stringWithFormat:args])
 
-#define kColoredVKVersion @"3.3.1-beta-1"
-#define kColoredVKAPIVersion @"1.2"
-#define kColoredVKAPIURL [NSString stringWithFormat:@"http://danpashin.ru/api/v%@", kColoredVKAPIVersion]
+#define kPackageIdentifier @"com.daniilpashin.coloredvk2"
+#define kPackageName @"ColoredVK 2"
+#define kPackageVersion @"3.3.1-beta-1"
+#define kPackageAPIVersion @"1.2"
+#define kPackageAPIURL [NSString stringWithFormat:@"http://danpashin.ru/api/v%@", kPackageAPIVersion]
+#define kPackageDevLink @"https://vk.com/danpashin"

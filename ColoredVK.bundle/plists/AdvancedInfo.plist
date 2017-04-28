@@ -24,9 +24,21 @@
 		</dict>
 		<dict>
 			<key>title</key>
+			<string>FRIENDS</string>
+			<key>identifier</key>
+			<string>friendsBackgroundImage</string>
+		</dict>
+		<dict>
+			<key>title</key>
 			<string>GROUPS</string>
 			<key>identifier</key>
 			<string>groupsListBackgroundImage</string>
+		</dict>
+		<dict>
+			<key>title</key>
+			<string>VIDEOS</string>
+			<key>identifier</key>
+			<string>videosBackgroundImage</string>
 		</dict>
 		<dict>
 			<key>title</key>

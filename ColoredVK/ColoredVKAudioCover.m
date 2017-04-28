@@ -233,7 +233,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
     title = [self convertStringToURLSafe:title];
     artist = [self convertStringToURLSafe:artist];
     
-    NSString *url = [NSString stringWithFormat:@"%@/lyrics.php?artist=%@&title=%@",  kColoredVKAPIURL, artist, title];
+    NSString *url = [NSString stringWithFormat:@"%@/lyrics.php?artist=%@&title=%@",  kPackageAPIURL, artist, title];
     url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
                                 JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]

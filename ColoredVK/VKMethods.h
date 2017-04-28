@@ -6,15 +6,7 @@
 //  
 //
 #import <AVFoundation/AVFoundation.h>
-#import <UIKit/UIKit.h>
 #import <MediaPlayer/MediaPlayer.h>
-
-
-@interface VKSession : NSObject
-@property(readonly, copy, nonatomic) NSNumber *userId; 
-@property(copy, nonatomic) NSString *token;
-@end
-
 
 @interface Model : NSObject
 @end
@@ -30,15 +22,9 @@
 
 @interface VKMSearchController : UISearchDisplayController
 @end
-@interface VKSearchController : UISearchController
-@end
 
 @interface VKMTableController : VKMScrollViewController
-@property(retain, nonatomic) VKSearchController *search80;
-@property(retain, nonatomic) VKMSearchController *search;
-@property(retain, nonatomic) UIColor *separatorColor;
 @property(retain, nonatomic) UITableView *tableView;
-@property (nonatomic, readonly, strong) id VKMTableCreateSearchBar;
 @end
 
 @interface VKMLiveController : VKMTableController
@@ -46,8 +32,6 @@
 
 
 @interface VKMMainController : VKMLiveController
-@property(retain, nonatomic) NSArray *menu;
-@property(retain, nonatomic) UINavigationController *navMain;
 @end
 
 
@@ -126,7 +110,7 @@
 
 @interface VKMessage : NSObject
 @property(nonatomic) BOOL read_state;
-@property(nonatomic) _Bool incoming;
+@property(nonatomic) BOOL incoming;
 @end
 
 @interface MessageCell : UITableViewCell
@@ -335,6 +319,7 @@
 @end
 
 
+
 @interface ProfileFriendsController : VKMMultiIndexController
 @end
 
@@ -349,4 +334,13 @@
 @interface FriendsAllRequestsController : VKMToolbarController
 @end
 
+
+@interface VideoAlbumController : VKMLiveController
+@end
+
+@interface VideoCell : VKMCell
+@property(readonly, retain, nonatomic) UILabel *viewCountLabel;
+@property(readonly, retain, nonatomic) UILabel *authorLabel;
+@property(readonly, retain, nonatomic) UILabel *videoTitleLabel;
+@end
 

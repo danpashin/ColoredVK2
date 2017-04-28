@@ -51,7 +51,7 @@
                 specifier.titleDictionary = [tempDict copy];
             }
             
-            if ([specifier.identifier isEqualToString:@"checkUpdates"] && [kColoredVKVersion containsString:@"beta"]) [specifier setProperty:@NO forKey:@"enabled"];
+            if ([specifier.identifier isEqualToString:@"checkUpdates"] && [kPackageVersion containsString:@"beta"]) [specifier setProperty:@NO forKey:@"enabled"];
             if ([specifier.identifier isEqualToString:@"manageSettingsFooter"] && specifier.properties[@"footerText"])
                  [specifier setProperty:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil), CVK_BACKUP_PATH] forKey:@"footerText"];
         }
@@ -116,14 +116,14 @@
 - (PSSpecifier *)errorMessage
 {
     PSSpecifier *errorMessage = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-    [errorMessage setProperty:[NSLocalizedStringFromTableInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", nil, self.bundle, nil) stringByAppendingString:@"\n\nhttps://vk.com/danpashin"] forKey:@"footerText"];
+    [errorMessage setProperty:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", nil, self.bundle, nil), @"\n\n%@", kPackageDevLink] forKey:@"footerText"];
     [errorMessage setProperty:@"1" forKey:@"footerAlignment"];
     return errorMessage;
 }
 
 - (NSString *)tweakVersion
 {
-    return [kColoredVKVersion stringByReplacingOccurrencesOfString:@"-" withString:@" "];
+    return [kPackageVersion stringByReplacingOccurrencesOfString:@"-" withString:@" "];
 }
 
 - (NSString *)vkAppVersion

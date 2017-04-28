@@ -37,6 +37,7 @@
         if ([identifier isEqualToString:@"audioBackgroundImage"]) self.key = @"enabledAudioImage";
         if ([identifier isEqualToString:@"audioCoverImage"]) self.key = @"enabledAudioCustomCover";
         if ([identifier isEqualToString:@"friendsBackgroundImage"]) self.key = @"enabledFriendsImage";
+        if ([identifier isEqualToString:@"videosBackgroundImage"]) self.key = @"enabledVideosImage";
         
         int imageViewSize = 30;
         self.previewImageView = [UIImageView new];

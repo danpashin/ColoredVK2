@@ -32,12 +32,7 @@
         self.coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:managedObjectModel];
         if (![self.coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
             CVKLog(@"Unresolved error %@, %@", error, error.userInfo);
-            [[NSFileManager defaultManager] removeItemAtPath:self.cachePath.path error:nil];
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2"
-                                                                                     message:[NSString stringWithFormat:@"Unresolved error:\n\n%@", error.userInfo] preferredStyle:UIAlertControllerStyleAlert];
-            [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { abort(); }]];
-            [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
-            
+            [self showWarningAlert:error.userInfo];
         }
         
         _managedContext = [[NSManagedObjectContext alloc] init];
@@ -52,11 +47,16 @@
     NSError *error = nil;
     if (self.managedContext.hasChanges && ![self.managedContext save:&error]) {
         CVKLog(@"Unresolved error %@, %@", error, error.userInfo);
-        abort();
+        [self showWarningAlert:error.userInfo];
     }
-    else {
-        CVKLog(@"CoreData context saved");
-    }
+}
+
+- (void)showWarningAlert:(NSDictionary *)dict
+{
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:kPackageName
+                                                                             message:[NSString stringWithFormat:@"Unresolved error:\n\n%@", dict] preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { abort(); }]];
+    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
 }
 
 @end

@@ -25,7 +25,9 @@
 
 - (void)checkForUpdates
 {
-    NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php?userVers=%@&product=com.daniilpashin.coloredvk2", kColoredVKAPIURL, kColoredVKVersion];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    BOOL getBetaBuilds = [prefs[@"getBetaBuilds"] boolValue];
+    NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php?userVers=%@&product=%@&get_beta=%@", kPackageAPIURL, kPackageIdentifier, kPackageVersion, @(getBetaBuilds)];
 #ifndef COMPILE_FOR_JAIL
     stringURL = [stringURL stringByAppendingString:@"&getIPA=1"];
 #endif
@@ -33,7 +35,7 @@
     
     [NSURLConnection sendAsynchronousRequest:urlRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         if (!connectionError) {
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:kPackageName message:@"" preferredStyle:UIAlertControllerStyleAlert];
             NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
             NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
             
@@ -69,10 +71,10 @@
 
 - (void)openProfie
 {
-    NSURL *appURL = [NSURL URLWithString:@"vk://vk.com/danpashin"];
+    NSURL *appURL = [NSURL URLWithString:[NSString stringWithFormat:@"vk://%@", kPackageDevLink]];
     UIApplication *application = [UIApplication sharedApplication];
     if ([application canOpenURL:appURL]) [self openURL:appURL];
-    else [self openURL:[NSURL URLWithString:@"https://vk.com/danpashin"]];
+    else [self openURL:[NSURL URLWithString:kPackageDevLink]];
 }
 
 - (void)openTesterPage:(PSSpecifier *)specifier

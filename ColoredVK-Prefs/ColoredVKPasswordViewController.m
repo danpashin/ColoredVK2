@@ -107,7 +107,7 @@
     
     self.hud = [ColoredVKHUD showHUDForView:self.view];
     
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/changePassword.php", kColoredVKAPIURL]]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/changePassword.php", kPackageAPIURL]]];
     request.HTTPMethod = @"POST";
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
     NSString *parameters = [NSString stringWithFormat:@"login=%@&password=%@&new_password=%@", login, currentPass, newPass];
