@@ -25,7 +25,6 @@
 
 
 NSTimeInterval updatesInterval;
-BOOL getBetaBuilds;
 
 BOOL tweakEnabled = NO;
 BOOL VKSettingsEnabled;
@@ -157,7 +156,7 @@ VKMMainController *mainController;
 #pragma mark Static methods
 void checkUpdates()
 {
-    NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php?userVers=%@&product=%@&get_beta=%@", kPackageAPIURL, kPackageVersion, kPackageIdentifier, @(getBetaBuilds)];
+    NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php?userVers=%@&product=%@", kPackageAPIURL, kPackageVersion, kPackageIdentifier];
 #ifndef COMPILE_FOR_JAIL
     stringURL = [stringURL stringByAppendingString:@"&getIPA=1"];
 #endif
@@ -284,8 +283,6 @@ void reloadPrefs()
         changeFriendsTextColor = [prefs[@"changeFriendsTextColor"] boolValue];
         changeVideosTextColor = [prefs[@"changeVideosTextColor"] boolValue];
         
-        getBetaBuilds = [prefs[@"getBetaBuilds"] boolValue];
-        
         updatesInterval = prefs[@"updatesInterval"]?[prefs[@"updatesInterval"] doubleValue]:1.0;
         menuSelectionStyle = prefs[@"menuSelectionStyle"]?[prefs[@"menuSelectionStyle"] integerValue]:CVKCellSelectionStyleTransparent;
         keyboardStyle = prefs[@"keyboardStyle"]?[prefs[@"keyboardStyle"] integerValue]:UIKeyboardAppearanceDefault;
@@ -388,9 +385,11 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
             }
         }
         
-        borderView.translatesAutoresizingMaskIntoConstraints = NO;
-        [blurEffectView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:verticalFormat options:0 metrics:nil views:@{@"view":borderView}]];
-        [blurEffectView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|"  options:0 metrics:nil views:@{@"view":borderView}]];
+        if (verticalFormat.length > 2) {
+            borderView.translatesAutoresizingMaskIntoConstraints = NO;
+            [blurEffectView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:verticalFormat options:0 metrics:nil views:@{@"view":borderView}]];
+            [blurEffectView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|"  options:0 metrics:nil views:@{@"view":borderView}]];
+        }
     } else {
         if ([bar isKindOfClass:[UINavigationBar class]]) {
             UINavigationBar *navbar = (UINavigationBar *)bar;
@@ -728,6 +727,17 @@ void performInitialCellSetup(UITableViewCell *cell)
     cell.selectedBackgroundView = backView;
 }
 
+void resetNavigationBar(UINavigationBar *navBar)
+{
+    setBlur(navBar, NO, nil, 0);
+    navBar._backgroundView.alpha = 1.0;
+    [cvkMainController.navBarImageView removeFromView:navBar._backgroundView];
+    navBar.barTintColor = kNavigationBarBarTintColor;
+    for (UIView *subview in navBar._backgroundView.subviews) {
+        if ([subview isKindOfClass:[UIVisualEffectView class]]) subview.hidden = NO;
+    }
+}
+
 
 
 
@@ -770,7 +780,7 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setBarTintColor, UIColor*, bar
 {
     if (enabled) {
         if (enabledBarImage) {
-            barTintColor = cvkMainController.navBarImageView?[UIColor colorWithPatternImage:cvkMainController.navBarImageView.imageView.image]:barBackgroundColor;
+            barTintColor = barBackgroundColor;
             dispatch_async(dispatch_get_main_queue(), ^{
                 BOOL containsImageView = [self._backgroundView.subviews containsObject:[self._backgroundView viewWithTag:24]];
                 BOOL containsBlur = [self._backgroundView.subviews containsObject:[self._backgroundView viewWithTag:10]];
@@ -782,7 +792,7 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setBarTintColor, UIColor*, bar
                         cvkMainController.navBarImageView.tag = 24;
                         cvkMainController.navBarImageView.backgroundColor = [UIColor clearColor];
                     }
-                    [cvkMainController.navBarImageView addToView:self._backgroundView animated:YES];
+                    [cvkMainController.navBarImageView addToView:self._backgroundView animated:NO];
                 
                 } else if (containsBlur || isAudioController) [cvkMainController.navBarImageView removeFromView:self._backgroundView];
             });
@@ -854,15 +864,15 @@ CHOptimizedMethod(1, self, void, VKMLiveController, viewWillAppear, BOOL, animat
 {
     CHSuper(1, VKMLiveController, viewWillAppear, animated);
     
-    if (enabled && [self.model.description containsString:@"AudioRecommendationsModel"]) {
-       if (enabledAudioImage) {
+    if (enabled && [self isKindOfClass:NSClassFromString(@"VKMLiveController")]) {
+       if (enabledAudioImage && ([self.model.description containsString:@"AudioRecommendationsModel"] || [self.model.description containsString:@"AudioCatalogPlaylistsListModel"])) {
            UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
            search.backgroundImage = [UIImage new];
            search.tag = 4;
            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
            NSDictionary *attributes = @{NSForegroundColorAttributeName:changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
-           search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder 
-                                                                                             attributes:attributes];
+           NSString *placeholder = (search.searchBarTextField.placeholder.length > 0) ? search.searchBarTextField.placeholder : @"";
+           search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholder attributes:attributes];
            search._scopeBarBackgroundView.superview.hidden = YES;
         }
     }
@@ -872,8 +882,8 @@ CHOptimizedMethod(0, self, void, VKMLiveController, viewWillLayoutSubviews)
 {
     CHSuper(0, VKMLiveController, viewWillLayoutSubviews);
     
-    if ([self isKindOfClass:NSClassFromString(@"VKMLiveController")]) {
-        if ((enabled && enabledAudioImage) && [self.model.description containsString:@"AudioRecommendationsModel"]) {
+    if (enabled && [self isKindOfClass:NSClassFromString(@"VKMLiveController")]) {
+        if (enabledAudioImage && ([self.model.description containsString:@"AudioRecommendationsModel"] || [self.model.description containsString:@"AudioCatalogPlaylistsListModel"])) {
             [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
             self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2];
             self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
@@ -886,11 +896,12 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMLiveController, tableView, UITab
 {
     UITableViewCell *cell = CHSuper(2, VKMLiveController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if ([self isKindOfClass:NSClassFromString(@"VKMLiveController")] && [self.model.description containsString:@"AudioRecommendationsModel"]) {
-        if (enabled && enabledAudioImage) {
+    if (enabled && [self isKindOfClass:NSClassFromString(@"VKMLiveController")]) {
+        if (enabledAudioImage && ([self.model.description containsString:@"AudioRecommendationsModel"] || [self.model.description containsString:@"AudioCatalogPlaylistsListModel"])) {
             performInitialCellSetup(cell);
-            cell.textLabel.textColor = [UIColor colorWithWhite:1 alpha:0.9];
-            cell.detailTextLabel.textColor = [UIColor colorWithWhite:0.8 alpha:0.9];
+            
+            cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+            cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
         }
     }
     return cell;
@@ -910,6 +921,9 @@ CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, anima
     UIColor *blurColor = [UIColor clearColor];
     UIBlurEffectStyle blurStyle = 0;
     if (enabled) {
+        NSArray *audioControllers = @[@"AudioAlbumController", @"AudioAlbumsController", @"AudioPlaylistController", @"AudioDashboardController", 
+                                      @"AudioCatalogController", @"AudioCatalogOwnersListController", @"AudioCatalogAudiosListController", 
+                                      @"AudioPlaylistDetailController", @"AudioPlaylistsController"];
         if (messagesUseBlur && ([CLASS_NAME(self) isEqualToString:@"MultiChatController"] || [CLASS_NAME(self) isEqualToString:@"SingleUserChatController"])) {
             shouldAddBlur = YES;
             blurColor = messagesBlurTone;
@@ -922,8 +936,7 @@ CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, anima
             shouldAddBlur = YES;
             blurColor = messagesListBlurTone;
             blurStyle = messagesListBlurStyle;
-        } else if (audiosUseBlur && 
-                   ([CLASS_NAME(self) isEqualToString:@"AudioAlbumController"] || [CLASS_NAME(self) isEqualToString:@"AudioAlbumsController"] || [CLASS_NAME(self) isEqualToString:@"AudioPlaylistController"])) {
+        } else if (audiosUseBlur && [audioControllers containsObject:CLASS_NAME(self)]) {
             shouldAddBlur = YES;
             blurColor = audiosBlurTone;
             blurStyle = audiosBlurStyle;
@@ -940,7 +953,7 @@ CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, anima
         } else shouldAddBlur = NO;
     } else shouldAddBlur = NO;
     
-    setBlur(self.navigationController.navigationBar, NO, nil, 0);
+    resetNavigationBar(self.navigationController.navigationBar);
     setBlur(self.navigationController.navigationBar, shouldAddBlur, blurColor, blurStyle);
 }
 
@@ -1032,26 +1045,22 @@ CHOptimizedMethod(0, self, void, GroupsController, viewWillLayoutSubviews)
 CHOptimizedMethod(2, self, UITableViewCell*, GroupsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, GroupsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    if ([self isKindOfClass:NSClassFromString(@"GroupsController")] && enabled) {
+    if ([self isKindOfClass:NSClassFromString(@"GroupsController")] && (enabled && enabledGroupsListImage)) {
         if ([cell isKindOfClass:NSClassFromString(@"GroupCell")]) {
             GroupCell *groupCell = (GroupCell *)cell;
-            if (enabledGroupsListImage) {
-                performInitialCellSetup(groupCell);
-                groupCell.name.textColor = changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1 alpha:0.9];
-                groupCell.name.backgroundColor = [UIColor clearColor];
-                groupCell.status.textColor = changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:0.8 alpha:0.9];
-                groupCell.status.backgroundColor = [UIColor clearColor];
-            }
+            performInitialCellSetup(groupCell);
+            groupCell.name.textColor = changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1 alpha:0.9];
+            groupCell.name.backgroundColor = UITableViewCellBackgroundColor;
+            groupCell.status.textColor = changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:0.8 alpha:0.9];
+            groupCell.status.backgroundColor = UITableViewCellBackgroundColor;
         } else  if ([cell isKindOfClass:NSClassFromString(@"VKMRendererCell")]) {
-            if (enabledGroupsListImage) {
-                performInitialCellSetup(cell);
-                
-                for (UIView *view in cell.contentView.subviews) {
-                    if ([view isKindOfClass:[UILabel class]]) {
-                        UILabel *label = (UILabel *)view;
-                        label.textColor = [UIColor colorWithWhite:1 alpha:0.9];
-                        label.backgroundColor = [UIColor clearColor];
-                    }
+            performInitialCellSetup(cell);
+            
+            for (UIView *view in cell.contentView.subviews) {
+                if ([view isKindOfClass:[UILabel class]]) {
+                    UILabel *label = (UILabel *)view;
+                    label.textColor = [UIColor colorWithWhite:1 alpha:0.9];
+                    label.backgroundColor = [UIColor clearColor];
                 }
             }
         }
@@ -1353,6 +1362,8 @@ CHOptimizedMethod(1, self, void, HintsSearchDisplayController, searchDisplayCont
 
 
 
+#pragma mark - AUDIO
+
 #pragma mark IOS7AudioController
 CHDeclareClass(IOS7AudioController);
 CHOptimizedMethod(0, self, UIStatusBarStyle, IOS7AudioController, preferredStatusBarStyle)
@@ -1378,6 +1389,8 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
             navBar.topItem.leftBarButtonItems = @[];
             navBar.tintColor = [UIColor whiteColor];
             
+            showAlertWithMessage([NSString stringWithFormat:@"NAVIGATION BAR TAG %i", (int)navBar.tag]);
+            
             UISwipeGestureRecognizer *downSwipe = [[UISwipeGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender) {
                 CGPoint location = [sender locationInView:sender.view];
                 UIView *view = [sender.view hitTest:location withEvent:nil];
@@ -1389,17 +1402,22 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
             setupAudioPlayer(self.hostView, audioPlayerTintColor);
             self.cover.hidden = YES;
             self.hostView.backgroundColor = [UIColor clearColor];
-            [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
-            [self.seek setMinimumTrackImage:[[self.seek minimumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:229/255.0f green:230/255.0f blue:231/255.0f alpha:1]] forState:UIControlStateNormal];
-            [self.seek setMaximumTrackImage:[[self.seek maximumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:200/255.0f green:201/255.0f blue:202/255.0f alpha:1]] forState:UIControlStateNormal];
-            [self.seek setThumbImage:[[self.seek thumbImageForState:UIControlStateNormal] imageWithTintColor:[UIColor blackColor]] forState:UIControlStateNormal];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UIImage *ppImage = [[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor];
+                UIImage *minimumTrackImage = [[self.seek minimumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:229/255.0f green:230/255.0f blue:231/255.0f alpha:1]];
+                UIImage *maximumTrackImage = [[self.seek maximumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:200/255.0f green:201/255.0f blue:202/255.0f alpha:1]];
+                UIImage *thumbImage = [[self.seek thumbImageForState:UIControlStateNormal] imageWithTintColor:[UIColor blackColor]];
+                
+                [self.pp setImage:ppImage forState:UIControlStateSelected];
+                [self.seek setMinimumTrackImage:minimumTrackImage forState:UIControlStateNormal];
+                [self.seek setMaximumTrackImage:maximumTrackImage forState:UIControlStateNormal];
+                [self.seek setThumbImage:[thumbImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)] forState:UIControlStateNormal];
+            });
             
             [NSNotificationCenter.defaultCenter addObserverForName:@"com.daniilpashin.coloredvk2.audio.image.changed" object:nil queue:nil usingBlock:^(NSNotification *note) {
                 audioPlayerTintColor = cvkMainController.coverView.color;
-                [UIView animateWithDuration:0.3 animations:^{
-                    [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
-                    setupAudioPlayer(self.hostView, audioPlayerTintColor);
-                }];
+                [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
+                setupAudioPlayer(self.hostView, audioPlayerTintColor);
             }];
             
             [cvkMainController.coverView addToView:self.view];
@@ -1407,15 +1425,35 @@ CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, anim
     }
 }
 
+
+CHOptimizedMethod(0, self, void, IOS7AudioController, viewDidLoad)
+{
+    CHSuper(0, IOS7AudioController, viewDidLoad);
+    
+    if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")]) {
+        if (enabled && changeAudioPlayerAppearance) {
+            
+            UINavigationBar *navBar = self.navigationController.navigationBar;
+            navBar.tag = 26;
+            navBar.topItem.titleView.hidden = YES;
+            navBar.shadowImage = [UIImage new];
+            [navBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+            navBar.topItem.leftBarButtonItems = @[];
+            navBar.tintColor = [UIColor whiteColor];
+        }
+    }
+    
+}
+
 #pragma mark AudioPlayer
 CHDeclareClass(AudioPlayer);
 CHOptimizedMethod(2, self, void, AudioPlayer, switchTo, int, arg1, force, BOOL, force)
 {
+    CHSuper(2, AudioPlayer, switchTo, arg1, force, force);
     if (enabled && changeAudioPlayerAppearance) {
         if (self.state == 1 && (![cvkMainController.coverView.artist isEqualToString:self.audio.performer] || ![cvkMainController.coverView.track isEqualToString:self.audio.title]))
             [cvkMainController.coverView updateCoverForAudioPlayer:self];
     }
-    CHSuper(2, AudioPlayer, switchTo, arg1, force, force);
 }
 
 
@@ -1427,18 +1465,15 @@ CHOptimizedMethod(0, self, void, AudioAlbumController, viewDidLoad)
 {
     CHSuper(0, AudioAlbumController, viewDidLoad);
     
-    if (enabled && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
-        if (enabledAudioImage) {
-            UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
-            if (search) {
-                search.backgroundImage = [UIImage new];
-                search.tag = 3;
-                search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
-                NSDictionary *attributes = @{NSForegroundColorAttributeName: changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
-                search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder
-                                                                                                  attributes:attributes];
-                search._scopeBarBackgroundView.superview.hidden = YES;
-            }
+    if ((enabled && enabledAudioImage) && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
+        UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
+        if (search) {
+            search.backgroundImage = [UIImage new];
+            search.tag = 3;
+            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+            NSDictionary *attributes = @{NSForegroundColorAttributeName: changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
+            search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder attributes:attributes];
+            search._scopeBarBackgroundView.superview.hidden = YES;
         }
     }
 }
@@ -1457,13 +1492,11 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioAlbumController, tableView, UI
 {
     UITableViewCell *cell = CHSuper(2, AudioAlbumController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
-        if (enabledAudioImage) {
-            performInitialCellSetup(cell);
+    if ((enabled && enabledAudioImage) && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
+        performInitialCellSetup(cell);
             
-            cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.9];
-            cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:0.8 alpha:0.9];
-        }
+        cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.9];
+        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:0.8 alpha:0.9];
     }
     
     return cell;
@@ -1491,13 +1524,11 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioPlaylistController, tableView,
 {
     UITableViewCell *cell = CHSuper(2, AudioPlaylistController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && [self isKindOfClass:NSClassFromString(@"AudioPlaylistController")]) {
-        if (enabledAudioImage) {
-            performInitialCellSetup(cell);
-            
-            cell.textLabel.textColor = [UIColor colorWithWhite:1 alpha:0.9];
-            cell.detailTextLabel.textColor = [UIColor colorWithWhite:0.8 alpha:0.9];
-        }
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistController")]) {
+        performInitialCellSetup(cell);
+        
+        cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.9];
+        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:0.8 alpha:0.9];
     }
     
     return cell;
@@ -1514,6 +1545,313 @@ CHOptimizedMethod(0, self, UIButton*, AudioRenderer, playIndicator)
     }
     return indicator;
 }
+
+
+
+/*
+ AudioDashboardController - рутовый контроллер музыки пользователя, начиная с VK App 2.13
+ */
+#pragma mark AudioDashboardController
+CHDeclareClass(AudioDashboardController);
+CHOptimizedMethod(1, self, void, AudioDashboardController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, AudioDashboardController, viewWillAppear, animated);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioDashboardController")]) {
+        [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
+        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
+        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+    }
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, AudioDashboardController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, AudioDashboardController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioDashboardController")]) {
+        performInitialCellSetup(cell);
+        
+        cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+    }
+    
+    return cell;
+}
+
+#pragma mark AudioCatalogController
+CHDeclareClass(AudioCatalogController);
+CHOptimizedMethod(1, self, void, AudioCatalogController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, AudioCatalogController, viewWillAppear, animated);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioCatalogController")]) {
+        [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
+        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
+        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+    }
+}
+
+
+CHOptimizedMethod(2, self, UITableViewCell*, AudioCatalogController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, AudioCatalogController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioCatalogController")]) {
+        performInitialCellSetup(cell);
+        
+        if ([cell respondsToSelector:@selector(headerView)] && [[cell valueForKey:@"headerView"] isKindOfClass:NSClassFromString(@"AudioBlockCellHeaderView")]) {
+            AudioBlockCellHeaderView *headerView = [cell valueForKey:@"headerView"];
+            headerView.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+            headerView.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+            [headerView.showAllButton setTitleColor:changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor forState:UIControlStateNormal];
+        }
+    }
+    
+    return cell;
+}
+
+#pragma mark AudioCatalogOwnersListController
+CHDeclareClass(AudioCatalogOwnersListController);
+CHOptimizedMethod(1, self, void, AudioCatalogOwnersListController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, AudioCatalogOwnersListController, viewWillAppear, animated);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioCatalogOwnersListController")]) {
+        [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
+        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
+        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+    }
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, AudioCatalogOwnersListController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, AudioCatalogOwnersListController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioCatalogOwnersListController")]) {
+        performInitialCellSetup(cell);
+        
+        if ([cell isKindOfClass:NSClassFromString(@"GroupCell")]) {
+            GroupCell *groupCell = (GroupCell *)cell;
+            groupCell.name.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+            groupCell.name.backgroundColor = UITableViewCellBackgroundColor;
+            groupCell.status.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+            groupCell.status.backgroundColor = UITableViewCellBackgroundColor;
+        }
+        else if ([cell isKindOfClass:NSClassFromString(@"SourceCell")]) {
+            SourceCell *sourceCell = (SourceCell *)cell;
+            sourceCell.first.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+            sourceCell.first.backgroundColor = UITableViewCellBackgroundColor;
+            sourceCell.last.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+            sourceCell.last.backgroundColor = UITableViewCellBackgroundColor;
+        }
+    }
+    
+    return cell;
+}
+
+
+#pragma mark AudioCatalogAudiosListController
+CHDeclareClass(AudioCatalogAudiosListController);
+CHOptimizedMethod(1, self, void, AudioCatalogAudiosListController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, AudioCatalogAudiosListController, viewWillAppear, animated);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioCatalogAudiosListController")]) {
+        [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
+        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
+        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+    }
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, AudioCatalogAudiosListController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, AudioCatalogAudiosListController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioCatalogAudiosListController")]) {
+        performInitialCellSetup(cell);
+        
+        cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+    }
+    
+    return cell;
+}
+
+
+
+#pragma mark AudioPlaylistDetailController
+CHDeclareClass(AudioPlaylistDetailController);
+CHOptimizedMethod(1, self, void, AudioPlaylistDetailController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, AudioPlaylistDetailController, viewWillAppear, animated);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistDetailController")]) {
+        [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
+        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
+        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+    }
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, AudioPlaylistDetailController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, AudioPlaylistDetailController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistDetailController")]) {
+        performInitialCellSetup(cell);
+        
+        cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+    }
+    
+    return cell;
+}
+
+#pragma mark AudioPlaylistsController
+CHDeclareClass(AudioPlaylistsController);
+CHOptimizedMethod(1, self, void, AudioPlaylistsController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, AudioPlaylistsController, viewWillAppear, animated);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistsController")]) {
+        [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
+        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
+        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        
+        UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
+        if (search) {
+            search.backgroundImage = [UIImage new];
+            search.tag = 3;
+            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+            NSDictionary *attributes = @{NSForegroundColorAttributeName: changeFriendsTextColor?friendsTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
+            search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder attributes:attributes];
+            search._scopeBarBackgroundView.superview.hidden = YES;
+        }
+    }
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, AudioPlaylistsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, AudioPlaylistsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistsController")]) {
+        performInitialCellSetup(cell);
+    }
+    
+    return cell;
+}
+
+
+
+
+#pragma mark AudioAudiosBlockTableCell
+CHDeclareClass(AudioAudiosBlockTableCell);
+CHOptimizedMethod(0, self, void, AudioAudiosBlockTableCell, layoutSubviews)
+{
+    CHSuper(0, AudioAudiosBlockTableCell, layoutSubviews);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioAudiosBlockTableCell")]) {
+        performInitialCellSetup(self);
+        self.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+        self.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+    }
+}
+
+#pragma mark AudioPlaylistInlineCell
+CHDeclareClass(AudioPlaylistInlineCell);
+CHOptimizedMethod(0, self, void, AudioPlaylistInlineCell, layoutSubviews)
+{
+    CHSuper(0, AudioPlaylistInlineCell, layoutSubviews);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistInlineCell")]) {
+        self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+        self.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+    }
+}
+
+#pragma mark AudioOwnersBlockItemCollectionCell
+CHDeclareClass(AudioOwnersBlockItemCollectionCell);
+CHOptimizedMethod(0, self, void, AudioOwnersBlockItemCollectionCell, layoutSubviews)
+{
+    CHSuper(0, AudioOwnersBlockItemCollectionCell, layoutSubviews);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioOwnersBlockItemCollectionCell")]) {
+        self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+    }
+}
+
+
+#pragma mark AudioPlaylistCell
+CHDeclareClass(AudioPlaylistCell);
+CHOptimizedMethod(0, self, void, AudioPlaylistCell, layoutSubviews)
+{
+    CHSuper(0, AudioPlaylistCell, layoutSubviews);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistCell")]) {
+        performInitialCellSetup(self);
+        self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+        self.artistLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+        self.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+   }
+}
+
+
+#pragma mark AudioPlaylistsCell
+CHDeclareClass(AudioPlaylistsCell);
+CHOptimizedMethod(0, self, void, AudioPlaylistsCell, layoutSubviews)
+{
+    CHSuper(0, AudioPlaylistsCell, layoutSubviews);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistsCell")]) {
+        performInitialCellSetup(self);
+        self.hostedView.backgroundColor = [UIColor clearColor];
+        self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+        [self.showAllButton setTitleColor:changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor forState:UIControlStateNormal];
+    }
+}
+
+#pragma mark AudioAudiosSpecialBlockView
+CHDeclareClass(AudioAudiosSpecialBlockView);
+CHOptimizedMethod(0, self, void, AudioAudiosSpecialBlockView, layoutSubviews)
+{
+    CHSuper(0, AudioAudiosSpecialBlockView, layoutSubviews);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioAudiosSpecialBlockView")]) {        
+        self.backgroundColor = [UIColor clearColor];
+        self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+        self.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+        for (UIView *subview in self.subviews) {
+            if ([subview isKindOfClass:NSClassFromString(@"GradientView")]) {
+                subview.hidden = YES;
+                break;
+            }
+        }
+
+    }
+}
+
+#pragma mark AudioPlaylistView
+CHDeclareClass(AudioPlaylistView);
+CHOptimizedMethod(0, self, void, AudioPlaylistView, layoutSubviews)
+{
+    CHSuper(0, AudioPlaylistView, layoutSubviews);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistView")]) {        
+        self.backgroundColor = [UIColor clearColor];
+        for (UIView *subview in self.subviews) {
+            if ([subview isKindOfClass:[UILabel class]]) {
+                UILabel *label = (UILabel *)subview;
+                label.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+            } else if ([subview isKindOfClass:[UIButton class]]) {
+                UIButton *button = (UIButton *)subview;
+                [button setTitleColor:changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor forState:UIControlStateNormal];
+                
+            }
+        }
+        
+    }
+}
+
+#pragma mark -
 
 
 
@@ -1573,7 +1911,7 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
             for (UIView *view in self.navigationItem.titleView.subviews) if ([view respondsToSelector:@selector(setTextColor:)]) ((UILabel*)view).textColor = barForegroundColor;
         }
         
-        setBlur(self.navigationController.navigationBar, NO, nil, 0);
+        resetNavigationBar(self.navigationController.navigationBar);
     }
 }
 
@@ -1648,8 +1986,7 @@ CHDeclareClass(PSListController);
 CHOptimizedMethod(1, self, void, PSListController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, PSListController, viewWillAppear, animated);
-    self.navigationController.navigationBar._backgroundView.alpha = 1.0;
-    setBlur(self.navigationController.navigationBar, NO, nil, 0);
+    resetNavigationBar(self.navigationController.navigationBar);
 }
 
 #pragma mark SelectAccountTableViewController
@@ -1658,7 +1995,7 @@ CHDeclareClass(SelectAccountTableViewController);
 CHOptimizedMethod(1, self, void, SelectAccountTableViewController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, SelectAccountTableViewController, viewWillAppear, animated);
-    setBlur(self.navigationController.navigationBar, NO, nil, 0);
+    resetNavigationBar(self.navigationController.navigationBar);
 }
 
 
@@ -1669,7 +2006,7 @@ CHDeclareClass(MessageController);
 CHOptimizedMethod(1, self, void, MessageController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, MessageController, viewWillAppear, animated);
-    setBlur(self.navigationController.navigationBar, NO, nil, 0);
+    resetNavigationBar(self.navigationController.navigationBar);
 }
 
 
@@ -2083,11 +2420,58 @@ CHConstructor
             CHHook(0, AudioAlbumController, viewWillLayoutSubviews);
             
             CHLoadLateClass(AudioPlaylistController);
+            CHHook(0, AudioPlaylistController, preferredStatusBarStyle);
             CHHook(1, AudioPlaylistController, viewWillAppear);
             CHHook(2, AudioPlaylistController, tableView, cellForRowAtIndexPath);
-            CHHook(0, AudioPlaylistController, preferredStatusBarStyle);
+            
+            CHLoadLateClass(AudioDashboardController);
+            CHHook(1, AudioDashboardController, viewWillAppear);
+            CHHook(2, AudioDashboardController, tableView, cellForRowAtIndexPath);
+            
+            CHLoadLateClass(AudioCatalogController);
+            CHHook(1, AudioCatalogController, viewWillAppear);
+            CHHook(2, AudioCatalogController, tableView, cellForRowAtIndexPath);
+            
+            CHLoadLateClass(AudioCatalogOwnersListController);
+            CHHook(1, AudioCatalogOwnersListController, viewWillAppear);
+            CHHook(2, AudioCatalogOwnersListController, tableView, cellForRowAtIndexPath);
+            
+            CHLoadLateClass(AudioCatalogAudiosListController);
+            CHHook(1, AudioCatalogAudiosListController, viewWillAppear);
+            CHHook(2, AudioCatalogAudiosListController, tableView, cellForRowAtIndexPath);
+            
+            CHLoadLateClass(AudioPlaylistDetailController);
+            CHHook(1, AudioPlaylistDetailController, viewWillAppear);
+            CHHook(2, AudioPlaylistDetailController, tableView, cellForRowAtIndexPath);
+            
+            CHLoadLateClass(AudioPlaylistsController);
+            CHHook(1, AudioPlaylistsController, viewWillAppear);
+            CHHook(2, AudioPlaylistsController, tableView, cellForRowAtIndexPath);
+            
+            CHLoadLateClass(AudioOwnersBlockItemCollectionCell);
+            CHHook(0, AudioOwnersBlockItemCollectionCell, layoutSubviews);
+            
+            CHLoadLateClass(AudioPlaylistInlineCell);
+            CHHook(0, AudioPlaylistInlineCell, layoutSubviews);
+            
+            CHLoadLateClass(AudioAudiosBlockTableCell);
+            CHHook(0, AudioAudiosBlockTableCell, layoutSubviews);
+            
+            CHLoadLateClass(AudioAudiosSpecialBlockView);
+            CHHook(0, AudioAudiosSpecialBlockView, layoutSubviews);
+            
+            CHLoadLateClass(AudioPlaylistCell);
+            CHHook(0, AudioPlaylistCell, layoutSubviews);
+            
+            CHLoadLateClass(AudioPlaylistsCell);
+            CHHook(0, AudioPlaylistsCell, layoutSubviews);
+            
+            CHLoadLateClass(AudioPlaylistView);
+            CHHook(0, AudioPlaylistView, layoutSubviews);
+            
             
             CHLoadLateClass(IOS7AudioController);
+            CHHook(0, IOS7AudioController, viewDidLoad);
             CHHook(1, IOS7AudioController, viewWillAppear);
             CHHook(0, IOS7AudioController, preferredStatusBarStyle);
             

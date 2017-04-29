@@ -113,6 +113,14 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
             };
             if (animated) [UIView transitionWithView:view duration:ANIMATION_DURANTION options:UIViewAnimationOptionAllowUserInteraction animations:block completion:nil];
             else          block();
+            
+            
+            if ([view isKindOfClass:NSClassFromString(@"_UIBarBackground")]) {
+                for (UIView *subview in view.subviews) {
+                    if ([subview isKindOfClass:[UIVisualEffectView class]]) subview.hidden = YES;
+                }
+            }
+            
         }
     });
 }
@@ -172,6 +180,12 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
 {
     if (superview && [superview.subviews containsObject:[superview viewWithTag:self.tag]]) {
         [self removeFromSuperview];
+        
+        if ([superview isKindOfClass:NSClassFromString(@"_UIBarBackground")]) {
+            for (UIView *subview in superview.subviews) {
+                if ([subview isKindOfClass:[UIVisualEffectView class]]) subview.hidden = NO;
+            }
+        }
     }
 }
 

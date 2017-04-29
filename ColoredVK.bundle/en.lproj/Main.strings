@@ -14,8 +14,8 @@
 "DIALOGS" = "Dialogs";
 "FRIENDS" = "Friends";
 "GROUPS" = "Groups";
-"AUDIO" = "Audio";
-"VIDEOS" = "Videos";
+"AUDIO" = "Music";
+"VIDEOS" = "Video";
 "MISCELLANEOUS" = "Miscellaneous";
 "MANAGE_SETTINGS" = "Manage settings";
 "MANAGE_ACCOUNT" = "Manage my account";

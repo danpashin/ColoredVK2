@@ -14,8 +14,8 @@
 "DIALOGS" = "Диалоги";
 "FRIENDS" = "Друзья";
 "GROUPS" = "Группы";
-"VIDEOS" = "Видеозаписи";
-"AUDIO" = "Аудиозаписи";
+"VIDEOS" = "Видео";
+"AUDIO" = "Музыка";
 "MISCELLANEOUS" = "Разное";
 "MANAGE_SETTINGS" = "Управление настройками";
 "MANAGE_ACCOUNT" = "Управление аккаунтом";

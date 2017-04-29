@@ -25,9 +25,7 @@
 
 - (void)checkForUpdates
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
-    BOOL getBetaBuilds = [prefs[@"getBetaBuilds"] boolValue];
-    NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php?userVers=%@&product=%@&get_beta=%@", kPackageAPIURL, kPackageIdentifier, kPackageVersion, @(getBetaBuilds)];
+    NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php?product=%@&userVers=%@", kPackageAPIURL, kPackageIdentifier, kPackageVersion];
 #ifndef COMPILE_FOR_JAIL
     stringURL = [stringURL stringByAppendingString:@"&getIPA=1"];
 #endif
@@ -55,7 +53,7 @@
                     [self openURL:[NSURL URLWithString:responseDict[@"url"]]];
                 }]];
             } else {
-                alertController.message = NSLocalizedStringFromTableInBundle(@"NO_UPDATES_FOUND_BUTTON_TITLE", nil, self.cvkBundle, nil);
+                alertController.message = responseDict[@"error"];
                 [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
             }
             [self presentViewController:alertController animated:YES completion:nil];

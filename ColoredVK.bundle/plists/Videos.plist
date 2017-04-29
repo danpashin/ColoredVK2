@@ -44,7 +44,7 @@
 			<key>label</key>
 			<string>CHANGE_TEXT_COLOR</string>
 			<key>key</key>
-			<string>videosFriendsTextColor</string>
+			<string>changeVideosTextColor</string>
 			<key>default</key>
 			<false/>
 		</dict>
@@ -83,16 +83,6 @@
 			<string>useVideosParallax</string>
 			<key>default</key>
 			<false/>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>key</key>
-			<string>hideVideosSeparators</string>
-			<key>label</key>
-			<string>HIDE_SEPARATORS</string>
 		</dict>
 	</array>
 </dict>

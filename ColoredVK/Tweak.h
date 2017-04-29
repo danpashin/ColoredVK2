@@ -18,6 +18,8 @@
 #define kNewsTableViewBackgroundColor [UIColor colorWithRed:237.0/255.0f green:238.0/255.0f blue:240.0/255.0f alpha:1]
 #define kNewsTableViewSeparatorColor [UIColor colorWithRed:220.0/255.0f green:221.0/255.0f blue:222.0/255.0f alpha:1]
 
+#define kNavigationBarBarTintColor [UIColor colorWithRed:0.235294 green:0.439216 blue:0.662745 alpha:1]
+
 typedef NS_ENUM(NSInteger, CVKCellSelectionStyle) {
     CVKCellSelectionStyleNone = 0,
     CVKCellSelectionStyleTransparent,

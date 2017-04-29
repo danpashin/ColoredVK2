@@ -155,6 +155,8 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         else {
             NSString *iTunesURL = [NSString stringWithFormat:@"https://itunes.apple.com/search?limit=1&media=music&term=%@", query];
             iTunesURL = [iTunesURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:iTunesURL]];
+            request.accessibilityValue = query;
         [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
                                     JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:iTunesURL]]
                                     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
@@ -167,7 +169,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
                                                                      if (block) block(image, YES);
                                                                      NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
                                                                      BOOL cacheCovers = prefs[@"cacheAudioCovers"]?[prefs[@"cacheAudioCovers"] boolValue]:YES;
-                                                                     if (cacheCovers) [self.manager.imageCache storeImage:image forKey:query completion:nil];
+                                                                     if (cacheCovers) [self.manager.imageCache storeImage:image forKey:request.accessibilityValue completion:nil];
                                                                  }];
                                         } else if (block) block(self.noCover, NO);
                                     }

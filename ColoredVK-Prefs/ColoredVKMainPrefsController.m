@@ -18,11 +18,16 @@
     if (!_specifiers) {
         NSMutableArray *specifiersArray = [self specifiersForPlistName:@"Main" localize:NO addFooter:YES].mutableCopy;
         
+        PSSpecifier *specifierToRemove = nil;
         for (PSSpecifier *specifier in specifiersArray) {
             if ([specifier.identifier isEqualToString:@"manageAccount"]) {
-                if (!licenceContainsKey(@"Login")) [specifiersArray removeObject:specifier];
+                if (!licenceContainsKey(@"Login")) {
+                    specifierToRemove = specifier;
+                    break;
+                }
             }
         }
+        if (specifierToRemove) [specifiersArray removeObject:specifierToRemove];
         
         _specifiers = specifiersArray.copy;
     }

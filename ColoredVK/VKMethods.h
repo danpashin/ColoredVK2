@@ -344,3 +344,89 @@
 @property(readonly, retain, nonatomic) UILabel *videoTitleLabel;
 @end
 
+
+
+
+@interface VKMCollectionController : VKMScrollViewController
+@end
+
+@interface AudioPlaylistsInlineController : VKMCollectionController
+@end
+
+
+@interface AudioDashboardController : VKMLiveController
+@end
+
+@interface AudioPlaylistsCell : VKMCell
+@property(readonly, retain, nonatomic) UIButton *showAllButton;
+@property(readonly, retain, nonatomic) UILabel *titleLabel;
+@property(retain, nonatomic) UIView *hostedView;
+@end
+
+@interface VKMCollectionCell : UICollectionViewCell
+@end
+
+@interface AudioPlaylistInlineCell : VKMCollectionCell
+
+@property(readonly, retain, nonatomic) UILabel *subtitleLabel;
+@property(readonly, retain, nonatomic) UILabel *titleLabel;
+
+@end
+
+@interface AudioCatalogController : VKMLiveController
+@end
+
+@interface AudioCatalogAudiosListController : VKMLiveController
+@end
+
+@interface AudioCatalogOwnersListController : VKMLiveController
+@end
+
+@interface AudioPlaylistsController : VKMLiveController
+@end
+
+
+@interface AudioImageAndTitleItemCollectionCell : VKMCollectionCell
+@property(retain, nonatomic) UILabel *titleLabel;
+@end
+
+@interface AudioOwnersBlockItemCollectionCell : AudioImageAndTitleItemCollectionCell
+@end
+
+
+@interface AudioBlockCellHeaderView : UIView
+@property(retain, nonatomic) UILabel *subtitleLabel;
+@property(retain, nonatomic) UILabel *titleLabel;
+@property(retain, nonatomic) UIButton *showAllButton;
+@end
+
+@interface AudioAudiosSpecialBlockView : UIView
+@property(retain, nonatomic) UIButton *button;
+@property(retain, nonatomic) UILabel *subtitleLabel;
+@property(retain, nonatomic) UILabel *titleLabel;
+@end
+
+
+@interface AudioAudiosBlockTableCell : VKMCell
+//@property(retain, nonatomic) AudioPlayer *player;
+//@property(retain, nonatomic) AudioOverlayButton *playPauseButton;
+//@property(retain, nonatomic) VKMImageView *coverView;
+@end
+
+
+@interface AudioPlaylistCell : VKMCell
+@property(readonly, retain, nonatomic) UILabel *subtitleLabel;
+@property(readonly, retain, nonatomic) UILabel *artistLabel;
+@property(readonly, retain, nonatomic) UILabel *titleLabel;
+@end
+
+
+@interface AudioPlaylistView : UIView
+@end
+
+
+
+@interface AudioPlaylistDetailController : VKMLiveController
+@end
+
+
