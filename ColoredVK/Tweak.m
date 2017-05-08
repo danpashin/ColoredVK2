@@ -2097,11 +2097,15 @@ CHOptimizedMethod(2, self, UITableViewCell*, ProfileFriendsController, tableView
     if ((enabled && enabledFriendsImage) && [self isKindOfClass:NSClassFromString(@"ProfileFriendsController")]) {
         performInitialCellSetup(cell);
             
-        SourceCell *sourceCell = (SourceCell *)cell;
-        sourceCell.last.textColor = changeFriendsTextColor?friendsTextColor:UITableViewCellTextColor;
-        sourceCell.last.backgroundColor = UITableViewCellBackgroundColor;
-        sourceCell.first.textColor = changeFriendsTextColor?friendsTextColor:UITableViewCellTextColor;
-        sourceCell.first.backgroundColor = UITableViewCellBackgroundColor;
+        if ([cell isKindOfClass:NSClassFromString(@"SourceCell")]) {
+            SourceCell *sourceCell = (SourceCell *)cell;
+            sourceCell.last.textColor = changeFriendsTextColor?friendsTextColor:UITableViewCellTextColor;
+            sourceCell.last.backgroundColor = UITableViewCellBackgroundColor;
+            sourceCell.first.textColor = changeFriendsTextColor?friendsTextColor:UITableViewCellTextColor;
+            sourceCell.first.backgroundColor = UITableViewCellBackgroundColor;
+        } else {
+            cell.textLabel.textColor = changeFriendsTextColor?friendsTextColor:UITableViewCellTextColor;
+        }
     }
     
     return cell;

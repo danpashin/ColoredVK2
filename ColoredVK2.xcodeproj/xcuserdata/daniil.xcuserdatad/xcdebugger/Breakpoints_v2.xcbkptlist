@@ -31,8 +31,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1709"
             endingLineNumber = "1709"
-            landmarkName = "CHOptimizedMethod()"
-            landmarkType = "9">
+            landmarkName = "CHDeclareClass()"
+            landmarkType = "8">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -63,8 +63,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "916"
             endingLineNumber = "916"
-            landmarkName = "CHOptimizedMethod()"
-            landmarkType = "9">
+            landmarkName = "CHDeclareClass()"
+            landmarkType = "8">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

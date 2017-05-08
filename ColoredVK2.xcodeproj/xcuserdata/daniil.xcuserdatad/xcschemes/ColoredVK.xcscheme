@@ -14,24 +14,38 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A576D17E1DC621B90039884F"
+               BlueprintIdentifier = "A5079FB11CC92157005B9693"
                BuildableName = "ColoredVK2.dylib"
-               BlueprintName = "ColoredVK-NonJail"
-               ReferencedContainer = "container:ColoredVK.xcodeproj">
+               BlueprintName = "ColoredVK"
+               ReferencedContainer = "container:ColoredVK2.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
-            buildForTesting = "YES"
+            buildForTesting = "NO"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
             buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A5B6ED051D3D659800383425"
+               BuildableName = "ColoredVK2.bundle"
+               BlueprintName = "ColoredVK-Prefs"
+               ReferencedContainer = "container:ColoredVK2.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "NO"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A5D979AB1DAEBB0E00607F06"
                BuildableName = "ColoredVK-Builder"
                BlueprintName = "ColoredVK-Builder"
-               ReferencedContainer = "container:ColoredVK.xcodeproj">
+               ReferencedContainer = "container:ColoredVK2.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -46,10 +60,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A576D17E1DC621B90039884F"
+            BlueprintIdentifier = "A5079FB11CC92157005B9693"
             BuildableName = "ColoredVK2.dylib"
-            BlueprintName = "ColoredVK-NonJail"
-            ReferencedContainer = "container:ColoredVK.xcodeproj">
+            BlueprintName = "ColoredVK"
+            ReferencedContainer = "container:ColoredVK2.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -68,10 +82,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A576D17E1DC621B90039884F"
+            BlueprintIdentifier = "A5079FB11CC92157005B9693"
             BuildableName = "ColoredVK2.dylib"
-            BlueprintName = "ColoredVK-NonJail"
-            ReferencedContainer = "container:ColoredVK.xcodeproj">
+            BlueprintName = "ColoredVK"
+            ReferencedContainer = "container:ColoredVK2.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -86,10 +100,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A576D17E1DC621B90039884F"
+            BlueprintIdentifier = "A5079FB11CC92157005B9693"
             BuildableName = "ColoredVK2.dylib"
-            BlueprintName = "ColoredVK-NonJail"
-            ReferencedContainer = "container:ColoredVK.xcodeproj">
+            BlueprintName = "ColoredVK"
+            ReferencedContainer = "container:ColoredVK2.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

@@ -30,7 +30,7 @@
 		<true/>
 	</dict>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Choose background for menus</string>
+	<string>Allow ColoredVK2 access photos to set images</string>
 	<key>NSPrincipalClass</key>
 	<string>ColoredVKMainPrefsController</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
