@@ -9,7 +9,6 @@
 
 #import "ColoredVKStepperPrefsCell.h"
 #import "PrefixHeader.h"
-#import "PPNumberButton.h"
 
 @implementation ColoredVKStepperPrefsCell
 
@@ -17,27 +16,28 @@
 {
     self = [super initWithStyle:style reuseIdentifier:identifier specifier:specifier];
     if (self) {
-        NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];        
+        self.idSpecifier = specifier;
         
-        PPNumberButton *numberButton = [PPNumberButton numberButtonWithFrame:CGRectMake(0, 0, 75, 30)];
-        numberButton.shakeAnimation = YES;
-        numberButton.minValue = 0;
-        numberButton.maxValue = 6;
-        numberButton.currentNumber = [prefs[specifier.identifier] componentsSeparatedByString:@"."].lastObject.integerValue;
-        numberButton.increaseTitle = @"＋";
-        numberButton.decreaseTitle = @"－";
-        numberButton.resultBlock = ^(NSInteger number, BOOL increaseStatus) {
-            NSMutableDictionary *tweakSettings = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-            tweakSettings[specifier.identifier] = [NSString stringWithFormat:@"0.%i", (int)number];
-            [tweakSettings writeToFile:CVK_PREFS_PATH atomically:YES];
-            
-            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
-            if ([specifier.identifier isEqualToString:@"menuImageBlackout"])
-                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-        };
-        self.accessoryView = numberButton;
+        NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
+        
+        ColoredVKStepperButton *stepperButton = [[ColoredVKStepperButton alloc] initWithFrame:CGRectMake(0, 0, 80, 32)];
+        stepperButton.maxValue = 6;
+        stepperButton.value = [prefs[specifier.identifier] componentsSeparatedByString:@"."].lastObject.integerValue;
+        stepperButton.delegate = self;
+        self.accessoryView = stepperButton;
 	}
     return self;
+}
+
+- (void)stepperButton:(ColoredVKStepperButton *)stepperButton didUpdateValue:(NSInteger)value
+{
+    NSMutableDictionary *tweakSettings = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+    tweakSettings[self.idSpecifier.identifier] = [NSString stringWithFormat:@"0.%i", (int)value];
+    [tweakSettings writeToFile:CVK_PREFS_PATH atomically:YES];
+    
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
+    if ([self.idSpecifier.identifier isEqualToString:@"menuImageBlackout"])
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
 }
 
 @end

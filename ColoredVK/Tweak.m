@@ -210,6 +210,9 @@ void reloadPrefs()
     SBBackgroundColor = [UIColor savedColorForIdentifier:@"SBBackgroundColor" fromPrefs:prefs];
     SBForegroundColor = [UIColor savedColorForIdentifier:@"SBForegroundColor" fromPrefs:prefs];
     
+    shouldCheckUpdates = prefs[@"checkUpdates"]?[prefs[@"checkUpdates"] boolValue]:YES;
+    updatesInterval = prefs[@"updatesInterval"]?[prefs[@"updatesInterval"] doubleValue]:1.0;
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
         if (statusBar != nil) {
@@ -227,7 +230,6 @@ void reloadPrefs()
         enabledBarColor = [prefs[@"enabledBarColor"] boolValue];
         enabledToolBarColor = [prefs[@"enabledToolBarColor"] boolValue];
         enabledBarImage = [prefs[@"enabledBarImage"] boolValue];
-        shouldCheckUpdates = prefs[@"checkUpdates"]?[prefs[@"checkUpdates"] boolValue]:YES;
         changeSBColors = [prefs[@"changeSBColors"] boolValue];
         changeSwitchColor = [prefs[@"changeSwitchColor"] boolValue];
         
@@ -283,7 +285,6 @@ void reloadPrefs()
         changeFriendsTextColor = [prefs[@"changeFriendsTextColor"] boolValue];
         changeVideosTextColor = [prefs[@"changeVideosTextColor"] boolValue];
         
-        updatesInterval = prefs[@"updatesInterval"]?[prefs[@"updatesInterval"] doubleValue]:1.0;
         menuSelectionStyle = prefs[@"menuSelectionStyle"]?[prefs[@"menuSelectionStyle"] integerValue]:CVKCellSelectionStyleTransparent;
         keyboardStyle = prefs[@"keyboardStyle"]?[prefs[@"keyboardStyle"] integerValue]:UIKeyboardAppearanceDefault;
         
@@ -924,6 +925,8 @@ CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, anima
         NSArray *audioControllers = @[@"AudioAlbumController", @"AudioAlbumsController", @"AudioPlaylistController", @"AudioDashboardController", 
                                       @"AudioCatalogController", @"AudioCatalogOwnersListController", @"AudioCatalogAudiosListController", 
                                       @"AudioPlaylistDetailController", @"AudioPlaylistsController"];
+        NSArray *friendsControllers = @[@"ProfileFriendsController", @"FriendsBDaysController", @"FriendsAllRequestsController"];
+        
         if (messagesUseBlur && ([CLASS_NAME(self) isEqualToString:@"MultiChatController"] || [CLASS_NAME(self) isEqualToString:@"SingleUserChatController"])) {
             shouldAddBlur = YES;
             blurColor = messagesBlurTone;
@@ -941,8 +944,7 @@ CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, anima
             blurColor = audiosBlurTone;
             blurStyle = audiosBlurStyle;
         } 
-        else if (friendsUseBlur && 
-                 ([CLASS_NAME(self) isEqualToString:@"ProfileFriendsController"] || [CLASS_NAME(self) isEqualToString:@"FriendsBDaysController"] || [CLASS_NAME(self) isEqualToString:@"FriendsAllRequestsController"])) {
+        else if (friendsUseBlur && [friendsControllers containsObject:CLASS_NAME(self)]) {
             shouldAddBlur = YES;
             blurColor = friendsBlurTone;
             blurStyle = friendsBlurStyle;
@@ -1925,16 +1927,6 @@ CHOptimizedMethod(0, self, BOOL, VKProfile, verified)
 }
 
 
-//#pragma mark VKSession
-//CHDeclareClass(VKSession);
-//CHOptimizedMethod(0, self, NSString*, VKSession, token)
-//{
-//    NSString *token = CHSuper(0, VKSession, token);
-//    if (token) userToken  = token;
-//    return token;
-//}
-
-
 
 #pragma mark VKMLiveSearchController
 CHDeclareClass(VKMLiveSearchController);
@@ -2322,10 +2314,6 @@ CHConstructor
             CHHook(1, DialogsSearchController, searchDisplayControllerWillBeginSearch);
             CHHook(1, DialogsSearchController, searchDisplayControllerWillEndSearch);
             
-            
-            
-//            CHLoadLateClass(VKSession);
-//            CHHook(0, VKSession, token);
             
             CHLoadLateClass(AppDelegate);
             CHHook(2,  AppDelegate, application, didFinishLaunchingWithOptions);

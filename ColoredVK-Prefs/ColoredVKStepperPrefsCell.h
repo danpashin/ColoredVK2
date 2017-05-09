@@ -10,6 +10,10 @@
 #import <UIKit/UIKit.h>
 #import "PSTableCell.h"
 #import "PSSpecifier.h"
+#import "ColoredVKStepperButton.h"
 
-@interface ColoredVKStepperPrefsCell : PSTableCell
+@interface ColoredVKStepperPrefsCell : PSTableCell <ColoredVKStepperButtonDelegate>
+
+@property (strong, nonatomic) PSSpecifier *idSpecifier;
+
 @end
