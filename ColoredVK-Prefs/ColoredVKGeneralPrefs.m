@@ -7,6 +7,11 @@
 //
 
 #import "ColoredVKGeneralPrefs.h"
+#import "UIImage+ResizeMagick.h"
+#import <MobileCoreServices/MobileCoreServices.h>
+#import "ColoredVKHUD.h"
+#import "UIImage+ResizeMagick.h"
+#import "ColoredVKSettingsController.h"
 
 
 @implementation ColoredVKGeneralPrefs
@@ -14,19 +19,40 @@
 
 - (void)showColorPicker:(PSSpecifier*)specifier
 {
-    ColoredVKColorPickerViewController *picker = [[ColoredVKColorPickerViewController alloc] initWithIdentifier:specifier.identifier];
-    picker.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    self.definesPresentationContext = NO;
-    picker.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    picker.view.backgroundColor = [UIColor clearColor];
-    
-    UIViewController *controller = [UIViewController new];
-    picker.pickerWindow = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-    picker.pickerWindow.rootViewController = controller;
-    [picker.pickerWindow makeKeyAndVisible];
-    [controller presentViewController:picker animated:YES completion:nil];
-    
+    ColoredVKColorPickerController *picker = [[ColoredVKColorPickerController alloc] initWithIdentifier:specifier.identifier];
+    picker.delegate = self;
+    [picker showPicker];
 }
+
+
+- (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didChangeColor:(UIColor *)color
+{
+    @synchronized (self) {
+        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
+        prefs[colorPicker.identifier] = color.stringValue;
+        [prefs writeToFile:self.prefsPath atomically:YES];
+    }
+}
+
+- (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didResetColorForIdentifier:(NSString *)identifier
+{
+    @synchronized (self) {
+        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
+        if (prefs[identifier]) [prefs removeObjectForKey:identifier];
+        [prefs writeToFile:self.prefsPath atomically:YES];
+    }
+}
+
+- (void)colorPickerWillDismiss:(ColoredVKColorPickerController *)colorPicker
+{
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.prefs.colorUpdate" object:nil userInfo:@{@"identifier":colorPicker.identifier}];
+    
+    NSArray *identificsToReloadMenu = @[@"MenuSeparatorColor", @"switchesTintColor", @"switchesOnTintColor", @"menuTextColor"];
+    if ([identificsToReloadMenu containsObject:colorPicker.identifier]) CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+}
+
+
 
 - (void)chooseImage:(PSSpecifier*)specifier
 {

@@ -7,30 +7,33 @@
 //
 
 
-#import "ColoredVKColorPickerViewController.h"
+#import "ColoredVKColorPickerController.h"
 #import "PrefixHeader.h"
 #import "KLCPopup.h"
 #import "HRColorMapView.h"
 #import "HRBrightnessSlider.h"
 #import "HRColorInfoView.h"
 
-@interface ColoredVKColorPickerViewController () <UITextFieldDelegate, UIGestureRecognizerDelegate>
-@property (strong, nonatomic) NSString *cellIdentifier;
-@property (strong, nonatomic) NSString *prefsPath;
+@interface ColoredVKColorPickerController () <UITextFieldDelegate, UIGestureRecognizerDelegate>
+
+@property (strong, nonatomic) UIWindow *presentationWindow;
 @property (strong, nonatomic) NSBundle *cvkBunlde;
-@property (strong, nonatomic) NSMutableDictionary *prefs;
 @property (strong, nonatomic) UIColor *customColor;
-@property (strong, nonatomic) UIView *mainView;
-@property (strong, nonatomic) KLCPopup *popup;
+@property (assign, nonatomic) CGFloat brightness;
+
+@property (strong, nonatomic) UIView *contentView;
+@property (strong, nonatomic) UIVisualEffectView *backgroundView;
 @property (strong, nonatomic) HRColorInfoView *infoView;
 @property (strong, nonatomic) HRBrightnessSlider *sliderView;
 @property (strong, nonatomic) HRColorMapView *colorMapView;
-@property (assign, nonatomic) CGFloat brightness;
+@property (strong, nonatomic) KLCPopup *popup;
+
 @property (assign, nonatomic) BOOL hideStatusBar;
+
 @end
 
 
-@implementation ColoredVKColorPickerViewController
+@implementation ColoredVKColorPickerController
 
 - (instancetype)init
 {
@@ -42,8 +45,13 @@
 {
     self = [super init];
     if (self) {
-        self.cellIdentifier = identifier;
+        _identifier = identifier;
         _hideStatusBar = NO;
+        
+        self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+        
+        self.customColor = [UIColor savedColorForIdentifier:self.identifier];
+        [self.customColor getHue:nil saturation:nil brightness:&_brightness alpha:nil];
     }
     return self;
 }
@@ -53,48 +61,49 @@
     return YES;
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidLoad
 {
-    self.prefsPath = CVK_PREFS_PATH;
-    self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    [super viewDidLoad];
     
-    [super viewWillAppear:animated];
+    self.backgroundView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+    self.backgroundView.frame = self.view.bounds;
+    self.backgroundView.tag = 10;
+    self.backgroundView.alpha = 0;
+    [self.view addSubview:self.backgroundView];
     
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [UIView animateWithDuration:0.7 delay:0 options:0 animations:^{
+            self.backgroundView.backgroundColor = [self.customColor colorWithAlphaComponent:0.1];
+            self.backgroundView.alpha = 1;
+        } completion:nil];
+    });
     
-    self.prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
-    self.customColor = [UIColor savedColorForIdentifier:self.cellIdentifier];
-    [self.customColor getHue:nil saturation:nil brightness:&_brightness alpha:nil];
-    
-    
-    UIVisualEffectView *blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
-    blurView.frame = self.view.bounds;
-    [self.view addSubview:blurView];
-    
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(writeValues)];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissPicker)];
     tap.delegate = self;
-    [blurView addGestureRecognizer:tap];
+    [self.backgroundView addGestureRecognizer:tap];
     
     
-    self.mainView = [UIView new];
-    self.mainView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
+    
+    self.contentView = [UIView new];
+    self.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
     
     int widthFromEdge = IS_IPAD?20:6;
-    self.mainView.frame = (CGRect){{widthFromEdge, 0}, {self.view.frame.size.width - widthFromEdge*2, self.view.frame.size.height - widthFromEdge*10}};
-    self.mainView.center = self.view.center;
-    self.mainView.layer.cornerRadius = 16;
+    self.contentView.frame = (CGRect){{widthFromEdge, 0}, {self.view.frame.size.width - widthFromEdge*2, self.view.frame.size.height - widthFromEdge*10}};
+    self.contentView.center = self.view.center;
+    self.contentView.layer.cornerRadius = 16;
     
     
-    UINavigationBar *topView = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.mainView.frame.size.width, 44)];
+    UINavigationBar *topView = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, 44)];
     [topView setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
     topView.shadowImage = [UIImage new];
-    [self.mainView addSubview:topView];
+    [self.contentView addSubview:topView];
     
     UINavigationItem *navItem = [[UINavigationItem alloc] init];
     UIImage *resetImage = [[UIImage imageNamed:@"ResetIcon" inBundle:self.cvkBunlde compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     navItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:resetImage style:UIBarButtonItemStylePlain target:self action:@selector(resetColorValue)];
     
     UIImage *closeImage = [[UIImage imageNamed:@"CloseIcon" inBundle:self.cvkBunlde compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    navItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:closeImage style:UIBarButtonItemStylePlain target:self action:@selector(writeValues)];
+    navItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:closeImage style:UIBarButtonItemStylePlain target:self action:@selector(dismissPicker)];
     
     topView.items = @[navItem];
     
@@ -104,71 +113,66 @@
     self.infoView.frame = CGRectMake(10, topView.frame.origin.y + topView.frame.size.height, 60, 80);
     self.infoView.color = self.customColor;
     [self.infoView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showHexWindow)]];
-    [self.mainView addSubview:self.infoView];
+    [self.contentView addSubview:self.infoView];
     
     self.sliderView = [HRBrightnessSlider new];
     self.sliderView.frame = CGRectMake(self.infoView.frame.origin.x + self.infoView.frame.size.width + 10, (self.infoView.frame.origin.y + self.infoView.frame.size.height)/2, 
-                                       self.mainView.frame.size.width - (self.infoView.frame.origin.x + self.infoView.frame.size.width + 10), 32);
+                                       self.contentView.frame.size.width - (self.infoView.frame.origin.x + self.infoView.frame.size.width + 10), 32);
     [self.sliderView addTarget:self action:@selector(setColorBrightness:) forControlEvents:UIControlEventValueChanged];
     self.sliderView.color = self.customColor;
     self.sliderView.brightnessLowerLimit = @0;
-    [self.mainView addSubview:self.sliderView];    
+    [self.contentView addSubview:self.sliderView];    
     
-    CGRect pickerRect = CGRectMake(10, topView.frame.origin.y + topView.frame.size.height + self.infoView.frame.size.height + 10, self.mainView.frame.size.width-20, 
-                                   self.mainView.frame.size.height - (topView.frame.origin.y + topView.frame.size.height + 120));    
+    CGRect pickerRect = CGRectMake(10, topView.frame.origin.y + topView.frame.size.height + self.infoView.frame.size.height + 10, self.contentView.frame.size.width-20, 
+                                   self.contentView.frame.size.height - (topView.frame.origin.y + topView.frame.size.height + 120));    
     self.colorMapView = [HRColorMapView colorMapWithFrame:pickerRect saturationUpperLimit:0.9];
     [self.colorMapView addTarget:self action:@selector(setColor:) forControlEvents:UIControlEventValueChanged];
     self.colorMapView.color = self.customColor;
     self.colorMapView.tileSize = @1;
     self.colorMapView.brightness = 1;
     self.colorMapView.layer.masksToBounds = YES;
-    self.colorMapView.layer.cornerRadius = self.mainView.layer.cornerRadius/2;
-    [self.mainView addSubview:self.colorMapView];
+    self.colorMapView.layer.cornerRadius = self.contentView.layer.cornerRadius/2;
+    [self.contentView addSubview:self.colorMapView];
     
     
-    [self.view addSubview:self.mainView];
+    [self.view addSubview:self.contentView];   
     
     
-    self.mainView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromEdge-[_mainView]-fromEdge-|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                      metrics:@{ @"fromEdge" : @(widthFromEdge*4)} views:NSDictionaryOfVariableBindings(_mainView)]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-fromEdge-[_mainView]-fromEdge-|" options:NSLayoutFormatDirectionLeadingToTrailing 
-                                                                      metrics:@{ @"fromEdge" : IS_IPAD?@(widthFromEdge*3):@(widthFromEdge)} views:NSDictionaryOfVariableBindings(_mainView)]];
     
-    blurView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[blurView]|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                      metrics:nil views:NSDictionaryOfVariableBindings(blurView)]];
+    self.backgroundView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self.backgroundView}]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view":self.backgroundView}]];
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[blurView]|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                      metrics:nil views:NSDictionaryOfVariableBindings(blurView)]];
+    self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromEdge-[contentView]-fromEdge-|" options:0 metrics:@{@"fromEdge":@(widthFromEdge*4)} views:@{@"contentView":self.contentView}]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-fromEdge-[contentView]-fromEdge-|" options:0 metrics:@{@"fromEdge":IS_IPAD?@(widthFromEdge*3):@(widthFromEdge)}
+                                                                        views:@{@"contentView":self.contentView}]];
     
     topView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topView(height)]" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                          metrics:@{@"height":@44} views:NSDictionaryOfVariableBindings(topView)]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topView(height)]" options:0 metrics:@{@"height":@44} views:@{@"topView":topView}]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[topView]|" options:0 metrics:nil views:@{@"topView":topView}]];
     
-    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[topView]|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                          metrics:nil views:NSDictionaryOfVariableBindings(topView)]];
     
     self.infoView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromTop-[_infoView(height)]" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                          metrics:@{@"height":@(self.infoView.frame.size.height), @"fromTop": @(topView.frame.origin.y + topView.frame.size.height)} views:NSDictionaryOfVariableBindings(_infoView)]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromTop-[infoView(height)]" options:0 
+                                                                          metrics:@{@"height":@(self.infoView.frame.size.height), @"fromTop":@(topView.frame.origin.y + topView.frame.size.height)} 
+                                                                            views:@{@"infoView":self.infoView}]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[infoView(width)]" options:0 metrics:@{@"width" : @(self.infoView.frame.size.width)} views:@{@"infoView":self.infoView}]];
     
-    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_infoView(width)]" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                          metrics:@{@"width" : @(self.infoView.frame.size.width)} views:NSDictionaryOfVariableBindings(_infoView)]];
     
     self.sliderView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromTop-[_sliderView(16)]" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                          metrics:@{@"fromTop": @((self.infoView.frame.origin.y + self.infoView.frame.size.height)/2 + 10)} views:NSDictionaryOfVariableBindings(_sliderView)]];
-    
-    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-fromLeft-[_sliderView]-|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                          metrics:@{@"fromLeft" : @(self.infoView.frame.origin.x + self.infoView.frame.size.width + 10)} views:NSDictionaryOfVariableBindings(_sliderView)]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromTop-[sliderView(16)]" options:0
+                                                                          metrics:@{@"fromTop": @((self.infoView.frame.origin.y + self.infoView.frame.size.height)/2 + 10)}
+                                                                            views:@{@"sliderView":self.sliderView}]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-fromLeft-[sliderView]-|" options:0
+                                                                          metrics:@{@"fromLeft" : @(self.infoView.frame.origin.x + self.infoView.frame.size.width + 10)}
+                                                                            views:@{@"sliderView":self.sliderView}]];
     
     self.colorMapView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromTop-[_colorMapView]-|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                          metrics:@{@"fromTop": @((self.infoView.frame.origin.y + self.infoView.frame.size.height) + 10)} views:NSDictionaryOfVariableBindings(_colorMapView)]];
-    
-    [self.mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_colorMapView]-|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                          metrics:nil views:NSDictionaryOfVariableBindings(_colorMapView)]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromTop-[colorMapView]-|" options:0
+                                                                          metrics:@{@"fromTop": @((self.infoView.frame.origin.y + self.infoView.frame.size.height) + 10)}
+                                                                            views:@{@"colorMapView":self.colorMapView}]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[colorMapView]-|" options:0 metrics:nil views:@{@"colorMapView":self.colorMapView}]];
     
     
 
@@ -183,18 +187,27 @@
 {
     [super viewDidAppear:animated];
     
-    self.mainView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.mainView.bounds cornerRadius:self.mainView.layer.cornerRadius].CGPath;
-    self.mainView.layer.shadowRadius = 4;
-    self.mainView.layer.shadowOffset = CGSizeMake(0, 3);
-    self.mainView.layer.shadowColor = [UIColor blackColor].CGColor;
+    if ([self.delegate respondsToSelector:@selector(colorPickerDidAppear:)]) [self.delegate colorPickerDidAppear:self];
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    
+    self.contentView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.contentView.bounds cornerRadius:self.contentView.layer.cornerRadius].CGPath;
+    self.contentView.layer.shadowRadius = 4;
+    self.contentView.layer.shadowOffset = CGSizeMake(0, 3);
+    self.contentView.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.contentView.layer.rasterizationScale = [UIScreen mainScreen].scale;
+    self.contentView.layer.shouldRasterize = YES;
     
     CGFloat shadowOpacity = 0.1;
     CABasicAnimation *shadowAnimation = [CABasicAnimation animationWithKeyPath:@"shadowOpacity"];
     shadowAnimation.fromValue = @0.0;
     shadowAnimation.toValue = @(shadowOpacity);
     shadowAnimation.duration = 1.0;
-    [self.mainView.layer addAnimation:shadowAnimation forKey:@"shadowOpacity"];
-    self.mainView.layer.shadowOpacity = shadowOpacity;
+    [self.contentView.layer addAnimation:shadowAnimation forKey:@"shadowOpacity"];
+    self.contentView.layer.shadowOpacity = shadowOpacity;
 }
 
 - (void)setHideStatusBar:(BOOL)hideStatusBar
@@ -214,6 +227,10 @@
     self.infoView.color = self.customColor;
     self.sliderView.color = self.customColor;
     self.colorMapView.color = self.customColor;
+    self.backgroundView.backgroundColor = [self.customColor colorWithAlphaComponent:0.1];
+    
+    if ([self.delegate respondsToSelector:@selector(colorPicker:didChangeColor:)]) [self.delegate colorPicker:self didChangeColor:self.customColor];
+    
 //    self.colorMapView.brightness = fromPicker?self.brightness:brightness;
 }
 
@@ -260,39 +277,47 @@
                                                                           message:NSLocalizedStringFromTableInBundle(@"RESET_COLOR_QUESTION", nil, self.cvkBunlde, nil) 
                                                                    preferredStyle:UIAlertControllerStyleAlert];
     [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-    [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { 
-        if (self.prefs[self.cellIdentifier]) [self.prefs removeObjectForKey:self.cellIdentifier];
-        [self.prefs writeToFile:self.prefsPath atomically:YES];
+    [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        if ([self.delegate respondsToSelector:@selector(colorPicker:didResetColorForIdentifier:)]) [self.delegate colorPicker:self didResetColorForIdentifier:self.identifier];
         [self dismissPicker];
     }]];
     [self presentViewController:warningAlert animated:YES completion:nil];
     
 }
 
-
-- (void)writeValues 
-{
-    self.prefs[self.cellIdentifier] = self.customColor.stringValue;
-    [self.prefs writeToFile:self.prefsPath atomically:YES];
-    
-    [self dismissPicker];
-}
-
 - (void)dismissPicker 
 {
+    if ([self.delegate respondsToSelector:@selector(colorPickerWillDismiss:)]) [self.delegate colorPickerWillDismiss:self];
     [self.popup dismiss:YES];
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.prefs.colorUpdate" object:nil userInfo:@{@"identifier":self.cellIdentifier}];
-    
-    NSArray *identificsToReloadMenu = @[@"MenuSeparatorColor", @"switchesTintColor", @"switchesOnTintColor", @"menuTextColor"];
-    if ([identificsToReloadMenu containsObject:self.cellIdentifier]) CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
     
     self.hideStatusBar = NO;
+    self.backgroundView.backgroundColor = [UIColor clearColor];
     
-    [self dismissViewControllerAnimated:YES completion:^{
-        self.pickerWindow.hidden = YES;
-        self.pickerWindow = nil;
+    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+        self.presentationWindow.alpha = 0;
+    } completion:^(BOOL finished) {
+        self.presentationWindow.hidden = YES;
+        self.presentationWindow = nil;
+        
+        if ([self.delegate respondsToSelector:@selector(colorPickerDidDismiss:)]) [self.delegate colorPickerDidDismiss:self];
     }];
+}
+
+- (void)showPicker
+{
+    if ([self.delegate respondsToSelector:@selector(colorPickerWillAppear:)]) [self.delegate colorPickerWillAppear:self];
+    
+    self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    self.view.backgroundColor = [UIColor clearColor];
+    
+    self.presentationWindow = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+    self.presentationWindow.alpha = 0;
+    self.presentationWindow.rootViewController = self;
+    [self.presentationWindow makeKeyAndVisible];
+    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+        self.presentationWindow.alpha = 1;
+    } completion:nil];
 }
 
 
@@ -380,7 +405,7 @@
 - (void)copyColorHexValue:(UIButton *)button
 {
     button.layer.borderColor = [UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1].CGColor;
-    [UIPasteboard generalPasteboard].string = [UIColor savedColorForIdentifier:self.cellIdentifier].hexStringValue;
+    [UIPasteboard generalPasteboard].string = [UIColor savedColorForIdentifier:self.identifier].hexStringValue;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField

@@ -7,15 +7,10 @@
 //
 
 #import "ColoredVKPrefs.h"
-#import "ColoredVKColorPickerViewController.h"
-#import "UIImage+ResizeMagick.h"
-#import <MobileCoreServices/MobileCoreServices.h>
-#import "ColoredVKHUD.h"
-#import "UIImage+ResizeMagick.h"
-#import "ColoredVKSettingsController.h"
+#import "ColoredVKColorPickerController.h"
 
 
-@interface ColoredVKGeneralPrefs : ColoredVKPrefs  <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface ColoredVKGeneralPrefs : ColoredVKPrefs  <UIImagePickerControllerDelegate, UINavigationControllerDelegate, ColoredVKColorPickerControllerDelegate>
 
 @property (strong, nonatomic) NSString *lastImageIdentifier;
 

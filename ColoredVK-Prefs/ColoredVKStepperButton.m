@@ -94,13 +94,13 @@
 - (void)setFrame:(CGRect)frame
 {
     frame.size.height = self.height;
-    [super setFrame:frame];
+    super.frame = frame;
 }
 
 - (void)setBounds:(CGRect)bounds
 {
     bounds.size.height = self.height;
-    [super setBounds:bounds];
+    super.bounds = bounds;
 }
 
 - (void)setValue:(NSInteger)value

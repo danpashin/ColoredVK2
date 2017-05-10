@@ -40,7 +40,7 @@
 #ifndef COMPILE_APP
     [ColoredVKInstaller sharedInstaller];
 #endif
-    self.prefsTableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.view];
+    self.prefsTableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.prefsTableView];
     self.navigationItem.title = @"";
 }
 @end
