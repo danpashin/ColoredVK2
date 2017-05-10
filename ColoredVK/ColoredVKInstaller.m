@@ -179,10 +179,11 @@ struct utsname systemInfo;
     if ([fileManager fileExistsAtPath:CVK_CACHE_PATH_OLD]) [fileManager removeItemAtPath:CVK_CACHE_PATH_OLD error:nil];
 #endif
     if (![fileManager fileExistsAtPath:CVK_FOLDER_PATH])  [fileManager createDirectoryAtPath:CVK_FOLDER_PATH withIntermediateDirectories:NO attributes:nil error:nil];
-    if (![fileManager fileExistsAtPath:CVK_CACHE_PATH])   [fileManager createDirectoryAtPath:CVK_CACHE_PATH  withIntermediateDirectories:NO attributes:nil error:nil];
+    NSString *cacheMainFolder = [CVK_CACHE_PATH stringByDeletingLastPathComponent];
+    if (![fileManager fileExistsAtPath:cacheMainFolder]) [fileManager createDirectoryAtPath:cacheMainFolder  withIntermediateDirectories:NO attributes:nil error:nil];
+    if (![fileManager fileExistsAtPath:CVK_CACHE_PATH])  [fileManager createDirectoryAtPath:CVK_CACHE_PATH withIntermediateDirectories:NO attributes:nil error:nil];
     if (![fileManager fileExistsAtPath:CVK_BACKUP_PATH])  [fileManager createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
 }
-
 
 - (void)sendStats
 {

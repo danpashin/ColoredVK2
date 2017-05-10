@@ -16,9 +16,6 @@
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didChangeColor:(UIColor *)color;
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didResetColorForIdentifier:(NSString *)identifier;
 - (void)colorPickerWillDismiss:(ColoredVKColorPickerController *)colorPicker;
-- (void)colorPickerDidDismiss:(ColoredVKColorPickerController *)colorPicker;
-- (void)colorPickerWillAppear:(ColoredVKColorPickerController *)colorPicker;
-- (void)colorPickerDidAppear:(ColoredVKColorPickerController *)colorPicker;
 
 @end
 

@@ -9,7 +9,6 @@
 
 #import "ColoredVKColorPickerController.h"
 #import "PrefixHeader.h"
-#import "KLCPopup.h"
 #import "HRColorMapView.h"
 #import "HRBrightnessSlider.h"
 #import "HRColorInfoView.h"
@@ -22,11 +21,11 @@
 @property (assign, nonatomic) CGFloat brightness;
 
 @property (strong, nonatomic) UIView *contentView;
+@property (strong, nonatomic) UIScrollView *hexScrollView;
 @property (strong, nonatomic) UIVisualEffectView *backgroundView;
 @property (strong, nonatomic) HRColorInfoView *infoView;
 @property (strong, nonatomic) HRBrightnessSlider *sliderView;
 @property (strong, nonatomic) HRColorMapView *colorMapView;
-@property (strong, nonatomic) KLCPopup *popup;
 
 @property (assign, nonatomic) BOOL hideStatusBar;
 
@@ -176,18 +175,11 @@
     
     
 
-    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillShown) name:UIKeyboardWillShowNotification object:nil];
-    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHidden) name:UIKeyboardWillHideNotification object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHide) name:UIKeyboardWillHideNotification object:nil];
     
     
     self.hideStatusBar = YES;
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    
-    if ([self.delegate respondsToSelector:@selector(colorPickerDidAppear:)]) [self.delegate colorPickerDidAppear:self];
 }
 
 - (void)viewDidLayoutSubviews
@@ -214,9 +206,7 @@
 {
     _hideStatusBar = hideStatusBar;
     
-    [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-        [self setNeedsStatusBarAppearanceUpdate];
-    } completion:nil];
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (void)updateColorsFromPicker:(BOOL)fromPicker
@@ -246,27 +236,20 @@
     [self updateColorsFromPicker:YES];
 }
 
-- (void)keyboardWillShown
+- (void)keyboardWillShow:(NSNotification *)notification
 {
-    self.popup.shouldDismissOnBackgroundTouch = NO;
-    [UIView animateWithDuration:0.2 animations:^{
-        self.popup.contentView.frame = CGRectMake(self.popup.contentView.frame.origin.x, self.popup.contentView.frame.origin.y - 50,
-                                                  self.popup.contentView.frame.size.width, self.popup.contentView.frame.size.height);
-    }];
+    CGRect kbRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    self.hexScrollView.contentOffset = CGPointMake(0, kbRect.size.height/2);
 
 }
-- (void)keyboardWillHidden
+- (void)keyboardWillHide
 {
-    self.popup.shouldDismissOnBackgroundTouch = YES;
-    [UIView animateWithDuration:0.2 animations:^{
-        self.popup.contentView.frame = CGRectMake(self.popup.contentView.frame.origin.x, self.popup.contentView.frame.origin.y + 50,
-                                                  self.popup.contentView.frame.size.width, self.popup.contentView.frame.size.height);
-    }];
+    self.hexScrollView.contentOffset = CGPointZero;
 }
 
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-{    
+{
     if ([touch.view isDescendantOfView:[self.view viewWithTag:10]]) return YES;
     return NO;
 }
@@ -285,10 +268,9 @@
     
 }
 
-- (void)dismissPicker 
+- (void)dismissPicker
 {
     if ([self.delegate respondsToSelector:@selector(colorPickerWillDismiss:)]) [self.delegate colorPickerWillDismiss:self];
-    [self.popup dismiss:YES];
     
     self.hideStatusBar = NO;
     self.backgroundView.backgroundColor = [UIColor clearColor];
@@ -298,15 +280,11 @@
     } completion:^(BOOL finished) {
         self.presentationWindow.hidden = YES;
         self.presentationWindow = nil;
-        
-        if ([self.delegate respondsToSelector:@selector(colorPickerDidDismiss:)]) [self.delegate colorPickerDidDismiss:self];
     }];
 }
 
 - (void)showPicker
 {
-    if ([self.delegate respondsToSelector:@selector(colorPickerWillAppear:)]) [self.delegate colorPickerWillAppear:self];
-    
     self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     self.view.backgroundColor = [UIColor clearColor];
@@ -321,8 +299,20 @@
 }
 
 
-- (void)showHexWindow 
+- (void)showHexWindow
 {
+    self.hexScrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+    self.hexScrollView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
+    [self.view addSubview:self.hexScrollView];
+    
+    self.hexScrollView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[hexScrollView]|" options:0 metrics:nil views:@{@"hexScrollView":self.hexScrollView}]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[hexScrollView]|" options:0 metrics:nil views:@{@"hexScrollView":self.hexScrollView}]];
+    
+    UITapGestureRecognizer *hexTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissHexView)];
+    [self.hexScrollView addGestureRecognizer:hexTap];
+    
+    
     UIView *view = [UIView new];
     view.backgroundColor = [UIColor whiteColor];
     view.frame = CGRectMake(0, 0, self.view.frame.size.width - 60, 120);
@@ -334,7 +324,7 @@
     
     
     UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width, 30)];
-    title.center = CGPointMake(view.frame .size.width / 2, 20);
+    title.center = CGPointMake(view.frame.size.width / 2, 20);
     
     NSString *locString = NSLocalizedStringFromTableInBundle(@"ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE", nil, self.cvkBunlde, nil);
     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:locString];
@@ -383,13 +373,45 @@
     [valueButton addTarget:self action:@selector(copyColorHexValue:) forControlEvents:UIControlEventTouchUpInside];
     [view addSubview:valueButton];
     
-    self.popup = [KLCPopup popupWithContentView:view 
-                                       showType:KLCPopupShowTypeBounceIn
-                                    dismissType:KLCPopupDismissTypeBounceOut 
-                                       maskType:KLCPopupMaskTypeDimmed
-                       dismissOnBackgroundTouch:YES 
-                          dismissOnContentTouch:NO];
-    [self.popup show];
+    [self.hexScrollView addSubview:view];
+    
+    view.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.hexScrollView addConstraint:[NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeCenterX relatedBy:0 toItem:self.hexScrollView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+    [self.hexScrollView addConstraint:[NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeCenterY relatedBy:0 toItem:self.hexScrollView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+    [self.hexScrollView addConstraint:[NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeWidth relatedBy:0 toItem:nil attribute:0 multiplier:1 constant:CGRectGetWidth(view.frame)]];
+    [self.hexScrollView addConstraint:[NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeHeight relatedBy:0 toItem:nil attribute:0 multiplier:1 constant:CGRectGetHeight(view.frame)]];
+    
+    view.alpha = 0.0;
+    view.transform = CGAffineTransformMakeScale(0.1, 0.1);
+    
+    [UIView animateWithDuration:0.6 delay:0.0 usingSpringWithDamping:0.8 initialSpringVelocity:15.0 options:0
+                     animations:^{
+                         view.alpha = 1.0;
+                         view.transform = CGAffineTransformIdentity;
+                     } completion:nil];
+    
+}
+
+- (void)dismissHexView
+{
+    NSTimeInterval bounce1Duration = 0.13;
+    NSTimeInterval bounce2Duration = (bounce1Duration * 2.0);
+    
+    UIView *hexContainerView = self.hexScrollView.subviews.lastObject;
+    
+    [UIView animateWithDuration:bounce1Duration delay:0 options:UIViewAnimationOptionCurveEaseOut
+                     animations:^(void){
+                         hexContainerView.transform = CGAffineTransformMakeScale(1.1, 1.1);
+                     } completion:^(BOOL finished) {
+                         
+                         [UIView animateWithDuration:bounce2Duration delay:0  options:UIViewAnimationOptionCurveEaseIn
+                                          animations:^(void){
+                                              hexContainerView.alpha = 0.0;
+                                              hexContainerView.transform = CGAffineTransformMakeScale(0.1, 0.1);
+                                          } completion:^(BOOL finished){
+                                              [self.hexScrollView removeFromSuperview];
+                                          }];
+                     }];
 }
 
 - (void)highlightButtonBorder:(UIButton *)button
