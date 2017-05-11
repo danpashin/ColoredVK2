@@ -502,9 +502,11 @@ void setupSearchController(UISearchDisplayController *controller, BOOL reset)
                         }
                     } else if ([navigation.childViewControllers.firstObject respondsToSelector:@selector(tableView)]) {
                         VKMTableController *tableController = (VKMTableController*)navigation.childViewControllers.firstObject;
-                        ColoredVKWallpaperView *backView = (ColoredVKWallpaperView*)tableController.tableView.backgroundView;
-                        ColoredVKWallpaperView *imageView = [ColoredVKWallpaperView viewWithFrame:[UIScreen mainScreen].bounds imageName:backView.name blackout:backView.blackout];
-                        controller.searchResultsTableView.backgroundView = imageView;
+                        if ([tableController.tableView.backgroundView isKindOfClass:[ColoredVKWallpaperView class]]) {
+                            ColoredVKWallpaperView *backView = (ColoredVKWallpaperView*)tableController.tableView.backgroundView;
+                            ColoredVKWallpaperView *imageView = [ColoredVKWallpaperView viewWithFrame:[UIScreen mainScreen].bounds imageName:backView.name blackout:backView.blackout];
+                            controller.searchResultsTableView.backgroundView = imageView;
+                        }
                     }
                 }
             }
@@ -2241,6 +2243,22 @@ CHOptimizedMethod(6, self, UITableViewHeaderFooterView*, UITableView, _sectionHe
     return view;
 }
 
+CHOptimizedMethod(1, self, void, UITableView, setBackgroundView, UIView*, backgroundView)
+{    
+    if ([self.backgroundView isKindOfClass:[ColoredVKWallpaperView class]] && [backgroundView isKindOfClass:NSClassFromString(@"TeaserView")]) {
+        TeaserView *teaserView = (TeaserView *)backgroundView;
+        teaserView.labelTitle.textColor = UITableViewCellTextColor;
+        teaserView.labelText.textColor = UITableViewCellTextColor;
+        [self.backgroundView addSubview:teaserView];
+        
+        teaserView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.backgroundView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":teaserView}]];
+        [self.backgroundView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view":teaserView}]];
+    } else {
+        CHSuper(1, UITableView, setBackgroundView, backgroundView);
+    }
+}
+
 
 #pragma mark Static methods
 static void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
@@ -2523,6 +2541,7 @@ CHConstructor
             
             CHLoadLateClass(UITableView);
             CHHook(6, UITableView, _sectionHeaderView, withFrame, forSection, floating, reuseViewIfPossible, willDisplay);
+            CHHook(1, UITableView, setBackgroundView);
 
         } else {
             showAlertWithMessage([NSString stringWithFormat:CVKLocalizedString(@"VKAPP_VERSION_IS_TOO_LOW"),  vkVersion, @"2.2"]);

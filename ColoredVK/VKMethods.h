@@ -429,4 +429,9 @@
 @interface AudioPlaylistDetailController : VKMLiveController
 @end
 
+@interface TeaserView : UIView
+@property(retain, nonatomic) UILabel *labelText;
+@property(retain, nonatomic) UILabel *labelTitle;
+@end
+
 
