@@ -14,7 +14,7 @@
 @interface ColoredVKAudioCover : NSObject
 
 - (instancetype)initWithFrame:(CGRect)frame andSeparationPoint:(CGPoint)point;
-- (void)updateCoverForAudioPlayer:(AudioPlayer *)player;
+- (void)updateCoverForArtist:(NSString *)artist title:(NSString *)title;
 - (void)addToView:(UIView *)view;
 
 @property (strong, nonatomic) NSString *track;

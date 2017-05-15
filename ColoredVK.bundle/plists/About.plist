@@ -44,7 +44,7 @@
 			<key>cell</key>
 			<string>PSTableCell</string>
 			<key>action</key>
-			<string>openProfie</string>
+			<string>openDeveloperProfile</string>
 			<key>textColor</key>
 			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
@@ -72,7 +72,7 @@
 			<key>icon</key>
 			<string>honcharuk_makc</string>
 			<key>action</key>
-			<string>openTesterPage:</string>
+			<string>openTesterProfile:</string>
 			<key>textColor</key>
 			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
@@ -88,7 +88,7 @@
 			<key>icon</key>
 			<string>md.furman</string>
 			<key>action</key>
-			<string>openTesterPage:</string>
+			<string>openTesterProfile:</string>
 			<key>textColor</key>
 			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
@@ -104,7 +104,7 @@
 			<key>icon</key>
 			<string>big_catz</string>
 			<key>action</key>
-			<string>openTesterPage:</string>
+			<string>openTesterProfile:</string>
 			<key>textColor</key>
 			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
@@ -118,7 +118,7 @@
 			<key>url</key>
 			<string>id188888433</string>
 			<key>action</key>
-			<string>openTesterPage:</string>
+			<string>openTesterProfile:</string>
 			<key>icon</key>
 			<string>id188888433</string>
 			<key>textColor</key>

@@ -27,6 +27,6 @@
 - (void)addToView:(UIView *)view animated:(BOOL)animated;
 - (void)addToBack:(UIView *)view animated:(BOOL)animated;
 - (void)addToFront:(UIView *)view animated:(BOOL)animated;
-- (void)removeFromView:(UIView *)superview;
+- (void)removeFromSuperview;
 
 @end

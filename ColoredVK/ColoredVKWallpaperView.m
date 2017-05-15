@@ -176,17 +176,15 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
     [self.imageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[frontView]|" options:0 metrics:nil views:@{@"frontView":self.frontView}]];
 }
 
-- (void)removeFromView:(UIView *)superview
+- (void)removeFromSuperview
 {
-    if (superview && [superview.subviews containsObject:[superview viewWithTag:self.tag]]) {
-        [self removeFromSuperview];
-        
-        if ([superview isKindOfClass:NSClassFromString(@"_UIBarBackground")]) {
-            for (UIView *subview in superview.subviews) {
-                if ([subview isKindOfClass:[UIVisualEffectView class]]) subview.hidden = NO;
-            }
+    if ([self.superview isKindOfClass:NSClassFromString(@"_UIBarBackground")]) {
+        for (UIView *subview in self.superview.subviews) {
+            if ([subview isKindOfClass:[UIVisualEffectView class]]) subview.hidden = NO;
         }
     }
+    
+    [super removeFromSuperview];
 }
 
 - (NSString *)description

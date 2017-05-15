@@ -67,20 +67,22 @@
     }];
 }
 
-- (void)openProfie
+- (void)openDeveloperProfile
 {
-    NSURL *appURL = [NSURL URLWithString:[NSString stringWithFormat:@"vk://%@", kPackageDevLink]];
-    UIApplication *application = [UIApplication sharedApplication];
-    if ([application canOpenURL:appURL]) [self openURL:appURL];
-    else [self openURL:[NSURL URLWithString:kPackageDevLink]];
+    [self openProfieForUsername:kPackageDevName];
 }
 
-- (void)openTesterPage:(PSSpecifier *)specifier
+- (void)openTesterProfile:(PSSpecifier *)specifier
 {
-    NSURL *appURL = [NSURL URLWithString:[NSString stringWithFormat:@"vk://vk.com/%@", specifier.properties[@"url"]]];
+    [self openProfieForUsername:specifier.properties[@"url"]];
+}
+
+- (void)openProfieForUsername:(NSString *)username
+{
+    NSURL *appURL = [NSURL URLWithString:[NSString stringWithFormat:@"vk://%@", username]];
     UIApplication *application = [UIApplication sharedApplication];
     if ([application canOpenURL:appURL]) [self openURL:appURL];
-    else [self openURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://vk.com/%@", specifier.properties[@"url"]]]];
+    else [self openURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://vk.com/%@", username]]];
 }
 
 - (void)showUsedLibraries

@@ -21,6 +21,7 @@
 #import "ColoredVKBarDownloadButton.h"
 #import "UIGestureRecognizer+BlocksKit.h"
 #import "ColoredVKHUD.h"
+#import "ColoredVKHelpController.h"
 
 
 
@@ -734,7 +735,7 @@ void resetNavigationBar(UINavigationBar *navBar)
 {
     setBlur(navBar, NO, nil, 0);
     navBar._backgroundView.alpha = 1.0;
-    [cvkMainController.navBarImageView removeFromView:navBar._backgroundView];
+    [cvkMainController.navBarImageView removeFromSuperview];
     navBar.barTintColor = kNavigationBarBarTintColor;
     for (UIView *subview in navBar._backgroundView.subviews) {
         if ([subview isKindOfClass:[UIVisualEffectView class]]) subview.hidden = NO;
@@ -757,6 +758,13 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
         if (!disableTweak) {
             tweakEnabled = YES;
             reloadPrefs();
+            
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                UIViewController *mainController = [UIApplication sharedApplication].keyWindow.rootViewController;
+//                
+////                ColoredVKHelpController *helpController = [ColoredVKHelpController helpController];
+////                [mainController presentViewController:helpController animated:YES completion:nil];
+//            });
         }
     };
     
@@ -783,7 +791,8 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setBarTintColor, UIColor*, bar
 {
     if (enabled) {
         if (enabledBarImage) {
-            barTintColor = barBackgroundColor;
+            if (cvkMainController.navBarImageView) barTintColor = [UIColor colorWithPatternImage:cvkMainController.navBarImageView.imageView.image];
+            else barTintColor = barBackgroundColor;
             dispatch_async(dispatch_get_main_queue(), ^{
                 BOOL containsImageView = [self._backgroundView.subviews containsObject:[self._backgroundView viewWithTag:24]];
                 BOOL containsBlur = [self._backgroundView.subviews containsObject:[self._backgroundView viewWithTag:10]];
@@ -797,14 +806,14 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setBarTintColor, UIColor*, bar
                     }
                     [cvkMainController.navBarImageView addToView:self._backgroundView animated:NO];
                 
-                } else if (containsBlur || isAudioController) [cvkMainController.navBarImageView removeFromView:self._backgroundView];
+                } else if (containsBlur || isAudioController) [cvkMainController.navBarImageView removeFromSuperview];
             });
         }
         else if (enabledBarColor) {
             barTintColor = barBackgroundColor;
-            [cvkMainController.navBarImageView removeFromView:self._backgroundView];
+            [cvkMainController.navBarImageView removeFromSuperview];
         }
-    } else [cvkMainController.navBarImageView removeFromView:self._backgroundView];
+    } else [cvkMainController.navBarImageView removeFromSuperview];
     
     CHSuper(1, UINavigationBar, setBarTintColor, barTintColor);
 }
@@ -1376,77 +1385,58 @@ CHOptimizedMethod(0, self, UIStatusBarStyle, IOS7AudioController, preferredStatu
     else return CHSuper(0, IOS7AudioController, preferredStatusBarStyle);
 }
 
-CHOptimizedMethod(1, self, void, IOS7AudioController, viewWillAppear, BOOL, animated)
-{
-    CHSuper(1, IOS7AudioController, viewWillAppear, animated);
-    
-    if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")]) {
-        if (enabled && changeAudioPlayerAppearance) {
-            if (!cvkMainController.coverView) cvkMainController.coverView = [[ColoredVKAudioCover alloc] initWithFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
-            audioPlayerTintColor = cvkMainController.coverView.color;
-            
-            UINavigationBar *navBar = self.navigationController.navigationBar;
-            navBar.tag = 26;
-            navBar.topItem.titleView.hidden = YES;
-            navBar.shadowImage = [UIImage new];
-            [navBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-            navBar.topItem.leftBarButtonItems = @[];
-            navBar.tintColor = [UIColor whiteColor];
-            
-            showAlertWithMessage([NSString stringWithFormat:@"NAVIGATION BAR TAG %i", (int)navBar.tag]);
-            
-            UISwipeGestureRecognizer *downSwipe = [[UISwipeGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender) {
-                CGPoint location = [sender locationInView:sender.view];
-                UIView *view = [sender.view hitTest:location withEvent:nil];
-                if (![view isKindOfClass:[UITextView class]]) [self done:nil];
-            }];
-            downSwipe.direction = UISwipeGestureRecognizerDirectionDown;
-            [self.view addGestureRecognizer:downSwipe];
-            
-            setupAudioPlayer(self.hostView, audioPlayerTintColor);
-            self.cover.hidden = YES;
-            self.hostView.backgroundColor = [UIColor clearColor];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                UIImage *ppImage = [[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor];
-                UIImage *minimumTrackImage = [[self.seek minimumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:229/255.0f green:230/255.0f blue:231/255.0f alpha:1]];
-                UIImage *maximumTrackImage = [[self.seek maximumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:200/255.0f green:201/255.0f blue:202/255.0f alpha:1]];
-                UIImage *thumbImage = [[self.seek thumbImageForState:UIControlStateNormal] imageWithTintColor:[UIColor blackColor]];
-                
-                [self.pp setImage:ppImage forState:UIControlStateSelected];
-                [self.seek setMinimumTrackImage:minimumTrackImage forState:UIControlStateNormal];
-                [self.seek setMaximumTrackImage:maximumTrackImage forState:UIControlStateNormal];
-                [self.seek setThumbImage:[thumbImage resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)] forState:UIControlStateNormal];
-            });
-            
-            [NSNotificationCenter.defaultCenter addObserverForName:@"com.daniilpashin.coloredvk2.audio.image.changed" object:nil queue:nil usingBlock:^(NSNotification *note) {
-                audioPlayerTintColor = cvkMainController.coverView.color;
-                [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
-                setupAudioPlayer(self.hostView, audioPlayerTintColor);
-            }];
-            
-            [cvkMainController.coverView addToView:self.view];
-        }
-    }
-}
-
-
 CHOptimizedMethod(0, self, void, IOS7AudioController, viewDidLoad)
 {
     CHSuper(0, IOS7AudioController, viewDidLoad);
     
-    if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")]) {
-        if (enabled && changeAudioPlayerAppearance) {
-            
-            UINavigationBar *navBar = self.navigationController.navigationBar;
-            navBar.tag = 26;
-            navBar.topItem.titleView.hidden = YES;
-            navBar.shadowImage = [UIImage new];
-            [navBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-            navBar.topItem.leftBarButtonItems = @[];
-            navBar.tintColor = [UIColor whiteColor];
+    if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")] && (enabled && changeAudioPlayerAppearance)) {
+        if (!cvkMainController.coverView) {
+            cvkMainController.coverView = [[ColoredVKAudioCover alloc] initWithFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
+            [cvkMainController.coverView updateCoverForArtist:self.actor.text title:self.song.text];
         }
+        audioPlayerTintColor = cvkMainController.coverView.color;
+        
+        UINavigationBar *navBar = self.navigationController.navigationBar;
+        navBar.tag = 26;
+        navBar.topItem.titleView.hidden = YES;
+        navBar.shadowImage = [UIImage new];
+        [navBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+        navBar.topItem.leftBarButtonItems = @[];
+        navBar.tintColor = [UIColor whiteColor];
+        
+        
+        UISwipeGestureRecognizer *downSwipe = [[UISwipeGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender) {
+            CGPoint location = [sender locationInView:sender.view];
+            UIView *view = [sender.view hitTest:location withEvent:nil];
+            if (![view isKindOfClass:[UITextView class]]) [self done:nil];
+        }];
+        downSwipe.direction = UISwipeGestureRecognizerDirectionDown;
+        [self.view addGestureRecognizer:downSwipe];
+        
+        
+        setupAudioPlayer(self.hostView, audioPlayerTintColor);
+        self.cover.hidden = YES;
+        self.hostView.backgroundColor = [UIColor clearColor];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIImage *ppImage = [[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor];
+            UIImage *minimumTrackImage = [[self.seek minimumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:229/255.0f green:230/255.0f blue:231/255.0f alpha:1]];
+            UIImage *maximumTrackImage = [[self.seek maximumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:200/255.0f green:201/255.0f blue:202/255.0f alpha:1]];
+            UIImage *thumbImage = [[self.seek thumbImageForState:UIControlStateNormal] imageWithTintColor:[UIColor blackColor]];
+            
+            [self.pp setImage:ppImage forState:UIControlStateSelected];
+            [self.seek setMinimumTrackImage:minimumTrackImage forState:UIControlStateNormal];
+            [self.seek setMaximumTrackImage:maximumTrackImage forState:UIControlStateNormal];
+            [self.seek setThumbImage:thumbImage forState:UIControlStateNormal];
+        });
+        
+        [NSNotificationCenter.defaultCenter addObserverForName:@"com.daniilpashin.coloredvk2.audio.image.changed" object:nil queue:nil usingBlock:^(NSNotification *note) {
+            audioPlayerTintColor = cvkMainController.coverView.color;
+            [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
+            setupAudioPlayer(self.hostView, audioPlayerTintColor);
+        }];
+        
+        [cvkMainController.coverView addToView:self.view];
     }
-    
 }
 
 #pragma mark AudioPlayer
@@ -1455,8 +1445,7 @@ CHOptimizedMethod(2, self, void, AudioPlayer, switchTo, int, arg1, force, BOOL, 
 {
     CHSuper(2, AudioPlayer, switchTo, arg1, force, force);
     if (enabled && changeAudioPlayerAppearance) {
-        if (self.state == 1 && (![cvkMainController.coverView.artist isEqualToString:self.audio.performer] || ![cvkMainController.coverView.track isEqualToString:self.audio.title]))
-            [cvkMainController.coverView updateCoverForAudioPlayer:self];
+        if (self.state == 1) [cvkMainController.coverView updateCoverForArtist:self.audio.performer title:self.audio.title];
     }
 }
 
@@ -2424,6 +2413,7 @@ CHConstructor
             
             
             
+            
             CHLoadLateClass(AudioAlbumController);
             CHHook(0, AudioAlbumController, viewDidLoad);
             CHHook(2, AudioAlbumController, tableView, cellForRowAtIndexPath);
@@ -2482,7 +2472,6 @@ CHConstructor
             
             CHLoadLateClass(IOS7AudioController);
             CHHook(0, IOS7AudioController, viewDidLoad);
-            CHHook(1, IOS7AudioController, viewWillAppear);
             CHHook(0, IOS7AudioController, preferredStatusBarStyle);
             
             CHLoadLateClass(AudioPlayer);

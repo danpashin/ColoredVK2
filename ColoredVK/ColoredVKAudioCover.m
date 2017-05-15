@@ -94,33 +94,37 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
     [view sendSubviewToBack:self.view];
 }
 
-- (void)updateCoverForAudioPlayer:(AudioPlayer *)player
+- (void)updateCoverForArtist:(NSString *)artist title:(NSString *)title
 {
     @synchronized (self) {
         dispatch_async(dispatch_queue_create("com.daniilpashin.coloredvk2.download.queue", DISPATCH_QUEUE_SERIAL), ^{
-            self.track = player.audio.title;
-            self.artist = player.audio.performer;
+            if (![self.track isEqualToString:title] || ![self.artist isEqualToString:artist]) {
+                self.track = title;
+                self.artist = artist;
+                
+                [self downloadCoverWithCompletionBlock:^(UIImage *image, BOOL wasDownloaded) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.defaultCover = (wasDownloaded && image)?NO:YES;
+                        
+                        [self changeImageViewImage:self.topImageView toImage:image animated:YES];
+                        if (self.defaultCover)
+                            [self changeImageViewImage:self.bottomImageView toImage:self.customCover?self.noCover:nil animated:YES];
+                        else
+                            [self changeImageViewImage:self.bottomImageView toImage:image animated:YES];
+                        
+                        MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
+                        NSMutableDictionary *playingInfo = [center.nowPlayingInfo mutableCopy];
+                        if (!self.defaultCover) playingInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:image];
+                        else [playingInfo removeObjectForKey:MPMediaItemPropertyArtwork];
+                        center.nowPlayingInfo = [playingInfo copy];
+                        
+                        [self updateColorSchemeForImage:image];
+                            //                if (self.inBackground) [[UIApplication sharedApplication] _updateSnapshotForBackgroundApplication:YES];
+                    });
+                }];
+            } else [self updateColorSchemeForImage:self.topImageView.image];
             
-            [self downloadCoverWithCompletionBlock:^(UIImage *image, BOOL wasDownloaded) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.defaultCover = (wasDownloaded && image)?NO:YES;
-                    
-                    [self changeImageViewImage:self.topImageView toImage:image animated:YES];
-                    if (self.defaultCover)
-                        [self changeImageViewImage:self.bottomImageView toImage:self.customCover?self.noCover:nil animated:YES];
-                    else
-                        [self changeImageViewImage:self.bottomImageView toImage:image animated:YES];
-                    
-                    MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
-                    NSMutableDictionary *playingInfo = [center.nowPlayingInfo mutableCopy];
-                    if (!self.defaultCover) playingInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:image];
-                    else [playingInfo removeObjectForKey:MPMediaItemPropertyArtwork];
-                    center.nowPlayingInfo = [playingInfo copy];
-                    
-                    [self updateColorSchemeForImage:image];
-                        //                if (self.inBackground) [[UIApplication sharedApplication] _updateSnapshotForBackgroundApplication:YES];
-                });
-            }];
+            [self updateLyrycsForArtist:artist title:title];
         });
     }
 }
