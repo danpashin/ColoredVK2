@@ -111,8 +111,6 @@ NSData *AES256EncryptStringForAPI(NSString *string)
 
 void(^installerCompletionBlock)(BOOL disableTweak);
 UIAlertController *alertController;
-UIAlertAction *loginAction;
-UIAlertAction *continueAction;
 NSString *login;
 NSString *password;
 NSString *udid;
@@ -231,7 +229,7 @@ struct utsname systemInfo;
         if ([[NSBundle mainBundle].executablePath.lastPathComponent containsString:@"vkclient"]) {
             [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OPEN_PREFERENCES") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:"]];
-                [self showAlertWithText:@"Downloading licence..."];
+                [self showAlertWithText:@"Downloading licence... (-4)"];
             }]];
         } else {
             alertController.message = CVKLocalizedString(@"GETTING_UDID_ERROR");
@@ -246,11 +244,10 @@ struct utsname systemInfo;
             [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Login") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 [self performSelectorOnMainThread:@selector(actionLogin) withObject:nil waitUntilDone:NO];
             }]];
-            continueAction = [UIAlertAction actionWithTitle:CVKLocalizedString(@"CONTINUE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"CONTINUE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 udid = alertController.textFields[0].text;
                 [self beginDownload];
-            }];
-            [alertController addAction:continueAction];
+            }]];
         }
         
         [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
@@ -260,14 +257,14 @@ struct utsname systemInfo;
         [self actionLogin];
         return;
     } else {
-        [self showAlertWithText:@"Downloading licence..."];
+        [self showAlertWithText:@"Downloading licence... (-4)"];
     }
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kDRMRemoteServerURL]];
     request.HTTPMethod = @"POST";
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
     
-    NSString *package = AES256EncryptStringForAPI(@"org.thebigboss.coloredvk2").base64Encoding;
+    NSString *package = AES256EncryptStringForAPI(kDRMPackage).base64Encoding;
     NSString *encryptedUDID = AES256EncryptStringForAPI(udid).base64Encoding;
     
     NSString *parameters = [NSString stringWithFormat:@"udid=%@&package=%@&version=%@&key=%@", encryptedUDID, package, kDRMPackageVersion, key];
@@ -277,7 +274,7 @@ struct utsname systemInfo;
 
 - (void)actionLogin
 {
-    alertController = [UIAlertController alertControllerWithTitle:kDRMPackageName message:UIKitLocalizedString(@"Login") preferredStyle:UIAlertControllerStyleAlert];
+    alertController = [UIAlertController alertControllerWithTitle:kDRMPackageName message:CVKLocalizedString(@"ENTER_LOGIN_PASSWORD") preferredStyle:UIAlertControllerStyleAlert];
     [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
         textField.placeholder = UIKitLocalizedString(@"Name");
         if (login) textField.text = login;
@@ -293,8 +290,7 @@ struct utsname systemInfo;
         exit(0);
     }]];
     
-    loginAction = [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Login") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        
+    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"AUTHORISE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         login = alertController.textFields[0].text;
         password = alertController.textFields[1].text;
         
@@ -306,15 +302,21 @@ struct utsname systemInfo;
         NSString *parameters = [NSString stringWithFormat:@"login=%@&password=%@&action=login&version=%@&device=%@&key=%@", login, password, kDRMPackageVersion, device, key];
         request.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];
         download(request, YES);
-    }];
-    [alertController addAction:loginAction];
+    }]];
+    
+    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"NO_ACCOUNT") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        NSURL *url = [NSURL URLWithString:kPackageAccountRegisterLink];
+        if ([[UIApplication sharedApplication] canOpenURL:url]) [[UIApplication sharedApplication] openURL:url];
+        [self showAlertWithText:@"Downloading licence... (-4)"];
+    }]];
+    
     [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
 }
 
 static void download(NSURLRequest *request,BOOL authorise)
 {
     void (^showAlertBlock)(NSError *error) = ^(NSError *error) {
-        NSString *text = [NSString stringWithFormat:CVKLocalizedString(@"ERROR_DOWNLOADING_LICENCE"), error.localizedDescription];
+        NSString *text = error.localizedDescription;
         if (error.localizedRecoverySuggestion.length > 6) text = [NSString stringWithFormat:@"%@\n\n%@", text, error.localizedRecoverySuggestion];
         if (authorise) [[ColoredVKInstaller alloc] showAlertWithText:text];
         else            alertController.message = text;

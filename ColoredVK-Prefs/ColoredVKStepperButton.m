@@ -52,13 +52,13 @@
     self.shouldShake = YES;
     
     
-    self.decreaseButton = [UIButton new];
+    self.decreaseButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.decreaseButton setTitle:@"-" forState:UIControlStateNormal];
     self.decreaseButton.titleLabel.font = [UIFont boldSystemFontOfSize:21];
     [self.decreaseButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     [self.decreaseButton addTarget:self action:@selector(actionDecrease) forControlEvents:UIControlEventTouchUpInside];
     
-    self.increaseButton = [UIButton new];
+    self.increaseButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.increaseButton setTitle:@"+" forState:UIControlStateNormal];
     self.increaseButton.titleLabel.font = [UIFont boldSystemFontOfSize:21];
     [self.increaseButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];

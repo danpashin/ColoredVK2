@@ -8,6 +8,7 @@
 
 
 #import <UIKit/UIKit.h>
+#import "ColoredVKWindowController.h"
 
 @class ColoredVKColorPickerController;
 @protocol ColoredVKColorPickerControllerDelegate <NSObject>
@@ -20,10 +21,9 @@
 @end
 
 
-@interface ColoredVKColorPickerController : UIViewController
+@interface ColoredVKColorPickerController : ColoredVKWindowController
 
 - (instancetype)initWithIdentifier:(NSString *)identifier;
-- (void)showPicker;
 
 @property (strong, nonatomic, readonly) NSString *identifier;
 @property (nonatomic) id <ColoredVKColorPickerControllerDelegate> delegate;

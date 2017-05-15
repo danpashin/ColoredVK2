@@ -21,7 +21,7 @@
 {
     ColoredVKColorPickerController *picker = [[ColoredVKColorPickerController alloc] initWithIdentifier:specifier.identifier];
     picker.delegate = self;
-    [picker showPicker];
+    [picker show];
 }
 
 

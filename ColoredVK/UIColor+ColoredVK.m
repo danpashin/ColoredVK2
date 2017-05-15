@@ -66,7 +66,7 @@
 - (NSString *)hexStringValue
 {
     const CGFloat *components = CGColorGetComponents(self.CGColor);
-    return [NSString stringWithFormat:@"#%02X%02X%02X", (int)(components[0] * 255), (int)(components[1] * 255), (int)(components[2] * 255)];
+    return [NSString stringWithFormat:@"#%02X%02X%02X", (int)(components[0] * 255), (int)(components[1] * 255), (int)(components[2] * 255)].lowercaseString;
 }
 
 + (UIColor *)colorWithGradientStyle:(UIGradientStyle)gradientStyle withFrame:(CGRect)frame andColors:(NSArray<UIColor *> *)colors

@@ -13,21 +13,16 @@
 #import "HRBrightnessSlider.h"
 #import "HRColorInfoView.h"
 
-@interface ColoredVKColorPickerController () <UITextFieldDelegate, UIGestureRecognizerDelegate>
+@interface ColoredVKColorPickerController () <UITextFieldDelegate>
 
-@property (strong, nonatomic) UIWindow *presentationWindow;
 @property (strong, nonatomic) NSBundle *cvkBunlde;
 @property (strong, nonatomic) UIColor *customColor;
 @property (assign, nonatomic) CGFloat brightness;
 
-@property (strong, nonatomic) UIView *contentView;
 @property (strong, nonatomic) UIScrollView *hexScrollView;
-@property (strong, nonatomic) UIVisualEffectView *backgroundView;
 @property (strong, nonatomic) HRColorInfoView *infoView;
 @property (strong, nonatomic) HRBrightnessSlider *sliderView;
 @property (strong, nonatomic) HRColorMapView *colorMapView;
-
-@property (assign, nonatomic) BOOL hideStatusBar;
 
 @end
 
@@ -36,7 +31,7 @@
 
 - (instancetype)init
 {
-    @throw [NSException exceptionWithName:NSGenericException reason:@"ColoredVKColorPicker init is forbidden." userInfo:nil];
+    @throw [NSException exceptionWithName:NSGenericException reason:[NSString stringWithFormat:@"%s is forbidden.", __FUNCTION__] userInfo:nil];
     return nil;
 }
 
@@ -45,52 +40,42 @@
     self = [super init];
     if (self) {
         _identifier = identifier;
-        _hideStatusBar = NO;
-        
-        self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         
         self.customColor = [UIColor savedColorForIdentifier:self.identifier];
         [self.customColor getHue:nil saturation:nil brightness:&_brightness alpha:nil];
+        
+        self.infoView.color = self.customColor;
+        self.sliderView.color = self.customColor;
+        self.colorMapView.color = self.customColor;
     }
     return self;
-}
-
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    self.backgroundView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
-    self.backgroundView.frame = self.view.bounds;
-    self.backgroundView.tag = 10;
+    self.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
     self.backgroundView.alpha = 0;
-    [self.view addSubview:self.backgroundView];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [UIView animateWithDuration:0.7 delay:0 options:0 animations:^{
             self.backgroundView.backgroundColor = [self.customColor colorWithAlphaComponent:0.1];
             self.backgroundView.alpha = 1;
         } completion:nil];
-    });
-    
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissPicker)];
-    tap.delegate = self;
-    [self.backgroundView addGestureRecognizer:tap];
-    
-    
+    });    
     
     self.contentView = [UIView new];
     self.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
+    self.contentViewWantsShadow = YES;
     
     int widthFromEdge = IS_IPAD?20:6;
     self.contentView.frame = (CGRect){{widthFromEdge, 0}, {self.view.frame.size.width - widthFromEdge*2, self.view.frame.size.height - widthFromEdge*10}};
     self.contentView.center = self.view.center;
     self.contentView.layer.cornerRadius = 16;
     
+    
+    self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     
     UINavigationBar *topView = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, 44)];
     [topView setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
@@ -102,15 +87,13 @@
     navItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:resetImage style:UIBarButtonItemStylePlain target:self action:@selector(resetColorValue)];
     
     UIImage *closeImage = [[UIImage imageNamed:@"CloseIcon" inBundle:self.cvkBunlde compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    navItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:closeImage style:UIBarButtonItemStylePlain target:self action:@selector(dismissPicker)];
+    navItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:closeImage style:UIBarButtonItemStylePlain target:self action:@selector(hide)];
     
     topView.items = @[navItem];
     
     
-    
     self.infoView = [HRColorInfoView new];
     self.infoView.frame = CGRectMake(10, topView.frame.origin.y + topView.frame.size.height, 60, 80);
-    self.infoView.color = self.customColor;
     [self.infoView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showHexWindow)]];
     [self.contentView addSubview:self.infoView];
     
@@ -118,7 +101,6 @@
     self.sliderView.frame = CGRectMake(self.infoView.frame.origin.x + self.infoView.frame.size.width + 10, (self.infoView.frame.origin.y + self.infoView.frame.size.height)/2, 
                                        self.contentView.frame.size.width - (self.infoView.frame.origin.x + self.infoView.frame.size.width + 10), 32);
     [self.sliderView addTarget:self action:@selector(setColorBrightness:) forControlEvents:UIControlEventValueChanged];
-    self.sliderView.color = self.customColor;
     self.sliderView.brightnessLowerLimit = @0;
     [self.contentView addSubview:self.sliderView];    
     
@@ -126,21 +108,11 @@
                                    self.contentView.frame.size.height - (topView.frame.origin.y + topView.frame.size.height + 120));    
     self.colorMapView = [HRColorMapView colorMapWithFrame:pickerRect saturationUpperLimit:0.9];
     [self.colorMapView addTarget:self action:@selector(setColor:) forControlEvents:UIControlEventValueChanged];
-    self.colorMapView.color = self.customColor;
     self.colorMapView.tileSize = @1;
     self.colorMapView.brightness = 1;
     self.colorMapView.layer.masksToBounds = YES;
     self.colorMapView.layer.cornerRadius = self.contentView.layer.cornerRadius/2;
-    [self.contentView addSubview:self.colorMapView];
-    
-    
-    [self.view addSubview:self.contentView];   
-    
-    
-    
-    self.backgroundView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self.backgroundView}]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view":self.backgroundView}]];
+    [self.contentView addSubview:self.colorMapView];    
     
     self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromEdge-[contentView]-fromEdge-|" options:0 metrics:@{@"fromEdge":@(widthFromEdge*4)} views:@{@"contentView":self.contentView}]];
@@ -177,37 +149,8 @@
 
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHide) name:UIKeyboardWillHideNotification object:nil];
-    
-    
-    self.hideStatusBar = YES;
 }
 
-- (void)viewDidLayoutSubviews
-{
-    [super viewDidLayoutSubviews];
-    
-    self.contentView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.contentView.bounds cornerRadius:self.contentView.layer.cornerRadius].CGPath;
-    self.contentView.layer.shadowRadius = 4;
-    self.contentView.layer.shadowOffset = CGSizeMake(0, 3);
-    self.contentView.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.contentView.layer.rasterizationScale = [UIScreen mainScreen].scale;
-    self.contentView.layer.shouldRasterize = YES;
-    
-    CGFloat shadowOpacity = 0.1;
-    CABasicAnimation *shadowAnimation = [CABasicAnimation animationWithKeyPath:@"shadowOpacity"];
-    shadowAnimation.fromValue = @0.0;
-    shadowAnimation.toValue = @(shadowOpacity);
-    shadowAnimation.duration = 1.0;
-    [self.contentView.layer addAnimation:shadowAnimation forKey:@"shadowOpacity"];
-    self.contentView.layer.shadowOpacity = shadowOpacity;
-}
-
-- (void)setHideStatusBar:(BOOL)hideStatusBar
-{
-    _hideStatusBar = hideStatusBar;
-    
-    [self setNeedsStatusBarAppearanceUpdate];
-}
 
 - (void)updateColorsFromPicker:(BOOL)fromPicker
 {
@@ -240,18 +183,11 @@
 {
     CGRect kbRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     self.hexScrollView.contentOffset = CGPointMake(0, kbRect.size.height/2);
-
 }
+
 - (void)keyboardWillHide
 {
     self.hexScrollView.contentOffset = CGPointZero;
-}
-
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-{
-    if ([touch.view isDescendantOfView:[self.view viewWithTag:10]]) return YES;
-    return NO;
 }
 
 - (void)resetColorValue
@@ -262,40 +198,17 @@
     [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         if ([self.delegate respondsToSelector:@selector(colorPicker:didResetColorForIdentifier:)]) [self.delegate colorPicker:self didResetColorForIdentifier:self.identifier];
-        [self dismissPicker];
+        [self hide];
     }]];
     [self presentViewController:warningAlert animated:YES completion:nil];
-    
 }
 
-- (void)dismissPicker
+- (void)hide
 {
     if ([self.delegate respondsToSelector:@selector(colorPickerWillDismiss:)]) [self.delegate colorPickerWillDismiss:self];
-    
-    self.hideStatusBar = NO;
     self.backgroundView.backgroundColor = [UIColor clearColor];
     
-    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-        self.presentationWindow.alpha = 0;
-    } completion:^(BOOL finished) {
-        self.presentationWindow.hidden = YES;
-        self.presentationWindow = nil;
-    }];
-}
-
-- (void)showPicker
-{
-    self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    self.view.backgroundColor = [UIColor clearColor];
-    
-    self.presentationWindow = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-    self.presentationWindow.alpha = 0;
-    self.presentationWindow.rootViewController = self;
-    [self.presentationWindow makeKeyAndVisible];
-    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-        self.presentationWindow.alpha = 1;
-    } completion:nil];
+    [super hide];
 }
 
 
@@ -389,7 +302,6 @@
                          view.alpha = 1.0;
                          view.transform = CGAffineTransformIdentity;
                      } completion:nil];
-    
 }
 
 - (void)dismissHexView
@@ -430,19 +342,29 @@
     [UIPasteboard generalPasteboard].string = [UIColor savedColorForIdentifier:self.identifier].hexStringValue;
 }
 
+#pragma mark - UITextFieldDelegate
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
+        NSString *expression = @"(?:#)?(?:[0-9A-Fa-f]{2}){3}";
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", expression];
+        
+        if (![predicate evaluateWithObject:textField.text]) {
+            textField.layer.borderColor = [UIColor colorWithRed:0.8 green:0 blue:0 alpha:1.0].CGColor;
+        } else {
+            textField.layer.borderColor = [UIColor clearColor].CGColor;
+            
+            self.customColor = textField.text.hexColorValue;
+            [self updateColorsFromPicker:NO];
+        }
+    });
+    
+    return YES;
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    NSString *expression = @"(?:#)?(?:[0-9A-Fa-f]{2}){3}";
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", expression];
-    
-    if (![predicate evaluateWithObject:textField.text]) {
-        textField.layer.borderColor = [UIColor colorWithRed:0.8 green:0 blue:0 alpha:1.0].CGColor;
-    } else {
-        textField.layer.borderColor = [UIColor clearColor].CGColor;
-        
-        self.customColor = textField.text.hexColorValue;
-        [self updateColorsFromPicker:NO];
-    }
     [textField resignFirstResponder];
     return YES;
 }

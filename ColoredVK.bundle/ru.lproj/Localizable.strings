@@ -32,7 +32,9 @@
 "YES_I_AM_SURE" = "Да, уверен";
 
 "NEVER" = "Никогда";
-"ERROR_DOWNLOADING_LICENCE" = "Ошибка при загрузке лицензии:\n%@";
+"ENTER_LOGIN_PASSWORD" = "Введите Ваше имя пользователя и пароль от аккаунта ColoredVK 2.";
+"NO_ACCOUNT" = "Нет аккаунта?";
+"AUTHORISE" = "Авторизоваться";
 "CLOSE_APP" = "Закрыть приложение";
 
 "SET_THIS_IMAGE_TO" = "Установить это изображение в";

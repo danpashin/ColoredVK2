@@ -69,3 +69,4 @@
 #define kPackageAPIVersion @"1.2"
 #define kPackageAPIURL [NSString stringWithFormat:@"http://danpashin.ru/api/v%@", kPackageAPIVersion]
 #define kPackageDevLink @"https://vk.com/danpashin"
+#define kPackageAccountRegisterLink @"http://danpashin.ru/register"
