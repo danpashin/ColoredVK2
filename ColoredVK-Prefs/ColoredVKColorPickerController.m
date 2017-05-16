@@ -40,13 +40,6 @@
     self = [super init];
     if (self) {
         _identifier = identifier;
-        
-        self.customColor = [UIColor savedColorForIdentifier:self.identifier];
-        [self.customColor getHue:nil saturation:nil brightness:&_brightness alpha:nil];
-        
-        self.infoView.color = self.customColor;
-        self.sliderView.color = self.customColor;
-        self.colorMapView.color = self.customColor;
     }
     return self;
 }
@@ -55,15 +48,13 @@
 {
     [super viewDidLoad];
     
-    self.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
-    self.backgroundView.alpha = 0;
+    self.customColor = [UIColor savedColorForIdentifier:self.identifier];
+    [self.customColor getHue:nil saturation:nil brightness:&_brightness alpha:nil];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:0.7 delay:0 options:0 animations:^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if ([self.backgroundView isKindOfClass:[UIVisualEffectView class]])
             self.backgroundView.backgroundColor = [self.customColor colorWithAlphaComponent:0.1];
-            self.backgroundView.alpha = 1;
-        } completion:nil];
-    });    
+    });
     
     self.contentView = [UIView new];
     self.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
@@ -95,6 +86,7 @@
     self.infoView = [HRColorInfoView new];
     self.infoView.frame = CGRectMake(10, topView.frame.origin.y + topView.frame.size.height, 60, 80);
     [self.infoView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showHexWindow)]];
+    self.infoView.color = self.customColor;
     [self.contentView addSubview:self.infoView];
     
     self.sliderView = [HRBrightnessSlider new];
@@ -102,6 +94,7 @@
                                        self.contentView.frame.size.width - (self.infoView.frame.origin.x + self.infoView.frame.size.width + 10), 32);
     [self.sliderView addTarget:self action:@selector(setColorBrightness:) forControlEvents:UIControlEventValueChanged];
     self.sliderView.brightnessLowerLimit = @0;
+    self.sliderView.color = self.customColor;
     [self.contentView addSubview:self.sliderView];    
     
     CGRect pickerRect = CGRectMake(10, topView.frame.origin.y + topView.frame.size.height + self.infoView.frame.size.height + 10, self.contentView.frame.size.width-20, 
@@ -112,7 +105,8 @@
     self.colorMapView.brightness = 1;
     self.colorMapView.layer.masksToBounds = YES;
     self.colorMapView.layer.cornerRadius = self.contentView.layer.cornerRadius/2;
-    [self.contentView addSubview:self.colorMapView];    
+    self.colorMapView.color = self.customColor;
+    [self.contentView addSubview:self.colorMapView];
     
     self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromEdge-[contentView]-fromEdge-|" options:0 metrics:@{@"fromEdge":@(widthFromEdge*4)} views:@{@"contentView":self.contentView}]];
@@ -160,7 +154,9 @@
     self.infoView.color = self.customColor;
     self.sliderView.color = self.customColor;
     self.colorMapView.color = self.customColor;
-    self.backgroundView.backgroundColor = [self.customColor colorWithAlphaComponent:0.1];
+    
+    if ([self.backgroundView isKindOfClass:[UIVisualEffectView class]])
+        self.backgroundView.backgroundColor = [self.customColor colorWithAlphaComponent:0.1];
     
     if ([self.delegate respondsToSelector:@selector(colorPicker:didChangeColor:)]) [self.delegate colorPicker:self didChangeColor:self.customColor];
     

@@ -142,6 +142,18 @@
 			<key>addDisclosureIndicator</key>
 			<true/>
 		</dict>
+		<dict>
+			<key>label</key>
+			<string>LICENCE_AGREEMENT</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>action</key>
+			<string>showLicenceAgreement</string>
+			<key>icon</key>
+			<string>LicenceIcon.png</string>
+			<key>textColor</key>
+			<string>0.35, 0.5, 0.7, 1.0</string>
+		</dict>
 	</array>
 </dict>
 </plist>

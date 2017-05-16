@@ -21,6 +21,7 @@
 {
     ColoredVKColorPickerController *picker = [[ColoredVKColorPickerController alloc] initWithIdentifier:specifier.identifier];
     picker.delegate = self;
+    picker.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
     [picker show];
 }
 

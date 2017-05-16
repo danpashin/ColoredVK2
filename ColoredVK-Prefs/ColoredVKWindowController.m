@@ -7,6 +7,7 @@
 //
 
 #import "ColoredVKWindowController.h"
+#import "PrefixHeader.h"
 
 @interface ColoredVKWindowController ()
 
@@ -21,10 +22,10 @@
 {
     self = [super init];
     if (self) {
-        self.hideByTouch = YES;
-        self.statusBarNeedsHidden = YES;
-        self.animationDuration = 0.3;
-        self.backgroundStyle = ColoredVKWindowBackgroundStyleDarkened;
+        _hideByTouch = YES;
+        _statusBarNeedsHidden = YES;
+        _animationDuration = 0.3;
+        _backgroundStyle = ColoredVKWindowBackgroundStyleDarkened;
         
         
         _window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
@@ -69,44 +70,51 @@
 
 - (void)show
 {
-    self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    self.view.backgroundColor = [UIColor clearColor];
-    
-    self.window.alpha = 0;
-    [self.window makeKeyAndVisible];
-    [UIView animateWithDuration:self.animationDuration delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-        self.window.alpha = 1;
-    } completion:^(BOOL finished) {
-        self.isPresented = YES;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+        self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+        self.view.backgroundColor = [UIColor clearColor];
         
-        [UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-            [self setNeedsStatusBarAppearanceUpdate];
-        } completion:nil];
-    }];
+        self.window.alpha = 0;
+        [self.window makeKeyAndVisible];
+        [UIView animateWithDuration:self.animationDuration delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            self.window.alpha = 1;
+        } completion:^(BOOL finished) {
+            self.isPresented = YES;
+            
+            [UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                [self setNeedsStatusBarAppearanceUpdate];
+            } completion:nil];
+        }];
+    });
 }
 
 - (void)hide
 {
-    [UIView animateWithDuration:self.animationDuration delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-        self.window.alpha = 0;
-    } completion:^(BOOL finished) {
-        self.isPresented = NO;
-        
-        [UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-            [self setNeedsStatusBarAppearanceUpdate];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIView animateWithDuration:self.animationDuration delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            self.window.alpha = 0;
         } completion:^(BOOL finished) {
-            self.window.hidden = YES;
-            _window = nil;
+            self.isPresented = NO;
+            
+            [UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                [self setNeedsStatusBarAppearanceUpdate];
+            } completion:^(BOOL finished) {
+                self.window.hidden = YES;
+                _window = nil;
+            }];
         }];
-    }];
+    });
 }
 
 
 - (void)setBackgroundStyle:(ColoredVKWindowBackgroundStyle)backgroundStyle
 {
-    _backgroundStyle = backgroundStyle;
-    
+    if ( UIAccessibilityIsReduceTransparencyEnabled() && (backgroundStyle == ColoredVKWindowBackgroundStyleBlurred))
+        _backgroundStyle = ColoredVKWindowBackgroundStyleDarkened;
+    else
+        _backgroundStyle = backgroundStyle;
+
     self.backgroundView = [UIView new];
 }
 

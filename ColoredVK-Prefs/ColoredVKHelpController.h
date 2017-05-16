@@ -7,14 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ColoredVKWindowController.h"
 
-@interface ColoredVKHelpController : UIViewController <UIViewControllerTransitioningDelegate, UIViewControllerAnimatedTransitioning>
+@interface ColoredVKHelpController : ColoredVKWindowController
 
-+ (ColoredVKHelpController *)helpController;
 @property (strong, nonatomic) NSString *username;
+@property (strong, nonatomic) NSNumber *userID;
 
-@property (strong, nonatomic) IBOutlet UILabel *nameLabel;
-@property (strong, nonatomic) IBOutlet UILabel *thanksLabel;
-@property (strong, nonatomic) IBOutlet UITextView *messageTextView;
+@property (strong, nonatomic) UILabel *nameLabel;
+@property (strong, nonatomic) UILabel *thanksLabel;
+@property (strong, nonatomic) UITextView *messageTextView;
+@property (strong, nonatomic) UIButton *agreeButton;
+
+@property (assign, nonatomic) BOOL showInFirstTime;
 
 @end

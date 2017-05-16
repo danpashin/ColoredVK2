@@ -96,6 +96,7 @@
 "UPDATES_SETTINGS" = "Налаштування оновлення";
 "LICENCES" = "Ліцензії";
 "USED_LIBRARIES" = "Використовувані бібліотеки";
+"LICENCE_AGREEMENT" = "Ліцензійна угода";
 
 "CHANGE_PASSWORD" = "Змінити пароль";
 "CACHE_SIZE" = "Зараз кеш займає";

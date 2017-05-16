@@ -123,7 +123,6 @@
 		A5453A9C1EC8F65800092ACF /* ColoredVKHelpController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5453A991EC8F65800092ACF /* ColoredVKHelpController.h */; };
 		A5453A9D1EC8F65800092ACF /* ColoredVKHelpController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5453A9A1EC8F65800092ACF /* ColoredVKHelpController.m */; };
 		A5453A9F1EC8F6CA00092ACF /* ColoredVKHelpController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5453A9A1EC8F65800092ACF /* ColoredVKHelpController.m */; };
-		A5453AA01EC8F6DC00092ACF /* ColoredVKHelpController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5453A9A1EC8F65800092ACF /* ColoredVKHelpController.m */; };
 		A5453AA11EC8F6E700092ACF /* ColoredVKHelpController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5453A9A1EC8F65800092ACF /* ColoredVKHelpController.m */; };
 		A54E41F51EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */ = {isa = PBXBuildFile; fileRef = A54E41F31EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h */; };
 		A54E41F61EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */ = {isa = PBXBuildFile; fileRef = A54E41F31EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h */; };
@@ -502,7 +501,6 @@
 		A5DA87DE1D944EAC00763B5F /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5DA87DD1D944EAC00763B5F /* ImageIO.framework */; };
 		A5DA87DF1D944EB700763B5F /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5DA87DD1D944EAC00763B5F /* ImageIO.framework */; };
 		A5DA87E21D944ED400763B5F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5DA87E01D944ECE00763B5F /* CoreGraphics.framework */; };
-		A5E087471EC98DA400E0A353 /* ColoredVK2.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5E087461EC98DA400E0A353 /* ColoredVK2.storyboard */; };
 		A5EB1CCA1D85418500C97A91 /* libMobileGestaltExtensions.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A5EB1CC91D85418500C97A91 /* libMobileGestaltExtensions.tbd */; };
 		A5ED144F1DE873BE00138A65 /* LEColorPicker.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ED144B1DE873BE00138A65 /* LEColorPicker.h */; };
 		A5ED14501DE873BE00138A65 /* LEColorPicker.h in Headers */ = {isa = PBXBuildFile; fileRef = A5ED144B1DE873BE00138A65 /* LEColorPicker.h */; };
@@ -715,7 +713,6 @@
 		A5DA87C51D944E1000763B5F /* LHProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LHProgressHUD.m; sourceTree = "<group>"; };
 		A5DA87DD1D944EAC00763B5F /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		A5DA87E01D944ECE00763B5F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		A5E087461EC98DA400E0A353 /* ColoredVK2.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ColoredVK2.storyboard; sourceTree = "<group>"; };
 		A5EB1CC91D85418500C97A91 /* libMobileGestaltExtensions.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libMobileGestaltExtensions.tbd; path = usr/lib/libMobileGestaltExtensions.tbd; sourceTree = SDKROOT; };
 		A5ED144B1DE873BE00138A65 /* LEColorPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEColorPicker.h; sourceTree = "<group>"; };
 		A5ED144C1DE873BE00138A65 /* LEColorPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEColorPicker.m; sourceTree = "<group>"; };
@@ -980,9 +977,6 @@
 		A56147B41EA00F1B00B3D8C8 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				A5E087461EC98DA400E0A353 /* ColoredVK2.storyboard */,
-				A5453A991EC8F65800092ACF /* ColoredVKHelpController.h */,
-				A5453A9A1EC8F65800092ACF /* ColoredVKHelpController.m */,
 				A56147BD1EA0157400B3D8C8 /* ColoredVKPrefs.h */,
 				A56147BE1EA0157400B3D8C8 /* ColoredVKPrefs.m */,
 				A599A82C1EA140F600D747D7 /* ColoredVKGeneralPrefs.h */,
@@ -1005,6 +999,8 @@
 				A5739D5C1EA015A900367595 /* ColoredVKLicencesController.m */,
 				A5B1E29C1E509246001B8442 /* ColoredVKSettingsController.h */,
 				A5B1E29D1E509246001B8442 /* ColoredVKSettingsController.m */,
+				A5453A991EC8F65800092ACF /* ColoredVKHelpController.h */,
+				A5453A9A1EC8F65800092ACF /* ColoredVKHelpController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -1567,7 +1563,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A5E087471EC98DA400E0A353 /* ColoredVK2.storyboard in Resources */,
 				A5D56ACF1E7043EF00A8FFB5 /* Launch Screen.storyboard in Resources */,
 				A5D56AC31E70427300A8FFB5 /* Images.xcassets in Resources */,
 				A5B124E71EA38B1600FAEE76 /* ColoredVKPasswordCell.xib in Resources */,
@@ -1621,7 +1616,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A5453AA01EC8F6DC00092ACF /* ColoredVKHelpController.m in Sources */,
 				A57B184D1E24F3E500A2A622 /* NSData+AESCrypt.m in Sources */,
 				A5ED14511DE873BE00138A65 /* LEColorPicker.m in Sources */,
 				A5210C951DE785C1004F7E11 /* LHAcvitityIndicator.m in Sources */,
@@ -1911,7 +1905,7 @@
 		A5D56AD61E70442900A8FFB5 /* Debug_APP */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.3.2-beta-1";
+				APP_VERSION = 3.3.2;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -2009,7 +2003,7 @@
 		A5D979A51DAEBAD300607F06 /* Release_DEB */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.3.2-beta-1";
+				APP_VERSION = 3.3.2;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -2075,7 +2069,7 @@
 		A5D979A81DAEBAD900607F06 /* Release_IPA */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.3.2-beta-1";
+				APP_VERSION = 3.3.2;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;

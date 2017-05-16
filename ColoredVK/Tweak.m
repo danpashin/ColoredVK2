@@ -24,6 +24,7 @@
 #import "ColoredVKHelpController.h"
 
 
+BOOL userAgreeWithCopyrights;
 
 NSTimeInterval updatesInterval;
 
@@ -138,7 +139,7 @@ BOOL friendsUseBlur;
 BOOL videosUseBlur;
 
 
-NSString *userToken;
+NSNumber *userID;
 
 CVKCellSelectionStyle menuSelectionStyle;
 UIKeyboardAppearance keyboardStyle;
@@ -323,7 +324,7 @@ void reloadPrefs()
         friendsBlurTone =           [[UIColor savedColorForIdentifier:@"friendsBlurTone"            fromPrefs:prefs] colorWithAlphaComponent:0.3];
         videosBlurTone =            [[UIColor savedColorForIdentifier:@"videosBlurTone"             fromPrefs:prefs] colorWithAlphaComponent:0.3];
         
-        
+        userAgreeWithCopyrights = [prefs[@"userAgreeWithCopyrights"] boolValue];
         
         if (cvkMainController.navBarImageView) [cvkMainController.navBarImageView updateViewForKey:@"navbarImageBlackout"];
     }
@@ -759,12 +760,15 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
             tweakEnabled = YES;
             reloadPrefs();
             
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                UIViewController *mainController = [UIApplication sharedApplication].keyWindow.rootViewController;
-//                
-////                ColoredVKHelpController *helpController = [ColoredVKHelpController helpController];
-////                [mainController presentViewController:helpController animated:YES completion:nil];
-//            });
+            if (!userAgreeWithCopyrights && (NSClassFromString(@"ColoredVKHelpController") != nil)) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    ColoredVKHelpController *helpController = [NSClassFromString(@"ColoredVKHelpController") new];
+                    helpController.userID = userID;
+                    helpController.showInFirstTime = YES;
+                    helpController.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
+                    [helpController show];
+                });
+            }
         }
     };
     
@@ -1918,6 +1922,16 @@ CHOptimizedMethod(0, self, BOOL, VKProfile, verified)
 }
 
 
+#pragma mark VKSession
+CHDeclareClass(VKSession);
+CHOptimizedMethod(0, self, NSNumber*, VKSession, userId)
+{
+    NSNumber *userId = CHSuper(0, VKSession, userId);
+    userID = userId;
+    return userId;
+}
+
+
 
 #pragma mark VKMLiveSearchController
 CHDeclareClass(VKMLiveSearchController);
@@ -2410,6 +2424,10 @@ CHConstructor
             
             CHLoadLateClass(VKProfile);
             CHHook(0, VKProfile, verified);
+            
+            
+            CHLoadLateClass(VKSession);
+            CHHook(0, VKSession, userId);
             
             
             

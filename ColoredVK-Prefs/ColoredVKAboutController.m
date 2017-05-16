@@ -10,6 +10,7 @@
 #import "ColoredVKHUD.h"
 #import "NSDate+DateTools.h"
 #import "ColoredVKLicencesController.h"
+#import "ColoredVKHelpController.h"
 
 @implementation ColoredVKAboutController
 
@@ -89,6 +90,13 @@
 {
     ColoredVKLicencesController *controller = [ColoredVKLicencesController new];
     [self.navigationController pushViewController:controller animated:YES];
+}
+
+- (void)showLicenceAgreement
+{
+    ColoredVKHelpController *helpController = [ColoredVKHelpController new];
+    helpController.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
+    [helpController show];
 }
 @end
 
