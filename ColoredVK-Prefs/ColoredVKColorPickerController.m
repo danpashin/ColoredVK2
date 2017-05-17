@@ -40,6 +40,14 @@
     self = [super init];
     if (self) {
         _identifier = identifier;
+        
+        
+        self.customColor = [UIColor savedColorForIdentifier:self.identifier];
+        [self.customColor getHue:nil saturation:nil brightness:&_brightness alpha:nil];
+        
+        self.sliderView.color = self.customColor;
+        self.infoView.color = self.customColor;
+        self.colorMapView.color = self.customColor;
     }
     return self;
 }
@@ -48,82 +56,53 @@
 {
     [super viewDidLoad];
     
-    self.customColor = [UIColor savedColorForIdentifier:self.identifier];
-    [self.customColor getHue:nil saturation:nil brightness:&_brightness alpha:nil];
+    self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if ([self.backgroundView isKindOfClass:[UIVisualEffectView class]])
             self.backgroundView.backgroundColor = [self.customColor colorWithAlphaComponent:0.1];
     });
     
-    self.contentView = [UIView new];
-    self.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
-    self.contentViewWantsShadow = YES;
+    [self setupDefaultContentView];
     
-    int widthFromEdge = IS_IPAD?20:6;
-    self.contentView.frame = (CGRect){{widthFromEdge, 0}, {self.view.frame.size.width - widthFromEdge*2, self.view.frame.size.height - widthFromEdge*10}};
-    self.contentView.center = self.view.center;
-    self.contentView.layer.cornerRadius = 16;
+    UINavigationBar *navBar = self.contentViewNavigationBar;
+    [self.contentView addSubview:navBar];
     
-    
-    self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    
-    UINavigationBar *topView = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, 44)];
-    [topView setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-    topView.shadowImage = [UIImage new];
-    [self.contentView addSubview:topView];
-    
-    UINavigationItem *navItem = [[UINavigationItem alloc] init];
+    UINavigationItem *navItem = navBar.items.firstObject;
     UIImage *resetImage = [[UIImage imageNamed:@"ResetIcon" inBundle:self.cvkBunlde compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     navItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:resetImage style:UIBarButtonItemStylePlain target:self action:@selector(resetColorValue)];
     
-    UIImage *closeImage = [[UIImage imageNamed:@"CloseIcon" inBundle:self.cvkBunlde compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    navItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:closeImage style:UIBarButtonItemStylePlain target:self action:@selector(hide)];
-    
-    topView.items = @[navItem];
-    
-    
     self.infoView = [HRColorInfoView new];
-    self.infoView.frame = CGRectMake(10, topView.frame.origin.y + topView.frame.size.height, 60, 80);
+    self.infoView.frame = CGRectMake(10, CGRectGetMinY(navBar.frame) + CGRectGetHeight(navBar.frame), 60, 80);
     [self.infoView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showHexWindow)]];
-    self.infoView.color = self.customColor;
     [self.contentView addSubview:self.infoView];
     
     self.sliderView = [HRBrightnessSlider new];
-    self.sliderView.frame = CGRectMake(self.infoView.frame.origin.x + self.infoView.frame.size.width + 10, (self.infoView.frame.origin.y + self.infoView.frame.size.height)/2, 
-                                       self.contentView.frame.size.width - (self.infoView.frame.origin.x + self.infoView.frame.size.width + 10), 32);
+    self.sliderView.frame = CGRectMake(CGRectGetMinX(self.infoView.frame) + CGRectGetWidth(self.infoView.frame) + 10, (CGRectGetMinY(self.infoView.frame) + CGRectGetHeight(self.infoView.frame))/2, 
+                                       CGRectGetWidth(self.contentView.frame) - (CGRectGetMinX(self.infoView.frame) + CGRectGetWidth(self.infoView.frame) + 10), 32);
     [self.sliderView addTarget:self action:@selector(setColorBrightness:) forControlEvents:UIControlEventValueChanged];
     self.sliderView.brightnessLowerLimit = @0;
-    self.sliderView.color = self.customColor;
     [self.contentView addSubview:self.sliderView];    
     
-    CGRect pickerRect = CGRectMake(10, topView.frame.origin.y + topView.frame.size.height + self.infoView.frame.size.height + 10, self.contentView.frame.size.width-20, 
-                                   self.contentView.frame.size.height - (topView.frame.origin.y + topView.frame.size.height + 120));    
+    CGRect pickerRect = CGRectMake(10, CGRectGetMinY(navBar.frame) + CGRectGetHeight(navBar.frame) + CGRectGetHeight(self.infoView.frame) + 10, CGRectGetWidth(self.contentView.frame)-20, 
+                                   CGRectGetHeight(self.contentView.frame) - (CGRectGetMinY(navBar.frame) + CGRectGetHeight(navBar.frame) + 120));    
     self.colorMapView = [HRColorMapView colorMapWithFrame:pickerRect saturationUpperLimit:0.9];
     [self.colorMapView addTarget:self action:@selector(setColor:) forControlEvents:UIControlEventValueChanged];
     self.colorMapView.tileSize = @1;
     self.colorMapView.brightness = 1;
     self.colorMapView.layer.masksToBounds = YES;
     self.colorMapView.layer.cornerRadius = self.contentView.layer.cornerRadius/2;
-    self.colorMapView.color = self.customColor;
     [self.contentView addSubview:self.colorMapView];
     
-    self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromEdge-[contentView]-fromEdge-|" options:0 metrics:@{@"fromEdge":@(widthFromEdge*4)} views:@{@"contentView":self.contentView}]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-fromEdge-[contentView]-fromEdge-|" options:0 metrics:@{@"fromEdge":IS_IPAD?@(widthFromEdge*3):@(widthFromEdge)}
-                                                                        views:@{@"contentView":self.contentView}]];
-    
-    topView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topView(height)]" options:0 metrics:@{@"height":@44} views:@{@"topView":topView}]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[topView]|" options:0 metrics:nil views:@{@"topView":topView}]];
-    
+    navBar.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[navBar(height)]" options:0 metrics:@{@"height":@44} views:@{@"navBar":navBar}]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[navBar]|" options:0 metrics:nil views:@{@"navBar":navBar}]];
     
     self.infoView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromTop-[infoView(height)]" options:0 
-                                                                          metrics:@{@"height":@(self.infoView.frame.size.height), @"fromTop":@(topView.frame.origin.y + topView.frame.size.height)} 
+                                                                          metrics:@{@"height":@(self.infoView.frame.size.height), @"fromTop":@(CGRectGetMinY(navBar.frame) + CGRectGetHeight(navBar.frame))} 
                                                                             views:@{@"infoView":self.infoView}]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[infoView(width)]" options:0 metrics:@{@"width" : @(self.infoView.frame.size.width)} views:@{@"infoView":self.infoView}]];
-    
     
     self.sliderView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromTop-[sliderView(16)]" options:0
@@ -140,7 +119,6 @@
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[colorMapView]-|" options:0 metrics:nil views:@{@"colorMapView":self.colorMapView}]];
     
     
-
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHide) name:UIKeyboardWillHideNotification object:nil];
 }

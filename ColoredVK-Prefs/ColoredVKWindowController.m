@@ -22,10 +22,10 @@
 {
     self = [super init];
     if (self) {
-        _hideByTouch = YES;
-        _statusBarNeedsHidden = YES;
-        _animationDuration = 0.3;
-        _backgroundStyle = ColoredVKWindowBackgroundStyleDarkened;
+        self.hideByTouch = YES;
+        self.statusBarNeedsHidden = YES;
+        self.animationDuration = 0.3;
+        self.backgroundStyle = ColoredVKWindowBackgroundStyleDarkened;
         
         
         _window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
@@ -130,6 +130,9 @@
     }
     
     self.backgroundView.frame = self.view.bounds;
+    self.backgroundView.tag = 2;
+    if (self.view.subviews.count > 0 && (self.view.subviews[0].tag == 2)) [self.view.subviews[0] removeFromSuperview];
+    
     [self.view insertSubview:self.backgroundView atIndex:0];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
@@ -145,6 +148,9 @@
 {
     _contentView = contentView;
     
+    self.contentView.tag = 3;
+    if (self.view.subviews.count > 1 && (self.view.subviews[1].tag != 3)) [self.view.subviews[1] removeFromSuperview];
+    
     [self.view insertSubview:self.contentView atIndex:1];
 }
 
@@ -152,6 +158,39 @@
 {    
     if ([touch.view isDescendantOfView:self.backgroundView] && self.hideByTouch) return YES;
     return NO;
+}
+
+- (void)setupDefaultContentView
+{
+    self.contentView = [UIView new];
+    self.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
+    self.contentViewWantsShadow = YES;
+    
+    int widthFromEdge = IS_IPAD?20:6;
+    self.contentView.frame = (CGRect){{widthFromEdge, 0}, {self.view.frame.size.width - widthFromEdge*2, self.view.frame.size.height - widthFromEdge*10}};
+    self.contentView.center = self.view.center;
+    self.contentView.layer.cornerRadius = 16;
+    
+    self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromEdge-[contentView]-fromEdge-|" options:0 metrics:@{@"fromEdge":@(widthFromEdge*4)} views:@{@"contentView":self.contentView}]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-fromEdge-[contentView]-fromEdge-|" options:0 metrics:@{@"fromEdge":IS_IPAD?@(widthFromEdge*3):@(widthFromEdge)}
+                                                                        views:@{@"contentView":self.contentView}]];
+}
+
+- (UINavigationBar *)contentViewNavigationBar
+{
+    UINavigationBar *navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, 44)];
+    [navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    navigationBar.shadowImage = [UIImage new];
+    
+    UINavigationItem *navItem = [[UINavigationItem alloc] init];    
+    UIImage *closeImage = [UIImage imageNamed:@"CloseIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
+    closeImage = [closeImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    navItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:closeImage style:UIBarButtonItemStylePlain target:self action:@selector(hide)];
+    
+    navigationBar.items = @[navItem];
+    
+    return navigationBar;
 }
 
 @end

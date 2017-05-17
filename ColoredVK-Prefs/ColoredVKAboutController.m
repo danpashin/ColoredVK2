@@ -70,26 +70,19 @@
 
 - (void)openDeveloperProfile
 {
-    [self openProfieForUsername:kPackageDevName];
+    [self openURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://vk.com/%@", kPackageDevName]]];
 }
 
 - (void)openTesterProfile:(PSSpecifier *)specifier
 {
-    [self openProfieForUsername:specifier.properties[@"url"]];
-}
-
-- (void)openProfieForUsername:(NSString *)username
-{
-    NSURL *appURL = [NSURL URLWithString:[NSString stringWithFormat:@"vk://%@", username]];
-    UIApplication *application = [UIApplication sharedApplication];
-    if ([application canOpenURL:appURL]) [self openURL:appURL];
-    else [self openURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://vk.com/%@", username]]];
+    [self openURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://vk.com/%@", specifier.properties[@"url"]]]];
 }
 
 - (void)showUsedLibraries
 {
     ColoredVKLicencesController *controller = [ColoredVKLicencesController new];
-    [self.navigationController pushViewController:controller animated:YES];
+    controller.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
+    [controller show];
 }
 
 - (void)showLicenceAgreement

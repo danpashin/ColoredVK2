@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ColoredVKWindowController.h"
 
-@interface ColoredVKLicencesController : UIViewController
+@interface ColoredVKLicencesController : ColoredVKWindowController
+
 @end

@@ -19,6 +19,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKWindowBackgroundStyle) {
 @property (strong, nonatomic) UIView *backgroundView;
 @property (strong, nonatomic) UIView *contentView;
 @property (strong, nonatomic, readonly) UIWindow *window;
+@property (strong, nonatomic, readonly) UINavigationBar *contentViewNavigationBar;
 
 @property (assign, nonatomic) ColoredVKWindowBackgroundStyle backgroundStyle;
 @property (assign, nonatomic) BOOL hideByTouch;
@@ -30,5 +31,6 @@ typedef NS_ENUM(NSUInteger, ColoredVKWindowBackgroundStyle) {
 - (void)hide;
 - (void)show;
 
+- (void)setupDefaultContentView;
 
 @end

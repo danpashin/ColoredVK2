@@ -138,9 +138,7 @@
 			<key>icon</key>
 			<string>CopyrightIcon.png</string>
 			<key>textColor</key>
-			<string>0,0,0,1</string>
-			<key>addDisclosureIndicator</key>
-			<true/>
+			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
 		<dict>
 			<key>label</key>

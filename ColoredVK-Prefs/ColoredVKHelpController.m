@@ -15,15 +15,8 @@
 {
     [super viewDidLoad];
     
-    self.contentView = [UIView new];
-    self.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
-    self.contentViewWantsShadow = YES;
-    
-    int widthFromEdge = IS_IPAD?20:6;
-    self.contentView.frame = (CGRect){{widthFromEdge, 0}, {self.view.frame.size.width - widthFromEdge*2, self.view.frame.size.height - widthFromEdge*10}};
-    self.contentView.center = self.view.center;
-    self.contentView.layer.cornerRadius = 16;
-    
+    [self setupDefaultContentView];
+    self.contentView.backgroundColor = [UIColor whiteColor];
     
     CGFloat contentViewWidth = CGRectGetWidth(self.contentView.frame);
     
@@ -52,12 +45,6 @@
     [self.agreeButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
     [self.agreeButton addTarget:self action:@selector(actionAgree) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.agreeButton];
-    
-    
-    self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromEdge-[contentView]-fromEdge-|" options:0 metrics:@{@"fromEdge":@(widthFromEdge*4)} views:@{@"contentView":self.contentView}]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-fromEdge-[contentView]-fromEdge-|" options:0 metrics:@{@"fromEdge":IS_IPAD?@(widthFromEdge*3):@(widthFromEdge)}
-                                                                        views:@{@"contentView":self.contentView}]];
     
     self.nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[view]-|" options:0 metrics:nil views:@{@"view":self.nameLabel}]];

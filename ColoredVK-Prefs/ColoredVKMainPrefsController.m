@@ -44,12 +44,18 @@
     self.prefsTableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.prefsTableView];
     self.navigationItem.title = @"";
     
-    NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:self.prefsPath];
-    
-    if (![prefs[@"userAgreeWithCopyrights"] boolValue]) {
-        ColoredVKHelpController *helpController = [ColoredVKHelpController new];
-        helpController.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
-        [helpController show];
+    if (![[NSBundle mainBundle].executablePath.lastPathComponent isEqualToString:@"vkclient"]) {
+        installerCompletionBlock = ^(BOOL disableTweak) {
+            if (!disableTweak) {
+                NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:self.prefsPath];
+                
+                if (![prefs[@"userAgreeWithCopyrights"] boolValue]) {
+                    ColoredVKHelpController *helpController = [ColoredVKHelpController new];
+                    helpController.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
+                    [helpController show];
+                }
+            }
+        };
     }
 }
 @end
