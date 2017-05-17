@@ -12,12 +12,6 @@
 
 @implementation ColoredVKLicencesController
 
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-    if ([[NSBundle mainBundle].executablePath.lastPathComponent isEqualToString:@"vkclient"]) return UIStatusBarStyleLightContent;
-    else return UIStatusBarStyleDefault;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
