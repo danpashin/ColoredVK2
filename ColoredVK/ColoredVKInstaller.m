@@ -175,6 +175,7 @@ struct utsname systemInfo;
     NSFileManager *fileManager = [NSFileManager defaultManager];
 #ifdef COMPILE_FOR_JAIL
     if ([fileManager fileExistsAtPath:CVK_CACHE_PATH_OLD]) [fileManager removeItemAtPath:CVK_CACHE_PATH_OLD error:nil];
+    if ([fileManager fileExistsAtPath:CVK_CACHE_PATH_OLD1]) [fileManager removeItemAtPath:CVK_CACHE_PATH_OLD1 error:nil];
 #endif
     if (![fileManager fileExistsAtPath:CVK_FOLDER_PATH])  [fileManager createDirectoryAtPath:CVK_FOLDER_PATH withIntermediateDirectories:NO attributes:nil error:nil];
     NSString *cacheMainFolder = [CVK_CACHE_PATH stringByDeletingLastPathComponent];

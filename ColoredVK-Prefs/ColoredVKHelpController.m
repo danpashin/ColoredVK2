@@ -17,6 +17,7 @@
     
     [self setupDefaultContentView];
     self.contentView.backgroundColor = [UIColor whiteColor];
+    self.backgroundView.backgroundColor = [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:0.2];
     
     CGFloat contentViewWidth = CGRectGetWidth(self.contentView.frame);
     
@@ -36,6 +37,7 @@
     self.messageTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, CGRectGetMinY(self.thanksLabel.frame) + CGRectGetHeight(self.thanksLabel.frame), contentViewWidth, CGRectGetHeight(self.contentView.frame) - (32 * 3))];
     self.messageTextView.text = CVKLocalizedString(@"RIGTHS_AGREEMENT");
     self.messageTextView.backgroundColor = [UIColor clearColor];
+    self.messageTextView.editable = NO;
     [self.contentView addSubview:self.messageTextView];
     
     self.agreeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, CGRectGetMinY(self.messageTextView.frame) + CGRectGetHeight(self.messageTextView.frame),  contentViewWidth, 32)];

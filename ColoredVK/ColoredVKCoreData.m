@@ -17,12 +17,14 @@
 
 @implementation ColoredVKCoreData
 
-#pragma mark - Core Data stack
 - (instancetype)init
 {
     self = [super init];
     if (self) {
         _cachePath = [NSURL fileURLWithPath:CVK_CACHE_PATH];
+        
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if (![fileManager fileExistsAtPath:CVK_CACHE_PATH])  [fileManager createDirectoryAtPath:CVK_CACHE_PATH withIntermediateDirectories:NO attributes:nil error:nil];
         
         NSURL *modelURL = [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] URLForResource:@"ColoredVK2" withExtension:@"mom"];
         NSManagedObjectModel *managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
@@ -35,13 +37,12 @@
             [self showWarningAlert:error.userInfo];
         }
         
-        _managedContext = [[NSManagedObjectContext alloc] init];
+        _managedContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         _managedContext.persistentStoreCoordinator = self.coordinator;
     }
     return self;
 }
 
-#pragma mark - Core Data Saving support
 - (void)saveContext
 {
     NSError *error = nil;
@@ -53,10 +54,12 @@
 
 - (void)showWarningAlert:(NSDictionary *)dict
 {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:kPackageName
-                                                                             message:[NSString stringWithFormat:@"Unresolved error:\n\n%@", dict] preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { abort(); }]];
-    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:kPackageName
+                                                                                 message:[NSString stringWithFormat:@"Unresolved error:\n\n%@", dict] preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { /*abort();*/ }]];
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+    });
 }
 
 @end

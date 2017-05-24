@@ -52,6 +52,7 @@
                 if (![prefs[@"userAgreeWithCopyrights"] boolValue]) {
                     ColoredVKHelpController *helpController = [ColoredVKHelpController new];
                     helpController.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
+                    helpController.hideByTouch = NO;
                     [helpController show];
                 }
             }

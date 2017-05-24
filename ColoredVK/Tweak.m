@@ -766,6 +766,7 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
                     helpController.userID = userID;
                     helpController.showInFirstTime = YES;
                     helpController.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
+                    helpController.hideByTouch = NO;
                     [helpController show];
                 });
             }

@@ -17,16 +17,18 @@
     [super viewDidLoad];
     
     [self setupDefaultContentView];
+    self.contentView.backgroundColor = [UIColor whiteColor];
+    
     UINavigationBar *navBar = self.contentViewNavigationBar;
+    [self.contentView addSubview:navBar];
     
     NSString *path = [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] pathForResource:@"Libraries" ofType:@"txt" inDirectory:@"plists"];
+    NSString *text = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
     
     UITextView *textView = [[UITextView alloc] initWithFrame:self.contentView.bounds];
     textView.backgroundColor = [UIColor clearColor];
-    textView.userInteractionEnabled = YES;
-    textView.scrollEnabled = YES;
     textView.editable = NO;
-    textView.text = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+    textView.text = text;
     [self.contentView addSubview:textView];
     
     textView.translatesAutoresizingMaskIntoConstraints = NO;

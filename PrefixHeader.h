@@ -19,7 +19,8 @@
 #define VKS_BUNDLE_PATH     @"/Library/PreferenceBundles/vksprefs.bundle"
 #define CVK_PREFS_PATH      @"/var/mobile/Library/Preferences/com.daniilpashin.coloredvk2.plist"
 #define CVK_FOLDER_PATH     @"/var/mobile/Library/Preferences/ColoredVK2"
-#define CVK_CACHE_PATH      @"/var/mobile/Library/Caches/com.daniilpashin.coloredvk2/"
+#define CVK_CACHE_PATH      [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/ColoredVK2"]
+#define CVK_CACHE_PATH_OLD1 @"/var/mobile/Library/Caches/com.daniilpashin.coloredvk2/"
 #define CVK_CACHE_PATH_OLD  @"/var/mobile/Library/Preferences/ColoredVK2/Cache"
 #define CVK_BACKUP_PATH     @"/var/mobile/Documents/ColoredVK2_Backups/"
 
@@ -65,7 +66,7 @@
 
 #define kPackageIdentifier @"com.daniilpashin.coloredvk2"
 #define kPackageName @"ColoredVK 2"
-#define kPackageVersion @"3.3.2"
+#define kPackageVersion @"3.3.2.1"
 #define kPackageAPIVersion @"1.2"
 #define kPackageAPIURL [NSString stringWithFormat:@"http://danpashin.ru/api/v%@", kPackageAPIVersion]
 #define kPackageDevName @"danpashin"

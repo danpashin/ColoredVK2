@@ -52,19 +52,12 @@
     
     if (self.contentViewWantsShadow) {
         self.contentView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.contentView.bounds cornerRadius:self.contentView.layer.cornerRadius].CGPath;
-        self.contentView.layer.shadowRadius = 4;
+        self.contentView.layer.shadowRadius = 4.0f;
+        self.contentView.layer.shadowOpacity = 0.1f;
         self.contentView.layer.shadowOffset = CGSizeMake(0, 3);
         self.contentView.layer.shadowColor = [UIColor blackColor].CGColor;
         self.contentView.layer.rasterizationScale = [UIScreen mainScreen].scale;
         self.contentView.layer.shouldRasterize = YES;
-        
-        CGFloat shadowOpacity = 0.1;
-        CABasicAnimation *shadowAnimation = [CABasicAnimation animationWithKeyPath:@"shadowOpacity"];
-        shadowAnimation.fromValue = @0.0;
-        shadowAnimation.toValue = @(shadowOpacity);
-        shadowAnimation.duration = 1.0;
-        [self.contentView.layer addAnimation:shadowAnimation forKey:@"shadowOpacity"];
-        self.contentView.layer.shadowOpacity = shadowOpacity;
     }
 }
 
