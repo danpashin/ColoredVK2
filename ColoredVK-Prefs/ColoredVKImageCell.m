@@ -122,9 +122,9 @@
             UIImage *image = [UIImage imageWithContentsOfFile:[self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]]];
             UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[image] applicationActivities:nil];
             if (IS_IPAD) {
-                alertController.popoverPresentationController.permittedArrowDirections = 0;
-                alertController.popoverPresentationController.sourceView = viewControllerToShowIn.view;
-                alertController.popoverPresentationController.sourceRect = viewControllerToShowIn.view.bounds;
+                activityVC.popoverPresentationController.permittedArrowDirections = 0;
+                activityVC.popoverPresentationController.sourceView = viewControllerToShowIn.view;
+                activityVC.popoverPresentationController.sourceRect = viewControllerToShowIn.view.bounds;
             }
             [viewControllerToShowIn presentViewController:activityVC animated:YES completion:nil];
         }]];

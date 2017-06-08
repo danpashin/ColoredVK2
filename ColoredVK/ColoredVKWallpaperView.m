@@ -56,7 +56,7 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
         self.parallaxEnabled = parallaxEffect;
         
         [self updateView];
-        [self setupConstraints];
+//        [self setupConstraints];
     }
     
     return self;

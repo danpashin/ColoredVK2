@@ -408,9 +408,6 @@
 
 
 @interface AudioAudiosBlockTableCell : VKMCell
-//@property(retain, nonatomic) AudioPlayer *player;
-//@property(retain, nonatomic) AudioOverlayButton *playPauseButton;
-//@property(retain, nonatomic) VKMImageView *coverView;
 @end
 
 

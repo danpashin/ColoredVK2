@@ -30,7 +30,7 @@ makeIPA () {
     echo "[->] Copying resources to temp directory..."
     TEMP_FOLDER="${BUILT_PRODUCTS_DIR}/Temp"
     mkdir "$TEMP_FOLDER"
-    cp -r "$FOLDER_TO_PACK/vkUnarch/Payload" "$TEMP_FOLDER"
+    cp -r "$FOLDER_TO_PACK/vkclient/Payload" "$TEMP_FOLDER"
     cp -r "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" "$TEMP_FOLDER/Payload/$APP_NAME"
     
     cd "$TEMP_FOLDER/Payload/$APP_NAME"

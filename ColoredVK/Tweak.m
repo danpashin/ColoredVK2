@@ -1390,6 +1390,19 @@ CHOptimizedMethod(0, self, UIStatusBarStyle, IOS7AudioController, preferredStatu
     else return CHSuper(0, IOS7AudioController, preferredStatusBarStyle);
 }
 
+CHOptimizedMethod(0, self, void, IOS7AudioController, viewWillLayoutSubviews)
+{
+    CHSuper(0, IOS7AudioController, viewWillLayoutSubviews);
+    
+    if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")] && (enabled && changeAudioPlayerAppearance)) {
+        if (!cvkMainController.coverView) {
+            cvkMainController.coverView = [[ColoredVKAudioCover alloc] initWithFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
+            [cvkMainController.coverView updateCoverForArtist:self.actor.text title:self.song.text];
+        }
+        [cvkMainController.coverView addToView:self.view];
+    }
+}
+
 CHOptimizedMethod(0, self, void, IOS7AudioController, viewDidLoad)
 {
     CHSuper(0, IOS7AudioController, viewDidLoad);
@@ -2491,6 +2504,7 @@ CHConstructor
             
             CHLoadLateClass(IOS7AudioController);
             CHHook(0, IOS7AudioController, viewDidLoad);
+            CHHook(0, IOS7AudioController, viewWillLayoutSubviews);
             CHHook(0, IOS7AudioController, preferredStatusBarStyle);
             
             CHLoadLateClass(AudioPlayer);
