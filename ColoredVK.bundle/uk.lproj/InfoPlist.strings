@@ -1,0 +1,9 @@
+//  
+//  InfoPlist.strings
+//  ColoredVK2
+//  
+//  Created by Даниил on 21.06.17.
+//  Copyright (©) Daniil Pashin 2017. All rights reserved.
+//  
+
+"NSPhotoLibraryUsageDescription" = "Дозвольте доступ до фото, щоб встановити фон у Ваш VK App";

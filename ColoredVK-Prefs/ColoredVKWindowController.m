@@ -46,6 +46,11 @@
     return UIStatusBarAnimationSlide;
 }
 
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
+
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
@@ -156,7 +161,7 @@
 - (void)setupDefaultContentView
 {
     self.contentView = [UIView new];
-    self.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
+    self.contentView.backgroundColor = [UIColor whiteColor];
     self.contentViewWantsShadow = YES;
     
     int widthFromEdge = IS_IPAD?20:6;
@@ -172,18 +177,22 @@
 
 - (UINavigationBar *)contentViewNavigationBar
 {
-    UINavigationBar *navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, 44)];
-    [navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-    navigationBar.shadowImage = [UIImage new];
+    if (!_contentViewNavigationBar) {
+        UINavigationBar *navigationBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, 44)];
+        [navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+        navigationBar.shadowImage = [UIImage new];
+        
+        UINavigationItem *navItem = [[UINavigationItem alloc] init];    
+        UIImage *closeImage = [UIImage imageNamed:@"CloseIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
+        closeImage = [closeImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        navItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:closeImage style:UIBarButtonItemStylePlain target:self action:@selector(hide)];
+        
+        navigationBar.items = @[navItem];
+        
+        _contentViewNavigationBar = navigationBar;
+    }
     
-    UINavigationItem *navItem = [[UINavigationItem alloc] init];    
-    UIImage *closeImage = [UIImage imageNamed:@"CloseIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
-    closeImage = [closeImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    navItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:closeImage style:UIBarButtonItemStylePlain target:self action:@selector(hide)];
-    
-    navigationBar.items = @[navItem];
-    
-    return navigationBar;
+    return _contentViewNavigationBar;
 }
 
 @end

@@ -11,23 +11,37 @@
 #import "PrefixHeader.h"
 #import "HRColorMapView.h"
 #import "HRBrightnessSlider.h"
-#import "HRColorInfoView.h"
+#import "ColoredVKColorPreview.h"
+#import "ColoredVKColorCollectionViewCell.h"
+#import "ColoredVKSimpleAlertController.h"
+#import "UIScrollView+EmptyDataSet.h"
 
-@interface ColoredVKColorPickerController () <UITextFieldDelegate>
+@interface ColoredVKColorPickerController () <UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate, ColoredVKColorCollectionViewCellDelegate>
 
-@property (strong, nonatomic) NSBundle *cvkBunlde;
-@property (strong, nonatomic) UIColor *customColor;
+@property (strong, nonatomic) NSBundle *cvkBundle;
+@property (strong, nonatomic) NSString *prefsPath;
+@property (assign, nonatomic) ColoredVKColorPickerState state;
 @property (assign, nonatomic) CGFloat brightness;
+@property (strong, nonatomic) UIColor *customColor;
+@property (strong, nonatomic) NSString *customHexColor;
+@property (strong, nonatomic) NSMutableArray <NSString *> *savedColors;
 
-@property (strong, nonatomic) UIScrollView *hexScrollView;
-@property (strong, nonatomic) HRColorInfoView *infoView;
+@property (strong, nonatomic) ColoredVKColorPreview *infoView;
 @property (strong, nonatomic) HRBrightnessSlider *sliderView;
 @property (strong, nonatomic) HRColorMapView *colorMapView;
+@property (strong, nonatomic) UIButton *saveColorButton;
+@property (strong, nonatomic) UILabel *savedColorsLabel;
+@property (strong, nonatomic) UICollectionView *savedCollectionView;
 
 @end
 
 
 @implementation ColoredVKColorPickerController
+
++ (instancetype)pickerWithIdentifier:(NSString *)identifier
+{
+    return [[ColoredVKColorPickerController alloc] initWithIdentifier:identifier];
+}
 
 - (instancetype)init
 {
@@ -40,7 +54,6 @@
     self = [super init];
     if (self) {
         _identifier = identifier;
-        
         
         self.customColor = [UIColor savedColorForIdentifier:self.identifier];
         [self.customColor getHue:nil saturation:nil brightness:&_brightness alpha:nil];
@@ -56,37 +69,19 @@
 {
     [super viewDidLoad];
     
-    self.cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if ([self.backgroundView isKindOfClass:[UIVisualEffectView class]])
-            self.backgroundView.backgroundColor = [self.customColor colorWithAlphaComponent:0.1];
-    });
+    self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    self.prefsPath = CVK_PREFS_PATH;
     
     [self setupDefaultContentView];
+    [self.contentView addSubview:self.contentViewNavigationBar];
     
-    UINavigationBar *navBar = self.contentViewNavigationBar;
-    [self.contentView addSubview:navBar];
+    UINavigationItem *navItem = self.contentViewNavigationBar.items.firstObject;
+    UIImage *resetImage = [[UIImage imageNamed:@"ResetIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    navItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:resetImage style:UIBarButtonItemStylePlain target:self action:@selector(actionResetColor)];
     
-    UINavigationItem *navItem = navBar.items.firstObject;
-    UIImage *resetImage = [[UIImage imageNamed:@"ResetIcon" inBundle:self.cvkBunlde compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    navItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:resetImage style:UIBarButtonItemStylePlain target:self action:@selector(resetColorValue)];
+    CGRect colorMapRect = CGRectMake(10, CGRectGetMaxY(self.contentViewNavigationBar.frame), CGRectGetWidth(self.contentView.frame)-20, CGRectGetWidth(self.contentView.frame)-60);
     
-    self.infoView = [HRColorInfoView new];
-    self.infoView.frame = CGRectMake(10, CGRectGetMinY(navBar.frame) + CGRectGetHeight(navBar.frame), 60, 80);
-    [self.infoView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showHexWindow)]];
-    [self.contentView addSubview:self.infoView];
-    
-    self.sliderView = [HRBrightnessSlider new];
-    self.sliderView.frame = CGRectMake(CGRectGetMinX(self.infoView.frame) + CGRectGetWidth(self.infoView.frame) + 10, (CGRectGetMinY(self.infoView.frame) + CGRectGetHeight(self.infoView.frame))/2, 
-                                       CGRectGetWidth(self.contentView.frame) - (CGRectGetMinX(self.infoView.frame) + CGRectGetWidth(self.infoView.frame) + 10), 32);
-    [self.sliderView addTarget:self action:@selector(setColorBrightness:) forControlEvents:UIControlEventValueChanged];
-    self.sliderView.brightnessLowerLimit = @0;
-    [self.contentView addSubview:self.sliderView];    
-    
-    CGRect pickerRect = CGRectMake(10, CGRectGetMinY(navBar.frame) + CGRectGetHeight(navBar.frame) + CGRectGetHeight(self.infoView.frame) + 10, CGRectGetWidth(self.contentView.frame)-20, 
-                                   CGRectGetHeight(self.contentView.frame) - (CGRectGetMinY(navBar.frame) + CGRectGetHeight(navBar.frame) + 120));    
-    self.colorMapView = [HRColorMapView colorMapWithFrame:pickerRect saturationUpperLimit:0.9];
+    self.colorMapView = [HRColorMapView colorMapWithFrame:colorMapRect saturationUpperLimit:0.9f];
     [self.colorMapView addTarget:self action:@selector(setColor:) forControlEvents:UIControlEventValueChanged];
     self.colorMapView.tileSize = @1;
     self.colorMapView.brightness = 1;
@@ -94,33 +89,147 @@
     self.colorMapView.layer.cornerRadius = self.contentView.layer.cornerRadius/2;
     [self.contentView addSubview:self.colorMapView];
     
-    navBar.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[navBar(height)]" options:0 metrics:@{@"height":@44} views:@{@"navBar":navBar}]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[navBar]|" options:0 metrics:nil views:@{@"navBar":navBar}]];
+    self.sliderView = [HRBrightnessSlider new];
+    self.sliderView.frame = CGRectMake(0, CGRectGetMaxY(self.colorMapView.frame), CGRectGetWidth(self.contentView.frame), 32);
+    [self.sliderView addTarget:self action:@selector(setColorBrightness:) forControlEvents:UIControlEventValueChanged];
+    self.sliderView.brightnessLowerLimit = @0;
+    [self.contentView addSubview:self.sliderView];
     
-    self.infoView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromTop-[infoView(height)]" options:0 
-                                                                          metrics:@{@"height":@(self.infoView.frame.size.height), @"fromTop":@(CGRectGetMinY(navBar.frame) + CGRectGetHeight(navBar.frame))} 
-                                                                            views:@{@"infoView":self.infoView}]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[infoView(width)]" options:0 metrics:@{@"width" : @(self.infoView.frame.size.width)} views:@{@"infoView":self.infoView}]];
     
-    self.sliderView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromTop-[sliderView(16)]" options:0
-                                                                          metrics:@{@"fromTop": @((self.infoView.frame.origin.y + self.infoView.frame.size.height)/2 + 10)}
-                                                                            views:@{@"sliderView":self.sliderView}]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-fromLeft-[sliderView]-|" options:0
-                                                                          metrics:@{@"fromLeft" : @(self.infoView.frame.origin.x + self.infoView.frame.size.width + 10)}
-                                                                            views:@{@"sliderView":self.sliderView}]];
+    CGFloat scale = [UIScreen mainScreen].scale;
+    
+    CGFloat infoViewWidth = IS_IPAD ? 60 * scale: 45 * scale;
+    CGFloat infoViewHeight = IS_IPAD ? 50 * scale : 35 * scale;
+    
+    self.infoView = [ColoredVKColorPreview new];
+    self.infoView.frame = CGRectMake(10, CGRectGetMaxY(self.sliderView.frame) + 10, infoViewWidth, infoViewHeight);
+    [self.infoView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionShowHexWindow)]];
+    [self.contentView addSubview:self.infoView];
+    
+    
+    self.saveColorButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.saveColorButton.frame = CGRectMake(CGRectGetMaxX(self.infoView.frame) + 20, CGRectGetMinY(self.infoView.frame), CGRectGetWidth(self.contentView.frame)-(CGRectGetMaxX(self.infoView.frame) + 30), 32);
+    [self.saveColorButton setImage:[UIImage imageNamed:@"SaveIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
+    [self.saveColorButton setTitle:UIKitLocalizedString(@"Save") forState:UIControlStateNormal];
+    [self.saveColorButton setTitleColor:[UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1.0] forState:UIControlStateNormal];
+    self.saveColorButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 15);
+    [self.saveColorButton addTarget:self action:@selector(actionSaveColor) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:self.saveColorButton];
+    
+    
+    self.savedColorsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(self.infoView.frame) + 10, CGRectGetWidth(self.contentView.frame) - 20, 26)];
+    self.savedColorsLabel.text = NSLocalizedStringFromTableInBundle(@"SAVED_COLORS", nil, self.cvkBundle, nil);
+    self.savedColorsLabel.font = [UIFont boldSystemFontOfSize:20.0f];
+    self.savedColorsLabel.textAlignment = NSTextAlignmentCenter;
+    self.savedColorsLabel.textColor = [UIColor darkGrayColor];
+    [self.contentView addSubview:self.savedColorsLabel];
+    
+    
+    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    layout.sectionInset = UIEdgeInsetsMake(0, 10, 0, 0);
+    layout.minimumLineSpacing = 10;
+    
+    self.savedCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.savedColorsLabel.frame) + 10, CGRectGetWidth(self.contentView.frame), 100) collectionViewLayout:layout];
+    self.savedCollectionView.backgroundColor = [UIColor clearColor];
+    self.savedCollectionView.pagingEnabled = YES;
+    self.savedCollectionView.showsHorizontalScrollIndicator = NO;
+    [self.savedCollectionView registerClass:[ColoredVKColorCollectionViewCell class] forCellWithReuseIdentifier:@"colorCell"];
+    self.savedCollectionView.delegate = self;
+    self.savedCollectionView.dataSource = self;
+    self.savedCollectionView.emptyDataSetSource = self;
+    self.savedCollectionView.emptyDataSetDelegate = self;
+    [self.contentView addSubview:self.savedCollectionView];
+    
+
+    [self updateSavedColorsFromPrefs];
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    
+    [self setupConstraints];
+    
+    if (self.contentViewWantsShadow) {
+        self.contentView.layer.shadowRadius = IS_IPAD ? 15.0f : 8.0f;
+        self.contentView.layer.shadowOpacity = IS_IPAD ? 0.15f : 0.3f;
+        self.contentView.layer.shadowOffset = CGSizeZero;
+    }
+}
+
+- (void)setupConstraints
+{
+    [self.contentView removeConstraints:self.contentView.constraints];
+    
+    self.contentViewNavigationBar.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[navBar]|" options:0 metrics:nil views:@{@"navBar":self.contentViewNavigationBar}]];
     
     self.colorMapView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromTop-[colorMapView]-|" options:0
-                                                                          metrics:@{@"fromTop": @((self.infoView.frame.origin.y + self.infoView.frame.size.height) + 10)}
-                                                                            views:@{@"colorMapView":self.colorMapView}]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[colorMapView]-|" options:0 metrics:nil views:@{@"colorMapView":self.colorMapView}]];
     
+    self.sliderView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[sliderView]-|" options:0 metrics:nil views:@{@"sliderView":self.sliderView}]];
     
-    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHide) name:UIKeyboardWillHideNotification object:nil];
+    self.infoView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[infoView(width)]" options:0 metrics:@{@"width":@(CGRectGetWidth(self.infoView.frame))} views:@{@"infoView":self.infoView}]];
+    
+    self.savedColorsLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[savedLabel]-|" options:0 metrics:nil views:@{@"savedLabel":self.savedColorsLabel}]];
+    
+    self.savedCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[savedCollectionView]|" options:0 metrics:nil views:@{@"savedCollectionView":self.savedCollectionView}]];
+    
+    
+    CGFloat collectionViewMinHeight = IS_IPAD ? CGRectGetHeight(self.infoView.frame) * 1.5 : CGRectGetHeight(self.infoView.frame) / 1.25;
+    CGFloat savedLabelheight = 26;
+    
+    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+    if (!IS_IPAD && (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight)) {
+        collectionViewMinHeight = 0;
+        savedLabelheight = 0;
+    }
+    
+    NSString *vertFormat = @"V:|[navBar(navBarHeight)]-[colorMapView(<=maxColorMapWidth)]-[sliderView(sliderHeight)]-[infoView(infoViewHeight)]-[savedLabel(labelHeight)][savedCollectionView(>=collectionViewMinHeight)]|";
+    NSDictionary *vertMetrics = @{
+                                  @"navBarHeight":@44, @"sliderHeight":@16, @"labelHeight":@(savedLabelheight), 
+                                  @"infoViewHeight":@(CGRectGetHeight(self.infoView.frame)), @"maxColorMapWidth":@(CGRectGetWidth(self.colorMapView.frame) / 1.25), @"collectionViewMinHeight":@(collectionViewMinHeight)
+                                  };
+    
+    NSDictionary *vertViews = @{
+                                @"navBar":self.contentViewNavigationBar, @"colorMapView":self.colorMapView, @"sliderView":self.sliderView, 
+                                @"infoView":self.infoView, @"savedLabel":self.savedColorsLabel, @"savedCollectionView":self.savedCollectionView
+                                };
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:vertFormat options:0 metrics:vertMetrics views:vertViews]];
+    
+    
+    self.saveColorButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.saveColorButton attribute:NSLayoutAttributeLeft relatedBy:0 toItem:self.infoView attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.saveColorButton attribute:NSLayoutAttributeTop relatedBy:0 toItem:self.infoView attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.saveColorButton attribute:NSLayoutAttributeBottom relatedBy:0 toItem:self.infoView attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.saveColorButton attribute:NSLayoutAttributeRight relatedBy:0 toItem:self.contentView attribute:NSLayoutAttributeRightMargin multiplier:1 constant:0]];
+}
+
+- (void)updateSavedColorsFromPrefs
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.savedColors = [NSMutableArray array];
+        if ([self.dataSource respondsToSelector:@selector(savedColorsForColorPicker:)]) {
+            [self.savedCollectionView performBatchUpdates:^{
+                NSArray <NSString *> *savedColors = [self.dataSource savedColorsForColorPicker:self];
+                
+                int collectionViewInsertIndex = 0;
+                for (int i=(int)savedColors.count-1; i>=0; i--) {
+                    
+                    [self.savedColors addObject:savedColors[i]];
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:collectionViewInsertIndex inSection:0];
+                    [self.savedCollectionView insertItemsAtIndexPaths:@[indexPath]];
+                    collectionViewInsertIndex++;
+                }
+                [self.savedCollectionView reloadData];
+            } completion:nil];
+        }
+    });
 }
 
 
@@ -132,13 +241,6 @@
     self.infoView.color = self.customColor;
     self.sliderView.color = self.customColor;
     self.colorMapView.color = self.customColor;
-    
-    if ([self.backgroundView isKindOfClass:[UIVisualEffectView class]])
-        self.backgroundView.backgroundColor = [self.customColor colorWithAlphaComponent:0.1];
-    
-    if ([self.delegate respondsToSelector:@selector(colorPicker:didChangeColor:)]) [self.delegate colorPicker:self didChangeColor:self.customColor];
-    
-//    self.colorMapView.brightness = fromPicker?self.brightness:brightness;
 }
 
 - (void)setColor:(HRColorMapView *)colorMap
@@ -147,73 +249,55 @@
     [self updateColorsFromPicker:YES];
 }
 
+- (void)setCustomColor:(UIColor *)customColor
+{
+    _customColor = customColor;
+    
+    self.customHexColor = self.customColor.hexStringValue;
+}
+
 - (void)setColorBrightness:(HRBrightnessSlider *)brightnessSlider
 {
     self.brightness = brightnessSlider.brightness.floatValue;
     [self updateColorsFromPicker:YES];
 }
 
-- (void)keyboardWillShow:(NSNotification *)notification
-{
-    CGRect kbRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    self.hexScrollView.contentOffset = CGPointMake(0, kbRect.size.height/2);
-}
-
-- (void)keyboardWillHide
-{
-    self.hexScrollView.contentOffset = CGPointZero;
-}
-
-- (void)resetColorValue
-{
-    UIAlertController *warningAlert = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBunlde, nil)  
-                                                                          message:NSLocalizedStringFromTableInBundle(@"RESET_COLOR_QUESTION", nil, self.cvkBunlde, nil) 
-                                                                   preferredStyle:UIAlertControllerStyleAlert];
-    [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-    [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-        if ([self.delegate respondsToSelector:@selector(colorPicker:didResetColorForIdentifier:)]) [self.delegate colorPicker:self didResetColorForIdentifier:self.identifier];
-        [self hide];
-    }]];
-    [self presentViewController:warningAlert animated:YES completion:nil];
-}
-
 - (void)hide
 {
-    if ([self.delegate respondsToSelector:@selector(colorPickerWillDismiss:)]) [self.delegate colorPickerWillDismiss:self];
+    if (!self.state) self.state = ColoredVKColorPickerStateDismiss;
+    if ([self.delegate respondsToSelector:@selector(colorPicker:willDismissWithColor:)]) {
+        UIColor *color = (self.state == ColoredVKColorPickerStateDismiss) ? self.customColor : nil;
+        [self.delegate colorPicker:self willDismissWithColor:color];
+    }
     self.backgroundView.backgroundColor = [UIColor clearColor];
     
     [super hide];
 }
 
+#pragma mark - Actions
 
-- (void)showHexWindow
+- (void)actionResetColor
 {
-    self.hexScrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
-    self.hexScrollView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
-    [self.view addSubview:self.hexScrollView];
+    UIAlertController *warningAlert = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBundle, nil)  
+                                                                          message:NSLocalizedStringFromTableInBundle(@"RESET_COLOR_QUESTION", nil, self.cvkBundle, nil) 
+                                                                   preferredStyle:UIAlertControllerStyleAlert];
+    [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+    [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        self.state = ColoredVKColorPickerStateReset;
+        [self hide];
+    }]];
+    [self presentViewController:warningAlert animated:YES completion:nil];
+}
+
+- (void)actionShowHexWindow
+{
+    ColoredVKSimpleAlertController *hexWindow = [ColoredVKSimpleAlertController new];
+    hexWindow.textField.placeholder = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"EXAMPLE_ALERT_MESSAGE", nil, self.cvkBundle, nil), self.customColor.hexStringValue];
+    hexWindow.textField.delegate = self;
+    [hexWindow.button setTitle:NSLocalizedStringFromTableInBundle(@"ALERT_COPY_CURRENT_VALUE_TIILE", nil, self.cvkBundle, nil) forState:UIControlStateNormal];
+    [hexWindow.button addTarget:self action:@selector(actionCopySavedHex) forControlEvents:UIControlEventTouchUpInside];
     
-    self.hexScrollView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[hexScrollView]|" options:0 metrics:nil views:@{@"hexScrollView":self.hexScrollView}]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[hexScrollView]|" options:0 metrics:nil views:@{@"hexScrollView":self.hexScrollView}]];
-    
-    UITapGestureRecognizer *hexTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissHexView)];
-    [self.hexScrollView addGestureRecognizer:hexTap];
-    
-    
-    UIView *view = [UIView new];
-    view.backgroundColor = [UIColor whiteColor];
-    view.frame = CGRectMake(0, 0, self.view.frame.size.width - 60, 120);
-    view.layer.masksToBounds = YES;
-    view.layer.cornerRadius = 6;
-    
-    int width = view.frame.size.width - 10;
-    int height = 30;
-    
-    
-    UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width, 30)];
-    title.center = CGPointMake(view.frame.size.width / 2, 20);
-    
-    NSString *locString = NSLocalizedStringFromTableInBundle(@"ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE", nil, self.cvkBunlde, nil);
+    NSString *locString = NSLocalizedStringFromTableInBundle(@"ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE", nil, self.cvkBundle, nil);
     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:locString];
     
     NSRange rangeBefore = NSMakeRange(0, [locString substringToIndex:[locString rangeOfString:@"("].location].length );
@@ -221,102 +305,87 @@
     
     [attributedText setAttributes:@{ NSFontAttributeName:[UIFont boldSystemFontOfSize:14.0f] } range:rangeBefore];
     [attributedText setAttributes:@{ NSFontAttributeName:[UIFont systemFontOfSize:10.0f], NSForegroundColorAttributeName:[UIColor lightGrayColor] } range:rangeAfter];
+    hexWindow.titleLabel.attributedText = attributedText;
     
-    title.attributedText = attributedText;
-    title.textAlignment = NSTextAlignmentCenter;
-    title.adjustsFontSizeToFitWidth = YES;
-    title.numberOfLines = 2;
-    [view addSubview:title];
-    
-    
-    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, width, height)];
-    textField.center = CGPointMake(view.frame .size.width / 2, title.center.y + 35);
-    textField.placeholder = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"EXAMPLE_ALERT_MESSAGE", nil, self.cvkBunlde, nil), self.customColor.hexStringValue];
-    textField.borderStyle = UITextBorderStyleRoundedRect;
-    textField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    textField.returnKeyType = UIReturnKeyDone;
-    textField.textAlignment = NSTextAlignmentCenter;
-    textField.delegate = self;
-    textField.layer.cornerRadius = 5.0f;
-    textField.layer.masksToBounds = YES;
-    textField.layer.borderWidth = 1.0f;
-    textField.layer.borderColor = [UIColor clearColor].CGColor;
-    [view addSubview:textField];
-    
-    
-    UIButton *valueButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, width, height)];
-    valueButton.center = CGPointMake(view.frame .size.width / 2, textField.center.y + 40);
-    valueButton.layer.masksToBounds = YES;
-    valueButton.layer.cornerRadius = 6;
-    valueButton.layer.borderColor = [UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1].CGColor;
-    valueButton.layer.borderWidth = 1.0;
-    [valueButton setTitle:NSLocalizedStringFromTableInBundle(@"ALERT_COPY_CURRENT_VALUE_TIILE", nil, self.cvkBunlde, nil) forState:UIControlStateNormal];
-    valueButton.titleLabel.adjustsFontSizeToFitWidth = YES;
-    [valueButton setTitleColor:[UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1] forState:UIControlStateNormal];
-    [valueButton setTitleColor:[UIColor colorWithRed:60.0/255.0f green:82.0/255.0f blue:131.0/255.0f alpha:1] forState:UIControlStateHighlighted];
-    valueButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    [valueButton addTarget:self action:@selector(highlightButtonBorder:) forControlEvents:UIControlEventTouchDragEnter];
-    [valueButton addTarget:self action:@selector(unHighlightButtonBorder:) forControlEvents:UIControlEventTouchDragExit];
-    [valueButton addTarget:self action:@selector(copyColorHexValue:) forControlEvents:UIControlEventTouchUpInside];
-    [view addSubview:valueButton];
-    
-    [self.hexScrollView addSubview:view];
-    
-    view.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.hexScrollView addConstraint:[NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeCenterX relatedBy:0 toItem:self.hexScrollView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
-    [self.hexScrollView addConstraint:[NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeCenterY relatedBy:0 toItem:self.hexScrollView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-    [self.hexScrollView addConstraint:[NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeWidth relatedBy:0 toItem:nil attribute:0 multiplier:1 constant:CGRectGetWidth(view.frame)]];
-    [self.hexScrollView addConstraint:[NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeHeight relatedBy:0 toItem:nil attribute:0 multiplier:1 constant:CGRectGetHeight(view.frame)]];
-    
-    view.alpha = 0.0;
-    view.transform = CGAffineTransformMakeScale(0.1, 0.1);
-    
-    [UIView animateWithDuration:0.6 delay:0.0 usingSpringWithDamping:0.8 initialSpringVelocity:15.0 options:0
-                     animations:^{
-                         view.alpha = 1.0;
-                         view.transform = CGAffineTransformIdentity;
-                     } completion:nil];
+    [hexWindow show];
 }
 
-- (void)dismissHexView
+- (void)actionCopySavedHex
 {
-    NSTimeInterval bounce1Duration = 0.13;
-    NSTimeInterval bounce2Duration = (bounce1Duration * 2.0);
-    
-    UIView *hexContainerView = self.hexScrollView.subviews.lastObject;
-    
-    [UIView animateWithDuration:bounce1Duration delay:0 options:UIViewAnimationOptionCurveEaseOut
-                     animations:^(void){
-                         hexContainerView.transform = CGAffineTransformMakeScale(1.1, 1.1);
-                     } completion:^(BOOL finished) {
-                         
-                         [UIView animateWithDuration:bounce2Duration delay:0  options:UIViewAnimationOptionCurveEaseIn
-                                          animations:^(void){
-                                              hexContainerView.alpha = 0.0;
-                                              hexContainerView.transform = CGAffineTransformMakeScale(0.1, 0.1);
-                                          } completion:^(BOOL finished){
-                                              [self.hexScrollView removeFromSuperview];
-                                          }];
-                     }];
-}
-
-- (void)highlightButtonBorder:(UIButton *)button
-{
-    button.layer.borderColor = [UIColor colorWithRed:60.0/255.0f green:82.0/255.0f blue:131.0/255.0f alpha:1].CGColor;
-}
-
-- (void)unHighlightButtonBorder:(UIButton *)button
-{
-    button.layer.borderColor = [UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1].CGColor;
-}
-
-- (void)copyColorHexValue:(UIButton *)button
-{
-    button.layer.borderColor = [UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1].CGColor;
     [UIPasteboard generalPasteboard].string = [UIColor savedColorForIdentifier:self.identifier].hexStringValue;
 }
 
+- (void)actionSaveColor
+{    
+    [self.savedCollectionView performBatchUpdates:^{
+        if (![self.savedColors containsObject:self.customHexColor]) {
+            [self.savedColors insertObject:self.customHexColor atIndex:0];
+        
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+            [self.savedCollectionView insertItemsAtIndexPaths:@[indexPath]];
+            
+            if ([self.delegate respondsToSelector:@selector(colorPicker:didSaveColor:)])
+                [self.delegate colorPicker:self didSaveColor:self.customHexColor];
+            
+            [self.savedCollectionView reloadData];
+        }
+    } completion:nil];
+}
+
+
+#pragma mark - UICollectionViewDelegate
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return self.savedColors.count;
+}
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    ColoredVKColorCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"colorCell" forIndexPath:indexPath];
+    cell.hexColor = self.savedColors[indexPath.row];
+    cell.delegate = self;
+    
+    return cell;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return CGSizeMake(CGRectGetWidth(collectionView.frame) / 4.5, CGRectGetHeight(collectionView.frame) / 1.25);
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    self.customColor = self.savedColors[indexPath.row].hexColorValue;
+    
+    [self updateColorsFromPicker:NO];
+}
+
+
+#pragma mark - ColoredVKColorCollectionViewCellDelegate
+
+- (void)colorCell:(ColoredVKColorCollectionViewCell *)cell deleteColor:(NSString *)hexColor
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.savedCollectionView performBatchUpdates:^{
+            if ([self.savedColors containsObject:hexColor]) {
+                NSUInteger index = [self.savedColors indexOfObject:hexColor];
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+                
+                [self.savedColors removeObject:hexColor];
+                [self.savedCollectionView deleteItemsAtIndexPaths:@[indexPath]];
+                
+                if ([self.delegate respondsToSelector:@selector(colorPicker:didDeleteColor:)])
+                    [self.delegate colorPicker:self didDeleteColor:self.customHexColor];
+                
+                [self.savedCollectionView reloadData];
+            }
+        } completion:nil];
+    });
+}
+
+
 #pragma mark - UITextFieldDelegate
+
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -343,8 +412,22 @@
     return YES;
 }
 
-- (void)dealloc
+
+#pragma mark - DZNEmptyDataSetDelegate
+
+- (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView
 {
-    [NSNotificationCenter.defaultCenter removeObserver:self];
+    return [UIImage imageNamed:@"WindowsIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
 }
+
+- (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView
+{
+    NSString *text = NSLocalizedStringFromTableInBundle(@"OH_YOU_HAVE_NOT_SAVED_COLORS", nil, self.cvkBundle, nil);
+    
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1],
+                                 NSForegroundColorAttributeName: [UIColor lightGrayColor]};
+    
+    return [[NSAttributedString alloc] initWithString:text attributes:attributes];
+}
+
 @end

@@ -22,7 +22,8 @@
 "TWEAK_FOOTER_TEXT" = "Версія твіка: %@\nВерсія VK App: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "При завантаженні файлів сталася помилка.\nПеревірте їх наявність або зверніться до розробника.";
 
-"SELECT_COLOR_TITLE" = "Вибрати колір";
+"OH_YOU_HAVE_NOT_SAVED_COLORS" = "Ой, схоже у Вас немає збережених кольорів";
+"SAVED_COLORS" = "Збережені кольору";
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Скопіювати поточне значення hex";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Введіть 16-ковий код кольору\n(Символ # ставити не обов'язково)";
 "EXAMPLE_ALERT_MESSAGE" = "Наприклад %@";

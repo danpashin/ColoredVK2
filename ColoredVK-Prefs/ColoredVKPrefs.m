@@ -13,7 +13,7 @@
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
-    if ([[NSBundle mainBundle].executablePath.lastPathComponent isEqualToString:@"vkclient"]) return UIStatusBarStyleLightContent;
+    if ([[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"]) return UIStatusBarStyleLightContent;
     else return UIStatusBarStyleDefault;
 }
 

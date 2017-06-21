@@ -6,7 +6,6 @@
 //  Copyright (©) Daniil Pashin 2016. All rights reserved.
 //  
 
-
 "ERROR" = "Error";
 "ERROR %@" = "Error:\n%@";
 "WARNING" = "Warning";
@@ -22,7 +21,8 @@
 "TWEAK_FOOTER_TEXT" = "Tweak version: %@\nVK App version: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Error loading tweak files.\nCheck their availability or contact developer.";
 
-"SELECT_COLOR_TITLE" = "Select color";
+"OH_YOU_HAVE_NOT_SAVED_COLORS" = "Oh, it seems you have no saved colors";
+"SAVED_COLORS" = "Saved colors";
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Copy current hex value";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Enter a hexadecimal color code\n(Symbol # is not necessary)";
 "EXAMPLE_ALERT_MESSAGE" = "Like %@";

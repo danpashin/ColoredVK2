@@ -6,7 +6,6 @@
 //  Copyright (©) Daniil Pashin 2016. All rights reserved.
 //  
 
-
 "ERROR" = "Ошибка";
 "ERROR %@" = "Ошибка:\n%@";
 "WARNING" = "Предупреждение";
@@ -22,7 +21,8 @@
 "TWEAK_FOOTER_TEXT" = "Версия твика: %@\nВерсия VK App: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "При загрузке файлов произошла ошибка.\nПроверьте их наличие или обратитесь к разработчику.";
 
-"SELECT_COLOR_TITLE" = "Выбрать цвет";
+"OH_YOU_HAVE_NOT_SAVED_COLORS" = "Ой, похоже у Вас нет сохранённых цветов";
+"SAVED_COLORS" = "Сохранённые цвета";
 "ALERT_COPY_CURRENT_VALUE_TIILE" = "Скопировать текущее значение hex";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Введите 16-ричный цветовой код\n(Символ # ставить необязательно)";
 "EXAMPLE_ALERT_MESSAGE" = "Например %@";

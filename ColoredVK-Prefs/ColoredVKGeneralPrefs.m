@@ -19,41 +19,73 @@
 
 - (void)showColorPicker:(PSSpecifier*)specifier
 {
-    ColoredVKColorPickerController *picker = [[ColoredVKColorPickerController alloc] initWithIdentifier:specifier.identifier];
+    ColoredVKColorPickerController *picker = [ColoredVKColorPickerController pickerWithIdentifier:specifier.identifier];
     picker.delegate = self;
-    picker.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
+    picker.dataSource = self;
+    picker.backgroundStyle = ColoredVKWindowBackgroundStyleCustom;
     [picker show];
 }
 
 
-- (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didChangeColor:(UIColor *)color
+#pragma mark - ColoredVKColorPickerControllerDelegate
+
+- (void)colorPicker:(ColoredVKColorPickerController *)colorPicker willDismissWithColor:(UIColor *)color
 {
-    @synchronized (self) {
-        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    
+    if (color) {
         prefs[colorPicker.identifier] = color.stringValue;
-        [prefs writeToFile:self.prefsPath atomically:YES];
+    } else {
+        if (prefs[colorPicker.identifier]) [prefs removeObjectForKey:colorPicker.identifier];
     }
-}
-
-- (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didResetColorForIdentifier:(NSString *)identifier
-{
-    @synchronized (self) {
-        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
-        if (prefs[identifier]) [prefs removeObjectForKey:identifier];
-        [prefs writeToFile:self.prefsPath atomically:YES];
-    }
-}
-
-- (void)colorPickerWillDismiss:(ColoredVKColorPickerController *)colorPicker
-{
+    
+    [prefs writeToFile:self.prefsPath atomically:YES];
+    
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.prefs.colorUpdate" object:nil userInfo:@{@"identifier":colorPicker.identifier}];
     
     NSArray *identificsToReloadMenu = @[@"MenuSeparatorColor", @"switchesTintColor", @"switchesOnTintColor", @"menuTextColor"];
     if ([identificsToReloadMenu containsObject:colorPicker.identifier]) CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        UINavigationBar *navBar = self.navigationController.navigationBar;
+        navBar.barTintColor = navBar.barTintColor;
+    });
 }
 
+- (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didSaveColor:(NSString *)hexColor
+{
+    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    NSMutableArray <NSString *> *savedColors = prefs[@"savedColors"] ? prefs[@"savedColors"] : [NSMutableArray new];
+    
+    if (![savedColors containsObject:hexColor])
+        [savedColors addObject:hexColor];
+    
+    prefs[@"savedColors"] = savedColors;
+    [prefs writeToFile:self.prefsPath atomically:YES];
+}
 
+- (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didDeleteColor:(NSString *)hexColor
+{
+    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    NSMutableArray <NSString *> *savedColors = prefs[@"savedColors"] ? prefs[@"savedColors"] : [NSMutableArray new];
+    
+    if ([savedColors containsObject:hexColor])
+        [savedColors removeObject:hexColor];
+    
+    prefs[@"savedColors"] = savedColors;
+    [prefs writeToFile:self.prefsPath atomically:YES];
+}
+
+#pragma mark - ColoredVKColorPickerControllerDataSource
+
+- (NSArray <NSString *> *)savedColorsForColorPicker:(ColoredVKColorPickerController *)colorPicker
+{
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    NSArray <NSString *> *savedColors = prefs[@"savedColors"] ? prefs[@"savedColors"] : [NSArray new];
+    
+    return savedColors;
+}
 
 - (void)chooseImage:(PSSpecifier*)specifier
 {
