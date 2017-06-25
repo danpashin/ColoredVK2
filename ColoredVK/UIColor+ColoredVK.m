@@ -63,6 +63,12 @@
     return  [NSString stringWithFormat:@"%.3f, %.3f, %.3f, %.3f", components[0], components[1], components[2], components[3]];
 }
 
+- (NSString *)rgbStringValue
+{
+    const CGFloat *components = CGColorGetComponents(self.CGColor);
+    return  [NSString stringWithFormat:@"%i, %i, %i", (int)(components[0] * 255), (int)(components[1] * 255), (int)(components[2] * 255)];
+}
+
 - (NSString *)hexStringValue
 {
     const CGFloat *components = CGColorGetComponents(self.CGColor);

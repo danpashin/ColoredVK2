@@ -8,6 +8,7 @@
 
 #import "ColoredVKColorPreview.h"
 #import "UIColor+ColoredVK.h"
+#import "PrefixHeader.h"
 
 static CGFloat const kHexLabelHeight = 25.0f;
 static CGFloat const kColorPreviewCornerRadius = 6.0f;
@@ -15,6 +16,7 @@ static CGFloat const kColorPreviewCornerRadius = 6.0f;
 @interface ColoredVKColorPreview ()
 
 @property (strong, nonatomic) UILabel *hexLabel;
+@property (strong, nonatomic) UILabel *rgbLabel;
 @property (strong, nonatomic) UIView *colorPreview;
 
 @end
@@ -31,8 +33,16 @@ static CGFloat const kColorPreviewCornerRadius = 6.0f;
         self.colorPreview.layer.masksToBounds = YES;
         [self addSubview:self.colorPreview];
         
+        self.rgbLabel = [UILabel new];
+        self.rgbLabel.frame = CGRectMake(0, CGRectGetHeight(self.frame) - kHexLabelHeight, CGRectGetWidth(self.frame), kHexLabelHeight / 2);
+        self.rgbLabel.textAlignment = NSTextAlignmentCenter;
+        self.rgbLabel.backgroundColor = [UIColor whiteColor];
+        self.rgbLabel.font = [UIFont systemFontOfSize:10];
+        self.rgbLabel.textColor = [UIColor colorWithWhite:0.5 alpha:1];
+        [self.colorPreview addSubview:self.rgbLabel];
+        
         self.hexLabel = [UILabel new];
-        self.hexLabel.frame = CGRectMake(0, CGRectGetHeight(self.frame) - kHexLabelHeight, CGRectGetWidth(self.frame), kHexLabelHeight);
+        self.hexLabel.frame = CGRectMake(0, CGRectGetHeight(self.frame) - 2 * kHexLabelHeight, CGRectGetWidth(self.frame), kHexLabelHeight);
         self.hexLabel.textAlignment = NSTextAlignmentCenter;
         self.hexLabel.backgroundColor = [UIColor whiteColor];
         self.hexLabel.font = [UIFont systemFontOfSize:12];
@@ -58,9 +68,14 @@ static CGFloat const kColorPreviewCornerRadius = 6.0f;
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[colorPreview]|" options:0 metrics:nil views:@{@"colorPreview":self.colorPreview}]];
     
     self.hexLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.colorPreview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[hexLabel(height)]|" options:0 metrics:@{@"height":@(kHexLabelHeight)} 
-                                                                                views:@{@"hexLabel":self.hexLabel}]];
+    self.rgbLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.colorPreview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[hexLabel]|" options:0 metrics:nil views:@{@"hexLabel":self.hexLabel}]];
+    [self.colorPreview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[rgbLabel]|" options:0 metrics:nil views:@{@"rgbLabel":self.rgbLabel}]];
+    [self.colorPreview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[hexLabel(height)][rgbLabel(12.5)]|" options:0 metrics:@{@"height":@(kHexLabelHeight)} 
+                                                                                views:@{@"hexLabel":self.hexLabel, @"rgbLabel":self.rgbLabel}]];
+    
+    CGFloat constant = IS_IPAD ? 2.5 : 2.0;
+    self.minHeight = (CGRectGetHeight(self.rgbLabel.frame) + CGRectGetHeight(self.hexLabel.frame)) * constant;
 }
 
 - (void)setColor:(UIColor *)color
@@ -71,8 +86,10 @@ static CGFloat const kColorPreviewCornerRadius = 6.0f;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         NSString *hexString = color.hexStringValue;
+        NSString *rgbString = color.rgbStringValue;        
         dispatch_async(dispatch_get_main_queue(), ^{
             self.hexLabel.text = hexString;
+            self.rgbLabel.text = rgbString;
         });
     });
 }

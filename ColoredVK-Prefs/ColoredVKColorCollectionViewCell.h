@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ColoredVKColorPreview.h"
 
 @class ColoredVKColorCollectionViewCell;
 @protocol ColoredVKColorCollectionViewCellDelegate <NSObject>
@@ -20,7 +21,7 @@
 
 @interface ColoredVKColorCollectionViewCell : UICollectionViewCell
 
-@property (strong, nonatomic) UIColor *color;
+@property (strong, nonatomic) ColoredVKColorPreview *colorPreview;
 @property (strong, nonatomic) NSString *hexColor;
 @property (nonatomic) id <ColoredVKColorCollectionViewCellDelegate> delegate;
 

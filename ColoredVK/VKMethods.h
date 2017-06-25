@@ -62,9 +62,7 @@
 @end
 
 @interface AudioPlayer : NSObject
-@property(retain, nonatomic) UIImage *coverImage;
 @property(retain, nonatomic) VKAudio *audio;
-@property(retain) AVPlayer *player;
 @property(nonatomic) int state;
 @end
 
@@ -429,6 +427,17 @@
 @interface TeaserView : UIView
 @property(retain, nonatomic) UILabel *labelText;
 @property(retain, nonatomic) UILabel *labelTitle;
+@end
+
+
+@interface VKAudioQueuePlayer : NSObject
+@property(nonatomic) int state;
+@property (nonatomic, readonly, copy) NSString *title;
+@property (nonatomic, readonly, copy) NSString *performer;
+@end
+
+@interface LoadingFooterView : UIView
+@property(readonly, retain, nonatomic) UILabel *label;
 @end
 
 

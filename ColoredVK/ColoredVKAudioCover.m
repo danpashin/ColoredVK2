@@ -16,13 +16,14 @@
 
 @interface ColoredVKAudioCover ()
 
-@property (strong, nonatomic, readonly) UIView *view;
-@property (strong, nonatomic) NSBundle *cvkBundle;
+@property (strong, nonatomic) UIView *coverView;
 @property (strong, nonatomic) UIImageView *topImageView;
 @property (strong, nonatomic) UIImageView *bottomImageView;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
+@property (strong, nonatomic) CAGradientLayer *topCoverGradient;
+
+@property (strong, nonatomic) NSBundle *cvkBundle;
 @property (strong, nonatomic, readonly) UIImage *noCover;
-@property (strong, nonatomic, readonly) NSDictionary *prefs;
 @property (strong, nonatomic) SDWebImageManager *manager;
 @property (strong, nonatomic) ColoredVKCoreData *coredata;
 
@@ -35,11 +36,12 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
     [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{@"identifier":@"audioCoverImage"}];
 }
 
-- (instancetype)initWithFrame:(CGRect)frame andSeparationPoint:(CGPoint)point
+- (instancetype)init
 {
     self = [super init];
     if (self) {
-        _view = [[UIView alloc] initWithFrame:frame];
+        self.coverView = [[UIView alloc] init];
+        self.coverView.tag = 265;
         
         self.defaultCover = YES;
         self.manager = [SDWebImageManager sharedManager];
@@ -51,14 +53,12 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         [self updateCoverInfo];
         
         self.topImageView = [[UIImageView alloc] initWithImage:self.noCover];
-        self.topImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, point.y);
         self.topImageView.backgroundColor = [UIColor blackColor];
         self.topImageView.contentMode = UIViewContentModeScaleAspectFill;
         self.topImageView.layer.masksToBounds = YES;
-        [self.view addSubview:self.topImageView];
+        [self.coverView addSubview:self.topImageView];
         
         self.bottomImageView = [UIImageView new];
-        self.bottomImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
         self.bottomImageView.backgroundColor = [UIColor blackColor];
         self.bottomImageView.contentMode = UIViewContentModeScaleAspectFill;
         if (self.customCover) self.bottomImageView.image = self.noCover;
@@ -67,17 +67,16 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         self.blurEffectView.frame = self.bottomImageView.bounds;
         [self.bottomImageView addSubview:self.blurEffectView];
         
-        [self.view addSubview:self.bottomImageView];
-        [self.view sendSubviewToBack:self.bottomImageView];
+        [self.coverView addSubview:self.bottomImageView];
+        [self.coverView sendSubviewToBack:self.bottomImageView];
         
-        self.audioLyricsView = [[ColoredVKAudioLyricsView alloc] initWithFrame:self.topImageView.bounds];
-        [self.view addSubview:self.audioLyricsView];
+        self.audioLyricsView = [[ColoredVKAudioLyricsView alloc] init];
+        [self.coverView addSubview:self.audioLyricsView];
         
-        CAGradientLayer *gradient = [CAGradientLayer layer];
-        gradient.frame = CGRectMake(0, 0, self.topImageView.frame.size.width, 79);
-        gradient.colors = @[ (id)[UIColor colorWithWhite:0 alpha:0.5].CGColor, (id)[UIColor clearColor].CGColor ];
-        gradient.locations = @[ @0, @0.95];
-        [self.topImageView.layer addSublayer:gradient];
+        self.topCoverGradient = [CAGradientLayer layer];
+        self.topCoverGradient.colors = @[ (id)[UIColor colorWithWhite:0 alpha:0.5].CGColor, (id)[UIColor clearColor].CGColor ];
+        self.topCoverGradient.locations = @[ @0, @0.95];
+        [self.topImageView.layer addSublayer:self.topCoverGradient];
         
         [self updateColorSchemeForImage:self.noCover];
         
@@ -88,10 +87,24 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
     return self;
 }
 
+- (void)updateViewFrame:(CGRect)frame andSeparationPoint:(CGPoint)separationPoint
+{
+    self.coverView.frame = frame;
+    self.topImageView.frame = CGRectMake(0, 0, CGRectGetWidth(self.coverView.frame), separationPoint.y);
+    self.bottomImageView.frame = self.coverView.bounds;
+    self.blurEffectView.frame = self.bottomImageView.bounds;
+    self.audioLyricsView.frame = self.topImageView.bounds;
+    self.topCoverGradient.frame = CGRectMake(0, 0, CGRectGetWidth(self.topImageView.frame), 79);
+}
+
 - (void)addToView:(UIView *)view
 {
-    [view addSubview:self.view];
-    [view sendSubviewToBack:self.view];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (![view.subviews containsObject:[view viewWithTag:self.coverView.tag]]) {
+            [view addSubview:self.coverView];
+            [view sendSubviewToBack:self.coverView];
+        }
+    });
 }
 
 - (void)updateCoverForArtist:(NSString *)artist title:(NSString *)title
@@ -119,7 +132,6 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
                         center.nowPlayingInfo = [playingInfo copy];
                         
                         [self updateColorSchemeForImage:image];
-                            //                if (self.inBackground) [[UIApplication sharedApplication] _updateSnapshotForBackgroundApplication:YES];
                     });
                 }];
             } else [self updateColorSchemeForImage:self.topImageView.image];

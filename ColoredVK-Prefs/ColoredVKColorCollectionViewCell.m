@@ -7,13 +7,11 @@
 //
 
 #import "ColoredVKColorCollectionViewCell.h"
-#import "ColoredVKColorPreview.h"
 #import "NSString+ColoredVK.h"
 #import "PrefixHeader.h"
 
 @interface ColoredVKColorCollectionViewCell ()
 
-@property (strong, nonatomic) ColoredVKColorPreview *colorPreview;
 @property (strong, nonatomic) UIButton *deleteButton;
 
 @end
@@ -48,18 +46,11 @@
     return self;
 }
 
-- (void)setColor:(UIColor *)color
-{
-    _color = color;
-    
-    self.colorPreview.color = self.color;
-}
-
 - (void)setHexColor:(NSString *)hexColor
 {
     _hexColor = hexColor;
     
-    self.color = hexColor.hexColorValue;
+    self.colorPreview.color =hexColor.hexColorValue;
 }
 
 - (void)actionDeleteColor

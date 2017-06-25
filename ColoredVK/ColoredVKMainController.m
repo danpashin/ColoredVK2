@@ -9,13 +9,33 @@
 #import "ColoredVKMainController.h"
 #import "Tweak.h"
 #import "PrefixHeader.h"
-#import <objc/runtime.h>
 #import "ColoredVKMainPrefsController.h"
-#import "UIImage+ResizeMagick.h"
 #import "ColoredVKWallpaperView.h"
+#import <sys/utsname.h>
 
 @implementation ColoredVKMainController
 static NSString const *switchViewKey = @"cvkCellSwitchKey";
+
++ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout
+{
+    [self setImageToTableView:tableView withName:name blackout:blackout flip:NO parallaxEffect:NO];
+}
+
++ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip 
+{
+    [self setImageToTableView:tableView withName:name blackout:blackout flip:flip parallaxEffect:NO];
+}
+
++ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect
+{
+    [self setImageToTableView:tableView withName:name blackout:blackout flip:NO parallaxEffect:parallaxEffect];
+}
+
++ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip  parallaxEffect:(BOOL)parallaxEffect 
+{
+    if (tableView.backgroundView.tag != 23)
+        tableView.backgroundView = [[ColoredVKWallpaperView alloc] initWithFrame:tableView.frame imageName:name blackout:blackout flip:flip parallaxEffect:parallaxEffect];
+}
 
 - (MenuCell *)menuCell
 {
@@ -76,24 +96,83 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     if (switchView) [switchView setOn:enabled animated:YES];
 }
 
-+ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout
+- (void)sendStats
 {
-    [self setImageToTableView:tableView withName:name blackout:blackout flip:NO parallaxEffect:NO];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+    BOOL sendStatistics = prefs[@"sendStatistics"]?[prefs[@"sendStatistics"] boolValue]:YES;
+    if (sendStatistics) {
+        struct utsname systemInfo;
+        uname(&systemInfo);
+        UIDevice *device = [UIDevice currentDevice];
+        
+        NSString *stringURL = [NSString stringWithFormat:@"%@/stats/?product=%@&version=%@&device=%@&ios_version=%@&device_language=%@&vk_version=%@&identifier=%@", 
+                               kPackageAPIURL, kPackageIdentifier, kPackageVersion, @(systemInfo.machine), 
+                               device.systemVersion, [NSLocale preferredLanguages].firstObject, [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], 
+                               device.identifierForVendor.UUIDString];
+        
+        [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]] 
+                                           queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {}];
+    }
 }
 
-+ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip 
+- (NSInteger)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version
 {
-    [self setImageToTableView:tableView withName:name blackout:blackout flip:flip parallaxEffect:NO];
+    if ([first_version isEqualToString:second_version]) return 0;
+    
+    NSArray *first_version_components = [first_version componentsSeparatedByString:@"."];
+    NSArray *second_version_components = [second_version componentsSeparatedByString:@"."];
+    NSInteger length = MIN(first_version_components.count, second_version_components.count);
+    
+    
+    for (int i = 0; i < length; i++) {
+        NSInteger first_component = [first_version_components[i] integerValue];
+        NSInteger second_component = [second_version_components[i] integerValue];
+        
+        if (first_component > second_component) return 1;
+        if (first_component < second_component) return -1;
+    }
+    
+    
+    if (first_version_components.count > second_version_components.count) return 1;
+    if (first_version_components.count < second_version_components.count) return -1;
+    
+    return 0;
 }
 
-+ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect
+- (NSString *)vkVersion
 {
-    [self setImageToTableView:tableView withName:name blackout:blackout flip:NO parallaxEffect:parallaxEffect];
+    return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
 }
 
-+ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip  parallaxEffect:(BOOL)parallaxEffect 
+- (void)checkCrashes
 {
-    if (tableView.backgroundView.tag != 23)
-        tableView.backgroundView = [[ColoredVKWallpaperView alloc] initWithFrame:tableView.frame imageName:name blackout:blackout flip:flip parallaxEffect:parallaxEffect];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{        
+        BOOL shouldShowCrashAlert = NO;
+        NSString *crashFilePath = @"";
+        NSFileManager *filemanager = [NSFileManager defaultManager];    
+        
+        for (NSString *filename in [filemanager contentsOfDirectoryAtPath:CVK_CACHE_PATH error:nil]) {
+            if ([filename containsString:@"com.daniilpashin.coloredvk2_crash"]) {
+                shouldShowCrashAlert = YES;
+                crashFilePath = [NSString stringWithFormat:@"%@/com.daniilpashin.coloredvk2_crash_%@", CVK_CACHE_PATH, filename];
+                break;
+            }
+        }
+        
+        if (shouldShowCrashAlert) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"CRASH_DETECTED_WANT_TO_SEND_TO_DEV") preferredStyle:UIAlertControllerStyleAlert];
+                [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"SEND") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                    
+                }]];
+                [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"BETTER_NOT") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                    [filemanager removeItemAtPath:crashFilePath error:nil];
+                }]];
+                [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+            });
+        }
+    });
 }
+
+
 @end

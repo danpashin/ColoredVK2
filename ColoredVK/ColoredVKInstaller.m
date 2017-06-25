@@ -163,7 +163,6 @@ struct utsname systemInfo;
             }
             
             [self setupFiles];
-            [self sendStats];
         });
         
     }
@@ -182,24 +181,6 @@ struct utsname systemInfo;
     if (![fileManager fileExistsAtPath:cacheMainFolder]) [fileManager createDirectoryAtPath:cacheMainFolder  withIntermediateDirectories:NO attributes:nil error:nil];
     if (![fileManager fileExistsAtPath:CVK_CACHE_PATH])  [fileManager createDirectoryAtPath:CVK_CACHE_PATH withIntermediateDirectories:NO attributes:nil error:nil];
     if (![fileManager fileExistsAtPath:CVK_BACKUP_PATH])  [fileManager createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
-}
-
-- (void)sendStats
-{
-    if ([[NSBundle mainBundle].executablePath.lastPathComponent containsString:@"vkclient"]) {
-        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-        BOOL sendStatistics = prefs[@"sendStatistics"]?[prefs[@"sendStatistics"] boolValue]:YES;
-        if (sendStatistics) {
-            UIDevice *device = [UIDevice currentDevice];
-            NSString *stringURL = [NSString stringWithFormat:@"%@/stats/?product=%@&version=%@&device=%@&ios_version=%@&device_language=%@&vk_version=%@&identifier=%@", 
-                                   kPackageAPIURL, kDRMPackage, kDRMPackageVersion, @(systemInfo.machine), 
-                                   device.systemVersion, [NSLocale preferredLanguages].firstObject, [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], 
-                                   device.identifierForVendor.UUIDString];
-            
-            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]] 
-                                               queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {}];
-        }
-    }
 }
 
 

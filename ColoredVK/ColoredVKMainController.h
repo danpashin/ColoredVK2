@@ -21,6 +21,17 @@
 - (void)switchTriggered:(UISwitch*)switchView;
 @property (strong, nonatomic) MenuCell *menuCell;
 
+/**
+ * Returns -1  if  (first_version < second_version).
+ * Returns  1  if  (first_version > second_version).
+ * Returns  0  if  (first_version = second_version).
+ */
+- (NSInteger)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version;
+- (void)sendStats;
+- (void)checkCrashes;
+
+@property (copy, nonatomic, readonly) NSString *vkVersion;
+
 @property (strong, nonatomic) ColoredVKAudioCover *coverView;
 @property (strong, nonatomic) ColoredVKWallpaperView *menuBackgroundView;
 @property (strong, nonatomic) ColoredVKWallpaperView *navBarImageView;

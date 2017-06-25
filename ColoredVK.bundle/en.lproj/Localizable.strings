@@ -20,6 +20,9 @@
 
 "TWEAK_FOOTER_TEXT" = "Tweak version: %@\nVK App version: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Error loading tweak files.\nCheck their availability or contact developer.";
+"CRASH_DETECTED_WANT_TO_SEND_TO_DEV" = "Oops, like last time the error occurred in VKApp. Send log to developer?";
+"SEND" = "Send";
+"BETTER_NOT" = "Better not";
 
 "OH_YOU_HAVE_NOT_SAVED_COLORS" = "Oh, it seems you have no saved colors";
 "SAVED_COLORS" = "Saved colors";

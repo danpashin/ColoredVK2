@@ -99,7 +99,7 @@
     CGFloat scale = [UIScreen mainScreen].scale;
     
     CGFloat infoViewWidth = IS_IPAD ? 60 * scale: 45 * scale;
-    CGFloat infoViewHeight = IS_IPAD ? 50 * scale : 35 * scale;
+    CGFloat infoViewHeight = IS_IPAD ? 50 * scale : 40 * scale;
     
     self.infoView = [ColoredVKColorPreview new];
     self.infoView.frame = CGRectMake(10, CGRectGetMaxY(self.sliderView.frame) + 10, infoViewWidth, infoViewHeight);
@@ -181,33 +181,41 @@
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[savedCollectionView]|" options:0 metrics:nil views:@{@"savedCollectionView":self.savedCollectionView}]];
     
     
-    CGFloat collectionViewMinHeight = IS_IPAD ? CGRectGetHeight(self.infoView.frame) * 1.5 : CGRectGetHeight(self.infoView.frame) / 1.25;
+    CGFloat infoViewHeight = self.infoView.minHeight;
+    if ([UIScreen mainScreen].scale == 3.0f)
+        infoViewHeight = 95;
+    
+    CGFloat collectionViewHeight = infoViewHeight * 1.5;
     CGFloat savedLabelheight = 26;
     
     UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
     if (!IS_IPAD && (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight)) {
-        collectionViewMinHeight = 0;
+        collectionViewHeight = 0;
         savedLabelheight = 0;
     }
     
-    NSString *vertFormat = @"V:|[navBar(navBarHeight)]-[colorMapView(<=maxColorMapWidth)]-[sliderView(sliderHeight)]-[infoView(infoViewHeight)]-[savedLabel(labelHeight)][savedCollectionView(>=collectionViewMinHeight)]|";
+    NSString *vertFormat = @"V:|[navBar(navBarHeight)]-[colorMapView]-[sliderView(sliderHeight)]-[infoView(infoViewHeight)]-5-[savedColorsLabel(labelHeight)][savedCollectionView(collectionViewHeight)]-|";
     NSDictionary *vertMetrics = @{
                                   @"navBarHeight":@44, @"sliderHeight":@16, @"labelHeight":@(savedLabelheight), 
-                                  @"infoViewHeight":@(CGRectGetHeight(self.infoView.frame)), @"maxColorMapWidth":@(CGRectGetWidth(self.colorMapView.frame) / 1.25), @"collectionViewMinHeight":@(collectionViewMinHeight)
+                                  @"infoViewHeight":@(infoViewHeight), @"collectionViewHeight":@(collectionViewHeight)
                                   };
     
     NSDictionary *vertViews = @{
                                 @"navBar":self.contentViewNavigationBar, @"colorMapView":self.colorMapView, @"sliderView":self.sliderView, 
-                                @"infoView":self.infoView, @"savedLabel":self.savedColorsLabel, @"savedCollectionView":self.savedCollectionView
+                                @"infoView":self.infoView, @"savedColorsLabel":self.savedColorsLabel, @"savedCollectionView":self.savedCollectionView
                                 };
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:vertFormat options:0 metrics:vertMetrics views:vertViews]];
     
     
     self.saveColorButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.saveColorButton attribute:NSLayoutAttributeLeft relatedBy:0 toItem:self.infoView attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.saveColorButton attribute:NSLayoutAttributeTop relatedBy:0 toItem:self.infoView attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.saveColorButton attribute:NSLayoutAttributeBottom relatedBy:0 toItem:self.infoView attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.saveColorButton attribute:NSLayoutAttributeRight relatedBy:0 toItem:self.contentView attribute:NSLayoutAttributeRightMargin multiplier:1 constant:0]];
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.saveColorButton attribute:NSLayoutAttributeLeft
+                                                                 relatedBy:0 toItem:self.infoView attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.saveColorButton attribute:NSLayoutAttributeTop
+                                                                 relatedBy:0 toItem:self.infoView attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.saveColorButton attribute:NSLayoutAttributeBottom
+                                                                 relatedBy:0 toItem:self.infoView attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.saveColorButton attribute:NSLayoutAttributeRight
+                                                                 relatedBy:0 toItem:self.contentView attribute:NSLayoutAttributeRightMargin multiplier:1 constant:0]];
 }
 
 - (void)updateSavedColorsFromPrefs
@@ -375,7 +383,7 @@
                 [self.savedCollectionView deleteItemsAtIndexPaths:@[indexPath]];
                 
                 if ([self.delegate respondsToSelector:@selector(colorPicker:didDeleteColor:)])
-                    [self.delegate colorPicker:self didDeleteColor:self.customHexColor];
+                    [self.delegate colorPicker:self didDeleteColor:hexColor];
                 
                 [self.savedCollectionView reloadData];
             }

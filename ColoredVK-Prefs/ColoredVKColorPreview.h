@@ -11,5 +11,6 @@
 @interface ColoredVKColorPreview : UIView
 
 @property (strong, nonatomic) UIColor *color;
+@property (assign, nonatomic) CGFloat minHeight;
 
 @end

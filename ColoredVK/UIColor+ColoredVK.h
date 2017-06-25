@@ -42,5 +42,6 @@ typedef NS_ENUM (NSUInteger, UIGradientStyle) {
 
 
 @property (nonatomic, readonly, copy) NSString *stringValue;
+@property (nonatomic, readonly, copy) NSString *rgbStringValue;
 @property (nonatomic, readonly, copy) NSString *hexStringValue;
 @end

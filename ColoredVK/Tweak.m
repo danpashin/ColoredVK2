@@ -638,40 +638,6 @@ void setupMessageBubbleForCell(ChatCell *cell)
     }
 }
 
-/**
- * Returns -1  if  (first_version < second_version).
- * Returns  1  if  (first_version > second_version).
- * Returns  0  if  (first_version = second_version).
- */
-NSInteger compareVersions(NSString *first_version, NSString *second_version)
-{
-    if ([first_version isEqualToString:second_version]) return 0;
-    
-    NSArray *first_version_components = [first_version componentsSeparatedByString:@"."];
-    NSArray *second_version_components = [second_version componentsSeparatedByString:@"."];
-    NSInteger length = MIN(first_version_components.count, second_version_components.count);
-    
-    
-    for (int i = 0; i < length; i++) {
-        NSInteger first_component = [first_version_components[i] integerValue];
-        NSInteger second_component = [second_version_components[i] integerValue];
-        
-        if (first_component > second_component) return 1;
-        if (first_component < second_component) return -1;
-    }
-    
-    
-    if (first_version_components.count > second_version_components.count) return 1;
-    if (first_version_components.count < second_version_components.count) return -1;
-    
-    return 0;
-}
-
-NSString *VKVersion()
-{    
-    return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-}
-
 UIVisualEffectView *blurForView(UIView *view, NSInteger tag)
 {
     UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
@@ -744,12 +710,25 @@ void resetNavigationBar(UINavigationBar *navBar)
 }
 
 
+void uncaughtExceptionHandler(NSException *exception)
+{
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    dateFormatter.dateFormat = @"yyyy-MM-dd_HH:mm";
+    
+    NSString *currentDate = [dateFormatter stringFromDate:[NSDate date]];
+    NSString *crashFilePath = [NSString stringWithFormat:@"%@/com.daniilpashin.coloredvk2_crash_%@", CVK_CACHE_PATH, currentDate];
+    
+    NSDictionary *dict = @{@"name":exception.name,@"reason":exception.reason,@"callStackSymbols":exception.callStackSymbols};
+    [dict writeToFile:crashFilePath atomically:YES];
+}
 
 
 #pragma mark - AppDelegate
 CHDeclareClass(AppDelegate);
 CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, application, didFinishLaunchingWithOptions, NSDictionary *, options)
 {
+    NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+    
     [cvkBunlde load];
     reloadPrefs();
     
@@ -775,15 +754,19 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
     
     [ColoredVKInstaller sharedInstaller];
     
-    BOOL beta = [kPackageVersion containsString:@"beta"];
-    if (shouldCheckUpdates || beta) {
-        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
-        NSDateFormatter *dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-        NSInteger daysAgo = [dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]].daysAgo;
-        BOOL allDaysPast = beta?(daysAgo >= 1):(daysAgo >= updatesInterval);
-        if (!prefs[@"lastCheckForUpdates"] || allDaysPast) checkUpdates();
-    }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        BOOL beta = [kPackageVersion containsString:@"beta"];
+        if (shouldCheckUpdates || beta) {
+            NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
+            NSDateFormatter *dateFormatter = [NSDateFormatter new];
+            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+            NSInteger daysAgo = [dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]].daysAgo;
+            BOOL allDaysPast = beta?(daysAgo >= 1):(daysAgo >= updatesInterval);
+            if (!prefs[@"lastCheckForUpdates"] || allDaysPast) checkUpdates();
+        }
+        
+        [cvkMainController sendStats];
+    });
     
     return YES;
 }
@@ -1048,8 +1031,8 @@ CHOptimizedMethod(0, self, void, GroupsController, viewWillLayoutSubviews)
             search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
             NSDictionary *attributes = @{NSForegroundColorAttributeName:changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
             search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder attributes:attributes];
-            NSString *version = VKVersion();
-            if (compareVersions(version, @"2.5") <= 0) {
+            NSString *version = cvkMainController.vkVersion;
+            if ([cvkMainController compareVersion:version withVersion:@"2.5"] <= 0) {
                 for (UIView *view in self.view.subviews) {
                          if ([view isKindOfClass:[UIToolbar class]] && groupsListUseBlur) { setBlur(view, YES, groupsListBlurTone, groupsListBlurStyle); break; }
                     else if ([view isKindOfClass:[UIToolbar class]] && enabledToolBarColor) { setToolBar((UIToolbar*)view); break; } 
@@ -1396,9 +1379,10 @@ CHOptimizedMethod(0, self, void, IOS7AudioController, viewWillLayoutSubviews)
     
     if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")] && (enabled && changeAudioPlayerAppearance)) {
         if (!cvkMainController.coverView) {
-            cvkMainController.coverView = [[ColoredVKAudioCover alloc] initWithFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
+            cvkMainController.coverView = [[ColoredVKAudioCover alloc] init];
             [cvkMainController.coverView updateCoverForArtist:self.actor.text title:self.song.text];
         }
+        [cvkMainController.coverView updateViewFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
         [cvkMainController.coverView addToView:self.view];
     }
 }
@@ -1409,9 +1393,12 @@ CHOptimizedMethod(0, self, void, IOS7AudioController, viewDidLoad)
     
     if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")] && (enabled && changeAudioPlayerAppearance)) {
         if (!cvkMainController.coverView) {
-            cvkMainController.coverView = [[ColoredVKAudioCover alloc] initWithFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
+            cvkMainController.coverView = [[ColoredVKAudioCover alloc] init];
             [cvkMainController.coverView updateCoverForArtist:self.actor.text title:self.song.text];
         }
+        [cvkMainController.coverView updateViewFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
+        [cvkMainController.coverView addToView:self.view];
+        
         audioPlayerTintColor = cvkMainController.coverView.color;
         
         UINavigationBar *navBar = self.navigationController.navigationBar;
@@ -1453,7 +1440,6 @@ CHOptimizedMethod(0, self, void, IOS7AudioController, viewDidLoad)
             setupAudioPlayer(self.hostView, audioPlayerTintColor);
         }];
         
-        [cvkMainController.coverView addToView:self.view];
     }
 }
 
@@ -1463,10 +1449,27 @@ CHOptimizedMethod(2, self, void, AudioPlayer, switchTo, int, arg1, force, BOOL, 
 {
     CHSuper(2, AudioPlayer, switchTo, arg1, force, force);
     if (enabled && changeAudioPlayerAppearance) {
-        if (self.state == 1) [cvkMainController.coverView updateCoverForArtist:self.audio.performer title:self.audio.title];
+        if (!cvkMainController.coverView)
+            cvkMainController.coverView = [[ColoredVKAudioCover alloc] init];
+        
+        if (self.state == 1)
+            [cvkMainController.coverView updateCoverForArtist:self.audio.performer title:self.audio.title];
     }
 }
 
+#pragma mark VKAudioQueuePlayer
+CHDeclareClass(VKAudioQueuePlayer);
+CHOptimizedMethod(2, self, void, VKAudioQueuePlayer, updateNowPlaying, id, arg1, forcePlaybackTime, BOOL, force)
+{
+    CHSuper(2, VKAudioQueuePlayer, updateNowPlaying, arg1, forcePlaybackTime, force);
+    if (enabled && changeAudioPlayerAppearance) {
+        if (!cvkMainController.coverView)
+            cvkMainController.coverView = [[ColoredVKAudioCover alloc] init];
+        
+        if (self.state == 1)
+            [cvkMainController.coverView updateCoverForArtist:self.performer title:self.title];
+    }
+}
 
 
 
@@ -1692,9 +1695,9 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioCatalogAudiosListController, t
 
 #pragma mark AudioPlaylistDetailController
 CHDeclareClass(AudioPlaylistDetailController);
-CHOptimizedMethod(1, self, void, AudioPlaylistDetailController, viewWillAppear, BOOL, animated)
+CHOptimizedMethod(0, self, void, AudioPlaylistDetailController, viewWillLayoutSubviews)
 {
-    CHSuper(1, AudioPlaylistDetailController, viewWillAppear, animated);
+    CHSuper(0, AudioPlaylistDetailController, viewWillLayoutSubviews);
     
     if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistDetailController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
@@ -2276,6 +2279,16 @@ CHOptimizedMethod(1, self, void, UITableView, setBackgroundView, UIView*, backgr
     }
 }
 
+CHOptimizedMethod(0, self, void, UITableView, layoutSubviews)
+{
+    CHSuper(0, UITableView, layoutSubviews);
+    
+    if (enabled && ([self.tableFooterView isKindOfClass:NSClassFromString(@"LoadingFooterView")] && [self.backgroundView isKindOfClass:[ColoredVKWallpaperView class]])) {
+        LoadingFooterView *footerView = (LoadingFooterView *)self.tableFooterView;
+        footerView.label.textColor = UITableViewCellTextColor;
+    }
+}
+
 
 #pragma mark Static methods
 static void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
@@ -2318,12 +2331,12 @@ CHConstructor
         
         NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:prefsPath];
         if (![[NSFileManager defaultManager] fileExistsAtPath:prefsPath]) prefs = [NSMutableDictionary new];
-        NSString *vkVersion = VKVersion();
+        NSString *vkVersion = cvkMainController.vkVersion;
         prefs[@"vkVersion"] = vkVersion;
         [prefs writeToFile:prefsPath atomically:YES];
         VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil)?YES:NO;
         
-        if (compareVersions(vkVersion, @"2.2") >= 0) {
+        if ([cvkMainController compareVersion:vkVersion withVersion:@"2.2"] >= 0) {
             CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
             CFNotificationCenterAddObserver(center, NULL, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             CFNotificationCenterAddObserver(center, NULL, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
@@ -2473,7 +2486,7 @@ CHConstructor
             CHHook(2, AudioCatalogAudiosListController, tableView, cellForRowAtIndexPath);
             
             CHLoadLateClass(AudioPlaylistDetailController);
-            CHHook(1, AudioPlaylistDetailController, viewWillAppear);
+            CHHook(0, AudioPlaylistDetailController, viewWillLayoutSubviews);
             CHHook(2, AudioPlaylistDetailController, tableView, cellForRowAtIndexPath);
             
             CHLoadLateClass(AudioPlaylistsController);
@@ -2510,11 +2523,14 @@ CHConstructor
             CHLoadLateClass(AudioPlayer);
             CHHook(2, AudioPlayer, switchTo, force);
             
+            CHLoadLateClass(VKAudioQueuePlayer);
+            CHHook(2, VKAudioQueuePlayer, updateNowPlaying, forcePlaybackTime);
+            
             CHLoadLateClass(AudioRenderer);
             CHHook(0, AudioRenderer, playIndicator);
             
             
-            if (compareVersions(vkVersion, @"2.9") >= 0) {
+            if ([cvkMainController compareVersion:vkVersion withVersion:@"2.9"] >= 0) {
                 CHLoadLateClass(ChatCell);
                 CHHook(4, ChatCell, initWithDelegate, multidialog, selfdialog, identifier);
                 CHHook(0, ChatCell, prepareForReuse);
@@ -2564,6 +2580,7 @@ CHConstructor
             CHLoadLateClass(UITableView);
             CHHook(6, UITableView, _sectionHeaderView, withFrame, forSection, floating, reuseViewIfPossible, willDisplay);
             CHHook(1, UITableView, setBackgroundView);
+            CHHook(0, UITableView, layoutSubviews);
 
         } else {
             showAlertWithMessage([NSString stringWithFormat:CVKLocalizedString(@"VKAPP_VERSION_IS_TOO_LOW"),  vkVersion, @"2.2"]);

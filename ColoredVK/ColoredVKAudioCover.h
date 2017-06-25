@@ -13,7 +13,7 @@
 
 @interface ColoredVKAudioCover : NSObject
 
-- (instancetype)initWithFrame:(CGRect)frame andSeparationPoint:(CGPoint)point;
+- (void)updateViewFrame:(CGRect)frame andSeparationPoint:(CGPoint)separationPoint;
 - (void)updateCoverForArtist:(NSString *)artist title:(NSString *)title;
 - (void)addToView:(UIView *)view;
 
