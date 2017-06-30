@@ -87,7 +87,7 @@ BOOL shouldCheckUpdates;
 BOOL useMessageBubbleTintColor;
 BOOL useCustomMessageReadColor;
 
-BOOL hideCommentSeparators;
+BOOL showCommentSeparators;
 BOOL disableGroupCovers;
 
 BOOL changeMenuTextColor;
@@ -235,7 +235,7 @@ void reloadPrefs()
         changeSBColors = [prefs[@"changeSBColors"] boolValue];
         changeSwitchColor = [prefs[@"changeSwitchColor"] boolValue];
         
-        hideCommentSeparators = [prefs[@"hideCommentSeparators"] boolValue];
+        showCommentSeparators = prefs[@"showCommentSeparators"] ? ![prefs[@"showCommentSeparators"] boolValue] : NO;
         disableGroupCovers = [prefs[@"disableGroupCovers"] boolValue];
         
         enabledMessagesImage = [prefs[@"enabledMessagesImage"] boolValue];
@@ -1567,9 +1567,9 @@ CHOptimizedMethod(0, self, UIButton*, AudioRenderer, playIndicator)
  */
 #pragma mark AudioDashboardController
 CHDeclareClass(AudioDashboardController);
-CHOptimizedMethod(1, self, void, AudioDashboardController, viewWillAppear, BOOL, animated)
+CHOptimizedMethod(0, self, void, AudioDashboardController, viewWillLayoutSubviews)
 {
-    CHSuper(1, AudioDashboardController, viewWillAppear, animated);
+    CHSuper(0, AudioDashboardController, viewWillLayoutSubviews);
     
     if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioDashboardController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
@@ -1594,9 +1594,9 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioDashboardController, tableView
 
 #pragma mark AudioCatalogController
 CHDeclareClass(AudioCatalogController);
-CHOptimizedMethod(1, self, void, AudioCatalogController, viewWillAppear, BOOL, animated)
+CHOptimizedMethod(0, self, void, AudioCatalogController, viewWillLayoutSubviews)
 {
-    CHSuper(1, AudioCatalogController, viewWillAppear, animated);
+    CHSuper(0, AudioCatalogController, viewWillLayoutSubviews);
     
     if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioCatalogController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
@@ -1626,9 +1626,9 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioCatalogController, tableView, 
 
 #pragma mark AudioCatalogOwnersListController
 CHDeclareClass(AudioCatalogOwnersListController);
-CHOptimizedMethod(1, self, void, AudioCatalogOwnersListController, viewWillAppear, BOOL, animated)
+CHOptimizedMethod(0, self, void, AudioCatalogOwnersListController, viewWillLayoutSubviews)
 {
-    CHSuper(1, AudioCatalogOwnersListController, viewWillAppear, animated);
+    CHSuper(0, AudioCatalogOwnersListController, viewWillLayoutSubviews);
     
     if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioCatalogOwnersListController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
@@ -1666,9 +1666,9 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioCatalogOwnersListController, t
 
 #pragma mark AudioCatalogAudiosListController
 CHDeclareClass(AudioCatalogAudiosListController);
-CHOptimizedMethod(1, self, void, AudioCatalogAudiosListController, viewWillAppear, BOOL, animated)
+CHOptimizedMethod(0, self, void, AudioCatalogAudiosListController, viewWillLayoutSubviews)
 {
-    CHSuper(1, AudioCatalogAudiosListController, viewWillAppear, animated);
+    CHSuper(0, AudioCatalogAudiosListController, viewWillLayoutSubviews);
     
     if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioCatalogAudiosListController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
@@ -1736,7 +1736,7 @@ CHOptimizedMethod(1, self, void, AudioPlaylistsController, viewWillAppear, BOOL,
             search.backgroundImage = [UIImage new];
             search.tag = 3;
             search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
-            NSDictionary *attributes = @{NSForegroundColorAttributeName: changeFriendsTextColor?friendsTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
+            NSDictionary *attributes = @{NSForegroundColorAttributeName: changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
             search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder attributes:attributes];
             search._scopeBarBackgroundView.superview.hidden = YES;
         }
@@ -2029,7 +2029,7 @@ CHOptimizedMethod(1, self, void, MessageController, viewWillAppear, BOOL, animat
 CHDeclareClass(VKComment);
 CHOptimizedMethod(0, self, BOOL, VKComment, separatorDisabled)
 {
-    if (enabled) return hideCommentSeparators;
+    if (enabled) return showCommentSeparators;
     return CHSuper(0, VKComment, separatorDisabled);
 }
 
@@ -2081,9 +2081,9 @@ CHOptimizedMethod(0, self, UIStatusBarStyle, PostEditController, preferredStatus
 
 #pragma mark ProfileFriendsController
 CHDeclareClass(ProfileFriendsController);
-CHOptimizedMethod(1, self, void, ProfileFriendsController, viewWillAppear, BOOL, animated)
+CHOptimizedMethod(0, self, void, ProfileFriendsController, viewWillLayoutSubviews)
 {
-    CHSuper(1, ProfileFriendsController, viewWillAppear, animated);
+    CHSuper(0, ProfileFriendsController, viewWillLayoutSubviews);
     
     if ((enabled && enabledFriendsImage) && [self isKindOfClass:NSClassFromString(@"ProfileFriendsController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"friendsBackgroundImage" blackout:friendsImageBlackout parallaxEffect:useFriendsParallax];
@@ -2193,9 +2193,9 @@ CHOptimizedMethod(2, self, UITableViewCell*, FriendsAllRequestsController, table
 
 #pragma mark VideoAlbumController
 CHDeclareClass(VideoAlbumController);
-CHOptimizedMethod(1, self, void, VideoAlbumController, viewWillAppear, BOOL, animated)
+CHOptimizedMethod(0, self, void, VideoAlbumController, viewWillLayoutSubviews)
 {
-    CHSuper(1, VideoAlbumController, viewWillAppear, animated);
+    CHSuper(0, VideoAlbumController, viewWillLayoutSubviews);
     
     if ((enabled && enabledVideosImage) && [self isKindOfClass:NSClassFromString(@"VideoAlbumController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"videosBackgroundImage" blackout:videosImageBlackout parallaxEffect:useVideosParallax];
@@ -2300,7 +2300,6 @@ static void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CF
 static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        for (UIView *view in mainController.view.subviews) if (view.tag == 25) { [view removeFromSuperview]; break; }
         BOOL shouldShow = (enabled && enabledMenuImage);
         UISearchBar *searchBar = (UISearchBar *)mainController.tableView.tableHeaderView;
         shouldShow?setupUISearchBar(searchBar):resetUISearchBar(searchBar);
@@ -2470,19 +2469,19 @@ CHConstructor
             CHHook(2, AudioPlaylistController, tableView, cellForRowAtIndexPath);
             
             CHLoadLateClass(AudioDashboardController);
-            CHHook(1, AudioDashboardController, viewWillAppear);
+            CHHook(0, AudioDashboardController, viewWillLayoutSubviews);
             CHHook(2, AudioDashboardController, tableView, cellForRowAtIndexPath);
             
             CHLoadLateClass(AudioCatalogController);
-            CHHook(1, AudioCatalogController, viewWillAppear);
+            CHHook(0, AudioCatalogController, viewWillLayoutSubviews);
             CHHook(2, AudioCatalogController, tableView, cellForRowAtIndexPath);
             
             CHLoadLateClass(AudioCatalogOwnersListController);
-            CHHook(1, AudioCatalogOwnersListController, viewWillAppear);
+            CHHook(0, AudioCatalogOwnersListController, viewWillLayoutSubviews);
             CHHook(2, AudioCatalogOwnersListController, tableView, cellForRowAtIndexPath);
             
             CHLoadLateClass(AudioCatalogAudiosListController);
-            CHHook(1, AudioCatalogAudiosListController, viewWillAppear);
+            CHHook(0, AudioCatalogAudiosListController, viewWillLayoutSubviews);
             CHHook(2, AudioCatalogAudiosListController, tableView, cellForRowAtIndexPath);
             
             CHLoadLateClass(AudioPlaylistDetailController);
@@ -2557,7 +2556,7 @@ CHConstructor
             
             
             CHLoadLateClass(ProfileFriendsController);
-            CHHook(1, ProfileFriendsController, viewWillAppear);
+            CHHook(0, ProfileFriendsController, viewWillLayoutSubviews);
             CHHook(2, ProfileFriendsController, tableView, cellForRowAtIndexPath);
             
             
@@ -2572,7 +2571,7 @@ CHConstructor
             
             
             CHLoadLateClass(VideoAlbumController);
-            CHHook(1, VideoAlbumController, viewWillAppear);
+            CHHook(0, VideoAlbumController, viewWillLayoutSubviews);
             CHHook(2, VideoAlbumController, tableView, cellForRowAtIndexPath);
             
             

@@ -11,12 +11,14 @@
 #import "PrefixHeader.h"
 #import "LHProgressHUD.h"
 #import "PSSpecifier.h"
+#import "ColoredVKHUD.h"
 
 @interface ColoredVKImageCell ()
 @property (strong, nonatomic) NSString *prefsPath;
 @property (strong, nonatomic) NSString *cvkFolder;
 @property (strong, nonatomic) NSString *key;
 @property (strong, nonatomic) UIImageView *previewImageView;
+@property (retain, nonatomic) ColoredVKHUD *hud;
 @end
 
 @implementation ColoredVKImageCell
@@ -113,8 +115,9 @@
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         [alertController addAction:
          [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Save to Camera Roll") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            self.hud = [ColoredVKHUD showHUD];
             UIImage *image = [UIImage imageWithContentsOfFile:[self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]]];
-            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
+            UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
         }]];
         
         [alertController addAction:
@@ -139,7 +142,7 @@
                 NSString *fullImagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]];
                 
                 NSError *error = nil;
-                NSFileManager *fileManager = NSFileManager.defaultManager;
+                NSFileManager *fileManager = [NSFileManager defaultManager];
                 
                 if ([fileManager fileExistsAtPath:previewPath]) [fileManager removeItemAtPath:previewPath error:&error];
                 if ([fileManager fileExistsAtPath:fullImagePath]) [fileManager removeItemAtPath:fullImagePath error:&error];
@@ -168,6 +171,14 @@
         if ([NSFileManager.defaultManager fileExistsAtPath:[self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]]]) 
             [viewControllerToShowIn presentViewController:alertController animated:YES completion:nil];
     }
+}
+
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
+{
+    if (!error)
+        [self.hud showSuccess];
+    else
+        [self.hud showFailureWithStatus:error.localizedFailureReason];
 }
 
 - (void)dealloc

@@ -23,7 +23,8 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.colorPreview = [ColoredVKColorPreview new];
-        self.backgroundView = self.colorPreview;
+        self.colorPreview.frame = self.bounds;
+        [self.contentView addSubview:self.colorPreview];
         
         NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         
@@ -38,10 +39,12 @@
         [self.contentView addSubview:self.deleteButton];
         
         self.deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[deleteButton(size)]-5-|" options:0 
-                                                                                 metrics:@{@"size":@(size)} views:@{@"deleteButton":self.deleteButton}]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[deleteButton(size)]" options:0
-                                                                                 metrics:@{@"size":@(size)} views:@{@"deleteButton":self.deleteButton}]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[deleteButton(size)]-5-|" options:0 metrics:@{@"size":@(size)} views:@{@"deleteButton":self.deleteButton}]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[deleteButton(size)]" options:0 metrics:@{@"size":@(size)} views:@{@"deleteButton":self.deleteButton}]];
+        
+        self.colorPreview.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[colorPreview]|" options:0 metrics:nil views:@{@"colorPreview":self.colorPreview}]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[colorPreview]|" options:0 metrics:nil views:@{@"colorPreview":self.colorPreview}]];
     }
     return self;
 }
@@ -50,7 +53,7 @@
 {
     _hexColor = hexColor;
     
-    self.colorPreview.color =hexColor.hexColorValue;
+    self.colorPreview.color = hexColor.hexColorValue;
 }
 
 - (void)actionDeleteColor

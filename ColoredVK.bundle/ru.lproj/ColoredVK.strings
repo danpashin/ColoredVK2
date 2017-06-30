@@ -63,7 +63,7 @@
 "CACHE_COVERS" = "Кэшировать обложки";
 "CLEAR_CACHE" = "Очистить кэш";
 
-"HIDE_COMMENT_SEPARATORS" = "Скрыть разделители в комментариях";
+"COMMENT_SEPARATORS" = "Разделители в комментариях";
 "DISABLE_GROUP_COVERS" = "Отключить обложки";
 
 "RESET_SETTINGS" = "Сбросить настройки";

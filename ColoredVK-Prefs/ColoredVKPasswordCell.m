@@ -16,7 +16,8 @@
     return [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] loadNibNamed:NSStringFromClass([ColoredVKPasswordCell class]) owner:viewController options:nil].firstObject;
 }
 
-- (void)awakeFromNib {
+- (void)awakeFromNib
+{
     [super awakeFromNib];
     
     self.textField.delegate = self;

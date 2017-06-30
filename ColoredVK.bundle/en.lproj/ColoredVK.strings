@@ -65,7 +65,7 @@
 "CACHE_COVERS" = "Cache covers";
 "CLEAR_CACHE" = "Clear cache";
 
-"HIDE_COMMENT_SEPARATORS" = "Hide separators in comments";
+"COMMENT_SEPARATORS" = "Separators in comments";
 "DISABLE_GROUP_COVERS" = "Disable covers";
 
 "RESET_SETTINGS" = "Reset settings";

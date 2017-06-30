@@ -28,11 +28,11 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
-			<false/>
+			<true/>
 			<key>key</key>
-			<string>hideCommentSeparators</string>
+			<string>showCommentSeparators</string>
 			<key>label</key>
-			<string>HIDE_COMMENT_SEPARATORS</string>
+			<string>COMMENT_SEPARATORS</string>
 		</dict>
 		<dict>
 			<key>cell</key>

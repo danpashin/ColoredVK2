@@ -29,6 +29,9 @@
     return self;
 }
 
+
+#pragma mark - ColoredVKStepperButtonDelegate
+
 - (void)stepperButton:(ColoredVKStepperButton *)stepperButton didUpdateValue:(NSInteger)value
 {
     NSMutableDictionary *tweakSettings = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];

@@ -71,7 +71,8 @@ static CGFloat const kColorPreviewCornerRadius = 6.0f;
     self.rgbLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.colorPreview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[hexLabel]|" options:0 metrics:nil views:@{@"hexLabel":self.hexLabel}]];
     [self.colorPreview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[rgbLabel]|" options:0 metrics:nil views:@{@"rgbLabel":self.rgbLabel}]];
-    [self.colorPreview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[hexLabel(height)][rgbLabel(12.5)]|" options:0 metrics:@{@"height":@(kHexLabelHeight)} 
+    [self.colorPreview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[hexLabel(hexHeight)][rgbLabel(rgbHeight)]|"
+                                                                              options:0 metrics:@{@"hexHeight":@(kHexLabelHeight), @"rgbHeight":@(kHexLabelHeight / 2)} 
                                                                                 views:@{@"hexLabel":self.hexLabel, @"rgbLabel":self.rgbLabel}]];
     
     CGFloat constant = IS_IPAD ? 2.5 : 2.0;

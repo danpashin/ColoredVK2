@@ -30,7 +30,10 @@
 - (void)sendStats;
 - (void)checkCrashes;
 
-@property (copy, nonatomic, readonly) NSString *vkVersion;
+/**
+ * Returns application version from Info.plist
+ */
+@property (readonly, copy, nonatomic) NSString *vkVersion;
 
 @property (strong, nonatomic) ColoredVKAudioCover *coverView;
 @property (strong, nonatomic) ColoredVKWallpaperView *menuBackgroundView;

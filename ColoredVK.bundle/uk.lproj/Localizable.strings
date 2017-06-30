@@ -27,7 +27,7 @@
 
 "OH_YOU_HAVE_NOT_SAVED_COLORS" = "Ой, схоже у Вас немає збережених кольорів";
 "SAVED_COLORS" = "Збережені кольору";
-"ALERT_COPY_CURRENT_VALUE_TIILE" = "Скопіювати поточне значення hex";
+"COPY_SAVED" = "Скопіювати збережене";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Введіть 16-ковий код кольору\n(Символ # ставити не обов'язково)";
 "EXAMPLE_ALERT_MESSAGE" = "Наприклад %@";
 "RESET_COLOR_QUESTION" = "Ви дійсно хочете скинути колір?";

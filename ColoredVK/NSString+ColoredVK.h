@@ -13,4 +13,5 @@
 @property (nonatomic, readonly, copy) UIColor *colorValue;
 @property (nonatomic, readonly, copy) UIColor *hexColorValue;
 @property (copy, nonatomic, readonly) NSString *md5String;
+@property (nonatomic, getter=isHexColor, readonly) BOOL hexColor;
 @end

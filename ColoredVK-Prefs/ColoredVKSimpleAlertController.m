@@ -9,22 +9,29 @@
 #import "ColoredVKSimpleAlertController.h"
 #import "PrefixHeader.h"
 
-static CGFloat const viewsHeight = 30.0f;
+static CGFloat const viewsHeight = 32.0f;
 
 
 @implementation ColoredVKSimpleAlertController
+
+- (BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
 
 - (void)viewDidLoad
 {
     self.contentViewWantsShadow = NO;
     self.statusBarNeedsHidden = YES;
-    self.hideByTouch = NO;
+    self.hideByTouch = YES;
     
     [super viewDidLoad];
     
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
     self.scrollView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
-    [self.scrollView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)]];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
+    tap.delegate = self;
+    [self.scrollView addGestureRecognizer:tap];
     [self.view addSubview:self.scrollView];
     
     
@@ -33,7 +40,6 @@ static CGFloat const viewsHeight = 30.0f;
     self.contentView.backgroundColor = [UIColor whiteColor];
     self.contentView.layer.masksToBounds = YES;
     self.contentView.layer.cornerRadius = 6;
-    self.contentView.userInteractionEnabled = YES;
     [self.scrollView addSubview:self.contentView];
     
     
@@ -42,7 +48,6 @@ static CGFloat const viewsHeight = 30.0f;
     
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width, viewsHeight * 1.5)];
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
-    self.titleLabel.adjustsFontSizeToFitWidth = YES;
     self.titleLabel.numberOfLines = 2;
     [self.contentView addSubview:self.titleLabel];
     
@@ -61,15 +66,12 @@ static CGFloat const viewsHeight = 30.0f;
     
     self.button = [[UIButton alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, viewsHeight)];
     self.button.layer.masksToBounds = YES;
-    self.button.layer.cornerRadius = 6;
-    self.button.layer.borderColor = [UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1].CGColor;
-    self.button.layer.borderWidth = 1.0;
+    self.button.layer.cornerRadius = 5;
     self.button.titleLabel.adjustsFontSizeToFitWidth = YES;
-    [self.button setTitleColor:[UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1] forState:UIControlStateNormal];
-    [self.button setTitleColor:[UIColor colorWithRed:60.0/255.0f green:82.0/255.0f blue:131.0/255.0f alpha:1] forState:UIControlStateHighlighted];
     self.button.titleLabel.textAlignment = NSTextAlignmentCenter;
-    [self.button addTarget:self action:@selector(highlightButtonBorder:) forControlEvents:UIControlEventTouchDragEnter];
-    [self.button addTarget:self action:@selector(unHighlightButtonBorder:) forControlEvents:UIControlEventTouchDragExit];
+    [self.button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.button setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:80/255.0f green:102/255.0f blue:151/255.0f alpha:1.0]] forState:UIControlStateNormal];
+    [self.button setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:60/255.0f green:82/255.0f blue:131/255.0f alpha:1.0]] forState:UIControlStateHighlighted];
     [self.contentView addSubview:self.button];
     
     [self setupConstraints];
@@ -80,6 +82,9 @@ static CGFloat const viewsHeight = 30.0f;
 
 - (void)setupConstraints
 {
+    [self.view removeConstraints:self.view.constraints];
+    [self.contentView removeConstraints:self.contentView.constraints];
+    
     self.scrollView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[scrollView]|" options:0 metrics:nil views:@{@"scrollView":self.scrollView}]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[scrollView]|" options:0 metrics:nil views:@{@"scrollView":self.scrollView}]];
@@ -93,26 +98,24 @@ static CGFloat const viewsHeight = 30.0f;
     self.button.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[button]-|" options:0 metrics:nil views:@{@"button":self.button}]];
     
-    
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[titleLabel]-[textField]-[button]-|" options:0
-                                                                             metrics:nil
+    NSDictionary *verticalMetrics = @{@"titleHeight":@(viewsHeight * 1.5), @"textFieldHeight":@(viewsHeight), @"buttonHeight":@(viewsHeight)};
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[titleLabel(titleHeight)]-[textField(textFieldHeight)]-[button(buttonHeight)]-|" options:0
+                                                                             metrics:verticalMetrics
                                                                                views:@{@"titleLabel":self.titleLabel, @"textField":self.textField, @"button":self.button}]];
+    
+    CGFloat height = 0;
+    for (NSNumber *number in verticalMetrics.allValues) {
+        height += number.floatValue;
+    }
+    height += (self.contentView.subviews.count + 1) * 8;
+    
+    CGFloat width = (self.prefferedWidth > 0) ? self.prefferedWidth : CGRectGetWidth(self.contentView.frame);
     
     self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeCenterX relatedBy:0 toItem:self.scrollView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
     [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeCenterY relatedBy:0 toItem:self.scrollView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-    [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeWidth relatedBy:0 toItem:nil attribute:0 multiplier:1 constant:CGRectGetWidth(self.contentView.frame)]];
-    [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeHeight relatedBy:0 toItem:nil attribute:0 multiplier:1 constant:CGRectGetHeight(self.contentView.frame)]];
-}
-
-- (void)highlightButtonBorder:(UIButton *)button
-{
-    button.layer.borderColor = [UIColor colorWithRed:60.0/255.0f green:82.0/255.0f blue:131.0/255.0f alpha:1].CGColor;
-}
-
-- (void)unHighlightButtonBorder:(UIButton *)button
-{
-    button.layer.borderColor = [UIColor colorWithRed:80.0/255.0f green:102.0/255.0f blue:151.0/255.0f alpha:1].CGColor;
+    [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeWidth relatedBy:0 toItem:nil attribute:0 multiplier:1 constant:width]];
+    [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeHeight relatedBy:0 toItem:nil attribute:0 multiplier:1 constant:height]];
 }
 
 - (void)keyboardWillShow:(NSNotification *)notification
@@ -124,6 +127,14 @@ static CGFloat const viewsHeight = 30.0f;
 - (void)keyboardWillHide
 {
     self.scrollView.contentOffset = CGPointZero;
+}
+
+- (void)setPrefferedWidth:(CGFloat)prefferedWidth
+{
+    _prefferedWidth = prefferedWidth;
+    
+    self.contentView.frame = CGRectMake(CGRectGetMinX(self.contentView.frame), CGRectGetMinY(self.contentView.frame), prefferedWidth, CGRectGetHeight(self.contentView.frame));
+    [self setupConstraints];
 }
 
 - (void)show
@@ -162,6 +173,12 @@ static CGFloat const viewsHeight = 30.0f;
                                               }];
                          }];
     });
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    if (![touch.view isDescendantOfView:self.contentView] && self.hideByTouch) return YES;
+    return NO;
 }
 
 - (void)dealloc

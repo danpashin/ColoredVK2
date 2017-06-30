@@ -26,7 +26,7 @@
 
 "OH_YOU_HAVE_NOT_SAVED_COLORS" = "Oh, it seems you have no saved colors";
 "SAVED_COLORS" = "Saved colors";
-"ALERT_COPY_CURRENT_VALUE_TIILE" = "Copy current hex value";
+"COPY_SAVED" = "Copy saved";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Enter a hexadecimal color code\n(Symbol # is not necessary)";
 "EXAMPLE_ALERT_MESSAGE" = "Like %@";
 "RESET_COLOR_QUESTION" = "Are you really want to reset color?";

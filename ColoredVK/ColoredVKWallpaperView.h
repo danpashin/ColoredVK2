@@ -24,9 +24,25 @@
 @property (assign, nonatomic) BOOL parallaxEnabled;
 
 - (void)updateViewForKey:(NSString *)key;
+
+/**
+ *  Adds this view to parent view
+ */
 - (void)addToView:(UIView *)view animated:(BOOL)animated;
+
+/**
+ *  Adds this view to background of parent view
+ */
 - (void)addToBack:(UIView *)view animated:(BOOL)animated;
+
+/**
+ *  Adds this view to front of parent view
+ */
 - (void)addToFront:(UIView *)view animated:(BOOL)animated;
+
+/**
+ *  Removes this view from parent view
+ */
 - (void)removeFromSuperview;
 
 @end

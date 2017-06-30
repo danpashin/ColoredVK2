@@ -65,7 +65,7 @@
 "CACHE_COVERS" = "Кешувати обкладинки";
 "CLEAR_CACHE" = "Очистити кеш";
 
-"HIDE_COMMENT_SEPARATORS" = "Приховати роздільники в коментарях";
+"COMMENT_SEPARATORS" = "Роздільники в коментарях";
 "DISABLE_GROUP_COVERS" = "Відключити кришки";
 
 "RESET_SETTINGS" = "Скидання налаштувань";

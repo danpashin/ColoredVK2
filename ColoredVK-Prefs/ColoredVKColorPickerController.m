@@ -15,6 +15,7 @@
 #import "ColoredVKColorCollectionViewCell.h"
 #import "ColoredVKSimpleAlertController.h"
 #import "UIScrollView+EmptyDataSet.h"
+#import "ColoredVKResponsiveButton.h"
 
 @interface ColoredVKColorPickerController () <UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate, ColoredVKColorCollectionViewCellDelegate>
 
@@ -25,13 +26,18 @@
 @property (strong, nonatomic) UIColor *customColor;
 @property (strong, nonatomic) NSString *customHexColor;
 @property (strong, nonatomic) NSMutableArray <NSString *> *savedColors;
+@property (assign, nonatomic, readonly) CGSize savedCollectionViewItemSize;
 
 @property (strong, nonatomic) ColoredVKColorPreview *infoView;
 @property (strong, nonatomic) HRBrightnessSlider *sliderView;
 @property (strong, nonatomic) HRColorMapView *colorMapView;
-@property (strong, nonatomic) UIButton *saveColorButton;
+@property (strong, nonatomic) ColoredVKResponsiveButton *saveColorButton;
 @property (strong, nonatomic) UILabel *savedColorsLabel;
 @property (strong, nonatomic) UICollectionView *savedCollectionView;
+
+@property (strong, nonatomic) UIView *colorMapContainer;
+@property (strong, nonatomic) UIView *colorPreviewContainer;
+@property (strong, nonatomic) UIView *savedColorsContainer;
 
 @end
 
@@ -79,70 +85,111 @@
     UIImage *resetImage = [[UIImage imageNamed:@"ResetIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     navItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:resetImage style:UIBarButtonItemStylePlain target:self action:@selector(actionResetColor)];
     
-    CGRect colorMapRect = CGRectMake(10, CGRectGetMaxY(self.contentViewNavigationBar.frame), CGRectGetWidth(self.contentView.frame)-20, CGRectGetWidth(self.contentView.frame)-60);
+    
+    
+    self.colorMapContainer = [UIView new];
+    self.colorMapContainer.frame = CGRectMake(0, CGRectGetMaxY(self.contentViewNavigationBar.frame), CGRectGetWidth(self.contentView.frame), CGRectGetWidth(self.contentView.frame)-60);
+    [self.contentView addSubview:self.colorMapContainer];
+    
+    CGRect colorMapRect = CGRectMake(8, 8, CGRectGetWidth(self.colorMapContainer.frame) - 16, CGRectGetWidth(self.colorMapContainer.frame) - 60);
     
     self.colorMapView = [HRColorMapView colorMapWithFrame:colorMapRect saturationUpperLimit:0.9f];
     [self.colorMapView addTarget:self action:@selector(setColor:) forControlEvents:UIControlEventValueChanged];
     self.colorMapView.tileSize = @1;
     self.colorMapView.brightness = 1;
     self.colorMapView.layer.masksToBounds = YES;
-    self.colorMapView.layer.cornerRadius = self.contentView.layer.cornerRadius/2;
-    [self.contentView addSubview:self.colorMapView];
+    self.colorMapView.layer.cornerRadius = 10;
+    [self.colorMapContainer addSubview:self.colorMapView];
     
     self.sliderView = [HRBrightnessSlider new];
-    self.sliderView.frame = CGRectMake(0, CGRectGetMaxY(self.colorMapView.frame), CGRectGetWidth(self.contentView.frame), 32);
+    self.sliderView.frame = CGRectMake(0, CGRectGetMaxY(self.colorMapView.frame), CGRectGetWidth(self.colorMapContainer.frame), 32);
     [self.sliderView addTarget:self action:@selector(setColorBrightness:) forControlEvents:UIControlEventValueChanged];
     self.sliderView.brightnessLowerLimit = @0;
-    [self.contentView addSubview:self.sliderView];
+    [self.colorMapContainer addSubview:self.sliderView];
     
     
-    CGFloat scale = [UIScreen mainScreen].scale;
     
-    CGFloat infoViewWidth = IS_IPAD ? 60 * scale: 45 * scale;
-    CGFloat infoViewHeight = IS_IPAD ? 50 * scale : 40 * scale;
+    
+    self.colorPreviewContainer = [UIView new];
+    self.colorPreviewContainer.frame = CGRectMake(0, CGRectGetMaxY(self.colorMapContainer.frame), CGRectGetWidth(self.contentView.frame), 0);
+    [self.contentView addSubview:self.colorPreviewContainer];
     
     self.infoView = [ColoredVKColorPreview new];
-    self.infoView.frame = CGRectMake(10, CGRectGetMaxY(self.sliderView.frame) + 10, infoViewWidth, infoViewHeight);
     [self.infoView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionShowHexWindow)]];
-    [self.contentView addSubview:self.infoView];
+    [self.colorPreviewContainer addSubview:self.infoView];
     
-    
-    self.saveColorButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.saveColorButton.frame = CGRectMake(CGRectGetMaxX(self.infoView.frame) + 20, CGRectGetMinY(self.infoView.frame), CGRectGetWidth(self.contentView.frame)-(CGRectGetMaxX(self.infoView.frame) + 30), 32);
-    [self.saveColorButton setImage:[UIImage imageNamed:@"SaveIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
+    self.saveColorButton = [ColoredVKResponsiveButton buttonWithType:UIButtonTypeCustom];
+    self.saveColorButton.frame = CGRectMake(CGRectGetMaxX(self.infoView.frame) + 20, CGRectGetMinY(self.infoView.frame), CGRectGetWidth(self.colorPreviewContainer.frame)-(CGRectGetMaxX(self.infoView.frame) + 30), 32);
+    UIImage *plusImage = [UIImage imageNamed:@"SaveIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    [self.saveColorButton setImage:plusImage forState:UIControlStateNormal];
+    [self.saveColorButton setImage:plusImage forState:UIControlStateSelected];
     [self.saveColorButton setTitle:UIKitLocalizedString(@"Save") forState:UIControlStateNormal];
     [self.saveColorButton setTitleColor:[UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1.0] forState:UIControlStateNormal];
-    self.saveColorButton.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 15);
+    self.saveColorButton.cachedTitleEdgeInsets = UIEdgeInsetsMake(0, 15, 0, 0);
+    self.saveColorButton.titleEdgeInsets = self.saveColorButton.cachedTitleEdgeInsets;
     [self.saveColorButton addTarget:self action:@selector(actionSaveColor) forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:self.saveColorButton];
+    [self.colorPreviewContainer addSubview:self.saveColorButton];
     
     
-    self.savedColorsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(self.infoView.frame) + 10, CGRectGetWidth(self.contentView.frame) - 20, 26)];
+    
+    self.savedColorsContainer = [UIView new];
+    self.savedColorsContainer.frame = CGRectMake(0, CGRectGetMaxY(self.colorPreviewContainer.frame), CGRectGetWidth(self.contentView.frame), 126);
+    [self.contentView addSubview:self.savedColorsContainer];
+    
+    self.savedColorsLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 8, CGRectGetWidth(self.savedColorsContainer.frame) - 16, 26)];
     self.savedColorsLabel.text = NSLocalizedStringFromTableInBundle(@"SAVED_COLORS", nil, self.cvkBundle, nil);
     self.savedColorsLabel.font = [UIFont boldSystemFontOfSize:20.0f];
+    self.savedColorsLabel.numberOfLines = 2;
     self.savedColorsLabel.textAlignment = NSTextAlignmentCenter;
     self.savedColorsLabel.textColor = [UIColor darkGrayColor];
-    [self.contentView addSubview:self.savedColorsLabel];
-    
+    self.savedColorsLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [self.savedColorsContainer addSubview:self.savedColorsLabel];
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    layout.sectionInset = UIEdgeInsetsMake(0, 10, 0, 0);
+    layout.sectionInset = UIEdgeInsetsMake(0, 10, 0, 10);
     layout.minimumLineSpacing = 10;
+    layout.itemSize = self.savedCollectionViewItemSize;
     
-    self.savedCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.savedColorsLabel.frame) + 10, CGRectGetWidth(self.contentView.frame), 100) collectionViewLayout:layout];
+    self.savedCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.savedColorsLabel.frame) + 8, CGRectGetWidth(self.savedColorsContainer.frame), 100) 
+                                                  collectionViewLayout:layout];
     self.savedCollectionView.backgroundColor = [UIColor clearColor];
     self.savedCollectionView.pagingEnabled = YES;
     self.savedCollectionView.showsHorizontalScrollIndicator = NO;
+    self.savedCollectionView.showsVerticalScrollIndicator = NO;
     [self.savedCollectionView registerClass:[ColoredVKColorCollectionViewCell class] forCellWithReuseIdentifier:@"colorCell"];
     self.savedCollectionView.delegate = self;
     self.savedCollectionView.dataSource = self;
     self.savedCollectionView.emptyDataSetSource = self;
     self.savedCollectionView.emptyDataSetDelegate = self;
-    [self.contentView addSubview:self.savedCollectionView];
+    [self.savedColorsContainer addSubview:self.savedCollectionView];
     
 
     [self updateSavedColorsFromPrefs];
+}
+
+- (void)viewWillLayoutSubviews
+{
+    [super viewWillLayoutSubviews];
+    
+    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+    
+    UICollectionViewFlowLayout *collectionViewLayout = (UICollectionViewFlowLayout *)self.savedCollectionView.collectionViewLayout;
+    collectionViewLayout.itemSize = self.savedCollectionViewItemSize;
+    collectionViewLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;    
+    
+    if (!IS_IPAD && UIDeviceOrientationIsLandscape(orientation)) {
+        collectionViewLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
+        
+        self.savedColorsLabel.font = [self.savedColorsLabel.font fontWithSize:16.0f];
+        [self.saveColorButton setTitle:@"" forState:UIControlStateNormal];
+        self.saveColorButton.titleEdgeInsets = UIEdgeInsetsZero;
+    } else {
+        [self.saveColorButton setTitle:self.saveColorButton.cachedTitle forState:UIControlStateNormal];
+        self.saveColorButton.titleEdgeInsets = self.saveColorButton.cachedTitleEdgeInsets;
+        self.savedColorsLabel.font = [self.savedColorsLabel.font fontWithSize:20.0f];
+    }
+    
 }
 
 - (void)viewDidLayoutSubviews
@@ -161,61 +208,93 @@
 - (void)setupConstraints
 {
     [self.contentView removeConstraints:self.contentView.constraints];
+    [self.colorMapContainer removeConstraints:self.colorMapContainer.constraints];
+    [self.colorPreviewContainer removeConstraints:self.colorPreviewContainer.constraints];
+    [self.savedColorsContainer removeConstraints:self.savedColorsContainer.constraints];
     
     self.contentViewNavigationBar.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[navBar]|" options:0 metrics:nil views:@{@"navBar":self.contentViewNavigationBar}]];
-    
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[navBar(44)]" options:0 metrics:nil views:@{@"navBar":self.contentViewNavigationBar}]];
+
     self.colorMapView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[colorMapView]-|" options:0 metrics:nil views:@{@"colorMapView":self.colorMapView}]];
-    
     self.sliderView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[sliderView]-|" options:0 metrics:nil views:@{@"sliderView":self.sliderView}]];
+    [self.colorMapContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[colorMapView]-|" options:0 metrics:nil views:@{@"colorMapView":self.colorMapView}]];
+    [self.colorMapContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[sliderView]-|" options:0 metrics:nil views:@{@"sliderView":self.sliderView}]];
+    [self.colorMapContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[colorMapView]-[sliderView(sliderViewHeight)]-|" options:0
+                                                                                   metrics:@{@"sliderViewHeight":@16} 
+                                                                                     views:@{@"colorMapView":self.colorMapView, @"sliderView":self.sliderView}]];
+    CGFloat screenScale = [UIScreen mainScreen].scale;
+    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
     
-    self.infoView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[infoView(width)]" options:0 metrics:@{@"width":@(CGRectGetWidth(self.infoView.frame))} views:@{@"infoView":self.infoView}]];
+    CGFloat infoViewHeight = IS_IPAD ? 120 : 85;
+    if (screenScale == 3.0f)
+        infoViewHeight = 100;
     
-    self.savedColorsLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[savedLabel]-|" options:0 metrics:nil views:@{@"savedLabel":self.savedColorsLabel}]];
+    CGFloat savedLabelHeight = 26;
+    CGFloat collectionViewHeight = IS_IPAD ? infoViewHeight : 112.5;
+    
+//    
+//    iPhone 4S
+//    
+    if ([UIScreen mainScreen].bounds.size.height == 480.0f)
+        collectionViewHeight = 95;
+    
+    self.colorMapContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    self.colorPreviewContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    self.savedColorsContainer.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.savedCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[savedCollectionView]|" options:0 metrics:nil views:@{@"savedCollectionView":self.savedCollectionView}]];
-    
-    
-    CGFloat infoViewHeight = self.infoView.minHeight;
-    if ([UIScreen mainScreen].scale == 3.0f)
-        infoViewHeight = 95;
-    
-    CGFloat collectionViewHeight = infoViewHeight * 1.5;
-    CGFloat savedLabelheight = 26;
-    
-    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
-    if (!IS_IPAD && (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight)) {
-        collectionViewHeight = 0;
-        savedLabelheight = 0;
-    }
-    
-    NSString *vertFormat = @"V:|[navBar(navBarHeight)]-[colorMapView]-[sliderView(sliderHeight)]-[infoView(infoViewHeight)]-5-[savedColorsLabel(labelHeight)][savedCollectionView(collectionViewHeight)]-|";
-    NSDictionary *vertMetrics = @{
-                                  @"navBarHeight":@44, @"sliderHeight":@16, @"labelHeight":@(savedLabelheight), 
-                                  @"infoViewHeight":@(infoViewHeight), @"collectionViewHeight":@(collectionViewHeight)
-                                  };
-    
-    NSDictionary *vertViews = @{
-                                @"navBar":self.contentViewNavigationBar, @"colorMapView":self.colorMapView, @"sliderView":self.sliderView, 
-                                @"infoView":self.infoView, @"savedColorsLabel":self.savedColorsLabel, @"savedCollectionView":self.savedCollectionView
-                                };
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:vertFormat options:0 metrics:vertMetrics views:vertViews]];
-    
+    self.savedColorsLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.saveColorButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.saveColorButton attribute:NSLayoutAttributeLeft
-                                                                 relatedBy:0 toItem:self.infoView attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.saveColorButton attribute:NSLayoutAttributeTop
-                                                                 relatedBy:0 toItem:self.infoView attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.saveColorButton attribute:NSLayoutAttributeBottom
-                                                                 relatedBy:0 toItem:self.infoView attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
-    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.saveColorButton attribute:NSLayoutAttributeRight
-                                                                 relatedBy:0 toItem:self.contentView attribute:NSLayoutAttributeRightMargin multiplier:1 constant:0]];
+    self.infoView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    NSDictionary *containers = @{@"colorMapContainer":self.colorMapContainer, @"colorPreviewContainer":self.colorPreviewContainer, @"savedColorsContainer":self.savedColorsContainer};
+    
+    if (IS_IPAD || UIDeviceOrientationIsPortrait(orientation)) {
+        CGSize infoViewSize = self.savedCollectionViewItemSize;
+        
+        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[infoView]-|" options:0 metrics:nil views:@{@"infoView":self.infoView}]];
+        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[saveColorButton]-|" options:0 metrics:nil views:@{@"saveColorButton":self.saveColorButton}]];
+        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[infoView(infoViewWidth)]-[saveColorButton]-|" options:0
+                                                                                           metrics:@{@"infoViewWidth":@(infoViewSize.width)} 
+                                                                                             views:@{@"infoView":self.infoView, @"saveColorButton":self.saveColorButton}]];
+        
+        [self.savedColorsContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[savedColorsLabel]|" options:0 metrics:nil views:@{@"savedColorsLabel":self.savedColorsLabel}]];
+        [self.savedColorsContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[savedCollectionView]|" options:0 metrics:nil views:@{@"savedCollectionView":self.savedCollectionView}]];
+        [self.savedColorsContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[savedColorsLabel(savedLabelHeight)][savedCollectionView]|" options:0
+                                                                                          metrics:@{@"savedLabelHeight":@(savedLabelHeight)} 
+                                                                                            views:@{@"savedColorsLabel":self.savedColorsLabel, @"savedCollectionView":self.savedCollectionView}]];
+        
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[container]|" options:0 metrics:nil views:@{@"container":self.colorMapContainer}]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[container]|" options:0 metrics:nil views:@{@"container":self.colorPreviewContainer}]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[container]|" options:0 metrics:nil views:@{@"container":self.savedColorsContainer}]];
+        
+        NSString *vertContainers = @"V:|-44-[colorMapContainer][colorPreviewContainer(colorPreviewContainerHeight)][savedColorsContainer(savedColorsContainerHeight)]|";
+        NSDictionary *vertMetrics = @{@"colorPreviewContainerHeight":@(infoViewSize.height), @"savedColorsContainerHeight":@(collectionViewHeight + savedLabelHeight)};
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:vertContainers options:0 metrics:vertMetrics views:containers]];
+    }
+    else if (!IS_IPAD && UIDeviceOrientationIsLandscape(orientation)) {
+        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[infoView]-|" options:0 metrics:nil views:@{@"infoView":self.infoView}]];
+        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[saveColorButton]-|" options:0 metrics:nil views:@{@"saveColorButton":self.saveColorButton}]];
+        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[infoView(infoViewHeight)]-[saveColorButton]-|" options:0
+                                                                                           metrics:@{@"infoViewHeight":@(infoViewHeight)} 
+                                                                                             views:@{@"infoView":self.infoView, @"saveColorButton":self.saveColorButton}]];
+        
+        [self.savedColorsContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[savedColorsLabel]|" options:0 metrics:nil views:@{@"savedColorsLabel":self.savedColorsLabel}]];
+        [self.savedColorsContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[savedCollectionView]|" options:0 metrics:nil views:@{@"savedCollectionView":self.savedCollectionView}]];
+        [self.savedColorsContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[savedColorsLabel(savedColorsLabelHeight)][savedCollectionView]-|" options:0
+                                                                                          metrics:@{@"savedColorsLabelHeight":@(savedLabelHeight * 2)} 
+                                                                                            views:@{@"savedColorsLabel":self.savedColorsLabel, @"savedCollectionView":self.savedCollectionView}]];
+        
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-44-[container]|" options:0 metrics:nil views:@{@"container":self.colorMapContainer}]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-44-[container]|" options:0 metrics:nil views:@{@"container":self.colorPreviewContainer}]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-44-[container]|" options:0 metrics:nil views:@{@"container":self.savedColorsContainer}]];
+        
+        NSString *horizontalContainers = @"H:|[colorMapContainer][colorPreviewContainer(colorPreviewContainerWidth)][savedColorsContainer(savedColorsContainerWidth)]|";
+        NSDictionary *horizontalMetrics = @{@"colorPreviewContainerWidth":@(infoViewHeight), @"savedColorsContainerWidth":@(collectionViewHeight)};
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:horizontalContainers options:0 metrics:horizontalMetrics views:containers]];
+    }
 }
 
 - (void)updateSavedColorsFromPrefs
@@ -270,6 +349,27 @@
     [self updateColorsFromPicker:YES];
 }
 
+- (CGSize)savedCollectionViewItemSize
+{
+    CGFloat screenScale = [UIScreen mainScreen].scale;
+    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+    
+    CGSize collectionViewItemSize = CGSizeMake(120, 96);    //  for iPad
+    if (!IS_IPAD) {        
+        if (screenScale == 3.0f) collectionViewItemSize = CGSizeMake(90, 90);   //  for 3x scale devices
+        else                     collectionViewItemSize = CGSizeMake(70, 90);   //  for other devices
+        
+        if (UIDeviceOrientationIsLandscape(orientation) && (screenScale != 3.0f))
+            collectionViewItemSize.height -= 10;
+        
+               
+        if ([UIScreen mainScreen].bounds.size.height == 480.0f)
+            collectionViewItemSize.height -= 10;
+    }
+    
+    return collectionViewItemSize;
+}
+
 - (void)hide
 {
     if (!self.state) self.state = ColoredVKColorPickerStateDismiss;
@@ -302,8 +402,14 @@
     ColoredVKSimpleAlertController *hexWindow = [ColoredVKSimpleAlertController new];
     hexWindow.textField.placeholder = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"EXAMPLE_ALERT_MESSAGE", nil, self.cvkBundle, nil), self.customColor.hexStringValue];
     hexWindow.textField.delegate = self;
-    [hexWindow.button setTitle:NSLocalizedStringFromTableInBundle(@"ALERT_COPY_CURRENT_VALUE_TIILE", nil, self.cvkBundle, nil) forState:UIControlStateNormal];
+    NSString *buttonTitle = NSLocalizedStringFromTableInBundle(@"COPY_SAVED", nil, self.cvkBundle, nil);
+    [hexWindow.button setTitle:buttonTitle forState:UIControlStateNormal];
     [hexWindow.button addTarget:self action:@selector(actionCopySavedHex) forControlEvents:UIControlEventTouchUpInside];
+    [hexWindow.button setBackgroundImage:nil forState:UIControlStateNormal];
+    [hexWindow.button setBackgroundImage:nil forState:UIControlStateHighlighted];
+    UIColor *titleColor = [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1.0f];
+    [hexWindow.button setTitleColor:titleColor forState:UIControlStateNormal];
+    [hexWindow.button setTitleColor:titleColor.darkerColor forState:UIControlStateHighlighted];
     
     NSString *locString = NSLocalizedStringFromTableInBundle(@"ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE", nil, self.cvkBundle, nil);
     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:locString];
@@ -311,9 +417,12 @@
     NSRange rangeBefore = NSMakeRange(0, [locString substringToIndex:[locString rangeOfString:@"("].location].length );
     NSRange rangeAfter = NSMakeRange([locString rangeOfString:@"("].location, [locString substringFromIndex:[locString rangeOfString:@"("].location].length );
     
-    [attributedText setAttributes:@{ NSFontAttributeName:[UIFont boldSystemFontOfSize:14.0f] } range:rangeBefore];
-    [attributedText setAttributes:@{ NSFontAttributeName:[UIFont systemFontOfSize:10.0f], NSForegroundColorAttributeName:[UIColor lightGrayColor] } range:rangeAfter];
+    [attributedText setAttributes:@{ NSFontAttributeName:[UIFont boldSystemFontOfSize:14.0], NSForegroundColorAttributeName:[UIColor darkGrayColor]} range:rangeBefore];
+    [attributedText setAttributes:@{ NSFontAttributeName:[UIFont preferredFontForTextStyle:UIFontTextStyleFootnote], NSForegroundColorAttributeName:[UIColor lightGrayColor] } range:rangeAfter];
     hexWindow.titleLabel.attributedText = attributedText;
+    
+    if (IS_IPAD)
+        hexWindow.prefferedWidth = CGRectGetWidth(self.contentView.frame) - 60;
     
     [hexWindow show];
 }
@@ -358,11 +467,13 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(CGRectGetWidth(collectionView.frame) / 4.5, CGRectGetHeight(collectionView.frame) / 1.25);
+    return ((UICollectionViewFlowLayout *)collectionViewLayout).itemSize;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    [collectionView deselectItemAtIndexPath:indexPath animated:YES];
+    
     self.customColor = self.savedColors[indexPath.row].hexColorValue;
     
     [self updateColorsFromPicker:NO];
@@ -397,11 +508,7 @@
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        
-        NSString *expression = @"(?:#)?(?:[0-9A-Fa-f]{2}){3}";
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", expression];
-        
-        if (![predicate evaluateWithObject:textField.text]) {
+        if (!textField.text.hexColor) {
             textField.layer.borderColor = [UIColor colorWithRed:0.8 green:0 blue:0 alpha:1.0].CGColor;
         } else {
             textField.layer.borderColor = [UIColor clearColor].CGColor;

@@ -20,7 +20,7 @@
 {
     self = [super init];
     if (self) {
-        [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionHide:)]];
+        [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionShow:)]];
         
         self.blurView = [[_UIBackdropView alloc] initWithSettings:[_UIBackdropViewSettings settingsForStyle:_UIBackdropViewStyleLight]];
         self.blurView.layer.cornerRadius = 14;
@@ -98,7 +98,7 @@
     }
 }
 
-- (void)actionHide:(UITapGestureRecognizer *)recognizer
+- (void)actionShow:(UITapGestureRecognizer *)recognizer
 {
     if (recognizer.state == UIGestureRecognizerStateRecognized) self.hide = !self.hide;
 }
