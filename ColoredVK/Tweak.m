@@ -865,15 +865,18 @@ CHOptimizedMethod(1, self, void, VKMLiveController, viewWillAppear, BOOL, animat
     CHSuper(1, VKMLiveController, viewWillAppear, animated);
     
     if (enabled && [self isKindOfClass:NSClassFromString(@"VKMLiveController")]) {
-       if (enabledAudioImage && ([self.model.description containsString:@"AudioRecommendationsModel"] || [self.model.description containsString:@"AudioCatalogPlaylistsListModel"])) {
+        NSArray <NSString *> *audioModelNames = @[@"AudioRecommendationsModel", @"AudioCatalogPlaylistsListModel", @"AudioCatalogExtendedPlaylistsListModel"];
+        if (enabledAudioImage && [audioModelNames containsObject:CLASS_NAME(self.model)]) {
            UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
-           search.backgroundImage = [UIImage new];
-           search.tag = 4;
-           search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
-           NSDictionary *attributes = @{NSForegroundColorAttributeName:changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
-           NSString *placeholder = (search.searchBarTextField.placeholder.length > 0) ? search.searchBarTextField.placeholder : @"";
-           search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholder attributes:attributes];
-           search._scopeBarBackgroundView.superview.hidden = YES;
+            if ([search isKindOfClass:[UISearchBar class]]) {
+                search.backgroundImage = [UIImage new];
+                search.tag = 4;
+                search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+                NSDictionary *attributes = @{NSForegroundColorAttributeName:changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
+                NSString *placeholder = (search.searchBarTextField.placeholder.length > 0) ? search.searchBarTextField.placeholder : @"";
+                search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholder attributes:attributes];
+                search._scopeBarBackgroundView.superview.hidden = YES;
+            }
         }
     }
 }
@@ -883,7 +886,8 @@ CHOptimizedMethod(0, self, void, VKMLiveController, viewWillLayoutSubviews)
     CHSuper(0, VKMLiveController, viewWillLayoutSubviews);
     
     if (enabled && [self isKindOfClass:NSClassFromString(@"VKMLiveController")]) {
-        if (enabledAudioImage && ([self.model.description containsString:@"AudioRecommendationsModel"] || [self.model.description containsString:@"AudioCatalogPlaylistsListModel"])) {
+        NSArray <NSString *> *audioModelNames = @[@"AudioRecommendationsModel", @"AudioCatalogPlaylistsListModel", @"AudioCatalogExtendedPlaylistsListModel"];
+        if (enabledAudioImage && [audioModelNames containsObject:CLASS_NAME(self.model)]) {
             [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
             self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2];
             self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
@@ -897,7 +901,8 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMLiveController, tableView, UITab
     UITableViewCell *cell = CHSuper(2, VKMLiveController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
     if (enabled && [self isKindOfClass:NSClassFromString(@"VKMLiveController")]) {
-        if (enabledAudioImage && ([self.model.description containsString:@"AudioRecommendationsModel"] || [self.model.description containsString:@"AudioCatalogPlaylistsListModel"])) {
+        NSArray <NSString *> *audioModelNames = @[@"AudioRecommendationsModel", @"AudioCatalogPlaylistsListModel", @"AudioCatalogExtendedPlaylistsListModel"];
+        if (enabledAudioImage && [audioModelNames containsObject:CLASS_NAME(self.model)]) {
             performInitialCellSetup(cell);
             
             cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
@@ -1722,9 +1727,9 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioPlaylistDetailController, tabl
 
 #pragma mark AudioPlaylistsController
 CHDeclareClass(AudioPlaylistsController);
-CHOptimizedMethod(1, self, void, AudioPlaylistsController, viewWillAppear, BOOL, animated)
+CHOptimizedMethod(0, self, void, AudioPlaylistsController, viewWillLayoutSubviews)
 {
-    CHSuper(1, AudioPlaylistsController, viewWillAppear, animated);
+    CHSuper(0, AudioPlaylistsController, viewWillLayoutSubviews);
     
     if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistsController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
@@ -1749,6 +1754,32 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioPlaylistsController, tableView
     
     if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistsController")]) {
         performInitialCellSetup(cell);
+    }
+    
+    return cell;
+}
+
+#pragma mark VKAudioPlayerListTableViewController
+CHDeclareClass(VKAudioPlayerListTableViewController);
+CHOptimizedMethod(0, self, void, VKAudioPlayerListTableViewController, viewWillLayoutSubviews)
+{
+    CHSuper(0, VKAudioPlayerListTableViewController, viewWillLayoutSubviews);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"VKAudioPlayerListTableViewController")]) {
+        [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout parallaxEffect:useAudioParallax];
+        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
+    }
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, VKAudioPlayerListTableViewController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, VKAudioPlayerListTableViewController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    
+    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"VKAudioPlayerListTableViewController")]) {
+        performInitialCellSetup(cell);
+        
+        cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
     }
     
     return cell;
@@ -2201,6 +2232,7 @@ CHOptimizedMethod(0, self, void, VideoAlbumController, viewWillLayoutSubviews)
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"videosBackgroundImage" blackout:videosImageBlackout parallaxEffect:useVideosParallax];
         self.tableView.separatorColor = hideVideosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
         self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        setBlur(self.toolbar, YES, videosBlurTone, videosBlurStyle);
         
         UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
         if (search) {
@@ -2489,8 +2521,12 @@ CHConstructor
             CHHook(2, AudioPlaylistDetailController, tableView, cellForRowAtIndexPath);
             
             CHLoadLateClass(AudioPlaylistsController);
-            CHHook(1, AudioPlaylistsController, viewWillAppear);
+            CHHook(0, AudioPlaylistsController, viewWillLayoutSubviews);
             CHHook(2, AudioPlaylistsController, tableView, cellForRowAtIndexPath);
+            
+            CHLoadLateClass(VKAudioPlayerListTableViewController);
+            CHHook(0, VKAudioPlayerListTableViewController, viewWillLayoutSubviews);
+            CHHook(2, VKAudioPlayerListTableViewController, tableView, cellForRowAtIndexPath);
             
             CHLoadLateClass(AudioOwnersBlockItemCollectionCell);
             CHHook(0, AudioOwnersBlockItemCollectionCell, layoutSubviews);

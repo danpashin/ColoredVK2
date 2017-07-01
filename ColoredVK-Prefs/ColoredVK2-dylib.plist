@@ -11,6 +11,7 @@
 		<key>Executables</key>
 		<array>
 			<string>vkclient</string>
+			<string>VKClient</string>
 		</array>
 		<key>Mode</key>
 		<string>Any</string>

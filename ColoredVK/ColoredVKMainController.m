@@ -107,7 +107,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         
         NSString *stringURL = [NSString stringWithFormat:@"%@/stats/?product=%@&version=%@&device=%@&ios_version=%@&device_language=%@&vk_version=%@&identifier=%@", 
                                kPackageAPIURL, kPackageIdentifier, kPackageVersion, @(systemInfo.machine), 
-                               device.systemVersion, [NSLocale preferredLanguages].firstObject, [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], 
+                               device.systemVersion, [NSLocale preferredLanguages].firstObject, self.vkVersion, 
                                device.identifierForVendor.UUIDString];
         
         [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]] 

@@ -333,7 +333,12 @@
 @end
 
 
+@interface VideoAlbumsInfoToolbar : UIToolbar
+@property(retain, nonatomic) UISegmentedControl *segmentedControl;
+@end
+
 @interface VideoAlbumController : VKMLiveController
+@property(retain, nonatomic) VideoAlbumsInfoToolbar *toolbar;
 @end
 
 @interface VideoCell : VKMCell
@@ -440,4 +445,6 @@
 @property(readonly, retain, nonatomic) UILabel *label;
 @end
 
+@interface VKAudioPlayerListTableViewController : UITableViewController
+@end
 
