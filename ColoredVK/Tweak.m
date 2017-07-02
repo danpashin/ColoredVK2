@@ -22,11 +22,10 @@
 #import "UIGestureRecognizer+BlocksKit.h"
 #import "ColoredVKHUD.h"
 #import "ColoredVKHelpController.h"
+#import "ColoredVKUpdatesController.h"
 
 
 BOOL userAgreeWithCopyrights;
-
-NSTimeInterval updatesInterval;
 
 BOOL tweakEnabled = NO;
 BOOL VKSettingsEnabled;
@@ -156,48 +155,6 @@ VKMMainController *mainController;
 
 
 #pragma mark Static methods
-void checkUpdates()
-{
-    NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php?userVers=%@&product=%@", kPackageAPIURL, kPackageVersion, kPackageIdentifier];
-#ifndef COMPILE_FOR_JAIL
-    stringURL = [stringURL stringByAppendingString:@"&getIPA=1"];
-#endif
-    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
-    
-    [NSURLConnection sendAsynchronousRequest:urlRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-        if (!connectionError) {
-            NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:prefsPath];
-            NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-            if (!responseDict[@"error"]) {
-                NSString *version = responseDict[@"version"];
-                if (![prefs[@"skippedVersion"] isEqualToString:version]) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        NSString *message = [NSString stringWithFormat:CVKLocalizedString(@"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE"), version, responseDict[@"changelog"]];
-                        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:kPackageName message:message preferredStyle:UIAlertControllerStyleAlert];
-                        [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"SKIP_THIS_VERSION_BUTTON_TITLE") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                            [prefs setValue:version forKey:@"skippedVersion"];
-                            [prefs writeToFile:prefsPath atomically:YES];
-                        }]];
-                        [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"REMIND_LATER_BUTTON_TITLE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
-                        [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"UPADTE_BUTTON_TITLE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                            NSURL *url = [NSURL URLWithString:responseDict[@"url"]];
-                            if ([[UIApplication sharedApplication] canOpenURL:url]) [[UIApplication sharedApplication] openURL:url];
-                            
-                        }]];
-                        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
-                    });
-                }
-            }
-            
-            NSDateFormatter *dateFormatter = [NSDateFormatter new];
-            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-            [prefs setValue:[dateFormatter stringFromDate:[NSDate date]] forKey:@"lastCheckForUpdates"];
-            [prefs writeToFile:prefsPath atomically:YES];
-        }
-    }];
-}
-
-
 void reloadPrefs()
 {
     NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:prefsPath];
@@ -213,7 +170,6 @@ void reloadPrefs()
     SBForegroundColor = [UIColor savedColorForIdentifier:@"SBForegroundColor" fromPrefs:prefs];
     
     shouldCheckUpdates = prefs[@"checkUpdates"]?[prefs[@"checkUpdates"] boolValue]:YES;
-    updatesInterval = prefs[@"updatesInterval"]?[prefs[@"updatesInterval"] doubleValue]:1.0;
     
     dispatch_async(dispatch_get_main_queue(), ^{
         UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
@@ -710,24 +666,24 @@ void resetNavigationBar(UINavigationBar *navBar)
 }
 
 
-void uncaughtExceptionHandler(NSException *exception)
-{
-    NSDateFormatter *dateFormatter = [NSDateFormatter new];
-    dateFormatter.dateFormat = @"yyyy-MM-dd_HH:mm";
-    
-    NSString *currentDate = [dateFormatter stringFromDate:[NSDate date]];
-    NSString *crashFilePath = [NSString stringWithFormat:@"%@/com.daniilpashin.coloredvk2_crash_%@", CVK_CACHE_PATH, currentDate];
-    
-    NSDictionary *dict = @{@"name":exception.name,@"reason":exception.reason,@"callStackSymbols":exception.callStackSymbols};
-    [dict writeToFile:crashFilePath atomically:YES];
-}
+//void uncaughtExceptionHandler(NSException *exception)
+//{
+//    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+//    dateFormatter.dateFormat = @"yyyy-MM-dd_HH:mm";
+//    
+//    NSString *currentDate = [dateFormatter stringFromDate:[NSDate date]];
+//    NSString *crashFilePath = [NSString stringWithFormat:@"%@/com.daniilpashin.coloredvk2_crash_%@", CVK_CACHE_PATH, currentDate];
+//    
+//    NSDictionary *dict = @{@"name":exception.name,@"reason":exception.reason,@"callStackSymbols":exception.callStackSymbols};
+//    [dict writeToFile:crashFilePath atomically:YES];
+//}
 
 
 #pragma mark - AppDelegate
 CHDeclareClass(AppDelegate);
 CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, application, didFinishLaunchingWithOptions, NSDictionary *, options)
 {
-    NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+//    NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
     [cvkBunlde load];
     reloadPrefs();
@@ -755,15 +711,9 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
     [ColoredVKInstaller sharedInstaller];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        BOOL beta = [kPackageVersion containsString:@"beta"];
-        if (shouldCheckUpdates || beta) {
-            NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:prefsPath];
-            NSDateFormatter *dateFormatter = [NSDateFormatter new];
-            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-            NSInteger daysAgo = [dateFormatter dateFromString:prefs[@"lastCheckForUpdates"]].daysAgo;
-            BOOL allDaysPast = beta?(daysAgo >= 1):(daysAgo >= updatesInterval);
-            if (!prefs[@"lastCheckForUpdates"] || allDaysPast) checkUpdates();
-        }
+        ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
+        if (updatesController.shouldCheckUpdates)
+            [updatesController checkUpdates];
         
         [cvkMainController sendStats];
     });

@@ -45,7 +45,6 @@
     [self.agreeButton addTarget:self action:@selector(actionAgree) forControlEvents:UIControlEventTouchUpInside];
     self.agreeButton.titleLabel.adjustsFontSizeToFitWidth = YES;
     [self.agreeButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-    [self.agreeButton addTarget:self action:@selector(actionAgree) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.agreeButton];
     
     self.nameLabel.translatesAutoresizingMaskIntoConstraints = NO;

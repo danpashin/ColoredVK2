@@ -17,6 +17,12 @@
 #import "UIScrollView+EmptyDataSet.h"
 #import "ColoredVKResponsiveButton.h"
 
+typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
+    ColoredVKColorPickerStateDismiss = 1,
+    ColoredVKColorPickerStateReset
+};
+
+
 @interface ColoredVKColorPickerController () <UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate, ColoredVKColorCollectionViewCellDelegate>
 
 @property (strong, nonatomic) NSBundle *cvkBundle;

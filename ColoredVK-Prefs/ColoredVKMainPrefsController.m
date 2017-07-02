@@ -11,6 +11,7 @@
 #import "ColoredVKHeaderView.h"
 #import "ColoredVKInstaller.h"
 #import "ColoredVKHelpController.h"
+#import "ColoredVKUpdatesController.h"
 
 @implementation ColoredVKMainPrefsController
 
@@ -44,7 +45,7 @@
     self.prefsTableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.prefsTableView];
     self.navigationItem.title = @"";
     
-    if ([[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"]) {
+    if (![[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"]) {
         installerCompletionBlock = ^(BOOL disableTweak) {
             if (!disableTweak) {
                 NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:self.prefsPath];
@@ -55,6 +56,10 @@
                     helpController.hideByTouch = NO;
                     [helpController show];
                 }
+                
+                ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
+                if (updatesController.shouldCheckUpdates)
+                    [updatesController checkUpdates];
             }
         };
     }
