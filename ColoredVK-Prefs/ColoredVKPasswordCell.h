@@ -24,6 +24,6 @@
 @property (strong, nonatomic) IBOutlet UITextField *textField;
 @property (strong, nonatomic) IBOutlet UILabel *label;
 @property (strong, nonatomic) NSString *identifier;
-@property (strong, nonatomic) id <ColoredVKPasswordCellDelegate> delegate;
+@property (weak, nonatomic) id <ColoredVKPasswordCellDelegate> delegate;
 
 @end

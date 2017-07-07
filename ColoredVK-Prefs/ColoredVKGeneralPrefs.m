@@ -16,7 +16,6 @@
 
 @implementation ColoredVKGeneralPrefs
 
-
 - (void)showColorPicker:(PSSpecifier*)specifier
 {
     ColoredVKColorPickerController *picker = [ColoredVKColorPickerController pickerWithIdentifier:specifier.identifier];
@@ -77,6 +76,7 @@
     [prefs writeToFile:self.prefsPath atomically:YES];
 }
 
+
 #pragma mark - ColoredVKColorPickerControllerDataSource
 
 - (NSArray <NSString *> *)savedColorsForColorPicker:(ColoredVKColorPickerController *)colorPicker
@@ -87,6 +87,7 @@
     return savedColors;
 }
 
+
 - (void)chooseImage:(PSSpecifier*)specifier
 {
     self.lastImageIdentifier = specifier.identifier;
@@ -96,13 +97,10 @@
     [self presentPopover:picker];
 }
 
+
+#pragma mark - UIImagePickerControllerDelegate
+
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
-{
-    [self saveImage:image fromPickerViewController:picker]; 
-}
-
-
-- (void)saveImage:(UIImage *)image fromPickerViewController:(UIViewController *)picker
 {
     ColoredVKHUD *hud = [ColoredVKHUD showAddedToView:picker.view];
     hud.backgroundView.blurStyle = LHBlurEffectStyleDark;
@@ -124,8 +122,8 @@
                 
                 CGSize screenSize = [UIScreen mainScreen].bounds.size;
                 if ([self.lastImageIdentifier isEqualToString:@"barImage"]) screenSize.height = 64;
-                UIImage *recizedImage = [imageToResize resizedImageByMagick:[NSString stringWithFormat:@"%fx%f#", screenSize.width, screenSize.height]];
-                [UIImageJPEGRepresentation(recizedImage, 1.0) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
+                UIImage *resizedImage = [imageToResize resizedImageByMagick:[NSString stringWithFormat:@"%fx%f#", screenSize.width, screenSize.height]];
+                [UIImageJPEGRepresentation(resizedImage, 1.0) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
             }
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{ @"identifier" : self.lastImageIdentifier }];
@@ -141,6 +139,7 @@
 }
 
 
+#pragma mark -
 - (void)clearCoversCache
 {
     ColoredVKHUD *hud = [ColoredVKHUD showHUD];
@@ -166,11 +165,11 @@
 
 - (void)resetSettings
 {
-    [[ColoredVKSettingsController alloc] actionReset];
+    [[ColoredVKSettingsController new] actionReset];
 }
 
 - (void)backupSettings
 {
-    [[ColoredVKSettingsController alloc] actionBackup];
+    [[ColoredVKSettingsController new] actionBackup];
 }
 @end

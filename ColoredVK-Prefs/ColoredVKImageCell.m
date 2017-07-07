@@ -18,7 +18,7 @@
 @property (strong, nonatomic) NSString *cvkFolder;
 @property (strong, nonatomic) NSString *key;
 @property (strong, nonatomic) UIImageView *previewImageView;
-@property (retain, nonatomic) ColoredVKHUD *hud;
+@property (weak, nonatomic) ColoredVKHUD *hud;
 @end
 
 @implementation ColoredVKImageCell

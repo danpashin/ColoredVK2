@@ -21,11 +21,11 @@
 @property (assign, nonatomic) NSInteger minValue;
 @property (assign, nonatomic) NSInteger maxValue;
 @property (assign, nonatomic) NSInteger value;
-@property (assign, nonatomic) NSUInteger step;
+@property (assign, nonatomic) NSInteger step;
 @property (assign, nonatomic) CGFloat height;
 
 @property (assign, nonatomic) BOOL shouldShake;
 
-@property (nonatomic) id <ColoredVKStepperButtonDelegate> delegate;
+@property (weak, nonatomic) id <ColoredVKStepperButtonDelegate> delegate;
 
 @end

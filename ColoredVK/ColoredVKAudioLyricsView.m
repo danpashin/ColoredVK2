@@ -109,4 +109,9 @@
     self.text = @"";
 }
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@" %@; textColor %@; hidden %@ ", [super description], self.textColor, @(self.hide)];
+}
+
 @end

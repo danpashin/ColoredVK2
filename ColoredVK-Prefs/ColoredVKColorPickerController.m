@@ -182,7 +182,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     
     UICollectionViewFlowLayout *collectionViewLayout = (UICollectionViewFlowLayout *)self.savedCollectionView.collectionViewLayout;
     collectionViewLayout.itemSize = self.savedCollectionViewItemSize;
-    collectionViewLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;    
+    collectionViewLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     
     if (!IS_IPAD && UIDeviceOrientationIsLandscape(orientation)) {
         collectionViewLayout.scrollDirection = UICollectionViewScrollDirectionVertical;

@@ -1414,9 +1414,9 @@ CHOptimizedMethod(2, self, void, AudioPlayer, switchTo, int, arg1, force, BOOL, 
 
 #pragma mark VKAudioQueuePlayer
 CHDeclareClass(VKAudioQueuePlayer);
-CHOptimizedMethod(2, self, void, VKAudioQueuePlayer, updateNowPlaying, id, arg1, forcePlaybackTime, BOOL, force)
+CHOptimizedMethod(1, self, void, VKAudioQueuePlayer, switchTo, int, arg1)
 {
-    CHSuper(2, VKAudioQueuePlayer, updateNowPlaying, arg1, forcePlaybackTime, force);
+    CHSuper(1, VKAudioQueuePlayer, switchTo, arg1);
     if (enabled && changeAudioPlayerAppearance) {
         if (!cvkMainController.coverView)
             cvkMainController.coverView = [[ColoredVKAudioCover alloc] init];
@@ -2324,7 +2324,7 @@ CHConstructor
             
             CHLoadLateClass(SelectAccountTableViewController);
             CHHook(1, SelectAccountTableViewController, viewWillAppear);
-                
+            
             CHLoadLateClass(MessageController);
             CHHook(1, MessageController, viewWillAppear);
             
@@ -2509,7 +2509,7 @@ CHConstructor
             CHHook(2, AudioPlayer, switchTo, force);
             
             CHLoadLateClass(VKAudioQueuePlayer);
-            CHHook(2, VKAudioQueuePlayer, updateNowPlaying, forcePlaybackTime);
+            CHHook(1, VKAudioQueuePlayer, switchTo);
             
             CHLoadLateClass(AudioRenderer);
             CHHook(0, AudioRenderer, playIndicator);

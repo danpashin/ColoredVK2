@@ -30,6 +30,9 @@
     
 }
 
+
+#pragma mark - UITextFieldDelegate
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
@@ -49,6 +52,5 @@
         if ([self.delegate respondsToSelector:@selector(passwordCellChangedText:)]) [self.delegate passwordCellChangedText:self];
     });
 }
-
 
 @end

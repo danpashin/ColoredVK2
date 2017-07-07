@@ -28,7 +28,7 @@
  */
 - (NSInteger)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version;
 - (void)sendStats;
-- (void)checkCrashes;
+//- (void)checkCrashes;
 
 /**
  * Returns application version from Info.plist

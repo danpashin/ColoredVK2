@@ -23,7 +23,7 @@
 
 @protocol ColoredVKColorPickerControllerDataSource <NSObject>
 
-@optional
+@required
 - (NSArray <NSString *> *)savedColorsForColorPicker:(ColoredVKColorPickerController *)colorPicker;
 
 @end
@@ -34,7 +34,7 @@
 + (instancetype)pickerWithIdentifier:(NSString *)identifier;
 
 @property (strong, nonatomic, readonly) NSString *identifier;
-@property (nonatomic) id <ColoredVKColorPickerControllerDelegate> delegate;
-@property (nonatomic) id <ColoredVKColorPickerControllerDataSource> dataSource;
+@property (weak, nonatomic) id <ColoredVKColorPickerControllerDelegate> delegate;
+@property (weak, nonatomic) id <ColoredVKColorPickerControllerDataSource> dataSource;
 
 @end

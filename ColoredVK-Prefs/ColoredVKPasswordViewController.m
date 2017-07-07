@@ -13,6 +13,14 @@
 
 @interface ColoredVKPasswordViewController () <UITableViewDelegate, UITableViewDataSource, ColoredVKPasswordCellDelegate>
 
+@property (strong, nonatomic) NSBundle *cvkBundle;
+@property (strong, nonatomic) UITableView *tableView;
+@property (strong, nonatomic) NSArray *cells;
+@property (weak, nonatomic) ColoredVKPasswordCell *currentPassCell;
+@property (weak, nonatomic) ColoredVKPasswordCell *passNewCell;
+@property (weak, nonatomic) ColoredVKPasswordCell *confirmCell;
+@property (weak, nonatomic) ColoredVKHUD *hud;
+
 @end
 
 @implementation ColoredVKPasswordViewController
@@ -92,11 +100,6 @@
     return self.cells[indexPath.row];
 }
 
-- (void)dismiss
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
 - (void)save
 {
     [[UIApplication sharedApplication] sendAction:@selector(resignFirstResponder) to:nil from:nil forEvent:nil];
@@ -123,7 +126,7 @@
                         
                         __weak __typeof(self) weakSelf = self;
                         self.hud.didHiddenBlock = ^{
-                            [weakSelf dismiss];
+                            [weakSelf dismissViewControllerAnimated:YES completion:nil];
                         };
                         
                     } else [self.hud showFailureWithStatus:@"Unknown error (-3)"];

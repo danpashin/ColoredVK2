@@ -13,12 +13,6 @@
 
 @implementation ColoredVKAccountController
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-}
-
 - (void)changePassword
 {    
     ColoredVKPasswordViewController *passController = [ColoredVKPasswordViewController new];

@@ -17,12 +17,7 @@
 - (void)updateCoverForArtist:(NSString *)artist title:(NSString *)title;
 - (void)addToView:(UIView *)view;
 
-@property (strong, nonatomic) NSString *track;
-@property (strong, nonatomic) NSString *artist;
-@property (strong, nonatomic) UIColor *color;
-@property (strong, nonatomic) UIColor *backColor;
-@property (assign, nonatomic) BOOL defaultCover;
-@property (assign, nonatomic) BOOL customCover;
-@property (strong, nonatomic) ColoredVKAudioLyricsView *audioLyricsView;
+@property (strong, nonatomic, readonly) UIColor *color;
+@property (strong, nonatomic, readonly) UIColor *backColor;
 
 @end

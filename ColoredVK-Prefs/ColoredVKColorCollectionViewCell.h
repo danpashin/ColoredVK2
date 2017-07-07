@@ -23,6 +23,6 @@
 
 @property (strong, nonatomic) ColoredVKColorPreview *colorPreview;
 @property (strong, nonatomic) NSString *hexColor;
-@property (nonatomic) id <ColoredVKColorCollectionViewCellDelegate> delegate;
+@property (weak, nonatomic) id <ColoredVKColorCollectionViewCellDelegate> delegate;
 
 @end

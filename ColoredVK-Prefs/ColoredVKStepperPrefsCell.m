@@ -21,6 +21,7 @@
         NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
         
         ColoredVKStepperButton *stepperButton = [[ColoredVKStepperButton alloc] initWithFrame:CGRectMake(0, 0, 80, 32)];
+        stepperButton.minValue = 0;
         stepperButton.maxValue = 6;
         stepperButton.value = [prefs[specifier.identifier] componentsSeparatedByString:@"."].lastObject.integerValue;
         stepperButton.delegate = self;

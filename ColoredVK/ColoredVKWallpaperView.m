@@ -56,7 +56,6 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
         self.parallaxEnabled = parallaxEffect;
         
         [self updateView];
-//        [self setupConstraints];
     }
     
     return self;
@@ -189,7 +188,7 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@; image name '%@'; blackout %.2f; parallax %@>", NSStringFromClass([self class]), self.name, self.blackout, @(self.parallaxEnabled)];
+    return [NSString stringWithFormat:@" %@; imageName '%@'; blackout %.2f; parallax %@ ", [super description], self.name, self.blackout, self.parallaxEnabled ? @"Enabled": @"Disabled"];
 }
 
 @end

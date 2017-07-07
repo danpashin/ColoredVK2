@@ -16,16 +16,23 @@
 
 @interface ColoredVKAudioCover ()
 
+@property (strong, nonatomic) NSString *track;
+@property (strong, nonatomic) NSString *artist;
+
 @property (strong, nonatomic) UIView *coverView;
 @property (strong, nonatomic) UIImageView *topImageView;
 @property (strong, nonatomic) UIImageView *bottomImageView;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
 @property (strong, nonatomic) CAGradientLayer *topCoverGradient;
+@property (strong, nonatomic) ColoredVKAudioLyricsView *audioLyricsView;
 
 @property (strong, nonatomic) NSBundle *cvkBundle;
 @property (strong, nonatomic, readonly) UIImage *noCover;
 @property (strong, nonatomic) SDWebImageManager *manager;
 @property (strong, nonatomic) ColoredVKCoreData *coredata;
+
+@property (assign, nonatomic) BOOL defaultCover;
+@property (assign, nonatomic) BOOL customCover;
 
 @end
 
@@ -48,7 +55,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         self.coredata = [ColoredVKCoreData new];
         self.artist = @"";
         self.track = @"";
-        self.color = [UIColor whiteColor];
+        _color = [UIColor whiteColor];
         self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         [self updateCoverInfo];
         
@@ -198,8 +205,8 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
 {
     LEColorPicker *picker = [[LEColorPicker alloc] init];
     [picker pickColorsFromImage:image onComplete:^(LEColorScheme *colorScheme) {
-        self.backColor = self.defaultCover?[UIColor clearColor]:[colorScheme.backgroundColor colorWithAlphaComponent:0.4];
-        self.color = colorScheme.secondaryTextColor;
+        _backColor = self.defaultCover?[UIColor clearColor]:[colorScheme.backgroundColor colorWithAlphaComponent:0.4];
+        _color = colorScheme.secondaryTextColor;
         self.audioLyricsView.textColor = self.color;
         [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
             self.blurEffectView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor;
@@ -289,4 +296,10 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
     
     return newString;
 }
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@" %@; artist '%@'; track '%@'; frame %@; separationPoint %@; ", [super description], self.artist, self.track, NSStringFromCGRect(self.coverView.frame), NSStringFromCGPoint(CGPointMake(0, CGRectGetHeight(self.bottomImageView.frame)))];
+}
+
 @end

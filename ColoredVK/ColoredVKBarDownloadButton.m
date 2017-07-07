@@ -118,4 +118,8 @@ static NSArray *getInfoForActionController()
     
 }
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@" %@; url '%@'; rootViewController %@; ", [super description], self.url, self.rootViewController];
+}
 @end

@@ -58,13 +58,11 @@
 
 - (PSSpecifier *)errorMessage
 {
-    PSSpecifier *errorMessage = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
+    PSSpecifier *errorMessage = super.errorMessage;
     [errorMessage setProperty:CVKLocalizedStringFromTable(@"NO_FILES_TO_RESTORE", @"ColoredVK") forKey:@"footerText"];
-    [errorMessage setProperty:@"1" forKey:@"footerAlignment"];
+    
     return errorMessage;
 }
-
-
 
 
 #pragma mark UITableView delegate
@@ -122,7 +120,6 @@
     [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
 
 }
-
 
 
 #pragma mark Actions
@@ -192,7 +189,13 @@
                             CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
                             CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, NULL, YES);
                             
-                        } else [parentHud showFailureWithStatus:error.localizedDescription];
+                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                UINavigationBar *navBar = self.navigationController.navigationBar;
+                                navBar.barTintColor = navBar.barTintColor;
+                            });
+                            
+                        } else
+                            [parentHud showFailureWithStatus:error.localizedDescription];
                     }];
     };
     hud.executionBlock(hud);
@@ -214,8 +217,10 @@
             CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
             CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, NULL, YES);
             
-            if ([[NSBundle mainBundle].executablePath.lastPathComponent isEqualToString:@"vkclient"]) 
-                self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:60/255.0f green:112/255.0f blue:169/255.0f alpha:1];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                UINavigationBar *navBar = self.navigationController.navigationBar;
+                navBar.barTintColor = navBar.barTintColor;
+            });
             
             error?[hud showFailure]:[hud showSuccess];
         }];  

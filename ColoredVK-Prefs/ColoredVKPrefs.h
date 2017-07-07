@@ -22,7 +22,7 @@
 @property (strong, nonatomic, readonly) NSBundle *cvkBundle;
 @property (strong, nonatomic, readonly) NSString *cvkFolder;
 
-@property (strong, nonatomic) UITableView *prefsTableView;
+@property (weak, nonatomic) UITableView *prefsTableView;
 
 - (void)openURL:(NSURL *)url;
 - (void)presentPopover:(UIViewController *)controller;

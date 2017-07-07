@@ -144,35 +144,35 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
 }
 
-- (void)checkCrashes
-{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{        
-        BOOL shouldShowCrashAlert = NO;
-        NSString *crashFilePath = @"";
-        NSFileManager *filemanager = [NSFileManager defaultManager];    
-        
-        for (NSString *filename in [filemanager contentsOfDirectoryAtPath:CVK_CACHE_PATH error:nil]) {
-            if ([filename containsString:@"com.daniilpashin.coloredvk2_crash"]) {
-                shouldShowCrashAlert = YES;
-                crashFilePath = [NSString stringWithFormat:@"%@/com.daniilpashin.coloredvk2_crash_%@", CVK_CACHE_PATH, filename];
-                break;
-            }
-        }
-        
-        if (shouldShowCrashAlert) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"CRASH_DETECTED_WANT_TO_SEND_TO_DEV") preferredStyle:UIAlertControllerStyleAlert];
-                [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"SEND") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                    
-                }]];
-                [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"BETTER_NOT") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                    [filemanager removeItemAtPath:crashFilePath error:nil];
-                }]];
-                [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
-            });
-        }
-    });
-}
+//- (void)checkCrashes
+//{
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{        
+//        BOOL shouldShowCrashAlert = NO;
+//        NSString *crashFilePath = @"";
+//        NSFileManager *filemanager = [NSFileManager defaultManager];    
+//        
+//        for (NSString *filename in [filemanager contentsOfDirectoryAtPath:CVK_CACHE_PATH error:nil]) {
+//            if ([filename containsString:@"com.daniilpashin.coloredvk2_crash"]) {
+//                shouldShowCrashAlert = YES;
+//                crashFilePath = [NSString stringWithFormat:@"%@/com.daniilpashin.coloredvk2_crash_%@", CVK_CACHE_PATH, filename];
+//                break;
+//            }
+//        }
+//        
+//        if (shouldShowCrashAlert) {
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"CRASH_DETECTED_WANT_TO_SEND_TO_DEV") preferredStyle:UIAlertControllerStyleAlert];
+//                [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"SEND") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+//                    
+//                }]];
+//                [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"BETTER_NOT") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+//                    [filemanager removeItemAtPath:crashFilePath error:nil];
+//                }]];
+//                [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+//            });
+//        }
+//    });
+//}
 
 
 @end
