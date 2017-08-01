@@ -43,6 +43,7 @@
     self = [super initWithAttachedView:view mode:LHProgressHUDModeNormal subMode:LHProgressHUDSubModeAnimating animated:YES];
     if (self) {
         self.operation = operation;
+        self.dismissByTap = YES;
         [self setupHUD];
     }
     return self;
@@ -122,7 +123,7 @@
 
 - (void)tapRecognized:(UITapGestureRecognizer *)recognizer
 {
-    if (recognizer.state == UIGestureRecognizerStateRecognized) {
+    if (self.dismissByTap && (recognizer.state == UIGestureRecognizerStateRecognized)) {
         if (self.operation && !self.operation.isFinished) [self.operation cancel];
         [super hide];
     }

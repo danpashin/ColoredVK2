@@ -101,6 +101,16 @@
 "CHANGE_PASSWORD" = "Змінити пароль";
 "CACHE_SIZE" = "Зараз кеш займає";
 
+
+
+"ENTER_ACCOUNT" = "Увійдіть у свій обліковий запис";
+"TO_UNLOCK_FULL_VERSION" = "Щоб розблокувати повну версію";
+"ACCOUNT_STATUS" = "Статус облікового запису";
+"ACCOUNT_PAID" = "Сплачений";
+"ACCOUNT_ACTIVATED" = "Активований";
+"NO_ACCOUNT_QUESTION" = "Немає облікового запису?";
+"REGISTER" = "Зареєструватися";
+
 /*
  
  ФУТЕРЫ

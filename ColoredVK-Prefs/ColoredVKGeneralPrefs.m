@@ -12,9 +12,38 @@
 #import "ColoredVKHUD.h"
 #import "UIImage+ResizeMagick.h"
 #import "ColoredVKSettingsController.h"
+#import "ColoredVKNewInstaller.h"
 
 
 @implementation ColoredVKGeneralPrefs
+
+NSArray <NSString *> *specifiersToDisable;
+
+- (NSArray *)specifiers
+{
+    if (!_specifiers) {
+        NSMutableArray *specifiersArray = [super specifiers].mutableCopy;
+        
+        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller]; 
+        BOOL shouldDisable = (!newInstaller.tweakPurchased || !newInstaller.tweakActivated);
+        
+        for (PSSpecifier *specifier in specifiersArray) {
+            if ([specifiersToDisable containsObject:specifier.identifier] && shouldDisable) {
+                [specifier setProperty:@NO forKey:@"enabled"];
+            }
+        }
+        
+        _specifiers = specifiersArray.copy;
+    }
+    return _specifiers;
+}
+
+- (void)viewDidLoad
+{
+    specifiersToDisable = @[@"barImage", @"navbarImageBlackout", @"useMenuParallax", @"useMessagesParallax", @"useCustomMessageReadColor", @"messageReadColor"];
+    
+    [super viewDidLoad];
+}
 
 - (void)showColorPicker:(PSSpecifier*)specifier
 {

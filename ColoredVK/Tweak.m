@@ -12,7 +12,7 @@
 
 #import "CaptainHook/CaptainHook.h"
 
-#import "ColoredVKInstaller.h"
+#import "ColoredVKNewInstaller.h"
 #import "PrefixHeader.h"
 #import "NSDate+DateTools.h"
 #import <dlfcn.h>
@@ -184,17 +184,42 @@ void reloadPrefs()
         }
     });
     
+    enabledBarColor = [prefs[@"enabledBarColor"] boolValue];
+    enabledToolBarColor = [prefs[@"enabledToolBarColor"] boolValue];
+    enabledMessagesImage = [prefs[@"enabledMessagesImage"] boolValue];
+    hideMenuSeparators = [prefs[@"hideMenuSeparators"] boolValue];
+    messagesUseBlur = [prefs[@"messagesUseBlur"] boolValue];
+    
+    chatImageBlackout = [prefs[@"chatImageBlackout"] floatValue];
+    hideMessagesNavBarItems = [prefs[@"hideMessagesNavBarItems"] boolValue];
+    changeMenuTextColor = [prefs[@"changeMenuTextColor"] boolValue];
+    changeMessagesTextColor = [prefs[@"changeMessagesTextColor"] boolValue];
+    useMessageBubbleTintColor = [prefs[@"useMessageBubbleTintColor"] boolValue];
+    menuSelectionStyle = prefs[@"menuSelectionStyle"]?[prefs[@"menuSelectionStyle"] integerValue]:CVKCellSelectionStyleTransparent;
+    messagesBlurStyle = prefs[@"messagesBlurStyle"]?[prefs[@"messagesBlurStyle"] integerValue]:UIBlurEffectStyleLight;
+    
+    menuSeparatorColor =         [UIColor savedColorForIdentifier:@"MenuSeparatorColor"         fromPrefs:prefs];
+    menuSelectionColor =        [[UIColor savedColorForIdentifier:@"menuSelectionColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
+    barBackgroundColor =         [UIColor savedColorForIdentifier:@"BarBackgroundColor"         fromPrefs:prefs];
+    toolBarBackgroundColor =     [UIColor savedColorForIdentifier:@"ToolBarBackgroundColor"     fromPrefs:prefs];
+    toolBarForegroundColor =     [UIColor savedColorForIdentifier:@"ToolBarForegroundColor"     fromPrefs:prefs];
+    messageBubbleTintColor =     [UIColor savedColorForIdentifier:@"messageBubbleTintColor"     fromPrefs:prefs];
+    messageBubbleSentTintColor = [UIColor savedColorForIdentifier:@"messageBubbleSentTintColor" fromPrefs:prefs];
+    menuTextColor =              [UIColor savedColorForIdentifier:@"menuTextColor"              fromPrefs:prefs];
+    messagesTextColor =          [UIColor savedColorForIdentifier:@"messagesTextColor"          fromPrefs:prefs];
+    messagesBlurTone =          [[UIColor savedColorForIdentifier:@"messagesBlurTone"           fromPrefs:prefs] colorWithAlphaComponent:0.3];
+    
     if (prefs && tweakEnabled) {
-        enabledBarColor = [prefs[@"enabledBarColor"] boolValue];
-        enabledToolBarColor = [prefs[@"enabledToolBarColor"] boolValue];
+       
         enabledBarImage = [prefs[@"enabledBarImage"] boolValue];
+        
+        
         changeSBColors = [prefs[@"changeSBColors"] boolValue];
         changeSwitchColor = [prefs[@"changeSwitchColor"] boolValue];
-        
         showCommentSeparators = prefs[@"showCommentSeparators"] ? ![prefs[@"showCommentSeparators"] boolValue] : NO;
+        
         disableGroupCovers = [prefs[@"disableGroupCovers"] boolValue];
         
-        enabledMessagesImage = [prefs[@"enabledMessagesImage"] boolValue];
         enabledMessagesListImage = [prefs[@"enabledMessagesListImage"] boolValue];
         enabledGroupsListImage = [prefs[@"enabledGroupsListImage"] boolValue];
         enabledAudioImage = [prefs[@"enabledAudioImage"] boolValue];
@@ -202,28 +227,25 @@ void reloadPrefs()
         enabledFriendsImage = [prefs[@"enabledFriendsImage"] boolValue];
         enabledVideosImage = [prefs[@"enabledVideosImage"] boolValue];
         
-        hideMenuSeparators = [prefs[@"hideMenuSeparators"] boolValue];
         hideMessagesListSeparators = [prefs[@"hideMessagesListSeparators"] boolValue];
         hideGroupsListSeparators = [prefs[@"hideGroupsListSeparators"] boolValue];
         hideAudiosSeparators = [prefs[@"hideAudiosSeparators"] boolValue];
         hideFriendsSeparators = [prefs[@"hideFriendsSeparators"] boolValue];
         hideVideosSeparators = [prefs[@"hideVideosSeparators"] boolValue];
         
-        messagesUseBlur = [prefs[@"messagesUseBlur"] boolValue];
         messagesListUseBlur = [prefs[@"messagesListUseBlur"] boolValue];
         groupsListUseBlur = [prefs[@"groupsListUseBlur"] boolValue];
         audiosUseBlur = [prefs[@"audiosUseBlur"] boolValue];
         friendsUseBlur = [prefs[@"friendsUseBlur"] boolValue];
         videosUseBlur = [prefs[@"videosUseBlur"] boolValue];
         
-        useMessagesListParallax = [prefs[@"useMessagesListParallax"] boolValue];
         useMessagesParallax = [prefs[@"useMessagesParallax"] boolValue];
+        useMessagesListParallax = [prefs[@"useMessagesListParallax"] boolValue];
         useGroupsListParallax = [prefs[@"useGroupsListParallax"] boolValue];
         useAudioParallax = [prefs[@"useAudioParallax"] boolValue];
         useFriendsParallax = [prefs[@"useFriendsParallax"] boolValue];
         useVideosParallax = [prefs[@"useVideosParallax"] boolValue];
         
-        chatImageBlackout = [prefs[@"chatImageBlackout"] floatValue];
         chatListImageBlackout = [prefs[@"chatListImageBlackout"] floatValue];
         groupsListImageBlackout = [prefs[@"groupsListImageBlackout"] floatValue];
         audioImageBlackout = [prefs[@"audioImageBlackout"] floatValue];
@@ -231,56 +253,40 @@ void reloadPrefs()
         friendsImageBlackout = [prefs[@"friendsImageBlackout"] floatValue];
         videosImageBlackout = [prefs[@"videosImageBlackout"] floatValue];
         
-        hideMessagesNavBarItems = [prefs[@"hideMessagesNavBarItems"] boolValue];
-        useMessageBubbleTintColor = [prefs[@"useMessageBubbleTintColor"] boolValue];
         useCustomMessageReadColor = [prefs[@"useCustomMessageReadColor"] boolValue];
         
-        changeMenuTextColor = [prefs[@"changeMenuTextColor"] boolValue];
-        changeMessagesTextColor = [prefs[@"changeMessagesTextColor"] boolValue];
         changeMessagesListTextColor = [prefs[@"changeMessagesListTextColor"] boolValue];
         changeGroupsListTextColor = [prefs[@"changeGroupsListTextColor"] boolValue];
         changeAudiosTextColor = [prefs[@"changeAudiosTextColor"] boolValue];
         changeFriendsTextColor = [prefs[@"changeFriendsTextColor"] boolValue];
         changeVideosTextColor = [prefs[@"changeVideosTextColor"] boolValue];
         
-        menuSelectionStyle = prefs[@"menuSelectionStyle"]?[prefs[@"menuSelectionStyle"] integerValue]:CVKCellSelectionStyleTransparent;
         keyboardStyle = prefs[@"keyboardStyle"]?[prefs[@"keyboardStyle"] integerValue]:UIKeyboardAppearanceDefault;
         
-        messagesBlurStyle = prefs[@"messagesBlurStyle"]?[prefs[@"messagesBlurStyle"] integerValue]:UIBlurEffectStyleLight;
         messagesListBlurStyle = prefs[@"messagesListBlurStyle"]?[prefs[@"messagesListBlurStyle"] integerValue]:UIBlurEffectStyleLight;
         groupsListBlurStyle = prefs[@"groupsListBlurStyle"]?[prefs[@"groupsListBlurStyle"] integerValue]:UIBlurEffectStyleLight;
         audiosBlurStyle = prefs[@"audiosBlurStyle"]?[prefs[@"audiosBlurStyle"] integerValue]:UIBlurEffectStyleLight;
         friendsBlurStyle = prefs[@"friendsBlurStyle"]?[prefs[@"friendsBlurStyle"] integerValue]:UIBlurEffectStyleLight;
         videosBlurStyle = prefs[@"videosBlurStyle"]?[prefs[@"videosBlurStyle"] integerValue]:UIBlurEffectStyleLight;
         
-        
-        menuSeparatorColor =         [UIColor savedColorForIdentifier:@"MenuSeparatorColor"         fromPrefs:prefs];
-        menuSelectionColor =        [[UIColor savedColorForIdentifier:@"menuSelectionColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
-        barBackgroundColor =         [UIColor savedColorForIdentifier:@"BarBackgroundColor"         fromPrefs:prefs];
-        toolBarBackgroundColor =     [UIColor savedColorForIdentifier:@"ToolBarBackgroundColor"     fromPrefs:prefs];
-        toolBarForegroundColor =     [UIColor savedColorForIdentifier:@"ToolBarForegroundColor"     fromPrefs:prefs];
+       
         switchesTintColor =          [UIColor savedColorForIdentifier:@"switchesTintColor"          fromPrefs:prefs];
         switchesOnTintColor =        [UIColor savedColorForIdentifier:@"switchesOnTintColor"        fromPrefs:prefs];
-        messageBubbleTintColor =     [UIColor savedColorForIdentifier:@"messageBubbleTintColor"     fromPrefs:prefs];
-        messageBubbleSentTintColor = [UIColor savedColorForIdentifier:@"messageBubbleSentTintColor" fromPrefs:prefs];
         messageUnreadColor =        [[UIColor savedColorForIdentifier:@"messageReadColor"           fromPrefs:prefs] colorWithAlphaComponent:0.2];
         
-        menuTextColor =              [UIColor savedColorForIdentifier:@"menuTextColor"              fromPrefs:prefs];
-        messagesTextColor =          [UIColor savedColorForIdentifier:@"messagesTextColor"          fromPrefs:prefs];
         messagesListTextColor =      [UIColor savedColorForIdentifier:@"messagesListTextColor"      fromPrefs:prefs];
         groupsListTextColor =        [UIColor savedColorForIdentifier:@"groupsListTextColor"        fromPrefs:prefs];
         audiosTextColor =            [UIColor savedColorForIdentifier:@"audiosTextColor"            fromPrefs:prefs];
         friendsTextColor =           [UIColor savedColorForIdentifier:@"friendsTextColor"           fromPrefs:prefs];
         videosTextColor =            [UIColor savedColorForIdentifier:@"videosTextColor"            fromPrefs:prefs];
         
-        messagesBlurTone =          [[UIColor savedColorForIdentifier:@"messagesBlurTone"           fromPrefs:prefs] colorWithAlphaComponent:0.3];
         messagesListBlurTone =      [[UIColor savedColorForIdentifier:@"messagesListBlurTone"       fromPrefs:prefs] colorWithAlphaComponent:0.3];
         groupsListBlurTone =        [[UIColor savedColorForIdentifier:@"groupsListBlurTone"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
         audiosBlurTone =            [[UIColor savedColorForIdentifier:@"audiosBlurTone"             fromPrefs:prefs] colorWithAlphaComponent:0.3];
         friendsBlurTone =           [[UIColor savedColorForIdentifier:@"friendsBlurTone"            fromPrefs:prefs] colorWithAlphaComponent:0.3];
         videosBlurTone =            [[UIColor savedColorForIdentifier:@"videosBlurTone"             fromPrefs:prefs] colorWithAlphaComponent:0.3];
         
-        userAgreeWithCopyrights = [prefs[@"userAgreeWithCopyrights"] boolValue];
+//        userAgreeWithCopyrights = [prefs[@"userAgreeWithCopyrights"] boolValue];
         
         if (cvkMainController.navBarImageView) [cvkMainController.navBarImageView updateViewForKey:@"navbarImageBlackout"];
     }
@@ -690,25 +696,37 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
     
     CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
     
-    installerCompletionBlock = ^(BOOL disableTweak) {
-        if (!disableTweak) {
-            tweakEnabled = YES;
-            reloadPrefs();
-            
-            if (!userAgreeWithCopyrights && (NSClassFromString(@"ColoredVKHelpController") != nil)) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    ColoredVKHelpController *helpController = [NSClassFromString(@"ColoredVKHelpController") new];
-                    helpController.userID = userID;
-                    helpController.showInFirstTime = YES;
-                    helpController.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
-                    helpController.hideByTouch = NO;
-                    [helpController show];
-                });
-            }
-        }
-    };
+//    installerCompletionBlock = ^(BOOL disableTweak) {
+//        if (!disableTweak) {
+//            tweakEnabled = YES;
+//            reloadPrefs();
+//            
+//            if (!userAgreeWithCopyrights && (NSClassFromString(@"ColoredVKHelpController") != nil)) {
+//                dispatch_async(dispatch_get_main_queue(), ^{
+//                    ColoredVKHelpController *helpController = [NSClassFromString(@"ColoredVKHelpController") new];
+//                    helpController.userID = userID;
+//                    helpController.showInFirstTime = YES;
+//                    helpController.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
+//                    helpController.hideByTouch = NO;
+//                    [helpController show];
+//                });
+//            }
+//        }
+//    };
+//    
+//    [ColoredVKInstaller sharedInstaller];
     
-    [ColoredVKInstaller sharedInstaller];
+    
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
+    installerCompletionBlock = ^(BOOL purchased) {
+        tweakEnabled = purchased;
+        reloadPrefs();
+    };
+    [newInstaller checkStatusAndShowAlert:NO];
+    [newInstaller updateAccountInfo:^{
+        [newInstaller checkStatusAndShowAlert:NO];
+    }];
+    
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
@@ -1976,7 +1994,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, DialogsSearchController, tableView,
 
 
 #pragma mark PSListController
-@interface PSListController : UIViewController @end
+//@interface PSListController : UIViewController @end
 CHDeclareClass(PSListController);
 CHOptimizedMethod(1, self, void, PSListController, viewWillAppear, BOOL, animated)
 {

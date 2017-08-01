@@ -105,6 +105,16 @@
 
 
 
+"ENTER_ACCOUNT" = "Sign in";
+"TO_UNLOCK_FULL_VERSION" = "To unlock the full version";
+"ACCOUNT_STATUS" = "Account status";
+"ACCOUNT_PAID" = "Paid";
+"ACCOUNT_ACTIVATED" = "Activated";
+"NO_ACCOUNT_QUESTION" = "No account yet?";
+"REGISTER" = "Register";
+
+
+
 /*
  
  FOOTERS

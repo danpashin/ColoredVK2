@@ -1,0 +1,527 @@
+//
+//  ColoredVKNewInstaller.m
+//  ColoredVK2
+//
+//  Created by Даниил on 07.07.17.
+//
+//
+
+#import "ColoredVKNewInstaller.h"
+
+#import "PrefixHeader.h"
+#import "ColoredVKCrypto.h"
+#import <sys/utsname.h>
+#import <SafariServices/SafariServices.h>
+#import <MobileGestalt/MobileGestalt.h>
+#import "ColoredVKHUD.h"
+#import "ColoredVKPaymentController.h"
+#import <Security/Security.h>
+
+
+
+#define kDRMLicenceKey          @"1D074B10BBA106699DD7D4AED9E595FA"
+#define kDRMAuthorizeKey        @"ACBEBB5F70D0883E875DAA6E1C5C59ED"
+#define kDRMPackage             @"org.thebigboss.coloredvk2"
+#define kDRMPackageName         kPackageName
+#define kDRMPackageVersion      kPackageVersion
+#define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
+#define kDRMRemoteServerURL     [NSString stringWithFormat:@"%@/index-new.php", kPackageAPIURL]
+
+
+
+
+
+@interface ColoredVKNewInstaller ()
+
+@property (strong, nonatomic) UIWindow *hudWindow;
+@property (weak, nonatomic) ColoredVKHUD *hud;
+
+
+@end
+
+
+@implementation ColoredVKNewInstaller
+/*******    STATIC VARIABLES    ******/
+void(^installerCompletionBlock)(BOOL purchased);
+struct utsname systemInfo;
+NSString *key;
+NSString *userLogin;
+NSString *userPassword;
+
+
+
++ (instancetype)sharedInstaller
+{
+    static id instance = nil;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        instance = [[self alloc] init];
+    });
+    return instance;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        key = AES256EncryptStringForAPI([NSProcessInfo processInfo].globallyUniqueString);
+        uname(&systemInfo);
+        
+        [self createFolders];
+    }
+    return self;
+}
+
+- (void)createFolders
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+#ifdef CVK_CACHE_PATH_OLD
+    if ([fileManager fileExistsAtPath:CVK_CACHE_PATH_OLD]) [fileManager removeItemAtPath:CVK_CACHE_PATH_OLD error:nil];
+#endif
+#ifdef CVK_CACHE_PATH_OLD1
+    if ([fileManager fileExistsAtPath:CVK_CACHE_PATH_OLD1]) [fileManager removeItemAtPath:CVK_CACHE_PATH_OLD1 error:nil];
+#endif
+    
+    if (![fileManager fileExistsAtPath:CVK_FOLDER_PATH])  [fileManager createDirectoryAtPath:CVK_FOLDER_PATH withIntermediateDirectories:NO attributes:nil error:nil];
+    if (![fileManager fileExistsAtPath:CVK_CACHE_PATH]) [fileManager createDirectoryAtPath:CVK_CACHE_PATH  withIntermediateDirectories:NO attributes:nil error:nil];
+    if (![fileManager fileExistsAtPath:CVK_CACHE_PATH])  [fileManager createDirectoryAtPath:CVK_CACHE_PATH withIntermediateDirectories:NO attributes:nil error:nil];
+    if (![fileManager fileExistsAtPath:CVK_BACKUP_PATH])  [fileManager createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
+}
+
+- (void)checkStatusAndShowAlert:(BOOL)showAlert
+{
+    if (![[NSFileManager defaultManager] fileExistsAtPath:kDRMLicencePath]) {
+        writeFreeLicence(showAlert);
+    } else {
+        NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
+        NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
+        if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0)) {
+            if (dict[@"Device"]) {
+                if (![dict[@"Device"] isEqualToString:@(systemInfo.machine)]) {
+                    writeFreeLicence(showAlert);
+                } else {
+                    if ([dict[@"purchased"] boolValue] && [dict[@"activated"] boolValue]) {                        
+                        if (installerCompletionBlock)
+                            installerCompletionBlock(YES);
+                    }
+                    
+                }
+            } else {
+                writeFreeLicence(showAlert);
+            }
+        } else {
+            writeFreeLicence(showAlert);
+        }
+    }
+}
+
+- (void)actionPurchase
+{
+    if (self.userID) {        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
+            NSError *error = nil;
+            NSURL *provisionURL = [[NSBundle mainBundle] URLForResource:@"embedded" withExtension:@"mobileprovision"];
+            NSString *provisionString = [[NSString alloc] initWithContentsOfURL:provisionURL encoding:NSISOLatin1StringEncoding error:&error];
+            
+            NSString *provisionTeamID = @"";
+            NSString *provisionTeamName = @"";
+            
+            if (!error) {         
+                NSString *provisionDictString = @"";
+                
+                NSScanner *scanner = [NSScanner scannerWithString:provisionString];
+                [scanner scanUpToString:@"<plist" intoString:nil];
+                [scanner scanUpToString:@"</plist>" intoString:&provisionDictString];
+                provisionDictString = [@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n" stringByAppendingString:provisionDictString];
+                provisionDictString = [provisionDictString stringByAppendingString:@"</plist>"];
+                
+                NSString *tempPath = [NSTemporaryDirectory() stringByAppendingString:@"/embedded_mobileprovision.plist"];
+                [[provisionDictString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:tempPath atomically:YES];
+                
+                NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:tempPath];
+                if (dict) {
+                    provisionTeamID = ((NSArray *)dict[@"TeamIdentifier"]).firstObject;
+                    provisionTeamName = dict[@"TeamName"];
+                }
+            }
+            
+            ColoredVKPaymentController *paymentController = [ColoredVKPaymentController new];
+            paymentController.url = [NSURL URLWithString:@"http://danpashin.ru/projects/coloredvk/purchase/"];
+            
+            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:paymentController.url cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:90.0f];
+            request.HTTPMethod = @"POST";
+            [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
+            request.HTTPBody = [[NSString stringWithFormat:@"user_id=%@&profile_team_id=%@&profile_team_name=%@", 
+                                 self.userID, provisionTeamID, provisionTeamName] dataUsingEncoding:NSUTF8StringEncoding];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                paymentController.request = request;
+                UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:paymentController];
+                navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+                [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:navigationController animated:YES completion:nil];
+            });
+        });
+    } else {
+        [self showAlertWithTitle:CVKLocalizedString(@"WARNING") text:CVKLocalizedString(@"ENTER_ACCOUNT_FIRST") buttons:nil];
+    }
+}
+
+- (void)showAlertWithTitle:(NSString *)title text:(NSString *)text buttons:(NSArray <__kindof UIAlertAction *> *)buttons
+{
+    if (buttons.count == 0) {
+        buttons = @[[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+    }
+    if (!title)
+        title = kDRMPackageName;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:text preferredStyle:UIAlertControllerStyleAlert];
+        for (UIAlertAction *action in buttons) {
+            [alertController addAction:action];
+        }
+        
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+    });
+    
+}
+
+- (void)showHudWithText:(NSString *)text
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.hudWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        self.hudWindow.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
+        self.hudWindow.userInteractionEnabled = NO;
+        [self.hudWindow makeKeyAndVisible];
+        
+        self.hud = [ColoredVKHUD showHUDForView:self.hudWindow];
+        [self.hud resetWithStatus:text];
+        self.hud.dismissByTap = NO;
+    });
+}
+
+- (void)hideHud
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.hud)
+            [self.hud removeFromSuperview];
+        self.hudWindow = nil;
+    });
+}
+
+
+#pragma mark -
+#pragma mark Getters
+#pragma mark -
+- (NSString *)userLogin
+{
+    return licenceValueForKey(@"Login");
+}
+
+- (NSString *)token
+{
+    return licenceValueForKey(@"user_token");
+}
+
+- (NSNumber *)userID
+{
+    return licenceValueForKey(@"user_id");
+}
+
+- (BOOL)isTweakPurchased
+{    
+    return [licenceValueForKey(@"purchased") boolValue];
+}
+
+- (BOOL)isTweakActivated
+{    
+    return [licenceValueForKey(@"activated") boolValue];
+}
+
+
+#pragma mark -
+#pragma mark Backend
+#pragma mark -
+- (void)updateAccountInfo:( void(^)() )completionBlock
+{
+    if (self.userID) {
+        if (self.tweakPurchased && self.tweakActivated) {
+            self.api_activated = self.tweakActivated;
+            self.api_purchased = self.tweakPurchased;
+            if (completionBlock)
+                completionBlock();
+            
+            return;
+        }
+        NSString *stringURL = [NSString stringWithFormat:@"%@/payment/get_info.php", kPackageAPIURL];;    
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
+        request.HTTPMethod = @"POST";
+        request.HTTPBody = [[NSString stringWithFormat:@"user_id=%@&token=%@", self.userID, self.token] dataUsingEncoding:NSUTF8StringEncoding];
+        
+        [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+            if (!connectionError && data) {
+                NSData *decrypted = AES256Decrypt(data, kDRMAuthorizeKey);
+                NSString *decryptedString = [[NSString alloc] initWithData:decrypted encoding:NSUTF8StringEncoding];
+                decryptedString = [decryptedString stringByReplacingOccurrencesOfString:@"\0" withString:@""];
+                
+                NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:[decryptedString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+                if (responseDict && !responseDict[@"error"]) {
+                    NSDictionary *response = responseDict[@"response"];
+                    
+                    self.api_banned = [response[@"is_banned"] boolValue];
+                    self.api_purchased = [response[@"is_purchased"] boolValue];
+                    self.api_activated = [response[@"is_activated"] boolValue];
+                    
+                    NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
+                    NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
+                    [dict setObject:@(self.api_purchased) forKey:@"purchased"];
+                    [dict setObject:@(self.api_activated) forKey:@"activated"];
+                    NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
+                    [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
+                }
+            }
+            if (completionBlock) {
+                completionBlock();
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
+            }
+        }];
+    } else {
+        self.api_banned = NO;
+        self.api_purchased = NO;
+        self.api_activated = NO;
+        if (completionBlock)
+            completionBlock();
+    }
+    
+}
+
+
+
+
+void writeFreeLicence(BOOL showAlert)
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        NSMutableDictionary *dict = @{@"isFree":@YES, @"Device":@(systemInfo.machine), @"UDID":deviceUDID}.mutableCopy;
+        NSMutableDictionary *dict = @{@"purchased":@NO, @"activated":@NO, @"Device":@(systemInfo.machine)}.mutableCopy;
+        NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
+        
+        NSError *writingError = nil;
+        [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
+        
+        if (showAlert) {
+            [[ColoredVKNewInstaller sharedInstaller] showAlertWithTitle:CVKLocalizedString(@"HI") text:CVKLocalizedString(@"GREETING_MESSAGE") buttons:nil];
+        }
+    });
+}
+
+void installerActionLogin(NSString *login, NSString *password, void(^completionBlock)())
+{
+    [[ColoredVKNewInstaller sharedInstaller] showHudWithText:CVKLocalizedString(@"PLEASE_WAIT")];
+    
+    userPassword = AES256EncryptStringForAPI(password);
+    userLogin = login;
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kDRMRemoteServerURL]];
+    request.HTTPMethod = @"POST";
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
+    NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", @(systemInfo.machine), [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];
+    NSString *parameters = [NSString stringWithFormat:@"login=%@&password=%@&action=login&version=%@&device=%@&key=%@",
+                            userLogin, userPassword, kDRMPackageVersion, device, key];
+    request.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];
+    download(request, YES, completionBlock);
+}
+
+
+void installerActionLogout(NSString *password, void(^completionBlock)())
+{
+    [[ColoredVKNewInstaller sharedInstaller] showHudWithText:CVKLocalizedString(@"PLEASE_WAIT")];
+    
+    userLogin = [ColoredVKNewInstaller sharedInstaller].userLogin;
+    userPassword = AES256EncryptStringForAPI(password);
+    
+    void (^newCompletionBlock)(NSError *error) = ^(NSError *error){
+        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
+        if (error.code == 1050) {
+            newInstaller.hud.didHiddenBlock = ^{
+                [newInstaller hideHud];
+            };
+            [newInstaller.hud showFailureWithStatus:error.localizedDescription];
+        }
+        else [newInstaller hideHud];
+        
+        if (completionBlock)
+            completionBlock();
+    };
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kDRMRemoteServerURL]];
+    request.HTTPMethod = @"POST";
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
+    NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", @(systemInfo.machine), [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];
+    NSString *parameters = [NSString stringWithFormat:@"login=%@&password=%@&action=logout&version=%@&device=%@&key=%@",
+                            userLogin, userPassword, kDRMPackageVersion, device, key];
+    request.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];
+    request.timeoutInterval = 90;
+    
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            if (!connectionError) {
+                NSData *decrypted = AES256Decrypt(data, kDRMAuthorizeKey);
+                NSString *decryptedString = [[NSString alloc] initWithData:decrypted encoding:NSUTF8StringEncoding];
+                decryptedString = [decryptedString stringByReplacingOccurrencesOfString:@"\0" withString:@""];
+                
+                NSData *jsonData = [decryptedString dataUsingEncoding:NSUTF8StringEncoding];
+                if (!jsonData)
+                    jsonData = [NSData data];
+                
+                NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
+                if (responseDict && !responseDict[@"error"]) {
+                    if ([responseDict[@"Status"] isEqualToString:userPassword]) {
+                        if ([responseDict[@"key"] isEqualToString:key]) {
+                            NSData *licenceDecryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
+                            NSMutableDictionary *licenceDict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:licenceDecryptedData] mutableCopy];
+                            
+                            if ([licenceDict isKindOfClass:[NSDictionary class]] && (licenceDict.allKeys.count>0)) {
+                                if (licenceDict[@"Login"])
+                                    [licenceDict removeObjectForKey:@"Login"];
+                                if (licenceDict[@"user_id"])
+                                    [licenceDict removeObjectForKey:@"user_id"];
+                                if (licenceDict[@"user_token"])
+                                    [licenceDict removeObjectForKey:@"user_token"];
+                                if (licenceDict[@"purchased"])
+                                    [licenceDict removeObjectForKey:@"purchased"];
+                                if (licenceDict[@"activated"])
+                                    [licenceDict removeObjectForKey:@"activated"];
+                                
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
+                                if (installerCompletionBlock)
+                                    installerCompletionBlock(NO);
+                                
+                                NSError *writingError;
+                                NSData *licenceEncryptedData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:licenceDict], kDRMLicenceKey);
+                                [licenceEncryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
+                                if (!writingError)  newCompletionBlock([NSError errorWithDomain:@"" code:1060 userInfo:nil]);
+                                else newCompletionBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error (-6)"}]);
+                            } else newCompletionBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error (-5)"}]);
+                            
+                        } else newCompletionBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error (-0)"}]);
+                    } else newCompletionBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error (-1)"}]);
+
+                } else {
+                    NSString *errorMessages = responseDict?responseDict[@"error"]:@"Unknown error (-2)";
+                    newCompletionBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);
+                }
+            } else newCompletionBlock(connectionError);
+            
+            userPassword = nil;
+            userLogin = nil;
+        });
+    }];
+}
+
+static void download(NSURLRequest *request,BOOL isAuthorisation, void(^completionBlock)())
+{
+    void (^showAlertBlock)(NSError *error) = ^(NSError *error) {
+        NSString *text = error.localizedDescription;
+        
+        if ((int)error.code == 1050) {
+            writeFreeLicence(NO);
+        }
+        if ((int)error.code == 1060) {
+            text = CVKLocalizedString(@"LICENCE_SUCCESSFULLY_INSTALLED");
+        }
+        if ((int)error.code == 1070) {
+            text = @"";
+        }
+        ColoredVKNewInstaller *installer = [ColoredVKNewInstaller sharedInstaller];
+        [installer hideHud];
+        if ((int)text.length > 0)
+            [installer showAlertWithTitle:nil text:text buttons:nil];
+        
+        if (completionBlock)
+            completionBlock();
+    };
+    if ([request isKindOfClass:[NSMutableURLRequest class]])
+        ((NSMutableURLRequest *)request).timeoutInterval = 90;
+    
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            if (!connectionError) {
+                NSData *decrypted = AES256Decrypt(data, kDRMAuthorizeKey);
+                NSString *decryptedString = [[NSString alloc] initWithData:decrypted encoding:NSUTF8StringEncoding];
+                decryptedString = [decryptedString stringByReplacingOccurrencesOfString:@"\0" withString:@""];
+                
+                NSData *jsonData = [decryptedString dataUsingEncoding:NSUTF8StringEncoding];
+                if (!jsonData)
+                    jsonData = [NSData data];
+                
+                NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
+                if (responseDict && !responseDict[@"error"]) {
+                    
+                    NSString *stringToCompare = userPassword; //isAuthorisation?userPassword:deviceUDID;
+                    if ([responseDict[@"Status"] isEqualToString:stringToCompare]) {
+                        if ([responseDict[@"key"] isEqualToString:key]) {
+//                            NSMutableDictionary *dict = @{@"UDID":deviceUDID, @"Device":@(systemInfo.machine)}.mutableCopy;
+                            NSMutableDictionary *dict = @{@"Device":@(systemInfo.machine)}.mutableCopy;
+                            
+                            [dict setObject:userLogin forKey:@"Login"];
+                            if (responseDict[@"user_id"])
+                                [dict setObject:responseDict[@"user_id"] forKey:@"user_id"];
+                            if (responseDict[@"user_token"])
+                                [dict setObject:responseDict[@"user_token"] forKey:@"user_token"];
+                            if (responseDict[@"purchased"])
+                                [dict setObject:responseDict[@"purchased"] forKey:@"purchased"];
+                            if (responseDict[@"activated"])
+                                [dict setObject:responseDict[@"activated"] forKey:@"activated"];
+                            
+                            
+                            
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
+                            
+                            NSError *writingError = nil;
+                            NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
+                            [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
+                            
+                            if (!writingError) {
+                                showAlertBlock([NSError errorWithDomain:@"" code:1070 userInfo:nil]);
+                                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+                                
+                                
+                                BOOL purchased = ([responseDict[@"activated"] boolValue] && [responseDict[@"purchased"] boolValue]);
+                                
+                                if (purchased && installerCompletionBlock) 
+                                        installerCompletionBlock(YES);
+                                
+                            }
+                            else showAlertBlock(writingError);
+                            
+                        } else showAlertBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error (-0)"}]);
+                    } else showAlertBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error (-1)"}]);
+                    
+                } else {
+                    NSString *errorMessages = responseDict?responseDict[@"error"]:@"Unknown error (-2)";
+                    showAlertBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);
+                }
+            } else showAlertBlock(connectionError);
+            
+            userPassword = nil;
+            userLogin = nil;
+        });
+    }]; 
+    
+}
+
+
+id licenceValueForKey(NSString *key)
+{
+    NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
+    if (decryptedData.length == 0) return nil;
+    NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
+    if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0))
+        return dict[key];
+    else
+        return nil;
+}
+
+@end

@@ -12,7 +12,7 @@
 			<key>key</key>
 			<string>enabled</string>
 			<key>id</key>
-			<string>enabled</string>
+			<string>enableTweakSwitch</string>
 			<key>label</key>
 			<string>ENABLED</string>
 		</dict>
@@ -27,6 +27,8 @@
 			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
 			<string>NavToolBar</string>
+			<key>id</key>
+			<string>navToolBarPrefsLink</string>
 			<key>label</key>
 			<string>NAVIGATION_TOOL_BAR</string>
 			<key>icon</key>
@@ -39,6 +41,8 @@
 			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
 			<string>Menu</string>
+			<key>id</key>
+			<string>menuPrefsLink</string>
 			<key>label</key>
 			<string>MENU</string>
 			<key>icon</key>
@@ -51,6 +55,8 @@
 			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
 			<string>Messages</string>
+			<key>id</key>
+			<string>messagesPrefsLink</string>
 			<key>label</key>
 			<string>MESSAGES</string>
 			<key>icon</key>
@@ -169,6 +175,8 @@
 			<string>ColoredVKAboutController</string>
 			<key>plistToLoad</key>
 			<string>About</string>
+			<key>id</key>
+			<string>aboutPrefsLink</string>
 			<key>label</key>
 			<string>ABOUT</string>
 			<key>icon</key>

@@ -9,48 +9,64 @@
 			<string>MENU</string>
 			<key>identifier</key>
 			<string>menuBackgroundImage</string>
+			<key>icon</key>
+			<string>MenuIcon.png</string>
 		</dict>
 		<dict>
 			<key>title</key>
 			<string>MESSAGES</string>
 			<key>identifier</key>
 			<string>messagesBackgroundImage</string>
+			<key>icon</key>
+			<string>DialogsIcon.png</string>
 		</dict>
 		<dict>
 			<key>title</key>
 			<string>MESSAGES_LIST</string>
 			<key>identifier</key>
 			<string>messagesListBackgroundImage</string>
+			<key>icon</key>
+			<string>MessagesIcon.png</string>
 		</dict>
 		<dict>
 			<key>title</key>
 			<string>FRIENDS</string>
 			<key>identifier</key>
 			<string>friendsBackgroundImage</string>
+			<key>icon</key>
+			<string>FriendsIcon.png</string>
 		</dict>
 		<dict>
 			<key>title</key>
 			<string>GROUPS</string>
 			<key>identifier</key>
 			<string>groupsListBackgroundImage</string>
+			<key>icon</key>
+			<string>GroupsIcon.png</string>
 		</dict>
 		<dict>
 			<key>title</key>
 			<string>VIDEOS</string>
 			<key>identifier</key>
 			<string>videosBackgroundImage</string>
+			<key>icon</key>
+			<string>VideosIcon.png</string>
 		</dict>
 		<dict>
 			<key>title</key>
 			<string>AUDIO</string>
 			<key>identifier</key>
 			<string>audioBackgroundImage</string>
+			<key>icon</key>
+			<string>AudioIcon.png</string>
 		</dict>
 		<dict>
 			<key>title</key>
 			<string>NAVIGATION_BAR</string>
 			<key>identifier</key>
 			<string>barImage</string>
+			<key>icon</key>
+			<string>TopBarSelectedIcon.png</string>
 		</dict>
 	</array>
 </dict>

@@ -6,23 +6,59 @@
 	<array>
 		<dict>
 			<key>cell</key>
+			<string>PSGiantIconCell</string>
+			<key>id</key>
+			<string>loginCell</string>
+			<key>icon</key>
+			<string>UserBigIcon.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSGroupCell</string>
-			<key>footerText</key>
-			<string>CHANGE_PASSWORD_FOOTER</string>
+			<key>label</key>
+			<string>NO_ACCOUNT_QUESTION</string>
+			<key>id</key>
+			<string>registerGroup</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSButtonCell</string>
 			<key>label</key>
-			<string>CHANGE_PASSWORD</string>
+			<string>REGISTER</string>
 			<key>action</key>
-			<string>changePassword</string>
-			<key>shouldCenter</key>
-			<true/>
-			<key>icon</key>
-			<string>LockIcon.png</string>
+			<string>actionRegister</string>
 			<key>textColor</key>
-			<string>0.35,0.5,0.7,1</string>
+			<string>0.35, 0.5, 0.7, 1.0</string>
+			<key>id</key>
+			<string>registerButton</string>
+			<key>icon</key>
+			<string>RegisterIcon.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>ACCOUNT_STATUS</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSTitleValueCell</string>
+			<key>label</key>
+			<string>ACCOUNT_PAID</string>
+			<key>id</key>
+			<string>accountPaid</string>
+			<key>get</key>
+			<string>getAccountPaymentStatus</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSTitleValueCell</string>
+			<key>label</key>
+			<string>ACCOUNT_ACTIVATED</string>
+			<key>id</key>
+			<string>accountActivated</string>
+			<key>get</key>
+			<string>getAccountActivationStatus</string>
 		</dict>
 	</array>
 </dict>

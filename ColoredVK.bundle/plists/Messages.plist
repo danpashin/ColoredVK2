@@ -155,6 +155,8 @@
 			<false/>
 			<key>key</key>
 			<string>useCustomMessageReadColor</string>
+			<key>id</key>
+			<string>useCustomMessageReadColor</string>
 			<key>label</key>
 			<string>USE_CUSTOM_MESSAGE_UNREAD_COLOR</string>
 		</dict>

@@ -27,14 +27,7 @@
     self.nameLabel.font = [UIFont systemFontOfSize:25.0];
     [self.contentView addSubview:self.nameLabel];
     
-    self.thanksLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMinY(self.nameLabel.frame) + CGRectGetHeight(self.nameLabel.frame), contentViewWidth, 32)];
-    self.thanksLabel.adjustsFontSizeToFitWidth = YES;
-    self.thanksLabel.text = CVKLocalizedString(@"THANKS_FOR_PURCHASING");
-    self.thanksLabel.textAlignment = NSTextAlignmentCenter;
-    self.thanksLabel.font = [UIFont systemFontOfSize:18.0];
-    [self.contentView addSubview:self.thanksLabel];
-    
-    self.messageTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, CGRectGetMinY(self.thanksLabel.frame) + CGRectGetHeight(self.thanksLabel.frame), contentViewWidth, CGRectGetHeight(self.contentView.frame) - (32 * 3))];
+    self.messageTextView = [[UITextView alloc] initWithFrame:CGRectMake(0, CGRectGetMinY(self.nameLabel.frame) + CGRectGetHeight(self.nameLabel.frame), contentViewWidth, CGRectGetHeight(self.contentView.frame) - (32 * 3))];
     self.messageTextView.text = CVKLocalizedString(@"RIGTHS_AGREEMENT");
     self.messageTextView.backgroundColor = [UIColor clearColor];
     self.messageTextView.editable = NO;
@@ -50,35 +43,16 @@
     self.nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[view]-|" options:0 metrics:nil views:@{@"view":self.nameLabel}]];
     
-    self.thanksLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[view]-|" options:0 metrics:nil views:@{@"view":self.thanksLabel}]];
-    
     self.agreeButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[view]-|" options:0 metrics:nil views:@{@"view":self.agreeButton}]];
     
     self.messageTextView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[view]-|" options:0 metrics:nil views:@{@"view":self.messageTextView}]];
     
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[nameLabel(height)]-[thanksLabel(height)]-[messageTextView]-[agreeButton(height)]-|"
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[nameLabel(height)]-[messageTextView]-[agreeButton(height)]-|"
                                                                              options:0 metrics:@{@"height":@32} 
-                                                                               views:@{@"nameLabel":self.nameLabel, @"thanksLabel":self.thanksLabel, 
+                                                                               views:@{@"nameLabel":self.nameLabel, 
                                                                                        @"messageTextView":self.messageTextView, @"agreeButton":self.agreeButton}]];
-}
-
-- (void)updateUsername
-{
-    NSString *url = [NSString stringWithFormat:@"https://api.vk.com/method/users.get?v=5.64&user_ids=%@", self.userID];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
-    
-    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-        if (!connectionError) {
-            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-            if (!json[@"error"] && json[@"response"]) {
-                NSDictionary *userInfo = ((NSArray *)json[@"response"]).firstObject;
-                self.username = userInfo[@"first_name"];
-            }
-        }
-    }];
 }
 
 - (void)actionAgree
@@ -90,29 +64,5 @@
     }
     
     [self hide];
-}
-
-
-
-#pragma mark - Setters
-
-- (void)setUserID:(NSNumber *)userID
-{
-    _userID = userID;
-    
-    [self updateUsername];
-}
-
-- (void)setUsername:(NSString *)username
-{
-    _username = username;
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [UIView transitionWithView:self.nameLabel duration:0.3 options:UIViewAnimationOptionTransitionCrossDissolve|UIViewAnimationOptionAllowUserInteraction
-                        animations:^{
-                            if (self.showInFirstTime) self.nameLabel.text = [NSString stringWithFormat:CVKLocalizedString(@"HI_%@"), self.username];
-                            else self.nameLabel.text = CVKLocalizedString(@"HI");
-                        } completion:nil];
-    });
 }
 @end

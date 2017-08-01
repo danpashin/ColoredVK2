@@ -13,6 +13,7 @@
 #import "UIImage+ResizeMagick.h"
 #import "PrefixHeader.h"
 #import "ColoredVKHUD.h"
+#import "ColoredVKAlertController.h"
 
 
 @implementation ColoredVKBarDownloadButton
@@ -58,17 +59,20 @@ static NSArray *getInfoForActionController()
 {
     if (self.urlBlock && !self.url) self.url = self.urlBlock();  
     
-    UIAlertController *actionController = [UIAlertController alertControllerWithTitle:@"" message:CVKLocalizedString(@"SET_THIS_IMAGE_TO") preferredStyle:UIAlertControllerStyleActionSheet];
+    ColoredVKAlertController *actionController = [ColoredVKAlertController alertControllerWithTitle:@"" message:CVKLocalizedString(@"SET_THIS_IMAGE_TO") preferredStyle:UIAlertControllerStyleActionSheet];
     [actionController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     
     NSArray *info = getInfoForActionController();
     for (NSDictionary *dict in info) {
-        [actionController addAction:[UIAlertAction actionWithTitle:CVKLocalizedStringFromTable(dict[@"title"], @"ColoredVK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+        UIAlertAction *action = [UIAlertAction actionWithTitle:CVKLocalizedStringFromTable(dict[@"title"], @"ColoredVK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
             ColoredVKHUD *hud = [ColoredVKHUD showHUD];
             hud.operation = [self downloadOperationWithIdentificator:dict[@"identifier"] completionBlock:^(BOOL success) {
                 success?[hud showSuccess]:[hud showFailure];
             }];
-        }]];
+        }];
+        
+        [action setValue:[UIImage imageNamed:dict[@"icon"] inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil] forKey:@"image"];
+        [actionController addAction:action];
     }
     
     if (IS_IPAD) {

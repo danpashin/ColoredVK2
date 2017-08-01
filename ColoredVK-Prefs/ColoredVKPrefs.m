@@ -7,6 +7,8 @@
 //
 
 #import "ColoredVKPrefs.h"
+#import "ColoredVKAlertController.h"
+#import "ColoredVKNewInstaller.h"
 
 
 @implementation ColoredVKPrefs
@@ -43,15 +45,21 @@
         for (PSSpecifier *specifier in specifiersArray) {
             specifier.name = NSLocalizedStringFromTableInBundle(specifier.name, @"ColoredVK", self.bundle, nil);
             
-            if (specifier.properties[@"footerText"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil) forKey:@"footerText"];
-            if (specifier.properties[@"label"]) [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"label"], @"ColoredVK", self.bundle, nil) forKey:@"label"];
+            if (specifier.properties[@"footerText"])
+                [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil) forKey:@"footerText"];
+            if (specifier.properties[@"label"])
+                [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"label"], @"ColoredVK", self.bundle, nil) forKey:@"label"];
+            if (specifier.properties[@"detailedLabel"])
+                [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"detailedLabel"], @"ColoredVK", self.bundle, nil) forKey:@"detailedLabel"];
+            
             if (specifier.properties[@"validTitles"]) {
                 NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
                 for (NSString *key in specifier.titleDictionary.allKeys) [tempDict setValue:NSLocalizedStringFromTableInBundle(specifier.titleDictionary[key], @"ColoredVK", self.bundle, nil) forKey:key];
                 specifier.titleDictionary = [tempDict copy];
             }
             
-            if ([specifier.identifier isEqualToString:@"checkUpdates"] && [kPackageVersion containsString:@"beta"]) [specifier setProperty:@NO forKey:@"enabled"];
+            if ([specifier.identifier isEqualToString:@"checkUpdates"] && [kPackageVersion containsString:@"beta"])
+                [specifier setProperty:@NO forKey:@"enabled"];
             if ([specifier.identifier isEqualToString:@"manageSettingsFooter"] && specifier.properties[@"footerText"])
                  [specifier setProperty:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil), CVK_BACKUP_PATH] forKey:@"footerText"];
         }
@@ -98,7 +106,7 @@
     
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
     
-    NSArray *identificsToReloadMenu = @[@"enabled", @"menuSelectionStyle", @"hideMenuSeparators", @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor"];
+    NSArray *identificsToReloadMenu = @[@"enableTweakSwitch", @"menuSelectionStyle", @"hideMenuSeparators", @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor"];
     if ([identificsToReloadMenu containsObject:specifier.identifier])
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
 }
@@ -167,6 +175,20 @@
             controller.popoverPresentationController.sourceRect = self.view.bounds;
         }
         [self.navigationController presentViewController:controller animated:YES completion:nil];
+    });
+}
+
+- (void)showPurchaseAlert
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"AVAILABLE_IN_FULL_VERSION")
+                                                                                        preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"THINK_LATER") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+        [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OF_COURSE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [[ColoredVKNewInstaller sharedInstaller] actionPurchase];
+        }]];
+        
+        [self presentViewController:alertController animated:YES completion:nil];
     });
 }
 @end

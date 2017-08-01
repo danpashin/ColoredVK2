@@ -38,7 +38,7 @@
 #define VKS_BUNDLE_PATH     [[NSBundle mainBundle] pathForResource: @"vksprefs" ofType: @"bundle"]
 #define CVK_PREFS_PATH      [NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.daniilpashin.coloredvk2.plist"]
 #define CVK_FOLDER_PATH     [NSHomeDirectory() stringByAppendingString:@"/Documents/ColoredVK2"]
-#define CVK_CACHE_PATH      [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/ColoredVK2/Cache"]
+#define CVK_CACHE_PATH      [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/ColoredVK2"]
 #define CVK_BACKUP_PATH     [NSHomeDirectory() stringByAppendingString:@"/Documents/ColoredVK2_Backups"]
 
 #endif
@@ -66,7 +66,7 @@
 
 #define kPackageIdentifier @"com.daniilpashin.coloredvk2"
 #define kPackageName @"ColoredVK 2"
-#define kPackageVersion @"3.3.3"
+#define kPackageVersion @"3.3.3-theux"
 #define kPackageAPIVersion @"1.2"
 #define kPackageAPIURL [NSString stringWithFormat:@"http://danpashin.ru/api/v%@", kPackageAPIVersion]
 #define kPackageDevName @"danpashin"

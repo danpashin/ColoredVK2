@@ -30,18 +30,13 @@ typedef NS_ENUM(NSInteger, PSCellType) {
 
 @property (nonatomic, retain) PSSpecifier *specifier;
 @property (nonatomic) PSCellType type;
-@property (nonatomic, retain) id target NS_DEPRECATED_IOS(2.0, 7.0);
-@property (nonatomic) SEL action;
-
 @property (nonatomic, retain) id cellTarget;
 @property (nonatomic) SEL cellAction;
 
 @property (nonatomic) BOOL cellEnabled;
 
 @property (nonatomic, retain) UIImage *icon;
-
 @property (nonatomic, getter=getLazyIcon, readonly, strong) UIImage *lazyIcon;
-
 @property (nonatomic, retain, readonly) UIImage *blankIcon;
 @property (nonatomic, retain, readonly) NSString *lazyIconAppID;
 

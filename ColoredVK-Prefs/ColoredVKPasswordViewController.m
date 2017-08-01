@@ -8,8 +8,8 @@
 
 #import "ColoredVKPasswordViewController.h"
 #import "PrefixHeader.h"
-#import "ColoredVKInstaller.h"
-#import "NSData+AESCrypt.h"
+#import "ColoredVKNewInstaller.h"
+#import "ColoredVKCrypto.h"
 
 @interface ColoredVKPasswordViewController () <UITableViewDelegate, UITableViewDataSource, ColoredVKPasswordCellDelegate>
 
@@ -100,13 +100,18 @@
     return self.cells[indexPath.row];
 }
 
+- (void)dismiss
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (void)save
 {
     [[UIApplication sharedApplication] sendAction:@selector(resignFirstResponder) to:nil from:nil forEvent:nil];
     
-    NSString *login = licenceValueForKey(@"Login");
-    NSString *currentPass = AES256EncryptStringForAPI(self.currentPassCell.textField.text).base64Encoding;
-    NSString *newPass = AES256EncryptStringForAPI(self.passNewCell.textField.text).base64Encoding;
+    NSString *login = [ColoredVKNewInstaller sharedInstaller].userLogin;
+    NSString *currentPass = AES256EncryptStringForAPI(self.currentPassCell.textField.text);
+    NSString *newPass = AES256EncryptStringForAPI(self.passNewCell.textField.text);
     
     self.hud = [ColoredVKHUD showHUDForView:self.view];
     
@@ -124,9 +129,8 @@
                     if (dict[@"status"]) {
                         [self.hud showSuccessWithStatus:dict[@"status"]];
                         
-                        __weak __typeof(self) weakSelf = self;
                         self.hud.didHiddenBlock = ^{
-                            [weakSelf dismissViewControllerAnimated:YES completion:nil];
+                            [self dismiss];
                         };
                         
                     } else [self.hud showFailureWithStatus:@"Unknown error (-3)"];

@@ -11,11 +11,7 @@
 
 @interface ColoredVKHelpController : ColoredVKWindowController
 
-@property (strong, nonatomic) NSString *username;
-@property (strong, nonatomic) NSNumber *userID;
-
 @property (strong, nonatomic) UILabel *nameLabel;
-@property (strong, nonatomic) UILabel *thanksLabel;
 @property (strong, nonatomic) UITextView *messageTextView;
 @property (strong, nonatomic) UIButton *agreeButton;
 
