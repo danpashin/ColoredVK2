@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "PrefixHeader.h"
 #import "NSDate+DateTools.h"
+#import "ColoredVKNetworkController.h"
 
 @interface ColoredVKUpdatesController ()
 
@@ -44,49 +45,54 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
 #ifndef COMPILE_FOR_JAIL
     stringURL = [stringURL stringByAppendingString:@"&getIPA=1"];
 #endif
-    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]];
     
-    [NSURLConnection sendAsynchronousRequest:urlRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-        if (!connectionError) {
-            NSMutableDictionary *tweakPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
-            NSDictionary *response = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-            if (!response[apiErrorKey]) {
-                NSString *newVersion = response[apiNewVersionKey];
-                NSString *skippedVersion = tweakPrefs[@"skippedVersion"];
-                if (![skippedVersion isEqualToString:newVersion] || self.showErrorAlert) {
-                    NSMutableArray <UIAlertAction *> *alertActions = [NSMutableArray array];
-                    NSString *updateAlertQuestion = [NSString stringWithFormat:CVKLocalizedString(@"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE"), newVersion, response[apiChangelogKey]];
-                    
-                    [alertActions addObject:[UIAlertAction actionWithTitle:CVKLocalizedString(@"REMIND_LATER_BUTTON_TITLE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
-                    [alertActions addObject:[UIAlertAction actionWithTitle:CVKLocalizedString(@"SKIP_THIS_VERSION_BUTTON_TITLE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                        [tweakPrefs setValue:newVersion forKey:@"skippedVersion"];
-                        [tweakPrefs writeToFile:self.prefsPath atomically:YES];
-                    }]];
-                    [alertActions addObject:[UIAlertAction actionWithTitle:CVKLocalizedString(@"UPADTE_BUTTON_TITLE") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                        NSURL *url = [NSURL URLWithString:response[apiDownloadURLKey]];
-                        UIApplication *application = [UIApplication sharedApplication];
-                        if ([application canOpenURL:url]) [application openURL:url];
-                    }]];
-                                        
-                    [self showAlertWithMessage:updateAlertQuestion actions:alertActions];
-                }
-            } else {
-                if (self.showErrorAlert)
-                    [self showAlertWithMessage:response[apiErrorKey]
-                                       actions:@[[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]]];
-            }
-            NSDateFormatter *dateFormatter = [NSDateFormatter new];
-            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-            [tweakPrefs setValue:[dateFormatter stringFromDate:[NSDate date]] forKey:prefsLastCheckKey];
-            [tweakPrefs writeToFile:self.prefsPath atomically:YES];
-            
-            if (self.checkCompletionHandler) self.checkCompletionHandler(self);
-        } else {
-            if (self.showErrorAlert)
-                [self showAlertWithMessage:connectionError.localizedDescription
-                                   actions:@[[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]]];
-        }
-    }];
+    ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
+    [networkController sendJSONRequestWithURL:[NSURL URLWithString:stringURL] parameters:nil 
+                                      success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+                                          
+                                          NSMutableDictionary *tweakPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
+                                          if (!json[apiErrorKey]) {
+                                              NSString *newVersion = json[apiNewVersionKey];
+                                              NSString *skippedVersion = tweakPrefs[@"skippedVersion"];
+                                              if (![skippedVersion isEqualToString:newVersion] || self.showErrorAlert) {
+                                                  NSMutableArray <UIAlertAction *> *alertActions = [NSMutableArray array];
+                                                  NSString *updateAlertQuestion = [NSString stringWithFormat:CVKLocalizedString(@"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE"), newVersion, json[apiChangelogKey]];
+                                                  
+                                                  [alertActions addObject:[UIAlertAction actionWithTitle:CVKLocalizedString(@"REMIND_LATER_BUTTON_TITLE") style:UIAlertActionStyleDefault 
+                                                                                                 handler:^(UIAlertAction *action){}]];
+                                                  [alertActions addObject:[UIAlertAction actionWithTitle:CVKLocalizedString(@"SKIP_THIS_VERSION_BUTTON_TITLE") style:UIAlertActionStyleDefault 
+                                                                                                 handler:^(UIAlertAction *action) {
+                                                                                                     [tweakPrefs setValue:newVersion forKey:@"skippedVersion"];
+                                                                                                     [tweakPrefs writeToFile:self.prefsPath atomically:YES];
+                                                                                                 }]];
+                                                  [alertActions addObject:[UIAlertAction actionWithTitle:CVKLocalizedString(@"UPADTE_BUTTON_TITLE") style:UIAlertActionStyleCancel 
+                                                                                                 handler:^(UIAlertAction *action) {
+                                                                                                     NSURL *url = [NSURL URLWithString:json[apiDownloadURLKey]];
+                                                                                                     UIApplication *application = [UIApplication sharedApplication];
+                                                                                                     if ([application canOpenURL:url]) [application openURL:url];
+                                                                                                 }]];
+                                                  
+                                                  [self showAlertWithMessage:updateAlertQuestion actions:alertActions];
+                                              }
+                                          } else {
+                                              if (self.showErrorAlert) {
+                                                  UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}];
+                                                  [self showAlertWithMessage:json[apiErrorKey] actions:@[cancelAction]];
+                                              }
+                                          }
+                                          NSDateFormatter *dateFormatter = [NSDateFormatter new];
+                                          dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+                                          [tweakPrefs setValue:[dateFormatter stringFromDate:[NSDate date]] forKey:prefsLastCheckKey];
+                                          [tweakPrefs writeToFile:self.prefsPath atomically:YES];
+                                          
+                                          if (self.checkCompletionHandler) self.checkCompletionHandler(self);
+                                          
+                                      } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                                          if (self.showErrorAlert) {
+                                              UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}];
+                                              [self showAlertWithMessage:error.localizedDescription actions:@[cancelAction]];
+                                          }
+                                      }];
 }
 
 - (void)showAlertWithMessage:(NSString *)message actions:(NSArray <UIAlertAction *> *)actions

@@ -132,4 +132,6 @@
 "CHANGE_PASSWORD_FOOTER" = "If you are logged in with your account, in this menu you can change the password.";
 "BLUR_PREFS_FOOTER" = "Blur will be applied to the navigation bar and toolbar (if any)";
 
+"ACCOUNT_STATUS_FOOTER" = "Account activation occurs automatically within 24 hours after payment. If You made a purchase recently, please wait. If the account was not activated within the specified time, email the developer, specifying your login.";
+
 

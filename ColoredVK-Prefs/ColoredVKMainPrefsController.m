@@ -86,7 +86,7 @@ NSArray <NSString *> *specifiersToEnable;
         [contentView addSubview:footerLabel];
         
         UIButton *hideButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [hideButton setTitle:@"Скрыть" forState:UIControlStateNormal];
+        [hideButton setTitle:CVKLocalizedString(@"HIDE") forState:UIControlStateNormal];
         [hideButton setTitleColor:CVKMainColor forState:UIControlStateNormal];
         hideButton.font = [UIFont boldSystemFontOfSize:[UIFont smallSystemFontSize]];
         [hideButton addTarget:self action:@selector(actionHideFreeVersionFooter) forControlEvents:UIControlEventTouchUpInside];

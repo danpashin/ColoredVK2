@@ -33,8 +33,10 @@
 {
     __weak typeof(self) weakSelf = self;
     self.updatesController.checkCompletionHandler = ^(ColoredVKUpdatesController *controller) {
-        weakSelf.lastCheckForUpdates = controller.localizedLastCheckForUpdates;
-        [weakSelf reloadSpecifiers];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            weakSelf.lastCheckForUpdates = controller.localizedLastCheckForUpdates;
+            [weakSelf reloadSpecifiers];
+        });
     };
     self.updatesController.showErrorAlert = YES;
     [self.updatesController checkUpdates];

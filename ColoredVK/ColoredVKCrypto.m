@@ -84,5 +84,5 @@ NSData *AES256EncryptString(NSString *string, NSString *key)
 
 NSString *AES256EncryptStringForAPI(NSString *string)
 {
-    return AES256EncryptString(string, kDRMAuthorizeKey).base64Encoding;
+    return [AES256EncryptString(string, kDRMAuthorizeKey) base64EncodedStringWithOptions:0];
 }

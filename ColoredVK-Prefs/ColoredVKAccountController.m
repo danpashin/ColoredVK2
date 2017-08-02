@@ -51,6 +51,21 @@
             }
         }
         
+        if (self.accountActivated) {
+            NSArray <NSString *> *specifiersIDToRemove = @[@"accountActivationFooter"];
+            NSMutableArray <PSSpecifier *> *specifiersToRemove = [NSMutableArray array];
+            
+            for (PSSpecifier *specifier in specifiers) {
+                if ([specifiersIDToRemove containsObject:specifier.identifier]) {
+                    [specifiersToRemove addObject:specifier];
+                }
+            }
+            
+            for (PSSpecifier *specifier in specifiersToRemove) {
+                [specifiers removeObject:specifier];
+            }
+        }
+        
         _specifiers = [specifiers copy];
     }
     
@@ -95,28 +110,6 @@
     self.accountPaymentStatus = CVKLocalizedString(@"UPDATING...");
     self.accountActivationStatus = CVKLocalizedString(@"UPDATING...");
 }
-
-- (UIView *)registerFooter
-{
-    if (!_registerFooter) {
-        UIView *contentView = [UIView new];
-        
-        UILabel *footerLabel = [UILabel new];
-        footerLabel.text = @"Для использования платной версии ColoredVK 2 необходим аккаунт. ";
-        footerLabel.textColor = [UIColor darkGrayColor];
-        footerLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
-        footerLabel.numberOfLines = 0;
-        [contentView addSubview:footerLabel];
-        
-        footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[footerLabel]|" options:0 metrics:nil views:@{@"footerLabel":footerLabel}]];
-        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[footerLabel]-|" options:0 metrics:nil views:@{@"footerLabel":footerLabel}]];
-        
-        _registerFooter = contentView;
-    }
-    return _registerFooter;
-}
-
 
 
 #pragma mark -
@@ -207,28 +200,6 @@
         [super tableView:tableView didSelectRowAtIndexPath:indexPath];
     }
 }
-
-//- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
-//{
-//    UIView *footer = [super tableView:tableView viewForFooterInSection:section];
-//    
-//    if (section == self.registerFooterSection) {        
-//        footer = self.registerFooter;
-//    }
-//    
-//    return footer;
-//}
-//
-//- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-//{
-//    CGFloat height = [super tableView:tableView heightForFooterInSection:section];
-//    
-//    if (section == self.registerFooterSection) {
-//        height = self.registerFooter.hidden ? 0 : 60;
-//    }
-//    
-//    return height;
-//}
 
 
 #pragma mark -
