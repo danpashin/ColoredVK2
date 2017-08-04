@@ -12,6 +12,7 @@
 #import "LEColorPicker.h"
 #import "ColoredVKCoreData.h"
 #import "ColoredVKAudioEntity.h"
+#import "ColoredVKNetworkController.h"
 
 
 @interface ColoredVKAudioCover ()
@@ -40,7 +41,7 @@
 
 void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{@"identifier":@"audioCoverImage"}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.audio.prefs.update" object:nil userInfo:nil];
 }
 
 - (instancetype)init
@@ -57,7 +58,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         self.track = @"";
         _color = [UIColor whiteColor];
         self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-        [self updateCoverInfo];
+        [self updatePrefs:nil];
         
         self.topImageView = [[UIImageView alloc] initWithImage:self.noCover];
         self.topImageView.backgroundColor = [UIColor blackColor];
@@ -88,7 +89,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         [self updateColorSchemeForImage:self.noCover];
         
         
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateNoCover:) name:@"com.daniilpashin.coloredvk2.image.update" object:nil];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updatePrefs:) name:@"com.daniilpashin.coloredvk2.audio.prefs.update" object:nil];
         CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
     }
     return self;
@@ -116,42 +117,41 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
 
 - (void)updateCoverForArtist:(NSString *)artist title:(NSString *)title
 {
-    @synchronized (self) {
-        dispatch_async(dispatch_queue_create("com.daniilpashin.coloredvk2.download.queue", DISPATCH_QUEUE_SERIAL), ^{
-            if (![self.track isEqualToString:title] || ![self.artist isEqualToString:artist]) {
-                self.track = title;
-                self.artist = artist;
+    if (![self.track isEqualToString:title] || ![self.artist isEqualToString:artist]) {
+        self.track = title;
+        self.artist = artist;
+        
+        [self downloadCoverWithCompletionBlock:^(UIImage *image, BOOL wasDownloaded) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.defaultCover = (wasDownloaded && image) ? NO : YES;
                 
-                [self downloadCoverWithCompletionBlock:^(UIImage *image, BOOL wasDownloaded) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        self.defaultCover = (wasDownloaded && image)?NO:YES;
-                        
-                        [self changeImageViewImage:self.topImageView toImage:image animated:YES];
-                        if (self.defaultCover)
-                            [self changeImageViewImage:self.bottomImageView toImage:self.customCover?self.noCover:nil animated:YES];
-                        else
-                            [self changeImageViewImage:self.bottomImageView toImage:image animated:YES];
-                        
-                        MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
-                        NSMutableDictionary *playingInfo = [center.nowPlayingInfo mutableCopy];
-                        if (!self.defaultCover) playingInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:image];
-                        else [playingInfo removeObjectForKey:MPMediaItemPropertyArtwork];
-                        center.nowPlayingInfo = [playingInfo copy];
-                        
-                        [self updateColorSchemeForImage:image];
-                    });
-                }];
-            } else [self updateColorSchemeForImage:self.topImageView.image];
-            
-            [self updateLyrycsForArtist:artist title:title];
-        });
-    }
+                [self changeImageViewImage:self.topImageView toImage:image animated:YES];
+                if (self.defaultCover)
+                    [self changeImageViewImage:self.bottomImageView toImage:self.customCover ? self.noCover : nil animated:YES];
+                else
+                    [self changeImageViewImage:self.bottomImageView toImage:image animated:YES];
+                
+                MPNowPlayingInfoCenter *center = [MPNowPlayingInfoCenter defaultCenter];
+                NSMutableDictionary *playingInfo = [center.nowPlayingInfo mutableCopy];
+                if (!self.defaultCover) playingInfo[MPMediaItemPropertyArtwork] = [[MPMediaItemArtwork alloc] initWithImage:image];
+                else [playingInfo removeObjectForKey:MPMediaItemPropertyArtwork];
+                center.nowPlayingInfo = [playingInfo copy];
+                
+                [self updateColorSchemeForImage:image];
+            });
+        }];
+    } else [self updateColorSchemeForImage:self.topImageView.image];
+    
+    [self updateLyrycsForArtist:artist title:title];
 }
 - (void)changeImageViewImage:(UIImageView *)imageView toImage:(UIImage *)image animated:(BOOL)animated
 {
-    if (animated) 
-        [UIView transitionWithView:imageView duration:0.3 options:UIViewAnimationOptionTransitionCrossDissolve|UIViewAnimationOptionAllowUserInteraction animations:^{ imageView.image = image; } completion:nil];
-    else imageView.image = image;
+    if (animated) {
+        [UIView transitionWithView:imageView duration:0.3 options:UIViewAnimationOptionTransitionCrossDissolve|UIViewAnimationOptionAllowUserInteraction
+                        animations:^{
+                            imageView.image = image;
+                        } completion:nil];
+    } else imageView.image = image;
 }
 
 - (void)downloadCoverWithCompletionBlock:( void(^)(UIImage *image, BOOL wasDownloaded) )block;
@@ -174,29 +174,34 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         query = [query.lowercaseString stringByReplacingOccurrencesOfString:@"_" withString:@"+"];
 
         UIImage *image = [self.manager.imageCache imageFromCacheForKey:query];
-        if (image) { if (block) block(image, YES); }
-        else {
-            NSString *iTunesURL = [NSString stringWithFormat:@"https://itunes.apple.com/search?limit=1&media=music&term=%@", query];
-            iTunesURL = [iTunesURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:iTunesURL]];
-            request.accessibilityValue = query;
-        [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
-                                    JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:iTunesURL]]
-                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-                                        NSDictionary *responseDict = JSON;
-                                        NSArray *items = responseDict[@"results"];
-                                        if (items.count > 0) {
-                                            NSString *url = [items[0][@"artworkUrl100"] stringByReplacingOccurrencesOfString:@"100x100bb" withString:@"1024x1024bb"];
-                                            [self.manager loadImageWithURL:[NSURL URLWithString:url] options:SDWebImageHighPriority|SDWebImageCacheMemoryOnly progress:nil 
-                                                                 completed:^(UIImage *image, NSData *data, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                                                     if (block) block(image, YES);
-                                                                     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-                                                                     BOOL cacheCovers = prefs[@"cacheAudioCovers"]?[prefs[@"cacheAudioCovers"] boolValue]:YES;
-                                                                     if (cacheCovers) [self.manager.imageCache storeImage:image forKey:request.accessibilityValue completion:nil];
-                                                                 }];
-                                        } else if (block) block(self.noCover, NO);
-                                    }
-                                    failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) { if (block) block(self.noCover, NO); }] start];
+        if (image) {
+            if (block) 
+                block(image, YES); 
+        } else {
+            ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
+            NSMutableURLRequest *urlRequest = [networkController requestWithMethod:@"GET" URLString:@"https://itunes.apple.com/search" 
+                                                                        parameters:@{@"limit":@1, @"media":@"music", @"term":query} error:nil];
+            urlRequest.accessibilityValue = query;
+            [networkController sendRequest:urlRequest
+                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData) {
+                                       NSError *jsonError = nil;
+                                       NSDictionary *json = [NSJSONSerialization JSONObjectWithData:rawData options:0 error:&jsonError];
+                                       if (!jsonError) {
+                                           NSArray *items = json[@"results"];
+                                           if (items.count > 0) {
+                                               NSString *url = [items[0][@"artworkUrl100"] stringByReplacingOccurrencesOfString:@"100x100bb" withString:@"1024x1024bb"];
+                                               [self.manager loadImageWithURL:[NSURL URLWithString:url] options:SDWebImageHighPriority|SDWebImageCacheMemoryOnly progress:nil 
+                                                                    completed:^(UIImage *image, NSData *data, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                                                        if (block) block(image, YES);
+                                                                        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+                                                                        BOOL cacheCovers = prefs[@"cacheAudioCovers"]?[prefs[@"cacheAudioCovers"] boolValue]:YES;
+                                                                        if (cacheCovers) [self.manager.imageCache storeImage:image forKey:request.accessibilityValue completion:nil];
+                                                                    }];
+                                           } else if (block) block(self.noCover, NO);
+                                       } else if (block) block(self.noCover, NO);
+                                   } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                                       if (block) block(self.noCover, NO);
+                                   }];
         }
     }
 }
@@ -205,14 +210,16 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
 {
     LEColorPicker *picker = [[LEColorPicker alloc] init];
     [picker pickColorsFromImage:image onComplete:^(LEColorScheme *colorScheme) {
-        _backColor = self.defaultCover?[UIColor clearColor]:[colorScheme.backgroundColor colorWithAlphaComponent:0.4];
-        _color = colorScheme.secondaryTextColor;
-        self.audioLyricsView.textColor = self.color;
-        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-            self.blurEffectView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor;
-            self.audioLyricsView.blurView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor;
-        } completion:nil];
-        [NSNotificationCenter.defaultCenter postNotificationName:@"com.daniilpashin.coloredvk2.audio.image.changed" object:nil];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _backColor = self.defaultCover?[UIColor clearColor]:[colorScheme.backgroundColor colorWithAlphaComponent:0.4];
+            _color = colorScheme.secondaryTextColor;
+            self.audioLyricsView.textColor = self.color;
+            [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                self.blurEffectView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor;
+                self.audioLyricsView.blurView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor;
+            } completion:nil];
+            [NSNotificationCenter.defaultCenter postNotificationName:@"com.daniilpashin.coloredvk2.audio.image.changed" object:nil];
+        });
     }];
 }
 
@@ -222,12 +229,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
     else                  return [UIImage imageNamed:@"CoverImage" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
 }
 
-- (void)updateNoCover:(NSNotification *)notification
-{
-    if ([notification.userInfo[@"identifier"] isEqualToString:@"audioCoverImage"]) [self updateCoverInfo];
-}
-
-- (void)updateCoverInfo
+- (void)updatePrefs:(NSNotification *)notification
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     self.customCover = [prefs[@"enabledAudioCustomCover"] boolValue];
@@ -258,27 +260,30 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
     title = [self convertStringToURLSafe:title];
     artist = [self convertStringToURLSafe:artist];
     
-    NSString *url = [NSString stringWithFormat:@"%@/lyrics.php?artist=%@&title=%@",  kPackageAPIURL, artist, title];
-    url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    [(AFJSONRequestOperation *)[NSClassFromString(@"AFJSONRequestOperation")
-                                JSONRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]
-                                success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-                                    if (JSON[@"response"]) {
-                                        NSData *responseData = [JSON[@"response"] dataUsingEncoding:NSUTF8StringEncoding];
-                                        NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
-                                        if (response[@"lyrics"]) {
-                                            self.audioLyricsView.text = response[@"lyrics"];
-                                            
-                                            if (self.audioLyricsView.text.length > 0) {
-                                                ColoredVKAudioEntity *audioEntity = [NSEntityDescription insertNewObjectForEntityForName:@"ColoredVKAudioEntity" inManagedObjectContext:self.coredata.managedContext];
-                                                audioEntity.artist = cdArtist;
-                                                audioEntity.title = cdTitle;
-                                                audioEntity.lyrics = response[@"lyrics"];
-                                                [self.coredata saveContext];
-                                            }
-                                        }
-                                    }
-                                } failure:nil] start];
+    NSString *url = [NSString stringWithFormat:@"%@/lyrics.php",  kPackageAPIURL];
+    
+    ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
+    [networkController sendJSONRequestWithMethod:@"GET" stringURL:url parameters:@{@"artist":artist, @"title":title} 
+                                         success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+                                             if (json[@"response"]) {
+                                                 NSDictionary *lyricsDict = [NSJSONSerialization JSONObjectWithData:[json[@"response"] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+                                                 NSString *lyrics = lyricsDict[@"lyrics"];
+                                                 
+                                                 self.audioLyricsView.text = lyrics;
+                                                 
+                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                     if (lyrics.length > 0) {
+                                                         ColoredVKAudioEntity *audioEntity = [NSEntityDescription insertNewObjectForEntityForName:@"ColoredVKAudioEntity" 
+                                                                                                                           inManagedObjectContext:self.coredata.managedContext];
+                                                         audioEntity.artist = cdArtist;
+                                                         audioEntity.title = cdTitle;
+                                                         audioEntity.lyrics = lyrics;
+                                                         [self.coredata saveContext];
+                                                     }
+                                                 });
+                                             }
+                                         } 
+                                         failure:nil];
 }
 
 - (NSString *)convertStringToURLSafe:(NSString *)string

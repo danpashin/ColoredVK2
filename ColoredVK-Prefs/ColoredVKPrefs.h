@@ -10,11 +10,11 @@
 #import <UIKit/UIKit.h>
 #import "Preferences.h"
 #import "PrefixHeader.h"
+#import "UIScrollView+EmptyDataSet.h"
 
-@interface ColoredVKPrefs : PSListController 
+@interface ColoredVKPrefs : PSListController <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 
 @property (nonatomic, readonly) PSSpecifier *footer;
-@property (nonatomic, readonly) PSSpecifier *errorMessage;
 @property (nonatomic, readonly) NSString *tweakVersion;
 @property (nonatomic, readonly) NSString *vkAppVersion;
 

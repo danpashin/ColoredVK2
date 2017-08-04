@@ -15,20 +15,20 @@
 #import "ColoredVKNewInstaller.h"
 #import "PrefixHeader.h"
 #import "NSDate+DateTools.h"
-#import <dlfcn.h>
 #import "ColoredVKMainController.h"
 #import "Tweak.h"
 #import "ColoredVKBarDownloadButton.h"
-#import "UIGestureRecognizer+BlocksKit.h"
 #import "ColoredVKHUD.h"
-#import "ColoredVKHelpController.h"
+#import "ColoredVKAlertController.h"
 #import "ColoredVKUpdatesController.h"
 
 
-BOOL userAgreeWithCopyrights;
 
 BOOL tweakEnabled = NO;
 BOOL VKSettingsEnabled;
+
+BOOL showFastDownloadButton;
+BOOL showMenuCell;
 
 NSString *prefsPath;
 NSString *cvkFolder;
@@ -55,6 +55,7 @@ BOOL enabledMessagesListImage;
 BOOL enabledGroupsListImage;
 BOOL enabledAudioImage;
 BOOL changeAudioPlayerAppearance;
+BOOL enablePlayerGestures;
 BOOL enabledFriendsImage;
 BOOL enabledVideosImage;
 
@@ -138,7 +139,6 @@ BOOL friendsUseBlur;
 BOOL videosUseBlur;
 
 
-NSNumber *userID;
 
 CVKCellSelectionStyle menuSelectionStyle;
 UIKeyboardAppearance keyboardStyle;
@@ -164,6 +164,7 @@ void reloadPrefs()
     enabledMenuImage = [prefs[@"enabledMenuImage"] boolValue];
     menuImageBlackout = [prefs[@"menuImageBlackout"] floatValue];
     useMenuParallax = [prefs[@"useMenuParallax"] boolValue];
+    useMessagesParallax = [prefs[@"useMessagesParallax"] boolValue];
     barForegroundColor = [UIColor savedColorForIdentifier:@"BarForegroundColor" fromPrefs:prefs];
     showBar = [prefs[@"showBar"] boolValue];
     SBBackgroundColor = [UIColor savedColorForIdentifier:@"SBBackgroundColor" fromPrefs:prefs];
@@ -184,12 +185,14 @@ void reloadPrefs()
         }
     });
     
+    enabledBarImage = [prefs[@"enabledBarImage"] boolValue];
     enabledBarColor = [prefs[@"enabledBarColor"] boolValue];
     enabledToolBarColor = [prefs[@"enabledToolBarColor"] boolValue];
     enabledMessagesImage = [prefs[@"enabledMessagesImage"] boolValue];
     hideMenuSeparators = [prefs[@"hideMenuSeparators"] boolValue];
     messagesUseBlur = [prefs[@"messagesUseBlur"] boolValue];
     
+    navbarImageBlackout = [prefs[@"navbarImageBlackout"] floatValue];
     chatImageBlackout = [prefs[@"chatImageBlackout"] floatValue];
     hideMessagesNavBarItems = [prefs[@"hideMessagesNavBarItems"] boolValue];
     changeMenuTextColor = [prefs[@"changeMenuTextColor"] boolValue];
@@ -209,11 +212,11 @@ void reloadPrefs()
     messagesTextColor =          [UIColor savedColorForIdentifier:@"messagesTextColor"          fromPrefs:prefs];
     messagesBlurTone =          [[UIColor savedColorForIdentifier:@"messagesBlurTone"           fromPrefs:prefs] colorWithAlphaComponent:0.3];
     
+    showFastDownloadButton = prefs[@"showFastDownloadButton"] ? [prefs[@"showFastDownloadButton"] boolValue] : YES;
+    showMenuCell = prefs[@"showMenuCell"] ? [prefs[@"showMenuCell"] boolValue] : YES;
+    
     if (prefs && tweakEnabled) {
        
-        enabledBarImage = [prefs[@"enabledBarImage"] boolValue];
-        
-        
         changeSBColors = [prefs[@"changeSBColors"] boolValue];
         changeSwitchColor = [prefs[@"changeSwitchColor"] boolValue];
         showCommentSeparators = prefs[@"showCommentSeparators"] ? ![prefs[@"showCommentSeparators"] boolValue] : NO;
@@ -224,6 +227,7 @@ void reloadPrefs()
         enabledGroupsListImage = [prefs[@"enabledGroupsListImage"] boolValue];
         enabledAudioImage = [prefs[@"enabledAudioImage"] boolValue];
         changeAudioPlayerAppearance = [prefs[@"changeAudioPlayerAppearance"] boolValue];
+        enablePlayerGestures = prefs[@"enablePlayerGestures"] ? [prefs[@"enablePlayerGestures"] boolValue] : YES;
         enabledFriendsImage = [prefs[@"enabledFriendsImage"] boolValue];
         enabledVideosImage = [prefs[@"enabledVideosImage"] boolValue];
         
@@ -239,7 +243,6 @@ void reloadPrefs()
         friendsUseBlur = [prefs[@"friendsUseBlur"] boolValue];
         videosUseBlur = [prefs[@"videosUseBlur"] boolValue];
         
-        useMessagesParallax = [prefs[@"useMessagesParallax"] boolValue];
         useMessagesListParallax = [prefs[@"useMessagesListParallax"] boolValue];
         useGroupsListParallax = [prefs[@"useGroupsListParallax"] boolValue];
         useAudioParallax = [prefs[@"useAudioParallax"] boolValue];
@@ -249,7 +252,6 @@ void reloadPrefs()
         chatListImageBlackout = [prefs[@"chatListImageBlackout"] floatValue];
         groupsListImageBlackout = [prefs[@"groupsListImageBlackout"] floatValue];
         audioImageBlackout = [prefs[@"audioImageBlackout"] floatValue];
-        navbarImageBlackout = [prefs[@"navbarImageBlackout"] floatValue];
         friendsImageBlackout = [prefs[@"friendsImageBlackout"] floatValue];
         videosImageBlackout = [prefs[@"videosImageBlackout"] floatValue];
         
@@ -286,7 +288,6 @@ void reloadPrefs()
         friendsBlurTone =           [[UIColor savedColorForIdentifier:@"friendsBlurTone"            fromPrefs:prefs] colorWithAlphaComponent:0.3];
         videosBlurTone =            [[UIColor savedColorForIdentifier:@"videosBlurTone"             fromPrefs:prefs] colorWithAlphaComponent:0.3];
         
-//        userAgreeWithCopyrights = [prefs[@"userAgreeWithCopyrights"] boolValue];
         
         if (cvkMainController.navBarImageView) [cvkMainController.navBarImageView updateViewForKey:@"navbarImageBlackout"];
     }
@@ -297,9 +298,9 @@ void reloadPrefs()
 void showAlertWithMessage(NSString *message)
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];
+        ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];
         [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+        [alertController present];
     });
 }
 
@@ -701,16 +702,6 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
 //            tweakEnabled = YES;
 //            reloadPrefs();
 //            
-//            if (!userAgreeWithCopyrights && (NSClassFromString(@"ColoredVKHelpController") != nil)) {
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    ColoredVKHelpController *helpController = [NSClassFromString(@"ColoredVKHelpController") new];
-//                    helpController.userID = userID;
-//                    helpController.showInFirstTime = YES;
-//                    helpController.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
-//                    helpController.hideByTouch = NO;
-//                    [helpController show];
-//                });
-//            }
 //        }
 //    };
 //    
@@ -777,7 +768,7 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setBarTintColor, UIColor*, bar
 CHOptimizedMethod(1, self, void, UINavigationBar, setTintColor, UIColor*, tintColor)
 {
     if (enabled && enabledBarColor) {
-        self.barTintColor = nil;
+        self.barTintColor = self.barTintColor;
         tintColor = barForegroundColor;
     }
     
@@ -1004,8 +995,8 @@ CHOptimizedMethod(0, self, void, GroupsController, viewWillLayoutSubviews)
             search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
             NSDictionary *attributes = @{NSForegroundColorAttributeName:changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
             search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder attributes:attributes];
-            NSString *version = cvkMainController.vkVersion;
-            if ([cvkMainController compareVersion:version withVersion:@"2.5"] <= 0) {
+            
+            if ([cvkMainController compareVersion:cvkMainController.vkVersion withVersion:@"2.5"] <= ColoredVKVersionCompareEqual) {
                 for (UIView *view in self.view.subviews) {
                          if ([view isKindOfClass:[UIToolbar class]] && groupsListUseBlur) { setBlur(view, YES, groupsListBlurTone, groupsListBlurStyle); break; }
                     else if ([view isKindOfClass:[UIToolbar class]] && enabledToolBarColor) { setToolBar((UIToolbar*)view); break; } 
@@ -1212,20 +1203,24 @@ CHDeclareClass(VKMMainController);
 CHOptimizedMethod(0, self, NSArray*, VKMMainController, menu)
 {
     NSArray *origMenu = CHSuper(0, VKMMainController, menu);
-    NSMutableArray *tempArray = [origMenu mutableCopy];
-    BOOL shouldInsert = NO;
-    NSInteger index = 0;
-    for (UITableViewCell *cell in tempArray) {
-        if ([cell.textLabel.text isEqualToString:@"VKSettings"]) {
-            shouldInsert = YES;
-            index = [tempArray indexOfObject:cell];
-            break;
-        }
-    }
-    if (shouldInsert) [tempArray insertObject:cvkMainController.menuCell atIndex:index];
-    else [tempArray addObject:cvkMainController.menuCell];
     
-    origMenu = [tempArray copy];
+    if (showMenuCell) {
+        NSMutableArray *tempArray = [origMenu mutableCopy];
+        BOOL shouldInsert = NO;
+        NSInteger index = 0;
+        for (UITableViewCell *cell in tempArray) {
+            if ([cell.textLabel.text isEqualToString:@"VKSettings"]) {
+                shouldInsert = YES;
+                index = [tempArray indexOfObject:cell];
+                break;
+            }
+        }
+        if (shouldInsert) [tempArray insertObject:cvkMainController.menuCell atIndex:index];
+        else [tempArray addObject:cvkMainController.menuCell];
+        
+        origMenu = [tempArray copy];
+    }
+    
     return origMenu;
 }
 
@@ -1252,7 +1247,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
 {
     UITableViewCell *cell = CHSuper(2, VKMMainController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    NSDictionary *identifiers = @{@"customCell" : @228, @"cvkCell": @405};
+    NSDictionary *identifiers = @{@"customCell" : @228, @"cvkMenuCell": @405};
     if ([identifiers.allKeys containsObject:cell.reuseIdentifier]) {
         UISwitch *switchView = [cell viewWithTag:[identifiers[cell.reuseIdentifier] integerValue]];
         if ([switchView isKindOfClass:[UISwitch class]]) [switchView layoutSubviews];
@@ -1379,18 +1374,40 @@ CHOptimizedMethod(0, self, void, IOS7AudioController, viewDidLoad)
         navBar.topItem.titleView.hidden = YES;
         navBar.shadowImage = [UIImage new];
         [navBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-        navBar.topItem.leftBarButtonItems = @[];
         navBar.tintColor = [UIColor whiteColor];
         
-        
-        UISwipeGestureRecognizer *downSwipe = [[UISwipeGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender) {
-            CGPoint location = [sender locationInView:sender.view];
-            UIView *view = [sender.view hitTest:location withEvent:nil];
-            if (![view isKindOfClass:[UITextView class]]) [self done:nil];
-        }];
-        downSwipe.direction = UISwipeGestureRecognizerDirectionDown;
-        [self.view addGestureRecognizer:downSwipe];
-        
+        if (enablePlayerGestures) {
+            navBar.topItem.leftBarButtonItems = @[];
+            navBar.topItem.rightBarButtonItems = @[];
+            
+            [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionDown 
+                                                                                   handler:^{
+                                                                                       if ([self respondsToSelector:@selector(done:)]) {
+                                                                                           [self done:nil];
+                                                                                       }
+                                                                                   }]];
+            
+            [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionRight 
+                                                                                   handler:^{
+                                                                                       if ([self respondsToSelector:@selector(actionNext:)]) {
+                                                                                           [self actionNext:nil];
+                                                                                       }
+                                                                                   }]];
+            
+            [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionLeft 
+                                                                                   handler:^{
+                                                                                       if ([self respondsToSelector:@selector(actionPrev:)]) {
+                                                                                           [self actionPrev:nil];
+                                                                                       }
+                                                                                   }]];
+            
+            [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionUp
+                                                                                   handler:^{
+                                                                                       if ([self respondsToSelector:@selector(actionPlaylist:)]) {
+                                                                                           [self actionPlaylist:nil];
+                                                                                       }
+                                                                                   }]];
+        }
         
         setupAudioPlayer(self.hostView, audioPlayerTintColor);
         self.cover.hidden = YES;
@@ -1876,26 +1893,28 @@ CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, a
 {
     CHSuper(1, PhotoBrowserController, viewWillAppear, animated);
     if ([self isKindOfClass:NSClassFromString(@"PhotoBrowserController")]) {
-        ColoredVKBarDownloadButton *saveButton = [ColoredVKBarDownloadButton button];
-        saveButton.urlBlock = ^NSString*() {
-            NSString *imageSource = @"";
-            int indexOfPage = self.paging.contentOffset.x / self.paging.frame.size.width;
-            VKPhotoSized *photo = [self photoForPage:indexOfPage];
-            if (photo.variants != nil) {
-                int maxVariantIndex = 0;
-                for (VKImageVariant *variant in photo.variants.allValues) {
-                    if (variant.type > maxVariantIndex) {
-                        maxVariantIndex = variant.type;
-                        imageSource = variant.src;
+        if (showFastDownloadButton) {
+            ColoredVKBarDownloadButton *saveButton = [ColoredVKBarDownloadButton button];
+            saveButton.urlBlock = ^NSString*() {
+                NSString *imageSource = @"";
+                int indexOfPage = self.paging.contentOffset.x / self.paging.frame.size.width;
+                VKPhotoSized *photo = [self photoForPage:indexOfPage];
+                if (photo.variants != nil) {
+                    int maxVariantIndex = 0;
+                    for (VKImageVariant *variant in photo.variants.allValues) {
+                        if (variant.type > maxVariantIndex) {
+                            maxVariantIndex = variant.type;
+                            imageSource = variant.src;
+                        }
                     }
                 }
-            }
-            return imageSource;
-        };
-        saveButton.rootViewController = self;
-        NSMutableArray *buttons = [self.navigationItem.rightBarButtonItems mutableCopy];
-        if (buttons.count < 2) [buttons addObject:saveButton];
-        self.navigationItem.rightBarButtonItems = [buttons copy];
+                return imageSource;
+            };
+            saveButton.rootViewController = self;
+            NSMutableArray *buttons = [self.navigationItem.rightBarButtonItems mutableCopy];
+            if (buttons.count < 2) [buttons addObject:saveButton];
+            self.navigationItem.rightBarButtonItems = [buttons copy];
+        }
     }
 }
 
@@ -1914,16 +1933,19 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
 {
     CHSuper(1, VKMBrowserController, viewWillAppear, animated);
     if ([self isKindOfClass:NSClassFromString(@"VKMBrowserController")]) {
-        ColoredVKBarDownloadButton *saveButton = [ColoredVKBarDownloadButton buttonWithURL:self.target.url.absoluteString rootController:self];
-        self.navigationItem.rightBarButtonItem = saveButton;
-        [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:self.target.url] queue:[NSOperationQueue mainQueue] 
-                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                                   if (![[response.MIMEType componentsSeparatedByString:@"/"].firstObject isEqualToString:@"image"]) self.navigationItem.rightBarButtonItem = nil;
-                               }];
+        if (showFastDownloadButton) {
+            ColoredVKBarDownloadButton *saveButton = [ColoredVKBarDownloadButton buttonWithURL:self.target.url.absoluteString rootController:self];
+            self.navigationItem.rightBarButtonItem = saveButton;
+            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:self.target.url] queue:[NSOperationQueue mainQueue] 
+                                   completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                                       if (![[response.MIMEType componentsSeparatedByString:@"/"].firstObject isEqualToString:@"image"]) self.navigationItem.rightBarButtonItem = nil;
+                                   }];
+            
+        }
+        
         if (enabled && enabledBarColor) {
             for (UIView *view in self.navigationItem.titleView.subviews) if ([view respondsToSelector:@selector(setTextColor:)]) ((UILabel*)view).textColor = barForegroundColor;
         }
-        
         resetNavigationBar(self.navigationController.navigationBar);
     }
 }
@@ -1935,16 +1957,6 @@ CHOptimizedMethod(0, self, BOOL, VKProfile, verified)
     NSArray *verifiedUsers = @[@89911723, @93264161, @414677401, @73369298, @188888433];
     if ([verifiedUsers containsObject:self.user.uid]) return YES;
     return CHSuper(0, VKProfile, verified);
-}
-
-
-#pragma mark VKSession
-CHDeclareClass(VKSession);
-CHOptimizedMethod(0, self, NSNumber*, VKSession, userId)
-{
-    NSNumber *userId = CHSuper(0, VKSession, userId);
-    userID = userId;
-    return userId;
 }
 
 
@@ -2289,6 +2301,60 @@ CHOptimizedMethod(0, self, void, UITableView, layoutSubviews)
     }
 }
 
+CHDeclareClass(UIViewController);
+CHOptimizedMethod(3, self, void, UIViewController, presentViewController, UIViewController *, viewControllerToPresent, animated, BOOL, flag, completion, id, completion)
+{
+    NSArray <Class> *classes = @[[UIAlertController class], [UIActivityViewController class]];
+    
+    if ([classes containsObject:[viewControllerToPresent class]] && IS_IPAD) {
+        viewControllerToPresent.modalPresentationStyle = UIModalPresentationPopover;
+        viewControllerToPresent.popoverPresentationController.permittedArrowDirections = 0;
+        viewControllerToPresent.popoverPresentationController.sourceView = self.view;
+        viewControllerToPresent.popoverPresentationController.sourceRect = self.view.bounds;
+    }
+    
+    CHSuper(3, UIViewController, presentViewController, viewControllerToPresent, animated, flag, completion, completion);
+}
+
+
+CHDeclareClass(ModernSettingsController);
+CHOptimizedMethod(2, self, NSInteger, ModernSettingsController, tableView, UITableView *, tableView, numberOfRowsInSection, NSInteger, section)
+{
+    NSInteger rowsCount = CHSuper(2, ModernSettingsController, tableView, tableView, numberOfRowsInSection, section);
+    if (section == 1) {
+//        rowsCount = 6;
+        rowsCount++;
+    }
+    return rowsCount;
+        
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, ModernSettingsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, ModernSettingsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    
+    if (indexPath.section == 1) {
+        NSInteger allRows = [self.tableView numberOfRowsInSection:indexPath.section];
+        if (indexPath.row == allRows-1) {
+            cell = cvkMainController.settingsCell;
+        }
+    }
+    
+    
+    return cell;
+}
+
+CHOptimizedMethod(2, self, void, ModernSettingsController, tableView, UITableView*, tableView, didSelectRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    CHSuper(2, ModernSettingsController, tableView, tableView, didSelectRowAtIndexPath, indexPath);
+    
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    
+    if ([cell.reuseIdentifier isEqualToString:cvkMainController.settingsCell.reuseIdentifier]) {
+        [cvkMainController actionOpenPreferencesPush:YES];
+    }
+}
+
 
 #pragma mark Static methods
 static void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
@@ -2335,7 +2401,7 @@ CHConstructor
         [prefs writeToFile:prefsPath atomically:YES];
         VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil)?YES:NO;
         
-        if ([cvkMainController compareVersion:vkVersion withVersion:@"2.2"] >= 0) {
+        if ([cvkMainController compareVersion:vkVersion withVersion:@"2.2"] >= ColoredVKVersionCompareEqual) {
             CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
             CFNotificationCenterAddObserver(center, NULL, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             CFNotificationCenterAddObserver(center, NULL, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
@@ -2452,9 +2518,6 @@ CHConstructor
             CHHook(0, VKProfile, verified);
             
             
-            CHLoadLateClass(VKSession);
-            CHHook(0, VKSession, userId);
-            
             
             
             
@@ -2533,7 +2596,7 @@ CHConstructor
             CHHook(0, AudioRenderer, playIndicator);
             
             
-            if ([cvkMainController compareVersion:vkVersion withVersion:@"2.9"] >= 0) {
+            if ([cvkMainController compareVersion:vkVersion withVersion:@"2.9"] >= ColoredVKVersionCompareEqual) {
                 CHLoadLateClass(ChatCell);
                 CHHook(4, ChatCell, initWithDelegate, multidialog, selfdialog, identifier);
                 CHHook(0, ChatCell, prepareForReuse);
@@ -2584,6 +2647,16 @@ CHConstructor
             CHHook(6, UITableView, _sectionHeaderView, withFrame, forSection, floating, reuseViewIfPossible, willDisplay);
             CHHook(1, UITableView, setBackgroundView);
             CHHook(0, UITableView, layoutSubviews);
+            
+            
+            CHLoadLateClass(UIViewController);
+            CHHook(3, UIViewController, presentViewController, animated, completion);
+            
+            
+            CHLoadLateClass(ModernSettingsController);
+            CHHook(2, ModernSettingsController, tableView, numberOfRowsInSection);
+            CHHook(2, ModernSettingsController, tableView, cellForRowAtIndexPath);
+            CHHook(2, ModernSettingsController, tableView, didSelectRowAtIndexPath);
 
         } else {
             showAlertWithMessage([NSString stringWithFormat:CVKLocalizedString(@"VKAPP_VERSION_IS_TOO_LOW"),  vkVersion, @"2.2"]);

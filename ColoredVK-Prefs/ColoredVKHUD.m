@@ -39,11 +39,11 @@
 - (instancetype)initHUDWithOperation:(NSOperation *)operation andView:(UIView *)view
 {
     if (!view) view = UIApplication.sharedApplication.keyWindow.rootViewController.view;
-//    UIWindow *hudWindow = [[UIWindow alloc] initWithFrame:view.bounds]
+    
     self = [super initWithAttachedView:view mode:LHProgressHUDModeNormal subMode:LHProgressHUDSubModeAnimating animated:YES];
     if (self) {
         self.operation = operation;
-        self.dismissByTap = YES;
+        self.dismissByTap = NO;
         [self setupHUD];
     }
     return self;

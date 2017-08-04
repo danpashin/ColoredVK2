@@ -48,7 +48,9 @@
 
 @interface VKMNavContext : NSObject 
 + (id)applicationNavRoot;
-- (void)reset:(id)arg1;
+- (void)reset:(UIViewController *)arg1;
+- (void)push:(UIViewController *)arg1;
+- (void)push:(UIViewController *)arg1 animated:(BOOL)arg2;
 @property (readonly, strong) VKMNavContext *rootNavContext;
 @property(retain, nonatomic) UINavigationController *navController;
 @end
@@ -72,6 +74,9 @@
 @property(retain, nonatomic) UILabel *actor;
 @property(retain, nonatomic) UISlider *seek;
 - (void)done:(id)arg;
+- (void)actionNext:(id)arg1;
+- (void)actionPrev:(id)arg1;
+- (void)actionPlaylist:(id)arg1;
 @end
 
 
@@ -207,26 +212,26 @@
 @end
 
 
-@interface AFURLConnectionOperation : NSOperation
-@end
+//@interface AFURLConnectionOperation : NSOperation
+//@end
+//
+//@interface AFHTTPRequestOperation : AFURLConnectionOperation
+//@end
 
-@interface AFHTTPRequestOperation : AFURLConnectionOperation
-@end
-
-@interface AFJSONRequestOperation : AFHTTPRequestOperation
-+ (instancetype)JSONRequestOperationWithRequest:(NSURLRequest *)request 
-                              success:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) )success 
-                              failure:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) )failure;
-@end
-
-
-@interface AFImageRequestOperation : AFHTTPRequestOperation
-+ (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-                            imageProcessingBlock:( UIImage *(^)(UIImage *image) )imageProcessingBlock
-                                       cacheName:(NSString *)cacheNameOrNil
-                                         success:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) )success
-                                         failure:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) )failure;
-@end
+//@interface AFJSONRequestOperation : AFHTTPRequestOperation
+//+ (instancetype)JSONRequestOperationWithRequest:(NSURLRequest *)request 
+//                              success:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) )success 
+//                              failure:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) )failure;
+//@end
+//
+//
+//@interface AFImageRequestOperation : AFHTTPRequestOperation
+//+ (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
+//                            imageProcessingBlock:( UIImage *(^)(UIImage *image) )imageProcessingBlock
+//                                       cacheName:(NSString *)cacheNameOrNil
+//                                         success:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) )success
+//                                         failure:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) )failure;
+//@end
 
 
 
@@ -446,5 +451,13 @@
 @end
 
 @interface VKAudioPlayerListTableViewController : UITableViewController
+@end
+
+
+
+@interface BaseSettingsController : VKMTableController
+@end
+
+@interface ModernSettingsController : BaseSettingsController
 @end
 

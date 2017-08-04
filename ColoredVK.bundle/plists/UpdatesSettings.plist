@@ -57,8 +57,6 @@
 			<string>CHECK_NOW</string>
 			<key>action</key>
 			<string>checkForUpdates</string>
-			<key>textColor</key>
-			<string>0.35, 0.5, 0.7, 1.0</string>
 			<key>icon</key>
 			<string>UpdateIcon.png</string>
 		</dict>

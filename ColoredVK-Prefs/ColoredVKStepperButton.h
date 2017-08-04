@@ -8,14 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@class ColoredVKStepperButton;
-@protocol ColoredVKStepperButtonDelegate <NSObject>
 
-- (void)stepperButton:(ColoredVKStepperButton *)stepperButton didUpdateValue:(NSInteger)value;
-
-@end
-
-
+@protocol ColoredVKStepperButtonDelegate;
 @interface ColoredVKStepperButton : UIView
 
 @property (assign, nonatomic) NSInteger minValue;
@@ -23,9 +17,14 @@
 @property (assign, nonatomic) NSInteger value;
 @property (assign, nonatomic) NSInteger step;
 @property (assign, nonatomic) CGFloat height;
-
 @property (assign, nonatomic) BOOL shouldShake;
-
 @property (weak, nonatomic) id <ColoredVKStepperButtonDelegate> delegate;
+
+@end
+
+
+@protocol ColoredVKStepperButtonDelegate <NSObject>
+
+- (void)stepperButton:(ColoredVKStepperButton *)stepperButton didUpdateValue:(NSInteger)value;
 
 @end

@@ -10,6 +10,7 @@
 #import "PrefixHeader.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKCrypto.h"
+#import "ColoredVKNetworkController.h"
 
 @interface ColoredVKPasswordViewController () <UITableViewDelegate, UITableViewDataSource, ColoredVKPasswordCellDelegate>
 
@@ -114,32 +115,25 @@
     NSString *newPass = AES256EncryptStringForAPI(self.passNewCell.textField.text);
     
     self.hud = [ColoredVKHUD showHUDForView:self.view];
+    ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
     
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/changePassword.php", kPackageAPIURL]]];
-    request.HTTPMethod = @"POST";
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
-    NSString *parameters = [NSString stringWithFormat:@"login=%@&password=%@&new_password=%@", login, currentPass, newPass];
-    request.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];
-    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-        if (!connectionError) {
-            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-            
-            if (dict) {
-                if (!dict[@"error"]) {
-                    if (dict[@"status"]) {
-                        [self.hud showSuccessWithStatus:dict[@"status"]];
-                        
-                        self.hud.didHiddenBlock = ^{
-                            [self dismiss];
-                        };
-                        
-                    } else [self.hud showFailureWithStatus:@"Unknown error (-3)"];
-                } else [self.hud showFailureWithStatus:dict[@"error"]];
-            } else [self.hud showFailureWithStatus:@"Unknown error (-2)"];
-            
-        } else [self.hud showFailureWithStatus:connectionError.localizedDescription];
-    }]; 
-
+    NSString *url = [NSString stringWithFormat:@"%@/changePassword.php", kPackageAPIURL];
+    [networkController sendJSONRequestWithMethod:@"GET" stringURL:url parameters:@{@"login": login, @"password":currentPass, @"new_password": newPass} 
+                                         success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+                                             if (!json[@"error"]) {
+                                                 if (json[@"status"]) {
+                                                     [self.hud showSuccessWithStatus:json[@"status"]];
+                                                     
+                                                     self.hud.didHiddenBlock = ^{
+                                                         [self dismiss];
+                                                     };
+                                                     
+                                                 } else [self.hud showFailureWithStatus:@"Unknown error (-3)"];
+                                             } else [self.hud showFailureWithStatus:json[@"error"]];
+                                         } 
+                                         failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                                             [self.hud showFailureWithStatus:error.localizedDescription];
+                                         }];
 }
 
 - (void)passwordCellChangedText:(ColoredVKPasswordCell *)cell

@@ -171,30 +171,19 @@
         if (!self.userLoggedIn) {
             [self actionLogin];
         } else {
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-            alertController.view.tintColor = CVKMainColor;
+            ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
             UIAlertAction *logout = [UIAlertAction actionWithTitle:CVKLocalizedString(@"ACTION_LOG_OUT") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
                 [self actionLogout];
             }];
-            [logout setValue:[[UIImage imageNamed:@"LogoutIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] 
-                      forKey:@"image"];
-            [alertController addAction:logout];
+            [alertController addAction:logout image:@"LogoutIcon"];
             
             UIAlertAction *changePass = [UIAlertAction actionWithTitle:CVKLocalizedString(@"CHANGE_PASSWORD") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 [self actionChangePassword];
             }];
-            [changePass setValue:[UIImage imageNamed:@"LockIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil] forKey:@"image"];
-            [alertController addAction:changePass];
+            [alertController addAction:changePass image:@"LockIcon"];
             [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
             
-            if (IS_IPAD) {
-                alertController.modalPresentationStyle = UIModalPresentationPopover;
-                alertController.popoverPresentationController.permittedArrowDirections = 0;
-                alertController.popoverPresentationController.sourceView = self.view;
-                alertController.popoverPresentationController.sourceRect = self.view.bounds;
-            }
-            [self presentViewController:alertController animated:YES completion:nil];
-            
+            [alertController presentFromController:self];
         }
     } else {
         [super tableView:tableView didSelectRowAtIndexPath:indexPath];
@@ -225,7 +214,7 @@
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     
-    [self presentViewController:alertController animated:YES completion:nil];
+    [alertController presentFromController:self];
 }
 
 - (void)actionLogout
@@ -244,7 +233,7 @@
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     
-    [self presentViewController:alertController animated:YES completion:nil];
+    [alertController presentFromController:self];
 }
 
 - (void)actionChangePassword

@@ -39,6 +39,8 @@ NSArray <NSString *> *specifiersToEnable;
         for (PSSpecifier *specifier in specifiersArray) {
             if (![specifiersToEnable containsObject:specifier.identifier] && shouldDisable) {
                 [specifier setProperty:@NO forKey:@"enabled"];
+            } else {
+                [specifier setProperty:@YES forKey:@"enabled"];
             }
         }
         
@@ -47,12 +49,13 @@ NSArray <NSString *> *specifiersToEnable;
     return _specifiers;
 }
 
-- (void)viewDidLoad
+- (void)loadView
 {
-    self.freeeVersionSection = 0;
-    specifiersToEnable = @[@"enableTweakSwitch", @"navToolBarPrefsLink", @"menuPrefsLink", @"messagesPrefsLink", @"manageAccount", @"aboutPrefsLink"];
+    [super loadView];
     
-    [super viewDidLoad];
+    self.freeeVersionSection = 0;
+    specifiersToEnable = @[@"enableTweakSwitch", @"navToolBarPrefsLink", @"menuPrefsLink", @"messagesPrefsLink", @"manageAccount", @"aboutPrefsLink", @"tweakPrefsLink"];
+    
     self.prefsTableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.prefsTableView];
     self.navigationItem.title = @"";
     
@@ -137,18 +140,6 @@ NSArray <NSString *> *specifiersToEnable;
 #pragma mark -
 #pragma mark UITableViewDelegate
 #pragma mark -
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    PSSpecifier *specifier = [self specifierAtIndexPath:indexPath];
-    if (![specifiersToEnable containsObject:specifier.identifier] && ![ColoredVKNewInstaller sharedInstaller].tweakPurchased) {
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        
-        [self showPurchaseAlert];
-    } else {
-        [super tableView:tableView didSelectRowAtIndexPath:indexPath];
-    }
-}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {

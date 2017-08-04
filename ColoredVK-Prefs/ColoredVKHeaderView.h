@@ -11,5 +11,7 @@
 #import "Preferences.h"
 
 @interface ColoredVKHeaderView : UIView
+
 + (instancetype)headerForView:(UIView *)rootView;
+
 @end

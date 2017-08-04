@@ -22,8 +22,10 @@
                 NSString *key = [self.specifier.properties[@"prefix"] stringByAppendingString:postfix];
                 specifier.identifier = key;
                 if (specifier.properties[@"key"]) specifier.properties[@"key"] = key;
+                
+                [specifier setProperty:@YES forKey:@"enabled"];
             }
-        } else specifiers = @[self.errorMessage];
+        } else specifiers = @[];
         
         _specifiers = specifiers;
     }

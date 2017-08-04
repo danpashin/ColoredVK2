@@ -41,8 +41,8 @@
 			<string>RESET_SETTINGS</string>
 			<key>action</key>
 			<string>resetSettings</string>
-			<key>textColor</key>
-			<string>1,0,0,1</string>
+			<key>style</key>
+			<string>Destructive</string>
 			<key>shouldCenter</key>
 			<true/>
 		</dict>

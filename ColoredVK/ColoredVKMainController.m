@@ -12,6 +12,7 @@
 #import "ColoredVKMainPrefsController.h"
 #import "ColoredVKWallpaperView.h"
 #import <sys/utsname.h>
+#import "UIGestureRecognizer+BlocksKit.h"
 
 @implementation ColoredVKMainController
 static NSString const *switchViewKey = @"cvkCellSwitchKey";
@@ -40,14 +41,18 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
 - (MenuCell *)menuCell
 {
     if (!_menuCell) {
-        MenuCell *cell = [[objc_getClass("MenuCell") alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cvkCell"];
+        NSString *reuseIdentifier = @"cvkMenuCell";
+        MenuCell *cell = [[objc_getClass("MenuCell") alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+        if (!cell) {
+            cell = (MenuCell *)[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+        }
         cell.backgroundColor = kMenuCellBackgroundColor;
         cell.contentView.backgroundColor = [UIColor clearColor];
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         cell.textLabel.text = @"ColoredVK 2";
         cell.textLabel.textColor = kMenuCellTextColor;
         cell.textLabel.backgroundColor = [UIColor clearColor];
-        cell.textLabel.font = [UIFont systemFontOfSize:17.0];
+        cell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
         cell.imageView.image = [UIImage imageNamed:@"VKMenuIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
         
         UIView *backgroundView = [UIView new];
@@ -63,19 +68,57 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         objc_setAssociatedObject(self, (__bridge const void *)(switchViewKey), switchView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         [cell.contentView addSubview:switchView];
         
-        cell.select = (id)^(id arg1, id arg2) {
-            VKMNavContext *mainContext = [[NSClassFromString(@"VKMNavContext") applicationNavRoot] rootNavContext];
-            
-            NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-            if (!cvkBundle.loaded) [cvkBundle load];
-            ColoredVKMainPrefsController *cvkPrefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
-            [mainContext reset:cvkPrefs];
-            return nil;
-        };
+        if ([cell respondsToSelector:@selector(select)]) {
+            cell.select = (id)^(id arg1, id arg2) {
+                [self actionOpenPreferencesPush:NO];
+                return nil;
+            };
+        }
         _menuCell = cell;
     }
     
     return _menuCell;
+}
+
+- (VKMCell *)settingsCell
+{
+    if (!_settingsCell) {
+        NSString *reuseIdentifier = @"cvkSettingsCell";
+        VKMCell *settingsCell = [[objc_getClass("VKMCell") alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+        if (!settingsCell) {
+            settingsCell = (VKMCell *)[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+        }
+        
+        settingsCell.selectionStyle = UITableViewCellSelectionStyleGray;
+        settingsCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        settingsCell.textLabel.text = @"ColoredVK 2";
+        settingsCell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
+        
+        UIImage *icon = [UIImage imageNamed:@"VKMenuIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
+        icon = [icon imageWithTintColor:[UIColor colorWithRed:88/255.0f green:133/255.0f blue:184/255.0f alpha:1.0f]];
+        settingsCell.imageView.image = icon;
+
+        
+        _settingsCell = settingsCell;
+    }
+    return _settingsCell;
+}
+
+- (void)actionOpenPreferencesPush:(BOOL)withPush
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        VKMNavContext *mainContext = [[NSClassFromString(@"VKMNavContext") applicationNavRoot] rootNavContext];
+        
+        NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+        if (!cvkBundle.loaded) [cvkBundle load];
+        ColoredVKMainPrefsController *cvkPrefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
+        
+        if (withPush) {
+            [mainContext push:cvkPrefs animated:YES];
+        } else {
+            [mainContext reset:cvkPrefs];
+        }
+    });
 }
 
 - (void)switchTriggered:(UISwitch *)switchView
@@ -115,9 +158,10 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     }
 }
 
-- (NSInteger)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version
+- (ColoredVKVersionCompare)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version
 {
-    if ([first_version isEqualToString:second_version]) return 0;
+    if ([first_version isEqualToString:second_version])
+        return ColoredVKVersionCompareEqual;
     
     NSArray *first_version_components = [first_version componentsSeparatedByString:@"."];
     NSArray *second_version_components = [second_version componentsSeparatedByString:@"."];
@@ -128,15 +172,22 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         NSInteger first_component = [first_version_components[i] integerValue];
         NSInteger second_component = [second_version_components[i] integerValue];
         
-        if (first_component > second_component) return 1;
-        if (first_component < second_component) return -1;
+        if (first_component > second_component)
+            return ColoredVKVersionCompareMore;
+        
+        if (first_component < second_component)
+            return ColoredVKVersionCompareLess;
     }
     
     
-    if (first_version_components.count > second_version_components.count) return 1;
-    if (first_version_components.count < second_version_components.count) return -1;
+    if (first_version_components.count > second_version_components.count)
+        return ColoredVKVersionCompareMore;
     
-    return 0;
+    if (first_version_components.count < second_version_components.count)
+        return ColoredVKVersionCompareLess;
+    
+    
+    return ColoredVKVersionCompareEqual;
 }
 
 - (NSString *)vkVersion
@@ -144,35 +195,21 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
 }
 
-//- (void)checkCrashes
-//{
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{        
-//        BOOL shouldShowCrashAlert = NO;
-//        NSString *crashFilePath = @"";
-//        NSFileManager *filemanager = [NSFileManager defaultManager];    
-//        
-//        for (NSString *filename in [filemanager contentsOfDirectoryAtPath:CVK_CACHE_PATH error:nil]) {
-//            if ([filename containsString:@"com.daniilpashin.coloredvk2_crash"]) {
-//                shouldShowCrashAlert = YES;
-//                crashFilePath = [NSString stringWithFormat:@"%@/com.daniilpashin.coloredvk2_crash_%@", CVK_CACHE_PATH, filename];
-//                break;
-//            }
-//        }
-//        
-//        if (shouldShowCrashAlert) {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"CRASH_DETECTED_WANT_TO_SEND_TO_DEV") preferredStyle:UIAlertControllerStyleAlert];
-//                [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"SEND") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-//                    
-//                }]];
-//                [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"BETTER_NOT") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-//                    [filemanager removeItemAtPath:crashFilePath error:nil];
-//                }]];
-//                [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
-//            });
-//        }
-//    });
-//}
+- (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)() )handler
+{
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer * _Nonnull sender) {
+        CGPoint location = [sender locationInView:sender.view];
+        UIView *view = [sender.view hitTest:location withEvent:nil];
+        if (![view isKindOfClass:[UITextView class]]) {
+            if (handler) {
+                handler();
+            }
+        }
+    }];
+    swipeGesture.direction = direction;
+    
+    return swipeGesture;
+}
 
 
 @end

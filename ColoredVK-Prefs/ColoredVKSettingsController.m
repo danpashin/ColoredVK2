@@ -12,6 +12,7 @@
 #import "ColoredVKHUD.h"
 #import "ColoredVKPrefs.h"
 #import "SSZipArchive.h"
+#import "ColoredVKAlertController.h"
 
 @implementation ColoredVKSettingsController
 
@@ -42,7 +43,7 @@
                 [specifiers addObject:specifier];
             }
         }
-        if (specifiers.count == 0) [specifiers addObject:self.errorMessage];
+//        if (specifiers.count == 0) [specifiers addObject:self.errorMessage];
         
         _specifiers = [specifiers copy];
     }
@@ -50,22 +51,34 @@
     return _specifiers;
 }
 
-- (void)viewDidLoad
+- (void)loadView
 {
-    [super viewDidLoad];
+    [super loadView];
     self.prefsTableView.allowsMultipleSelectionDuringEditing = NO;
 }
 
-- (PSSpecifier *)errorMessage
+
+#pragma mark -
+#pragma mark DZNEmptyDataSetSource
+#pragma mark -
+
+- (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView
 {
-    PSSpecifier *errorMessage = super.errorMessage;
-    [errorMessage setProperty:CVKLocalizedStringFromTable(@"NO_FILES_TO_RESTORE", @"ColoredVK") forKey:@"footerText"];
+    NSMutableAttributedString *string = [[super titleForEmptyDataSet:scrollView] mutableCopy];
+    string.mutableString.string = NSLocalizedStringFromTableInBundle(@"NO_FILES_TO_RESTORE", @"ColoredVK", self.cvkBundle, nil);
     
-    return errorMessage;
+    return string;
+}
+
+- (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView
+{
+    return [UIImage imageNamed:@"TabsIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
 }
 
 
-#pragma mark UITableView delegate
+#pragma mark -
+#pragma mark UITableViewDelegate, UITableViewDataSource
+#pragma mark -
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -111,18 +124,17 @@
     PSSpecifier *specifier = [self specifierAtIndexPath:indexPath];
     
     NSString *message = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"RESTORE_BACKUP_QUESTION", nil, self.cvkBundle, nil), specifier.properties[@"filename"]];
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTableInBundle(@"YES_I_AM_SURE", nil, self.cvkBundle, nil) style:UIAlertActionStyleDefault 
                                                       handler:^(UIAlertAction *action) {
                                                           [self restoreSettingsFromFile:specifier.properties[@"filename"]];
                                                       }]];
-    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
-
+    [alertController present];
 }
 
 
-#pragma mark Actions
+#pragma mark - Actions
 
 - (void)actionShare:(UIButton *)button
 {
@@ -220,19 +232,20 @@
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 UINavigationBar *navBar = self.navigationController.navigationBar;
                 navBar.barTintColor = navBar.barTintColor;
+                navBar.tintColor = navBar.tintColor;
             });
             
             error?[hud showFailure]:[hud showSuccess];
         }];  
     };
     
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBundle, nil)
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBundle, nil)
                                                                              message:NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS_QUESTION", nil, self.cvkBundle, nil) 
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     
     NSString *resetTitle = [NSLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"ColoredVK", self.cvkBundle, nil) componentsSeparatedByString:@" "].firstObject;    
     [alertController addAction:[UIAlertAction actionWithTitle:resetTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { resetSettingsBlock(); }]];
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+    [alertController present];
 }
 @end

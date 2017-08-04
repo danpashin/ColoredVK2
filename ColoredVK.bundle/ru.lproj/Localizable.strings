@@ -10,19 +10,21 @@
 "ERROR %@" = "Ошибка:\n%@";
 "WARNING" = "Предупреждение";
 "THIS_ACTION_CAN_NOT_BE_UNDONE" = "Это действие не может быть отменено";
+"REMOVE_IMAGE_WARNING" = "Удаление изображения является необратимой операцией. Используйте данную функцию с осторожностью.";
 "CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Невозможно сохранить изображение. Попробуйте снова или обратитесь к разработчику.";
 
 "UPGRADE_IS_AVAILABLE_ALERT_MESSAGE" = "Доступна новая версия (%@).\n\nСписок изменений:\n%@\n\nОбновить?";
 "REMIND_LATER_BUTTON_TITLE" = "Напомнить позже";
 "SKIP_THIS_VERSION_BUTTON_TITLE" = "Пропустить эту версию";
 "UPADTE_BUTTON_TITLE" = "Обновить сейчас";
-"NO_UPDATES_FOUND_BUTTON_TITLE" = "Обновлений не найдено";
+"NO_UPDATES_FOUND_BUTTON_TITLE" = "У вас установлена новейшая версия.";
 
 "TWEAK_FOOTER_TEXT" = "Версия твика: %@\nВерсия VK App: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "При загрузке файлов произошла ошибка.\nПроверьте их наличие или обратитесь к разработчику.";
 "CRASH_DETECTED_WANT_TO_SEND_TO_DEV" = "Ой, похоже в прошлый раз В VKApp произошла ошибка. Отправить лог вылета разработчику?";
 "SEND" = "Отправить";
 "BETTER_NOT" = "Лучше не надо";
+"UNKNOWN" = "Неизвестно";
 
 "OH_YOU_HAVE_NOT_SAVED_COLORS" = "Ой, похоже у Вас нет сохранённых цветов";
 "SAVED_COLORS" = "Сохранённые цвета";
@@ -66,6 +68,7 @@
 "PURCHASE" = "Купить";
 "ENTER_PASS_FOR_ACTION" = "Для подтверждения данного действия введите пароль.";
 "HIDE" = "Скрыть";
+
 
 
 

@@ -11,4 +11,5 @@
 #import "PSTableCell.h"
 
 @interface ColoredVKImageCell : PSTableCell
+
 @end

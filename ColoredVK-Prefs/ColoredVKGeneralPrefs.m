@@ -28,8 +28,10 @@ NSArray <NSString *> *specifiersToDisable;
         BOOL shouldDisable = (!newInstaller.tweakPurchased || !newInstaller.tweakActivated);
         
         for (PSSpecifier *specifier in specifiersArray) {
-            if ([specifiersToDisable containsObject:specifier.identifier] && shouldDisable) {
+            if (([specifiersToDisable containsObject:specifier.identifier] && shouldDisable) || ![[self.specifier propertyForKey:@"enabled"] boolValue]) {
                 [specifier setProperty:@NO forKey:@"enabled"];
+            } else {
+                [specifier setProperty:@YES forKey:@"enabled"];
             }
         }
         
@@ -38,12 +40,38 @@ NSArray <NSString *> *specifiersToDisable;
     return _specifiers;
 }
 
-- (void)viewDidLoad
+- (void)loadView
 {
-    specifiersToDisable = @[@"barImage", @"navbarImageBlackout", @"useMenuParallax", @"useMessagesParallax", @"useCustomMessageReadColor", @"messageReadColor"];
+    [super loadView];
     
-    [super viewDidLoad];
+    specifiersToDisable = @[@"useCustomMessageReadColor", @"messageReadColor"];
 }
+
+#pragma mark -
+#pragma mark UITableViewDelegate
+#pragma mark -
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    PSSpecifier *specifier = [self specifierAtIndexPath:indexPath];
+    
+    if (![[specifier propertyForKey:@"enabled"] boolValue]) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+        [self showPurchaseAlert];
+    } else {
+        [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+    }
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
+    cell.userInteractionEnabled = YES;
+    
+    return cell;
+}
+
 
 - (void)showColorPicker:(PSSpecifier*)specifier
 {
@@ -55,7 +83,9 @@ NSArray <NSString *> *specifiersToDisable;
 }
 
 
-#pragma mark - ColoredVKColorPickerControllerDelegate
+#pragma mark - 
+#pragma mark ColoredVKColorPickerControllerDelegate
+#pragma mark - 
 
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker willDismissWithColor:(UIColor *)color
 {
@@ -78,6 +108,7 @@ NSArray <NSString *> *specifiersToDisable;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         UINavigationBar *navBar = self.navigationController.navigationBar;
         navBar.barTintColor = navBar.barTintColor;
+        navBar.tintColor = navBar.tintColor;
     });
 }
 
@@ -106,7 +137,9 @@ NSArray <NSString *> *specifiersToDisable;
 }
 
 
-#pragma mark - ColoredVKColorPickerControllerDataSource
+#pragma mark - 
+#pragma mark ColoredVKColorPickerControllerDataSource
+#pragma mark - 
 
 - (NSArray <NSString *> *)savedColorsForColorPicker:(ColoredVKColorPickerController *)colorPicker
 {
@@ -127,15 +160,16 @@ NSArray <NSString *> *specifiersToDisable;
 }
 
 
-#pragma mark - UIImagePickerControllerDelegate
+#pragma mark - 
+#pragma mark UIImagePickerControllerDelegate
+#pragma mark - 
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
 {
-    ColoredVKHUD *hud = [ColoredVKHUD showAddedToView:picker.view];
-    hud.backgroundView.blurStyle = LHBlurEffectStyleDark;
-    hud.centerBackgroundView.blurStyle = LHBlurEffectStyleNone;
-    hud.centerBackgroundView.backgroundColor = [UIColor clearColor];
-    hud.didHiddenBlock = ^{ [picker dismissViewControllerAnimated:YES completion:nil]; };
+    ColoredVKHUD *hud = [ColoredVKHUD showHUDForView:picker.view];
+    hud.didHiddenBlock = ^{
+        [picker dismissViewControllerAnimated:YES completion:nil];
+    };
     
     hud.executionBlock = ^(ColoredVKHUD *parentHud) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
@@ -154,13 +188,11 @@ NSArray <NSString *> *specifiersToDisable;
                 UIImage *resizedImage = [imageToResize resizedImageByMagick:[NSString stringWithFormat:@"%fx%f#", screenSize.width, screenSize.height]];
                 [UIImageJPEGRepresentation(resizedImage, 1.0) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
             }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{ @"identifier" : self.lastImageIdentifier }];
-                if ([self.lastImageIdentifier isEqualToString:@"menuBackgroundImage"]) {
-                    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-                }
-                error?[parentHud showFailureWithStatus:error.localizedDescription]:[parentHud showSuccess];
-            });
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{ @"identifier" : self.lastImageIdentifier }];
+            if ([self.lastImageIdentifier isEqualToString:@"menuBackgroundImage"]) {
+                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+            }
+            error?[parentHud showFailureWithStatus:error.localizedDescription]:[parentHud showSuccess];
         });
     };
     

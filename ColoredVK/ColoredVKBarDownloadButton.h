@@ -9,10 +9,12 @@
 #import <UIKit/UIKit.h>
 
 @interface ColoredVKBarDownloadButton : UIBarButtonItem
-@property (strong, nonatomic) NSString *url;
-@property (nonatomic, copy) NSString*(^urlBlock)();
-@property (weak, nonatomic) UIViewController *rootViewController;
 + (instancetype)buttonWithURL:(NSString *)url;
 + (instancetype)buttonWithURL:(NSString *)url rootController:(UIViewController *)controller;
 + (instancetype)button;
+
+@property (strong, nonatomic) NSString *url;
+@property (nonatomic, copy) NSString*(^urlBlock)();
+@property (weak, nonatomic) UIViewController *rootViewController;
+
 @end

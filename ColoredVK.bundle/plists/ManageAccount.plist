@@ -27,8 +27,6 @@
 			<string>REGISTER</string>
 			<key>action</key>
 			<string>actionRegister</string>
-			<key>textColor</key>
-			<string>0.35, 0.5, 0.7, 1.0</string>
 			<key>id</key>
 			<string>registerButton</string>
 			<key>icon</key>

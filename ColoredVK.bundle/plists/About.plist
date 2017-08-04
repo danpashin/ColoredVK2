@@ -5,38 +5,6 @@
 	<key>items</key>
 	<array>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>detail</key>
-			<string>ColoredVKAboutController</string>
-			<key>plistToLoad</key>
-			<string>UpdatesSettings</string>
-			<key>icon</key>
-			<string>UpdatesIcon.png</string>
-			<key>label</key>
-			<string>UPDATES_SETTINGS</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>footerText</key>
-			<string>SEND_STATISTICS_FOOTER</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<true/>
-			<key>key</key>
-			<string>sendStatistics</string>
-			<key>label</key>
-			<string>SEND_STATISTICS</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-		</dict>
-		<dict>
 			<key>label</key>
 			<string>DEVELOPER_IN_VK</string>
 			<key>icon</key>
@@ -45,12 +13,6 @@
 			<string>PSTableCell</string>
 			<key>action</key>
 			<string>openDeveloperProfile</string>
-			<key>textColor</key>
-			<string>0.35, 0.5, 0.7, 1.0</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -73,8 +35,6 @@
 			<string>honcharuk_makc</string>
 			<key>action</key>
 			<string>openTesterProfile:</string>
-			<key>textColor</key>
-			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -89,8 +49,6 @@
 			<string>md.furman</string>
 			<key>action</key>
 			<string>openTesterProfile:</string>
-			<key>textColor</key>
-			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -105,8 +63,6 @@
 			<string>big_catz</string>
 			<key>action</key>
 			<string>openTesterProfile:</string>
-			<key>textColor</key>
-			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -121,8 +77,6 @@
 			<string>openTesterProfile:</string>
 			<key>icon</key>
 			<string>id188888433</string>
-			<key>textColor</key>
-			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -137,8 +91,6 @@
 			<string>showUsedLibraries</string>
 			<key>icon</key>
 			<string>CopyrightIcon.png</string>
-			<key>textColor</key>
-			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
 		<dict>
 			<key>label</key>
@@ -149,8 +101,6 @@
 			<string>showLicenceAgreement</string>
 			<key>icon</key>
 			<string>LicenceIcon.png</string>
-			<key>textColor</key>
-			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
 	</array>
 </dict>

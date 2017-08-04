@@ -16,6 +16,7 @@
 #import "ColoredVKSimpleAlertController.h"
 #import "UIScrollView+EmptyDataSet.h"
 #import "ColoredVKResponsiveButton.h"
+#import "ColoredVKAlertController.h"
 
 typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     ColoredVKColorPickerStateDismiss = 1,
@@ -392,7 +393,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 - (void)actionResetColor
 {
-    UIAlertController *warningAlert = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBundle, nil)  
+    ColoredVKAlertController *warningAlert = [ColoredVKAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBundle, nil)  
                                                                           message:NSLocalizedStringFromTableInBundle(@"RESET_COLOR_QUESTION", nil, self.cvkBundle, nil) 
                                                                    preferredStyle:UIAlertControllerStyleAlert];
     [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
@@ -400,7 +401,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
         self.state = ColoredVKColorPickerStateReset;
         [self hide];
     }]];
-    [self presentViewController:warningAlert animated:YES completion:nil];
+    [warningAlert presentFromController:self];
 }
 
 - (void)actionShowHexWindow

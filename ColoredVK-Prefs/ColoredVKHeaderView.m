@@ -10,7 +10,6 @@
 #import "ColoredVKHeaderView.h"
 #import "UIColor+ColoredVK.h"
 #import "NSString+ColoredVK.h"
-#import <dlfcn.h>
 
 @implementation ColoredVKHeaderView
 
@@ -48,21 +47,8 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             heading.textColor = [UIColor colorWithGradientStyle:UIGradientStyleTopToBottom withFrame:heading.bounds andColors:@[@"26D0CE".hexColorValue, @"1A2980".hexColorValue]];
         });
-        
-#ifdef  COMPILE_FOR_JAIL
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapRecognized:)];
-        tap.numberOfTapsRequired = 5;
-        [self addGestureRecognizer:tap];
-#endif
     }
     
     return self;
 }
-
-#ifdef  COMPILE_FOR_JAIL
-- (void)tapRecognized:(UITapGestureRecognizer *)recognizer
-{
-    if (recognizer.state == UIGestureRecognizerStateRecognized) dlopen(@"/var/mobile/FLEXDylib.dylib".UTF8String, RTLD_NOW);
-}
-#endif
 @end

@@ -8,25 +8,19 @@
 
 #import "ColoredVKBarDownloadButton.h"
 #import "PrefixHeader.h"
-#import "VKMethods.h"
-#import "ColoredVKMainController.h"
 #import "UIImage+ResizeMagick.h"
-#import "PrefixHeader.h"
 #import "ColoredVKHUD.h"
 #import "ColoredVKAlertController.h"
+#import "ColoredVKNetworkController.h"
 
+@interface ColoredVKBarDownloadButton ()
+
+@property (strong, nonatomic) NSArray *availableControllers;
+@property (strong, nonatomic) ColoredVKNetworkController *networkController;
+
+@end
 
 @implementation ColoredVKBarDownloadButton
-
-static NSArray *getInfoForActionController()
-{
-    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle bundleWithPath:CVK_BUNDLE_PATH] pathForResource:@"AdvancedInfo" ofType:@"plist" inDirectory:@"plists"]];
-    if (dict) {
-        NSArray *arr = dict[@"ImagesDLInfo"];
-        if (arr) return arr;
-        else return @[];
-    } else return @[];
-}
 
 + (instancetype)button
 {
@@ -46,84 +40,89 @@ static NSArray *getInfoForActionController()
 
 - (instancetype)initWithURL:(NSString *)url rootController:(UIViewController *)controller
 {
-    self = [super initWithImage:[UIImage imageNamed:@"downloadCloudIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil]
-                          style:UIBarButtonItemStylePlain target:self action:@selector(download)];
+    UIImage *downloadIcon = [UIImage imageNamed:@"downloadCloudIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
+    self = [super initWithImage:downloadIcon style:UIBarButtonItemStylePlain target:self action:@selector(actionDownloadImage)];
     if (self)  {
         self.url = url;
         self.rootViewController = controller;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            self.networkController = [ColoredVKNetworkController controller];
+            self.availableControllers = self.availableControllers;
+        });
     }
     return self;
 }
 
-- (void)download
+- (void)actionDownloadImage
 {
     if (self.urlBlock && !self.url) self.url = self.urlBlock();  
     
     ColoredVKAlertController *actionController = [ColoredVKAlertController alertControllerWithTitle:@"" message:CVKLocalizedString(@"SET_THIS_IMAGE_TO") preferredStyle:UIAlertControllerStyleActionSheet];
     [actionController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     
-    NSArray *info = getInfoForActionController();
-    for (NSDictionary *dict in info) {
+    for (NSDictionary *dict in self.availableControllers) {
         UIAlertAction *action = [UIAlertAction actionWithTitle:CVKLocalizedStringFromTable(dict[@"title"], @"ColoredVK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
             ColoredVKHUD *hud = [ColoredVKHUD showHUD];
-            hud.operation = [self downloadOperationWithIdentificator:dict[@"identifier"] completionBlock:^(BOOL success) {
-                success?[hud showSuccess]:[hud showFailure];
+            [self downloadImageWithIdentifier:dict[@"identifier"] completionBlock:^(BOOL success) {
+                success ? [hud showSuccess] : [hud showFailure];
             }];
         }];
-        
-        [action setValue:[UIImage imageNamed:dict[@"icon"] inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil] forKey:@"image"];
-        [actionController addAction:action];
+        [actionController addAction:action image:dict[@"icon"]];
     }
     
-    if (IS_IPAD) {
-        actionController.modalPresentationStyle = UIModalPresentationPopover;
-        actionController.popoverPresentationController.permittedArrowDirections = 0;
-        actionController.popoverPresentationController.sourceView = self.rootViewController.view;
-        actionController.popoverPresentationController.sourceRect = self.rootViewController.view.bounds;
-    }
-    
-    [self.rootViewController presentViewController:actionController animated:YES completion:nil];
+    [actionController presentFromController:self.rootViewController];
 }
 
-
-- (AFImageRequestOperation *)downloadOperationWithIdentificator:(NSString *)identificator completionBlock:( void(^)(BOOL success) )block
+- (void)downloadImageWithIdentifier:(NSString *)identifier completionBlock:( void(^)(BOOL success) )block
 {
-    AFImageRequestOperation *imageOperation = [NSClassFromString(@"AFImageRequestOperation") 
-                                               imageRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.url]]
-                                               imageProcessingBlock:^UIImage *(UIImage *image) { return image; }
-                                               cacheName:nil
-                                               success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                                   NSString *cvkFolderPath = CVK_FOLDER_PATH;
-                                                   NSString *imagePath = [cvkFolderPath stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identificator]];
-                                                   NSString *prevImagePath = [cvkFolderPath stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identificator]];
-                                                   
-                                                   NSError *error = nil;
-                                                   [UIImageJPEGRepresentation(image, 1.0) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
-                                                   if (!error) {
-                                                       UIImage *imageToResize = [UIImage imageWithData:[NSData dataWithContentsOfFile:imagePath]];
-                                                       UIImage *preview = [imageToResize resizedImageByMagick:@"40x40#"];
-                                                       [UIImageJPEGRepresentation(preview, 1.0) writeToFile:prevImagePath options:NSDataWritingAtomic error:&error];
-                                                       
-                                                       CGSize screenSize = [UIScreen mainScreen].bounds.size;
-                                                       if ([identificator isEqualToString:@"barImage"]) screenSize.height = 64;
-                                                       UIImage *recizedImage = [imageToResize resizedImageByMagick:[NSString stringWithFormat:@"%fx%f#", screenSize.width, screenSize.height]];
-                                                       [UIImageJPEGRepresentation(recizedImage, 1.0) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
-                                                   }
-                                                   
-                                                   [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{@"identifier" : identificator}];
-                                                   
-                                                   if ([identificator isEqualToString:@"menuBackgroundImage"]) {
-                                                       CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-                                                   }
-                                                   if (block) block(error?NO:YES);
-                                                   
-                                               } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) { if (block) block(NO); }];
-    return imageOperation;
-    
+    [self.networkController sendRequestWithMethod:@"GET" url:self.url parameters:nil
+                                          success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData) {
+                                              NSString *imagePath = [CVK_FOLDER_PATH stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]];
+                                              NSString *prevImagePath = [CVK_FOLDER_PATH stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identifier]];
+                                              
+                                              NSError *error = nil;
+                                              [rawData writeToFile:imagePath options:NSDataWritingAtomic error:&error];
+                                              if (!error) {
+                                                  UIImage *imageToResize = [UIImage imageWithData:[NSData dataWithContentsOfFile:imagePath]];
+                                                  UIImage *preview = [imageToResize resizedImageByMagick:@"40x40#"];
+                                                  [UIImageJPEGRepresentation(preview, 1.0) writeToFile:prevImagePath options:NSDataWritingAtomic error:&error];
+                                                  
+                                                  CGSize screenSize = [UIScreen mainScreen].bounds.size;
+                                                  if ([identifier isEqualToString:@"barImage"]) screenSize.height = 64;
+                                                  UIImage *recizedImage = [imageToResize resizedImageByMagick:[NSString stringWithFormat:@"%fx%f#", screenSize.width, screenSize.height]];
+                                                  [UIImageJPEGRepresentation(recizedImage, 1.0) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
+                                              }
+                                              
+                                              if (block) block(error ? NO : YES);
+                                              
+                                              dispatch_async(dispatch_get_main_queue(), ^{
+                                                  [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{@"identifier" : identifier}];
+                                                  
+                                                  if ([identifier isEqualToString:@"menuBackgroundImage"]) {
+                                                      CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+                                                  }
+                                              });
+                                          }
+                                          failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) { if (block) block(NO); }];
 }
 
 - (NSString *)description
 {
     return [NSString stringWithFormat:@" %@; url '%@'; rootViewController %@; ", [super description], self.url, self.rootViewController];
+}
+
+- (NSArray *)availableControllers
+{
+    if (!_availableControllers) {
+        NSArray *availableControllers = [NSArray array];
+        NSDictionary *infoDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle bundleWithPath:CVK_BUNDLE_PATH] pathForResource:@"AdvancedInfo" ofType:@"plist" inDirectory:@"plists"]];
+        if (infoDict) {
+            availableControllers = infoDict[@"ImagesDLInfo"];
+        }
+        
+        _availableControllers = availableControllers;
+    }
+    
+    return _availableControllers;
 }
 @end

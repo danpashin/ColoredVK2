@@ -9,6 +9,12 @@
 #import "ColoredVKAlertController.h"
 #import "PrefixHeader.h"
 
+@interface UIAlertAction ()
+
+@property (nonatomic) UIImage *image;
+
+@end
+
 @implementation ColoredVKAlertController
 
 - (instancetype)init
@@ -17,6 +23,7 @@
     if (self) {
         self.shouldReconfigureTextFields = YES;
         self.shouldUseCustomTintColor = YES;
+        self.presentInCenter = YES;
     }
     return self;
 }
@@ -29,7 +36,7 @@
         self.view.tintColor = CVKMainColor;
 }
 
-- (void)addTextFieldWithConfigurationHandler:(void (^)(UITextField * _Nonnull textField))configurationHandler
+- (void)addTextFieldWithConfigurationHandler:(void (^ __nullable)(UITextField *textField))configurationHandler
 {
     if (self.shouldReconfigureTextFields) {
         void (^newHandler)(UITextField * _Nonnull textField) = ^(UITextField * _Nonnull textField){
@@ -45,7 +52,7 @@
 
 - (void)setupTextField:(UITextField *)textField
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         UIView *viewToRoundSuperView = textField.superview.superview;
         if (viewToRoundSuperView) {
             for (UIView *subview in textField.superview.superview.subviews) {
@@ -62,6 +69,37 @@
             viewToRound.layer.masksToBounds = YES;
         }
     });
+}
+
+- (void)present
+{
+    [self presentFromController:[UIApplication sharedApplication].keyWindow.rootViewController];
+}
+
+- (void)presentFromController:(UIViewController *)viewController
+{
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (IS_IPAD && self.presentInCenter) {
+            self.modalPresentationStyle = UIModalPresentationPopover;
+            self.popoverPresentationController.permittedArrowDirections = 0;
+        }
+        
+        self.popoverPresentationController.sourceView = viewController.view;
+        self.popoverPresentationController.sourceRect = viewController.view.bounds;
+        
+        [viewController presentViewController:self animated:YES completion:nil];
+    });
+}
+
+- (void)addAction:(UIAlertAction *)action image:(NSString *)imageName
+{
+    if ([action respondsToSelector:@selector(setImage:)]) {
+        UIImage *image = [UIImage imageNamed:imageName inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
+        image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        action.image = image;
+    }
+    [super addAction:action];
 }
 
 @end

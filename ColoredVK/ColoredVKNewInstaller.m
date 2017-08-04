@@ -12,16 +12,14 @@
 #import "ColoredVKCrypto.h"
 #import <sys/utsname.h>
 #import <SafariServices/SafariServices.h>
-#import <MobileGestalt/MobileGestalt.h>
 #import "ColoredVKHUD.h"
 #import "ColoredVKPaymentController.h"
-#import <Security/Security.h>
 #import "ColoredVKNetworkController.h"
+#import "ColoredVKAlertController.h"
 
 
 
 #define kDRMLicenceKey          @"1D074B10BBA106699DD7D4AED9E595FA"
-#define kDRMAuthorizeKey        @"ACBEBB5F70D0883E875DAA6E1C5C59ED"
 #define kDRMPackage             @"org.thebigboss.coloredvk2"
 #define kDRMPackageName         kPackageName
 #define kDRMPackageVersion      kPackageVersion
@@ -178,12 +176,11 @@ NSString *userPassword;
     
     dispatch_async(dispatch_get_main_queue(), ^{
         
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:text preferredStyle:UIAlertControllerStyleAlert];
+        ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:title message:text preferredStyle:UIAlertControllerStyleAlert];
         for (UIAlertAction *action in buttons) {
             [alertController addAction:action];
         }
-        
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+        [alertController present];
     });
     
 }
@@ -255,11 +252,11 @@ NSString *userPassword;
             
             return;
         } 
-        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/payment/get_info.php", kPackageAPIURL]];
+        NSString *url = [NSString stringWithFormat:@"%@/payment/get_info.php", kPackageAPIURL];
         NSString *parameters = [NSString stringWithFormat:@"user_id=%@&token=%@", self.userID, self.token];
         
         ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
-        [networkController sendJSONRequestWithURL:url parameters:parameters
+        [networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:parameters
                                           success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
                                               if (!json[@"error"]) {
                                                   NSDictionary *response = json[@"response"];
@@ -317,8 +314,10 @@ void installerActionLogin(NSString *login, NSString *password, void(^completionB
     userPassword = AES256EncryptStringForAPI(password);
     userLogin = login;
     
-    NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", @(systemInfo.machine), [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];
-    NSString *parameters = [NSString stringWithFormat:@"login=%@&password=%@&action=login&version=%@&device=%@&key=%@", userLogin, userPassword, kDRMPackageVersion, device, key];
+    NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", @(systemInfo.machine), [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];    
+    NSDictionary *parameters = @{@"login": userLogin, @"password": userPassword, @"action": @"login", 
+                                 @"version": kDRMPackageVersion, @"device": device, @"key": key
+                                 };
     download(parameters, YES, completionBlock);
 }
 
@@ -345,10 +344,12 @@ void installerActionLogout(NSString *password, void(^completionBlock)())
     };
     
     NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", @(systemInfo.machine), [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];
-    NSString *parameters = [NSString stringWithFormat:@"login=%@&password=%@&action=logout&version=%@&device=%@&key=%@", userLogin, userPassword, kDRMPackageVersion, device, key];
+    NSDictionary *parameters = @{@"login": userLogin, @"password": userPassword, @"action": @"logout", 
+                                 @"version": kDRMPackageVersion, @"device": device, @"key": key
+                                 };
     
     ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
-    [networkController sendJSONRequestWithURL:[NSURL URLWithString:kDRMRemoteServerURL] parameters:parameters 
+    [networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters 
                                       success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
                                           if (!json[@"error"]) {
                                               if ([json[@"Status"] isEqualToString:userPassword]) {
@@ -388,7 +389,7 @@ void installerActionLogout(NSString *password, void(^completionBlock)())
                                       }];
 }
 
-static void download(NSString *parameters,BOOL isAuthorisation, void(^completionBlock)())
+static void download(id parameters,BOOL isAuthorisation, void(^completionBlock)())
 {
     void (^showAlertBlock)(NSError *error) = ^(NSError *error) {
         NSString *text = error.localizedDescription;
@@ -412,7 +413,7 @@ static void download(NSString *parameters,BOOL isAuthorisation, void(^completion
     };
     
     ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
-    [networkController sendJSONRequestWithURL:[NSURL URLWithString:kDRMRemoteServerURL] parameters:parameters
+    [networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters
                                       success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
                                           if (!json[@"error"]) {
                                               NSString *stringToCompare = userPassword; //isAuthorisation?userPassword:deviceUDID;

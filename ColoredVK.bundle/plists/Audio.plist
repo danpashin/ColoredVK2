@@ -21,8 +21,6 @@
 			<string>CHANGE_BACKGROUND</string>
 			<key>id</key>
 			<string>audioBackgroundImage</string>
-			<key>textColor</key>
-			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -118,6 +116,22 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
+			<string>PLAYER_GESTURES_FOOTER</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>key</key>
+			<string>enablePlayerGestures</string>
+			<key>label</key>
+			<string>ENABLE_PLAYER_GESTURES</string>
+			<key>default</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
 			<string>CUSTOM_COVER_FOOTER</string>
 		</dict>
 		<dict>
@@ -131,8 +145,6 @@
 			<string>CUSTOM_COVER</string>
 			<key>id</key>
 			<string>audioCoverImage</string>
-			<key>textColor</key>
-			<string>0.35, 0.5, 0.7, 1.0</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -165,8 +177,8 @@
 			<string>CLEAR_CACHE</string>
 			<key>action</key>
 			<string>clearCoversCache</string>
-			<key>textColor</key>
-			<string>1,0,0,1</string>
+			<key>style</key>
+			<string>Destructive</string>
 			<key>shouldCenter</key>
 			<true/>
 		</dict>

@@ -11,6 +11,7 @@
 #import "PrefixHeader.h"
 #import "NSDate+DateTools.h"
 #import "ColoredVKNetworkController.h"
+#import "ColoredVKAlertController.h"
 
 @interface ColoredVKUpdatesController ()
 
@@ -41,13 +42,15 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
 
 - (void)checkUpdates
 {    
-    NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php?userVers=%@&product=%@", kPackageAPIURL, kPackageVersion, kPackageIdentifier];
+    NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php", kPackageAPIURL];
+    NSMutableDictionary *parameters = [@{@"userVers": kPackageVersion, @"product": kPackageIdentifier} mutableCopy];
+    
 #ifndef COMPILE_FOR_JAIL
-    stringURL = [stringURL stringByAppendingString:@"&getIPA=1"];
+    [parameters setObject:@1 forKey:@"getIPA"];
 #endif
     
     ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
-    [networkController sendJSONRequestWithURL:[NSURL URLWithString:stringURL] parameters:nil 
+    [networkController sendJSONRequestWithMethod:@"GET" stringURL:stringURL parameters:parameters
                                       success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
                                           
                                           NSMutableDictionary *tweakPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
@@ -99,11 +102,11 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
 {    
     dispatch_async(dispatch_get_main_queue(), ^{
         if (actions.count > 0) {
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:kPackageName message:message preferredStyle:UIAlertControllerStyleAlert];
+            ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:message preferredStyle:UIAlertControllerStyleAlert];
             for (UIAlertAction *action in actions) {
                 [alertController addAction:action];
             }
-            [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+            [alertController presentFromController:[UIApplication sharedApplication].keyWindow.rootViewController];
         }
     });
 }

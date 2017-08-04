@@ -14,6 +14,6 @@
 
 @interface ColoredVKStepperPrefsCell : PSTableCell <ColoredVKStepperButtonDelegate>
 
-@property (strong, nonatomic) PSSpecifier *idSpecifier;
+@property (strong, nonatomic) ColoredVKStepperButton *stepperButton;
 
 @end

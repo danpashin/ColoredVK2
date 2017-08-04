@@ -16,16 +16,15 @@
 {
     self = [super initWithStyle:style reuseIdentifier:identifier specifier:specifier];
     if (self) {
-        self.idSpecifier = specifier;
         
         NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
         
-        ColoredVKStepperButton *stepperButton = [[ColoredVKStepperButton alloc] initWithFrame:CGRectMake(0, 0, 80, 32)];
-        stepperButton.minValue = 0;
-        stepperButton.maxValue = 6;
-        stepperButton.value = [prefs[specifier.identifier] componentsSeparatedByString:@"."].lastObject.integerValue;
-        stepperButton.delegate = self;
-        self.accessoryView = stepperButton;
+        self.stepperButton = [[ColoredVKStepperButton alloc] initWithFrame:CGRectMake(0, 0, 80, 32)];
+        self.stepperButton.minValue = 0;
+        self.stepperButton.maxValue = 6;
+        self.stepperButton.value = [prefs[specifier.identifier] componentsSeparatedByString:@"."].lastObject.integerValue;
+        self.stepperButton.delegate = self;
+        self.accessoryView = self.stepperButton;
 	}
     return self;
 }
@@ -36,11 +35,11 @@
 - (void)stepperButton:(ColoredVKStepperButton *)stepperButton didUpdateValue:(NSInteger)value
 {
     NSMutableDictionary *tweakSettings = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    tweakSettings[self.idSpecifier.identifier] = [NSString stringWithFormat:@"0.%i", (int)value];
+    tweakSettings[self.specifier.identifier] = [NSString stringWithFormat:@"0.%i", (int)value];
     [tweakSettings writeToFile:CVK_PREFS_PATH atomically:YES];
     
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
-    if ([self.idSpecifier.identifier isEqualToString:@"menuImageBlackout"])
+    if ([self.specifier.identifier isEqualToString:@"menuImageBlackout"])
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
 }
 

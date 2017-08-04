@@ -7,39 +7,18 @@
 //
 
 #import "ColoredVKAboutController.h"
-#import "ColoredVKHUD.h"
-#import "NSDate+DateTools.h"
 #import "ColoredVKLicencesController.h"
 #import "ColoredVKHelpController.h"
 #import "ColoredVKUpdatesController.h"
+#import "ColoredVKHeaderView.h"
 
-@interface ColoredVKAboutController ()
-
-@property (strong, nonatomic) ColoredVKUpdatesController *updatesController;
-@property (nonatomic, getter=getLastCheckForUpdates, copy) NSString *lastCheckForUpdates;
-
-@end
 
 @implementation ColoredVKAboutController
 
-- (void)viewDidLoad
+- (void)loadView
 {
-    [super viewDidLoad];
-    self.updatesController = [ColoredVKUpdatesController new];
-    self.lastCheckForUpdates = self.updatesController.localizedLastCheckForUpdates;
-}
-
-- (void)checkForUpdates
-{
-    __weak typeof(self) weakSelf = self;
-    self.updatesController.checkCompletionHandler = ^(ColoredVKUpdatesController *controller) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            weakSelf.lastCheckForUpdates = controller.localizedLastCheckForUpdates;
-            [weakSelf reloadSpecifiers];
-        });
-    };
-    self.updatesController.showErrorAlert = YES;
-    [self.updatesController checkUpdates];
+    [super loadView];
+    self.prefsTableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.prefsTableView];
 }
 
 - (void)openDeveloperProfile

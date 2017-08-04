@@ -67,16 +67,17 @@
     
     if (specifiersArray.count == 0) {
         specifiersArray = [NSMutableArray new];
-        [specifiersArray addObject:self.errorMessage];
+    } else {
+        if (addFooter) [specifiersArray addObject:self.footer];
     }
-    if (addFooter) [specifiersArray addObject:self.footer];
     
     return [specifiersArray copy];
 }
 
-- (void)viewDidLoad
+- (void)loadView
 {
-    [super viewDidLoad];
+    [super loadView];
+    
     for (UIView *view in self.view.subviews) {
         if ([view isKindOfClass:[UITableView class]]) {
             self.prefsTableView = (UITableView *)view;
@@ -84,6 +85,10 @@
             break;
         }
     }
+    
+    self.prefsTableView.emptyDataSetSource = self;
+    self.prefsTableView.emptyDataSetDelegate = self;
+    
     self.navigationItem.title = self.specifier?self.specifier.name:@"";
 }
 
@@ -106,7 +111,7 @@
     
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
     
-    NSArray *identificsToReloadMenu = @[@"enableTweakSwitch", @"menuSelectionStyle", @"hideMenuSeparators", @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor"];
+    NSArray *identificsToReloadMenu = @[@"enableTweakSwitch", @"menuSelectionStyle", @"hideMenuSeparators", @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor", @"showMenuCell"];
     if ([identificsToReloadMenu containsObject:specifier.identifier])
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
 }
@@ -121,14 +126,6 @@
     return footer;
 }
 
-- (PSSpecifier *)errorMessage
-{
-    PSSpecifier *errorMessage = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-    [errorMessage setProperty:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", nil, self.bundle, nil), @"\n\n%@", kPackageDevLink] forKey:@"footerText"];
-    [errorMessage setProperty:@"1" forKey:@"footerAlignment"];
-    return errorMessage;
-}
-
 - (NSString *)tweakVersion
 {
     return [kPackageVersion stringByReplacingOccurrencesOfString:@"-" withString:@" "];
@@ -137,7 +134,7 @@
 - (NSString *)vkAppVersion
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
-    return prefs[@"vkVersion"];
+    return prefs[@"vkVersion"] ? prefs[@"vkVersion"] : CVKLocalizedString(@"UNKNOWN");
 }
 
 - (NSBundle *)cvkBundle
@@ -187,8 +184,36 @@
         [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OF_COURSE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             [[ColoredVKNewInstaller sharedInstaller] actionPurchase];
         }]];
-        
-        [self presentViewController:alertController animated:YES completion:nil];
+        [alertController presentFromController:self];
     });
 }
+
+
+#pragma mark -
+#pragma mark DZNEmptyDataSetSource
+#pragma mark -
+
+- (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView
+{
+    return [UIImage imageNamed:@"WarningIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+}
+
+- (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView
+{
+    NSString *text = NSLocalizedStringFromTableInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", nil, self.cvkBundle, nil);
+    
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1],
+                                 NSForegroundColorAttributeName: [UIColor darkGrayColor]};
+    
+    return [[NSAttributedString alloc] initWithString:text attributes:attributes];
+}
+
+- (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView
+{
+    if (self.prefsTableView.tableHeaderView) {
+        return -100.0f;
+    }
+    return -150.0f;
+}
+
 @end

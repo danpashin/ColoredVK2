@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PSTableCell.h"
+#import "PSSpecifier.h"
 
 @interface PSTableCell (ColoredVK)
 

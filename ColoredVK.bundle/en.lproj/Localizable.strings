@@ -10,19 +10,21 @@
 "ERROR %@" = "Error:\n%@";
 "WARNING" = "Warning";
 "THIS_ACTION_CAN_NOT_BE_UNDONE" = "This action can not be undone";
+"REMOVE_IMAGE_WARNING" = "Removal of image is not reversible. Use this function with caution.";
 "CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Can not save image. Try again or contact developer.";
 
 "UPGRADE_IS_AVAILABLE_ALERT_MESSAGE" = "A new version is available (%@).\n\nChangelog:\n%@\n\nUpdate?";
 "REMIND_LATER_BUTTON_TITLE" = "Remind later";
 "SKIP_THIS_VERSION_BUTTON_TITLE" = "Skip this version";
 "UPADTE_BUTTON_TITLE" = "Update now";
-"NO_UPDATES_FOUND_BUTTON_TITLE" = "No updates found";
+"NO_UPDATES_FOUND_BUTTON_TITLE" = "You have the latest version.";
 
 "TWEAK_FOOTER_TEXT" = "Tweak version: %@\nVK App version: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Error loading tweak files.\nCheck their availability or contact developer.";
 "CRASH_DETECTED_WANT_TO_SEND_TO_DEV" = "Oops, like last time the error occurred in VKApp. Send log to developer?";
 "SEND" = "Send";
 "BETTER_NOT" = "Better not";
+"UNKNOWN" = "Unknown";
 
 "OH_YOU_HAVE_NOT_SAVED_COLORS" = "Oh, it seems you have no saved colors";
 "SAVED_COLORS" = "Saved colors";
