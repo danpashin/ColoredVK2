@@ -16,7 +16,9 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 {
     ColoredVKVersionCompareLess = -1,
     ColoredVKVersionCompareEqual = 0,
-    ColoredVKVersionCompareMore = 1
+    ColoredVKVersionCompareMore = 1,
+    ColoredVKVersionCompareMoreOrEqual = ColoredVKVersionCompareEqual|ColoredVKVersionCompareMore,
+    ColoredVKVersionCompareLessOrEqual = ColoredVKVersionCompareEqual|ColoredVKVersionCompareLess
 };
 
 @interface ColoredVKMainController : NSObject
@@ -29,7 +31,7 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 /**
  * Returns application version from Info.plist
  */
-@property (readonly, copy, nonatomic) NSString *vkVersion;
+@property (readonly, copy, nonatomic) NSString *appVersion;
 
 @property (strong, nonatomic) MenuCell *menuCell;
 @property (strong, nonatomic) VKMCell *settingsCell;
@@ -40,15 +42,12 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 
 - (void)reloadSwitch:(BOOL)on;
 - (void)switchTriggered:(UISwitch *)switchView;
-/**
- * Returns -1  if  (first_version < second_version).
- * Returns  1  if  (first_version > second_version).
- * Returns  0  if  (first_version = second_version).
- */
+
+- (ColoredVKVersionCompare)compareAppVersionWithVersion:(NSString *)second_version;
 - (ColoredVKVersionCompare)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version;
+
 - (void)sendStats;
 - (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)() )handler;
-//- (void)checkCrashes;
 - (void)actionOpenPreferencesPush:(BOOL)withPush;
 
 

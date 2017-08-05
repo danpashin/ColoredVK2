@@ -150,12 +150,17 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         
         NSString *stringURL = [NSString stringWithFormat:@"%@/stats/?product=%@&version=%@&device=%@&ios_version=%@&device_language=%@&vk_version=%@&identifier=%@", 
                                kPackageAPIURL, kPackageIdentifier, kPackageVersion, @(systemInfo.machine), 
-                               device.systemVersion, [NSLocale preferredLanguages].firstObject, self.vkVersion, 
+                               device.systemVersion, [NSLocale preferredLanguages].firstObject, self.appVersion, 
                                device.identifierForVendor.UUIDString];
         
         [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]] 
                                            queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {}];
     }
+}
+
+- (ColoredVKVersionCompare)compareAppVersionWithVersion:(NSString *)second_version
+{
+    return [self compareVersion:self.appVersion withVersion:second_version];
 }
 
 - (ColoredVKVersionCompare)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version
@@ -190,7 +195,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     return ColoredVKVersionCompareEqual;
 }
 
-- (NSString *)vkVersion
+- (NSString *)appVersion
 {
     return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
 }

@@ -8,6 +8,10 @@
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
 
+@interface UIView ()
+@property (copy, nonatomic, readonly) NSString *recursiveDescription;
+@end
+
 @interface Model : NSObject
 @end
 
@@ -210,28 +214,6 @@
 
 @interface AudioPlaylistController : VKMLiveController
 @end
-
-
-//@interface AFURLConnectionOperation : NSOperation
-//@end
-//
-//@interface AFHTTPRequestOperation : AFURLConnectionOperation
-//@end
-
-//@interface AFJSONRequestOperation : AFHTTPRequestOperation
-//+ (instancetype)JSONRequestOperationWithRequest:(NSURLRequest *)request 
-//                              success:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) )success 
-//                              failure:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) )failure;
-//@end
-//
-//
-//@interface AFImageRequestOperation : AFHTTPRequestOperation
-//+ (instancetype)imageRequestOperationWithRequest:(NSURLRequest *)urlRequest
-//                            imageProcessingBlock:( UIImage *(^)(UIImage *image) )imageProcessingBlock
-//                                       cacheName:(NSString *)cacheNameOrNil
-//                                         success:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) )success
-//                                         failure:( void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) )failure;
-//@end
 
 
 

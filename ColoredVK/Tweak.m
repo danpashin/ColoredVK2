@@ -215,6 +215,9 @@ void reloadPrefs()
     showFastDownloadButton = prefs[@"showFastDownloadButton"] ? [prefs[@"showFastDownloadButton"] boolValue] : YES;
     showMenuCell = prefs[@"showMenuCell"] ? [prefs[@"showMenuCell"] boolValue] : YES;
     
+    if ([cvkMainController compareAppVersionWithVersion:@"2.4"] == ColoredVKVersionCompareLess)
+        showMenuCell = YES;
+    
     if (prefs && tweakEnabled) {
        
         changeSBColors = [prefs[@"changeSBColors"] boolValue];
@@ -707,6 +710,7 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
 //    
 //    [ColoredVKInstaller sharedInstaller];
     
+    cvkMainController.navBarImageView = cvkMainController.navBarImageView;
     
     ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     installerCompletionBlock = ^(BOOL purchased) {
@@ -996,7 +1000,7 @@ CHOptimizedMethod(0, self, void, GroupsController, viewWillLayoutSubviews)
             NSDictionary *attributes = @{NSForegroundColorAttributeName:changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
             search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder attributes:attributes];
             
-            if ([cvkMainController compareVersion:cvkMainController.vkVersion withVersion:@"2.5"] <= ColoredVKVersionCompareEqual) {
+            if ([cvkMainController compareAppVersionWithVersion:@"2.5"] <= ColoredVKVersionCompareEqual) {
                 for (UIView *view in self.view.subviews) {
                          if ([view isKindOfClass:[UIToolbar class]] && groupsListUseBlur) { setBlur(view, YES, groupsListBlurTone, groupsListBlurStyle); break; }
                     else if ([view isKindOfClass:[UIToolbar class]] && enabledToolBarColor) { setToolBar((UIToolbar*)view); break; } 
@@ -2322,7 +2326,6 @@ CHOptimizedMethod(2, self, NSInteger, ModernSettingsController, tableView, UITab
 {
     NSInteger rowsCount = CHSuper(2, ModernSettingsController, tableView, tableView, numberOfRowsInSection, section);
     if (section == 1) {
-//        rowsCount = 6;
         rowsCount++;
     }
     return rowsCount;
@@ -2386,7 +2389,6 @@ CHConstructor
 {
     @autoreleasepool {
 //        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{ dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW); });
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{ dlopen(@"/var/mobile/FLEXDylib.dylib".UTF8String, RTLD_NOW); });
         
         prefsPath = CVK_PREFS_PATH;
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
@@ -2396,12 +2398,12 @@ CHConstructor
         
         NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:prefsPath];
         if (![[NSFileManager defaultManager] fileExistsAtPath:prefsPath]) prefs = [NSMutableDictionary new];
-        NSString *vkVersion = cvkMainController.vkVersion;
+        NSString *vkVersion = cvkMainController.appVersion;
         prefs[@"vkVersion"] = vkVersion;
         [prefs writeToFile:prefsPath atomically:YES];
         VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil)?YES:NO;
         
-        if ([cvkMainController compareVersion:vkVersion withVersion:@"2.2"] >= ColoredVKVersionCompareEqual) {
+        if ([cvkMainController compareVersion:vkVersion withVersion:@"2.2"]  >= ColoredVKVersionCompareEqual) {
             CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
             CFNotificationCenterAddObserver(center, NULL, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             CFNotificationCenterAddObserver(center, NULL, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
