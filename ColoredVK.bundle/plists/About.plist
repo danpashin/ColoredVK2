@@ -30,7 +30,7 @@
 			<key>id</key>
 			<string>testerCell</string>
 			<key>url</key>
-			<string>honcharuk_makc</string>
+			<string>id93264161</string>
 			<key>icon</key>
 			<string>honcharuk_makc</string>
 			<key>action</key>
@@ -44,7 +44,7 @@
 			<key>id</key>
 			<string>testerCell</string>
 			<key>url</key>
-			<string>md.furman</string>
+			<string>id125879328</string>
 			<key>icon</key>
 			<string>md.furman</string>
 			<key>action</key>
@@ -58,7 +58,7 @@
 			<key>id</key>
 			<string>testerCell</string>
 			<key>url</key>
-			<string>big_catz</string>
+			<string>id73369298</string>
 			<key>icon</key>
 			<string>big_catz</string>
 			<key>action</key>
@@ -68,15 +68,15 @@
 			<key>cell</key>
 			<string>PSButtonCell</string>
 			<key>label</key>
-			<string>Сергей Мельников</string>
+			<string>Error Network</string>
 			<key>id</key>
 			<string>testerCell</string>
 			<key>url</key>
-			<string>id188888433</string>
+			<string>id283990174</string>
 			<key>action</key>
 			<string>openTesterProfile:</string>
 			<key>icon</key>
-			<string>id188888433</string>
+			<string>errornetwork</string>
 		</dict>
 		<dict>
 			<key>cell</key>

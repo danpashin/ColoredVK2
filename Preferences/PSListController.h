@@ -16,11 +16,11 @@
 @property (nonatomic, readonly) UITableViewStyle tableViewStyle;
 
 @property (nonatomic, retain) UITableView *view;
-//@property (nonatomic, retain) UITableView *table; // 3.0 - 6.0
-//@property (nonatomic, retain) UITableView *tableView;
+@property (nonatomic, retain) UITableView *table;
+@property (nonatomic, retain) UITableView *tableView NS_DEPRECATED_IOS(3_0, 6_0);
 
 - (PSSpecifier *)specifierAtIndex:(NSInteger)index;
-- (PSSpecifier *)specifierAtIndexPath:(NSIndexPath *)indexPath;
+- (PSSpecifier *)specifierAtIndexPath:(NSIndexPath *)indexPath NS_AVAILABLE_IOS(9_0);
 - (PSSpecifier *)specifierForID:(NSString *)identifier;
 - (NSArray *)specifiersForIDs:(NSArray *)identifiers;
 - (NSArray *)specifiersInGroup:(NSInteger)group;

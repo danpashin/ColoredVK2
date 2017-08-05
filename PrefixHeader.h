@@ -66,7 +66,7 @@
 
 #define kPackageIdentifier @"com.daniilpashin.coloredvk2"
 #define kPackageName @"ColoredVK 2"
-#define kPackageVersion @"3.3.3-theux"
+#define kPackageVersion @"3.4-theux"
 #define kPackageAPIVersion @"1.2"
 #define kPackageAPIURL [NSString stringWithFormat:@"http://danpashin.ru/api/v%@", kPackageAPIVersion]
 #define kPackageDevName @"danpashin"

@@ -12,7 +12,8 @@
 
 @interface ColoredVKPaymentController () <NSURLConnectionDataDelegate>
 
-@property (strong, nonatomic) WKWebView *webView;
+@property (strong, nonatomic) WKWebView *wkWebView;
+@property (strong, nonatomic) UIWebView *webView;
 @property (strong, nonatomic) NSMutableData *paymentPage;
 
 @end
@@ -34,13 +35,23 @@
     self.navigationController.navigationBar.topItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone 
                                                                                                                        target:self action:@selector(dismiss)];
     
-    self.webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) configuration:[WKWebViewConfiguration new]];
-    self.webView.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:self.webView];
-    
-    self.webView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[webView]|" options:0 metrics:nil views:@{@"webView":self.webView}]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[webView]|" options:0 metrics:nil views:@{@"webView":self.webView}]];
+    if (SYSTEM_VERSION_IS_MORE_THAN(@"9.0")) {
+        self.wkWebView = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) configuration:[WKWebViewConfiguration new]];
+        self.wkWebView.backgroundColor = [UIColor whiteColor];
+        [self.view addSubview:self.wkWebView];
+        
+        self.wkWebView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[wkWebView]|" options:0 metrics:nil views:@{@"wkWebView":self.wkWebView}]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[wkWebView]|" options:0 metrics:nil views:@{@"wkWebView":self.wkWebView}]];
+    } else {
+        self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+        self.webView.backgroundColor = [UIColor whiteColor];
+        [self.view addSubview:self.webView];
+        
+        self.webView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[webView]|" options:0 metrics:nil views:@{@"webView":self.webView}]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[webView]|" options:0 metrics:nil views:@{@"webView":self.webView}]];
+    }
 }
 
 - (void)setRequest:(NSURLRequest *)request
@@ -67,7 +78,12 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     NSString *html = [[NSString alloc] initWithData:self.paymentPage encoding:NSUTF8StringEncoding];
-    [self.webView loadHTMLString:html baseURL:self.url];
+    
+    if (SYSTEM_VERSION_IS_MORE_THAN(@"9.0")) {
+        [self.wkWebView loadHTMLString:html baseURL:self.url];
+    } else {
+        [self.webView loadHTMLString:html baseURL:self.url];
+    }
 }
 
 @end

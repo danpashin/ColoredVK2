@@ -165,7 +165,14 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PSSpecifier *specifier = [self specifierAtIndexPath:indexPath];
+    PSSpecifier *specifier = nil;
+    if ([self respondsToSelector:@selector(specifierAtIndexPath:)]) {
+        specifier = [self specifierAtIndexPath:indexPath];
+    } else {
+        NSInteger index = [self indexForRow:indexPath.row inGroup:indexPath.section];
+        specifier = [self specifierAtIndex:index];
+    }
+    
     if ([specifier.identifier isEqualToString:@"loginCell"]) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         if (!self.userLoggedIn) {

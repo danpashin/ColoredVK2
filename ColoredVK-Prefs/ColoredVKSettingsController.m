@@ -43,7 +43,6 @@
                 [specifiers addObject:specifier];
             }
         }
-//        if (specifiers.count == 0) [specifiers addObject:self.errorMessage];
         
         _specifiers = [specifiers copy];
     }
@@ -88,7 +87,13 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        PSSpecifier *specifier = [self specifierAtIndexPath:indexPath];   
+        PSSpecifier *specifier = nil;
+        if ([self respondsToSelector:@selector(specifierAtIndexPath:)]) {
+            specifier = [self specifierAtIndexPath:indexPath];
+        } else {
+            NSInteger index = [self indexForRow:indexPath.row inGroup:indexPath.section];
+            specifier = [self specifierAtIndex:index];
+        }
         
         NSError *error = nil;
         BOOL success = [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", CVK_BACKUP_PATH, specifier.properties[@"filename"]] error:&error];

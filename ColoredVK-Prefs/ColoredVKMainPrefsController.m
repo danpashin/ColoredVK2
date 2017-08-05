@@ -57,7 +57,6 @@ NSArray <NSString *> *specifiersToEnable;
     specifiersToEnable = @[@"enableTweakSwitch", @"navToolBarPrefsLink", @"menuPrefsLink", @"messagesPrefsLink", @"manageAccount", @"aboutPrefsLink", @"tweakPrefsLink"];
     
     self.prefsTableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.prefsTableView];
-    self.navigationItem.title = @"";
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTable) name:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
     
@@ -65,6 +64,13 @@ NSArray <NSString *> *specifiersToEnable;
     ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
     if (updatesController.shouldCheckUpdates)
         [updatesController checkUpdates];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    self.navigationItem.title = @"";
 }
 
 - (void)reloadTable

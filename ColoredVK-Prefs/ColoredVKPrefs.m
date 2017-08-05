@@ -89,7 +89,12 @@
     self.prefsTableView.emptyDataSetSource = self;
     self.prefsTableView.emptyDataSetDelegate = self;
     
-    self.navigationItem.title = self.specifier?self.specifier.name:@"";
+}
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    self.navigationItem.title = self.specifier ? self.specifier.name : @"";
 }
 
 - (id)readPreferenceValue:(PSSpecifier *)specifier
