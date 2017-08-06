@@ -112,14 +112,16 @@
 			<key>key</key>
 			<string>keyboardStyle</string>
 			<key>default</key>
-			<string>2</string>
+			<string>0</string>
 			<key>validTitles</key>
 			<array>
+				<string>DEFAULT</string>
 				<string>LIGHT</string>
 				<string>DARK</string>
 			</array>
 			<key>validValues</key>
 			<array>
+				<string>0</string>
 				<string>2</string>
 				<string>1</string>
 			</array>

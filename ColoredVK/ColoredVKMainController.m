@@ -61,7 +61,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         
         UISwitch *switchView = [UISwitch new];
         switchView.frame = CGRectMake([UIScreen mainScreen].bounds.size.width/1.2 - switchView.frame.size.width, (cell.contentView.frame.size.height - switchView.frame.size.height)/2, 0, 0);
-        switchView.tag = 405;
+        switchView.tag = 228;
         switchView.on = enabled;
         switchView.onTintColor = [UIColor defaultColorForIdentifier:@"switchesOnTintColor"];
         [switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventTouchUpInside];
@@ -106,19 +106,17 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
 
 - (void)actionOpenPreferencesPush:(BOOL)withPush
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        VKMNavContext *mainContext = [[NSClassFromString(@"VKMNavContext") applicationNavRoot] rootNavContext];
-        
-        NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-        if (!cvkBundle.loaded) [cvkBundle load];
-        ColoredVKMainPrefsController *cvkPrefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
-        
-        if (withPush) {
-            [mainContext push:cvkPrefs animated:YES];
-        } else {
-            [mainContext reset:cvkPrefs];
-        }
-    });
+    VKMNavContext *mainContext = [[NSClassFromString(@"VKMNavContext") applicationNavRoot] rootNavContext];
+    
+    NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    if (!cvkBundle.loaded) [cvkBundle load];
+    ColoredVKMainPrefsController *cvkPrefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
+    
+    if (withPush) {
+        [mainContext push:cvkPrefs animated:YES];
+    } else {
+        [mainContext reset:cvkPrefs];
+    }
 }
 
 - (void)switchTriggered:(UISwitch *)switchView

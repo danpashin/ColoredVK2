@@ -13,6 +13,7 @@
 #import "ColoredVKCrypto.h"
 #import "ColoredVKAlertController.h"
 #import <SafariServices/SafariServices.h>
+#import "ColoredVKWebViewController.h"
 
 @interface ColoredVKAccountController ()
 
@@ -260,8 +261,17 @@
 
 - (void)actionRegister
 {
-    SFSafariViewController *sfController = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:kPackageAccountRegisterLink]];
-    [self presentViewController:sfController animated:YES completion:nil];
+    NSURL *url = [NSURL URLWithString:kPackageAccountRegisterLink];
+    
+    if (SYSTEM_VERSION_IS_MORE_THAN(@"9.0")) {
+        SFSafariViewController *sfController = [[SFSafariViewController alloc] initWithURL:url];
+        [self presentViewController:sfController animated:YES completion:nil];
+    } else {
+        ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
+        webController.url = url;
+        webController.request = [NSURLRequest requestWithURL:webController.url ];
+        [webController presentFromController:self];
+    }
 }
 
 @end

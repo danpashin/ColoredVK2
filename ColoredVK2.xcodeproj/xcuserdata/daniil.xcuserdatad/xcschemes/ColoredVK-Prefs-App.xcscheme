@@ -52,7 +52,7 @@
       debugXPCServices = "NO"
       debugServiceExtension = "internal"
       allowLocationSimulation = "NO"
-      language = "en"
+      language = "ru"
       region = "RU"
       queueDebuggingEnabled = "No">
       <BuildableProductRunnable

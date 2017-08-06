@@ -24,7 +24,7 @@
 
 @property (weak, nonatomic) UITableView *prefsTableView;
 
-- (void)openURL:(NSURL *)url;
+- (BOOL)openURL:(NSURL *)url;
 - (void)presentPopover:(UIViewController *)controller;
 - (NSArray *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize addFooter:(BOOL)addFooter;
 - (void)showPurchaseAlert;

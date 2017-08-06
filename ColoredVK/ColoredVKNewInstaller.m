@@ -13,7 +13,7 @@
 #import <sys/utsname.h>
 #import <SafariServices/SafariServices.h>
 #import "ColoredVKHUD.h"
-#import "ColoredVKPaymentController.h"
+#import "ColoredVKWebViewController.h"
 #import "ColoredVKNetworkController.h"
 #import "ColoredVKAlertController.h"
 
@@ -145,21 +145,17 @@ NSString *userPassword;
                 }
             }
             
-            ColoredVKPaymentController *paymentController = [ColoredVKPaymentController new];
-            paymentController.url = [NSURL URLWithString:@"http://danpashin.ru/projects/coloredvk/purchase/"];
+            ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
+            webController.url = [NSURL URLWithString:@"http://danpashin.ru/projects/coloredvk/purchase/"];
             
-            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:paymentController.url cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:90.0f];
+            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:webController.url cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:90.0f];
             request.HTTPMethod = @"POST";
             [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
             request.HTTPBody = [[NSString stringWithFormat:@"user_id=%@&profile_team_id=%@&profile_team_name=%@", 
                                  self.userID, provisionTeamID, provisionTeamName] dataUsingEncoding:NSUTF8StringEncoding];
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                paymentController.request = request;
-                UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:paymentController];
-                navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-                [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:navigationController animated:YES completion:nil];
-            });
+            webController.request = request;
+            [webController present];
         });
     } else {
         [self showAlertWithTitle:CVKLocalizedString(@"WARNING") text:CVKLocalizedString(@"ENTER_ACCOUNT_FIRST") buttons:nil];

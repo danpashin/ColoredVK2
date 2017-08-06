@@ -7,10 +7,10 @@
 		<dict>
 			<key>label</key>
 			<string>DEVELOPER_IN_VK</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
 			<key>icon</key>
 			<string>AuthorIcon</string>
-			<key>cell</key>
-			<string>PSTableCell</string>
 			<key>action</key>
 			<string>openDeveloperProfile</string>
 		</dict>

@@ -157,14 +157,17 @@
     return CVK_PREFS_PATH;
 }
 
-- (void)openURL:(NSURL *)url
+- (BOOL)openURL:(NSURL *)url
 {
     UIApplication *application = [UIApplication sharedApplication];
     
     if ([application canOpenURL:url]) {
-        if ([application respondsToSelector:@selector(openURL:options:completionHandler:)]) [application openURL:url options:@{} completionHandler:^(BOOL success) {}];
-        else [application openURL:url];
+        BOOL urlIsOpen = [application openURL:url];
+        
+        return urlIsOpen;
     }
+    
+    return NO;
 }
 
 - (void)presentPopover:(UIViewController *)controller

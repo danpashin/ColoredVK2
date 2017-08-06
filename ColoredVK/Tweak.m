@@ -796,7 +796,9 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDict
 CHDeclareClass(UITextInputTraits);
 CHOptimizedMethod(0, self, UIKeyboardAppearance, UITextInputTraits, keyboardAppearance) 
 {
-    if (enabled) return keyboardStyle;
+    if (enabled && (keyboardStyle != UIKeyboardAppearanceDefault))
+        return keyboardStyle;
+    
     return CHSuper(0, UITextInputTraits, keyboardAppearance);
 }
 
@@ -815,7 +817,7 @@ CHOptimizedMethod(0, self, void, UISwitch, layoutSubviews)
         } else {
             self.tintColor = nil;
             self.thumbTintColor = nil;
-            if ((self.tag == 405) || (self.tag == 228)) self.onTintColor = CVKMainColor;
+            if (self.tag == 228) self.onTintColor = CVKMainColor;
             else self.onTintColor = nil;
         }
     }
@@ -2009,13 +2011,26 @@ CHOptimizedMethod(2, self, UITableViewCell*, DialogsSearchController, tableView,
 }
 
 
+
+#pragma mark -
+#pragma mark VKSettings
+#pragma mark -
+
 #pragma mark PSListController
-//@interface PSListController : UIViewController @end
 CHDeclareClass(PSListController);
+
 CHOptimizedMethod(1, self, void, PSListController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, PSListController, viewWillAppear, animated);
     resetNavigationBar(self.navigationController.navigationBar);
+}
+
+CHOptimizedMethod(0, self, UIStatusBarStyle, PSListController, preferredStatusBarStyle)
+{
+    if (enabled && (enabledBarColor || enabledBarImage))
+        return UIStatusBarStyleLightContent;
+    
+    return UIStatusBarStyleDefault;
 }
 
 #pragma mark SelectAccountTableViewController
@@ -2027,10 +2042,23 @@ CHOptimizedMethod(1, self, void, SelectAccountTableViewController, viewWillAppea
     resetNavigationBar(self.navigationController.navigationBar);
 }
 
+#pragma mark vksprefsListController
+@interface vksprefsListController : PSListController @end
+CHDeclareClass(vksprefsListController);
+CHOptimizedMethod(2, self, UITableViewCell *, vksprefsListController, tableView, UITableView *, tableView, cellForRowAtIndexPath, NSIndexPath *, indexPath)
+{
+    UITableViewCell * cell = CHSuper(2, vksprefsListController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    
+    if ([cell.accessoryView isKindOfClass:[UISwitch class]]) {
+        cell.accessoryView.tag = 404;
+    }
+    
+    return cell;
+}
 
 
 
-#pragma mark MessageController
+#pragma mark - MessageController
 CHDeclareClass(MessageController);
 CHOptimizedMethod(1, self, void, MessageController, viewWillAppear, BOOL, animated)
 {
@@ -2305,6 +2333,9 @@ CHOptimizedMethod(0, self, void, UITableView, layoutSubviews)
     }
 }
 
+
+#pragma mark - UIViewController
+
 CHDeclareClass(UIViewController);
 CHOptimizedMethod(3, self, void, UIViewController, presentViewController, UIViewController *, viewControllerToPresent, animated, BOOL, flag, completion, id, completion)
 {
@@ -2320,6 +2351,9 @@ CHOptimizedMethod(3, self, void, UIViewController, presentViewController, UIView
     CHSuper(3, UIViewController, presentViewController, viewControllerToPresent, animated, flag, completion, completion);
 }
 
+
+
+#pragma mark - ModernSettingsController
 
 CHDeclareClass(ModernSettingsController);
 CHOptimizedMethod(2, self, NSInteger, ModernSettingsController, tableView, UITableView *, tableView, numberOfRowsInSection, NSInteger, section)
@@ -2342,7 +2376,6 @@ CHOptimizedMethod(2, self, UITableViewCell*, ModernSettingsController, tableView
             cell = cvkMainController.settingsCell;
         }
     }
-    
     
     return cell;
 }
@@ -2388,7 +2421,6 @@ static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFS
 CHConstructor
 {
     @autoreleasepool {
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{ dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW); });
         
         prefsPath = CVK_PREFS_PATH;
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
@@ -2408,16 +2440,11 @@ CHConstructor
             CFNotificationCenterAddObserver(center, NULL, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             CFNotificationCenterAddObserver(center, NULL, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             
-            CHLoadLateClass(SelectAccountTableViewController);
-            CHHook(1, SelectAccountTableViewController, viewWillAppear);
+            
             
             CHLoadLateClass(MessageController);
             CHHook(1, MessageController, viewWillAppear);
-            
-            CHLoadLateClass(PSListController);
-            CHHook(1, PSListController, viewWillAppear);
-            
-            
+             
             CHLoadLateClass(VKMLiveSearchController);
             CHHook(2, VKMLiveSearchController, tableView, cellForRowAtIndexPath);
             CHHook(1, VKMLiveSearchController, searchDisplayControllerWillBeginSearch);
@@ -2660,6 +2687,19 @@ CHConstructor
             CHHook(2, ModernSettingsController, tableView, numberOfRowsInSection);
             CHHook(2, ModernSettingsController, tableView, cellForRowAtIndexPath);
             CHHook(2, ModernSettingsController, tableView, didSelectRowAtIndexPath);
+            
+     
+            
+            CHLoadLateClass(vksprefsListController);
+            CHHook(2, vksprefsListController, tableView, cellForRowAtIndexPath);
+            
+            CHLoadLateClass(SelectAccountTableViewController);
+            CHHook(1, SelectAccountTableViewController, viewWillAppear);
+            
+            CHLoadLateClass(PSListController);
+            CHHook(1, PSListController, viewWillAppear);
+            CHHook(0, PSListController, preferredStatusBarStyle);
+       
 
         } else {
             showAlertWithMessage([NSString stringWithFormat:CVKLocalizedString(@"VKAPP_VERSION_IS_TOO_LOW"),  vkVersion, @"2.2"]);
