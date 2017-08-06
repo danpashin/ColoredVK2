@@ -16,9 +16,9 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 {
     ColoredVKVersionCompareLess = -1,
     ColoredVKVersionCompareEqual = 0,
-    ColoredVKVersionCompareMore = 1,
-    ColoredVKVersionCompareMoreOrEqual = ColoredVKVersionCompareEqual|ColoredVKVersionCompareMore,
-    ColoredVKVersionCompareLessOrEqual = ColoredVKVersionCompareEqual|ColoredVKVersionCompareLess
+    ColoredVKVersionCompareMore = 1
+//    ColoredVKVersionCompareMoreOrEqual = ColoredVKVersionCompareEqual|ColoredVKVersionCompareMore,
+//    ColoredVKVersionCompareLessOrEqual = ColoredVKVersionCompareEqual|ColoredVKVersionCompareLess
 };
 
 @interface ColoredVKMainController : NSObject
@@ -35,7 +35,7 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 
 @property (strong, nonatomic) MenuCell *menuCell;
 @property (strong, nonatomic) VKMCell *settingsCell;
-@property (strong, nonatomic) ColoredVKAudioCover *coverView;
+@property (strong, nonatomic) ColoredVKAudioCover *audioCover;
 @property (strong, nonatomic) ColoredVKWallpaperView *menuBackgroundView;
 @property (strong, nonatomic) ColoredVKWallpaperView *navBarImageView;
 

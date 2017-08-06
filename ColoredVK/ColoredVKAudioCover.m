@@ -206,11 +206,16 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
     }
 }
 
+- (void)updateColorScheme
+{
+    [self updateColorSchemeForImage:self.topImageView.image];
+}
+
 - (void)updateColorSchemeForImage:(UIImage *)image
 {
-    LEColorPicker *picker = [[LEColorPicker alloc] init];
-    [picker pickColorsFromImage:image onComplete:^(LEColorScheme *colorScheme) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        LEColorPicker *picker = [[LEColorPicker alloc] init];
+        [picker pickColorsFromImage:image onComplete:^(LEColorScheme *colorScheme) {
             _backColor = self.defaultCover?[UIColor clearColor]:[colorScheme.backgroundColor colorWithAlphaComponent:0.4];
             _color = colorScheme.secondaryTextColor;
             self.audioLyricsView.textColor = self.color;
@@ -218,9 +223,11 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
                 self.blurEffectView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor;
                 self.audioLyricsView.blurView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor;
             } completion:nil];
-            [NSNotificationCenter.defaultCenter postNotificationName:@"com.daniilpashin.coloredvk2.audio.image.changed" object:nil];
-        });
-    }];
+            
+            if (self.updateCompletionBlock)
+                self.updateCompletionBlock(self);
+        }];
+    });
 }
 
 - (UIImage *)noCover
@@ -304,7 +311,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@" %@; artist '%@'; track '%@'; frame %@; separationPoint %@; ", [super description], self.artist, self.track, NSStringFromCGRect(self.coverView.frame), NSStringFromCGPoint(CGPointMake(0, CGRectGetHeight(self.bottomImageView.frame)))];
+    return [NSString stringWithFormat:@" %@; artist '%@'; track '%@'; frame %@; separationPoint %@; ", super.description, self.artist, self.track, NSStringFromCGRect(self.coverView.frame), NSStringFromCGPoint(CGPointMake(0, CGRectGetHeight(self.bottomImageView.frame)))];
 }
 
 @end

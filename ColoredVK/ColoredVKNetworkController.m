@@ -9,8 +9,6 @@
 #import "ColoredVKNetworkController.h"
 #import "ColoredVKCrypto.h"
 
-NSString *const ColoredVKNetworkMethodPost = @"POST";
-NSString *const ColoredVKNetworkMethodGet = @"GET";
 
 @interface ColoredVKNetworkController  () <NSURLSessionDelegate>
 
@@ -148,7 +146,7 @@ NSString *const ColoredVKNetworkMethodGet = @"GET";
     if ([parameters isKindOfClass:[NSDictionary class]]) {
         NSDictionary *dictParameters = (NSDictionary *)parameters;
         for (NSString *key in dictParameters.allKeys) {
-            [stringParameters appendFormat:@"%@=%@&", key, [dictParameters objectForKey:key]];
+            [stringParameters appendFormat:@"%@=%@&", key, dictParameters[key]];
         }
     } else if ([parameters isKindOfClass:[NSString class]]) {
         [stringParameters appendString:(NSString *)parameters];

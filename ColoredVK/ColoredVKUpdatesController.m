@@ -46,7 +46,7 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
     NSMutableDictionary *parameters = [@{@"userVers": kPackageVersion, @"product": kPackageIdentifier} mutableCopy];
     
 #ifndef COMPILE_FOR_JAIL
-    [parameters setObject:@1 forKey:@"getIPA"];
+    parameters[@"getIPA"] = @1;
 #endif
     
     ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
@@ -139,7 +139,7 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
     
-    return prefs[prefsLastCheckKey]?[dateFormatter dateFromString:prefs[prefsLastCheckKey]].timeAgoSinceNow : CVKLocalizedString(@"NEVER");
+    return prefs[prefsLastCheckKey] ? [dateFormatter dateFromString:prefs[prefsLastCheckKey]].timeAgoSinceNow : CVKLocalizedString(@"NEVER");
 }
 
 @end

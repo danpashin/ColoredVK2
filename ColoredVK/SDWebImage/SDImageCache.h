@@ -8,8 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "SDWebImageCompat.h"
-
-@class SDImageCacheConfig;
+#import "SDImageCacheConfig.h"
 
 typedef NS_ENUM(NSInteger, SDImageCacheType) {
     /**
@@ -231,12 +230,12 @@ typedef void(^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger tot
 /**
  * Get the size used by the disk cache
  */
-@property (nonatomic, getter=getSize, readonly) NSUInteger size;
+- (NSUInteger)getSize;
 
 /**
  * Get the number of images in the disk cache
  */
-@property (nonatomic, getter=getDiskCount, readonly) NSUInteger diskCount;
+- (NSUInteger)getDiskCount;
 
 /**
  * Asynchronously calculate the disk cache's size.

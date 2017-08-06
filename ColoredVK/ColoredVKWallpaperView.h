@@ -11,10 +11,7 @@
 
 @interface ColoredVKWallpaperView : UIView
 
-+ (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name;
 + (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout;
-+ (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip;
-+ (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect;
 - (instancetype)initWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip parallaxEffect:(BOOL)parallaxEffect;
 
 @property (strong, nonatomic, readonly) NSString *name;

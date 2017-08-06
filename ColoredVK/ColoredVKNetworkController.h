@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-FOUNDATION_EXPORT NSString *const ColoredVKNetworkMethodPost;
-FOUNDATION_EXPORT NSString *const ColoredVKNetworkMethodGet;
 
 @interface ColoredVKNetworkController : NSObject
 

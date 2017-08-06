@@ -15,7 +15,7 @@
 
 @interface ColoredVKBarDownloadButton ()
 
-@property (strong, nonatomic) NSArray *availableControllers;
+@property (strong, nonatomic) NSArray *downloadInfo;
 @property (strong, nonatomic) ColoredVKNetworkController *networkController;
 
 @end
@@ -25,11 +25,6 @@
 + (instancetype)button
 {
     return [[self alloc] initWithURL:nil rootController:nil];
-}
-
-+ (instancetype)buttonWithURL:(NSString *)url
-{
-    return [[self alloc] initWithURL:url rootController:nil];
 }
 
 + (instancetype)buttonWithURL:(NSString *)url rootController:(UIViewController *)controller
@@ -47,7 +42,7 @@
         self.rootViewController = controller;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             self.networkController = [ColoredVKNetworkController controller];
-            self.availableControllers = self.availableControllers;
+            self.downloadInfo = self.downloadInfo;
         });
     }
     return self;
@@ -60,7 +55,7 @@
     ColoredVKAlertController *actionController = [ColoredVKAlertController alertControllerWithTitle:@"" message:CVKLocalizedString(@"SET_THIS_IMAGE_TO") preferredStyle:UIAlertControllerStyleActionSheet];
     [actionController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     
-    for (NSDictionary *dict in self.availableControllers) {
+    for (NSDictionary *dict in self.downloadInfo) {
         UIAlertAction *action = [UIAlertAction actionWithTitle:CVKLocalizedStringFromTable(dict[@"title"], @"ColoredVK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
             ColoredVKHUD *hud = [ColoredVKHUD showHUD];
             [self downloadImageWithIdentifier:dict[@"identifier"] completionBlock:^(BOOL success) {
@@ -108,21 +103,21 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@" %@; url '%@'; rootViewController %@; ", [super description], self.url, self.rootViewController];
+    return [NSString stringWithFormat:@" %@; url '%@'; rootViewController %@; ", super.description, self.url, self.rootViewController];
 }
 
-- (NSArray *)availableControllers
+- (NSArray *)downloadInfo
 {
-    if (!_availableControllers) {
-        NSArray *availableControllers = [NSArray array];
+    if (!_downloadInfo) {
+        NSArray *downloadInfo = [NSArray array];
         NSDictionary *infoDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle bundleWithPath:CVK_BUNDLE_PATH] pathForResource:@"AdvancedInfo" ofType:@"plist" inDirectory:@"plists"]];
         if (infoDict) {
-            availableControllers = infoDict[@"ImagesDLInfo"];
+            downloadInfo = infoDict[@"ImagesDLInfo"];
         }
         
-        _availableControllers = availableControllers;
+        _downloadInfo = downloadInfo;
     }
     
-    return _availableControllers;
+    return _downloadInfo;
 }
 @end

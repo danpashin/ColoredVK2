@@ -39,7 +39,7 @@
                 name = [NSString stringWithFormat:@"%@  (%.1f MB)", name, fileSize];
                 
                 PSSpecifier *specifier = [PSSpecifier preferenceSpecifierNamed:name target:self set:nil get:nil detail:nil cell:PSTitleValueCell edit:nil];
-                [specifier.properties setObject:filename forKey:@"filename"];
+                (specifier.properties)[@"filename"] = filename;
                 [specifiers addObject:specifier];
             }
         }

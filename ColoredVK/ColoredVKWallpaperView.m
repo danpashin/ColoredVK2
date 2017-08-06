@@ -188,7 +188,7 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@" %@; imageName '%@'; blackout %.2f; parallax %@ ", [super description], self.name, self.blackout, self.parallaxEnabled ? @"Enabled": @"Disabled"];
+    return [NSString stringWithFormat:@" %@; imageName '%@'; blackout %.2f; parallax %@ ", super.description, self.name, self.blackout, self.parallaxEnabled ? @"Enabled": @"Disabled"];
 }
 
 @end

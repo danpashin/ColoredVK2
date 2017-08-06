@@ -267,8 +267,8 @@ NSString *userPassword;
                                                   
                                                   NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
                                                   NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
-                                                  [dict setObject:@(self.api_purchased) forKey:@"purchased"];
-                                                  [dict setObject:@(self.api_activated) forKey:@"activated"];
+                                                  dict[@"purchased"] = @(self.api_purchased);
+                                                  dict[@"activated"] = @(self.api_activated);
                                                   NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
                                                   [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
                                               }
@@ -422,15 +422,19 @@ static void download(id parameters,BOOL isAuthorisation, void(^completionBlock)(
 //                                                      NSMutableDictionary *dict = @{@"UDID":deviceUDID, @"Device":@(systemInfo.machine)}.mutableCopy;
                                                       NSMutableDictionary *dict = @{@"Device":@(systemInfo.machine)}.mutableCopy;
                                                       
-                                                      [dict setObject:userLogin forKey:@"Login"];
+                                                      dict[@"Login"] = userLogin;
+                                                      
                                                       if (json[@"user_id"])
-                                                          [dict setObject:json[@"user_id"] forKey:@"user_id"];
+                                                          dict[@"user_id"] = json[@"user_id"];
+                                                      
                                                       if (json[@"user_token"])
-                                                          [dict setObject:json[@"user_token"] forKey:@"user_token"];
+                                                          dict[@"user_token"] = json[@"user_token"];
+                                                      
                                                       if (json[@"purchased"])
-                                                          [dict setObject:json[@"purchased"] forKey:@"purchased"];
+                                                          dict[@"purchased"] = json[@"purchased"];
+                                                      
                                                       if (json[@"activated"])
-                                                          [dict setObject:json[@"activated"] forKey:@"activated"];
+                                                          dict[@"activated"] = json[@"activated"];
                                                       
                                                       [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
                                                       

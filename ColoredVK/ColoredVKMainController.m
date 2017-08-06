@@ -205,7 +205,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer * _Nonnull sender) {
         CGPoint location = [sender locationInView:sender.view];
         UIView *view = [sender.view hitTest:location withEvent:nil];
-        if (![view isKindOfClass:[UITextView class]]) {
+        if (![view isKindOfClass:[UITextView class]] && [view isKindOfClass:[ColoredVKAudioLyricsView class]]) {
             if (handler) {
                 handler();
             }

@@ -700,15 +700,6 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
     
     CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
     
-//    installerCompletionBlock = ^(BOOL disableTweak) {
-//        if (!disableTweak) {
-//            tweakEnabled = YES;
-//            reloadPrefs();
-//            
-//        }
-//    };
-//    
-//    [ColoredVKInstaller sharedInstaller];
     
     cvkMainController.navBarImageView = cvkMainController.navBarImageView;
     
@@ -718,20 +709,30 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
         reloadPrefs();
     };
     [newInstaller checkStatusAndShowAlert:NO];
+    
+    [cvkMainController sendStats];
+    
+    return YES;
+}
+
+CHOptimizedMethod(1, self, void, AppDelegate, applicationDidBecomeActive, UIApplication *, application)
+{    
+    CHSuper(1, AppDelegate, applicationDidBecomeActive, application);
+    
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     [newInstaller updateAccountInfo:^{
         [newInstaller checkStatusAndShowAlert:NO];
     }];
-    
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
         if (updatesController.shouldCheckUpdates)
             [updatesController checkUpdates];
-        
-        [cvkMainController sendStats];
     });
     
-    return YES;
+    if (cvkMainController.audioCover) {
+        [cvkMainController.audioCover updateColorScheme];
+    }
 }
 
 
@@ -1236,8 +1237,8 @@ CHOptimizedMethod(0, self, void, VKMMainController, viewDidLoad)
         CGRect bounds = [UIScreen mainScreen].bounds;
         CGFloat width = (bounds.size.width > bounds.size.height)?bounds.size.height:bounds.size.width;
         CGFloat height = (bounds.size.width < bounds.size.height)?bounds.size.height:bounds.size.width;
-        cvkMainController.menuBackgroundView = [ColoredVKWallpaperView viewWithFrame:CGRectMake(0, 0, width, height) 
-                                                                                 imageName:@"menuBackgroundImage" blackout:menuImageBlackout parallaxEffect:useMenuParallax];
+        cvkMainController.menuBackgroundView = [[ColoredVKWallpaperView alloc] initWithFrame:CGRectMake(0, 0, width, height) 
+                                                                                   imageName:@"menuBackgroundImage" blackout:menuImageBlackout flip:NO parallaxEffect:useMenuParallax];
     }
     
     if (enabled && enabledMenuImage) {
@@ -1350,12 +1351,12 @@ CHOptimizedMethod(0, self, void, IOS7AudioController, viewWillLayoutSubviews)
     CHSuper(0, IOS7AudioController, viewWillLayoutSubviews);
     
     if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")] && (enabled && changeAudioPlayerAppearance)) {
-        if (!cvkMainController.coverView) {
-            cvkMainController.coverView = [[ColoredVKAudioCover alloc] init];
-            [cvkMainController.coverView updateCoverForArtist:self.actor.text title:self.song.text];
+        if (!cvkMainController.audioCover) {
+            cvkMainController.audioCover = [[ColoredVKAudioCover alloc] init];
+            [cvkMainController.audioCover updateCoverForArtist:self.actor.text title:self.song.text];
         }
-        [cvkMainController.coverView updateViewFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
-        [cvkMainController.coverView addToView:self.view];
+        [cvkMainController.audioCover updateViewFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
+        [cvkMainController.audioCover addToView:self.view];
     }
 }
 
@@ -1364,14 +1365,14 @@ CHOptimizedMethod(0, self, void, IOS7AudioController, viewDidLoad)
     CHSuper(0, IOS7AudioController, viewDidLoad);
     
     if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")] && (enabled && changeAudioPlayerAppearance)) {
-        if (!cvkMainController.coverView) {
-            cvkMainController.coverView = [[ColoredVKAudioCover alloc] init];
-            [cvkMainController.coverView updateCoverForArtist:self.actor.text title:self.song.text];
+        if (!cvkMainController.audioCover) {
+            cvkMainController.audioCover = [[ColoredVKAudioCover alloc] init];
+            [cvkMainController.audioCover updateCoverForArtist:self.actor.text title:self.song.text];
         }
-        [cvkMainController.coverView updateViewFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
-        [cvkMainController.coverView addToView:self.view];
+        [cvkMainController.audioCover updateViewFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
+        [cvkMainController.audioCover addToView:self.view];
         
-        audioPlayerTintColor = cvkMainController.coverView.color;
+        audioPlayerTintColor = cvkMainController.audioCover.color;
         
         UINavigationBar *navBar = self.navigationController.navigationBar;
         navBar.tag = 26;
@@ -1391,14 +1392,14 @@ CHOptimizedMethod(0, self, void, IOS7AudioController, viewDidLoad)
                                                                                        }
                                                                                    }]];
             
-            [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionRight 
+            [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionLeft 
                                                                                    handler:^{
                                                                                        if ([self respondsToSelector:@selector(actionNext:)]) {
                                                                                            [self actionNext:nil];
                                                                                        }
                                                                                    }]];
             
-            [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionLeft 
+            [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionRight 
                                                                                    handler:^{
                                                                                        if ([self respondsToSelector:@selector(actionPrev:)]) {
                                                                                            [self actionPrev:nil];
@@ -1428,12 +1429,11 @@ CHOptimizedMethod(0, self, void, IOS7AudioController, viewDidLoad)
             [self.seek setThumbImage:thumbImage forState:UIControlStateNormal];
         });
         
-        [NSNotificationCenter.defaultCenter addObserverForName:@"com.daniilpashin.coloredvk2.audio.image.changed" object:nil queue:nil usingBlock:^(NSNotification *note) {
-            audioPlayerTintColor = cvkMainController.coverView.color;
+        cvkMainController.audioCover.updateCompletionBlock = ^(ColoredVKAudioCover *cover) {
+            audioPlayerTintColor = cvkMainController.audioCover.color;
             [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
             setupAudioPlayer(self.hostView, audioPlayerTintColor);
-        }];
-        
+        };
     }
 }
 
@@ -1443,11 +1443,11 @@ CHOptimizedMethod(2, self, void, AudioPlayer, switchTo, int, arg1, force, BOOL, 
 {
     CHSuper(2, AudioPlayer, switchTo, arg1, force, force);
     if (enabled && changeAudioPlayerAppearance) {
-        if (!cvkMainController.coverView)
-            cvkMainController.coverView = [[ColoredVKAudioCover alloc] init];
+        if (!cvkMainController.audioCover)
+            cvkMainController.audioCover = [[ColoredVKAudioCover alloc] init];
         
         if (self.state == 1)
-            [cvkMainController.coverView updateCoverForArtist:self.audio.performer title:self.audio.title];
+            [cvkMainController.audioCover updateCoverForArtist:self.audio.performer title:self.audio.title];
     }
 }
 
@@ -1457,11 +1457,11 @@ CHOptimizedMethod(1, self, void, VKAudioQueuePlayer, switchTo, int, arg1)
 {
     CHSuper(1, VKAudioQueuePlayer, switchTo, arg1);
     if (enabled && changeAudioPlayerAppearance) {
-        if (!cvkMainController.coverView)
-            cvkMainController.coverView = [[ColoredVKAudioCover alloc] init];
+        if (!cvkMainController.audioCover)
+            cvkMainController.audioCover = [[ColoredVKAudioCover alloc] init];
         
         if (self.state == 1)
-            [cvkMainController.coverView updateCoverForArtist:self.performer title:self.title];
+            [cvkMainController.audioCover updateCoverForArtist:self.performer title:self.title];
     }
 }
 
@@ -2432,6 +2432,7 @@ CHConstructor
             
             CHLoadLateClass(AppDelegate);
             CHHook(2,  AppDelegate, application, didFinishLaunchingWithOptions);
+            CHHook(1,  AppDelegate, applicationDidBecomeActive);
             
             
             CHLoadLateClass(UINavigationBar);

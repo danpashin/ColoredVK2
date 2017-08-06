@@ -34,7 +34,7 @@
 - (NSArray *)specifiers
 {
     if (!_specifiers) {
-        NSMutableArray *specifiers = [[super specifiers] mutableCopy];
+        NSMutableArray *specifiers = [super.specifiers mutableCopy];
         
         if (self.userLoggedIn) {
             NSArray <NSString *> *specifiersIDToRemove = @[@"registerButton", @"registerGroup"];

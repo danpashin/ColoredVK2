@@ -22,7 +22,7 @@ NSArray <NSString *> *specifiersToDisable;
 - (NSArray *)specifiers
 {
     if (!_specifiers) {
-        NSMutableArray *specifiersArray = [super specifiers].mutableCopy;
+        NSMutableArray *specifiersArray = super.specifiers.mutableCopy;
         
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller]; 
         BOOL shouldDisable = (!newInstaller.tweakPurchased || !newInstaller.tweakActivated);
