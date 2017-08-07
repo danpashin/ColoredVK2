@@ -69,6 +69,9 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
         _identifier = identifier;
         
         self.customColor = [UIColor savedColorForIdentifier:self.identifier];
+        if (self.customColor == nil)
+            self.customColor = [UIColor clearColor];
+        
         [self.customColor getHue:nil saturation:nil brightness:&_brightness alpha:nil];
         
         self.sliderView.color = self.customColor;

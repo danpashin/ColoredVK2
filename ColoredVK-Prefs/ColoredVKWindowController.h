@@ -11,7 +11,7 @@
 typedef NS_ENUM(NSUInteger, ColoredVKWindowBackgroundStyle) {
     ColoredVKWindowBackgroundStyleBlurred,
     ColoredVKWindowBackgroundStyleDarkened,
-    ColoredVKWindowBackgroundStyleCustom,
+    ColoredVKWindowBackgroundStyleCustom
 };
 
 @interface ColoredVKWindowController : UIViewController <UIGestureRecognizerDelegate>

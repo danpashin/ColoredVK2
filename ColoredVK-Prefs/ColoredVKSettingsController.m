@@ -105,28 +105,24 @@
 {
     PSTableCell *cell = (PSTableCell *)[super tableView:tableView cellForRowAtIndexPath:indexPath];
     
-    CGFloat buttonWidth = 30.0;
-    if (![cell.contentView.subviews containsObject:[cell.contentView viewWithTag:2]]) {
-        UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width-1.5*buttonWidth, 0, buttonWidth, buttonWidth)];
-        [shareButton addTarget:self action:@selector(actionShare:) forControlEvents:UIControlEventTouchUpInside];
-        [shareButton setImage:[UIImage imageNamed:@"ShareIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
-        shareButton.accessibilityValue = cell.specifier.properties[@"filename"];
-        shareButton.tag = 2;
-        [cell.contentView addSubview:shareButton];
-        
-        shareButton.translatesAutoresizingMaskIntoConstraints = NO;
-        [cell.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[shareButton]-|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                     metrics:nil views:NSDictionaryOfVariableBindings(shareButton)]];
-        [cell.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[shareButton(width)]-|" options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                                 metrics:@{@"width":@(buttonWidth)} views:NSDictionaryOfVariableBindings(shareButton)]];
-    }
+    UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 30.0f, 30.0f)];
+    [shareButton addTarget:self action:@selector(actionShare:) forControlEvents:UIControlEventTouchUpInside];
+    [shareButton setImage:[UIImage imageNamed:@"ShareIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
+    shareButton.accessibilityValue = cell.specifier.properties[@"filename"];
+    cell.accessoryView = shareButton;
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PSSpecifier *specifier = [self specifierAtIndexPath:indexPath];
+    PSSpecifier *specifier = nil;
+    if ([self respondsToSelector:@selector(specifierAtIndexPath:)]) {
+        specifier = [self specifierAtIndexPath:indexPath];
+    } else {
+        NSInteger index = [self indexForRow:indexPath.row inGroup:indexPath.section];
+        specifier = [self specifierAtIndex:index];
+    }
     
     NSString *message = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"RESTORE_BACKUP_QUESTION", nil, self.cvkBundle, nil), specifier.properties[@"filename"]];
     ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];
@@ -151,7 +147,8 @@
 - (void)actionBackup
 {
     ColoredVKHUD *hud = [ColoredVKHUD showHUD];
-    hud.operation = [NSBlockOperation blockOperationWithBlock:^{
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         NSMutableArray *files = @[self.prefsPath].mutableCopy;
         
         NSFileManager *filemaneger = [NSFileManager defaultManager];
@@ -166,15 +163,16 @@
         NSString *backupName = [@"com.daniilpashin.coloredvk2_" stringByAppendingString:[dateFormatter stringFromDate:[NSDate date]]];
         NSString *backupPath = [NSString stringWithFormat:@"%@/%@.zip", CVK_BACKUP_PATH, backupName];
         
-        [SSZipArchive createZipFileAtPath:backupPath withFilesAtPaths:files];
-        [hud showSuccess];
-    }];
+        BOOL success = [SSZipArchive createZipFileAtPath:backupPath withFilesAtPaths:files];
+        success ? [hud showSuccess] : [hud showFailure];
+    });
 }
 
 - (void)restoreSettingsFromFile:(NSString *)file
 {
     ColoredVKHUD *hud = [ColoredVKHUD showHUD];
-    hud.executionBlock = ^(ColoredVKHUD *parentHud){
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         NSString *backupPath = [NSString stringWithFormat:@"%@/%@", CVK_BACKUP_PATH, file];
         NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingString:@"coloredvk2"];
         
@@ -199,23 +197,13 @@
                             }
                             [filemanager removeItemAtPath:tmpPath error:nil];
                             
-                            movingError?[parentHud showFailureWithStatus:movingError.localizedDescription]:[parentHud showSuccess];
+                            movingError ? [hud showFailureWithStatus:movingError.localizedDescription] : [hud showSuccess];
                             
-                            [self reloadSpecifiers];
-                            CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-                            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
-                            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, NULL, YES);
-                            
-                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                UINavigationBar *navBar = self.navigationController.navigationBar;
-                                navBar.barTintColor = navBar.barTintColor;
-                            });
-                            
+                            [self sendNotifications];
                         } else
-                            [parentHud showFailureWithStatus:error.localizedDescription];
+                            [hud showFailureWithStatus:error.localizedDescription];
                     }];
-    };
-    hud.executionBlock(hud);
+    });
     
 }
 
@@ -224,24 +212,17 @@
     void (^resetSettingsBlock)() = ^{
         
         ColoredVKHUD *hud = [ColoredVKHUD showHUD];
-        hud.operation = [NSBlockOperation blockOperationWithBlock:^{
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
             NSError *error = nil;
             NSFileManager *fileManager = [NSFileManager defaultManager];
             [fileManager removeItemAtPath:self.prefsPath error:&error];
             [fileManager removeItemAtPath:self.cvkFolder error:&error];
-            [self reloadSpecifiers];
-            CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
-            CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, NULL, YES);
             
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                UINavigationBar *navBar = self.navigationController.navigationBar;
-                navBar.barTintColor = navBar.barTintColor;
-                navBar.tintColor = navBar.tintColor;
-            });
+            error ? [hud showFailure] : [hud showSuccess];
             
-            error?[hud showFailure]:[hud showSuccess];
-        }];  
+            [self sendNotifications];
+        });  
     };
     
     ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBundle, nil)
@@ -252,5 +233,20 @@
     [alertController addAction:[UIAlertAction actionWithTitle:resetTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { resetSettingsBlock(); }]];
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     [alertController present];
+}
+
+- (void)sendNotifications
+{
+    CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
+    CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
+    CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, NULL, YES);
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self reloadSpecifiers];
+        
+        UINavigationBar *navBar = self.navigationController.navigationBar;
+        navBar.barTintColor = navBar.barTintColor;
+        navBar.tintColor = navBar.tintColor;
+    });
 }
 @end

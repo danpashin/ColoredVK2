@@ -71,6 +71,10 @@
 			<string>ColoredVKStepperPrefsCell</string>
 			<key>id</key>
 			<string>navbarImageBlackout</string>
+			<key>minValue</key>
+			<string>0</string>
+			<key>maxValue</key>
+			<string>0.6</string>
 		</dict>
 		<dict>
 			<key>cell</key>

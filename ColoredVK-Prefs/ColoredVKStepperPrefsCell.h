@@ -1,5 +1,5 @@
 //
-//  ColoredVKImagePrefs.h
+//  ColoredVKStepperPrefsCell.h
 //  ColoredVK
 //
 //  Created by Даниил on 26.04.16.

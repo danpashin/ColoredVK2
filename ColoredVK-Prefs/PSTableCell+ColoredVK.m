@@ -28,14 +28,12 @@
             } else {
                 self.titleLabel.textColor = CVKMainColor;
             }
-        } else if (self.type == PSSegmentCell) {
-            if ([self.contentView.subviews[0] isKindOfClass:[UISegmentedControl class]]) {
-                UISegmentedControl *segmentedControl = self.contentView.subviews[0];
-                segmentedControl.tintColor = CVKMainColor;
-                
-                if ([self.specifier propertyForKey:@"enabled"]) {
-                    segmentedControl.enabled = [[self.specifier propertyForKey:@"enabled"] boolValue];
-                }
+        } else if ([self.contentView.subviews[0] isKindOfClass:[UIControl class]]) {
+            UIControl *control = self.contentView.subviews[0];
+            control.tintColor = CVKMainColor;
+            
+            if ([self.specifier propertyForKey:@"enabled"]) {
+                control.enabled = [[self.specifier propertyForKey:@"enabled"] boolValue];
             }
         }
         

@@ -12,10 +12,10 @@
 @protocol ColoredVKStepperButtonDelegate;
 @interface ColoredVKStepperButton : UIView
 
-@property (assign, nonatomic) NSInteger minValue;
-@property (assign, nonatomic) NSInteger maxValue;
-@property (assign, nonatomic) NSInteger value;
-@property (assign, nonatomic) NSInteger step;
+@property (assign, nonatomic) CGFloat minValue;
+@property (assign, nonatomic) CGFloat maxValue;
+@property (assign, nonatomic) CGFloat value;
+@property (assign, nonatomic) CGFloat step;
 @property (assign, nonatomic) CGFloat height;
 @property (assign, nonatomic) BOOL shouldShake;
 @property (weak, nonatomic) id <ColoredVKStepperButtonDelegate> delegate;
@@ -25,6 +25,6 @@
 
 @protocol ColoredVKStepperButtonDelegate <NSObject>
 
-- (void)stepperButton:(ColoredVKStepperButton *)stepperButton didUpdateValue:(NSInteger)value;
+- (void)stepperButton:(ColoredVKStepperButton *)stepperButton didUpdateValue:(CGFloat)value;
 
 @end

@@ -66,7 +66,7 @@
     
     self.valueLabel = [UILabel new];
     self.valueLabel.textAlignment = NSTextAlignmentCenter;
-    self.valueLabel.font = [UIFont systemFontOfSize:15];
+    self.valueLabel.font = [UIFont systemFontOfSize:15.0f];
     
     [self addSubview:self.decreaseButton];
     [self addSubview:self.increaseButton];
@@ -86,7 +86,7 @@
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self.valueLabel}]];
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[decreaseButton(buttonWidth)][valueLabel][increaseButton(buttonWidth)]|" 
-                                                                 options:0 metrics:@{@"buttonWidth":@(self.height)} 
+                                                                 options:0 metrics:@{@"buttonWidth":@(self.height/1.15)} 
                                                                    views:@{@"decreaseButton":self.decreaseButton, @"valueLabel":self.valueLabel, @"increaseButton":self.increaseButton}]];
 }
 
@@ -103,18 +103,19 @@
     super.bounds = bounds;
 }
 
-- (void)setValue:(NSInteger)value
+- (void)setValue:(CGFloat)value
 {
     _value = value;
-    if (self.valueLabel) self.valueLabel.text = [NSString stringWithFormat:@"%i", (int)self.value];
+    
+    self.valueLabel.text = [NSString stringWithFormat:@"%.1f", self.value];
 }
 
 #pragma mark - Actions
 
 - (void)actionDecrease
-{    
-    if ((int)self.value - (int)self.step >= (int)self.minValue) {
-        self.value = (int)self.value - (int)self.step;
+{
+    if (self.value - self.step >= self.minValue) {
+        self.value -= self.step;
         
         if ([self.delegate respondsToSelector:@selector(stepperButton:didUpdateValue:)])
             [self.delegate stepperButton:self didUpdateValue:self.value];
@@ -126,8 +127,8 @@
 
 - (void)actionIncrease
 {    
-    if ((int)self.value + (int)self.step <= (int)self.maxValue) {
-        self.value = (int)self.value + (int)self.step;
+    if (self.value + self.step <= self.maxValue) {
+        self.value += self.step;
         
         if ([self.delegate respondsToSelector:@selector(stepperButton:didUpdateValue:)])
             [self.delegate stepperButton:self didUpdateValue:self.value];

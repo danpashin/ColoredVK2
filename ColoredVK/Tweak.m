@@ -14,11 +14,9 @@
 
 #import "ColoredVKNewInstaller.h"
 #import "PrefixHeader.h"
-#import "NSDate+DateTools.h"
 #import "ColoredVKMainController.h"
 #import "Tweak.h"
 #import "ColoredVKBarDownloadButton.h"
-#import "ColoredVKHUD.h"
 #import "ColoredVKAlertController.h"
 #import "ColoredVKUpdatesController.h"
 
@@ -69,6 +67,9 @@ CGFloat friendsImageBlackout;
 CGFloat videosImageBlackout;
 
 
+CGFloat appCornerRadius;
+
+
 BOOL useMenuParallax;
 BOOL useMessagesListParallax;
 BOOL useMessagesParallax;
@@ -97,6 +98,9 @@ BOOL changeGroupsListTextColor;
 BOOL changeAudiosTextColor;
 BOOL changeFriendsTextColor;
 BOOL changeVideosTextColor;
+
+BOOL useCustomDialogsUnreadColor;
+UIColor *dialogsUnreadColor;
 
 UIColor *menuSeparatorColor;
 UIColor *barBackgroundColor;
@@ -259,6 +263,7 @@ void reloadPrefs()
         videosImageBlackout = [prefs[@"videosImageBlackout"] floatValue];
         
         useCustomMessageReadColor = [prefs[@"useCustomMessageReadColor"] boolValue];
+        useCustomDialogsUnreadColor = [prefs[@"useCustomDialogsUnreadColor"] boolValue];
         
         changeMessagesListTextColor = [prefs[@"changeMessagesListTextColor"] boolValue];
         changeGroupsListTextColor = [prefs[@"changeGroupsListTextColor"] boolValue];
@@ -290,9 +295,19 @@ void reloadPrefs()
         audiosBlurTone =            [[UIColor savedColorForIdentifier:@"audiosBlurTone"             fromPrefs:prefs] colorWithAlphaComponent:0.3];
         friendsBlurTone =           [[UIColor savedColorForIdentifier:@"friendsBlurTone"            fromPrefs:prefs] colorWithAlphaComponent:0.3];
         videosBlurTone =            [[UIColor savedColorForIdentifier:@"videosBlurTone"             fromPrefs:prefs] colorWithAlphaComponent:0.3];
+        dialogsUnreadColor =        [[UIColor savedColorForIdentifier:@"dialogsUnreadColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
         
         
         if (cvkMainController.navBarImageView) [cvkMainController.navBarImageView updateViewForKey:@"navbarImageBlackout"];
+        
+        
+        appCornerRadius = [prefs[@"appCornerRadius"] floatValue];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIViewController *rootController = [UIApplication sharedApplication].keyWindow.rootViewController;
+            rootController.view.layer.masksToBounds = YES;
+            rootController.view.layer.cornerRadius = appCornerRadius;
+        });
     }
     
 }
@@ -596,10 +611,10 @@ void setupMessageBubbleForCell(ChatCell *cell)
 {
     if (enabled && useMessageBubbleTintColor) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                cell.bg.image = [cell.bg.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                cell.bg.tintColor = cell.message.incoming?messageBubbleTintColor:messageBubbleSentTintColor;
-            } completion:nil];
+            cell.bg.alpha = 0;
+            cell.bg.image = [cell.bg.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            cell.bg.tintColor = cell.message.incoming ? messageBubbleTintColor : messageBubbleSentTintColor;
+            cell.bg.alpha = 1;
         });
     }
 }
@@ -1083,7 +1098,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, DialogsController, tableView, UITab
             performInitialCellSetup(cell);
             cell.backgroundView.hidden = YES;
             
-            if (!cell.dialog.head.read_state && cell.unread.hidden) cell.contentView.backgroundColor = useCustomMessageReadColor?messageUnreadColor:[UIColor defaultColorForIdentifier:@"messageReadColor"];
+            if (!cell.dialog.head.read_state && cell.unread.hidden) cell.contentView.backgroundColor = useCustomDialogsUnreadColor?dialogsUnreadColor:[UIColor defaultColorForIdentifier:@"dialogsUnreadColor"];
             else cell.contentView.backgroundColor = [UIColor clearColor];
             
             cell.name.textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1 alpha:0.9];
@@ -1104,7 +1119,7 @@ CHOptimizedMethod(1, self, void, BackgroundView, drawRect, CGRect, rect)
     if (enabled) {
         self.layer.cornerRadius = self.cornerRadius;
         self.layer.masksToBounds = YES;
-        if (enabledMessagesListImage) self.layer.backgroundColor = useCustomMessageReadColor?messageUnreadColor.CGColor:[UIColor defaultColorForIdentifier:@"messageReadColor"].CGColor;
+        if (enabledMessagesListImage) self.layer.backgroundColor = useCustomDialogsUnreadColor?dialogsUnreadColor.CGColor:[UIColor defaultColorForIdentifier:@"messageReadColor"].CGColor;
         else CHSuper(1, BackgroundView, drawRect, rect);
     } else CHSuper(1, BackgroundView, drawRect, rect);
 }

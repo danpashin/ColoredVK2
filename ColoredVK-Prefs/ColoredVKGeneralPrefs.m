@@ -105,11 +105,13 @@ NSArray <NSString *> *specifiersToDisable;
     
     [prefs writeToFile:self.prefsPath atomically:YES];
     
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
+    CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
+    CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.prefs.colorUpdate" object:nil userInfo:@{@"identifier":colorPicker.identifier}];
     
     NSArray *identificsToReloadMenu = @[@"MenuSeparatorColor", @"switchesTintColor", @"switchesOnTintColor", @"menuTextColor"];
-    if ([identificsToReloadMenu containsObject:colorPicker.identifier]) CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+    if ([identificsToReloadMenu containsObject:colorPicker.identifier])
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         UINavigationBar *navBar = self.navigationController.navigationBar;
@@ -156,6 +158,10 @@ NSArray <NSString *> *specifiersToDisable;
 }
 
 
+#pragma mark - 
+#pragma mark UIImagePickerControllerDelegate
+#pragma mark - 
+
 - (void)chooseImage:(PSSpecifier*)specifier
 {
     self.lastImageIdentifier = specifier.identifier;
@@ -164,11 +170,6 @@ NSArray <NSString *> *specifiersToDisable;
     picker.delegate = self;
     [self presentPopover:picker];
 }
-
-
-#pragma mark - 
-#pragma mark UIImagePickerControllerDelegate
-#pragma mark - 
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
 {

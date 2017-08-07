@@ -126,6 +126,26 @@
 				<string>1</string>
 			</array>
 		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKStepperPrefsCell</string>
+			<key>label</key>
+			<string>APP_CORNER_RADIUS</string>
+			<key>id</key>
+			<string>appCornerRadius</string>
+			<key>minValue</key>
+			<integer>0</integer>
+			<key>maxValue</key>
+			<integer>20</integer>
+			<key>step</key>
+			<integer>1</integer>
+		</dict>
 	</array>
 </dict>
 </plist>

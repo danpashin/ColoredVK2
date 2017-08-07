@@ -45,10 +45,6 @@
 @end
 
 
-@interface TitleMenuCell : MenuCell
-+ (id)image:(id)arg1 statId:(id)arg2 title:(id)arg3 select:(id)arg4;
-@property(retain, nonatomic) UIButton *badge;
-@end
 
 @interface VKMNavContext : NSObject 
 + (id)applicationNavRoot;

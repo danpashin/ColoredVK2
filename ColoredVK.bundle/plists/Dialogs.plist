@@ -31,6 +31,10 @@
 			<string>ColoredVKStepperPrefsCell</string>
 			<key>id</key>
 			<string>chatListImageBlackout</string>
+			<key>minValue</key>
+			<string>0</string>
+			<key>maxValue</key>
+			<string>0.6</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -59,6 +63,32 @@
 			<string>PSTableCell</string>
 			<key>id</key>
 			<string>messagesListTextColor</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>key</key>
+			<string>useCustomDialogsUnreadColor</string>
+			<key>label</key>
+			<string>USE_CUSTOM_MESSAGE_UNREAD_COLOR</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>showColorPicker:</string>
+			<key>label</key>
+			<string>FOREGROUND_COLOR</string>
+			<key>cellClass</key>
+			<string>ColoredVKColorCell</string>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>id</key>
+			<string>dialogsUnreadColor</string>
 		</dict>
 		<dict>
 			<key>cell</key>
