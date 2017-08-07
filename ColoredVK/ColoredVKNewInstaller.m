@@ -146,7 +146,7 @@ NSString *userPassword;
             }
             
             ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
-            webController.url = [NSURL URLWithString:@"http://danpashin.ru/projects/coloredvk/purchase/"];
+            webController.url = [NSURL URLWithString:kPackagePurchaseLink];
             
             NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:webController.url cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:90.0f];
             request.HTTPMethod = @"POST";

@@ -189,6 +189,18 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>action</key>
+			<string>actionOpenFaq</string>
+			<key>id</key>
+			<string>faqLink</string>
+			<key>label</key>
+			<string>FAQ</string>
+			<key>icon</key>
+			<string>FaqIcon</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
 			<key>detail</key>
 			<string>ColoredVKAboutController</string>
 			<key>plistToLoad</key>

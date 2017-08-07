@@ -9,10 +9,11 @@
 
 #import "ColoredVKMainPrefsController.h"
 #import "ColoredVKHeaderView.h"
-#import "ColoredVKInstaller.h"
 #import "ColoredVKUpdatesController.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKAlertController.h"
+#import <SafariServices/SafariServices.h>
+#import "ColoredVKWebViewController.h"
 
 @interface ColoredVKMainPrefsController ()
 
@@ -54,7 +55,9 @@ NSArray <NSString *> *specifiersToEnable;
     [super loadView];
     
     self.freeeVersionSection = 0;
-    specifiersToEnable = @[@"enableTweakSwitch", @"navToolBarPrefsLink", @"menuPrefsLink", @"messagesPrefsLink", @"manageAccount", @"aboutPrefsLink", @"tweakPrefsLink"];
+    specifiersToEnable = @[@"enableTweakSwitch", @"navToolBarPrefsLink", @"menuPrefsLink", 
+                           @"messagesPrefsLink", @"manageAccount", @"aboutPrefsLink",
+                           @"tweakPrefsLink", @"faqLink"];
     
     self.prefsTableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.prefsTableView];
     
@@ -134,6 +137,21 @@ NSArray <NSString *> *specifiersToEnable;
     
     self.showFreeVersionFooter = NO;
     [self reloadTable];
+}
+
+- (void)actionOpenFaq
+{
+    NSURL *url = [NSURL URLWithString:kPackageFaqLink];
+    
+    if (SYSTEM_VERSION_IS_MORE_THAN(@"9.0")) {
+        SFSafariViewController *sfController = [[SFSafariViewController alloc] initWithURL:url];
+        [self presentViewController:sfController animated:YES completion:nil];
+    } else {
+        ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
+        webController.url = url;
+        webController.request = [NSURLRequest requestWithURL:webController.url];
+        [webController presentFromController:self];
+    }
 }
 
 
