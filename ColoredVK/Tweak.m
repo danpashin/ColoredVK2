@@ -262,6 +262,8 @@ void reloadPrefs()
         friendsImageBlackout = [prefs[@"friendsImageBlackout"] floatValue];
         videosImageBlackout = [prefs[@"videosImageBlackout"] floatValue];
         
+        appCornerRadius = [prefs[@"appCornerRadius"] floatValue];
+        
         useCustomMessageReadColor = [prefs[@"useCustomMessageReadColor"] boolValue];
         useCustomDialogsUnreadColor = [prefs[@"useCustomDialogsUnreadColor"] boolValue];
         
@@ -300,16 +302,13 @@ void reloadPrefs()
         
         if (cvkMainController.navBarImageView) [cvkMainController.navBarImageView updateViewForKey:@"navbarImageBlackout"];
         
-        
-        appCornerRadius = [prefs[@"appCornerRadius"] floatValue];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            UIViewController *rootController = [UIApplication sharedApplication].keyWindow.rootViewController;
-            rootController.view.layer.masksToBounds = YES;
-            rootController.view.layer.cornerRadius = appCornerRadius;
-        });
     }
     
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIViewController *rootController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        rootController.view.layer.masksToBounds = YES;
+        rootController.view.layer.cornerRadius = enabled ? appCornerRadius : 0.0f;
+    });
 }
 
 

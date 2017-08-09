@@ -102,4 +102,9 @@
     [super addAction:action];
 }
 
+- (void)dealloc
+{
+    [self.view removeFromSuperview];
+}
+
 @end
