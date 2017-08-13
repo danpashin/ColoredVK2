@@ -606,18 +606,6 @@ void setupCellForSearchController(UITableViewCell *cell, UISearchDisplayControll
     }
 }
 
-void setupMessageBubbleForCell(ChatCell *cell)
-{
-    if (enabled && useMessageBubbleTintColor) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            cell.bg.alpha = 0;
-            cell.bg.image = [cell.bg.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-            cell.bg.tintColor = cell.message.incoming ? messageBubbleTintColor : messageBubbleSentTintColor;
-            cell.bg.alpha = 1;
-        });
-    }
-}
-
 UIVisualEffectView *blurForView(UIView *view, NSInteger tag)
 {
     UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
@@ -690,41 +678,23 @@ void resetNavigationBar(UINavigationBar *navBar)
 }
 
 
-//void uncaughtExceptionHandler(NSException *exception)
-//{
-//    NSDateFormatter *dateFormatter = [NSDateFormatter new];
-//    dateFormatter.dateFormat = @"yyyy-MM-dd_HH:mm";
-//    
-//    NSString *currentDate = [dateFormatter stringFromDate:[NSDate date]];
-//    NSString *crashFilePath = [NSString stringWithFormat:@"%@/com.daniilpashin.coloredvk2_crash_%@", CVK_CACHE_PATH, currentDate];
-//    
-//    NSDictionary *dict = @{@"name":exception.name,@"reason":exception.reason,@"callStackSymbols":exception.callStackSymbols};
-//    [dict writeToFile:crashFilePath atomically:YES];
-//}
-
-
 #pragma mark - AppDelegate
 CHDeclareClass(AppDelegate);
 CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, application, didFinishLaunchingWithOptions, NSDictionary *, options)
 {
-//    NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
-    
     [cvkBunlde load];
     reloadPrefs();
     
     CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
     
-    
-    cvkMainController.navBarImageView = cvkMainController.navBarImageView;
-    
-    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-    installerCompletionBlock = ^(BOOL purchased) {
-        tweakEnabled = purchased;
-        reloadPrefs();
-    };
-    [newInstaller checkStatusAndShowAlert:NO];
-    
-    [cvkMainController sendStats];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
+        installerCompletionBlock = ^(BOOL purchased) {
+            tweakEnabled = purchased;
+            reloadPrefs();
+        };
+        [newInstaller checkStatusAndShowAlert:NO];
+    });
     
     return YES;
 }
@@ -747,6 +717,8 @@ CHOptimizedMethod(1, self, void, AppDelegate, applicationDidBecomeActive, UIAppl
     if (cvkMainController.audioCover) {
         [cvkMainController.audioCover updateColorScheme];
     }
+    
+    [cvkMainController sendStats];
 }
 
 
@@ -797,9 +769,7 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setTintColor, UIColor*, tintCo
 CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDictionary*, attributes)
 {
     if (enabled && enabledBarColor) {
-        @try {
-            attributes = @{NSForegroundColorAttributeName:barForegroundColor};
-        } @catch (NSException *exception) {  }
+        attributes = @{NSForegroundColorAttributeName:barForegroundColor};
     }
     
     CHSuper(1, UINavigationBar, setTitleTextAttributes, attributes);
@@ -1118,8 +1088,10 @@ CHOptimizedMethod(1, self, void, BackgroundView, drawRect, CGRect, rect)
     if (enabled) {
         self.layer.cornerRadius = self.cornerRadius;
         self.layer.masksToBounds = YES;
-        if (enabledMessagesListImage) self.layer.backgroundColor = useCustomDialogsUnreadColor?dialogsUnreadColor.CGColor:[UIColor defaultColorForIdentifier:@"messageReadColor"].CGColor;
-        else CHSuper(1, BackgroundView, drawRect, rect);
+        if (enabledMessagesListImage)
+            self.layer.backgroundColor = useCustomDialogsUnreadColor ? dialogsUnreadColor.CGColor : [UIColor defaultColorForIdentifier:@"messageReadColor"].CGColor;
+        else
+            CHSuper(1, BackgroundView, drawRect, rect);
     } else CHSuper(1, BackgroundView, drawRect, rect);
 }
 
@@ -1140,7 +1112,24 @@ CHOptimizedMethod(1, self, void, ChatController, viewWillAppear, BOOL, animated)
     
     if ([self isKindOfClass:NSClassFromString(@"ChatController")]) {
         setToolBar(self.inputPanel);
-        if (enabled && messagesUseBlur) setBlur(self.inputPanel, YES, messagesBlurTone, messagesBlurStyle);
+        if (enabled && messagesUseBlur)
+            setBlur(self.inputPanel, YES, messagesBlurTone, messagesBlurStyle);
+        
+//        for (UIView *subview in self.inputPanel.subviews) {
+//            if ([subview isKindOfClass:NSClassFromString(@"DefaultHighlightButton")]) {
+//                UIButton *button = (UIButton *)subview;
+//                [button setImage:[[button imageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+//                button.imageView.tintColor = self.inputPanel.tintColor;
+//            }
+//            if ([subview isKindOfClass:[UITextView class]]) {
+//                UITextView *textView = (UITextView *)subview;
+//                textView.backgroundColor = [UIColor clearColor];
+//                textView.textColor = self.inputPanel.tintColor;
+//            }
+//            if ([CLASS_NAME(subview) isEqualToString:@"UIView"]) {
+//                subview.backgroundColor = [UIColor clearColor];
+//            }
+//        }
     }
 }
 
@@ -1152,8 +1141,10 @@ CHOptimizedMethod(0, self, void, ChatController, viewWillLayoutSubviews)
         if (enabled && enabledMessagesImage) {
             if (hideMessagesNavBarItems) {
                 self.headerImage.hidden = YES;
-                if ([self respondsToSelector:@selector(componentTitleView)]) self.componentTitleView.hidden = YES;
-                else self.navigationController.navigationBar.topItem.titleView.hidden = YES;
+                if ([self respondsToSelector:@selector(componentTitleView)])
+                    self.componentTitleView.hidden = YES;
+                else
+                    self.navigationController.navigationBar.topItem.titleView.hidden = YES;
             }
             self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
             [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesBackgroundImage" blackout:chatImageBlackout flip:YES parallaxEffect:useMessagesParallax];
@@ -1183,7 +1174,12 @@ CHOptimizedMethod(0, self, UIButton*, ChatController, editForward)
     if (enabled && messagesUseBlur) {
         [forwardButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [forwardButton setImage:[[forwardButton imageForState:UIControlStateNormal] imageWithTintColor:[UIColor whiteColor]] forState:UIControlStateNormal];
-        for (UIView *subview in forwardButton.superview.subviews) if ([subview isKindOfClass:[UIToolbar class]]) { setBlur(subview, YES, messagesBlurTone, messagesBlurStyle); break; }
+        for (UIView *subview in forwardButton.superview.subviews) {
+            if ([subview isKindOfClass:[UIToolbar class]]) {
+                setBlur(subview, YES, messagesBlurTone, messagesBlurStyle);
+                break;
+            }
+        }
     }
     return forwardButton;
 }
@@ -1195,26 +1191,33 @@ CHDeclareClass(MessageCell);
 CHOptimizedMethod(1, self, void, MessageCell, updateBackground, BOOL, animated)
 {
     CHSuper(1, MessageCell, updateBackground, animated);
+    
     if (enabled && enabledMessagesImage) {
         self.backgroundView = nil;
-        if (!self.message.read_state) self.backgroundColor = useCustomMessageReadColor?messageUnreadColor:[UIColor defaultColorForIdentifier:@"messageReadColor"];
-        else self.backgroundColor = [UIColor clearColor];
+        if (!self.message.read_state)
+            self.backgroundColor = useCustomMessageReadColor ? messageUnreadColor : [UIColor defaultColorForIdentifier:@"messageReadColor"];
+        else
+            self.backgroundColor = [UIColor clearColor];
     }
 }
 
 #pragma mark ChatCell
 CHDeclareClass(ChatCell);
-CHOptimizedMethod(4, self, ChatCell*, ChatCell, initWithDelegate, id, delegate, multidialog, BOOL, arg1, selfdialog, BOOL, arg2, identifier, id, arg3)
+CHOptimizedMethod(0, self, void, ChatCell, setBG)
 {
-    self = CHSuper(4, ChatCell, initWithDelegate, delegate, multidialog, arg1, selfdialog, arg2, identifier, arg3);
-    setupMessageBubbleForCell(self);
-    return self;
-}
-
-CHOptimizedMethod(0, self, void, ChatCell, prepareForReuse)
-{
-    CHSuper(0, ChatCell, prepareForReuse);
-    setupMessageBubbleForCell(self);
+    self.bg.alpha = 0.f;
+    
+    CHSuper(0, ChatCell, setBG);
+    
+    if (enabled && useMessageBubbleTintColor) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.bg.image.renderingMode != UIImageRenderingModeAlwaysTemplate) {
+                self.bg.image = [self.bg.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            }
+            self.bg.tintColor = self.message.incoming ? messageBubbleTintColor : messageBubbleSentTintColor;
+        });
+    }
+    self.bg.alpha = 1.f;
 }
 
 
@@ -2041,10 +2044,7 @@ CHOptimizedMethod(1, self, void, PSListController, viewWillAppear, BOOL, animate
 
 CHOptimizedMethod(0, self, UIStatusBarStyle, PSListController, preferredStatusBarStyle)
 {
-    if (enabled && (enabledBarColor || enabledBarImage))
-        return UIStatusBarStyleLightContent;
-    
-    return UIStatusBarStyleDefault;
+    return UIStatusBarStyleLightContent;
 }
 
 #pragma mark SelectAccountTableViewController
@@ -2642,8 +2642,7 @@ CHConstructor
             
             if ([cvkMainController compareVersion:vkVersion withVersion:@"2.9"] >= ColoredVKVersionCompareEqual) {
                 CHLoadLateClass(ChatCell);
-                CHHook(4, ChatCell, initWithDelegate, multidialog, selfdialog, identifier);
-                CHHook(0, ChatCell, prepareForReuse);
+                CHHook(0, ChatCell, setBG);
             }
             
             

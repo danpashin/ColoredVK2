@@ -170,15 +170,13 @@ NSString *userPassword;
     if (!title)
         title = kDRMPackageName;
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:title message:text preferredStyle:UIAlertControllerStyleAlert];
         for (UIAlertAction *action in buttons) {
             [alertController addAction:action];
         }
         [alertController present];
     });
-    
 }
 
 - (void)showHudWithText:(NSString *)text
@@ -249,7 +247,7 @@ NSString *userPassword;
             return;
         } 
         NSString *url = [NSString stringWithFormat:@"%@/payment/get_info.php", kPackageAPIURL];
-        NSString *parameters = [NSString stringWithFormat:@"user_id=%@&token=%@", self.userID, self.token];
+        NSDictionary *parameters = @{@"user_id":self.userID, @"token":self.token};
         
         ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
         [networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:parameters
@@ -327,13 +325,10 @@ void installerActionLogout(NSString *password, void(^completionBlock)())
     
     void (^newCompletionBlock)(NSError *error) = ^(NSError *error){
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-        if (error.code == 1050) {
-            newInstaller.hud.didHiddenBlock = ^{
-                [newInstaller hideHud];
-            };
-            [newInstaller.hud showFailureWithStatus:error.localizedDescription];
-        }
-        else [newInstaller hideHud];
+        
+        [newInstaller hideHud];
+        if (error.code == 1050)
+            [newInstaller showAlertWithTitle:nil text:error.localizedDescription buttons:nil];
         
         if (completionBlock)
             completionBlock();
@@ -378,6 +373,9 @@ void installerActionLogout(NSString *password, void(^completionBlock)())
                                                       
                                                   } else newCompletionBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error (-0)"}]);
                                               } else newCompletionBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error (-1)"}]);
+                                          } else {
+                                              NSString *errorMessages = json ? json[@"error"] : @"Unknown error (-2)";
+                                              newCompletionBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);
                                           }
                                       } 
                                       failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {

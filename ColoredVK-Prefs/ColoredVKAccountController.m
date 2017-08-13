@@ -25,8 +25,7 @@
 @property (strong, nonatomic, getter=getAccountPaymentStatus) NSString *accountPaymentStatus;
 @property (strong, nonatomic, getter=getAccountActivationStatus) NSString *accountActivationStatus;
 
-@property (assign, nonatomic) NSUInteger registerFooterSection;
-@property (strong, nonatomic) UIView *registerFooter;
+@property (strong, nonatomic) UIButton *purchaseButton;
 
 @end
 
@@ -87,7 +86,6 @@
             if (self.accountPaid && !self.accountActivated)
                 self.accountActivationStatus = CVKLocalizedString(@"WAIT_ACTIVATION");
             
-            self.registerFooter.hidden = (self.accountPaid && self.accountActivated);
             
             [self reloadSpecifiers];
         });
@@ -96,7 +94,6 @@
 
 - (void)viewDidLoad
 {
-    self.registerFooterSection = 1;
     [self resetStatus];
     [super viewDidLoad];
     
@@ -112,6 +109,23 @@
     self.accountActivationStatus = CVKLocalizedString(@"UPDATING...");
 }
 
+- (UIButton *)purchaseButton
+{
+    if (!_purchaseButton) {
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        NSString *title = CVKLocalizedString(@"PURCHASE");
+        CGSize btnSize = [title sizeWithAttributes:@{NSFontAttributeName:button.titleLabel.font}];
+        button.frame = CGRectMake(0, 0, btnSize.width + 5, 32);
+        
+        [button setTitle:title forState:UIControlStateNormal];
+        [button setTitleColor:CVKMainColor forState:UIControlStateNormal];
+        [button setTitleColor:CVKMainColor.darkerColor forState:UIControlStateHighlighted];
+        [button addTarget:self action:@selector(actionPurchase) forControlEvents:UIControlEventTouchUpInside];
+        
+        _purchaseButton = button;
+    }
+    return _purchaseButton;
+}
 
 #pragma mark -
 #pragma mark UITableViewDelegate
@@ -148,17 +162,7 @@
     }
     
     if ([cell.specifier.identifier isEqualToString:@"accountPaid"] && (!self.accountPaid && self.userLoggedIn)) {
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        NSString *title = CVKLocalizedString(@"PURCHASE");
-        CGSize btnSize = [title sizeWithAttributes:@{NSFontAttributeName:button.titleLabel.font}];
-        button.frame = CGRectMake(0, 0, btnSize.width + 5, 32);
-        
-        [button setTitle:title forState:UIControlStateNormal];
-        [button setTitleColor:CVKMainColor forState:UIControlStateNormal];
-        [button setTitleColor:CVKMainColor.darkerColor forState:UIControlStateHighlighted];
-        [button addTarget:self action:@selector(actionPurchase) forControlEvents:UIControlEventTouchUpInside];
-        cell.accessoryView = button;
-        
+        cell.accessoryView = self.purchaseButton;
     }
     
     return cell;
@@ -269,7 +273,7 @@
     } else {
         ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
         webController.url = url;
-        webController.request = [NSURLRequest requestWithURL:webController.url ];
+        webController.request = [NSURLRequest requestWithURL:webController.url];
         [webController presentFromController:self];
     }
 }

@@ -20,12 +20,26 @@ typedef NS_ENUM(NSUInteger, ColoredVKWindowBackgroundStyle) {
 @property (strong, nonatomic) UIView *contentView;
 @property (strong, nonatomic, readonly) UIWindow *window;
 @property (strong, nonatomic) UINavigationBar *contentViewNavigationBar;
-
+/**
+ *  Default ColoredVKWindowBackgroundStyleDarkened
+ */
 @property (assign, nonatomic) ColoredVKWindowBackgroundStyle backgroundStyle;
+/**
+ *  Default YES
+ */
 @property (assign, nonatomic) BOOL hideByTouch;
+/**
+ *  Default YES
+ */
 @property (assign, nonatomic) BOOL statusBarNeedsHidden;
+/**
+ *  Default NO
+ */
 @property (assign, nonatomic) BOOL contentViewWantsShadow;
 
+/**
+ *  Default 0.3
+ */
 @property (assign, nonatomic) NSTimeInterval animationDuration;
 
 - (void)hide;

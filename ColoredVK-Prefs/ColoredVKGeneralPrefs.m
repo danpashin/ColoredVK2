@@ -84,6 +84,7 @@ NSArray <NSString *> *specifiersToDisable;
     ColoredVKColorPickerController *picker = [ColoredVKColorPickerController pickerWithIdentifier:specifier.identifier];
     picker.delegate = self;
     picker.dataSource = self;
+    picker.statusBarNeedsHidden = NO;
     picker.backgroundStyle = ColoredVKWindowBackgroundStyleCustom;
     [picker show];
 }

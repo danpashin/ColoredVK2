@@ -12,6 +12,7 @@
 "THIS_ACTION_CAN_NOT_BE_UNDONE" = "This action can not be undone";
 "REMOVE_IMAGE_WARNING" = "Removal of image is not reversible. Use this function with caution.";
 "CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Can not save image. Try again or contact developer.";
+"Dismiss" = "Dismiss";
 
 "UPGRADE_IS_AVAILABLE_ALERT_MESSAGE" = "A new version is available (%@).\n\nChangelog:\n%@\n\nUpdate?";
 "REMIND_LATER_BUTTON_TITLE" = "Remind later";
