@@ -49,6 +49,7 @@
 		A510E7D81EF99CE9001D6798 /* ColoredVKSimpleAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = A510E7D41EF99CE9001D6798 /* ColoredVKSimpleAlertController.m */; };
 		A510E7D91EF99CE9001D6798 /* ColoredVKSimpleAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = A510E7D41EF99CE9001D6798 /* ColoredVKSimpleAlertController.m */; };
 		A510E7DA1EF99CE9001D6798 /* ColoredVKSimpleAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = A510E7D41EF99CE9001D6798 /* ColoredVKSimpleAlertController.m */; };
+		A513AB351F43666E0045F530 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F09DA51F101A5200024198 /* SafariServices.framework */; };
 		A5210C951DE785C1004F7E11 /* LHAcvitityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DA87BF1D944E1000763B5F /* LHAcvitityIndicator.m */; };
 		A5210C961DE785C1004F7E11 /* LHBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DA87C11D944E1000763B5F /* LHBackgroundView.m */; };
 		A5210C981DE785C1004F7E11 /* LHProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DA87C51D944E1000763B5F /* LHProgressHUD.m */; };
@@ -850,6 +851,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A513AB351F43666E0045F530 /* SafariServices.framework in Frameworks */,
 				A525A3911F2A381A00F86EFF /* WebKit.framework in Frameworks */,
 				A5B1E29B1E5056AB001B8442 /* libz.tbd in Frameworks */,
 				A5D0A2A01DB270EC00720E41 /* libMobileGestalt.tbd in Frameworks */,
@@ -1672,7 +1674,7 @@
 						ProvisioningStyle = Manual;
 					};
 					A5D56A561E70427300A8FFB5 = {
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 					A5D979AB1DAEBB0E00607F06 = {
 						CreatedOnToolsVersion = 8.0;
@@ -2062,9 +2064,10 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = VW97WHTS78;
+				DEVELOPMENT_TEAM = "";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = iphonesimulator;
 				WRAPPER_EXTENSION = app;
@@ -2076,9 +2079,10 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = VW97WHTS78;
+				DEVELOPMENT_TEAM = "";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = iphonesimulator;
 				WRAPPER_EXTENSION = app;
@@ -2088,7 +2092,7 @@
 		A5D56AD61E70442900A8FFB5 /* Debug_APP */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.4.1-theux";
+				APP_VERSION = "3.4.2-theux";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -2177,10 +2181,12 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = VW97WHTS78;
+				DEVELOPMENT_TEAM = 62DQNF58FV;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
+				PROVISIONING_PROFILE = "3a219e9d-0182-42d6-8a63-b5718750d7ed";
+				PROVISIONING_PROFILE_SPECIFIER = 1ab6dc745ad2232661f27c341c996da8d894de3c;
 				SUPPORTED_PLATFORMS = iphonesimulator;
 				WRAPPER_EXTENSION = app;
 			};
@@ -2189,7 +2195,7 @@
 		A5D979A51DAEBAD300607F06 /* Release_DEB */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.4.1-theux";
+				APP_VERSION = "3.4.2-theux";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -2255,7 +2261,7 @@
 		A5D979A81DAEBAD900607F06 /* Release_IPA */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.4.1-theux";
+				APP_VERSION = "3.4.2-theux";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;

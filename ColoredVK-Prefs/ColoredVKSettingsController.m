@@ -247,6 +247,7 @@
         UINavigationBar *navBar = self.navigationController.navigationBar;
         navBar.barTintColor = navBar.barTintColor;
         navBar.tintColor = navBar.tintColor;
+        navBar.titleTextAttributes = navBar.titleTextAttributes;
     });
 }
 @end

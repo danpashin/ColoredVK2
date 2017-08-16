@@ -200,7 +200,7 @@
 
 @interface VKProfile : NSObject
 @property(nonatomic) BOOL verified;
-@property(retain, nonatomic) VKUser *user; 
+@property(retain, nonatomic) VKUser *user;
 @end
 
 
@@ -439,3 +439,20 @@
 @interface ModernSettingsController : BaseSettingsController
 @end
 
+
+
+@interface ProfileModel : NSObject
+@property(readonly, retain, nonatomic) VKProfile *item;
+@end
+
+@interface UserWallController : UIViewController
+@property(retain, nonatomic) ProfileModel *profile;
+@end
+
+@interface VKGroup : NSObject
+@property(retain, nonatomic) NSNumber *gid;
+@end
+
+@interface VKGroupProfile : NSObject
+@property(retain, nonatomic) VKGroup *group;
+@end

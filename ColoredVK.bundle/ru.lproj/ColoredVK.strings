@@ -27,7 +27,7 @@
 "BACKGROUND_TONE" = "Оттенок фона";
 "CHANGE_TEXT_COLOR" = "Изменить цвет текста";
 "TEXT_COLOR" = "Цвет текста";
-"ENABLED_IMAGE" = "Изображ. вместо цвета";
+"ENABLED_IMAGE" = "Фон вместо цвета";
 
 "CHANGE_BACKGROUND" = "Изменить фон";
 "IMAGE_BLACKOUT" = "Затемнение изображ.";

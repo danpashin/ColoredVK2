@@ -38,6 +38,7 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 @property (strong, nonatomic) ColoredVKAudioCover *audioCover;
 @property (strong, nonatomic) ColoredVKWallpaperView *menuBackgroundView;
 @property (strong, nonatomic) ColoredVKWallpaperView *navBarImageView;
+@property (weak, nonatomic) VKMMainController *vkMainController;
 
 
 - (void)reloadSwitch:(BOOL)on;

@@ -142,7 +142,7 @@
 			<key>minValue</key>
 			<integer>0</integer>
 			<key>maxValue</key>
-			<integer>20</integer>
+			<integer>40</integer>
 			<key>step</key>
 			<integer>1</integer>
 		</dict>

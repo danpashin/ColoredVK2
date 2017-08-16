@@ -14,6 +14,7 @@
 @property (strong, nonatomic) UIButton *decreaseButton;
 @property (strong, nonatomic) UILabel *valueLabel;
 @property (strong, nonatomic) UIButton *increaseButton;
+@property (strong, nonatomic) NSTimer *timer;
 
 @end
 
@@ -58,11 +59,20 @@
     [self.decreaseButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     [self.decreaseButton addTarget:self action:@selector(actionDecrease) forControlEvents:UIControlEventTouchUpInside];
     
+    UILongPressGestureRecognizer *decreasePress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(changeValueWithGesture:)];
+    decreasePress.accessibilityLabel = @"decrease";
+    [self.decreaseButton addGestureRecognizer:decreasePress];
+    
+    
     self.increaseButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.increaseButton setTitle:@"+" forState:UIControlStateNormal];
     self.increaseButton.titleLabel.font = [UIFont boldSystemFontOfSize:21];
     [self.increaseButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     [self.increaseButton addTarget:self action:@selector(actionIncrease) forControlEvents:UIControlEventTouchUpInside];
+    
+    UILongPressGestureRecognizer *increasePress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(changeValueWithGesture:)];
+    increasePress.accessibilityLabel = @"increase";
+    [self.increaseButton addGestureRecognizer:increasePress];
     
     self.valueLabel = [UILabel new];
     self.valueLabel.textAlignment = NSTextAlignmentCenter;
@@ -86,7 +96,7 @@
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self.valueLabel}]];
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[decreaseButton(buttonWidth)][valueLabel][increaseButton(buttonWidth)]|" 
-                                                                 options:0 metrics:@{@"buttonWidth":@(self.height/1.15)} 
+                                                                 options:0 metrics:@{@"buttonWidth":@(self.height)} 
                                                                    views:@{@"decreaseButton":self.decreaseButton, @"valueLabel":self.valueLabel, @"increaseButton":self.increaseButton}]];
 }
 
@@ -126,7 +136,7 @@
 }
 
 - (void)actionIncrease
-{    
+{
     if (self.value + self.step <= self.maxValue) {
         self.value += self.step;
         
@@ -148,6 +158,22 @@
         animation.duration = 0.07;
         animation.autoreverses = YES;
         [self.layer addAnimation:animation forKey:nil];
+    }
+}
+
+- (void)changeValueWithGesture:(UILongPressGestureRecognizer *)recognizer
+{
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:0.3f repeats:YES block:^(NSTimer * _Nonnull timer) {
+            if ([recognizer.accessibilityLabel isEqualToString:@"increase"]) {
+                [self actionIncrease];
+            } else if ([recognizer.accessibilityLabel isEqualToString:@"decrease"]) {
+                [self actionDecrease];
+            }
+        }];
+        [self.timer fire];
+    } else if (recognizer.state == UIGestureRecognizerStateEnded) {
+        [self.timer invalidate];
     }
 }
 

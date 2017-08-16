@@ -155,7 +155,7 @@ UIBlurEffectStyle friendsBlurStyle;
 UIBlurEffectStyle videosBlurStyle;
 
 ColoredVKMainController *cvkMainController;
-VKMMainController *mainController;
+
 
 
 #pragma mark Static methods
@@ -307,7 +307,17 @@ void reloadPrefs()
     dispatch_async(dispatch_get_main_queue(), ^{
         UIViewController *rootController = [UIApplication sharedApplication].keyWindow.rootViewController;
         rootController.view.layer.masksToBounds = YES;
-        rootController.view.layer.cornerRadius = enabled ? appCornerRadius : 0.0f;
+        
+        CGFloat cornerRaduis = enabled ? appCornerRadius : 0.0f;
+        
+        CABasicAnimation *cornerAnimation = [CABasicAnimation animationWithKeyPath:@"cornerRadius"];
+        cornerAnimation.fromValue = @(rootController.view.layer.cornerRadius);
+        cornerAnimation.toValue = @(cornerRaduis);
+        cornerAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+        cornerAnimation.duration = 0.3f;
+        
+        rootController.view.layer.cornerRadius = cornerRaduis;
+        [rootController.view.layer addAnimation:cornerAnimation forKey:@"cornerAnimation"];
     });
 }
 
@@ -1251,7 +1261,7 @@ CHOptimizedMethod(0, self, NSArray*, VKMMainController, menu)
 CHOptimizedMethod(0, self, void, VKMMainController, viewDidLoad)
 {
     CHSuper(0, VKMMainController, viewDidLoad);
-    if (!mainController) mainController = self;
+    if (!cvkMainController.vkMainController) cvkMainController.vkMainController = self;
     if (!cvkMainController.menuBackgroundView) {
         CGRect bounds = [UIScreen mainScreen].bounds;
         CGFloat width = (bounds.size.width > bounds.size.height)?bounds.size.height:bounds.size.width;
@@ -1973,13 +1983,40 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
     }
 }
 
+
+#pragma mark VKGroupProfile
+CHDeclareClass(VKGroupProfile);
+CHOptimizedMethod(0, self, BOOL, VKGroupProfile, verified)
+{
+    if ([self.group.gid isEqual:@55161589])
+        return YES;
+    return CHSuper(0, VKGroupProfile, verified);
+}
+
 #pragma mark VKProfile
 CHDeclareClass(VKProfile);
 CHOptimizedMethod(0, self, BOOL, VKProfile, verified)
 {
-    NSArray *verifiedUsers = @[@89911723, @93264161, @414677401, @73369298, @188888433];
-    if ([verifiedUsers containsObject:self.user.uid]) return YES;
+    NSArray *verifiedUsers = @[@89911723, @93264161, @414677401, @73369298, @188888433, @147469494];
+    if ([verifiedUsers containsObject:self.user.uid])
+        return YES;
     return CHSuper(0, VKProfile, verified);
+}
+
+#pragma mark UserWallController
+CHDeclareClass(UserWallController);
+CHOptimizedMethod(0, self, void, UserWallController, updateProfile)
+{
+    CHSuper(0, UserWallController, updateProfile);
+    
+    if (self.profile.item) {
+        if ([self.profile.item.user.uid isEqual:@89911723]) {
+            UIImageView *titleView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+            titleView.image = [[UIImage imageNamed:@"DeveloperNavIcon" inBundle:cvkBunlde compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            titleView.tintColor = barForegroundColor;
+            self.navigationItem.titleView = titleView;
+        }
+    }
 }
 
 
@@ -2417,17 +2454,38 @@ static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFS
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         BOOL shouldShow = (enabled && enabledMenuImage);
-        UISearchBar *searchBar = (UISearchBar *)mainController.tableView.tableHeaderView;
-        shouldShow?setupUISearchBar(searchBar):resetUISearchBar(searchBar);
-        [mainController.tableView reloadData];
-        [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-            cvkMainController.menuBackgroundView.alpha = shouldShow?1:0;
-            mainController.tableView.backgroundColor = shouldShow?[UIColor clearColor]:[UIColor colorWithRed:56.0/255.0f green:69.0/255.0f blue:84.0/255.0f alpha:1];
-        } completion:nil];
+        UITableView *menuTableView = cvkMainController.vkMainController.tableView;
+        UISearchBar *searchBar = (UISearchBar *)menuTableView.tableHeaderView;
+        shouldShow ? setupUISearchBar(searchBar) : resetUISearchBar(searchBar);
+        
+        [menuTableView deselectRowAtIndexPath:menuTableView.indexPathForSelectedRow animated:YES];
+        
+        NSTimeInterval animationDuration = 0.2f;
+        UIViewAnimationOptions options = UIViewAnimationOptionAllowUserInteraction;
+        
+        void (^tableReloadBlock)() = ^{
+            [menuTableView reloadData];
+        };
+        
+        if (shouldShow) {
+            tableReloadBlock();
+            menuTableView.backgroundColor = [UIColor clearColor];
+            [UIView animateWithDuration:animationDuration delay:0 options:options animations:^{
+                cvkMainController.menuBackgroundView.alpha = 1.0f;
+            } completion:nil];
+        } else {
+            [UIView animateWithDuration:animationDuration delay:0 options:options animations:^{
+                cvkMainController.menuBackgroundView.alpha = 0.0f;
+            } completion:^(BOOL finished) {
+                menuTableView.backgroundColor = [UIColor colorWithRed:56.0/255.0f green:69.0/255.0f blue:84.0/255.0f alpha:1];
+                tableReloadBlock();
+            }];
+        }
+        
         cvkMainController.menuBackgroundView.parallaxEnabled = useMenuParallax;
         if (shouldShow) {
             [cvkMainController.menuBackgroundView updateViewForKey:@"menuImageBlackout"];
-            [cvkMainController.menuBackgroundView addToBack:mainController.view animated:NO];
+            [cvkMainController.menuBackgroundView addToBack:cvkMainController.vkMainController.view animated:NO];
         }
     });
 }
@@ -2558,8 +2616,14 @@ CHConstructor
             CHHook(1, VKMToolbarController, viewWillAppear);
             
             
+            CHLoadLateClass(VKGroupProfile);
+            CHHook(0, VKGroupProfile, verified);
+            
             CHLoadLateClass(VKProfile);
             CHHook(0, VKProfile, verified);
+            
+            CHLoadLateClass(UserWallController);
+            CHHook(0, UserWallController, updateProfile);
             
             
             

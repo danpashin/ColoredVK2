@@ -143,6 +143,7 @@ NSString *userPassword;
                     provisionTeamID = ((NSArray *)dict[@"TeamIdentifier"]).firstObject;
                     provisionTeamName = dict[@"TeamName"];
                 }
+                [[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
             }
             
             ColoredVKWebViewController *webController = [ColoredVKWebViewController new];

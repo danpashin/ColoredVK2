@@ -63,8 +63,8 @@
             UIView *viewToRound = textField.superview;
             textField.backgroundColor = [UIColor whiteColor];
             viewToRound.backgroundColor = [UIColor whiteColor];
-            viewToRound.layer.cornerRadius = 4.0f;
-            viewToRound.layer.borderWidth = 0.6f;
+            viewToRound.layer.cornerRadius = 5.0f;
+            viewToRound.layer.borderWidth = 0.5f;
             viewToRound.layer.borderColor = [UIColor colorWithWhite:0.85f alpha:1.0f].CGColor;
             viewToRound.layer.masksToBounds = YES;
         }

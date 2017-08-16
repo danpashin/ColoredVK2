@@ -13,6 +13,8 @@
 
 + (instancetype)controller;
 
+@property (strong, nonatomic, readonly) NSURLSessionConfiguration *configuration;
+
 - (void)sendRequestWithMethod:(NSString *)method url:(NSString *)url parameters:(id)parameters 
                       success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData))sucess 
                       failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;

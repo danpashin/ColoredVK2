@@ -13,6 +13,7 @@
 @interface ColoredVKNetworkController  () <NSURLSessionDelegate>
 
 @property (strong, nonatomic) NSURLSession *session;
+@property (strong, nonatomic) NSOperationQueue *operationQueue;
 
 @end
 
@@ -27,14 +28,14 @@
 {
     self = [super init];
     if (self) {
-        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-        configuration.timeoutIntervalForResource = 90.0f;
-        configuration.allowsCellularAccess = YES;
+        _configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+        self.configuration.timeoutIntervalForResource = 90.0f;
+        self.configuration.allowsCellularAccess = YES;
         
-        NSOperationQueue *delegateQueue = [[NSOperationQueue alloc] init];
-        delegateQueue.name = @"com.daniilpashin.coloredvk2.network";
+        self.operationQueue = [[NSOperationQueue alloc] init];
+        self.operationQueue.name = @"com.daniilpashin.coloredvk2.network";
         
-        self.session = [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:delegateQueue];
+        self.session = [NSURLSession sessionWithConfiguration:self.configuration delegate:self delegateQueue:self.operationQueue];
     }
     return self;
 }
