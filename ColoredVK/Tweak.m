@@ -2463,13 +2463,11 @@ static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFS
         NSTimeInterval animationDuration = 0.2f;
         UIViewAnimationOptions options = UIViewAnimationOptionAllowUserInteraction;
         
-        void (^tableReloadBlock)() = ^{
-            [menuTableView reloadData];
-        };
-        
         if (shouldShow) {
-            tableReloadBlock();
+            setupUISearchBar(searchBar);
+            [menuTableView reloadData];
             menuTableView.backgroundColor = [UIColor clearColor];
+            
             [UIView animateWithDuration:animationDuration delay:0 options:options animations:^{
                 cvkMainController.menuBackgroundView.alpha = 1.0f;
             } completion:nil];
@@ -2478,7 +2476,8 @@ static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFS
                 cvkMainController.menuBackgroundView.alpha = 0.0f;
             } completion:^(BOOL finished) {
                 menuTableView.backgroundColor = [UIColor colorWithRed:56.0/255.0f green:69.0/255.0f blue:84.0/255.0f alpha:1];
-                tableReloadBlock();
+                [menuTableView reloadData];
+                resetUISearchBar(searchBar);
             }];
         }
         
