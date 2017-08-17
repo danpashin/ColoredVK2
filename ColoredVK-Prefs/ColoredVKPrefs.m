@@ -14,9 +14,8 @@
 @implementation ColoredVKPrefs
 
 - (UIStatusBarStyle)preferredStatusBarStyle
-{
-    if ([[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"]) return UIStatusBarStyleLightContent;
-    else return UIStatusBarStyleDefault;
+{    
+    return self.app_is_vk ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
 }
 
 - (NSArray *)specifiers
@@ -114,11 +113,19 @@
     else [prefs removeObjectForKey:specifier.properties[@"key"]];
     [prefs writeToFile:self.prefsPath atomically:YES];
     
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
+    NSArray *identificsToReloadMenu = @[@"enableTweakSwitch", @"menuSelectionStyle", @"hideMenuSeparators", 
+                                        @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor", 
+                                        @"showMenuCell"];
     
-    NSArray *identificsToReloadMenu = @[@"enableTweakSwitch", @"menuSelectionStyle", @"hideMenuSeparators", @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor", @"showMenuCell"];
+    CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
+    CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), nil, nil, YES);
+    
     if ([identificsToReloadMenu containsObject:specifier.identifier])
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), nil, nil, YES);
+    
+    if ([specifier.identifier isEqualToString:@"enableTweakSwitch"]) {
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.update.corners"), nil, nil, YES);
+    }
 }
 
 
@@ -194,6 +201,11 @@
         }]];
         [alertController presentFromController:self];
     });
+}
+
+- (BOOL)app_is_vk
+{
+    return [[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"];
 }
 
 

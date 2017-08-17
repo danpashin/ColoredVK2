@@ -303,22 +303,6 @@ void reloadPrefs()
         if (cvkMainController.navBarImageView) [cvkMainController.navBarImageView updateViewForKey:@"navbarImageBlackout"];
         
     }
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIViewController *rootController = [UIApplication sharedApplication].keyWindow.rootViewController;
-        rootController.view.layer.masksToBounds = YES;
-        
-        CGFloat cornerRaduis = enabled ? appCornerRadius : 0.0f;
-        
-        CABasicAnimation *cornerAnimation = [CABasicAnimation animationWithKeyPath:@"cornerRadius"];
-        cornerAnimation.fromValue = @(rootController.view.layer.cornerRadius);
-        cornerAnimation.toValue = @(cornerRaduis);
-        cornerAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-        cornerAnimation.duration = 0.3f;
-        
-        rootController.view.layer.cornerRadius = cornerRaduis;
-        [rootController.view.layer addAnimation:cornerAnimation forKey:@"cornerAnimation"];
-    });
 }
 
 
@@ -687,6 +671,25 @@ void resetNavigationBar(UINavigationBar *navBar)
     }
 }
 
+void actionChangeCornerRadius()
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIWindow *window = [UIApplication sharedApplication].keyWindow;
+        window.layer.masksToBounds = YES;
+        
+        CGFloat cornerRaduis = enabled ? appCornerRadius : 0.0f;
+        
+        CABasicAnimation *cornerAnimation = [CABasicAnimation animationWithKeyPath:@"cornerRadius"];
+        cornerAnimation.fromValue = @(window.layer.cornerRadius);
+        cornerAnimation.toValue = @(cornerRaduis);
+        cornerAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+        cornerAnimation.duration = 0.3f;
+        
+        window.layer.cornerRadius = cornerRaduis;
+        [window.layer addAnimation:cornerAnimation forKey:@"cornerAnimation"];
+    });
+}
+
 
 #pragma mark - AppDelegate
 CHDeclareClass(AppDelegate);
@@ -712,6 +715,8 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
 CHOptimizedMethod(1, self, void, AppDelegate, applicationDidBecomeActive, UIApplication *, application)
 {    
     CHSuper(1, AppDelegate, applicationDidBecomeActive, application);
+    
+    actionChangeCornerRadius();
     
     ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     [newInstaller updateAccountInfo:^{
@@ -803,7 +808,7 @@ CHOptimizedMethod(0, self, void, UISwitch, layoutSubviews)
 {
     CHSuper(0, UISwitch, layoutSubviews);
     
-    if ([self isKindOfClass:[UISwitch class]] && (self.tag != 404)) {
+    if ([self isKindOfClass:[UISwitch class]]) {
         if (enabled && changeSwitchColor) {
             self.onTintColor = switchesOnTintColor;
             self.tintColor = switchesTintColor;
@@ -2489,6 +2494,11 @@ static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFS
     });
 }
 
+void updateCornerRadius(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
+{
+    actionChangeCornerRadius();
+}
+
 CHConstructor
 {
     @autoreleasepool {
@@ -2510,6 +2520,7 @@ CHConstructor
             CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
             CFNotificationCenterAddObserver(center, NULL, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             CFNotificationCenterAddObserver(center, NULL, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+            CFNotificationCenterAddObserver(center, nil, updateCornerRadius, CFSTR("com.daniilpashin.coloredvk2.update.corners"),NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             
             
             

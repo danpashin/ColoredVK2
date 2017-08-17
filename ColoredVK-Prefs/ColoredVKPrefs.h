@@ -17,6 +17,7 @@
 @property (nonatomic, readonly) PSSpecifier *footer;
 @property (nonatomic, readonly) NSString *tweakVersion;
 @property (nonatomic, readonly) NSString *vkAppVersion;
+@property (assign, nonatomic, readonly) BOOL app_is_vk;
 
 @property (strong, nonatomic, readonly) NSString *prefsPath;
 @property (strong, nonatomic, readonly) NSBundle *cvkBundle;

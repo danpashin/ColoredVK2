@@ -39,9 +39,14 @@
     tweakSettings[self.specifier.identifier] = [NSString stringWithFormat:@"%.2f", value];
     [tweakSettings writeToFile:CVK_PREFS_PATH atomically:YES];
     
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
-    if ([self.specifier.identifier isEqualToString:@"menuImageBlackout"])
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+    CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
+    CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
+    
+    if ([self.specifier.identifier isEqualToString:@"menuImageBlackout"]) {
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+    } else if ([self.specifier.identifier isEqualToString:@"appCornerRadius"]) {
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.update.corners"), NULL, NULL, YES);
+    }
 }
 
 @end

@@ -126,15 +126,22 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+        CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), nil, nil, YES);
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), nil, nil, YES);
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.update.corners"), nil, nil, YES);
     });
 }
 
 - (void)reloadSwitch:(BOOL)on
 {
     UISwitch *switchView = objc_getAssociatedObject(self, (__bridge const void *)(switchViewKey));
-    if (switchView) [switchView setOn:enabled animated:YES];
+    if ([switchView isKindOfClass:[UISwitch class]]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [switchView setOn:on animated:YES];
+            [switchView setNeedsLayout];
+        });
+    }
 }
 
 - (void)sendStats

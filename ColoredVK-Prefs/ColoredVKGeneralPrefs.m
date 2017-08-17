@@ -114,12 +114,16 @@ NSArray <NSString *> *specifiersToDisable;
     if ([identificsToReloadMenu containsObject:colorPicker.identifier])
         CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        UINavigationBar *navBar = self.navigationController.navigationBar;
-        navBar.barTintColor = navBar.barTintColor;
-        navBar.tintColor = navBar.tintColor;
-        navBar.titleTextAttributes = navBar.titleTextAttributes;
-    });
+    if (self.app_is_vk) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            UINavigationBar *navBar = self.navigationController.navigationBar;
+            navBar.barTintColor = navBar.barTintColor;
+            navBar.tintColor = navBar.tintColor;
+            navBar.titleTextAttributes = navBar.titleTextAttributes;
+            
+            [self reloadSpecifiers];
+        });
+    }
 }
 
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didSaveColor:(NSString *)hexColor

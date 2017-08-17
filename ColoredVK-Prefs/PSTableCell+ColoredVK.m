@@ -38,10 +38,16 @@
         }
         
         if ([self.accessoryView isKindOfClass:[UISwitch class]]) {
-            UISwitch *switchView = (UISwitch *)self.accessoryView;
-            switchView.tintColor = [UIColor colorWithRed:235.0/255.0f green:235.0/255.0f blue:235.0/255.0f alpha:1.0];
-            switchView.onTintColor = CVKMainColor;
-            switchView.tag = 404;
+            NSDictionary *userPrefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+            BOOL userChangedColor = ([userPrefs[@"enabled"] boolValue] && [userPrefs[@"changeSwitchColor"] boolValue]);
+            if (![[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"])
+                userChangedColor = NO;
+            
+            if (!userChangedColor) {
+                UISwitch *switchView = (UISwitch *)self.accessoryView;
+                switchView.tintColor = [UIColor colorWithRed:235.0/255.0f green:235.0/255.0f blue:235.0/255.0f alpha:1.0];
+                switchView.onTintColor = CVKMainColor;
+            }
         }
     }
 }
