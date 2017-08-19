@@ -133,6 +133,32 @@
     [task resume];
 }
 
+- (void)uploadData:(NSData *)dataToUpload toRemoteURL:(NSString *)remoteURL 
+           success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))sucess 
+           failure:(void(^)(NSHTTPURLResponse *response, NSError *error))failure
+{
+    if (dataToUpload) {
+        NSError *requestError = nil;        
+        NSMutableURLRequest *request = [self requestWithMethod:@"POST" URLString:remoteURL parameters:nil error:&requestError];
+        if (requestError) {
+            if (failure)
+                failure(nil, requestError);
+        }
+        
+        NSURLSessionDataTask *task = [self.session uploadTaskWithRequest:request fromData:dataToUpload 
+                                                       completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                                           if (!error) {
+                                                               if (sucess)
+                                                                   sucess((NSHTTPURLResponse *)response, data);
+                                                           } else {
+                                                               if (failure)
+                                                                   failure((NSHTTPURLResponse *)response, error);
+                                                           }
+                                                       }];
+        [task resume];
+    }
+}
+
 
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method URLString:(NSString *)urlString parameters:(id)parameters error:(NSError *__autoreleasing *)error
 {

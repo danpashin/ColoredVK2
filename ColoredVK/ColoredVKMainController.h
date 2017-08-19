@@ -23,10 +23,10 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 
 @interface ColoredVKMainController : NSObject
 
-+ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout;
-+ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip;
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect;
-+ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip parallaxEffect:(BOOL)parallaxEffect;
++ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect blurBackground:(BOOL)blurBackground;
++ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip 
+             parallaxEffect:(BOOL)parallaxEffect blurBackground:(BOOL)blurBackground;
 
 /**
  * Returns application version from Info.plist
@@ -34,7 +34,7 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 @property (readonly, copy, nonatomic) NSString *appVersion;
 
 @property (strong, nonatomic) MenuCell *menuCell;
-@property (strong, nonatomic) VKMCell *settingsCell;
+@property (strong, nonatomic) UITableViewCell *settingsCell;
 @property (strong, nonatomic) ColoredVKAudioCover *audioCover;
 @property (strong, nonatomic) ColoredVKWallpaperView *menuBackgroundView;
 @property (strong, nonatomic) ColoredVKWallpaperView *navBarImageView;
@@ -42,7 +42,6 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 
 
 - (void)reloadSwitch:(BOOL)on;
-- (void)switchTriggered:(UISwitch *)switchView;
 
 - (ColoredVKVersionCompare)compareAppVersionWithVersion:(NSString *)second_version;
 - (ColoredVKVersionCompare)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version;
@@ -50,6 +49,7 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 - (void)sendStats;
 - (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)() )handler;
 - (void)actionOpenPreferencesPush:(BOOL)withPush;
+- (void)checkCrashes;
 
 
 @end

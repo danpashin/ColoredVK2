@@ -128,6 +128,18 @@
 			<key>detail</key>
 			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
+			<string>Settings</string>
+			<key>label</key>
+			<string>SETTINGS</string>
+			<key>icon</key>
+			<string>SettingsIconAlt</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKGeneralPrefs</string>
+			<key>plistToLoad</key>
 			<string>Misc</string>
 			<key>label</key>
 			<string>MISCELLANEOUS</string>

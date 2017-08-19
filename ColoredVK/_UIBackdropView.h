@@ -4,7 +4,7 @@ typedef NS_ENUM(NSUInteger, _UIBackdropViewStyle) {
     _UIBackdropViewStyleNone = -2,
     _UIBackdropViewStyleLight = 0,
     _UIBackdropViewStyleDark,
-    _UIBackdropViewStyleBlur
+    _UIBackdropViewStyleBlur = 2
 };
 
 

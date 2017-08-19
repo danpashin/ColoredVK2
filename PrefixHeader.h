@@ -12,6 +12,7 @@
 
 #import "CaptainHook/CaptainHook.h"
 
+#define CVK_CRASH_PATH      [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/Crash.txt"]
 
 #ifdef  COMPILE_FOR_JAIL
 

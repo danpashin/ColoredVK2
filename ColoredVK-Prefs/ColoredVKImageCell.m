@@ -44,6 +44,7 @@
         if ([identifier isEqualToString:@"audioCoverImage"]) self.key = @"enabledAudioCustomCover";
         if ([identifier isEqualToString:@"friendsBackgroundImage"]) self.key = @"enabledFriendsImage";
         if ([identifier isEqualToString:@"videosBackgroundImage"]) self.key = @"enabledVideosImage";
+        if ([identifier isEqualToString:@"settingsBackgroundImage"]) self.key = @"enabledSettingsImage";
         
         int imageViewSize = 30;
         self.previewImageView = [UIImageView new];
@@ -95,6 +96,9 @@
 
 - (void)switchTriggerred:(UISwitch *)switchView
 {
+    if (self.key.length == 0)
+        return;
+    
     NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
     if (!prefs) prefs = [NSMutableDictionary new];
     

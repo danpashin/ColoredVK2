@@ -244,12 +244,10 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
 
 - (void)updateLyrycsForArtist:(NSString *)artist title:(NSString *)title
 {
-    [self.audioLyricsView resetState];
-    
     if ([artist hasPrefix:@"+"]) artist = [artist substringFromIndex:1];
     if ([artist hasSuffix:@"+"]) artist = [artist substringToIndex:artist.length - 1];
     if ([title hasPrefix:@"+"]) title = [title substringFromIndex:1];
-    if ([title hasSuffix:@"+"]) artist = [title substringToIndex:title.length - 1];
+    if ([title hasSuffix:@"+"]) title = [title substringToIndex:title.length - 1];
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"ColoredVKAudioEntity"];
     NSString *cdArtist = [artist stringByReplacingOccurrencesOfString:@"+" withString:@""];
@@ -273,7 +271,8 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
     [networkController sendJSONRequestWithMethod:@"GET" stringURL:url parameters:@{@"artist":artist, @"title":title} 
                                          success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
                                              if (json[@"response"]) {
-                                                 NSDictionary *lyricsDict = [NSJSONSerialization JSONObjectWithData:[json[@"response"] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+                                                 NSData *data = [json[@"response"] dataUsingEncoding:NSUTF8StringEncoding];
+                                                 NSDictionary *lyricsDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
                                                  NSString *lyrics = lyricsDict[@"lyrics"];
                                                  
                                                  self.audioLyricsView.text = lyrics;
@@ -288,9 +287,13 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
                                                          [self.coredata saveContext];
                                                      }
                                                  });
+                                             } else {
+                                                 [self.audioLyricsView resetState];
                                              }
                                          } 
-                                         failure:nil];
+                                         failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                                             [self.audioLyricsView resetState];
+                                         }];
 }
 
 - (NSString *)convertStringToURLSafe:(NSString *)string
@@ -311,7 +314,8 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@" %@; artist '%@'; track '%@'; frame %@; separationPoint %@; ", super.description, self.artist, self.track, NSStringFromCGRect(self.coverView.frame), NSStringFromCGPoint(CGPointMake(0, CGRectGetHeight(self.bottomImageView.frame)))];
+    return [NSString stringWithFormat:@" %@; artist '%@'; track '%@'; frame %@; separationPoint %@; ", super.description, self.artist, self.track, 
+            NSStringFromCGRect(self.coverView.frame), NSStringFromCGPoint(CGPointMake(0, CGRectGetMinY(self.bottomImageView.frame)))];
 }
 
 @end

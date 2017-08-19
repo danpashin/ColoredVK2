@@ -7,20 +7,26 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "_UIBackdropView.h"
 
 @interface ColoredVKWallpaperView : UIView
 
 + (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout;
-- (instancetype)initWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip parallaxEffect:(BOOL)parallaxEffect;
+- (instancetype)initWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout enableParallax:(BOOL)enableParallax blurBackground:(BOOL)blurBackground;
 
 @property (strong, nonatomic, readonly) NSString *name;
-@property (assign, nonatomic, readonly) CGFloat blackout;
+@property (assign, nonatomic) CGFloat blackout;
 @property (strong, nonatomic) UIImageView *imageView;
-@property (strong, nonatomic) UIView *frontView;
 @property (assign, nonatomic) BOOL parallaxEnabled;
+@property (assign, nonatomic) BOOL flip;
+@property (assign, nonatomic) BOOL blurBackground;
 
-- (void)updateViewForKey:(NSString *)key;
+@property (assign, nonatomic) _UIBackdropViewStyle blurStyle;
+@property (strong, nonatomic) UIColor *blurTone;
+
+- (void)updateViewWithBlackout:(CGFloat)blackout;
+- (void)setFlip:(BOOL)flip animated:(BOOL)animated;
+- (void)setBlackout:(CGFloat)blackout animated:(BOOL)animated;
 
 /**
  *  Adds this view to parent view

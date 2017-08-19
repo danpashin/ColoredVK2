@@ -19,6 +19,7 @@
 "AUDIO_PLAYER" = "Player";
 "FRIENDS" = "Friends";
 "VIDEOS" = "Video";
+"SETTINGS_MAIN_MENU" = "Settings main menu";
 
 
 "CHANGE_COLORS" = "Change colors";
@@ -48,6 +49,7 @@
 "BLUR_SETTINGS" = "Blur settings";
 "USE_BLUR" = "Enable blur";
 "BLUR_STYLE" = "Blur style";
+"BLUR_BACKGROUND" = "Blur background";
 
 
 "KEYBOARD_STYLE" = "Keyboard style";

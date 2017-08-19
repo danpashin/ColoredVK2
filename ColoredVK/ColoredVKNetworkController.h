@@ -28,6 +28,10 @@
             success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData))sucess 
             failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
 
+- (void)uploadData:(NSData *)dataToUpload toRemoteURL:(NSString *)remoteURL 
+           success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))sucess 
+           failure:(void(^)(NSHTTPURLResponse *response, NSError *error))failure;
+
 
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method URLString:(NSString *)urlString parameters:(id)parameters error:(NSError *__autoreleasing *)error;
 

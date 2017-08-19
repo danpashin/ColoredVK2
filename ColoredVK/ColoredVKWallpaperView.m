@@ -12,50 +12,48 @@
 const NSInteger PARALLAX_EFFECT_VALUE = 14;
 const NSTimeInterval ANIMATION_DURANTION = 0.2;
 
-@implementation ColoredVKWallpaperView
+@interface ColoredVKWallpaperView ()
 
-+ (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name
-{
-    return [[self alloc] initWithFrame:frame imageName:name blackout:0 flip:NO parallaxEffect:NO];
-}
+@property (strong, nonatomic) UIView *frontView;
+@property (strong, nonatomic) _UIBackdropView *blurView;
+
+@end
+
+@implementation ColoredVKWallpaperView
 
 + (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout
 {
-    return [[self alloc] initWithFrame:frame imageName:name blackout:blackout flip:NO parallaxEffect:NO];
+    return [[self alloc] initWithFrame:frame imageName:name blackout:blackout enableParallax:NO blurBackground:NO];
 }
 
-+ (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip
-{
-    return [[self alloc] initWithFrame:frame imageName:name blackout:blackout flip:flip parallaxEffect:NO];
-}
-
-+ (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect 
-{
-    return [[self alloc] initWithFrame:frame imageName:name blackout:blackout flip:NO parallaxEffect:parallaxEffect];
-}
-
-- (instancetype)initWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip parallaxEffect:(BOOL)parallaxEffect
+- (instancetype)initWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout enableParallax:(BOOL)enableParallax blurBackground:(BOOL)blurBackground
 {    
     self = [super initWithFrame:frame];
     if (self) {
         self.tag = 23;
         self.backgroundColor = [UIColor blackColor];
         _name = name;
-        _blackout = blackout;
         
-        self.imageView = [[UIImageView alloc] initWithFrame:frame];
+        CGRect bounds = CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame));
+        
+        self.imageView = [[UIImageView alloc] initWithFrame:bounds];
         self.imageView.contentMode = UIViewContentModeScaleAspectFill;
         self.imageView.layer.masksToBounds = YES;
-        if (flip) self.imageView.transform = CGAffineTransformMakeRotation(180 * M_PI/180);
         [self addSubview:self.imageView];
         
-        self.frontView = [[UIView alloc] initWithFrame:frame];
-        self.frontView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:blackout];
+        self.frontView = [[UIView alloc] initWithFrame:bounds];
         [self.imageView addSubview:self.frontView];
         
-        self.parallaxEnabled = parallaxEffect;
+        self.blurStyle = _UIBackdropViewStyleBlur;
+        self.blurView = [[_UIBackdropView alloc] initWithStyle:self.blurStyle];
+        self.blurView.frame = bounds;
+        [self addSubview:self.blurView];
         
-        [self updateView];
+        self.blackout = blackout;
+        self.parallaxEnabled = enableParallax;
+        self.blurBackground = blurBackground;
+        
+        [self updateImage];
     }
     
     return self;
@@ -75,30 +73,97 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
         horizontalMotionEffect.maximumRelativeValue = @(PARALLAX_EFFECT_VALUE);
         [self.imageView addMotionEffect:horizontalMotionEffect];
     } else {
-        for (UIMotionEffect *effect in self.imageView.motionEffects) [self.imageView removeMotionEffect:effect];
+        for (UIMotionEffect *effect in [self.imageView.motionEffects copy]) [self.imageView removeMotionEffect:effect];
     }
 }
 
-- (void)updateViewForKey:(NSString *)key
+- (void)setFlip:(BOOL)flip
 {
-    NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
-    _blackout = [prefs[key] floatValue];
-    
-    [self updateView];
+    [self setFlip:flip animated:NO];
 }
 
-- (void)updateView
+- (void)setFlip:(BOOL)flip animated:(BOOL)animated
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+    _flip = flip;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CGFloat flipDegree = flip ? 180.0f : 0.0f;
+        void (^flipBlock)() = ^{
+            self.imageView.transform = CGAffineTransformMakeRotation(flipDegree * M_PI/180);
+        };
+        
+        if (animated) [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:flipBlock completion:nil];
+        else          flipBlock();
+    });
+}
+
+- (void)setBlackout:(CGFloat)blackout
+{    
+    [self setBlackout:blackout animated:NO];
+}
+
+- (void)setBlackout:(CGFloat)blackout animated:(BOOL)animated
+{
+    _blackout = blackout;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        void (^blackoutBlock)() = ^{
+            self.frontView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:blackout];
+        };
+        
+        if (animated) [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:blackoutBlock completion:nil];
+        else          blackoutBlock();
+    });
+}
+
+- (void)setBlurBackground:(BOOL)blurBackground
+{    
+    [self setBlurBackground:blurBackground animated:NO];
+}
+
+- (void)setBlurBackground:(BOOL)blurBackground animated:(BOOL)animated
+{
+    _blurBackground = blurBackground;
+    
+    if (UIAccessibilityIsReduceTransparencyEnabled()) {
+        self.blurView.alpha = 0.0f;
+        return;
+    }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        void (^blurBlock)() = ^{
+            self.blurView.alpha = self.blurBackground ? 1.0f : 0.0f;
+            self.blurView.backgroundColor = self.blurTone;
+            [self.blurView transitionToStyle:self.blurStyle];
+        };
+        
+        if (animated) [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:blurBlock completion:nil];
+        else          blurBlock();
+    });
+    
+    
+}
+
+- (void)updateViewWithBlackout:(CGFloat)blackout
+{
+    [self setBlackout:blackout animated:YES];
+    [self updateImage];
+}
+
+- (void)updateImage
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         UIImage *image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, self.name]];
         dispatch_async(dispatch_get_main_queue(), ^{
             [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
                 self.imageView.image = image;
-                self.frontView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:self.blackout];
             } completion:nil];
         });
     });
 }
+
+
+#pragma mark -
 
 - (void)addToView:(UIView *)view animated:(BOOL)animated
 {
@@ -188,7 +253,7 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@" %@; imageName '%@'; blackout %.2f; parallax %@ ", super.description, self.name, self.blackout, self.parallaxEnabled ? @"Enabled": @"Disabled"];
+    return [NSString stringWithFormat:@" %@; imageName '%@'; blackout %.2f; parallax '%@' ", super.description, self.name, self.blackout, self.parallaxEnabled ? @"Enabled": @"Disabled"];
 }
 
 @end

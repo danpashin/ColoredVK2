@@ -165,10 +165,12 @@
 {
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         self.timer = [NSTimer scheduledTimerWithTimeInterval:0.3f repeats:YES block:^(NSTimer * _Nonnull timer) {
-            if ([recognizer.accessibilityLabel isEqualToString:@"increase"]) {
-                [self actionIncrease];
-            } else if ([recognizer.accessibilityLabel isEqualToString:@"decrease"]) {
-                [self actionDecrease];
+            if ([self isKindOfClass:[ColoredVKStepperButton class]]) {
+                if ([recognizer.accessibilityLabel isEqualToString:@"increase"]) {
+                    [self actionIncrease];
+                } else if ([recognizer.accessibilityLabel isEqualToString:@"decrease"]) {
+                    [self actionDecrease];
+                }
             }
         }];
         [self.timer fire];

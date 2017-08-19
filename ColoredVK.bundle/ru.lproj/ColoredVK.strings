@@ -19,6 +19,7 @@
 "AUDIO_PLAYER" = "Плеер";
 "FRIENDS" = "Друзья";
 "VIDEOS" = "Видео";
+"SETTINGS_MAIN_MENU" = "Главное меню настроек";
 
 
 "CHANGE_COLORS" = "Изменить цветa";
@@ -48,6 +49,7 @@
 "BLUR_SETTINGS" = "Настройки размытия";
 "USE_BLUR" = "Включить размытие";
 "BLUR_STYLE" = "Стиль размытия";
+"BLUR_BACKGROUND" = "Размыть фон";
 
 "KEYBOARD_STYLE" = "Стиль клавиатуры";
 "DEFAULT" = "По умолчанию";
