@@ -14,6 +14,7 @@
 #import <sys/utsname.h>
 #import "UIGestureRecognizer+BlocksKit.h"
 #import "ColoredVKNetworkController.h"
+#import "ColoredVKAlertController.h"
 
 @implementation ColoredVKMainController
 static NSString const *switchViewKey = @"cvkCellSwitchKey";
@@ -244,6 +245,10 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
                                   }
                               }
                           } failure:nil];
+    
+    ColoredVKAlertController *alert = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"CRASH_OCCURED_MESSAGE") preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {}]];
+    [alert present];
 }
 
 

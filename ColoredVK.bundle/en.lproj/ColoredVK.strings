@@ -11,7 +11,7 @@
 "MENU" = "Menu";
 "MESSAGES" = "Messages";
 "MESSAGES_LIST" = "Dialogs list";
-"GROUPS" = "Groups";
+"GROUPS" = "Communities";
 "MISCELLANEOUS" = "Miscellaneous";
 "STATUS_BAR" = "Status bar";
 "SWITCH_COLORS" = "Switches";
@@ -19,7 +19,10 @@
 "AUDIO_PLAYER" = "Player";
 "FRIENDS" = "Friends";
 "VIDEOS" = "Video";
-"SETTINGS_MAIN_MENU" = "Settings main menu";
+"SETTINGS_MAIN_MENU" = "General settings menu";
+"SETTINGS_ADVANCED_MENU" = "Additional settings menu";
+"MAIN_SETTINGS" = "Settings (general)";
+"ADVANCED_SETTINGS" = "Settings (additional)";
 
 
 "CHANGE_COLORS" = "Change colors";
@@ -57,6 +60,7 @@
 "DARK" = "Dark";
 "LIGHT" = "Light";
 "ALWAYS_SHOW_NAVIGATION_BAR" = "Always show nav bar";
+"APP_CORNER_RADIUS" = "Corner radius";
 
 
 "NEW_DESIGN" = "New design";

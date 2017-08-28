@@ -238,6 +238,10 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
     self.frontView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.imageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[frontView]|" options:0 metrics:nil views:@{@"frontView":self.frontView}]];
     [self.imageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[frontView]|" options:0 metrics:nil views:@{@"frontView":self.frontView}]];
+    
+    self.blurView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[blurView]|" options:0 metrics:nil views:@{@"blurView":self.blurView}]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[blurView]|" options:0 metrics:nil views:@{@"blurView":self.blurView}]];
 }
 
 - (void)removeFromSuperview

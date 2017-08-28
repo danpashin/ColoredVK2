@@ -96,7 +96,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{ 
         [super showSuccessWithStatus:status animated:YES];
-        [super hideAfterDelay:2.5];
+        [super hideAfterDelay:1.5];
     });
 }
 

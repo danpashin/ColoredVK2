@@ -6,6 +6,14 @@
 	<array>
 		<dict>
 			<key>title</key>
+			<string>NAVIGATION_BAR</string>
+			<key>identifier</key>
+			<string>barImage</string>
+			<key>icon</key>
+			<string>TopBarSelectedIcon.png</string>
+		</dict>
+		<dict>
+			<key>title</key>
 			<string>MENU</string>
 			<key>identifier</key>
 			<string>menuBackgroundImage</string>
@@ -62,11 +70,19 @@
 		</dict>
 		<dict>
 			<key>title</key>
-			<string>NAVIGATION_BAR</string>
+			<string>MAIN_SETTINGS</string>
 			<key>identifier</key>
-			<string>barImage</string>
+			<string>settingsBackgroundImage</string>
 			<key>icon</key>
-			<string>TopBarSelectedIcon.png</string>
+			<string>SettingsIconAlt</string>
+		</dict>
+		<dict>
+			<key>title</key>
+			<string>ADVANCED_SETTINGS</string>
+			<key>identifier</key>
+			<string>settingsExtraBackgroundImage</string>
+			<key>icon</key>
+			<string>SettingsIconAlt</string>
 		</dict>
 	</array>
 </dict>

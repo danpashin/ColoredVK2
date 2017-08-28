@@ -20,6 +20,9 @@
 "FRIENDS" = "Друзья";
 "VIDEOS" = "Видео";
 "SETTINGS_MAIN_MENU" = "Главное меню настроек";
+"SETTINGS_ADVANCED_MENU" = "Дополнительное меню настроек";
+"MAIN_SETTINGS" = "Настройки (основные)";
+"ADVANCED_SETTINGS" = "Настройки (дополнительные)";
 
 
 "CHANGE_COLORS" = "Изменить цветa";

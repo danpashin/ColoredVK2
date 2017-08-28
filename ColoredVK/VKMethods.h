@@ -439,6 +439,9 @@
 @interface ModernSettingsController : BaseSettingsController
 @end
 
+@interface BaseSectionedSettingsController : BaseSettingsController
+@end
+
 
 
 @interface ProfileModel : NSObject
@@ -456,3 +459,18 @@
 @interface VKGroupProfile : NSObject
 @property(retain, nonatomic) VKGroup *group;
 @end
+
+
+@interface ProfileBannedController : VKMLiveController
+@end
+@interface SettingsPrivacyController : VKMLiveController
+@end
+@interface PaymentsBalanceController : VKMLiveController
+@end
+@interface SubscriptionsSettingsViewController : VKMLiveController
+@end
+@interface ModernPushSettingsController : VKMTableController
+@end
+@interface VKP2PViewController : VKMLiveController
+@end
+

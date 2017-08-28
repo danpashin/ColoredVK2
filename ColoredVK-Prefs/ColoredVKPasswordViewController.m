@@ -118,7 +118,7 @@
     ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
     
     NSString *url = [NSString stringWithFormat:@"%@/changePassword.php", kPackageAPIURL];
-    [networkController sendJSONRequestWithMethod:@"GET" stringURL:url parameters:@{@"login": login, @"password":currentPass, @"new_password": newPass} 
+    [networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:@{@"login": login, @"password":currentPass, @"new_password": newPass} 
                                          success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
                                              if (!json[@"error"]) {
                                                  if (json[@"status"]) {

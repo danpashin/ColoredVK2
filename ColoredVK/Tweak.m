@@ -19,6 +19,7 @@
 #import "ColoredVKBarDownloadButton.h"
 #import "ColoredVKAlertController.h"
 #import "ColoredVKUpdatesController.h"
+#import <dlfcn.h>
 
 
 
@@ -48,6 +49,7 @@ BOOL hideAudiosSeparators;
 BOOL hideFriendsSeparators;
 BOOL hideVideosSeparators;
 BOOL hideSettingsSeparators;
+BOOL hideSettingsExtraSeparators;
 
 BOOL enabledMessagesImage;
 BOOL enabledMessagesListImage;
@@ -58,6 +60,7 @@ BOOL enablePlayerGestures;
 BOOL enabledFriendsImage;
 BOOL enabledVideosImage;
 BOOL enabledSettingsImage;
+BOOL enabledSettingsExtraImage;
 
 CGFloat menuImageBlackout;
 CGFloat chatImageBlackout;
@@ -68,6 +71,7 @@ CGFloat navbarImageBlackout;
 CGFloat friendsImageBlackout;
 CGFloat videosImageBlackout;
 CGFloat settingsImageBlackout;
+CGFloat settingsExtraImageBlackout;
 
 
 CGFloat appCornerRadius;
@@ -81,6 +85,7 @@ BOOL useAudioParallax;
 BOOL useFriendsParallax;
 BOOL useVideosParallax;
 BOOL useSettingsParallax;
+BOOL useSettingsExtraParallax;
 
 BOOL hideMessagesNavBarItems;
 
@@ -103,6 +108,7 @@ BOOL changeAudiosTextColor;
 BOOL changeFriendsTextColor;
 BOOL changeVideosTextColor;
 BOOL changeSettingsTextColor;
+BOOL changeSettingsExtraTextColor;
 
 BOOL useCustomDialogsUnreadColor;
 UIColor *dialogsUnreadColor;
@@ -129,6 +135,7 @@ UIColor *audiosTextColor;
 UIColor *friendsTextColor;
 UIColor *videosTextColor;
 UIColor *settingsTextColor;
+UIColor *settingsExtraTextColor;
 
 UIColor *audioPlayerTintColor;
 UIColor *menuSelectionColor;
@@ -141,6 +148,7 @@ UIColor *audiosBlurTone;
 UIColor *friendsBlurTone;
 UIColor *videosBlurTone;
 UIColor *settingsBlurTone;
+UIColor *settingsExtraBlurTone;
 
 BOOL messagesUseBlur;
 BOOL messagesListUseBlur;
@@ -149,6 +157,7 @@ BOOL audiosUseBlur;
 BOOL friendsUseBlur;
 BOOL videosUseBlur;
 BOOL settingsUseBlur;
+BOOL settingsExtraUseBlur;
 
 BOOL messagesUseBackgroundBlur;
 BOOL messagesListUseBackgroundBlur;
@@ -157,6 +166,7 @@ BOOL audiosUseBackgroundBlur;
 BOOL friendsUseBackgroundBlur;
 BOOL videosUseBackgroundBlur;
 BOOL settingsUseBackgroundBlur;
+BOOL settingsExtraUseBackgroundBlur;
 
 
 CVKCellSelectionStyle menuSelectionStyle;
@@ -169,6 +179,7 @@ UIBlurEffectStyle audiosBlurStyle;
 UIBlurEffectStyle friendsBlurStyle;
 UIBlurEffectStyle videosBlurStyle;
 UIBlurEffectStyle settingsBlurStyle;
+UIBlurEffectStyle settingsExtraBlurStyle;
 
 ColoredVKMainController *cvkMainController;
 
@@ -255,6 +266,7 @@ void reloadPrefs()
         enabledFriendsImage = [prefs[@"enabledFriendsImage"] boolValue];
         enabledVideosImage = [prefs[@"enabledVideosImage"] boolValue];
         enabledSettingsImage = [prefs[@"enabledSettingsImage"] boolValue];
+        enabledSettingsExtraImage = [prefs[@"enabledSettingsExtraImage"] boolValue];
         
         hideMessagesListSeparators = [prefs[@"hideMessagesListSeparators"] boolValue];
         hideGroupsListSeparators = [prefs[@"hideGroupsListSeparators"] boolValue];
@@ -262,6 +274,7 @@ void reloadPrefs()
         hideFriendsSeparators = [prefs[@"hideFriendsSeparators"] boolValue];
         hideVideosSeparators = [prefs[@"hideVideosSeparators"] boolValue];
         hideSettingsSeparators = [prefs[@"hideSettingsSeparators"] boolValue];
+        hideSettingsExtraSeparators = [prefs[@"hideSettingsExtraSeparators"] boolValue];
         
         messagesListUseBlur = [prefs[@"messagesListUseBlur"] boolValue];
         groupsListUseBlur = [prefs[@"groupsListUseBlur"] boolValue];
@@ -269,6 +282,7 @@ void reloadPrefs()
         friendsUseBlur = [prefs[@"friendsUseBlur"] boolValue];
         videosUseBlur = [prefs[@"videosUseBlur"] boolValue];
         settingsUseBlur = [prefs[@"settingsUseBlur"] boolValue];
+        settingsExtraUseBlur = [prefs[@"settingsExtraUseBlur"] boolValue];
         
         messagesListUseBackgroundBlur = [prefs[@"messagesListUseBackgroundBlur"] boolValue];
         groupsListUseBackgroundBlur = [prefs[@"groupsListUseBackgroundBlur"] boolValue];
@@ -276,6 +290,7 @@ void reloadPrefs()
         friendsUseBackgroundBlur = [prefs[@"friendsUseBackgroundBlur"] boolValue];
         videosUseBackgroundBlur = [prefs[@"videosUseBackgroundBlur"] boolValue];
         settingsUseBackgroundBlur = [prefs[@"settingsUseBackgroundBlur"] boolValue];
+        settingsExtraUseBackgroundBlur = [prefs[@"settingsExtraUseBackgroundBlur"] boolValue];
         
         
         useMessagesListParallax = [prefs[@"useMessagesListParallax"] boolValue];
@@ -284,6 +299,7 @@ void reloadPrefs()
         useFriendsParallax = [prefs[@"useFriendsParallax"] boolValue];
         useVideosParallax = [prefs[@"useVideosParallax"] boolValue];
         useSettingsParallax = [prefs[@"useSettingsParallax"] boolValue];
+        useSettingsExtraParallax = [prefs[@"useSettingsExtraParallax"] boolValue];
         
         chatListImageBlackout = [prefs[@"chatListImageBlackout"] floatValue];
         groupsListImageBlackout = [prefs[@"groupsListImageBlackout"] floatValue];
@@ -291,6 +307,7 @@ void reloadPrefs()
         friendsImageBlackout = [prefs[@"friendsImageBlackout"] floatValue];
         videosImageBlackout = [prefs[@"videosImageBlackout"] floatValue];
         settingsImageBlackout = [prefs[@"settingsImageBlackout"] floatValue];
+        settingsExtraImageBlackout = [prefs[@"settingsExtraImageBlackout"] floatValue];
         
         appCornerRadius = [prefs[@"appCornerRadius"] floatValue];
         
@@ -303,6 +320,7 @@ void reloadPrefs()
         changeFriendsTextColor = [prefs[@"changeFriendsTextColor"] boolValue];
         changeVideosTextColor = [prefs[@"changeVideosTextColor"] boolValue];
         changeSettingsTextColor = [prefs[@"changeSettingsTextColor"] boolValue];
+        changeSettingsExtraTextColor = [prefs[@"changeSettingsExtraTextColor"] boolValue];
         
         keyboardStyle = prefs[@"keyboardStyle"]?[prefs[@"keyboardStyle"] integerValue]:UIKeyboardAppearanceDefault;
         
@@ -312,8 +330,9 @@ void reloadPrefs()
         friendsBlurStyle = prefs[@"friendsBlurStyle"]?[prefs[@"friendsBlurStyle"] integerValue]:UIBlurEffectStyleLight;
         videosBlurStyle = prefs[@"videosBlurStyle"]?[prefs[@"videosBlurStyle"] integerValue]:UIBlurEffectStyleLight;
         settingsBlurStyle = prefs[@"settingsBlurStyle"]?[prefs[@"settingsBlurStyle"] integerValue]:UIBlurEffectStyleLight;
+        settingsExtraBlurStyle = prefs[@"settingsExtraBlurStyle"]?[prefs[@"settingsExtraBlurStyle"] integerValue]:UIBlurEffectStyleLight;
         
-       
+        
         switchesTintColor =          [UIColor savedColorForIdentifier:@"switchesTintColor"          fromPrefs:prefs];
         switchesOnTintColor =        [UIColor savedColorForIdentifier:@"switchesOnTintColor"        fromPrefs:prefs];
         messageUnreadColor =        [[UIColor savedColorForIdentifier:@"messageReadColor"           fromPrefs:prefs] colorWithAlphaComponent:0.2];
@@ -324,6 +343,7 @@ void reloadPrefs()
         friendsTextColor =           [UIColor savedColorForIdentifier:@"friendsTextColor"           fromPrefs:prefs];
         videosTextColor =            [UIColor savedColorForIdentifier:@"videosTextColor"            fromPrefs:prefs];
         settingsTextColor =          [UIColor savedColorForIdentifier:@"settingsTextColor"          fromPrefs:prefs];
+        settingsExtraTextColor =     [UIColor savedColorForIdentifier:@"settingsExtraTextColor"     fromPrefs:prefs];
         
         messagesListBlurTone =      [[UIColor savedColorForIdentifier:@"messagesListBlurTone"       fromPrefs:prefs] colorWithAlphaComponent:0.3];
         groupsListBlurTone =        [[UIColor savedColorForIdentifier:@"groupsListBlurTone"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
@@ -331,6 +351,7 @@ void reloadPrefs()
         friendsBlurTone =           [[UIColor savedColorForIdentifier:@"friendsBlurTone"            fromPrefs:prefs] colorWithAlphaComponent:0.3];
         videosBlurTone =            [[UIColor savedColorForIdentifier:@"videosBlurTone"             fromPrefs:prefs] colorWithAlphaComponent:0.3];
         settingsBlurTone =          [[UIColor savedColorForIdentifier:@"settingsBlurTone"           fromPrefs:prefs] colorWithAlphaComponent:0.3];
+        settingsExtraBlurTone =     [[UIColor savedColorForIdentifier:@"settingsExtraBlurTone"      fromPrefs:prefs] colorWithAlphaComponent:0.3];
         dialogsUnreadColor =        [[UIColor savedColorForIdentifier:@"dialogsUnreadColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
         
         
@@ -943,40 +964,48 @@ CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, anima
     UIColor *blurColor = [UIColor clearColor];
     UIBlurEffectStyle blurStyle = 0;
     if (enabled) {
+        NSString *selfName = CLASS_NAME(self);
         NSArray *audioControllers = @[@"AudioAlbumController", @"AudioAlbumsController", @"AudioPlaylistController", @"AudioDashboardController", 
                                       @"AudioCatalogController", @"AudioCatalogOwnersListController", @"AudioCatalogAudiosListController", 
                                       @"AudioPlaylistDetailController", @"AudioPlaylistsController"];
         NSArray *friendsControllers = @[@"ProfileFriendsController", @"FriendsBDaysController", @"FriendsAllRequestsController"];
+        NSArray *settingsExtraControllers = @[@"ProfileBannedController", @"ModernGeneralSettings", @"ModernAccountSettings",
+                                              @"SettingsPrivacyController", @"PaymentsBalanceController", @"SubscriptionSettingsViewController", 
+                                              @"AboutViewController", @"ModernPushSettingsController", @"VKP2PViewController"];
         
-        if (messagesUseBlur && ([CLASS_NAME(self) isEqualToString:@"MultiChatController"] || [CLASS_NAME(self) isEqualToString:@"SingleUserChatController"])) {
+        if (messagesUseBlur && ([selfName isEqualToString:@"MultiChatController"] || [selfName isEqualToString:@"SingleUserChatController"])) {
             shouldAddBlur = YES;
             blurColor = messagesBlurTone;
             blurStyle = messagesBlurStyle;
-        } else if (groupsListUseBlur && [CLASS_NAME(self) isEqualToString:@"GroupsController"]) {
+        } else if (groupsListUseBlur && [selfName isEqualToString:@"GroupsController"]) {
             shouldAddBlur = YES;
             blurColor = groupsListBlurTone;
             blurStyle = groupsListBlurStyle;
-        } else if (messagesListUseBlur && [CLASS_NAME(self) isEqualToString:@"DialogsController"]) {
+        } else if (messagesListUseBlur && [selfName isEqualToString:@"DialogsController"]) {
             shouldAddBlur = YES;
             blurColor = messagesListBlurTone;
             blurStyle = messagesListBlurStyle;
-        } else if (audiosUseBlur && [audioControllers containsObject:CLASS_NAME(self)]) {
+        } else if (audiosUseBlur && [audioControllers containsObject:selfName]) {
             shouldAddBlur = YES;
             blurColor = audiosBlurTone;
             blurStyle = audiosBlurStyle;
         } 
-        else if (friendsUseBlur && [friendsControllers containsObject:CLASS_NAME(self)]) {
+        else if (friendsUseBlur && [friendsControllers containsObject:selfName]) {
             shouldAddBlur = YES;
             blurColor = friendsBlurTone;
             blurStyle = friendsBlurStyle;
-        } else if (videosUseBlur && [CLASS_NAME(self) isEqualToString:@"VideoAlbumController"]) {
+        } else if (videosUseBlur && [selfName isEqualToString:@"VideoAlbumController"]) {
             shouldAddBlur = YES;
             blurColor = videosBlurTone;
             blurStyle = videosBlurStyle;
-        } else if (settingsUseBlur && [CLASS_NAME(self) isEqualToString:@"ModernSettingsController"]) {
+        } else if (settingsUseBlur && [selfName isEqualToString:@"ModernSettingsController"]) {
             shouldAddBlur = YES;
             blurColor = settingsBlurTone;
             blurStyle = settingsBlurStyle;
+        } else if (settingsExtraUseBlur && [settingsExtraControllers containsObject:selfName]) {
+            shouldAddBlur = YES;
+            blurColor = settingsExtraBlurTone;
+            blurStyle = settingsExtraBlurStyle;
         } else shouldAddBlur = NO;
     } else shouldAddBlur = NO;
     
@@ -1211,17 +1240,16 @@ CHOptimizedMethod(0, self, void, ChatController, viewWillLayoutSubviews)
     CHSuper(0, ChatController, viewWillLayoutSubviews);
     
     if ([self isKindOfClass:NSClassFromString(@"ChatController")]) {
-        if (enabled && enabledMessagesImage) {
+        if (enabled) {
             if (hideMessagesNavBarItems) {
                 self.headerImage.hidden = YES;
-                if ([self respondsToSelector:@selector(componentTitleView)])
-                    self.componentTitleView.hidden = YES;
-                else
-                    self.navigationController.navigationBar.topItem.titleView.hidden = YES;
+                self.navigationItem.titleView.hidden = YES;
             }
-            self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
-            [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesBackgroundImage" blackout:chatImageBlackout 
-                                                    flip:YES parallaxEffect:useMessagesParallax blurBackground:messagesUseBackgroundBlur];
+            if (enabledMessagesImage) {
+                self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+                [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesBackgroundImage" blackout:chatImageBlackout 
+                                                        flip:YES parallaxEffect:useMessagesParallax blurBackground:messagesUseBackgroundBlur];
+            }
         }
     }
 }
@@ -2082,14 +2110,22 @@ CHOptimizedMethod(0, self, void, UserWallController, updateProfile)
 {
     CHSuper(0, UserWallController, updateProfile);
     
-    if (self.profile.item) {
-        if ([self.profile.item.user.uid isEqual:@89911723]) {
-            UIImageView *titleView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-            titleView.image = [[UIImage imageNamed:@"DeveloperNavIcon" inBundle:cvkBunlde compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-            titleView.tintColor = barForegroundColor;
-            self.navigationItem.titleView = titleView;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.profile.item) {
+            if ([self.profile.item.user.uid isEqual:@89911723]) {
+                CGRect navBarFrame = self.navigationController.navigationBar.bounds;
+                UIImageView *titleView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+                titleView.center = CGPointMake(CGRectGetMidX(navBarFrame), CGRectGetMidY(navBarFrame));
+                titleView.image = [[UIImage imageNamed:@"DeveloperNavIcon" inBundle:cvkBunlde compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                titleView.tintColor = barForegroundColor;
+                [UIView animateWithDuration:0.15f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                    titleView.alpha = 0.0f;
+                    self.navigationItem.titleView = titleView;
+                    titleView.alpha = 1.0f;
+                } completion:nil];
+            }
         }
-    }
+    });
 }
 
 
@@ -2369,7 +2405,7 @@ CHOptimizedMethod(0, self, void, VideoAlbumController, viewWillLayoutSubviews)
     
     if ((enabled && enabledVideosImage) && [self isKindOfClass:NSClassFromString(@"VideoAlbumController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"videosBackgroundImage" blackout:videosImageBlackout 
-                                      parallaxEffect:useVideosParallax blurBackground:friendsUseBackgroundBlur];
+                                      parallaxEffect:useVideosParallax blurBackground:videosUseBackgroundBlur];
         self.tableView.separatorColor = hideVideosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
         self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
         setBlur(self.toolbar, YES, videosBlurTone, videosBlurStyle);
@@ -2421,7 +2457,7 @@ CHOptimizedMethod(6, self, UITableViewHeaderFooterView*, UITableView, _sectionHe
         view.contentView.backgroundColor = [UIColor clearColor];
         view.backgroundView.backgroundColor = [UIColor clearColor];
         view.textLabel.backgroundColor = [UIColor clearColor];
-        view.textLabel.textColor = UITableViewCellTextColor;  
+        view.textLabel.textColor = (self.tag == 23) ? UITableViewCellTextColor.darkerColor : UITableViewCellTextColor;  
     };
     if (self.tag == 21) {
         setColors();
@@ -2430,6 +2466,10 @@ CHOptimizedMethod(6, self, UITableViewHeaderFooterView*, UITableView, _sectionHe
     } else if (self.tag == 22) {
         setColors();
         view.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+        
+    } else if (self.tag == 23) {
+        setColors();
+        view.contentView.backgroundColor = [UIColor clearColor];
         
     }
     return view;
@@ -2561,6 +2601,174 @@ CHOptimizedMethod(0, self, void, ModernSettingsController, viewWillLayoutSubview
     }
 }
 
+void setupExtraSettingsController(VKMTableController *controller)
+{
+    if (![controller isKindOfClass:NSClassFromString(@"VKMTableController")])
+        return;
+    
+    if (enabled && enabledSettingsExtraImage) {
+        [ColoredVKMainController setImageToTableView:controller.tableView withName:@"settingsExtraBackgroundImage" blackout:settingsExtraImageBlackout 
+                                      parallaxEffect:useSettingsExtraParallax blurBackground:settingsExtraUseBackgroundBlur];
+        
+        if (hideSettingsSeparators) 
+            controller.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        else
+            controller.tableView.separatorColor = [controller.tableView.separatorColor colorWithAlphaComponent:0.5f];
+        
+        controller.rptr.tintColor = changeSettingsExtraTextColor ? settingsExtraTextColor : UITableViewCellTextColor;
+        controller.tableView.tag = 23;
+    }
+}
+
+void setupExtraSettingsCell(UITableViewCell *cell)
+{
+    if (enabled && enabledSettingsExtraImage) {
+        performInitialCellSetup(cell);
+        UIColor *textColor = changeSettingsExtraTextColor ? settingsExtraTextColor : UITableViewCellTextColor;
+        UIColor *detailedTextColor = changeSettingsExtraTextColor ? settingsExtraTextColor : UITableViewCellTextColor;
+        cell.textLabel.textColor = textColor;
+        cell.detailTextLabel.textColor = detailedTextColor;
+        if ([cell isKindOfClass:NSClassFromString(@"SourceCell")]) {
+            SourceCell *sourceCell = (SourceCell *)cell;
+            sourceCell.last.textColor = textColor;
+            sourceCell.last.backgroundColor = UITableViewCellBackgroundColor;
+            sourceCell.first.textColor = textColor;
+            sourceCell.first.backgroundColor = UITableViewCellBackgroundColor;
+        }
+        else if ([cell isKindOfClass:NSClassFromString(@"VKMRendererCell")]) {
+            for (UIView *subview in cell.contentView.subviews) {
+                if ([subview isKindOfClass:[UILabel class]]) {
+                    ((UILabel *)subview).textColor = textColor;
+                }
+            }
+            
+        }
+    }
+}
+
+
+CHDeclareClass(BaseSectionedSettingsController);
+CHOptimizedMethod(0, self, void, BaseSectionedSettingsController, viewWillLayoutSubviews)
+{
+    CHSuper(0, BaseSectionedSettingsController, viewWillLayoutSubviews);
+    NSArray <Class> *settingsExtraClasses = @[NSClassFromString(@"ModernGeneralSettings"), NSClassFromString(@"ModernAccountSettings"), NSClassFromString(@"AboutViewController")];
+    if ([settingsExtraClasses containsObject:[self class]])
+         setupExtraSettingsController(self);
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, BaseSectionedSettingsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, BaseSectionedSettingsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    NSArray <Class> *settingsExtraClasses = @[NSClassFromString(@"ModernGeneralSettings"), NSClassFromString(@"ModernAccountSettings"), NSClassFromString(@"AboutViewController")];
+    if ([settingsExtraClasses containsObject:[self class]])
+        setupExtraSettingsCell(cell);
+    return cell;
+}
+
+#pragma mark ProfileBannedController
+CHDeclareClass(ProfileBannedController);
+CHOptimizedMethod(0, self, void, ProfileBannedController, viewWillLayoutSubviews)
+{
+    CHSuper(0, ProfileBannedController, viewWillLayoutSubviews);
+    if ([self isKindOfClass:NSClassFromString(@"ProfileBannedController")])
+        setupExtraSettingsController(self);
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, ProfileBannedController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, ProfileBannedController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    if ([self isKindOfClass:NSClassFromString(@"ProfileBannedController")])
+        setupExtraSettingsCell(cell);
+    return cell;
+}
+
+#pragma mark SettingsPrivacyController
+CHDeclareClass(SettingsPrivacyController);
+CHOptimizedMethod(0, self, void, SettingsPrivacyController, viewWillLayoutSubviews)
+{
+    CHSuper(0, SettingsPrivacyController, viewWillLayoutSubviews);
+    if ([self isKindOfClass:NSClassFromString(@"SettingsPrivacyController")])
+        setupExtraSettingsController(self);
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, SettingsPrivacyController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, SettingsPrivacyController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    if ([self isKindOfClass:NSClassFromString(@"SettingsPrivacyController")])
+        setupExtraSettingsCell(cell);
+    return cell;
+}
+
+#pragma mark PaymentsBalanceController
+CHDeclareClass(PaymentsBalanceController);
+CHOptimizedMethod(0, self, void, PaymentsBalanceController, viewWillLayoutSubviews)
+{
+    CHSuper(0, PaymentsBalanceController, viewWillLayoutSubviews);
+    if ([self isKindOfClass:NSClassFromString(@"PaymentsBalanceController")])
+        setupExtraSettingsController(self);
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, PaymentsBalanceController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, PaymentsBalanceController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    if ([self isKindOfClass:NSClassFromString(@"PaymentsBalanceController")])
+        setupExtraSettingsCell(cell);
+    return cell;
+}
+
+#pragma mark SubscriptionsSettingsViewController
+CHDeclareClass(SubscriptionsSettingsViewController);
+CHOptimizedMethod(0, self, void, SubscriptionsSettingsViewController, viewWillLayoutSubviews)
+{
+    CHSuper(0, SubscriptionsSettingsViewController, viewWillLayoutSubviews);
+    if ([self isKindOfClass:NSClassFromString(@"SubscriptionsSettingsViewController")])
+        setupExtraSettingsController(self);
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, SubscriptionsSettingsViewController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, SubscriptionsSettingsViewController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    if ([self isKindOfClass:NSClassFromString(@"SubscriptionsSettingsViewController")])
+        setupExtraSettingsCell(cell);
+    return cell;
+}
+
+#pragma mark ModernPushSettingsController
+CHDeclareClass(ModernPushSettingsController);
+CHOptimizedMethod(0, self, void, ModernPushSettingsController, viewWillLayoutSubviews)
+{
+    CHSuper(0, ModernPushSettingsController, viewWillLayoutSubviews);
+    if ([self isKindOfClass:NSClassFromString(@"ModernPushSettingsController")])
+        setupExtraSettingsController(self);
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, ModernPushSettingsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, ModernPushSettingsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    if ([self isKindOfClass:NSClassFromString(@"ModernPushSettingsController")])
+        setupExtraSettingsCell(cell);
+    return cell;
+}
+
+#pragma mark VKP2PViewController
+CHDeclareClass(VKP2PViewController);
+CHOptimizedMethod(0, self, void, VKP2PViewController, viewWillLayoutSubviews)
+{
+    CHSuper(0, VKP2PViewController, viewWillLayoutSubviews);
+    if ([self isKindOfClass:NSClassFromString(@"VKP2PViewController")])
+        setupExtraSettingsController(self);
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, VKP2PViewController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, VKP2PViewController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    if ([self isKindOfClass:NSClassFromString(@"VKP2PViewController")])
+        setupExtraSettingsCell(cell);
+    return cell;
+}
+
+
+
 
 #pragma mark Static methods
 static void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
@@ -2616,6 +2824,7 @@ void updateCornerRadius(CFNotificationCenterRef center, void *observer, CFString
 CHConstructor
 {
     @autoreleasepool {
+//        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
         
         prefsPath = CVK_PREFS_PATH;
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
@@ -2889,6 +3098,36 @@ CHConstructor
             CHHook(2, ModernSettingsController, tableView, cellForRowAtIndexPath);
             CHHook(2, ModernSettingsController, tableView, didSelectRowAtIndexPath);
             CHHook(0, ModernSettingsController, viewWillLayoutSubviews);
+            
+            
+            
+            CHLoadLateClass(BaseSectionedSettingsController);
+            CHHook(2, BaseSectionedSettingsController, tableView, cellForRowAtIndexPath);
+            CHHook(0, BaseSectionedSettingsController, viewWillLayoutSubviews);
+            
+            CHLoadLateClass(ProfileBannedController);
+            CHHook(2, ProfileBannedController, tableView, cellForRowAtIndexPath);
+            CHHook(0, ProfileBannedController, viewWillLayoutSubviews);
+            
+            CHLoadLateClass(SettingsPrivacyController);
+            CHHook(2, SettingsPrivacyController, tableView, cellForRowAtIndexPath);
+            CHHook(0, SettingsPrivacyController, viewWillLayoutSubviews);
+            
+            CHLoadLateClass(PaymentsBalanceController);
+            CHHook(2, PaymentsBalanceController, tableView, cellForRowAtIndexPath);
+            CHHook(0, PaymentsBalanceController, viewWillLayoutSubviews);
+            
+            CHLoadLateClass(SubscriptionsSettingsViewController);
+            CHHook(2, SubscriptionsSettingsViewController, tableView, cellForRowAtIndexPath);
+            CHHook(0, SubscriptionsSettingsViewController, viewWillLayoutSubviews);
+            
+            CHLoadLateClass(ModernPushSettingsController);
+            CHHook(2, ModernPushSettingsController, tableView, cellForRowAtIndexPath);
+            CHHook(0, ModernPushSettingsController, viewWillLayoutSubviews);
+            
+            CHLoadLateClass(VKP2PViewController);
+            CHHook(2, VKP2PViewController, tableView, cellForRowAtIndexPath);
+            CHHook(0, VKP2PViewController, viewWillLayoutSubviews);
             
      
             

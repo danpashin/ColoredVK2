@@ -22,12 +22,10 @@
 
 "TWEAK_FOOTER_TEXT" = "Tweak version: %@\nVK App version: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Error loading tweak files.\nCheck their availability or contact developer.";
-"CRASH_DETECTED_WANT_TO_SEND_TO_DEV" = "Oops, like last time the error occurred in VKApp. Send log to developer?";
-"SEND" = "Send";
-"BETTER_NOT" = "Better not";
 "UNKNOWN" = "Unknown";
+"CRASH_OCCURED_MESSAGE" = "Looks like there was a crash of the app. The report will be sent to the Developer automatically.";
 
-"OH_YOU_HAVE_NOT_SAVED_COLORS" = "Oh, it seems you have no saved colors";
+"OH_YOU_HAVE_NOT_SAVED_COLORS" = "It seems you have no saved colors. Tap 'Save' to move color here.";
 "SAVED_COLORS" = "Saved colors";
 "COPY_SAVED" = "Copy saved";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Enter a hexadecimal color code\n(Symbol # is not necessary)";

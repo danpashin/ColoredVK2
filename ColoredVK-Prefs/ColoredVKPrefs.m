@@ -53,14 +53,16 @@
             
             if (specifier.properties[@"validTitles"]) {
                 NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
-                for (NSString *key in specifier.titleDictionary.allKeys) [tempDict setValue:NSLocalizedStringFromTableInBundle(specifier.titleDictionary[key], @"ColoredVK", self.bundle, nil) forKey:key];
+                for (NSString *key in specifier.titleDictionary.allKeys) 
+                    [tempDict setValue:NSLocalizedStringFromTableInBundle(specifier.titleDictionary[key], @"ColoredVK", self.bundle, nil) forKey:key];
                 specifier.titleDictionary = [tempDict copy];
             }
             
             if ([specifier.identifier isEqualToString:@"checkUpdates"] && [kPackageVersion containsString:@"beta"])
                 [specifier setProperty:@NO forKey:@"enabled"];
             if ([specifier.identifier isEqualToString:@"manageSettingsFooter"] && specifier.properties[@"footerText"])
-                 [specifier setProperty:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil), CVK_BACKUP_PATH] forKey:@"footerText"];
+                 [specifier setProperty:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil), CVK_BACKUP_PATH]
+                                 forKey:@"footerText"];
         }
     }
     
@@ -192,20 +194,28 @@
 
 - (void)showPurchaseAlert
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"AVAILABLE_IN_FULL_VERSION")
-                                                                                        preferredStyle:UIAlertControllerStyleAlert];
-        [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"THINK_LATER") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-        [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OF_COURSE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            [[ColoredVKNewInstaller sharedInstaller] actionPurchase];
-        }]];
-        [alertController presentFromController:self];
-    });
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"AVAILABLE_IN_FULL_VERSION")
+                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"THINK_LATER") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OF_COURSE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [[ColoredVKNewInstaller sharedInstaller] actionPurchase];
+    }]];
+    [alertController presentFromController:self];
 }
 
 - (BOOL)app_is_vk
 {
     return [[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"];
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
+    
+//    cell.textLabel.font = [UIFont fontWithName:@"AvenirNext-Medium" size:cell.textLabel.font.pointSize];
+    
+    return cell;
 }
 
 

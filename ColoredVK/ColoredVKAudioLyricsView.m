@@ -76,7 +76,7 @@
 {
     _text = text;
     dispatch_async(dispatch_get_main_queue(), ^{
-        [UIView transitionWithView:self.textView duration:0.5 
+        [UIView transitionWithView:self.textView duration:0.2 
                            options:UIViewAnimationOptionTransitionCrossDissolve|UIViewAnimationOptionAllowUserInteraction
                         animations:^{ self.textView.text = self.text; } completion:nil];
     });

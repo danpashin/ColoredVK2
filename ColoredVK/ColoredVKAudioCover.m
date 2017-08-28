@@ -249,6 +249,9 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
     if ([title hasPrefix:@"+"]) title = [title substringFromIndex:1];
     if ([title hasSuffix:@"+"]) title = [title substringToIndex:title.length - 1];
     
+    title = [self convertStringToURLSafe:title];
+    artist = [self convertStringToURLSafe:artist];
+    
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"ColoredVKAudioEntity"];
     NSString *cdArtist = [artist stringByReplacingOccurrencesOfString:@"+" withString:@""];
     NSString *cdTitle = [title stringByReplacingOccurrencesOfString:@"+" withString:@""];
@@ -261,9 +264,6 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         self.audioLyricsView.text = entity.lyrics;
         return;
     }
-
-    title = [self convertStringToURLSafe:title];
-    artist = [self convertStringToURLSafe:artist];
     
     NSString *url = [NSString stringWithFormat:@"%@/lyrics.php",  kPackageAPIURL];
     

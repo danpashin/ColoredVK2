@@ -45,6 +45,7 @@
         if ([identifier isEqualToString:@"friendsBackgroundImage"]) self.key = @"enabledFriendsImage";
         if ([identifier isEqualToString:@"videosBackgroundImage"]) self.key = @"enabledVideosImage";
         if ([identifier isEqualToString:@"settingsBackgroundImage"]) self.key = @"enabledSettingsImage";
+        if ([identifier isEqualToString:@"settingsExtraBackgroundImage"]) self.key = @"enabledSettingsExtraImage";
         
         int imageViewSize = 30;
         self.previewImageView = [UIImageView new];
