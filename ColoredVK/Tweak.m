@@ -2271,13 +2271,39 @@ CHOptimizedMethod(0, self, UIView *, ProfileCoverImageView, overlayView)
 
 
 #pragma mark PostEditController
-@interface PostEditController : UIViewController
-@end
 CHDeclareClass(PostEditController);
 CHOptimizedMethod(0, self, UIStatusBarStyle, PostEditController, preferredStatusBarStyle)
 {
-    if ([self isKindOfClass:NSClassFromString(@"PostEditController")] && (enabled && enabledBarColor)) return UIStatusBarStyleLightContent;
-    else return CHSuper(0, PostEditController, preferredStatusBarStyle);
+    if ([self isKindOfClass:NSClassFromString(@"PostEditController")] && (enabled && enabledBarColor))
+        return UIStatusBarStyleLightContent;
+    return CHSuper(0, PostEditController, preferredStatusBarStyle);
+}
+
+#pragma mark ProfileInfoEditController
+CHDeclareClass(ProfileInfoEditController);
+CHOptimizedMethod(0, self, UIStatusBarStyle, ProfileInfoEditController, preferredStatusBarStyle)
+{
+    if ([self isKindOfClass:NSClassFromString(@"ProfileInfoEditController")] && (enabled && enabledBarColor))
+        return UIStatusBarStyleLightContent;
+    return CHSuper(0, ProfileInfoEditController, preferredStatusBarStyle);
+}
+
+#pragma mark OptionSelectionController
+CHDeclareClass(OptionSelectionController);
+CHOptimizedMethod(0, self, UIStatusBarStyle, OptionSelectionController, preferredStatusBarStyle)
+{
+    if ([self isKindOfClass:NSClassFromString(@"OptionSelectionController")] && (enabled && enabledBarColor))
+        return UIStatusBarStyleLightContent;
+    return CHSuper(0, OptionSelectionController, preferredStatusBarStyle);
+}
+
+#pragma mark VKRegionSelectionViewController
+CHDeclareClass(VKRegionSelectionViewController);
+CHOptimizedMethod(0, self, UIStatusBarStyle, VKRegionSelectionViewController, preferredStatusBarStyle)
+{
+    if ([self isKindOfClass:NSClassFromString(@"VKRegionSelectionViewController")] && (enabled && enabledBarColor))
+        return UIStatusBarStyleLightContent;
+    return CHSuper(0, VKRegionSelectionViewController, preferredStatusBarStyle);
 }
 
 
@@ -3060,6 +3086,15 @@ CHConstructor
             
             CHLoadLateClass(PostEditController);
             CHHook(0, PostEditController, preferredStatusBarStyle);
+            
+            CHLoadLateClass(ProfileInfoEditController);
+            CHHook(0, ProfileInfoEditController, preferredStatusBarStyle);
+            
+            CHLoadLateClass(OptionSelectionController);
+            CHHook(0, OptionSelectionController, preferredStatusBarStyle);
+            
+            CHLoadLateClass(VKRegionSelectionViewController);
+            CHHook(0, VKRegionSelectionViewController, preferredStatusBarStyle);
             
             
             CHLoadLateClass(ProfileFriendsController);

@@ -474,3 +474,13 @@
 @interface VKP2PViewController : VKMLiveController
 @end
 
+
+@interface PostEditController : UIViewController
+@end
+@interface ProfileInfoEditController : VKMTableController
+@end
+@interface OptionSelectionController : UITableViewController
+@end
+@interface VKRegionSelectionViewController : VKMLiveController
+@end
+
