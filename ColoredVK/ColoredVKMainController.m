@@ -228,7 +228,10 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     if (!crash)
         return;
     
-    NSDictionary *allInfo = @{@"vk_version":self.appVersion, @"cvk_version":kPackageVersion, @"crash_info":crash};
+    struct utsname systemInfo;
+    uname(&systemInfo);
+    
+    NSDictionary *allInfo = @{@"vk_version":self.appVersion, @"cvk_version":kPackageVersion, @"ios_version": @(systemInfo.version), @"device": @(systemInfo.machine), @"crash_info":crash};
     
     NSError *error = nil;
     NSData *data = [NSJSONSerialization dataWithJSONObject:allInfo options:0 error:&error];

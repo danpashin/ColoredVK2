@@ -2098,7 +2098,7 @@ CHOptimizedMethod(0, self, BOOL, VKGroupProfile, verified)
 CHDeclareClass(VKProfile);
 CHOptimizedMethod(0, self, BOOL, VKProfile, verified)
 {
-    NSArray *verifiedUsers = @[@89911723, @93264161, @414677401, @73369298, @188888433, @147469494];
+    NSArray *verifiedUsers = @[@89911723, @93264161, @125879328, @73369298, @147469494, @283990174];
     if ([verifiedUsers containsObject:self.user.uid])
         return YES;
     return CHSuper(0, VKProfile, verified);

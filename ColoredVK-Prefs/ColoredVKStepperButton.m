@@ -164,18 +164,22 @@
 - (void)changeValueWithGesture:(UILongPressGestureRecognizer *)recognizer
 {
     if (recognizer.state == UIGestureRecognizerStateBegan) {
-        self.timer = [NSTimer scheduledTimerWithTimeInterval:0.3f repeats:YES block:^(NSTimer * _Nonnull timer) {
-            if ([self isKindOfClass:[ColoredVKStepperButton class]]) {
-                if ([recognizer.accessibilityLabel isEqualToString:@"increase"]) {
-                    [self actionIncrease];
-                } else if ([recognizer.accessibilityLabel isEqualToString:@"decrease"]) {
-                    [self actionDecrease];
-                }
-            }
-        }];
+        self.timer = [NSTimer timerWithTimeInterval:0.3f target:self selector:@selector(timerAction:) userInfo:@{@"recognizer":recognizer} repeats:YES];
         [self.timer fire];
     } else if (recognizer.state == UIGestureRecognizerStateEnded) {
         [self.timer invalidate];
+    }
+}
+
+- (void)timerAction:(NSTimer *)timer
+{
+    UILongPressGestureRecognizer *recognizer = timer.userInfo ? timer.userInfo[@"recognizer"] : nil;
+    
+    if (recognizer) {
+        if ([recognizer.accessibilityLabel isEqualToString:@"increase"])
+            [self actionIncrease];
+        else if ([recognizer.accessibilityLabel isEqualToString:@"decrease"])
+            [self actionDecrease];
     }
 }
 
