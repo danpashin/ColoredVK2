@@ -60,20 +60,23 @@
 
 - (NSString *)stringValue
 {
-    const CGFloat *components = CGColorGetComponents(self.CGColor);
-    return  [NSString stringWithFormat:@"%.3f, %.3f, %.3f, %.3f", components[0], components[1], components[2], components[3]];
+    CGFloat red, green, blue, alpha;
+    [self getRed:&red green:&green blue:&blue alpha:&alpha];
+    return  [NSString stringWithFormat:@"%.3f, %.3f, %.3f, %.3f", red, green, blue, alpha];
 }
 
 - (NSString *)rgbStringValue
 {
-    const CGFloat *components = CGColorGetComponents(self.CGColor);
-    return  [NSString stringWithFormat:@"%i, %i, %i, %.1f", (int)(components[0] * 255), (int)(components[1] * 255), (int)(components[2] * 255), components[3]];
+    CGFloat red, green, blue, alpha;
+    [self getRed:&red green:&green blue:&blue alpha:&alpha];
+    return  [NSString stringWithFormat:@"%i, %i, %i, %.1f", (int)(red * 255), (int)(green * 255), (int)(blue * 255), alpha];
 }
 
 - (NSString *)hexStringValue
 {
-    const CGFloat *components = CGColorGetComponents(self.CGColor);
-    return [NSString stringWithFormat:@"#%02X%02X%02X", (int)(components[0] * 255), (int)(components[1] * 255), (int)(components[2] * 255)].lowercaseString;
+    CGFloat red, green, blue;
+    [self getRed:&red green:&green blue:&blue alpha:nil];
+    return [NSString stringWithFormat:@"#%02X%02X%02X", (int)(red * 255), (int)(green * 255), (int)(blue * 255)].lowercaseString;
 }
 
 + (UIColor *)colorWithGradientStyle:(UIGradientStyle)gradientStyle withFrame:(CGRect)frame andColors:(NSArray<UIColor *> *)colors

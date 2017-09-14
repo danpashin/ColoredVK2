@@ -2684,20 +2684,32 @@ CHOptimizedMethod(2, self, UITableViewCell*, ModernSettingsController, tableView
         cell.backgroundColor = [UIColor whiteColor];
         cell.textLabel.textColor = [UIColor blackColor];
         cell.imageView.tintColor = kVKMainColor;
-    }
-    
-    if ([cell.textLabel.text isEqualToString:@"VKSettings"]) {
-        cell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
-    }
-    
-    if (enabled && enabledSettingsImage) {
-        performInitialCellSetup(cell);
-        cell.textLabel.textColor = changeSettingsTextColor ? settingsTextColor : UITableViewCellTextColor;
-        cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        cell.imageView.tintColor = cell.textLabel.textColor;
-    }
+        
+        if ([cvkMainController compareAppVersionWithVersion:@"3.0"] >= 0)
+            cell.imageView.tintColor = [UIColor colorWithRed:0.667 green:0.682 blue:0.702 alpha:1.0f];
+    }    
     
     return cell;
+}
+
+CHOptimizedMethod(3, self, void, ModernSettingsController, tableView, UITableView*, tableView, willDisplayCell, UITableViewCell *, cell, forRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    CHSuper(3, ModernSettingsController, tableView, tableView, willDisplayCell, cell, forRowAtIndexPath, indexPath);
+    
+    if ([self isKindOfClass:NSClassFromString(@"ModernSettingsController")]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([cell.textLabel.text.lowercaseString isEqualToString:@"vksettings"]) {
+                cell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
+            }
+            
+            if (enabled && enabledSettingsImage) {
+                performInitialCellSetup(cell);
+                cell.textLabel.textColor = changeSettingsTextColor ? settingsTextColor : UITableViewCellTextColor;
+                cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                cell.imageView.tintColor = cell.textLabel.textColor;
+            }
+        });
+    }
 }
 
 CHOptimizedMethod(2, self, void, ModernSettingsController, tableView, UITableView*, tableView, didSelectRowAtIndexPath, NSIndexPath*, indexPath)
@@ -3288,6 +3300,7 @@ CHConstructor
             CHLoadLateClass(ModernSettingsController);
             CHHook(2, ModernSettingsController, tableView, numberOfRowsInSection);
             CHHook(2, ModernSettingsController, tableView, cellForRowAtIndexPath);
+            CHHook(3, ModernSettingsController, tableView, willDisplayCell, forRowAtIndexPath);
             CHHook(2, ModernSettingsController, tableView, didSelectRowAtIndexPath);
             CHHook(0, ModernSettingsController, viewWillLayoutSubviews);
             

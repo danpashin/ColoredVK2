@@ -82,7 +82,7 @@
     for (UIView *view in self.view.subviews) {
         if ([view isKindOfClass:[UITableView class]]) {
             self.prefsTableView = (UITableView *)view;
-            self.prefsTableView.separatorColor = self.prefsTableView.backgroundColor;
+            self.prefsTableView.separatorColor = [UIColor clearColor];
             break;
         }
     }
@@ -231,6 +231,7 @@
     
     CGMutablePathRef pathRef = CGPathCreateMutable();
     CGRect shadowRect = bounds;
+    BOOL addSeparatorLine = NO;
     if (indexPath.row == 0 && indexPath.row == [tableView numberOfRowsInSection:indexPath.section]-1) {
         CGPathAddRoundedRect(pathRef, nil, bounds, cornerRadius, cornerRadius);
         shadowRect = bounds;
@@ -239,20 +240,32 @@
         CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMinY(bounds), CGRectGetMidX(bounds), CGRectGetMinY(bounds), cornerRadius);
         CGPathAddArcToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMinY(bounds), CGRectGetMaxX(bounds), CGRectGetMidY(bounds), cornerRadius);
         CGPathAddLineToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMaxY(bounds));
+        addSeparatorLine = YES;
     } else if (indexPath.row == [tableView numberOfRowsInSection:indexPath.section]-1) {
         CGPathMoveToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMinY(bounds));
         CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMaxY(bounds), CGRectGetMidX(bounds), CGRectGetMaxY(bounds), cornerRadius);
         CGPathAddArcToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMaxY(bounds), CGRectGetMaxX(bounds), CGRectGetMidY(bounds), cornerRadius);
         CGPathAddLineToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMinY(bounds));
+        addSeparatorLine = YES;
     } else {
         CGPathAddRect(pathRef, nil, bounds);
+        addSeparatorLine = YES;
     }
     layer.path = pathRef;
     CFRelease(pathRef);
     
+    if (addSeparatorLine) {
+        CALayer *lineLayer = [CALayer layer];
+        CGFloat lineHeight = (1.0f / [UIScreen mainScreen].scale);
+        CGFloat margin = 8.0f;
+        lineLayer.frame = CGRectMake(CGRectGetMinX(bounds) + margin, 0, CGRectGetWidth(bounds) - (margin * 2), lineHeight);
+        lineLayer.backgroundColor = [UIColor colorWithRed:232/255.0f green:233/255.0f blue:234/255.0f alpha:1.0f].CGColor;
+        [layer addSublayer:lineLayer];
+    }
+    
     UIView *backgroundView = [[UIView alloc] initWithFrame:bounds];
-    [backgroundView.layer insertSublayer:layer atIndex:0];
     backgroundView.backgroundColor = [UIColor clearColor];
+    [backgroundView.layer insertSublayer:layer atIndex:0];
     
     cell.backgroundColor = [UIColor clearColor];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
