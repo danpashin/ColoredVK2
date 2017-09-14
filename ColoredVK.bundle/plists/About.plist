@@ -92,16 +92,6 @@
 			<key>icon</key>
 			<string>CopyrightIcon.png</string>
 		</dict>
-		<dict>
-			<key>label</key>
-			<string>LICENCE_AGREEMENT</string>
-			<key>cell</key>
-			<string>PSButtonCell</string>
-			<key>action</key>
-			<string>showLicenceAgreement</string>
-			<key>icon</key>
-			<string>LicenceIcon.png</string>
-		</dict>
 	</array>
 </dict>
 </plist>

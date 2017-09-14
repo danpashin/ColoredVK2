@@ -456,6 +456,7 @@ void setToolBar(UIToolbar *toolbar)
                         break;
                     }
                 }
+                
                 toolbar.barTintColor = toolBarBackgroundColor;
                 if (canUseTint) toolbar.tintColor = toolBarForegroundColor;
                 
@@ -466,11 +467,17 @@ void setToolBar(UIToolbar *toolbar)
                             [btn setTitleColor:toolBarForegroundColor.darkerColor forState:UIControlStateDisabled];
                             [btn setTitleColor:toolBarForegroundColor forState:UIControlStateNormal];
                             BOOL btnToExclude = NO;
-                            NSArray *btnsWithActionsToExclude = @[@"actionToggleEmoji:"];
+                            NSMutableArray <NSString *> *btnsWithActionsToExclude = [NSMutableArray arrayWithObject:@"actionToggleEmoji:"];
+                            if ([cvkMainController compareAppVersionWithVersion:@"3.0"] >= 0) {
+                                [btnsWithActionsToExclude addObject:@"send:"];
+                                [btnsWithActionsToExclude addObject:@"actionSendInline:"];
+                            }
+                            
                             for (NSString *action in [btn actionsForTarget:btn.allTargets.allObjects[0] forControlEvent:UIControlEventTouchUpInside]) {
                                 if ([btnsWithActionsToExclude containsObject:action]) btnToExclude = YES;
                             }
-                            if (!btnToExclude && btn.currentImage) [btn setImage:[[btn imageForState:UIControlStateNormal] imageWithTintColor:toolBarForegroundColor] forState:UIControlStateNormal];
+                            if (!btnToExclude && btn.currentImage)
+                                [btn setImage:[[btn imageForState:UIControlStateNormal] imageWithTintColor:toolBarForegroundColor] forState:UIControlStateNormal];
                         }
                     }
                     
@@ -671,6 +678,9 @@ UIVisualEffectView *blurForView(UIView *view, NSInteger tag)
 
 void setupUISearchBar(UISearchBar *searchBar)
 {
+    if (![searchBar isKindOfClass:[UISearchBar class]])
+        return;
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         UIView *barBackground = searchBar.subviews[0].subviews[0];
         if (menuSelectionStyle == CVKCellSelectionStyleBlurred) {
@@ -695,6 +705,9 @@ void setupUISearchBar(UISearchBar *searchBar)
 
 void resetUISearchBar(UISearchBar *searchBar)
 {
+    if (![searchBar isKindOfClass:[UISearchBar class]])
+        return;
+    
     searchBar.backgroundColor = kMenuCellBackgroundColor;
     
     UIView *barBackground = searchBar.subviews[0].subviews[0];
@@ -1135,9 +1148,11 @@ CHDeclareClass(DialogsController);
 CHOptimizedMethod(0, self, void, DialogsController, viewWillLayoutSubviews)
 {
     CHSuper(0, DialogsController, viewWillLayoutSubviews);
-    if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && (enabled && enabledMessagesListImage)) {
-        [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
-                                      parallaxEffect:useMessagesListParallax blurBackground:messagesListUseBackgroundBlur];
+    if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && ([cvkMainController compareAppVersionWithVersion:@"3.0"] < 0)) {
+        if (enabled && enabledMessagesListImage) {
+            [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
+                                          parallaxEffect:useMessagesListParallax blurBackground:messagesListUseBackgroundBlur];
+        }
     }
 }
 
@@ -1145,18 +1160,46 @@ CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animat
 {
     CHSuper(1, DialogsController, viewWillAppear, animated);
     if ([self isKindOfClass:NSClassFromString(@"DialogsController")]) {
+        UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
+        if (![search isKindOfClass:[UISearchBar class]])
+            search = nil;
+        else
+            search.tag = 1;
+        
+        UIColor *placeholderColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1 alpha:0.7];
         if (enabled && enabledMessagesListImage) {
             self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
             self.tableView.separatorColor = (enabled && hideMessagesListSeparators)?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
             
-            UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
-            search.backgroundImage = [UIImage new];
-            search.tag = 1;
-            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
-            NSDictionary *attributes = @{NSForegroundColorAttributeName:changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
-            search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder
-                                                                                              attributes:attributes];
-            search._scopeBarBackgroundView.superview.hidden = YES;
+            if (search) {
+                search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+                search.backgroundImage = [UIImage new];
+                search._scopeBarBackgroundView.superview.hidden = YES;
+            }
+            
+        } else if ([cvkMainController compareAppVersionWithVersion:@"3.0"] >= 0) {
+            self.rptr.tintColor = nil;
+            self.tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
+            if (search) {
+                placeholderColor = [UIColor colorWithRed:0.556863 green:0.556863 blue:0.576471 alpha:1.0f];
+                search.searchBarTextField.backgroundColor = nil;
+                search._scopeBarBackgroundView.superview.hidden = NO;
+                search.backgroundImage = [UIImage imageWithColor:[UIColor colorWithRed:235/255.0f green:237/255.0f blue:240/255.0f alpha:1.0f]];
+            }
+        }
+        
+        if (search) {
+            NSMutableAttributedString *placeholder = [search.searchBarTextField.attributedPlaceholder mutableCopy];
+            [placeholder addAttribute:NSForegroundColorAttributeName value:placeholderColor range:NSMakeRange(0, placeholder.mutableString.length)];
+            search.searchBarTextField.attributedPlaceholder = placeholder;
+        }
+        
+        if ([cvkMainController compareAppVersionWithVersion:@"3.0"] >= 0) {
+            if (enabled && enabledMessagesListImage) {
+                [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
+                                              parallaxEffect:useMessagesListParallax blurBackground:messagesListUseBackgroundBlur];
+             } else
+                 self.tableView.backgroundView = nil;
         }
     }
 }
@@ -1353,19 +1396,23 @@ CHOptimizedMethod(0, self, NSArray*, VKMMainController, menu)
 CHOptimizedMethod(0, self, void, VKMMainController, viewDidLoad)
 {
     CHSuper(0, VKMMainController, viewDidLoad);
-    if (!cvkMainController.vkMainController) cvkMainController.vkMainController = self;
-    if (!cvkMainController.menuBackgroundView) {
-        CGRect bounds = [UIScreen mainScreen].bounds;
-        CGFloat width = (bounds.size.width > bounds.size.height)?bounds.size.height:bounds.size.width;
-        CGFloat height = (bounds.size.width < bounds.size.height)?bounds.size.height:bounds.size.width;
-        cvkMainController.menuBackgroundView = [[ColoredVKWallpaperView alloc] initWithFrame:CGRectMake(0, 0, width, height) 
-                                                                                   imageName:@"menuBackgroundImage" blackout:menuImageBlackout enableParallax:useMenuParallax blurBackground:NO];
-    }
+    if (!cvkMainController.vkMainController)
+        cvkMainController.vkMainController = self;
     
-    if (enabled && enabledMenuImage) {
-        [cvkMainController.menuBackgroundView addToBack:self.view animated:NO];
-        setupUISearchBar((UISearchBar*)self.tableView.tableHeaderView);
-        self.tableView.backgroundColor = [UIColor clearColor];
+    if (![self isKindOfClass:[UITabBarController class]]) {
+        if (!cvkMainController.menuBackgroundView) {
+            CGRect bounds = [UIScreen mainScreen].bounds;
+            CGFloat width = (bounds.size.width > bounds.size.height)?bounds.size.height:bounds.size.width;
+            CGFloat height = (bounds.size.width < bounds.size.height)?bounds.size.height:bounds.size.width;
+            cvkMainController.menuBackgroundView = [[ColoredVKWallpaperView alloc] initWithFrame:CGRectMake(0, 0, width, height) 
+                                                                                       imageName:@"menuBackgroundImage" blackout:menuImageBlackout enableParallax:useMenuParallax blurBackground:NO];
+        }
+        
+        if (enabled && enabledMenuImage) {
+            [cvkMainController.menuBackgroundView addToBack:self.view animated:NO];
+            setupUISearchBar((UISearchBar*)self.tableView.tableHeaderView);
+            self.tableView.backgroundColor = [UIColor clearColor];
+        }
     }
 }
 
@@ -1435,6 +1482,66 @@ CHOptimizedMethod(0, self, id, VKMMainController, VKMTableCreateSearchBar)
 {
     if (enabled && hideMenuSearch) return nil;
     return CHSuper(0, VKMMainController, VKMTableCreateSearchBar);
+}
+
+
+
+#pragma mark MenuViewController
+CHDeclareClass(MenuViewController);
+CHOptimizedMethod(0, self, void, MenuViewController, viewDidLoad)
+{
+    CHSuper(0, MenuViewController, viewDidLoad);
+    if (!cvkMainController.vkMenuController)
+        cvkMainController.vkMenuController = self;
+    
+    if (!cvkMainController.menuBackgroundView) {
+        CGRect bounds = [UIScreen mainScreen].bounds;
+        CGFloat width = (bounds.size.width > bounds.size.height)?bounds.size.height:bounds.size.width;
+        CGFloat height = (bounds.size.width < bounds.size.height)?bounds.size.height:bounds.size.width;
+        cvkMainController.menuBackgroundView = [[ColoredVKWallpaperView alloc] initWithFrame:CGRectMake(0, 0, width, height) 
+                                                                                   imageName:@"menuBackgroundImage" blackout:menuImageBlackout enableParallax:useMenuParallax blurBackground:NO];
+    }
+    
+    if (enabled && enabledMenuImage) {
+        [cvkMainController.menuBackgroundView addToBack:self.view animated:NO];
+        self.tableView.backgroundColor = [UIColor clearColor];
+    }
+}
+
+CHOptimizedMethod(2, self, UITableViewCell*, MenuViewController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, MenuViewController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    
+    if (enabled && hideMenuSeparators) tableView.separatorColor = [UIColor clearColor]; 
+    else if (enabled && !hideMenuSeparators) tableView.separatorColor = menuSeparatorColor; 
+    else tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0 alpha:1.0f];
+    
+    if (enabled && enabledMenuImage) {
+        cell.textLabel.textColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
+        cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        cell.imageView.tintColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1.0f alpha:0.8f];
+        cell.backgroundColor = [UIColor clearColor];
+        cell.contentView.backgroundColor = [UIColor clearColor];
+        
+        UIView *selectedBackView = [UIView new];
+        if (menuSelectionStyle == CVKCellSelectionStyleTransparent) selectedBackView.backgroundColor = menuSelectionColor;
+        else if (menuSelectionStyle == CVKCellSelectionStyleBlurred) {
+            selectedBackView.backgroundColor = [UIColor clearColor];
+            if (![selectedBackView.subviews containsObject: [selectedBackView viewWithTag:100] ]) [selectedBackView addSubview:blurForView(selectedBackView, 100)];
+            
+        } else selectedBackView.backgroundColor = [UIColor clearColor];
+        cell.selectedBackgroundView = selectedBackView;
+        
+    } else {
+        cell.imageView.tintColor = [UIColor colorWithRed:0.667f green:0.682f blue:0.702f alpha:1.0f];
+        cell.backgroundColor = [UIColor whiteColor];
+        cell.contentView.backgroundColor = [UIColor whiteColor];
+        cell.textLabel.textColor = [UIColor blackColor];
+        
+        cell.selectedBackgroundView = nil;
+    }
+    
+    return cell;
 }
 
 
@@ -2112,12 +2219,18 @@ CHOptimizedMethod(0, self, void, UserWallController, updateProfile)
     
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.profile.item) {
-            if ([self.profile.item.user.uid isEqual:@89911723]) {
+            NSDictionary <NSString *, NSString *> *users = @{@"89911723": @"DeveloperNavIcon", @"125879328": @"id125879328_NavIcon"};
+            NSString *stringID = [NSString stringWithFormat:@"%@", self.profile.item.user.uid];
+            
+            if (users[stringID]) {
                 CGRect navBarFrame = self.navigationController.navigationBar.bounds;
                 UIImageView *titleView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
                 titleView.center = CGPointMake(CGRectGetMidX(navBarFrame), CGRectGetMidY(navBarFrame));
-                titleView.image = [[UIImage imageNamed:@"DeveloperNavIcon" inBundle:cvkBunlde compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                titleView.tintColor = barForegroundColor;
+                titleView.image = [UIImage imageNamed:users[stringID] inBundle:cvkBunlde compatibleWithTraitCollection:nil];
+                if ([stringID isEqualToString:@"89911723"]) {
+                    titleView.image = [titleView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                    titleView.tintColor = barForegroundColor;
+                }
                 [UIView animateWithDuration:0.15f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
                     titleView.alpha = 0.0f;
                     self.navigationItem.titleView = titleView;
@@ -2793,33 +2906,68 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKP2PViewController, tableView, UIT
     return cell;
 }
 
+CHDeclareClass(AFURLConnectionOperation);
+CHDeclareMethod(0, NSURLRequest *, AFURLConnectionOperation, request)
+{
+    NSURLRequest *request = CHSuper(0, AFURLConnectionOperation, request);
+    
+    if ([request valueForHTTPHeaderField:@"User-Agent"].length > 0) {
+        NSMutableURLRequest *mutableRequest = [request mutableCopy];
+        [mutableRequest setValue:@"com.vk.vkclient/54 (unknown, iOS 10.3.3, iPad, Scale/2.000000)" forHTTPHeaderField:@"User-Agent"];
+        request = mutableRequest;
+    }
+    
+    return request;
+}
 
+CHDeclareMethod(0, void, AFURLConnectionOperation, start)
+{
+    if (![self.request.URL.absoluteString containsString:@"newsfeed.getDiscover"])
+        CHSuper(0, AFURLConnectionOperation, start);
+}
 
 
 #pragma mark Static methods
 static void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
     reloadPrefs();
+    if ([cvkMainController.vkMainController respondsToSelector:@selector(dialogsController)]) {
+        DialogsController *dialogsController = (DialogsController *)cvkMainController.vkMainController.dialogsController;
+        if ([dialogsController respondsToSelector:@selector(tableView)]) {
+            [dialogsController.tableView reloadData];
+        }
+    }
     [cvkMainController reloadSwitch:enabled];
 }
 
 static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
-{
+{    
     dispatch_async(dispatch_get_main_queue(), ^{
         BOOL shouldShow = (enabled && enabledMenuImage);
-        UITableView *menuTableView = cvkMainController.vkMainController.tableView;
-        UISearchBar *searchBar = (UISearchBar *)menuTableView.tableHeaderView;
-        shouldShow ? setupUISearchBar(searchBar) : resetUISearchBar(searchBar);
         
-        [menuTableView deselectRowAtIndexPath:menuTableView.indexPathForSelectedRow animated:YES];
+        VKMLiveController *menuController = nil;
+        if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]])
+            menuController = cvkMainController.vkMenuController;
+        else
+            menuController = cvkMainController.vkMainController;
+        
+        UITableView *menuTableView = menuController.tableView;
+        
+        UISearchBar *searchBar = (UISearchBar *)menuTableView.tableHeaderView;
+        if (menuTableView) {
+            shouldShow ? setupUISearchBar(searchBar) : resetUISearchBar(searchBar);
+            [menuTableView deselectRowAtIndexPath:menuTableView.indexPathForSelectedRow animated:YES];
+        }
         
         NSTimeInterval animationDuration = 0.2f;
         UIViewAnimationOptions options = UIViewAnimationOptionAllowUserInteraction;
         
         if (shouldShow) {
-            setupUISearchBar(searchBar);
-            [menuTableView reloadData];
-            menuTableView.backgroundColor = [UIColor clearColor];
+            if (menuTableView) {
+                setupUISearchBar(searchBar);
+                [menuTableView reloadData];
+                menuTableView.backgroundColor = [UIColor clearColor];
+            }
             
             [UIView animateWithDuration:animationDuration delay:0 options:options animations:^{
                 cvkMainController.menuBackgroundView.alpha = 1.0f;
@@ -2828,16 +2976,21 @@ static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFS
             [UIView animateWithDuration:animationDuration delay:0 options:options animations:^{
                 cvkMainController.menuBackgroundView.alpha = 0.0f;
             } completion:^(BOOL finished) {
-                menuTableView.backgroundColor = [UIColor colorWithRed:56.0/255.0f green:69.0/255.0f blue:84.0/255.0f alpha:1];
-                [menuTableView reloadData];
-                resetUISearchBar(searchBar);
+                if (menuTableView) {
+                    if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]])
+                        menuTableView.backgroundColor = [UIColor colorWithRed:235/255.0f green:237/255.0f blue:240/255.0f alpha:1.0f];
+                    else
+                        menuTableView.backgroundColor = [UIColor colorWithRed:56.0/255.0f green:69.0/255.0f blue:84.0/255.0f alpha:1];
+                    [menuTableView reloadData];
+                    resetUISearchBar(searchBar);
+                }
             }];
         }
         
         cvkMainController.menuBackgroundView.parallaxEnabled = useMenuParallax;
         if (shouldShow) {
             [cvkMainController.menuBackgroundView updateViewWithBlackout:menuImageBlackout];
-            [cvkMainController.menuBackgroundView addToBack:cvkMainController.vkMainController.view animated:NO];
+            [cvkMainController.menuBackgroundView addToBack:menuController.view animated:NO];
         }
     });
 }
@@ -2956,6 +3109,10 @@ CHConstructor
             CHHook(0, VKMMainController, VKMTableCreateSearchBar);
             CHHook(0, VKMMainController, menu);
             CHHook(0, VKMMainController, viewDidLoad);
+            
+            CHLoadLateClass(MenuViewController);
+            CHHook(2, MenuViewController, tableView, cellForRowAtIndexPath);
+            CHHook(0, MenuViewController, viewDidLoad);
             
             CHLoadLateClass(HintsSearchDisplayController);
             CHHook(1, HintsSearchDisplayController, searchDisplayControllerWillBeginSearch);

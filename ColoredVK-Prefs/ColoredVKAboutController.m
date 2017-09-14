@@ -8,7 +8,6 @@
 
 #import "ColoredVKAboutController.h"
 #import "ColoredVKLicencesController.h"
-#import "ColoredVKHelpController.h"
 #import "ColoredVKUpdatesController.h"
 #import "ColoredVKHeaderView.h"
 
@@ -38,11 +37,5 @@
     [controller show];
 }
 
-- (void)showLicenceAgreement
-{
-    ColoredVKHelpController *helpController = [ColoredVKHelpController new];
-    helpController.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
-    [helpController show];
-}
 @end
 

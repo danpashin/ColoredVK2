@@ -60,8 +60,12 @@
         self.previewImageView.translatesAutoresizingMaskIntoConstraints = NO;
         NSDictionary *metrics = @{@"width":@(imageViewSize)};
         NSDictionary *views = @{@"view":self.previewImageView};
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[view(width)]-|" options:0 metrics:metrics views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[view(width)]-|"   options:0 metrics:metrics views:views]];
+        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.previewImageView attribute:NSLayoutAttributeCenterY 
+                                                                     relatedBy:0 toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1.0f constant:0.0f]];
+        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.previewImageView attribute:NSLayoutAttributeHeight 
+                                                                     relatedBy:0 toItem:nil attribute:0 multiplier:1.0f constant:imageViewSize]];
+        
         
         NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
         self.switchView = [UISwitch new];

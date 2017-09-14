@@ -244,6 +244,9 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
 
 - (void)updateLyrycsForArtist:(NSString *)artist title:(NSString *)title
 {
+    if (artist.length <= 0 || title.length <= 0)
+        return;
+    
     if ([artist hasPrefix:@"+"]) artist = [artist substringFromIndex:1];
     if ([artist hasSuffix:@"+"]) artist = [artist substringToIndex:artist.length - 1];
     if ([title hasPrefix:@"+"]) title = [title substringFromIndex:1];

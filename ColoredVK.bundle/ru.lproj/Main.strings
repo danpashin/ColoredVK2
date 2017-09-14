@@ -7,7 +7,7 @@
 //  
     
 
-"ENABLED" = "Включено";
+"ENABLED" = "Включить";
 "NAVIGATION_TOOL_BAR" = "Бар навигации и тулбар";
 "MENU" = "Меню";
 "MESSAGES" = "Сообщения";

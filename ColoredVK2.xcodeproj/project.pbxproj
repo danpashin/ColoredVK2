@@ -140,10 +140,6 @@
 		A54249C81E0526C60018D3E3 /* UIImage+MultiFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = A54249C41E0526C60018D3E3 /* UIImage+MultiFormat.m */; };
 		A54249CA1E052A930018D3E3 /* ColoredVKAudioCover.m in Sources */ = {isa = PBXBuildFile; fileRef = A54249C91E052A930018D3E3 /* ColoredVKAudioCover.m */; };
 		A54249CB1E052A930018D3E3 /* ColoredVKAudioCover.m in Sources */ = {isa = PBXBuildFile; fileRef = A54249C91E052A930018D3E3 /* ColoredVKAudioCover.m */; };
-		A5453A9C1EC8F65800092ACF /* ColoredVKHelpController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5453A991EC8F65800092ACF /* ColoredVKHelpController.h */; };
-		A5453A9D1EC8F65800092ACF /* ColoredVKHelpController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5453A9A1EC8F65800092ACF /* ColoredVKHelpController.m */; };
-		A5453A9F1EC8F6CA00092ACF /* ColoredVKHelpController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5453A9A1EC8F65800092ACF /* ColoredVKHelpController.m */; };
-		A5453AA11EC8F6E700092ACF /* ColoredVKHelpController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5453A9A1EC8F65800092ACF /* ColoredVKHelpController.m */; };
 		A54E41F51EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */ = {isa = PBXBuildFile; fileRef = A54E41F31EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h */; };
 		A54E41F61EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */ = {isa = PBXBuildFile; fileRef = A54E41F31EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h */; };
 		A54E41F71EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */ = {isa = PBXBuildFile; fileRef = A54E41F31EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h */; };
@@ -654,8 +650,6 @@
 		A54249C31E0526C60018D3E3 /* UIImage+MultiFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+MultiFormat.h"; sourceTree = "<group>"; };
 		A54249C41E0526C60018D3E3 /* UIImage+MultiFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+MultiFormat.m"; sourceTree = "<group>"; };
 		A54249C91E052A930018D3E3 /* ColoredVKAudioCover.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKAudioCover.m; sourceTree = "<group>"; };
-		A5453A991EC8F65800092ACF /* ColoredVKHelpController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKHelpController.h; sourceTree = "<group>"; };
-		A5453A9A1EC8F65800092ACF /* ColoredVKHelpController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKHelpController.m; sourceTree = "<group>"; };
 		A54E41F31EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKBlurPrefsController.h; sourceTree = "<group>"; };
 		A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKBlurPrefsController.m; sourceTree = "<group>"; };
 		A55434FA1E636B19003B4256 /* Tweak.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tweak.h; sourceTree = "<group>"; };
@@ -1104,8 +1098,6 @@
 				A5739D5C1EA015A900367595 /* ColoredVKLicencesController.m */,
 				A5B1E29C1E509246001B8442 /* ColoredVKSettingsController.h */,
 				A5B1E29D1E509246001B8442 /* ColoredVKSettingsController.m */,
-				A5453A991EC8F65800092ACF /* ColoredVKHelpController.h */,
-				A5453A9A1EC8F65800092ACF /* ColoredVKHelpController.m */,
 				A510E7D31EF99CE9001D6798 /* ColoredVKSimpleAlertController.h */,
 				A510E7D41EF99CE9001D6798 /* ColoredVKSimpleAlertController.m */,
 				A5BC53A81F1234C200C4E1E0 /* ColoredVKAlertController.h */,
@@ -1474,7 +1466,6 @@
 				A5D979801DAEB8EA00607F06 /* HRColorMapView.h in Headers */,
 				A5739D651EA015B200367595 /* ColoredVKColorCell.h in Headers */,
 				A5B1E2841E505633001B8442 /* mztools.h in Headers */,
-				A5453A9C1EC8F65800092ACF /* ColoredVKHelpController.h in Headers */,
 				A5AB32791F34F8E100C7537C /* ColoredVKTweakPrefsController.h in Headers */,
 				A5B1E28C1E505633001B8442 /* zip.h in Headers */,
 				A5B124E01EA38B1600FAEE76 /* ColoredVKPasswordCell.h in Headers */,
@@ -1806,7 +1797,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A5453AA11EC8F6E700092ACF /* ColoredVKHelpController.m in Sources */,
 				A50A5A131F069CBC007561E2 /* ColoredVKResponsiveButton.m in Sources */,
 				A5B1E2641E505632001B8442 /* entropy.c in Sources */,
 				A5F09D991F0FF88200024198 /* ColoredVKNewInstaller.m in Sources */,
@@ -1942,7 +1932,6 @@
 				A5B1E2631E505632001B8442 /* entropy.c in Sources */,
 				A5D979CD1DAEC1CB00607F06 /* ColoredVKHeaderView.m in Sources */,
 				A5B1E27E1E505633001B8442 /* ioapi.c in Sources */,
-				A5453A9D1EC8F65800092ACF /* ColoredVKHelpController.m in Sources */,
 				A57B184B1E24F3D500A2A622 /* NSData+AESCrypt.m in Sources */,
 				A510E7D81EF99CE9001D6798 /* ColoredVKSimpleAlertController.m in Sources */,
 				A5B1E2921E505633001B8442 /* SSZipArchive.m in Sources */,
@@ -1964,7 +1953,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A5453A9F1EC8F6CA00092ACF /* ColoredVKHelpController.m in Sources */,
 				A5D56A8B1E70427300A8FFB5 /* fileenc.c in Sources */,
 				A5D56A8C1E70427300A8FFB5 /* HRBrightnessCursor.m in Sources */,
 				A5739D7A1EA015C300367595 /* ColoredVKStepperPrefsCell.m in Sources */,
@@ -2092,7 +2080,7 @@
 		A5D56AD61E70442900A8FFB5 /* Debug_APP */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.5-theux";
+				APP_VERSION = "3.6-theux";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -2195,7 +2183,7 @@
 		A5D979A51DAEBAD300607F06 /* Release_DEB */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.5-theux";
+				APP_VERSION = "3.6-theux";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -2261,7 +2249,7 @@
 		A5D979A81DAEBAD900607F06 /* Release_IPA */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.5-theux";
+				APP_VERSION = "3.6-theux";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;

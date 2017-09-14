@@ -37,6 +37,12 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
                                                                                 blackout:blackout enableParallax:parallaxEffect blurBackground:blurBackground];
         wallView.flip = flip;
         tableView.backgroundView = wallView;
+    } else {
+        ColoredVKWallpaperView *wallView = (ColoredVKWallpaperView *)tableView.backgroundView;
+        if ([wallView isKindOfClass:[ColoredVKWallpaperView class]]) {
+            [wallView updateViewWithBlackout:blackout];
+            wallView.blurBackground = blurBackground;
+        }
     }
 }
 
@@ -231,7 +237,8 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     struct utsname systemInfo;
     uname(&systemInfo);
     
-    NSDictionary *allInfo = @{@"vk_version":self.appVersion, @"cvk_version":kPackageVersion, @"ios_version": @(systemInfo.version), @"device": @(systemInfo.machine), @"crash_info":crash};
+    NSDictionary *allInfo = @{@"vk_version":self.appVersion, @"cvk_version":kPackageVersion, @"ios_version": [UIDevice currentDevice].systemVersion, 
+                              @"device": @(systemInfo.machine), @"crash_info":crash};
     
     NSError *error = nil;
     NSData *data = [NSJSONSerialization dataWithJSONObject:allInfo options:0 error:&error];
@@ -253,7 +260,5 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     [alert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {}]];
     [alert present];
 }
-
-
 
 @end

@@ -82,7 +82,7 @@
     for (UIView *view in self.view.subviews) {
         if ([view isKindOfClass:[UITableView class]]) {
             self.prefsTableView = (UITableView *)view;
-            self.prefsTableView.separatorColor = CVKTableViewSeparatorColor;
+            self.prefsTableView.separatorColor = self.prefsTableView.backgroundColor;
             break;
         }
     }
@@ -209,13 +209,69 @@
 }
 
 
+#pragma mark -
+#pragma mark UITableViewDelegate
+#pragma mark -
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
-    
-//    cell.textLabel.font = [UIFont fontWithName:@"AvenirNext-Medium" size:cell.textLabel.font.pointSize];
+    cell.textLabel.adjustsFontSizeToFitWidth = YES;
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CGFloat cornerRadius = 10.f;
+    CGRect bounds = CGRectInset(cell.bounds, 8, 0);
+    
+    CAShapeLayer *layer = [CAShapeLayer layer];
+    layer.fillColor = [UIColor whiteColor].CGColor;
+    
+    CGMutablePathRef pathRef = CGPathCreateMutable();
+    CGRect shadowRect = bounds;
+    if (indexPath.row == 0 && indexPath.row == [tableView numberOfRowsInSection:indexPath.section]-1) {
+        CGPathAddRoundedRect(pathRef, nil, bounds, cornerRadius, cornerRadius);
+        shadowRect = bounds;
+    } else if (indexPath.row == 0) {
+        CGPathMoveToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMaxY(bounds));
+        CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMinY(bounds), CGRectGetMidX(bounds), CGRectGetMinY(bounds), cornerRadius);
+        CGPathAddArcToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMinY(bounds), CGRectGetMaxX(bounds), CGRectGetMidY(bounds), cornerRadius);
+        CGPathAddLineToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMaxY(bounds));
+    } else if (indexPath.row == [tableView numberOfRowsInSection:indexPath.section]-1) {
+        CGPathMoveToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMinY(bounds));
+        CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMaxY(bounds), CGRectGetMidX(bounds), CGRectGetMaxY(bounds), cornerRadius);
+        CGPathAddArcToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMaxY(bounds), CGRectGetMaxX(bounds), CGRectGetMidY(bounds), cornerRadius);
+        CGPathAddLineToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMinY(bounds));
+    } else {
+        CGPathAddRect(pathRef, nil, bounds);
+    }
+    layer.path = pathRef;
+    CFRelease(pathRef);
+    
+    UIView *backgroundView = [[UIView alloc] initWithFrame:bounds];
+    [backgroundView.layer insertSublayer:layer atIndex:0];
+    backgroundView.backgroundColor = [UIColor clearColor];
+    
+    cell.backgroundColor = [UIColor clearColor];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.backgroundView = backgroundView;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    PSSpecifier *specifier = nil;
+    if ([self respondsToSelector:@selector(specifierAtIndexPath:)]) {
+        specifier = [self specifierAtIndexPath:indexPath];
+    } else {
+        NSInteger index = [self indexForRow:indexPath.row inGroup:indexPath.section];
+        specifier = [self specifierAtIndex:index];
+    }
+    if ([specifier.properties[@"cell"] isEqualToString:@"PSGiantIconCell"])
+        return 64.0f;
+    
+    return 48.0f;
 }
 
 

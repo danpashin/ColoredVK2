@@ -43,12 +43,20 @@
             if (![[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"])
                 userChangedColor = NO;
             
-            if (!userChangedColor) {
+            dispatch_async(dispatch_get_main_queue(), ^{
                 UISwitch *switchView = (UISwitch *)self.accessoryView;
-                switchView.tintColor = [UIColor colorWithRed:235.0/255.0f green:235.0/255.0f blue:235.0/255.0f alpha:1.0];
-                switchView.onTintColor = CVKMainColor;
-            }
+                switchView.backgroundColor = [UIColor colorWithRed:234/255.0f green:234/255.0f blue:239/255.0f alpha:1.0f];
+                switchView.layer.cornerRadius = 16.0f;
+                switchView.thumbTintColor = [UIColor whiteColor];
+                
+                if (!userChangedColor) {
+                    switchView.onTintColor = CVKMainColor;
+                    switchView.tintColor = [UIColor clearColor];
+                }
+            });
+            
         }
     }
 }
+
 @end

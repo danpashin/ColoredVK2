@@ -38,13 +38,19 @@
 @interface VKMMainController : VKMLiveController
 @end
 
+@interface VKMMainController ()
+@property(retain, nonatomic) UIViewController *dialogsController;
+@end
+
 
 
 @interface MenuCell : UITableViewCell
 @property (copy, nonatomic) id(^select)(id arg1, id arg2);
 @end
 
-
+@interface MenuViewController : VKMLiveController
+@property(retain, nonatomic) NSArray *menu;
+@end
 
 @interface VKMNavContext : NSObject 
 + (id)applicationNavRoot;
@@ -482,5 +488,10 @@
 @interface OptionSelectionController : UITableViewController
 @end
 @interface VKRegionSelectionViewController : VKMLiveController
+@end
+
+@interface AFURLConnectionOperation : NSOperation
+@property(retain, nonatomic) NSURLResponse *response;
+@property(retain, nonatomic) NSURLRequest *request; 
 @end
 

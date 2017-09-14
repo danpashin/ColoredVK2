@@ -11,6 +11,7 @@
 
 @interface NSString (ColoredVK)
 @property (nonatomic, readonly, copy) UIColor *colorValue;
+@property (nonatomic, readonly, copy) UIColor *rgbColorValue;
 @property (nonatomic, readonly, copy) UIColor *hexColorValue;
 @property (nonatomic, getter=isHexColor, readonly) BOOL hexColor;
 @end

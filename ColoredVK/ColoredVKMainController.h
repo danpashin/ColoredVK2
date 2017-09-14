@@ -39,6 +39,7 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 @property (strong, nonatomic) ColoredVKWallpaperView *menuBackgroundView;
 @property (strong, nonatomic) ColoredVKWallpaperView *navBarImageView;
 @property (weak, nonatomic) VKMMainController *vkMainController;
+@property (weak, nonatomic) MenuViewController *vkMenuController;
 
 
 - (void)reloadSwitch:(BOOL)on;

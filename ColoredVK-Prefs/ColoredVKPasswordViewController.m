@@ -46,7 +46,7 @@
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.separatorColor = CVKTableViewSeparatorColor;
+    self.tableView.separatorColor = self.tableView.backgroundColor;
     self.tableView.allowsSelection = NO;
     [self.view addSubview:self.tableView];
     
