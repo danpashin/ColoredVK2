@@ -37,7 +37,12 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
                                                                                 blackout:blackout enableParallax:parallaxEffect blurBackground:blurBackground];
         wallView.flip = flip;
         tableView.backgroundView = wallView;
-    } else {
+    }
+}
+
++ (void)forceUpdateTableView:(UITableView *)tableView withBlackout:(CGFloat)blackout blurBackground:(BOOL)blurBackground
+{
+    if (tableView.backgroundView.tag == 23) {
         ColoredVKWallpaperView *wallView = (ColoredVKWallpaperView *)tableView.backgroundView;
         if ([wallView isKindOfClass:[ColoredVKWallpaperView class]]) {
             [wallView updateViewWithBlackout:blackout];
@@ -256,9 +261,9 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
                               }
                           } failure:nil];
     
-    ColoredVKAlertController *alert = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"CRASH_OCCURED_MESSAGE") preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {}]];
-    [alert present];
+//    ColoredVKAlertController *alert = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"CRASH_OCCURED_MESSAGE") preferredStyle:UIAlertControllerStyleAlert];
+//    [alert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {}]];
+//    [alert present];
 }
 
 @end

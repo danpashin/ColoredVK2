@@ -432,6 +432,7 @@
 
 @interface LoadingFooterView : UIView
 @property(readonly, retain, nonatomic) UILabel *label;
+@property(readonly, retain, nonatomic) UIActivityIndicatorView *anim;
 @end
 
 @interface VKAudioPlayerListTableViewController : UITableViewController
@@ -490,8 +491,25 @@
 @interface VKRegionSelectionViewController : VKMLiveController
 @end
 
+
+
 @interface AFURLConnectionOperation : NSOperation
 @property(retain, nonatomic) NSURLResponse *response;
+@property(copy, nonatomic) NSString *responseString;
 @property(retain, nonatomic) NSURLRequest *request; 
+@end
+
+@interface AFHTTPRequestOperation : AFURLConnectionOperation
+@end
+
+@interface AFJSONRequestOperation : AFHTTPRequestOperation
+@property(retain, nonatomic) id responseJSON;
+@end
+
+
+
+@interface CommunityCommentsCell : VKMCell
+@property(readonly, nonatomic) UILabel *subtitleLabel;
+@property(readonly, nonatomic) UILabel *titleLabel;
 @end
 

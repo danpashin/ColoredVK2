@@ -1198,6 +1198,7 @@ CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animat
             if (enabled && enabledMessagesListImage) {
                 [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
                                               parallaxEffect:useMessagesListParallax blurBackground:messagesListUseBackgroundBlur];
+                [ColoredVKMainController forceUpdateTableView:self.tableView withBlackout:chatListImageBlackout blurBackground:messagesListUseBackgroundBlur];
              } else
                  self.tableView.backgroundView = nil;
         }
@@ -2410,6 +2411,13 @@ CHOptimizedMethod(0, self, UIStatusBarStyle, OptionSelectionController, preferre
     return CHSuper(0, OptionSelectionController, preferredStatusBarStyle);
 }
 
+CHOptimizedMethod(1, self, void, OptionSelectionController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, OptionSelectionController, viewWillAppear, animated);
+    if ([self isKindOfClass:NSClassFromString(@"OptionSelectionController")])
+        resetNavigationBar(self.navigationController.navigationBar);
+}
+
 #pragma mark VKRegionSelectionViewController
 CHDeclareClass(VKRegionSelectionViewController);
 CHOptimizedMethod(0, self, UIStatusBarStyle, VKRegionSelectionViewController, preferredStatusBarStyle)
@@ -2637,6 +2645,7 @@ CHOptimizedMethod(0, self, void, UITableView, layoutSubviews)
     if (enabled && ([self.tableFooterView isKindOfClass:NSClassFromString(@"LoadingFooterView")] && [self.backgroundView isKindOfClass:[ColoredVKWallpaperView class]])) {
         LoadingFooterView *footerView = (LoadingFooterView *)self.tableFooterView;
         footerView.label.textColor = UITableViewCellTextColor;
+        footerView.anim.color = UITableViewCellTextColor;
     }
 }
 
@@ -2792,7 +2801,12 @@ void setupExtraSettingsCell(UITableViewCell *cell)
                     ((UILabel *)subview).textColor = textColor;
                 }
             }
-            
+        } else if ([cell isKindOfClass:NSClassFromString(@"CommunityCommentsCell")]) {
+            CommunityCommentsCell *commentsCell =  (CommunityCommentsCell *)cell;
+            commentsCell.titleLabel.textColor = textColor;
+            commentsCell.titleLabel.backgroundColor = UITableViewCellBackgroundColor;
+            commentsCell.subtitleLabel.textColor = textColor;
+            commentsCell.subtitleLabel.backgroundColor = UITableViewCellBackgroundColor;
         }
     }
 }
@@ -2923,20 +2937,59 @@ CHDeclareMethod(0, NSURLRequest *, AFURLConnectionOperation, request)
 {
     NSURLRequest *request = CHSuper(0, AFURLConnectionOperation, request);
     
-    if ([request valueForHTTPHeaderField:@"User-Agent"].length > 0) {
-        NSMutableURLRequest *mutableRequest = [request mutableCopy];
-        [mutableRequest setValue:@"com.vk.vkclient/54 (unknown, iOS 10.3.3, iPad, Scale/2.000000)" forHTTPHeaderField:@"User-Agent"];
-        request = mutableRequest;
+    NSMutableURLRequest *mutableRequest = [request mutableCopy];
+    
+    if ([cvkMainController compareAppVersionWithVersion:@"3.0"] >= 0) {
+        NSString *versionForReplace = @"v=5.69";
+        NSString *versionToReplace = @"v=5.68";
+        NSString *parameters = [[NSString alloc] initWithData:request.HTTPBody encoding:NSUTF8StringEncoding];
+        if (parameters.length > 0) {
+            parameters = [parameters stringByReplacingOccurrencesOfString:versionForReplace withString:versionToReplace];
+            parameters = [parameters stringByReplacingOccurrencesOfString:@"device_id" withString:@"device"];
+            mutableRequest.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];
+        }
+        NSString *url = mutableRequest.URL.absoluteString;
+        url = [url stringByReplacingOccurrencesOfString:versionForReplace withString:versionToReplace];
+        url = [url stringByReplacingOccurrencesOfString:@"device_id" withString:@"device"];
+        
+        mutableRequest.URL = [NSURL URLWithString:url];
+        
+        if ([mutableRequest valueForHTTPHeaderField:@"User-Agent"].length > 0) {
+            UIDevice *device = [UIDevice currentDevice];
+            NSString *agent = [NSString stringWithFormat:@"com.vk.vkclient/54 (unknown, iOS %@, %@, Scale/2.000000)", device.systemVersion, device.model];
+            [mutableRequest setValue:agent forHTTPHeaderField:@"User-Agent"];
+        }
     }
     
-    return request;
+    return mutableRequest;
 }
 
 CHDeclareMethod(0, void, AFURLConnectionOperation, start)
 {
-    if (![self.request.URL.absoluteString containsString:@"newsfeed.getDiscover"])
+    BOOL shouldBreak = NO;
+    
+    NSArray <NSString *> *explicitMethods = @[@"API.stats.trackEvents"];
+    for (NSString *method in explicitMethods) {
+        if ([self.request.URL.absoluteString containsString:method]) {
+            shouldBreak = YES;
+            break;
+        }
+    }
+    
+    if (!shouldBreak)
         CHSuper(0, AFURLConnectionOperation, start);
 }
+
+
+//CHDeclareClass(AFJSONRequestOperation);
+//CHDeclareMethod(0, id, AFJSONRequestOperation, responseJSON)
+//{
+//    id responseJSON = CHSuper(0, AFJSONRequestOperation, responseJSON);
+//    
+//    NSLog(@"%@", responseJSON);
+//    
+//    return responseJSON;
+//}
 
 
 #pragma mark Static methods
@@ -3261,6 +3314,7 @@ CHConstructor
             
             CHLoadLateClass(OptionSelectionController);
             CHHook(0, OptionSelectionController, preferredStatusBarStyle);
+            CHHook(1, OptionSelectionController, viewWillAppear);
             
             CHLoadLateClass(VKRegionSelectionViewController);
             CHHook(0, VKRegionSelectionViewController, preferredStatusBarStyle);

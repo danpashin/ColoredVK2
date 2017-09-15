@@ -27,6 +27,7 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect blurBackground:(BOOL)blurBackground;
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip 
              parallaxEffect:(BOOL)parallaxEffect blurBackground:(BOOL)blurBackground;
++ (void)forceUpdateTableView:(UITableView *)tableView withBlackout:(CGFloat)blackout blurBackground:(BOOL)blurBackground;
 
 /**
  * Returns application version from Info.plist
