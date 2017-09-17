@@ -30,4 +30,6 @@
 - (NSArray *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize addFooter:(BOOL)addFooter;
 - (void)showPurchaseAlert;
 
+- (PSSpecifier *)specifierForIndexPath:(NSIndexPath *)indexPath;
+
 @end

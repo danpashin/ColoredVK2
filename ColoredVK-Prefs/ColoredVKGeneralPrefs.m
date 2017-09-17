@@ -53,13 +53,7 @@ NSArray <NSString *> *specifiersToDisable;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PSSpecifier *specifier = nil;
-    if ([self respondsToSelector:@selector(specifierAtIndexPath:)]) {
-        specifier = [self specifierAtIndexPath:indexPath];
-    } else {
-        NSInteger index = [self indexForRow:indexPath.row inGroup:indexPath.section];
-        specifier = [self specifierAtIndex:index];
-    }
+    PSSpecifier *specifier = [self specifierForIndexPath:indexPath];
     
     if (![[specifier propertyForKey:@"enabled"] boolValue]) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];

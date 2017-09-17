@@ -59,35 +59,36 @@
     }
 }
 
-- (void)updateColors
+- (void)setShapeColor:(BOOL)tapped
 {
-   if ([self.cellTarget isKindOfClass:[ColoredVKPrefs class]]) {
-       if (self.backgroundView) {
-           if (self.backgroundView.layer.sublayers.count > 0) {
-               CAShapeLayer *shapeLayer = (CAShapeLayer *)self.backgroundView.layer.sublayers.firstObject;
-               if ([shapeLayer isKindOfClass:[CAShapeLayer class]]) {
-                   if (self.selected || self.highlighted)
-                       shapeLayer.fillColor = @"#dddddd".hexColorValue.CGColor;
-                   else
-                       shapeLayer.fillColor = [UIColor whiteColor].CGColor;
-               }
-           }
-       }
-   }
+    if ([self.cellTarget isKindOfClass:[ColoredVKPrefs class]]) {
+        if (self.backgroundView && (self.backgroundView.layer.sublayers.count > 0)) {
+            CAShapeLayer *shapeLayer = (CAShapeLayer *)self.backgroundView.layer.sublayers.firstObject;
+            if ([shapeLayer isKindOfClass:[CAShapeLayer class]]) {
+                if (tapped) {
+                    shapeLayer.fillColor = @"#dddddd".hexColorValue.CGColor;
+                } else {
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        shapeLayer.fillColor = [UIColor whiteColor].CGColor;
+                    });
+                }
+            }
+        }
+    }
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
     
-    [self updateColors];
+    [self setShapeColor:selected];
 }
 
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
 {
     [super setHighlighted:highlighted animated:animated];
     
-    [self updateColors];
+    [self setShapeColor:highlighted];
 }
 
 @end

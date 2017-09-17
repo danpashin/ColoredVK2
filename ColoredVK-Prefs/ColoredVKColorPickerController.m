@@ -176,12 +176,19 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     
 
     [self updateSavedColorsFromPrefs];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViews) name:UIDeviceOrientationDidChangeNotification object:nil];
 }
 
-- (void)viewWillLayoutSubviews
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillLayoutSubviews];
+    [super viewWillAppear:animated];
     
+    [self updateViews];
+}
+
+- (void)updateViews
+{    
     UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
     
     UICollectionViewFlowLayout *collectionViewLayout = (UICollectionViewFlowLayout *)self.savedCollectionView.collectionViewLayout;
@@ -200,13 +207,12 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
         self.savedColorsLabel.font = [self.savedColorsLabel.font fontWithSize:20.0f];
     }
     
+    [self setupConstraints];
 }
 
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
-    
-    [self setupConstraints];
     
     if (self.contentViewWantsShadow) {
         self.contentView.layer.shadowRadius = IS_IPAD ? 15.0f : 8.0f;
@@ -457,6 +463,11 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
             [self.savedCollectionView reloadData];
         }
     } completion:nil];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 

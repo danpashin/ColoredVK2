@@ -13,8 +13,8 @@
 @interface ColoredVKNewInstaller : NSObject
 
 FOUNDATION_EXPORT void(^installerCompletionBlock)(BOOL purchased);
-FOUNDATION_EXPORT void installerActionLogin(NSString *login, NSString *password, void(^completionBlock)());
-FOUNDATION_EXPORT void installerActionLogout(NSString *password, void(^completionBlock)());
+FOUNDATION_EXPORT void installerActionLogin(NSString *login, NSString *password, void(^completionBlock)(void));
+FOUNDATION_EXPORT void installerActionLogout(NSString *password, void(^completionBlock)(void));
 
 + (instancetype)sharedInstaller;
 
@@ -29,6 +29,6 @@ FOUNDATION_EXPORT void installerActionLogout(NSString *password, void(^completio
 
 - (void)checkStatusAndShowAlert:(BOOL)showAlert;
 - (void)actionPurchase;
-- (void)updateAccountInfo:( void(^)() )completionBlock;
+- (void)updateAccountInfo:( void(^)(void) )completionBlock;
 
 @end

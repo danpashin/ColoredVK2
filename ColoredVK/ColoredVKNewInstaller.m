@@ -236,7 +236,7 @@ NSString *userPassword;
 #pragma mark -
 #pragma mark Backend
 #pragma mark -
-- (void)updateAccountInfo:( void(^)() )completionBlock
+- (void)updateAccountInfo:( void(^)(void) )completionBlock
 {
     if (self.userID) {
         if (self.tweakPurchased && self.tweakActivated) {
@@ -302,7 +302,7 @@ void writeFreeLicence(BOOL showAlert)
     });
 }
 
-void installerActionLogin(NSString *login, NSString *password, void(^completionBlock)())
+void installerActionLogin(NSString *login, NSString *password, void(^completionBlock)(void))
 {
     [[ColoredVKNewInstaller sharedInstaller] showHudWithText:CVKLocalizedString(@"PLEASE_WAIT")];
     
@@ -317,7 +317,7 @@ void installerActionLogin(NSString *login, NSString *password, void(^completionB
 }
 
 
-void installerActionLogout(NSString *password, void(^completionBlock)())
+void installerActionLogout(NSString *password, void(^completionBlock)(void))
 {
     [[ColoredVKNewInstaller sharedInstaller] showHudWithText:CVKLocalizedString(@"PLEASE_WAIT")];
     
@@ -384,7 +384,7 @@ void installerActionLogout(NSString *password, void(^completionBlock)())
                                       }];
 }
 
-static void download(id parameters,BOOL isAuthorisation, void(^completionBlock)())
+static void download(id parameters,BOOL isAuthorisation, void(^completionBlock)(void))
 {
     void (^showAlertBlock)(NSError *error) = ^(NSError *error) {
         NSString *text = error.localizedDescription;

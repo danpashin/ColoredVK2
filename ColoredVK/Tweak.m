@@ -521,7 +521,7 @@ void setupSearchController(UISearchDisplayController *controller, BOOL reset)
     
     if (enabled && shouldCustomize) {
         if (reset) {
-            void (^removeAllBlur)() = ^void() {
+            void (^removeAllBlur)(void) = ^void() {
                 [[controller.searchBar._backgroundView viewWithTag:10] removeFromSuperview];
                 [[controller.searchBar._scopeBarBackgroundView.superview viewWithTag:10] removeFromSuperview];
                 controller.searchBar.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
@@ -2968,7 +2968,7 @@ CHDeclareMethod(0, void, AFURLConnectionOperation, start)
 {
     BOOL shouldBreak = NO;
     
-    NSArray <NSString *> *explicitMethods = @[@"API.stats.trackEvents"];
+    NSArray <NSString *> *explicitMethods = @[@"API.stats.trackEvents", @"newsfeed.getDiscover"];
     for (NSString *method in explicitMethods) {
         if ([self.request.URL.absoluteString containsString:method]) {
             shouldBreak = YES;
@@ -2990,7 +2990,6 @@ CHDeclareMethod(0, void, AFURLConnectionOperation, start)
 //    
 //    return responseJSON;
 //}
-
 
 #pragma mark Static methods
 static void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
@@ -3078,12 +3077,11 @@ CHConstructor
         
         NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:prefsPath];
         if (![[NSFileManager defaultManager] fileExistsAtPath:prefsPath]) prefs = [NSMutableDictionary new];
-        NSString *vkVersion = cvkMainController.appVersion;
-        prefs[@"vkVersion"] = vkVersion;
+        prefs[@"vkVersion"] = cvkMainController.appVersionDetailed;
         [prefs writeToFile:prefsPath atomically:YES];
         VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil)?YES:NO;
         
-        if ([cvkMainController compareVersion:vkVersion withVersion:@"2.2"]  >= ColoredVKVersionCompareEqual) {
+        if ([cvkMainController compareAppVersionWithVersion:@"2.2"]  >= ColoredVKVersionCompareEqual) {
             CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
             CFNotificationCenterAddObserver(center, NULL, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             CFNotificationCenterAddObserver(center, NULL, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
@@ -3285,7 +3283,7 @@ CHConstructor
             CHHook(0, AudioRenderer, playIndicator);
             
             
-            if ([cvkMainController compareVersion:vkVersion withVersion:@"2.9"] >= ColoredVKVersionCompareEqual) {
+            if ([cvkMainController compareAppVersionWithVersion:@"2.9"] >= ColoredVKVersionCompareEqual) {
                 CHLoadLateClass(ChatCell);
                 CHHook(0, ChatCell, setBG);
             }
@@ -3402,7 +3400,7 @@ CHConstructor
        
 
         } else {
-            showAlertWithMessage([NSString stringWithFormat:CVKLocalizedString(@"VKAPP_VERSION_IS_TOO_LOW"),  vkVersion, @"2.2"]);
+            showAlertWithMessage([NSString stringWithFormat:CVKLocalizedString(@"VKAPP_VERSION_IS_TOO_LOW"), cvkMainController.appVersion, @"2.2"]);
         }
     }
 }

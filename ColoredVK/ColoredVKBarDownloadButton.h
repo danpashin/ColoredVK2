@@ -14,7 +14,7 @@
 + (instancetype)button;
 
 @property (strong, nonatomic) NSString *url;
-@property (strong, nonatomic) NSString*(^urlBlock)();
+@property (strong, nonatomic) NSString*(^urlBlock)(void);
 @property (weak, nonatomic) UIViewController *rootViewController;
 
 @end

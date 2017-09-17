@@ -87,13 +87,7 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        PSSpecifier *specifier = nil;
-        if ([self respondsToSelector:@selector(specifierAtIndexPath:)]) {
-            specifier = [self specifierAtIndexPath:indexPath];
-        } else {
-            NSInteger index = [self indexForRow:indexPath.row inGroup:indexPath.section];
-            specifier = [self specifierAtIndex:index];
-        }
+        PSSpecifier *specifier = [self specifierForIndexPath:indexPath];
         
         NSError *error = nil;
         BOOL success = [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", CVK_BACKUP_PATH, specifier.properties[@"filename"]] error:&error];
@@ -109,6 +103,7 @@
     [shareButton addTarget:self action:@selector(actionShare:) forControlEvents:UIControlEventTouchUpInside];
     [shareButton setImage:[UIImage imageNamed:@"ShareIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil] forState:UIControlStateNormal];
     shareButton.accessibilityValue = cell.specifier.properties[@"filename"];
+    shareButton.isAccessibilityElement = NO;
     cell.accessoryView = shareButton;
     
     return cell;
@@ -116,13 +111,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PSSpecifier *specifier = nil;
-    if ([self respondsToSelector:@selector(specifierAtIndexPath:)]) {
-        specifier = [self specifierAtIndexPath:indexPath];
-    } else {
-        NSInteger index = [self indexForRow:indexPath.row inGroup:indexPath.section];
-        specifier = [self specifierAtIndex:index];
-    }
+    PSSpecifier *specifier = [self specifierForIndexPath:indexPath];
     
     NSString *message = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"RESTORE_BACKUP_QUESTION", nil, self.cvkBundle, nil), specifier.properties[@"filename"]];
     ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];

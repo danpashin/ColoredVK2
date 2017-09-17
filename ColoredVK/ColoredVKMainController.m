@@ -121,9 +121,11 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     ColoredVKMainPrefsController *cvkPrefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
     
     if (withPush) {
-        [mainContext push:cvkPrefs animated:YES];
+        if ([mainContext respondsToSelector:@selector(push:animated:)])
+            [mainContext push:cvkPrefs animated:YES];
     } else {
-        [mainContext reset:cvkPrefs];
+        if ([mainContext respondsToSelector:@selector(reset:)])
+            [mainContext reset:cvkPrefs];
     }
 }
 
@@ -213,7 +215,12 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
 }
 
-- (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)() )handler
+- (NSString *)appVersionDetailed
+{
+    return [NSString stringWithFormat:@"%@ (%@)", self.appVersion, [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
+}
+
+- (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)(void) )handler
 {
     UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer * _Nonnull sender) {
         CGPoint location = [sender locationInView:sender.view];

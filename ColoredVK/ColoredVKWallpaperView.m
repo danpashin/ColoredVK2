@@ -88,7 +88,7 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
     
     dispatch_async(dispatch_get_main_queue(), ^{
         CGFloat flipDegree = flip ? 180.0f : 0.0f;
-        void (^flipBlock)() = ^{
+        void (^flipBlock)(void) = ^{
             self.imageView.transform = CGAffineTransformMakeRotation(flipDegree * M_PI/180);
         };
         
@@ -107,7 +107,7 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
     _blackout = blackout;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        void (^blackoutBlock)() = ^{
+        void (^blackoutBlock)(void) = ^{
             self.frontView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:blackout];
         };
         
@@ -131,7 +131,7 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        void (^blurBlock)() = ^{
+        void (^blurBlock)(void) = ^{
             self.blurView.alpha = self.blurBackground ? 1.0f : 0.0f;
             self.blurView.backgroundColor = self.blurTone;
             [self.blurView transitionToStyle:self.blurStyle];
@@ -169,7 +169,7 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![view.subviews containsObject:[view viewWithTag:self.tag]] && view) {
-            void (^block)() = ^{
+            void (^block)(void) = ^{
                 self.alpha = 0;
                 [view addSubview:self];
                 [self setupConstraints];
@@ -193,7 +193,7 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![view.subviews containsObject:[view viewWithTag:self.tag]] && view) {
-            void (^block)() = ^{
+            void (^block)(void) = ^{
                 self.alpha = 0;
                 [view addSubview:self];
                 [view sendSubviewToBack:self];
@@ -210,7 +210,7 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![view.subviews containsObject:[view viewWithTag:self.tag]] && view) {
-            void (^block)() = ^{
+            void (^block)(void) = ^{
                 self.alpha = 0;
                 [view addSubview:self];
                 [view bringSubviewToFront:self];

@@ -208,6 +208,19 @@
     return [[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"];
 }
 
+- (PSSpecifier *)specifierForIndexPath:(NSIndexPath *)indexPath
+{
+    PSSpecifier *specifier = nil;
+    if ([self respondsToSelector:@selector(specifierAtIndexPath:)]) {
+        specifier = [self specifierAtIndexPath:indexPath];
+    } else {
+        NSInteger index = [self indexForRow:indexPath.row inGroup:indexPath.section];
+        specifier = [self specifierAtIndex:index];
+    }
+    
+    return specifier;
+}
+
 
 #pragma mark -
 #pragma mark UITableViewDelegate
@@ -274,13 +287,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PSSpecifier *specifier = nil;
-    if ([self respondsToSelector:@selector(specifierAtIndexPath:)]) {
-        specifier = [self specifierAtIndexPath:indexPath];
-    } else {
-        NSInteger index = [self indexForRow:indexPath.row inGroup:indexPath.section];
-        specifier = [self specifierAtIndex:index];
-    }
+    PSSpecifier *specifier = [self specifierForIndexPath:indexPath];
     if ([specifier.properties[@"cell"] isEqualToString:@"PSGiantIconCell"])
         return 64.0f;
     

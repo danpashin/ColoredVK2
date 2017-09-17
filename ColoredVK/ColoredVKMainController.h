@@ -33,6 +33,7 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
  * Returns application version from Info.plist
  */
 @property (readonly, copy, nonatomic) NSString *appVersion;
+@property (readonly, copy, nonatomic) NSString *appVersionDetailed;
 
 @property (strong, nonatomic) MenuCell *menuCell;
 @property (strong, nonatomic) UITableViewCell *settingsCell;
@@ -49,7 +50,7 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 - (ColoredVKVersionCompare)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version;
 
 - (void)sendStats;
-- (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)() )handler;
+- (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)(void) )handler;
 - (void)actionOpenPreferencesPush:(BOOL)withPush;
 - (void)checkCrashes;
 
