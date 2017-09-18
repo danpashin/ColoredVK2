@@ -165,7 +165,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         
         NSString *stringURL = [NSString stringWithFormat:@"%@/stats/?product=%@&version=%@&device=%@&ios_version=%@&device_language=%@&vk_version=%@&identifier=%@", 
                                kPackageAPIURL, kPackageIdentifier, kPackageVersion, @(systemInfo.machine), 
-                               device.systemVersion, [NSLocale preferredLanguages].firstObject, self.appVersion, 
+                               device.systemVersion, [NSLocale preferredLanguages].firstObject, self.appVersionDetailed, 
                                device.identifierForVendor.UUIDString];
         
         [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]] 
@@ -249,7 +249,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     struct utsname systemInfo;
     uname(&systemInfo);
     
-    NSDictionary *allInfo = @{@"vk_version":self.appVersion, @"cvk_version":kPackageVersion, @"ios_version": [UIDevice currentDevice].systemVersion, 
+    NSDictionary *allInfo = @{@"vk_version":self.appVersionDetailed, @"cvk_version":kPackageVersion, @"ios_version": [UIDevice currentDevice].systemVersion, 
                               @"device": @(systemInfo.machine), @"crash_info":crash};
     
     NSError *error = nil;

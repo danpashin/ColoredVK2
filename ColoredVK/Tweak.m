@@ -365,7 +365,7 @@ void showAlertWithMessage(NSString *message)
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];
-        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
+        [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
         [alertController present];
     });
 }

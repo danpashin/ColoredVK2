@@ -243,11 +243,9 @@
     layer.fillColor = [UIColor whiteColor].CGColor;
     
     CGMutablePathRef pathRef = CGPathCreateMutable();
-    CGRect shadowRect = bounds;
     BOOL addSeparatorLine = NO;
     if (indexPath.row == 0 && indexPath.row == [tableView numberOfRowsInSection:indexPath.section]-1) {
         CGPathAddRoundedRect(pathRef, nil, bounds, cornerRadius, cornerRadius);
-        shadowRect = bounds;
     } else if (indexPath.row == 0) {
         CGPathMoveToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMaxY(bounds));
         CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMinY(bounds), CGRectGetMidX(bounds), CGRectGetMinY(bounds), cornerRadius);
