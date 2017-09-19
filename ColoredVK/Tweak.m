@@ -375,11 +375,6 @@ void reloadPrefs()
     
     if (cvkMainController.navBarImageView)
         [cvkMainController.navBarImageView updateViewWithBlackout:navbarImageBlackout];
-    
-    if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]]) {
-        UITabBarController *controller = (UITabBarController *)cvkMainController.vkMainController;
-        [controller.tabBar layoutIfNeeded];
-    }
 }
 
 
@@ -440,6 +435,18 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
                 [toolBar sendSubviewToBack:blurEffectView];
                 [toolBar setBackgroundImage:[UIImage new] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
             }
+        } else if  ([bar isKindOfClass:[UITabBar class]]) {
+            UITabBar *tabbar = (UITabBar *)bar;
+            verticalFormat = @"V:|[view(0.5)]";
+            
+            if (![tabbar.subviews containsObject:[tabbar viewWithTag:10]]) {        
+                blurEffectView.frame = CGRectMake(0, 0, tabbar.frame.size.width, tabbar.frame.size.height);
+                borderView.frame = CGRectMake(0, 0, tabbar.frame.size.width, 0.5);
+                
+                [tabbar addSubview:blurEffectView];
+                [tabbar sendSubviewToBack:blurEffectView];
+                tabbar.backgroundImage = [UIImage new];
+            }
         }
         
         if (verticalFormat.length > 2) {
@@ -458,6 +465,10 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
         } else if  ([bar isKindOfClass:[UIToolbar class]]) {
             UIToolbar *toolBar = (UIToolbar *)bar;
             if ([toolBar.subviews containsObject:[toolBar viewWithTag:10]]) [[toolBar viewWithTag:10] removeFromSuperview];
+        } else if  ([bar isKindOfClass:[UITabBar class]]) {
+            UITabBar *tabbar = (UITabBar *)bar;
+            tabbar.backgroundImage = nil;
+            if ([tabbar.subviews containsObject:[tabbar viewWithTag:10]]) [[tabbar viewWithTag:10] removeFromSuperview];
         }
     }
 }
@@ -815,6 +826,14 @@ void setupTabbar()
     }
 }
 
+void resetTabBar()
+{
+    if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]]) {
+        setBlur(((UITabBarController *)cvkMainController.vkMainController).tabBar, NO, nil, 0);
+    }
+    setupTabbar();
+}
+
 
 #pragma mark - AppDelegate
 CHDeclareClass(AppDelegate);
@@ -1027,7 +1046,8 @@ CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, anima
         NSArray *friendsControllers = @[@"ProfileFriendsController", @"FriendsBDaysController", @"FriendsAllRequestsController"];
         NSArray *settingsExtraControllers = @[@"ProfileBannedController", @"ModernGeneralSettings", @"ModernAccountSettings",
                                               @"SettingsPrivacyController", @"PaymentsBalanceController", @"SubscriptionSettingsViewController", 
-                                              @"AboutViewController", @"ModernPushSettingsController", @"VKP2PViewController"];
+                                              @"AboutViewController", @"ModernPushSettingsController", @"VKP2PViewController", 
+                                              @"SubscriptionsSettingsViewController"];
         
         if (messagesUseBlur && ([selfName isEqualToString:@"MultiChatController"] || [selfName isEqualToString:@"SingleUserChatController"])) {
             shouldAddBlur = YES;
@@ -1071,6 +1091,10 @@ CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, anima
     
     resetNavigationBar(self.navigationController.navigationBar);
     setBlur(self.navigationController.navigationBar, shouldAddBlur, blurColor, blurStyle);
+    
+    resetTabBar();
+    if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]])
+        setBlur(((UITabBarController *)cvkMainController.vkMainController).tabBar, shouldAddBlur, blurColor, blurStyle);
 }
 
 #pragma mark VKMToolbarController
@@ -2238,6 +2262,7 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
             for (UIView *view in self.navigationItem.titleView.subviews) if ([view respondsToSelector:@selector(setTextColor:)]) ((UILabel*)view).textColor = barForegroundColor;
         }
         resetNavigationBar(self.navigationController.navigationBar);
+        resetTabBar();
     }
 }
 
@@ -2349,6 +2374,7 @@ CHOptimizedMethod(1, self, void, PSListController, viewWillAppear, BOOL, animate
 {
     CHSuper(1, PSListController, viewWillAppear, animated);
     resetNavigationBar(self.navigationController.navigationBar);
+    resetTabBar();
 }
 
 CHOptimizedMethod(0, self, UIStatusBarStyle, PSListController, preferredStatusBarStyle)
@@ -2363,6 +2389,7 @@ CHOptimizedMethod(1, self, void, SelectAccountTableViewController, viewWillAppea
 {
     CHSuper(1, SelectAccountTableViewController, viewWillAppear, animated);
     resetNavigationBar(self.navigationController.navigationBar);
+    resetTabBar();
 }
 
 #pragma mark vksprefsListController
@@ -2387,6 +2414,7 @@ CHOptimizedMethod(1, self, void, MessageController, viewWillAppear, BOOL, animat
 {
     CHSuper(1, MessageController, viewWillAppear, animated);
     resetNavigationBar(self.navigationController.navigationBar);
+    resetTabBar();
 }
 
 
@@ -2463,8 +2491,10 @@ CHOptimizedMethod(0, self, UIStatusBarStyle, OptionSelectionController, preferre
 CHOptimizedMethod(1, self, void, OptionSelectionController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, OptionSelectionController, viewWillAppear, animated);
-    if ([self isKindOfClass:NSClassFromString(@"OptionSelectionController")])
+    if ([self isKindOfClass:NSClassFromString(@"OptionSelectionController")]) {
         resetNavigationBar(self.navigationController.navigationBar);
+        resetTabBar();
+    }
 }
 
 #pragma mark VKRegionSelectionViewController
