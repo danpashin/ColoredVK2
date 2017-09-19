@@ -8,6 +8,7 @@
 
 "NAVIGATION_BAR" = "Navigation bar";
 "TOOLBAR" = "Toolbar";
+"TABBAR" = "Tabbar";
 "MENU" = "Menu";
 "MESSAGES" = "Messages";
 "MESSAGES_LIST" = "Dialogs list";
@@ -28,6 +29,7 @@
 "CHANGE_COLORS" = "Change colors";
 "BACKGROUND_COLOR" = "Background color";
 "FOREGROUND_COLOR" = "Foreground color";
+"SELECTED_FOREGROUND_COLOR" = "Selected tab color";
 "BACKGROUND_TONE" = "Background tone";
 "TEXT_COLOR" = "Text color";
 "CHANGE_TEXT_COLOR" = "Change text color";
@@ -102,6 +104,7 @@
 "UPDATES_SETTINGS" = "Updates settings";
 "USED_LIBRARIES" = "Used libraries";
 "LICENCE_AGREEMENT" = "License agreement";
+"AVAILABLE_IN_%@_AND_HIGHER" = "Available in VK App %@ and higher.";
 
 "CACHE_SIZE" = "Now cache is";
 

@@ -44,8 +44,13 @@
         for (PSSpecifier *specifier in specifiersArray) {
             specifier.name = NSLocalizedStringFromTableInBundle(specifier.name, @"ColoredVK", self.bundle, nil);
             
-            if (specifier.properties[@"footerText"])
-                [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil) forKey:@"footerText"];
+            if (specifier.properties[@"footerText"]) {
+                if ([specifier.properties[@"footerText"] isEqualToString:@"AVAILABLE_IN_%@_AND_HIGHER"]) {
+                    NSString *string = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil), specifier.properties[@"requiredVersion"]];
+                    [specifier setProperty:string forKey:@"footerText"];
+                } else
+                    [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil) forKey:@"footerText"];
+            }
             if (specifier.properties[@"label"])
                 [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"label"], @"ColoredVK", self.bundle, nil) forKey:@"label"];
             if (specifier.properties[@"detailedLabel"])

@@ -8,6 +8,7 @@
 
 "NAVIGATION_BAR" = "Бар навигации";
 "TOOLBAR" = "Тулбар";
+"TABBAR" = "Таббар";
 "MENU" = "Меню";
 "MESSAGES" = "Сообщения";
 "MESSAGES_LIST" = "Список диалогов";
@@ -28,6 +29,7 @@
 "CHANGE_COLORS" = "Изменить цветa";
 "BACKGROUND_COLOR" = "Цвет фона";
 "FOREGROUND_COLOR" = "Основной цвет";
+"SELECTED_FOREGROUND_COLOR" = "Цвет выбранной вкладки";
 "BACKGROUND_TONE" = "Оттенок фона";
 "CHANGE_TEXT_COLOR" = "Изменить цвет текста";
 "TEXT_COLOR" = "Цвет текста";
@@ -101,6 +103,7 @@
 "UPDATES_SETTINGS" = "Настройки обновлений";
 "USED_LIBRARIES" = "Используемые библиотеки";
 "LICENCE_AGREEMENT" = "Лицензионное соглашение";
+"AVAILABLE_IN_%@_AND_HIGHER" = "Доступно в VK App %@ и выше.";
 
 "CACHE_SIZE" = "Сейчас кэш занимает";
 

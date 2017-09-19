@@ -39,6 +39,7 @@ BOOL enabledBarColor;
 BOOL showBar;
 BOOL enabledToolBarColor;
 BOOL enabledBarImage;
+BOOL enabledTabbarColor;
 
 
 BOOL enabledMenuImage;
@@ -118,6 +119,9 @@ UIColor *barBackgroundColor;
 UIColor *barForegroundColor;
 UIColor *toolBarBackgroundColor;
 UIColor *toolBarForegroundColor;
+UIColor *tabbarForegroundColor;
+UIColor *tabbarBackgroundColor;
+UIColor *tabbarSelForegroundColor;
 UIColor *SBBackgroundColor;
 UIColor *SBForegroundColor;
 UIColor *switchesTintColor;
@@ -149,6 +153,7 @@ UIColor *friendsBlurTone;
 UIColor *videosBlurTone;
 UIColor *settingsBlurTone;
 UIColor *settingsExtraBlurTone;
+UIColor *menuBlurTone;
 
 BOOL messagesUseBlur;
 BOOL messagesListUseBlur;
@@ -158,6 +163,7 @@ BOOL friendsUseBlur;
 BOOL videosUseBlur;
 BOOL settingsUseBlur;
 BOOL settingsExtraUseBlur;
+BOOL menuUseBlur;
 
 BOOL messagesUseBackgroundBlur;
 BOOL messagesListUseBackgroundBlur;
@@ -167,11 +173,13 @@ BOOL friendsUseBackgroundBlur;
 BOOL videosUseBackgroundBlur;
 BOOL settingsUseBackgroundBlur;
 BOOL settingsExtraUseBackgroundBlur;
+BOOL menuUseBackgroundBlur;
 
 
 CVKCellSelectionStyle menuSelectionStyle;
 UIKeyboardAppearance keyboardStyle;
 
+UIBlurEffectStyle menuBlurStyle;
 UIBlurEffectStyle messagesBlurStyle;
 UIBlurEffectStyle messagesListBlurStyle;
 UIBlurEffectStyle groupsListBlurStyle;
@@ -219,10 +227,14 @@ void reloadPrefs()
     enabledBarImage = [prefs[@"enabledBarImage"] boolValue];
     enabledBarColor = [prefs[@"enabledBarColor"] boolValue];
     enabledToolBarColor = [prefs[@"enabledToolBarColor"] boolValue];
+    enabledTabbarColor = [prefs[@"enabledTabbarColor"] boolValue];
+    
     enabledMessagesImage = [prefs[@"enabledMessagesImage"] boolValue];
     hideMenuSeparators = [prefs[@"hideMenuSeparators"] boolValue];
     messagesUseBlur = [prefs[@"messagesUseBlur"] boolValue];
     messagesUseBackgroundBlur = [prefs[@"messagesUseBackgroundBlur"] boolValue];
+    menuUseBlur = [prefs[@"menuUseBlur"] boolValue];
+    menuUseBackgroundBlur = [prefs[@"menuUseBackgroundBlur"] boolValue];
     
     navbarImageBlackout = [prefs[@"navbarImageBlackout"] floatValue];
     chatImageBlackout = [prefs[@"chatImageBlackout"] floatValue];
@@ -232,6 +244,7 @@ void reloadPrefs()
     useMessageBubbleTintColor = [prefs[@"useMessageBubbleTintColor"] boolValue];
     menuSelectionStyle = prefs[@"menuSelectionStyle"]?[prefs[@"menuSelectionStyle"] integerValue]:CVKCellSelectionStyleTransparent;
     messagesBlurStyle = prefs[@"messagesBlurStyle"]?[prefs[@"messagesBlurStyle"] integerValue]:UIBlurEffectStyleLight;
+    menuBlurStyle = prefs[@"menuBlurStyle"]?[prefs[@"menuBlurStyle"] integerValue]:UIBlurEffectStyleLight;
     
     menuSeparatorColor =         [UIColor savedColorForIdentifier:@"MenuSeparatorColor"         fromPrefs:prefs];
     menuSelectionColor =        [[UIColor savedColorForIdentifier:@"menuSelectionColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
@@ -243,6 +256,10 @@ void reloadPrefs()
     menuTextColor =              [UIColor savedColorForIdentifier:@"menuTextColor"              fromPrefs:prefs];
     messagesTextColor =          [UIColor savedColorForIdentifier:@"messagesTextColor"          fromPrefs:prefs];
     messagesBlurTone =          [[UIColor savedColorForIdentifier:@"messagesBlurTone"           fromPrefs:prefs] colorWithAlphaComponent:0.3];
+    menuBlurTone =              [[UIColor savedColorForIdentifier:@"menuBlurTone"               fromPrefs:prefs] colorWithAlphaComponent:0.3];
+    tabbarBackgroundColor =     [UIColor savedColorForIdentifier:@"TabbarBackgroundColor"       fromPrefs:prefs];
+    tabbarForegroundColor =     [UIColor savedColorForIdentifier:@"TabbarForegroundColor"       fromPrefs:prefs];
+    tabbarSelForegroundColor =  [UIColor savedColorForIdentifier:@"TabbarSelForegroundColor"    fromPrefs:prefs];
     
     showFastDownloadButton = prefs[@"showFastDownloadButton"] ? [prefs[@"showFastDownloadButton"] boolValue] : YES;
     showMenuCell = prefs[@"showMenuCell"] ? [prefs[@"showMenuCell"] boolValue] : YES;
@@ -354,9 +371,14 @@ void reloadPrefs()
         settingsExtraBlurTone =     [[UIColor savedColorForIdentifier:@"settingsExtraBlurTone"      fromPrefs:prefs] colorWithAlphaComponent:0.3];
         dialogsUnreadColor =        [[UIColor savedColorForIdentifier:@"dialogsUnreadColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
         
-        
-        if (cvkMainController.navBarImageView) [cvkMainController.navBarImageView updateViewWithBlackout:navbarImageBlackout];
-        
+    }
+    
+    if (cvkMainController.navBarImageView)
+        [cvkMainController.navBarImageView updateViewWithBlackout:navbarImageBlackout];
+    
+    if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]]) {
+        UITabBarController *controller = (UITabBarController *)cvkMainController.vkMainController;
+        [controller.tabBar layoutIfNeeded];
     }
 }
 
@@ -772,6 +794,27 @@ void uncaughtExceptionHandler(NSException *exception)
     [crash writeToFile:CVK_CRASH_PATH atomically:YES];
 }
 
+void setupTabbar()
+{
+    UITabBarController *controller = (UITabBarController *)cvkMainController.vkMainController;
+    if ([controller isKindOfClass:[UITabBarController class]]) {
+        if (enabled && enabledTabbarColor) {
+            controller.tabBar.barTintColor = tabbarBackgroundColor;
+            controller.tabBar.unselectedItemTintColor = tabbarForegroundColor;
+            controller.tabBar.tintColor = tabbarSelForegroundColor;
+        } else {
+            controller.tabBar.barTintColor = [UIColor defaultColorForIdentifier:@"TabbarBackgroundColor"];
+            controller.tabBar.unselectedItemTintColor = [UIColor defaultColorForIdentifier:@"TabbarForegroundColor"];
+            controller.tabBar.tintColor = [UIColor defaultColorForIdentifier:@"TabbarSelForegroundColor"];
+        }
+        
+        for (UITabBarItem *item in controller.tabBar.items) {
+            item.image = [item.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            item.selectedImage = [item.selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        }
+    }
+}
+
 
 #pragma mark - AppDelegate
 CHDeclareClass(AppDelegate);
@@ -1019,6 +1062,10 @@ CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, anima
             shouldAddBlur = YES;
             blurColor = settingsExtraBlurTone;
             blurStyle = settingsExtraBlurStyle;
+        } else if (menuUseBlur && [selfName isEqualToString:@"MenuViewController"]) {
+            shouldAddBlur = YES;
+            blurColor = menuBlurTone;
+            blurStyle = menuBlurStyle;
         } else shouldAddBlur = NO;
     } else shouldAddBlur = NO;
     
@@ -1406,7 +1453,7 @@ CHOptimizedMethod(0, self, void, VKMMainController, viewDidLoad)
             CGFloat width = (bounds.size.width > bounds.size.height)?bounds.size.height:bounds.size.width;
             CGFloat height = (bounds.size.width < bounds.size.height)?bounds.size.height:bounds.size.width;
             cvkMainController.menuBackgroundView = [[ColoredVKWallpaperView alloc] initWithFrame:CGRectMake(0, 0, width, height) 
-                                                                                       imageName:@"menuBackgroundImage" blackout:menuImageBlackout enableParallax:useMenuParallax blurBackground:NO];
+                                                                                       imageName:@"menuBackgroundImage" blackout:menuImageBlackout enableParallax:useMenuParallax blurBackground:menuUseBackgroundBlur];
         }
         
         if (enabled && enabledMenuImage) {
@@ -1414,6 +1461,8 @@ CHOptimizedMethod(0, self, void, VKMMainController, viewDidLoad)
             setupUISearchBar((UISearchBar*)self.tableView.tableHeaderView);
             self.tableView.backgroundColor = [UIColor clearColor];
         }
+    } else {
+        setupTabbar();
     }
 }
 
@@ -1500,7 +1549,7 @@ CHOptimizedMethod(0, self, void, MenuViewController, viewDidLoad)
         CGFloat width = (bounds.size.width > bounds.size.height)?bounds.size.height:bounds.size.width;
         CGFloat height = (bounds.size.width < bounds.size.height)?bounds.size.height:bounds.size.width;
         cvkMainController.menuBackgroundView = [[ColoredVKWallpaperView alloc] initWithFrame:CGRectMake(0, 0, width, height) 
-                                                                                   imageName:@"menuBackgroundImage" blackout:menuImageBlackout enableParallax:useMenuParallax blurBackground:NO];
+                                                                                   imageName:@"menuBackgroundImage" blackout:menuImageBlackout enableParallax:useMenuParallax blurBackground:menuUseBackgroundBlur];
     }
     
     if (enabled && enabledMenuImage) {
@@ -3002,6 +3051,8 @@ static void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CF
         }
     }
     [cvkMainController reloadSwitch:enabled];
+    
+    setupTabbar();
 }
 
 static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
@@ -3052,6 +3103,7 @@ static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFS
         }
         
         cvkMainController.menuBackgroundView.parallaxEnabled = useMenuParallax;
+        cvkMainController.menuBackgroundView.blurBackground = menuUseBackgroundBlur;
         if (shouldShow) {
             [cvkMainController.menuBackgroundView updateViewWithBlackout:menuImageBlackout];
             [cvkMainController.menuBackgroundView addToBack:menuController.view animated:NO];

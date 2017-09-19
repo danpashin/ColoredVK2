@@ -331,6 +331,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     
     dispatch_async(dispatch_get_main_queue(), ^{
         self.colorMapView.colorMapLayer.frame = CGRectMake(0, 0, CGRectGetWidth(self.colorMapView.frame), CGRectGetHeight(self.colorMapView.frame));
+        self.colorMapView.colorMapBackgroundLayer.frame = self.colorMapView.colorMapLayer.frame;
     });
 }
 
@@ -389,14 +390,14 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 - (CGSize)savedCollectionViewItemSize
 {
     CGFloat screenScale = [UIScreen mainScreen].scale;
-    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
     
     CGSize collectionViewItemSize = CGSizeMake(120, 96);    //  for iPad
     if (!IS_IPAD) {        
         if (screenScale == 3.0f) collectionViewItemSize = CGSizeMake(90, 90);   //  for 3x scale devices
         else                     collectionViewItemSize = CGSizeMake(70, 90);   //  for other devices
         
-        if (UIDeviceOrientationIsLandscape(orientation) && (screenScale != 3.0f))
+        if (UIInterfaceOrientationIsLandscape(orientation) && (screenScale != 3.0f))
             collectionViewItemSize.height -= 10;
         
         

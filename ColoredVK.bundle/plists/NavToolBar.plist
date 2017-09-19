@@ -136,6 +136,62 @@
 			<key>id</key>
 			<string>ToolBarBackgroundColor</string>
 		</dict>
+		<dict>
+			<key>label</key>
+			<string>TABBAR</string>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>AVAILABLE_IN_%@_AND_HIGHER</string>
+			<key>requiredVersion</key>
+			<string>3.0</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>key</key>
+			<string>enabledTabbarColor</string>
+			<key>label</key>
+			<string>CHANGE_COLORS</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>showColorPicker:</string>
+			<key>label</key>
+			<string>FOREGROUND_COLOR</string>
+			<key>cellClass</key>
+			<string>ColoredVKColorCell</string>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>id</key>
+			<string>TabbarForegroundColor</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>showColorPicker:</string>
+			<key>label</key>
+			<string>SELECTED_FOREGROUND_COLOR</string>
+			<key>cellClass</key>
+			<string>ColoredVKColorCell</string>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>id</key>
+			<string>TabbarSelForegroundColor</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>showColorPicker:</string>
+			<key>label</key>
+			<string>BACKGROUND_COLOR</string>
+			<key>cellClass</key>
+			<string>ColoredVKColorCell</string>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>id</key>
+			<string>TabbarBackgroundColor</string>
+		</dict>
 	</array>
 </dict>
 </plist>
