@@ -65,7 +65,7 @@
         if (self.backgroundView && (self.backgroundView.layer.sublayers.count > 0)) {
             CAShapeLayer *shapeLayer = (CAShapeLayer *)self.backgroundView.layer.sublayers.firstObject;
             if ([shapeLayer isKindOfClass:[CAShapeLayer class]]) {
-                if (tapped) {
+                if (tapped && (self.type != PSSwitchCell)) {
                     shapeLayer.fillColor = @"#dddddd".hexColorValue.CGColor;
                 } else {
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

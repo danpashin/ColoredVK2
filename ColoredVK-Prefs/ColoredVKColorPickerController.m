@@ -17,6 +17,7 @@
 #import "UIScrollView+EmptyDataSet.h"
 #import "ColoredVKResponsiveButton.h"
 #import "ColoredVKAlertController.h"
+#import <OAStackView.h>
 
 typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     ColoredVKColorPickerStateDismiss = 1,
@@ -46,6 +47,15 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 @property (strong, nonatomic) UIView *colorPreviewContainer;
 @property (strong, nonatomic) UIView *savedColorsContainer;
 
+@property (strong, nonatomic) OAStackView *stackView;
+@property (strong, nonatomic) UIView *stackContainerView;
+
+@end
+
+@interface HRColorMapView ()
+@property (atomic, strong) CALayer *colorMapLayer; // brightness 1.0
+@property (atomic, strong) CALayer *colorMapBackgroundLayer; // brightness 0 (= black)
+
 @end
 
 
@@ -67,7 +77,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     self = [super init];
     if (self) {
         _identifier = identifier;
-        
+    
         self.customColor = [UIColor savedColorForIdentifier:self.identifier];
         if (self.customColor == nil)
             self.customColor = [UIColor clearColor];
@@ -96,12 +106,24 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     navItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:resetImage style:UIBarButtonItemStylePlain target:self action:@selector(actionResetColor)];
     
     
+    self.stackContainerView = [UIView new];
+    self.stackContainerView.frame = CGRectMake(8, CGRectGetMaxY(self.contentViewNavigationBar.frame), CGRectGetWidth(self.contentView.frame)-16.0f, CGRectGetHeight(self.contentView.frame) - 64);
+    [self.contentView addSubview:self.stackContainerView];
+    
+    self.stackView = [[OAStackView alloc] initWithArrangedSubviews:@[]];
+    self.stackView.frame = CGRectMake(8, CGRectGetMaxY(self.contentViewNavigationBar.frame), CGRectGetWidth(self.contentView.frame)-16.0f, CGRectGetHeight(self.contentView.frame) - 64);
+    self.stackView.axis = UILayoutConstraintAxisVertical;
+    self.stackView.spacing = 8.0f;
+    self.stackView.alignment = OAStackViewAlignmentFill;
+    self.stackView.distribution = OAStackViewDistributionFill;
+    [self.stackContainerView addSubview:self.stackView];
+    
+    
     
     self.colorMapContainer = [UIView new];
-    self.colorMapContainer.frame = CGRectMake(0, CGRectGetMaxY(self.contentViewNavigationBar.frame), CGRectGetWidth(self.contentView.frame), CGRectGetWidth(self.contentView.frame)-60);
-    [self.contentView addSubview:self.colorMapContainer];
+    [self.stackView addArrangedSubview:self.colorMapContainer];
     
-    CGRect colorMapRect = CGRectMake(8, 8, CGRectGetWidth(self.colorMapContainer.frame) - 16, CGRectGetWidth(self.colorMapContainer.frame) - 60);
+    CGRect colorMapRect = CGRectMake(0, 0, CGRectGetWidth(self.stackView.frame), CGRectGetWidth(self.stackView.frame));
     
     self.colorMapView = [HRColorMapView colorMapWithFrame:colorMapRect saturationUpperLimit:0.9f];
     [self.colorMapView addTarget:self action:@selector(setColor:) forControlEvents:UIControlEventValueChanged];
@@ -112,7 +134,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     [self.colorMapContainer addSubview:self.colorMapView];
     
     self.sliderView = [HRBrightnessSlider new];
-    self.sliderView.frame = CGRectMake(0, CGRectGetMaxY(self.colorMapView.frame), CGRectGetWidth(self.colorMapContainer.frame), 32);
+    self.sliderView.frame = CGRectMake(0, CGRectGetMaxY(self.colorMapView.frame), CGRectGetWidth(self.stackView.frame), 32);
     [self.sliderView addTarget:self action:@selector(setColorBrightness:) forControlEvents:UIControlEventValueChanged];
     self.sliderView.brightnessLowerLimit = @0;
     [self.colorMapContainer addSubview:self.sliderView];
@@ -121,10 +143,10 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     
     
     self.colorPreviewContainer = [UIView new];
-    self.colorPreviewContainer.frame = CGRectMake(0, CGRectGetMaxY(self.colorMapContainer.frame), CGRectGetWidth(self.contentView.frame), 0);
-    [self.contentView addSubview:self.colorPreviewContainer];
+    [self.stackView addArrangedSubview:self.colorPreviewContainer];
     
     self.infoView = [ColoredVKColorPreview new];
+    self.infoView.frame = CGRectMake(0, 0, 70, 70);
     [self.infoView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionShowHexWindow)]];
     [self.colorPreviewContainer addSubview:self.infoView];
     
@@ -143,8 +165,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     
     
     self.savedColorsContainer = [UIView new];
-    self.savedColorsContainer.frame = CGRectMake(0, CGRectGetMaxY(self.colorPreviewContainer.frame), CGRectGetWidth(self.contentView.frame), 126);
-    [self.contentView addSubview:self.savedColorsContainer];
+    [self.stackView addArrangedSubview:self.savedColorsContainer];
     
     self.savedColorsLabel = [[UILabel alloc] initWithFrame:CGRectMake(8, 8, CGRectGetWidth(self.savedColorsContainer.frame) - 16, 26)];
     self.savedColorsLabel.text = NSLocalizedStringFromTableInBundle(@"SAVED_COLORS", nil, self.cvkBundle, nil);
@@ -176,19 +197,12 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     
 
     [self updateSavedColorsFromPrefs];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViews) name:UIDeviceOrientationDidChangeNotification object:nil];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewWillLayoutSubviews
 {
-    [super viewWillAppear:animated];
+    [super viewWillLayoutSubviews];
     
-    [self updateViews];
-}
-
-- (void)updateViews
-{    
     UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
     
     UICollectionViewFlowLayout *collectionViewLayout = (UICollectionViewFlowLayout *)self.savedCollectionView.collectionViewLayout;
@@ -206,13 +220,13 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
         self.saveColorButton.titleEdgeInsets = self.saveColorButton.cachedTitleEdgeInsets;
         self.savedColorsLabel.font = [self.savedColorsLabel.font fontWithSize:20.0f];
     }
-    
-    [self setupConstraints];
 }
 
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
+    
+    [self setupConstraints];
     
     if (self.contentViewWantsShadow) {
         self.contentView.layer.shadowRadius = IS_IPAD ? 15.0f : 8.0f;
@@ -223,24 +237,33 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 - (void)setupConstraints
 {
-    [self.contentView removeConstraints:self.contentView.constraints];
+    if (!self.stackContainerView.superview)
+        return;
+    
     [self.colorMapContainer removeConstraints:self.colorMapContainer.constraints];
     [self.colorPreviewContainer removeConstraints:self.colorPreviewContainer.constraints];
     [self.savedColorsContainer removeConstraints:self.savedColorsContainer.constraints];
     
     self.contentViewNavigationBar.translatesAutoresizingMaskIntoConstraints = NO;
+    self.stackContainerView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[stackContainer]-|" options:0 metrics:nil views:@{@"stackContainer":self.stackContainerView}]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[navBar]|" options:0 metrics:nil views:@{@"navBar":self.contentViewNavigationBar}]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[navBar(44)]" options:0 metrics:nil views:@{@"navBar":self.contentViewNavigationBar}]];
-
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[navBar(44)][stackContainer]-|" options:0 metrics:nil 
+                                                                               views:@{@"navBar":self.contentViewNavigationBar, @"stackContainer":self.stackContainerView}]];
+    
+    self.stackView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.stackContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[stackView]|" options:0 metrics:nil views:@{@"stackView":self.stackView}]];
+    [self.stackContainerView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[stackView]|" options:0 metrics:nil views:@{@"stackView":self.stackView}]];
+    
     self.colorMapView.translatesAutoresizingMaskIntoConstraints = NO;
     self.sliderView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.colorMapContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[colorMapView]-|" options:0 metrics:nil views:@{@"colorMapView":self.colorMapView}]];
-    [self.colorMapContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[sliderView]-|" options:0 metrics:nil views:@{@"sliderView":self.sliderView}]];
-    [self.colorMapContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[colorMapView]-[sliderView(sliderViewHeight)]-|" options:0
-                                                                                   metrics:@{@"sliderViewHeight":@16} 
-                                                                                     views:@{@"colorMapView":self.colorMapView, @"sliderView":self.sliderView}]];
+    [self.colorMapContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[colorMapView]|" options:0 metrics:nil views:@{@"colorMapView":self.colorMapView}]];
+    [self.colorMapContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[sliderView]|" options:0 metrics:nil views:@{@"sliderView":self.sliderView}]];
+    [self.colorMapContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[colorMapView]-[sliderView(16)]|" options:0
+                                                                                   metrics:nil views:@{@"colorMapView":self.colorMapView, @"sliderView":self.sliderView}]];
+    
     CGFloat screenScale = [UIScreen mainScreen].scale;
-    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
     
     CGFloat infoViewHeight = IS_IPAD ? 120 : 85;
     if (screenScale == 3.0f)
@@ -249,68 +272,66 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     CGFloat savedLabelHeight = 26;
     CGFloat collectionViewHeight = IS_IPAD ? infoViewHeight : 112.5;
     
-//    
-//    iPhone 4S
-//    
+        //    
+        //    iPhone 4S
+        //    
     if ([UIScreen mainScreen].bounds.size.height == 480.0f)
         collectionViewHeight = 95;
     
-    self.colorMapContainer.translatesAutoresizingMaskIntoConstraints = NO;
     self.colorPreviewContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    self.savedColorsContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    self.savedCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.savedColorsLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    self.saveColorButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.infoView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.saveColorButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.savedColorsContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    self.savedColorsLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.savedCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
     
-    NSDictionary *containers = @{@"colorMapContainer":self.colorMapContainer, @"colorPreviewContainer":self.colorPreviewContainer, @"savedColorsContainer":self.savedColorsContainer};
-    
-    if (IS_IPAD || UIDeviceOrientationIsPortrait(orientation)) {
+    if (IS_IPAD || UIInterfaceOrientationIsPortrait(orientation)) {
         CGSize infoViewSize = self.savedCollectionViewItemSize;
         
-        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[infoView]-|" options:0 metrics:nil views:@{@"infoView":self.infoView}]];
-        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[saveColorButton]-|" options:0 metrics:nil views:@{@"saveColorButton":self.saveColorButton}]];
-        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[infoView(infoViewWidth)]-[saveColorButton]-|" options:0
-                                                                                           metrics:@{@"infoViewWidth":@(infoViewSize.width)} 
+        self.stackView.axis = UILayoutConstraintAxisVertical;
+        [self.colorPreviewContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.colorPreviewContainer attribute:NSLayoutAttributeHeight 
+                                                                               relatedBy:0 toItem:nil attribute:0 multiplier:1.0f constant:infoViewSize.height]];
+        
+        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[infoView]|" options:0 metrics:nil views:@{@"infoView":self.infoView}]];
+        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[saveColorButton]|" options:0 metrics:nil views:@{@"saveColorButton":self.saveColorButton}]];
+        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[infoView(infoViewWidth)]-[saveColorButton]|" options:0
+                                                                                           metrics:@{@"infoViewWidth":@(infoViewSize.width + 5.0f)} 
                                                                                              views:@{@"infoView":self.infoView, @"saveColorButton":self.saveColorButton}]];
+        
+        [self.savedColorsContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.savedColorsContainer attribute:NSLayoutAttributeHeight 
+                                                                              relatedBy:0 toItem:nil attribute:0 multiplier:1.0f constant:collectionViewHeight+16.0f]];
         
         [self.savedColorsContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[savedColorsLabel]|" options:0 metrics:nil views:@{@"savedColorsLabel":self.savedColorsLabel}]];
         [self.savedColorsContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[savedCollectionView]|" options:0 metrics:nil views:@{@"savedCollectionView":self.savedCollectionView}]];
         [self.savedColorsContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[savedColorsLabel(savedLabelHeight)][savedCollectionView]|" options:0
                                                                                           metrics:@{@"savedLabelHeight":@(savedLabelHeight)} 
                                                                                             views:@{@"savedColorsLabel":self.savedColorsLabel, @"savedCollectionView":self.savedCollectionView}]];
-        
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[container]|" options:0 metrics:nil views:@{@"container":self.colorMapContainer}]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[container]|" options:0 metrics:nil views:@{@"container":self.colorPreviewContainer}]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[container]|" options:0 metrics:nil views:@{@"container":self.savedColorsContainer}]];
-        
-        NSString *vertContainers = @"V:|-44-[colorMapContainer][colorPreviewContainer(colorPreviewContainerHeight)][savedColorsContainer(savedColorsContainerHeight)]|";
-        NSDictionary *vertMetrics = @{@"colorPreviewContainerHeight":@(infoViewSize.height), @"savedColorsContainerHeight":@(collectionViewHeight + savedLabelHeight)};
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:vertContainers options:0 metrics:vertMetrics views:containers]];
     }
-    else if (!IS_IPAD && UIDeviceOrientationIsLandscape(orientation)) {
-        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[infoView]-|" options:0 metrics:nil views:@{@"infoView":self.infoView}]];
-        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[saveColorButton]-|" options:0 metrics:nil views:@{@"saveColorButton":self.saveColorButton}]];
-        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[infoView(infoViewHeight)]-[saveColorButton]-|" options:0
+    else if (!IS_IPAD && UIInterfaceOrientationIsLandscape(orientation)) {
+        self.stackView.axis = UILayoutConstraintAxisHorizontal;
+        
+        [self.colorPreviewContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.colorPreviewContainer attribute:NSLayoutAttributeWidth 
+                                                                               relatedBy:0 toItem:nil attribute:0 multiplier:1.0f constant:infoViewHeight]];
+        
+        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[infoView]|" options:0 metrics:nil views:@{@"infoView":self.infoView}]];
+        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[saveColorButton]|" options:0 metrics:nil views:@{@"saveColorButton":self.saveColorButton}]];
+        [self.colorPreviewContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[infoView(infoViewHeight)]-[saveColorButton]|" options:0
                                                                                            metrics:@{@"infoViewHeight":@(infoViewHeight)} 
                                                                                              views:@{@"infoView":self.infoView, @"saveColorButton":self.saveColorButton}]];
         
+        [self.savedColorsContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.savedColorsContainer attribute:NSLayoutAttributeWidth 
+                                                                              relatedBy:0 toItem:nil attribute:0 multiplier:1.0f constant:collectionViewHeight]];
+        
         [self.savedColorsContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[savedColorsLabel]|" options:0 metrics:nil views:@{@"savedColorsLabel":self.savedColorsLabel}]];
         [self.savedColorsContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[savedCollectionView]|" options:0 metrics:nil views:@{@"savedCollectionView":self.savedCollectionView}]];
-        [self.savedColorsContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[savedColorsLabel(savedColorsLabelHeight)][savedCollectionView]-|" options:0
+        [self.savedColorsContainer addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[savedColorsLabel(savedColorsLabelHeight)][savedCollectionView]|" options:0
                                                                                           metrics:@{@"savedColorsLabelHeight":@(savedLabelHeight * 2)} 
                                                                                             views:@{@"savedColorsLabel":self.savedColorsLabel, @"savedCollectionView":self.savedCollectionView}]];
-        
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-44-[container]|" options:0 metrics:nil views:@{@"container":self.colorMapContainer}]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-44-[container]|" options:0 metrics:nil views:@{@"container":self.colorPreviewContainer}]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-44-[container]|" options:0 metrics:nil views:@{@"container":self.savedColorsContainer}]];
-        
-        NSString *horizontalContainers = @"H:|[colorMapContainer][colorPreviewContainer(colorPreviewContainerWidth)][savedColorsContainer(savedColorsContainerWidth)]|";
-        NSDictionary *horizontalMetrics = @{@"colorPreviewContainerWidth":@(infoViewHeight), @"savedColorsContainerWidth":@(collectionViewHeight)};
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:horizontalContainers options:0 metrics:horizontalMetrics views:containers]];
     }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.colorMapView.colorMapLayer.frame = CGRectMake(0, 0, CGRectGetWidth(self.colorMapView.frame), CGRectGetHeight(self.colorMapView.frame));
+    });
 }
 
 - (void)updateSavedColorsFromPrefs
@@ -378,7 +399,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
         if (UIDeviceOrientationIsLandscape(orientation) && (screenScale != 3.0f))
             collectionViewItemSize.height -= 10;
         
-               
+        
         if ([UIScreen mainScreen].bounds.size.height == 480.0f)
             collectionViewItemSize.height -= 10;
     }
@@ -403,8 +424,8 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 - (void)actionResetColor
 {
     ColoredVKAlertController *warningAlert = [ColoredVKAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBundle, nil)  
-                                                                          message:NSLocalizedStringFromTableInBundle(@"RESET_COLOR_QUESTION", nil, self.cvkBundle, nil) 
-                                                                   preferredStyle:UIAlertControllerStyleAlert];
+                                                                                        message:NSLocalizedStringFromTableInBundle(@"RESET_COLOR_QUESTION", nil, self.cvkBundle, nil) 
+                                                                                 preferredStyle:UIAlertControllerStyleAlert];
     [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         self.state = ColoredVKColorPickerStateReset;
@@ -453,7 +474,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     [self.savedCollectionView performBatchUpdates:^{
         if (![self.savedColors containsObject:self.customHexColor]) {
             [self.savedColors insertObject:self.customHexColor atIndex:0];
-        
+            
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
             [self.savedCollectionView insertItemsAtIndexPaths:@[indexPath]];
             
@@ -465,10 +486,6 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     } completion:nil];
 }
 
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
 
 
 #pragma mark - UICollectionViewDelegate
