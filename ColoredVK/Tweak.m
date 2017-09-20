@@ -110,6 +110,7 @@ BOOL changeFriendsTextColor;
 BOOL changeVideosTextColor;
 BOOL changeSettingsTextColor;
 BOOL changeSettingsExtraTextColor;
+BOOL changeMessagesInput;
 
 BOOL useCustomDialogsUnreadColor;
 UIColor *dialogsUnreadColor;
@@ -140,6 +141,9 @@ UIColor *friendsTextColor;
 UIColor *videosTextColor;
 UIColor *settingsTextColor;
 UIColor *settingsExtraTextColor;
+
+UIColor *messagesInputTextColor;
+UIColor *messagesInputBackColor;
 
 UIColor *audioPlayerTintColor;
 UIColor *menuSelectionColor;
@@ -235,6 +239,7 @@ void reloadPrefs()
     messagesUseBackgroundBlur = [prefs[@"messagesUseBackgroundBlur"] boolValue];
     menuUseBlur = [prefs[@"menuUseBlur"] boolValue];
     menuUseBackgroundBlur = [prefs[@"menuUseBackgroundBlur"] boolValue];
+    changeMessagesInput = [prefs[@"changeMessagesInput"] boolValue];
     
     navbarImageBlackout = [prefs[@"navbarImageBlackout"] floatValue];
     chatImageBlackout = [prefs[@"chatImageBlackout"] floatValue];
@@ -260,6 +265,8 @@ void reloadPrefs()
     tabbarBackgroundColor =     [UIColor savedColorForIdentifier:@"TabbarBackgroundColor"       fromPrefs:prefs];
     tabbarForegroundColor =     [UIColor savedColorForIdentifier:@"TabbarForegroundColor"       fromPrefs:prefs];
     tabbarSelForegroundColor =  [UIColor savedColorForIdentifier:@"TabbarSelForegroundColor"    fromPrefs:prefs];
+    messagesInputTextColor =    [UIColor savedColorForIdentifier:@"messagesInputTextColor"      fromPrefs:prefs];
+    messagesInputBackColor =    [UIColor savedColorForIdentifier:@"messagesInputBackColor"      fromPrefs:prefs];
     
     showFastDownloadButton = prefs[@"showFastDownloadButton"] ? [prefs[@"showFastDownloadButton"] boolValue] : YES;
     showMenuCell = prefs[@"showMenuCell"] ? [prefs[@"showMenuCell"] boolValue] : YES;
@@ -891,29 +898,13 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setBarTintColor, UIColor*, bar
 {
     if (enabled) {
         if (enabledBarImage) {
-            if (cvkMainController.navBarImageView) barTintColor = [UIColor colorWithPatternImage:cvkMainController.navBarImageView.imageView.image];
-            else barTintColor = barBackgroundColor;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                BOOL containsImageView = [self._backgroundView.subviews containsObject:[self._backgroundView viewWithTag:24]];
-                BOOL containsBlur = [self._backgroundView.subviews containsObject:[self._backgroundView viewWithTag:10]];
-                BOOL isAudioController = (changeAudioPlayerAppearance && (self.tag == 26));
-                
-                if (!containsBlur && !containsImageView && !isAudioController) {
-                    if (!cvkMainController.navBarImageView) {
-                        cvkMainController.navBarImageView = [ColoredVKWallpaperView viewWithFrame:self._backgroundView.bounds imageName:@"barImage" blackout:navbarImageBlackout];
-                        cvkMainController.navBarImageView.tag = 24;
-                        cvkMainController.navBarImageView.backgroundColor = [UIColor clearColor];
-                    }
-                    [cvkMainController.navBarImageView addToView:self._backgroundView animated:NO];
-                
-                } else if (containsBlur || isAudioController) [cvkMainController.navBarImageView removeFromSuperview];
-            });
+            if (cvkMainController.navBarImageView)  barTintColor = [UIColor colorWithPatternImage:cvkMainController.navBarImageView.imageView.image];
+            else                                    barTintColor = barBackgroundColor;
         }
         else if (enabledBarColor) {
             barTintColor = barBackgroundColor;
-            [cvkMainController.navBarImageView removeFromSuperview];
         }
-    } else [cvkMainController.navBarImageView removeFromSuperview];
+    }
     
     CHSuper(1, UINavigationBar, setBarTintColor, barTintColor);
 }
@@ -935,6 +926,54 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDict
     }
     
     CHSuper(1, UINavigationBar, setTitleTextAttributes, attributes);
+}
+
+
+#pragma mark VKMController
+CHDeclareClass(VKMController);
+CHOptimizedMethod(0, self, void, VKMController, VKMNavigationBarUpdate)
+{
+    CHSuper(0, VKMController, VKMNavigationBarUpdate);
+    
+    UINavigationBar *navBar = self.navigationController.navigationBar;
+    if (enabled) {
+        if (enabledBarImage) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                BOOL containsImageView = [navBar._backgroundView.subviews containsObject:[navBar._backgroundView viewWithTag:24]];
+                BOOL containsBlur = [navBar._backgroundView.subviews containsObject:[navBar._backgroundView viewWithTag:10]];
+                BOOL isAudioController = (changeAudioPlayerAppearance && (navBar.tag == 26));
+                
+                if (!containsBlur && !containsImageView && !isAudioController) {
+                    if (!cvkMainController.navBarImageView) {
+                        cvkMainController.navBarImageView = [ColoredVKWallpaperView viewWithFrame:navBar._backgroundView.bounds imageName:@"barImage" blackout:navbarImageBlackout];
+                        cvkMainController.navBarImageView.tag = 24;
+                        cvkMainController.navBarImageView.backgroundColor = [UIColor clearColor];
+                    }
+                    [cvkMainController.navBarImageView addToView:navBar._backgroundView animated:NO];
+                    
+                } else if (containsBlur || isAudioController) [cvkMainController.navBarImageView removeFromSuperview];
+            });
+        }
+        else if (enabledBarColor) {
+            [cvkMainController.navBarImageView removeFromSuperview];
+        }
+    } else [cvkMainController.navBarImageView removeFromSuperview];  
+}
+
+
+CHDeclareClass(VKSearchBarNoCancel);
+CHOptimizedMethod(0, self, void, VKSearchBarNoCancel, layoutSubviews)
+{
+    CHSuper(0, VKSearchBarNoCancel, layoutSubviews);
+    
+    if ([self isKindOfClass:NSClassFromString(@"VKSearchBarNoCancel")]) {
+        if (enabled && [self.superview isKindOfClass:[UINavigationBar class]]) {
+            if (enabledBarImage)
+                self.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.2f];
+           else if (enabledBarColor)
+                self.searchBarTextField.backgroundColor = barBackgroundColor.darkerColor;
+        }
+    }
 }
 
 
@@ -1332,21 +1371,17 @@ CHOptimizedMethod(1, self, void, ChatController, viewWillAppear, BOOL, animated)
         if (enabled && messagesUseBlur)
             setBlur(self.inputPanel, YES, messagesBlurTone, messagesBlurStyle);
         
-//        for (UIView *subview in self.inputPanel.subviews) {
-//            if ([subview isKindOfClass:NSClassFromString(@"DefaultHighlightButton")]) {
-//                UIButton *button = (UIButton *)subview;
-//                [button setImage:[[button imageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-//                button.imageView.tintColor = self.inputPanel.tintColor;
-//            }
-//            if ([subview isKindOfClass:[UITextView class]]) {
-//                UITextView *textView = (UITextView *)subview;
-//                textView.backgroundColor = [UIColor clearColor];
-//                textView.textColor = self.inputPanel.tintColor;
-//            }
-//            if ([CLASS_NAME(subview) isEqualToString:@"UIView"]) {
-//                subview.backgroundColor = [UIColor clearColor];
-//            }
-//        }
+        if (enabled && changeMessagesInput) {
+            UIButton *inputViewButton = self.inputPanel.inputViewButton;
+            [inputViewButton setImage:[[inputViewButton imageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+            inputViewButton.imageView.tintColor = messagesInputTextColor;
+            
+            self.inputPanel.overlay.backgroundColor = messagesInputBackColor;
+            self.inputPanel.overlay.layer.borderColor = messagesInputBackColor.CGColor;
+            self.inputPanel.textPanel.textColor = messagesInputTextColor;
+            self.inputPanel.textPanel.tintColor = messagesInputTextColor;
+            self.inputPanel.textPanel.placeholderLabel.textColor = messagesInputTextColor;
+        }
     }
 }
 
@@ -3195,6 +3230,12 @@ CHConstructor
             CHHook(1, UINavigationBar, setBarTintColor);
             CHHook(1, UINavigationBar, setTintColor);
             CHHook(1, UINavigationBar, setTitleTextAttributes);
+            
+            CHLoadLateClass(VKMController);
+            CHHook(0, VKMController, VKMNavigationBarUpdate);
+            
+            CHLoadLateClass(VKSearchBarNoCancel);
+            CHHook(0, VKSearchBarNoCancel, layoutSubviews);
             
             
             

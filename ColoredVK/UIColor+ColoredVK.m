@@ -58,6 +58,8 @@
     else if ([identifier isEqualToString:@"TabbarForegroundColor"])      return [UIColor colorWithWhite:0.573f alpha:1.0f];
     else if ([identifier isEqualToString:@"TabbarBackgroundColor"])      return [UIColor colorWithWhite:1.0f alpha:0.9f];
     else if ([identifier isEqualToString:@"TabbarSelForegroundColor"])   return [UIColor colorWithRed:92/255.0f green:156/255.0f blue:230/255.0f alpha:1.0f];
+    else if ([identifier isEqualToString:@"messagesInputBackColor"])     return [UIColor whiteColor];
+    else if ([identifier isEqualToString:@"messagesInputTextColor"])     return [UIColor blackColor];
     else                                                                 return [UIColor blackColor];
 }
 

@@ -168,7 +168,7 @@
     int widthFromEdge = IS_IPAD?20:6;
     self.contentView.frame = (CGRect){{widthFromEdge, 0}, {self.view.frame.size.width - widthFromEdge*2, self.view.frame.size.height - widthFromEdge*10}};
     self.contentView.center = self.view.center;
-    self.contentView.layer.cornerRadius = 16;
+    self.contentView.layer.cornerRadius = 20;
     self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
     
     if (@available(iOS 11.0, *)) {

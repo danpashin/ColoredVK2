@@ -174,6 +174,48 @@
 			<key>id</key>
 			<string>messageReadColor</string>
 		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>TEXT_INPUT</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>key</key>
+			<string>changeMessagesInput</string>
+			<key>id</key>
+			<string>changeMessagesInput</string>
+			<key>label</key>
+			<string>CHANGE</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>showColorPicker:</string>
+			<key>label</key>
+			<string>TEXT_COLOR</string>
+			<key>cellClass</key>
+			<string>ColoredVKColorCell</string>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>id</key>
+			<string>messagesInputTextColor</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>showColorPicker:</string>
+			<key>label</key>
+			<string>BACKGROUND_COLOR</string>
+			<key>cellClass</key>
+			<string>ColoredVKColorCell</string>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>id</key>
+			<string>messagesInputBackColor</string>
+		</dict>
 	</array>
 </dict>
 </plist>

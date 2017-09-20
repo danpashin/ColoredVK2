@@ -49,6 +49,8 @@
 "CHANGE_MESSAGE_BUBBLE_TINT_COLOR" = "Change message color";
 "MESSAGE_BUBBLE_TINT_COLOR" = "Incoming";
 "MESSAGE_SENT_BUBBLE_TINT_COLOR" = "Sent";
+"TEXT_INPUT" = "Text input field";
+"CHANGE" = "Change";
 
 
 "BLUR_SETTINGS" = "Blur settings";

@@ -49,6 +49,8 @@
 "CHANGE_MESSAGE_BUBBLE_TINT_COLOR" = "Изменить цвет сообщений";
 "MESSAGE_BUBBLE_TINT_COLOR" = "Входящие";
 "MESSAGE_SENT_BUBBLE_TINT_COLOR" = "Отправленные";
+"TEXT_INPUT" = "Поле ввода текста";
+"CHANGE" = "Изменить";
 
 
 "BLUR_SETTINGS" = "Настройки размытия";

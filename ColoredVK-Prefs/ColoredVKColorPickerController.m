@@ -130,7 +130,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     self.colorMapView.tileSize = @1;
     self.colorMapView.brightness = 1;
     self.colorMapView.layer.masksToBounds = YES;
-    self.colorMapView.layer.cornerRadius = 10;
+    self.colorMapView.layer.cornerRadius = 15;
     [self.colorMapContainer addSubview:self.colorMapView];
     
     self.sliderView = [HRBrightnessSlider new];

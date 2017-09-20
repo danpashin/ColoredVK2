@@ -159,9 +159,25 @@
 @interface DialogsController : VKMTableController
 @end
 
+@interface ExtrasInputView : UIView
+@end
+
+
+@interface MOTextView : UITextView
+@property(retain, nonatomic) UILabel *placeholderLabel;
+@property(retain, nonatomic) UIView *footerView; // @synthesize footerView=_footerView;
+@end
+
+@interface InputPanelViewTextView : MOTextView
+
+@end
+
 @interface InputPanelView : UIToolbar
+@property(retain, nonatomic) UIView *overlay;
+@property(retain, nonatomic) InputPanelViewTextView *textPanel;
 @end
 @interface ExtraInputPanelView : InputPanelView
+@property(retain, nonatomic) UIButton *inputViewButton;
 @end
 @interface ChatController : VKMTableController
 @property(retain, nonatomic) ExtraInputPanelView *inputPanel;
@@ -511,5 +527,8 @@
 @interface CommunityCommentsCell : VKMCell
 @property(readonly, nonatomic) UILabel *subtitleLabel;
 @property(readonly, nonatomic) UILabel *titleLabel;
+@end
+
+@interface VKSearchBarNoCancel : UISearchBar
 @end
 
