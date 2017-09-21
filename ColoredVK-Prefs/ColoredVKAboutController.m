@@ -7,7 +7,7 @@
 //
 
 #import "ColoredVKAboutController.h"
-#import "ColoredVKLicencesController.h"
+#import "ColoredVKTextViewController.h"
 #import "ColoredVKUpdatesController.h"
 #import "ColoredVKHeaderView.h"
 
@@ -30,9 +30,9 @@
     [self openURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://vk.com/%@", specifier.properties[@"url"]]]];
 }
 
-- (void)showUsedLibraries
+- (void)showTextController:(PSSpecifier *)specifier
 {
-    ColoredVKLicencesController *controller = [ColoredVKLicencesController new];
+    ColoredVKTextViewController *controller = [[ColoredVKTextViewController alloc] initWithFile:specifier.properties[@"fileName"]];
     controller.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
     [controller show];
 }

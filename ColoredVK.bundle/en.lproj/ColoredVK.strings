@@ -106,6 +106,7 @@
 "UPDATES_SETTINGS" = "Updates settings";
 "USED_LIBRARIES" = "Used libraries";
 "LICENCE_AGREEMENT" = "License agreement";
+"PRIVACY_STATEMENT" = "Privacy statement";
 "AVAILABLE_IN_%@_AND_HIGHER" = "Available in VK App %@ and higher.";
 
 "CACHE_SIZE" = "Now cache is";

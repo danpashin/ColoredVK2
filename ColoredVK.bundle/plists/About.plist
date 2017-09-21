@@ -88,9 +88,23 @@
 			<key>cell</key>
 			<string>PSButtonCell</string>
 			<key>action</key>
-			<string>showUsedLibraries</string>
+			<string>showTextController:</string>
 			<key>icon</key>
 			<string>CopyrightIcon.png</string>
+			<key>fileName</key>
+			<string>Libraries</string>
+		</dict>
+		<dict>
+			<key>label</key>
+			<string>PRIVACY_STATEMENT</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>action</key>
+			<string>showTextController:</string>
+			<key>fileName</key>
+			<string>Confidence</string>
+			<key>icon</key>
+			<string>PrivacyIcon</string>
 		</dict>
 	</array>
 </dict>

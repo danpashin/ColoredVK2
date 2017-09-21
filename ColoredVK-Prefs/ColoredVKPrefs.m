@@ -96,6 +96,7 @@
     self.prefsTableView.emptyDataSetDelegate = self;
     
 }
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];

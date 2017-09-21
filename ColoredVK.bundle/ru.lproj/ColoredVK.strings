@@ -105,6 +105,7 @@
 "UPDATES_SETTINGS" = "Настройки обновлений";
 "USED_LIBRARIES" = "Используемые библиотеки";
 "LICENCE_AGREEMENT" = "Лицензионное соглашение";
+"PRIVACY_STATEMENT" = "Заявление о Конфиденциальности";
 "AVAILABLE_IN_%@_AND_HIGHER" = "Доступно в VK App %@ и выше.";
 
 "CACHE_SIZE" = "Сейчас кэш занимает";
