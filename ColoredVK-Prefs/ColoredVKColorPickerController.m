@@ -17,7 +17,7 @@
 #import "UIScrollView+EmptyDataSet.h"
 #import "ColoredVKResponsiveButton.h"
 #import "ColoredVKAlertController.h"
-#import <OAStackView.h>
+#import "OAStackView.h"
 
 typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     ColoredVKColorPickerStateDismiss = 1,

@@ -32,6 +32,10 @@
            success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))sucess 
            failure:(void(^)(NSHTTPURLResponse *response, NSError *error))failure;
 
+- (void)downloadDataFromURL:(NSString *)stringURL
+                    success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))sucess 
+                    failure:(void(^)(NSHTTPURLResponse *response, NSError *error))failure;
+
 
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method URLString:(NSString *)urlString parameters:(id)parameters error:(NSError *__autoreleasing *)error;
 

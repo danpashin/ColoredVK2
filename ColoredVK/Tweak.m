@@ -1367,6 +1367,7 @@ CHOptimizedMethod(1, self, void, ChatController, viewWillAppear, BOOL, animated)
     CHSuper(1, ChatController, viewWillAppear, animated);
     
     if ([self isKindOfClass:NSClassFromString(@"ChatController")]) {
+        [self.root.inputPanelView.gapToolbar setBackgroundImage:[UIImage new] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
         setToolBar(self.inputPanel);
         if (enabled && messagesUseBlur)
             setBlur(self.inputPanel, YES, messagesBlurTone, messagesBlurStyle);
@@ -1692,7 +1693,7 @@ CHOptimizedMethod(0, self, void, IOS7AudioController, viewWillLayoutSubviews)
             cvkMainController.audioCover = [[ColoredVKAudioCover alloc] init];
             [cvkMainController.audioCover updateCoverForArtist:self.actor.text title:self.song.text];
         }
-        [cvkMainController.audioCover updateViewFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
+        [cvkMainController.audioCover updateViewFrame:self.view.bounds andSeparationPoint:self.hostView.frame.origin];
         [cvkMainController.audioCover addToView:self.view];
     }
 }
@@ -1706,7 +1707,7 @@ CHOptimizedMethod(0, self, void, IOS7AudioController, viewDidLoad)
             cvkMainController.audioCover = [[ColoredVKAudioCover alloc] init];
             [cvkMainController.audioCover updateCoverForArtist:self.actor.text title:self.song.text];
         }
-        [cvkMainController.audioCover updateViewFrame:self.view.frame andSeparationPoint:self.hostView.frame.origin];
+        [cvkMainController.audioCover updateViewFrame:self.view.bounds andSeparationPoint:self.hostView.frame.origin];
         [cvkMainController.audioCover addToView:self.view];
         
         audioPlayerTintColor = cvkMainController.audioCover.color;
@@ -1721,6 +1722,7 @@ CHOptimizedMethod(0, self, void, IOS7AudioController, viewDidLoad)
         if (enablePlayerGestures) {
             navBar.topItem.leftBarButtonItems = @[];
             navBar.topItem.rightBarButtonItems = @[];
+            self.navigationController.navigationBar.hidden = YES;
             
             [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionDown 
                                                                                    handler:^{
@@ -2284,8 +2286,7 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
     CHSuper(1, VKMBrowserController, viewWillAppear, animated);
     if ([self isKindOfClass:NSClassFromString(@"VKMBrowserController")]) {
         if (showFastDownloadButton) {
-            ColoredVKBarDownloadButton *saveButton = [ColoredVKBarDownloadButton buttonWithURL:self.target.url.absoluteString rootController:self];
-            self.navigationItem.rightBarButtonItem = saveButton;
+            self.navigationItem.rightBarButtonItem = [ColoredVKBarDownloadButton buttonWithURL:self.target.url.absoluteString rootController:self];
             [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:self.target.url] queue:[NSOperationQueue mainQueue] 
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
                                        if (![[response.MIMEType componentsSeparatedByString:@"/"].firstObject isEqualToString:@"image"]) self.navigationItem.rightBarButtonItem = nil;

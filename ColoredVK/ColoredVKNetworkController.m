@@ -159,6 +159,32 @@
     }
 }
 
+- (void)downloadDataFromURL:(NSString *)stringURL
+                    success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))sucess 
+                    failure:(void(^)(NSHTTPURLResponse *response, NSError *error))failure
+{
+    NSError *requestError = nil;        
+    NSMutableURLRequest *request = [self requestWithMethod:@"GET" URLString:stringURL parameters:nil error:&requestError];
+    if (requestError) {
+        if (failure)
+            failure(nil, requestError);
+    }
+    
+    NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:request
+                                                         completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
+                                                             if (!error) {
+                                                                 NSData *data = [NSData dataWithContentsOfURL:location];
+                                                                 if (sucess)
+                                                                     sucess((NSHTTPURLResponse *)response, data);
+                                                                 [[NSFileManager defaultManager] removeItemAtURL:location error:nil];
+                                                             } else {
+                                                                 if (failure)
+                                                                     failure((NSHTTPURLResponse *)response, error);
+                                                             }
+                                                         }];
+    [task resume];
+}
+
 
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method URLString:(NSString *)urlString parameters:(id)parameters error:(NSError *__autoreleasing *)error
 {

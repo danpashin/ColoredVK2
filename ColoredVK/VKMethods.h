@@ -165,7 +165,7 @@
 
 @interface MOTextView : UITextView
 @property(retain, nonatomic) UILabel *placeholderLabel;
-@property(retain, nonatomic) UIView *footerView; // @synthesize footerView=_footerView;
+@property(retain, nonatomic) UIView *footerView;
 @end
 
 @interface InputPanelViewTextView : MOTextView
@@ -174,12 +174,19 @@
 
 @interface InputPanelView : UIToolbar
 @property(retain, nonatomic) UIView *overlay;
+@property(retain, nonatomic) UIToolbar *gapToolbar;
 @property(retain, nonatomic) InputPanelViewTextView *textPanel;
 @end
 @interface ExtraInputPanelView : InputPanelView
 @property(retain, nonatomic) UIButton *inputViewButton;
 @end
+
+@interface RootView : UIView
+@property(retain, nonatomic) ExtraInputPanelView *inputPanelView;
+@end
+
 @interface ChatController : VKMTableController
+@property(retain, nonatomic) RootView *root;
 @property(retain, nonatomic) ExtraInputPanelView *inputPanel;
 @property(retain, nonatomic) UIButton *editForward;
 @property(retain, nonatomic) UIButton *editDelete;

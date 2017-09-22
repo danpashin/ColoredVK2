@@ -103,6 +103,21 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
     self.blurEffectView.frame = self.bottomImageView.bounds;
     self.audioLyricsView.frame = self.topImageView.bounds;
     self.topCoverGradient.frame = CGRectMake(0, 0, CGRectGetWidth(self.topImageView.frame), 79);
+    
+    self.topImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.coverView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topImageView(height)]|" options:0 
+                                                                           metrics:@{@"height":@(separationPoint.y)} views:@{@"topImageView":self.topImageView}]];
+    [self.coverView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[topImageView]|" options:0 metrics:nil views:@{@"topImageView":self.topImageView}]];
+    
+    
+    self.bottomImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.coverView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[btmImageView]|" options:0 metrics:nil views:@{@"btmImageView":self.bottomImageView}]];
+    [self.coverView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[btmImageView]|" options:0 metrics:nil views:@{@"btmImageView":self.bottomImageView}]];
+    
+    
+    self.blurEffectView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.bottomImageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[blurView]|" options:0 metrics:nil views:@{@"blurView":self.blurEffectView}]];
+    [self.bottomImageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[blurView]|" options:0 metrics:nil views:@{@"blurView":self.blurEffectView}]];
 }
 
 - (void)addToView:(UIView *)view
@@ -111,6 +126,10 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         if (![view.subviews containsObject:[view viewWithTag:self.coverView.tag]]) {
             [view addSubview:self.coverView];
             [view sendSubviewToBack:self.coverView];
+            
+            self.coverView.translatesAutoresizingMaskIntoConstraints = NO;
+            [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[coverView]|" options:0 metrics:nil views:@{@"coverView":self.coverView}]];
+            [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[coverView]|" options:0 metrics:nil views:@{@"coverView":self.coverView}]];
         }
     });
 }

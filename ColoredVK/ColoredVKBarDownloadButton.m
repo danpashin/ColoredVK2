@@ -70,8 +70,8 @@
 
 - (void)downloadImageWithIdentifier:(NSString *)identifier completionBlock:( void(^)(BOOL success) )block
 {
-    [self.networkController sendRequestWithMethod:@"GET" url:self.url parameters:nil
-                                          success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData) {
+    [self.networkController downloadDataFromURL:self.url
+                                          success:^(NSHTTPURLResponse *response, NSData *rawData) {
                                               NSString *imagePath = [CVK_FOLDER_PATH stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]];
                                               NSString *prevImagePath = [CVK_FOLDER_PATH stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identifier]];
                                               
@@ -98,7 +98,7 @@
                                                   }
                                               });
                                           }
-                                          failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) { if (block) block(NO); }];
+                                          failure:^(NSHTTPURLResponse *response, NSError *error) { if (block) block(NO); }];
 }
 
 - (NSString *)description
