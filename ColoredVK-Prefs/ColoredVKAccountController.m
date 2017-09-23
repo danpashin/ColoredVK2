@@ -7,10 +7,8 @@
 //
 
 #import "ColoredVKAccountController.h"
-#import "ColoredVKInstaller.h"
 #import "ColoredVKPasswordViewController.h"
 #import "ColoredVKNewInstaller.h"
-#import "ColoredVKCrypto.h"
 #import "ColoredVKAlertController.h"
 #import <SafariServices/SafariServices.h>
 #import "ColoredVKWebViewController.h"

@@ -8,7 +8,6 @@
 
 
 #import <UIKit/UIKit.h>
-#import "Preferences.h"
 
 @interface ColoredVKHeaderView : UIView
 

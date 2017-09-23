@@ -8,17 +8,16 @@
 
 #import "ColoredVKBarDownloadButton.h"
 #import "PrefixHeader.h"
-#import "UIImage+ResizeMagick.h"
 #import "ColoredVKHUD.h"
 #import "ColoredVKAlertController.h"
-#import "ColoredVKNetworkController.h"
+#import "ColoredVKImageProcessor.h"
+
 
 @interface ColoredVKBarDownloadButton ()
-
 @property (strong, nonatomic) NSArray *downloadInfo;
-@property (strong, nonatomic) ColoredVKNetworkController *networkController;
-
+@property (strong, nonatomic) ColoredVKImageProcessor *processor;
 @end
+
 
 @implementation ColoredVKBarDownloadButton
 
@@ -41,7 +40,7 @@
         self.url = url;
         self.rootViewController = controller;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            self.networkController = [ColoredVKNetworkController controller];
+            self.processor = [ColoredVKImageProcessor new];
             self.downloadInfo = self.downloadInfo;
         });
     }
@@ -50,55 +49,34 @@
 
 - (void)actionDownloadImage
 {
-    if (self.urlBlock && !self.url) self.url = self.urlBlock();  
+    if (self.urlBlock && !self.url) self.url = self.urlBlock(); 
     
     ColoredVKAlertController *actionController = [ColoredVKAlertController alertControllerWithTitle:@"" message:CVKLocalizedString(@"SET_THIS_IMAGE_TO") preferredStyle:UIAlertControllerStyleActionSheet];
     [actionController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     
     for (NSDictionary *dict in self.downloadInfo) {
-        UIAlertAction *action = [UIAlertAction actionWithTitle:CVKLocalizedStringFromTable(dict[@"title"], @"ColoredVK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+        NSString *identifier = dict[@"identifier"];
+        UIAlertAction *action = [UIAlertAction actionWithTitle:CVKLocalizedStringFromTable(dict[@"title"], @"ColoredVK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             ColoredVKHUD *hud = [ColoredVKHUD showHUD];
-            [self downloadImageWithIdentifier:dict[@"identifier"] completionBlock:^(BOOL success) {
-                success ? [hud showSuccess] : [hud showFailure];
-            }];
+            
+            NSString *stringPath = [CVK_FOLDER_PATH stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]];
+            [self.processor processImageFromURL:[NSURL URLWithString:self.url] identifier:identifier 
+                                   andSaveToURL:[NSURL fileURLWithPath:stringPath] 
+                                completionBlock:^(BOOL success, NSError *error) {
+                                    success ? [hud showSuccess] : [hud showFailure];
+                                    
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil 
+                                                                                      userInfo:@{@"identifier" : identifier}];
+                                    
+                                    if ([identifier isEqualToString:@"menuBackgroundImage"]) {
+                                        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+                                    }
+                                }];
         }];
         [actionController addAction:action image:dict[@"icon"]];
     }
     
     [actionController presentFromController:self.rootViewController];
-}
-
-- (void)downloadImageWithIdentifier:(NSString *)identifier completionBlock:( void(^)(BOOL success) )block
-{
-    [self.networkController downloadDataFromURL:self.url
-                                          success:^(NSHTTPURLResponse *response, NSData *rawData) {
-                                              NSString *imagePath = [CVK_FOLDER_PATH stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]];
-                                              NSString *prevImagePath = [CVK_FOLDER_PATH stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identifier]];
-                                              
-                                              NSError *error = nil;
-                                              [rawData writeToFile:imagePath options:NSDataWritingAtomic error:&error];
-                                              if (!error) {
-                                                  UIImage *imageToResize = [UIImage imageWithData:[NSData dataWithContentsOfFile:imagePath]];
-                                                  UIImage *preview = [imageToResize resizedImageByMagick:@"40x40#"];
-                                                  [UIImageJPEGRepresentation(preview, 1.0) writeToFile:prevImagePath options:NSDataWritingAtomic error:&error];
-                                                  
-                                                  CGSize screenSize = [UIScreen mainScreen].bounds.size;
-                                                  if ([identifier isEqualToString:@"barImage"]) screenSize.height = 64;
-                                                  UIImage *recizedImage = [imageToResize resizedImageByMagick:[NSString stringWithFormat:@"%fx%f#", screenSize.width, screenSize.height]];
-                                                  [UIImageJPEGRepresentation(recizedImage, 1.0) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
-                                              }
-                                              
-                                              if (block) block(error ? NO : YES);
-                                              
-                                              dispatch_async(dispatch_get_main_queue(), ^{
-                                                  [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{@"identifier" : identifier}];
-                                                  
-                                                  if ([identifier isEqualToString:@"menuBackgroundImage"]) {
-                                                      CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-                                                  }
-                                              });
-                                          }
-                                          failure:^(NSHTTPURLResponse *response, NSError *error) { if (block) block(NO); }];
 }
 
 - (NSString *)description

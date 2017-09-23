@@ -8,7 +8,6 @@
 
 #import "ColoredVKWindowController.h"
 #import "PrefixHeader.h"
-#import <sys/utsname.h>
 
 @interface ColoredVKWindowController ()
 

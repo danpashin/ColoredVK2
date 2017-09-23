@@ -105,6 +105,8 @@
 			<string>Confidence</string>
 			<key>icon</key>
 			<string>PrivacyIcon</string>
+			<key>localized</key>
+			<true/>
 		</dict>
 	</array>
 </dict>

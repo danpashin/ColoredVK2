@@ -7,6 +7,8 @@
 //
 
 #import "ColoredVKPasswordViewController.h"
+#import "ColoredVKPasswordCell.h"
+#import "ColoredVKHUD.h"
 #import "PrefixHeader.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKCrypto.h"

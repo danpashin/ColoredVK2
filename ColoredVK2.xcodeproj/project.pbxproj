@@ -51,6 +51,14 @@
 		A510E7D91EF99CE9001D6798 /* ColoredVKSimpleAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = A510E7D41EF99CE9001D6798 /* ColoredVKSimpleAlertController.m */; };
 		A510E7DA1EF99CE9001D6798 /* ColoredVKSimpleAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = A510E7D41EF99CE9001D6798 /* ColoredVKSimpleAlertController.m */; };
 		A513AB351F43666E0045F530 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F09DA51F101A5200024198 /* SafariServices.framework */; };
+		A51D536D1F769E3900F6952A /* ColoredVKImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */; };
+		A51D536E1F769E3900F6952A /* ColoredVKImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */; };
+		A51D536F1F769E3A00F6952A /* ColoredVKImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */; };
+		A51D53701F769E3B00F6952A /* ColoredVKImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */; };
+		A51D53711F769E4000F6952A /* ColoredVKImageProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = A51D536B1F769DB600F6952A /* ColoredVKImageProcessor.h */; };
+		A51D53721F769E4000F6952A /* ColoredVKImageProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = A51D536B1F769DB600F6952A /* ColoredVKImageProcessor.h */; };
+		A51D53731F769E4100F6952A /* ColoredVKImageProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = A51D536B1F769DB600F6952A /* ColoredVKImageProcessor.h */; };
+		A51D53741F769E4100F6952A /* ColoredVKImageProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = A51D536B1F769DB600F6952A /* ColoredVKImageProcessor.h */; };
 		A5210C951DE785C1004F7E11 /* LHAcvitityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DA87BF1D944E1000763B5F /* LHAcvitityIndicator.m */; };
 		A5210C961DE785C1004F7E11 /* LHBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DA87C11D944E1000763B5F /* LHBackgroundView.m */; };
 		A5210C981DE785C1004F7E11 /* LHProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DA87C51D944E1000763B5F /* LHProgressHUD.m */; };
@@ -247,14 +255,6 @@
 		A585E1821EAF31AA005B30F7 /* ColoredVK2.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = A585E1801EAF31AA005B30F7 /* ColoredVK2.xcdatamodel */; };
 		A589F66B1DE1B2F100467138 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A589F66A1DE1B2F100467138 /* MediaPlayer.framework */; };
 		A589F66C1DE1B2F800467138 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A589F66A1DE1B2F100467138 /* MediaPlayer.framework */; };
-		A58E96351F75559100258A01 /* UIImage+ResizeMagick.m in Sources */ = {isa = PBXBuildFile; fileRef = A58E96341F75557700258A01 /* UIImage+ResizeMagick.m */; };
-		A58E96361F75559B00258A01 /* UIImage+ResizeMagick.m in Sources */ = {isa = PBXBuildFile; fileRef = A58E96341F75557700258A01 /* UIImage+ResizeMagick.m */; };
-		A58E96371F75559C00258A01 /* UIImage+ResizeMagick.m in Sources */ = {isa = PBXBuildFile; fileRef = A58E96341F75557700258A01 /* UIImage+ResizeMagick.m */; };
-		A58E96381F75559D00258A01 /* UIImage+ResizeMagick.m in Sources */ = {isa = PBXBuildFile; fileRef = A58E96341F75557700258A01 /* UIImage+ResizeMagick.m */; };
-		A58E963A1F7555A200258A01 /* UIImage+ResizeMagick.h in Headers */ = {isa = PBXBuildFile; fileRef = A58E96331F75557700258A01 /* UIImage+ResizeMagick.h */; };
-		A58E963B1F7555A300258A01 /* UIImage+ResizeMagick.h in Headers */ = {isa = PBXBuildFile; fileRef = A58E96331F75557700258A01 /* UIImage+ResizeMagick.h */; };
-		A58E963C1F7555A400258A01 /* UIImage+ResizeMagick.h in Headers */ = {isa = PBXBuildFile; fileRef = A58E96331F75557700258A01 /* UIImage+ResizeMagick.h */; };
-		A58E963D1F7555A400258A01 /* UIImage+ResizeMagick.h in Headers */ = {isa = PBXBuildFile; fileRef = A58E96331F75557700258A01 /* UIImage+ResizeMagick.h */; };
 		A599A82E1EA140F600D747D7 /* ColoredVKGeneralPrefs.h in Headers */ = {isa = PBXBuildFile; fileRef = A599A82C1EA140F600D747D7 /* ColoredVKGeneralPrefs.h */; };
 		A599A82F1EA140F600D747D7 /* ColoredVKGeneralPrefs.h in Headers */ = {isa = PBXBuildFile; fileRef = A599A82C1EA140F600D747D7 /* ColoredVKGeneralPrefs.h */; };
 		A599A8301EA140F600D747D7 /* ColoredVKGeneralPrefs.h in Headers */ = {isa = PBXBuildFile; fileRef = A599A82C1EA140F600D747D7 /* ColoredVKGeneralPrefs.h */; };
@@ -458,6 +458,8 @@
 		A510E7D31EF99CE9001D6798 /* ColoredVKSimpleAlertController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKSimpleAlertController.h; sourceTree = "<group>"; };
 		A510E7D41EF99CE9001D6798 /* ColoredVKSimpleAlertController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKSimpleAlertController.m; sourceTree = "<group>"; };
 		A517D7991D78A25700DD153E /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		A51D536B1F769DB600F6952A /* ColoredVKImageProcessor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKImageProcessor.h; sourceTree = "<group>"; };
+		A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKImageProcessor.m; sourceTree = "<group>"; };
 		A523509D1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKBarDownloadButton.h; sourceTree = "<group>"; };
 		A523509E1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKBarDownloadButton.m; sourceTree = "<group>"; };
 		A526A6BE1DD50D4700B47104 /* ColoredVKAudioLyricsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKAudioLyricsView.h; sourceTree = "<group>"; };
@@ -552,8 +554,6 @@
 		A585E1741EAF210C005B30F7 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		A585E1801EAF31AA005B30F7 /* ColoredVK2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ColoredVK2.xcdatamodel; sourceTree = "<group>"; };
 		A589F66A1DE1B2F100467138 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
-		A58E96331F75557700258A01 /* UIImage+ResizeMagick.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+ResizeMagick.h"; sourceTree = "<group>"; };
-		A58E96341F75557700258A01 /* UIImage+ResizeMagick.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ResizeMagick.m"; sourceTree = "<group>"; };
 		A58F34101D5A378100838814 /* UIColor+ColoredVK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+ColoredVK.m"; sourceTree = "<group>"; };
 		A58F34111D5A378100838814 /* UIColor+ColoredVK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+ColoredVK.h"; sourceTree = "<group>"; };
 		A58F34121D5A378100838814 /* NSString+ColoredVK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ColoredVK.m"; sourceTree = "<group>"; };
@@ -861,7 +861,6 @@
 		A53D919D1CCA82C000E45A49 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				A58E96321F75557700258A01 /* UIImage-ResizeMagick */,
 				A585E16E1EAF1E7C005B30F7 /* ColoredVKCoreData.h */,
 				A585E16F1EAF1E7C005B30F7 /* ColoredVKCoreData.m */,
 				A585E1681EAF1DEC005B30F7 /* ColoredVKAudioEntity.h */,
@@ -944,15 +943,6 @@
 			name = Controllers;
 			sourceTree = "<group>";
 		};
-		A58E96321F75557700258A01 /* UIImage-ResizeMagick */ = {
-			isa = PBXGroup;
-			children = (
-				A58E96331F75557700258A01 /* UIImage+ResizeMagick.h */,
-				A58E96341F75557700258A01 /* UIImage+ResizeMagick.m */,
-			);
-			path = "UIImage-ResizeMagick";
-			sourceTree = "<group>";
-		};
 		A5B6ED0A1D3D659800383425 /* ColoredVK-Prefs */ = {
 			isa = PBXGroup;
 			children = (
@@ -980,6 +970,8 @@
 				A510E7CC1EF98866001D6798 /* ColoredVKColorCollectionViewCell.m */,
 				A50A5A0D1F069CBC007561E2 /* ColoredVKResponsiveButton.h */,
 				A50A5A0E1F069CBC007561E2 /* ColoredVKResponsiveButton.m */,
+				A51D536B1F769DB600F6952A /* ColoredVKImageProcessor.h */,
+				A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */,
 				A5D979A41DAEBA1000607F06 /* Images.xcassets */,
 				A53FDE511E4CC95100AA3031 /* Icon-big.png */,
 				A5DD93FE1D3E0F560006E470 /* Supporting Files */,
@@ -1047,7 +1039,7 @@
 				A50D222E1DB16572007F195C /* NSDate+DateTools.h in Headers */,
 				A528D8841DE9FCAF00B299C1 /* ColoredVKMainController.h in Headers */,
 				A54249951E0522560018D3E3 /* SDWebImageDownloaderOperation.h in Headers */,
-				A58E963A1F7555A200258A01 /* UIImage+ResizeMagick.h in Headers */,
+				A51D53721F769E4000F6952A /* ColoredVKImageProcessor.h in Headers */,
 				A542498D1E0522560018D3E3 /* SDWebImageDecoder.h in Headers */,
 				A585E1701EAF1E7C005B30F7 /* ColoredVKCoreData.h in Headers */,
 				A52CDBAC1E33EB2400D69AD3 /* ColoredVKHUD.h in Headers */,
@@ -1092,10 +1084,10 @@
 				A54249861E0522560018D3E3 /* SDImageCacheConfig.h in Headers */,
 				A52CDBAE1E33EB2400D69AD3 /* ColoredVKHUD.h in Headers */,
 				A5739D5E1EA015A900367595 /* ColoredVKTextViewController.h in Headers */,
-				A58E963C1F7555A400258A01 /* UIImage+ResizeMagick.h in Headers */,
 				A576D1C91DC6222C0039884F /* PSTableCell+ColoredVK.h in Headers */,
 				A54E41F61EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */,
 				A510E7D61EF99CE9001D6798 /* ColoredVKSimpleAlertController.h in Headers */,
+				A51D53741F769E4100F6952A /* ColoredVKImageProcessor.h in Headers */,
 				A5B1E29F1E509246001B8442 /* ColoredVKSettingsController.h in Headers */,
 				A55434FC1E636B19003B4256 /* Tweak.h in Headers */,
 				A528D8851DE9FCAF00B299C1 /* ColoredVKMainController.h in Headers */,
@@ -1149,7 +1141,6 @@
 				A5D979D71DAEC1E600607F06 /* ColoredVKHeaderView.h in Headers */,
 				A52CDBAD1E33EB2400D69AD3 /* ColoredVKHUD.h in Headers */,
 				A54E41F51EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */,
-				A58E963B1F7555A300258A01 /* UIImage+ResizeMagick.h in Headers */,
 				A5D979731DAEB8EA00607F06 /* PrefixHeader.h in Headers */,
 				A5A8596F1EF8110200C6E1EA /* ColoredVKColorPreview.h in Headers */,
 				A5739D551EA0159700367595 /* ColoredVKColorPickerController.h in Headers */,
@@ -1180,6 +1171,7 @@
 				A5D979861DAEB8EA00607F06 /* LHProgressHUD.h in Headers */,
 				A5B1E29E1E509246001B8442 /* ColoredVKSettingsController.h in Headers */,
 				A5D979881DAEB8EA00607F06 /* UIImage+ColoredVK.h in Headers */,
+				A51D53711F769E4000F6952A /* ColoredVKImageProcessor.h in Headers */,
 				A5D979891DAEB8EA00607F06 /* UIColor+ColoredVK.h in Headers */,
 				A5D9798A1DAEB8EA00607F06 /* NSString+ColoredVK.h in Headers */,
 				A57B18491E24F3D500A2A622 /* NSData+AESCrypt.h in Headers */,
@@ -1191,7 +1183,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5D56A591E70427300A8FFB5 /* ColoredVKMainPrefsController.h in Headers */,
-				A58E963D1F7555A400258A01 /* UIImage+ResizeMagick.h in Headers */,
+				A51D53731F769E4100F6952A /* ColoredVKImageProcessor.h in Headers */,
 				A54E41F71EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */,
 				A5D56AD31E70440600A8FFB5 /* AppDelegate.h in Headers */,
 				A5D56A5B1E70427300A8FFB5 /* ColoredVKHeaderView.h in Headers */,
@@ -1455,7 +1447,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ColoredVK-Prefs/Pods-ColoredVK-Prefs-resources.sh",
-				"$PODS_CONFIGURATION_BUILD_DIR/OAStackView/OAStackView.bundle",
+				$PODS_CONFIGURATION_BUILD_DIR/OAStackView/OAStackView.bundle,
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -1473,7 +1465,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ColoredVK-NonJail/Pods-ColoredVK-NonJail-resources.sh",
-				"$PODS_CONFIGURATION_BUILD_DIR/OAStackView/OAStackView.bundle",
+				$PODS_CONFIGURATION_BUILD_DIR/OAStackView/OAStackView.bundle,
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -1575,7 +1567,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ColoredVK-Prefs-App/Pods-ColoredVK-Prefs-App-resources.sh",
-				"$PODS_CONFIGURATION_BUILD_DIR/OAStackView/OAStackView.bundle",
+				$PODS_CONFIGURATION_BUILD_DIR/OAStackView/OAStackView.bundle,
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -1619,8 +1611,8 @@
 				A585E1721EAF1E7C005B30F7 /* ColoredVKCoreData.m in Sources */,
 				A52350A11DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m in Sources */,
 				A542498B1E0522560018D3E3 /* SDWebImageCompat.m in Sources */,
-				A58E96371F75559C00258A01 /* UIImage+ResizeMagick.m in Sources */,
 				A542498F1E0522560018D3E3 /* SDWebImageDecoder.m in Sources */,
+				A51D536D1F769E3900F6952A /* ColoredVKImageProcessor.m in Sources */,
 				A5D979671DAEB87900607F06 /* UIImage+ColoredVK.m in Sources */,
 				A5363B0F1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.m in Sources */,
 				A50D222F1DB16572007F195C /* NSDate+DateTools.m in Sources */,
@@ -1635,7 +1627,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A58E96351F75559100258A01 /* UIImage+ResizeMagick.m in Sources */,
 				A50A5A131F069CBC007561E2 /* ColoredVKResponsiveButton.m in Sources */,
 				A5F09D991F0FF88200024198 /* ColoredVKNewInstaller.m in Sources */,
 				A5363B101E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.m in Sources */,
@@ -1675,6 +1666,7 @@
 				A528D8871DE9FCAF00B299C1 /* ColoredVKMainController.m in Sources */,
 				A576D1BC1DC6220C0039884F /* LHBackgroundView.m in Sources */,
 				A5A859731EF8110200C6E1EA /* ColoredVKColorPreview.m in Sources */,
+				A51D53701F769E3B00F6952A /* ColoredVKImageProcessor.m in Sources */,
 				A576D1BE1DC6220C0039884F /* LHProgressHUD.m in Sources */,
 				A599A8321EA140F600D747D7 /* ColoredVKGeneralPrefs.m in Sources */,
 				A5739D611EA015A900367595 /* ColoredVKTextViewController.m in Sources */,
@@ -1701,6 +1693,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A51D536E1F769E3900F6952A /* ColoredVKImageProcessor.m in Sources */,
 				A5DB61CB1F10DBF200FFAFF9 /* ColoredVKNewInstaller.m in Sources */,
 				A510E7D01EF98866001D6798 /* ColoredVKColorCollectionViewCell.m in Sources */,
 				A599A8311EA140F600D747D7 /* ColoredVKGeneralPrefs.m in Sources */,
@@ -1724,7 +1717,6 @@
 				A54E41F81EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */,
 				A5A4E2D31F250A520001102F /* ColoredVKWebViewController.m in Sources */,
 				A5AB327D1F34F8E100C7537C /* ColoredVKTweakPrefsController.m in Sources */,
-				A58E96361F75559B00258A01 /* UIImage+ResizeMagick.m in Sources */,
 				A50A5A121F069CBC007561E2 /* ColoredVKResponsiveButton.m in Sources */,
 				A5739D781EA015C300367595 /* ColoredVKStepperPrefsCell.m in Sources */,
 				A56147BA1EA0140900B3D8C8 /* ColoredVKAboutController.m in Sources */,
@@ -1763,6 +1755,7 @@
 				A50A5A141F069CBC007561E2 /* ColoredVKResponsiveButton.m in Sources */,
 				A5D56A9C1E70427300A8FFB5 /* ColoredVKSettingsController.m in Sources */,
 				A5D56A9D1E70427300A8FFB5 /* UIImage+ColoredVK.m in Sources */,
+				A51D536F1F769E3A00F6952A /* ColoredVKImageProcessor.m in Sources */,
 				A5B124DC1EA3873D00FAEE76 /* ColoredVKPasswordViewController.m in Sources */,
 				A5A4E2D51F250A520001102F /* ColoredVKWebViewController.m in Sources */,
 				A5A859741EF8110200C6E1EA /* ColoredVKColorPreview.m in Sources */,
@@ -1773,7 +1766,6 @@
 				A5739D621EA015A900367595 /* ColoredVKTextViewController.m in Sources */,
 				A5D56AA51E70427300A8FFB5 /* ColoredVKMainPrefsController.m in Sources */,
 				A5F09DA41F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */,
-				A58E96381F75559D00258A01 /* UIImage+ResizeMagick.m in Sources */,
 				A5D56AA71E70427300A8FFB5 /* ColoredVKHeaderView.m in Sources */,
 				A5D56AD41E70440600A8FFB5 /* AppDelegate.m in Sources */,
 				A5D56AA91E70427300A8FFB5 /* NSData+AESCrypt.m in Sources */,
@@ -1859,6 +1851,7 @@
 			buildSettings = {
 				APP_VERSION = "3.6-theux";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -1974,6 +1967,7 @@
 			buildSettings = {
 				APP_VERSION = "3.6-theux";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -2050,6 +2044,7 @@
 			buildSettings = {
 				APP_VERSION = "3.6-theux";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;

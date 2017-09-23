@@ -32,7 +32,8 @@
 
 - (void)showTextController:(PSSpecifier *)specifier
 {
-    ColoredVKTextViewController *controller = [[ColoredVKTextViewController alloc] initWithFile:specifier.properties[@"fileName"]];
+    ColoredVKTextViewController *controller = [[ColoredVKTextViewController alloc] initWithFile:specifier.properties[@"fileName"] 
+                                                                                      localized:[specifier.properties[@"localized"] boolValue]];
     controller.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
     [controller show];
 }

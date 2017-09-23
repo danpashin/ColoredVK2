@@ -20,6 +20,7 @@
 #import "ColoredVKAlertController.h"
 #import "ColoredVKUpdatesController.h"
 #import <dlfcn.h>
+#import "Preferences.h"
 
 
 
@@ -237,6 +238,8 @@ void reloadPrefs()
     hideMenuSeparators = [prefs[@"hideMenuSeparators"] boolValue];
     messagesUseBlur = [prefs[@"messagesUseBlur"] boolValue];
     messagesUseBackgroundBlur = [prefs[@"messagesUseBackgroundBlur"] boolValue];
+    useCustomMessageReadColor = [prefs[@"useCustomMessageReadColor"] boolValue];
+    useCustomDialogsUnreadColor = [prefs[@"useCustomDialogsUnreadColor"] boolValue];
     menuUseBlur = [prefs[@"menuUseBlur"] boolValue];
     menuUseBackgroundBlur = [prefs[@"menuUseBackgroundBlur"] boolValue];
     changeMessagesInput = [prefs[@"changeMessagesInput"] boolValue];
@@ -267,6 +270,8 @@ void reloadPrefs()
     tabbarSelForegroundColor =  [UIColor savedColorForIdentifier:@"TabbarSelForegroundColor"    fromPrefs:prefs];
     messagesInputTextColor =    [UIColor savedColorForIdentifier:@"messagesInputTextColor"      fromPrefs:prefs];
     messagesInputBackColor =    [UIColor savedColorForIdentifier:@"messagesInputBackColor"      fromPrefs:prefs];
+    dialogsUnreadColor =        [[UIColor savedColorForIdentifier:@"dialogsUnreadColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
+    messageUnreadColor =        [[UIColor savedColorForIdentifier:@"messageReadColor"           fromPrefs:prefs] colorWithAlphaComponent:0.2];
     
     showFastDownloadButton = prefs[@"showFastDownloadButton"] ? [prefs[@"showFastDownloadButton"] boolValue] : YES;
     showMenuCell = prefs[@"showMenuCell"] ? [prefs[@"showMenuCell"] boolValue] : YES;
@@ -335,8 +340,6 @@ void reloadPrefs()
         
         appCornerRadius = [prefs[@"appCornerRadius"] floatValue];
         
-        useCustomMessageReadColor = [prefs[@"useCustomMessageReadColor"] boolValue];
-        useCustomDialogsUnreadColor = [prefs[@"useCustomDialogsUnreadColor"] boolValue];
         
         changeMessagesListTextColor = [prefs[@"changeMessagesListTextColor"] boolValue];
         changeGroupsListTextColor = [prefs[@"changeGroupsListTextColor"] boolValue];
@@ -359,7 +362,6 @@ void reloadPrefs()
         
         switchesTintColor =          [UIColor savedColorForIdentifier:@"switchesTintColor"          fromPrefs:prefs];
         switchesOnTintColor =        [UIColor savedColorForIdentifier:@"switchesOnTintColor"        fromPrefs:prefs];
-        messageUnreadColor =        [[UIColor savedColorForIdentifier:@"messageReadColor"           fromPrefs:prefs] colorWithAlphaComponent:0.2];
         
         messagesListTextColor =      [UIColor savedColorForIdentifier:@"messagesListTextColor"      fromPrefs:prefs];
         groupsListTextColor =        [UIColor savedColorForIdentifier:@"groupsListTextColor"        fromPrefs:prefs];
@@ -376,7 +378,6 @@ void reloadPrefs()
         videosBlurTone =            [[UIColor savedColorForIdentifier:@"videosBlurTone"             fromPrefs:prefs] colorWithAlphaComponent:0.3];
         settingsBlurTone =          [[UIColor savedColorForIdentifier:@"settingsBlurTone"           fromPrefs:prefs] colorWithAlphaComponent:0.3];
         settingsExtraBlurTone =     [[UIColor savedColorForIdentifier:@"settingsExtraBlurTone"      fromPrefs:prefs] colorWithAlphaComponent:0.3];
-        dialogsUnreadColor =        [[UIColor savedColorForIdentifier:@"dialogsUnreadColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
         
     }
     

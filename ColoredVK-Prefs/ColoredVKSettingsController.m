@@ -8,9 +8,7 @@
 
 #import "ColoredVKSettingsController.h"
 #import "PrefixHeader.h"
-#import "PSSpecifier.h"
 #import "ColoredVKHUD.h"
-#import "ColoredVKPrefs.h"
 #import "SSZipArchive.h"
 #import "ColoredVKAlertController.h"
 

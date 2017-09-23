@@ -7,8 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ColoredVKPasswordCell.h"
-#import "ColoredVKHUD.h"
 
 @interface ColoredVKPasswordViewController : UIViewController
 

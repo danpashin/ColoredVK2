@@ -7,12 +7,10 @@
 //
 
 #import "ColoredVKGeneralPrefs.h"
-#import "UIImage+ResizeMagick.h"
-#import <MobileCoreServices/MobileCoreServices.h>
 #import "ColoredVKHUD.h"
-#import "UIImage+ResizeMagick.h"
 #import "ColoredVKSettingsController.h"
 #import "ColoredVKNewInstaller.h"
+#import "ColoredVKImageProcessor.h"
 
 
 @implementation ColoredVKGeneralPrefs
@@ -44,7 +42,7 @@ NSArray <NSString *> *specifiersToDisable;
 {
     [super loadView];
     
-    specifiersToDisable = @[@"useCustomMessageReadColor", @"messageReadColor"];
+    specifiersToDisable = @[];
 }
 
 #pragma mark -
@@ -178,32 +176,18 @@ NSArray <NSString *> *specifiersToDisable;
         [picker dismissViewControllerAnimated:YES completion:nil];
     };
     
-    hud.executionBlock = ^(ColoredVKHUD *parentHud) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-            NSString *imagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.lastImageIdentifier]];
-            NSString *prevImagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", self.lastImageIdentifier]];
-            
-            NSError *error = nil;
-            [UIImageJPEGRepresentation(image, 1.0) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
-            if (!error) {
-                UIImage *imageToResize = [UIImage imageWithData:[NSData dataWithContentsOfFile:imagePath]];
-                UIImage *preview = [imageToResize resizedImageByMagick:@"40x40#"];
-                [UIImageJPEGRepresentation(preview, 1.0) writeToFile:prevImagePath options:NSDataWritingAtomic error:&error];
-                
-                CGSize screenSize = [UIScreen mainScreen].bounds.size;
-                if ([self.lastImageIdentifier isEqualToString:@"barImage"]) screenSize.height = 64;
-                UIImage *resizedImage = [imageToResize resizedImageByMagick:[NSString stringWithFormat:@"%fx%f#", screenSize.width, screenSize.height]];
-                [UIImageJPEGRepresentation(resizedImage, 1.0) writeToFile:imagePath options:NSDataWritingAtomic error:&error];
-            }
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{ @"identifier" : self.lastImageIdentifier }];
-            if ([self.lastImageIdentifier isEqualToString:@"menuBackgroundImage"]) {
-                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-            }
-            error?[parentHud showFailureWithStatus:error.localizedDescription]:[parentHud showSuccess];
-        });
-    };
-    
-    hud.executionBlock(hud);
+    ColoredVKImageProcessor *processor = [ColoredVKImageProcessor new];
+    NSString *stringPath = [CVK_FOLDER_PATH stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.lastImageIdentifier]];
+    [processor processImage:image identifier:self.lastImageIdentifier andSaveToURL:[NSURL fileURLWithPath:stringPath] 
+                   completionBlock:^(BOOL success, NSError *error) {
+                       success ? [hud showSuccess] : [hud showFailureWithStatus:error.localizedDescription];
+                       
+                       [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{@"identifier" : self.lastImageIdentifier}];
+                       
+                       if ([self.lastImageIdentifier isEqualToString:@"menuBackgroundImage"]) {
+                           CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+                       }
+                   }];
 }
 
 

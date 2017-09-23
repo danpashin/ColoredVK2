@@ -20,12 +20,20 @@
     return NO;
 }
 
-- (instancetype)initWithFile:(NSString *)fileName
+- (instancetype)initWithFile:(NSString *)fileName localized:(BOOL)localized
 {
     self = [super init];
     if (self) {        
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSURL *path = [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] URLForResource:fileName withExtension:@"rtf" subdirectory:@"plists"];
+            NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+            NSString *extension = @"rtf";
+            
+            NSURL *path = nil;
+            if (localized)
+                path = [cvkBundle URLForResource:fileName withExtension:extension];
+            else
+                path = [cvkBundle URLForResource:fileName withExtension:extension subdirectory:@"plists"];
+            
             self.textView.attributedText = [[NSAttributedString alloc] initWithFileURL:path 
                                                                                options:@{NSDocumentTypeDocumentAttribute:NSRTFTextDocumentType} 
                                                                     documentAttributes:nil error:nil];
