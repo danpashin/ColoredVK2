@@ -842,6 +842,30 @@ void resetTabBar()
     setupTabbar();
 }
 
+void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *tableView)
+{
+    void (^setColors)() = ^{
+        view.contentView.backgroundColor = [UIColor clearColor];
+        view.backgroundView.backgroundColor = [UIColor clearColor];
+        view.textLabel.backgroundColor = [UIColor clearColor];
+        view.textLabel.textColor = (tableView.tag == 24) ? UITableViewCellTextColor.darkerColor : UITableViewCellTextColor;
+        view.detailTextLabel.textColor = (tableView.tag == 24) ? UITableViewCellTextColor.darkerColor : UITableViewCellTextColor;
+    };
+    if (tableView.tag == 21) {
+        setColors();
+        UIVisualEffectView *blurView = blurForView(view, 5);
+        if (![view.contentView.subviews containsObject:[view.contentView viewWithTag:5]]) [view.contentView addSubview:blurView];
+    } else if (tableView.tag == 22) {
+        setColors();
+        view.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+        
+    } else if (tableView.tag == 24) {
+        setColors();
+        view.contentView.backgroundColor = [UIColor clearColor];
+        
+    }
+}
+
 
 #pragma mark - AppDelegate
 CHDeclareClass(AppDelegate);
@@ -1616,6 +1640,7 @@ CHOptimizedMethod(0, self, void, MenuViewController, viewDidLoad)
     if (enabled && enabledMenuImage) {
         [cvkMainController.menuBackgroundView addToBack:self.view animated:NO];
         self.tableView.backgroundColor = [UIColor clearColor];
+        self.tableView.tag = 24;
     }
 }
 
@@ -1633,6 +1658,12 @@ CHOptimizedMethod(2, self, UITableViewCell*, MenuViewController, tableView, UITa
         cell.imageView.tintColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1.0f alpha:0.8f];
         cell.backgroundColor = [UIColor clearColor];
         cell.contentView.backgroundColor = [UIColor clearColor];
+        
+        if ([cell isKindOfClass:NSClassFromString(@"MenuBirthdayCell")]) {
+            MenuBirthdayCell *birthdayCell = (MenuBirthdayCell *)cell;
+            birthdayCell.name.textColor = cell.textLabel.textColor;
+            birthdayCell.status.textColor = cell.textLabel.textColor;
+        }
         
         UIView *selectedBackView = [UIView new];
         if (menuSelectionStyle == CVKCellSelectionStyleTransparent) selectedBackView.backgroundColor = menuSelectionColor;
@@ -1653,6 +1684,14 @@ CHOptimizedMethod(2, self, UITableViewCell*, MenuViewController, tableView, UITa
     }
     
     return cell;
+}
+
+CHOptimizedMethod(3, self, void, MenuViewController, tableView, UITableView *, tableView, willDisplayHeaderView, UIView *, view, forSection, NSInteger, section)
+{
+    CHSuper(3, MenuViewController, tableView, tableView, willDisplayHeaderView, view, forSection, section);
+    if ([view isKindOfClass:NSClassFromString(@"TablePrimaryHeaderView")]) {
+        ((TablePrimaryHeaderView*)view).separator.alpha = 0.3;
+    }
 }
 
 
@@ -2595,9 +2634,9 @@ CHOptimizedMethod(2, self, UITableViewCell*, ProfileFriendsController, tableView
 
 #pragma mark FriendsBDaysController
 CHDeclareClass(FriendsBDaysController);
-CHOptimizedMethod(1, self, void, FriendsBDaysController, viewWillAppear, BOOL, animated)
+CHOptimizedMethod(0, self, void, FriendsBDaysController, viewWillLayoutSubviews)
 {
-    CHSuper(1, FriendsBDaysController, viewWillAppear, animated);
+    CHSuper(0, FriendsBDaysController, viewWillLayoutSubviews);
     
     if ((enabled && enabledFriendsImage) && [self isKindOfClass:NSClassFromString(@"FriendsBDaysController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"friendsBackgroundImage" blackout:friendsImageBlackout 
@@ -2716,25 +2755,9 @@ CHOptimizedMethod(6, self, UITableViewHeaderFooterView*, UITableView, _sectionHe
 {
     UITableViewHeaderFooterView *view = CHSuper(6, UITableView, _sectionHeaderView, arg1, withFrame, frame, forSection, section, floating, floating, reuseViewIfPossible, reuse, willDisplay, display);
     
-    void (^setColors)() = ^{
-        view.contentView.backgroundColor = [UIColor clearColor];
-        view.backgroundView.backgroundColor = [UIColor clearColor];
-        view.textLabel.backgroundColor = [UIColor clearColor];
-        view.textLabel.textColor = (self.tag == 23) ? UITableViewCellTextColor.darkerColor : UITableViewCellTextColor;  
-    };
-    if (self.tag == 21) {
-        setColors();
-       UIVisualEffectView *blurView = blurForView(view, 5);
-        if (![view.contentView.subviews containsObject:[view.contentView viewWithTag:5]]) [view.contentView addSubview:blurView];
-    } else if (self.tag == 22) {
-        setColors();
-        view.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
-        
-    } else if (self.tag == 23) {
-        setColors();
-        view.contentView.backgroundColor = [UIColor clearColor];
-        
-    }
+    if (enabled)
+        setupHeaderFooterView(view, self);
+    
     return view;
 }
 
@@ -2892,7 +2915,7 @@ void setupExtraSettingsController(VKMTableController *controller)
             controller.tableView.separatorColor = [controller.tableView.separatorColor colorWithAlphaComponent:0.5f];
         
         controller.rptr.tintColor = changeSettingsExtraTextColor ? settingsExtraTextColor : UITableViewCellTextColor;
-        controller.tableView.tag = 23;
+        controller.tableView.tag = 24;
     }
 }
 
@@ -3301,6 +3324,7 @@ CHConstructor
             CHLoadLateClass(MenuViewController);
             CHHook(2, MenuViewController, tableView, cellForRowAtIndexPath);
             CHHook(0, MenuViewController, viewDidLoad);
+            CHHook(3, MenuViewController, tableView, willDisplayHeaderView, forSection);
             
             CHLoadLateClass(HintsSearchDisplayController);
             CHHook(1, HintsSearchDisplayController, searchDisplayControllerWillBeginSearch);
@@ -3449,7 +3473,7 @@ CHConstructor
             
             
             CHLoadLateClass(FriendsBDaysController);
-            CHHook(1, FriendsBDaysController, viewWillAppear);
+            CHHook(0, FriendsBDaysController, viewWillLayoutSubviews);
             CHHook(2, FriendsBDaysController, tableView, cellForRowAtIndexPath);
             
             

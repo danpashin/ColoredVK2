@@ -539,3 +539,25 @@
 @interface VKSearchBarNoCancel : UISearchBar
 @end
 
+
+
+@interface MenuSubtitleCell : VKMCell
+@property(retain, nonatomic) UIView *separator;
+@property(retain, nonatomic) UIImageView *verified;
+@property(readonly, nonatomic) UIButton *online;
+@property(readonly, retain, nonatomic) UILabel *status;
+@property(readonly, retain, nonatomic) UILabel *name;
+@end
+@interface HintsCell : MenuSubtitleCell
+@end
+@interface MenuBirthdayCell : HintsCell
+@property(retain, nonatomic) UIButton *giftButton;
+@end
+
+@interface TablePrimaryHeaderView : UITableViewHeaderFooterView
+@property(retain, nonatomic) UIButton *button;
+@property(nonatomic) struct UIEdgeInsets separatorInsets;
+@property(retain, nonatomic) UIView *separator;
+@property(retain, nonatomic) NSString *title;
+@end
+
