@@ -38,8 +38,10 @@
     navBar.barTintColor = [UIColor whiteColor];
     navBar.tintColor = [UIColor darkGrayColor];
     navBar.titleTextAttributes = @{};
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:CVKLocalizedString(@"Dismiss") 
-                                                                              style:UIBarButtonItemStyleDone target:self action:@selector(dismiss)];
+    
+    UIImage *closeImage = [UIImage imageNamed:@"CloseIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
+    closeImage = [closeImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:closeImage style:UIBarButtonItemStyleDone target:self action:@selector(dismiss)];
     
     if (SYSTEM_VERSION_IS_MORE_THAN(@"9.0")) {
         self.wkWebView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:[WKWebViewConfiguration new]];

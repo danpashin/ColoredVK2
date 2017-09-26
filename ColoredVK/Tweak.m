@@ -1392,7 +1392,11 @@ CHOptimizedMethod(1, self, void, ChatController, viewWillAppear, BOOL, animated)
     CHSuper(1, ChatController, viewWillAppear, animated);
     
     if ([self isKindOfClass:NSClassFromString(@"ChatController")]) {
-        [self.root.inputPanelView.gapToolbar setBackgroundImage:[UIImage new] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+        if ([self respondsToSelector:@selector(root)])
+            if ([self.root respondsToSelector:@selector(inputPanelView)])
+                if ([self.root.inputPanelView respondsToSelector:@selector(gapToolbar)])
+                    [self.root.inputPanelView.gapToolbar setBackgroundImage:[UIImage new] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+    
         setToolBar(self.inputPanel);
         if (enabled && messagesUseBlur)
             setBlur(self.inputPanel, YES, messagesBlurTone, messagesBlurStyle);
@@ -1689,7 +1693,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, MenuViewController, tableView, UITa
 CHOptimizedMethod(3, self, void, MenuViewController, tableView, UITableView *, tableView, willDisplayHeaderView, UIView *, view, forSection, NSInteger, section)
 {
     CHSuper(3, MenuViewController, tableView, tableView, willDisplayHeaderView, view, forSection, section);
-    if ([view isKindOfClass:NSClassFromString(@"TablePrimaryHeaderView")]) {
+    if ((enabled && enabledMenuImage) && [view isKindOfClass:NSClassFromString(@"TablePrimaryHeaderView")]) {
         ((TablePrimaryHeaderView*)view).separator.alpha = 0.3;
     }
 }
@@ -3071,75 +3075,29 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKP2PViewController, tableView, UIT
     return cell;
 }
 
-CHDeclareClass(AFURLConnectionOperation);
-CHDeclareMethod(0, NSURLRequest *, AFURLConnectionOperation, request)
+CHDeclareClass(DiscoverFeedController);
+CHOptimizedMethod(1, self, void, DiscoverFeedController, viewWillAppear, BOOL, animated)
 {
-    NSURLRequest *request = CHSuper(0, AFURLConnectionOperation, request);
+    CHSuper(1, DiscoverFeedController, viewWillAppear, animated);
     
-    NSMutableURLRequest *mutableRequest = [request mutableCopy];
-    
-    if ([cvkMainController compareAppVersionWithVersion:@"3.0"] >= 0) {
-        NSString *versionForReplace = @"v=5.69";
-        NSString *versionToReplace = @"v=5.68";
-        NSString *parameters = [[NSString alloc] initWithData:request.HTTPBody encoding:NSUTF8StringEncoding];
-        if (parameters.length > 0) {
-            parameters = [parameters stringByReplacingOccurrencesOfString:versionForReplace withString:versionToReplace];
-            parameters = [parameters stringByReplacingOccurrencesOfString:@"device_id" withString:@"device"];
-            mutableRequest.HTTPBody = [parameters dataUsingEncoding:NSUTF8StringEncoding];
-        }
-        NSString *url = mutableRequest.URL.absoluteString;
-        url = [url stringByReplacingOccurrencesOfString:versionForReplace withString:versionToReplace];
-        url = [url stringByReplacingOccurrencesOfString:@"device_id" withString:@"device"];
-        
-        mutableRequest.URL = [NSURL URLWithString:url];
-        
-        if ([mutableRequest valueForHTTPHeaderField:@"User-Agent"].length > 0) {
-            UIDevice *device = [UIDevice currentDevice];
-            NSString *agent = [NSString stringWithFormat:@"com.vk.vkclient/54 (unknown, iOS %@, %@, Scale/2.000000)", device.systemVersion, device.model];
-            [mutableRequest setValue:agent forHTTPHeaderField:@"User-Agent"];
-        }
+    if ([self isKindOfClass:NSClassFromString(@"DiscoverFeedController")]) {
+        resetTabBar();
     }
-    
-    return mutableRequest;
-}
-
-CHDeclareMethod(0, void, AFURLConnectionOperation, start)
-{
-    BOOL shouldBreak = NO;
-    
-    NSArray <NSString *> *explicitMethods = @[@"API.stats.trackEvents", @"newsfeed.getDiscover"];
-    for (NSString *method in explicitMethods) {
-        if ([self.request.URL.absoluteString containsString:method]) {
-            shouldBreak = YES;
-            break;
-        }
-    }
-    
-    if (!shouldBreak)
-        CHSuper(0, AFURLConnectionOperation, start);
 }
 
 
-//CHDeclareClass(AFJSONRequestOperation);
-//CHDeclareMethod(0, id, AFJSONRequestOperation, responseJSON)
-//{
-//    id responseJSON = CHSuper(0, AFJSONRequestOperation, responseJSON);
-//    
-//    NSLog(@"%@", responseJSON);
-//    
-//    return responseJSON;
-//}
 
 #pragma mark Static methods
 static void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
     reloadPrefs();
-    if ([cvkMainController.vkMainController respondsToSelector:@selector(dialogsController)]) {
-        DialogsController *dialogsController = (DialogsController *)cvkMainController.vkMainController.dialogsController;
-        if ([dialogsController respondsToSelector:@selector(tableView)]) {
-            [dialogsController.tableView reloadData];
-        }
-    }
+//    if ([cvkMainController.vkMainController respondsToSelector:@selector(dialogsController)]) {
+//        DialogsController *dialogsController = (DialogsController *)cvkMainController.vkMainController.dialogsController;
+//        if ([dialogsController respondsToSelector:@selector(tableView)]) {
+//            [dialogsController.tableView reloadData];
+//            CVKLog(@"reload dialogs");
+//        }
+//    }
     [cvkMainController reloadSwitch:enabled];
     
     setupTabbar();
@@ -3225,8 +3183,8 @@ CHConstructor
         
         if ([cvkMainController compareAppVersionWithVersion:@"2.2"]  >= ColoredVKVersionCompareEqual) {
             CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-            CFNotificationCenterAddObserver(center, NULL, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-            CFNotificationCenterAddObserver(center, NULL, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+            CFNotificationCenterAddObserver(center, nil, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+            CFNotificationCenterAddObserver(center, nil, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             CFNotificationCenterAddObserver(center, nil, updateCornerRadius, CFSTR("com.daniilpashin.coloredvk2.update.corners"),NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
             
             
@@ -3546,6 +3504,10 @@ CHConstructor
             CHLoadLateClass(PSListController);
             CHHook(1, PSListController, viewWillAppear);
             CHHook(0, PSListController, preferredStatusBarStyle);
+            
+            
+            CHLoadLateClass(DiscoverFeedController);
+            CHHook(1, DiscoverFeedController, viewWillAppear);
        
 
         } else {

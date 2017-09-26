@@ -516,21 +516,6 @@
 
 
 
-@interface AFURLConnectionOperation : NSOperation
-@property(retain, nonatomic) NSURLResponse *response;
-@property(copy, nonatomic) NSString *responseString;
-@property(retain, nonatomic) NSURLRequest *request; 
-@end
-
-@interface AFHTTPRequestOperation : AFURLConnectionOperation
-@end
-
-@interface AFJSONRequestOperation : AFHTTPRequestOperation
-@property(retain, nonatomic) id responseJSON;
-@end
-
-
-
 @interface CommunityCommentsCell : VKMCell
 @property(readonly, nonatomic) UILabel *subtitleLabel;
 @property(readonly, nonatomic) UILabel *titleLabel;
@@ -556,8 +541,10 @@
 
 @interface TablePrimaryHeaderView : UITableViewHeaderFooterView
 @property(retain, nonatomic) UIButton *button;
-@property(nonatomic) struct UIEdgeInsets separatorInsets;
 @property(retain, nonatomic) UIView *separator;
-@property(retain, nonatomic) NSString *title;
+@end
+
+
+@interface DiscoverFeedController : VKMScrollViewController
 @end
 

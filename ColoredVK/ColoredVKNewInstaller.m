@@ -146,17 +146,27 @@ NSString *userPassword;
                 [[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
             }
             
+            NSString *from = @"";
+            NSArray *contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSBundle mainBundle].bundlePath error:nil];
+            if ([contents containsObject:@"iappsDefender.dylib"]) {
+                from = @"iapps";
+            }
+            
             ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
             webController.url = [NSURL URLWithString:kPackagePurchaseLink];
             
-            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:webController.url cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval:90.0f];
-            request.HTTPMethod = @"POST";
-            [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
-            request.HTTPBody = [[NSString stringWithFormat:@"user_id=%@&profile_team_id=%@&profile_team_name=%@", 
-                                 self.userID, provisionTeamID, provisionTeamName] dataUsingEncoding:NSUTF8StringEncoding];
+            ColoredVKNetworkController *network = [ColoredVKNetworkController controller];
+            network.configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalAndRemoteCacheData;
+            NSError *requestError = nil;
+            NSDictionary *params = @{@"user_id" :self.userID, @"profile_team_id": provisionTeamID, @"profile_team_name": provisionTeamName, @"from": from};
+            NSURLRequest *request = [network requestWithMethod:@"POST" URLString:webController.url.absoluteString parameters:params error:&requestError];
             
-            webController.request = request;
-            [webController present];
+            if (!requestError) {
+                webController.request = request;
+                [webController present];
+            } else {
+                [self showAlertWithTitle:nil text:[NSString stringWithFormat:@"Unknown error:\n%@", error.localizedDescription] buttons:nil];
+            }
         });
     } else {
         [self showAlertWithTitle:CVKLocalizedString(@"WARNING") text:CVKLocalizedString(@"ENTER_ACCOUNT_FIRST") buttons:nil];
