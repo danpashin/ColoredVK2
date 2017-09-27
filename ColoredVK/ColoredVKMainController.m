@@ -133,6 +133,9 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     if (!cvkBundle.loaded) [cvkBundle load];
     ColoredVKMainPrefsController *cvkPrefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
     
+    if ([self compareAppVersionWithVersion:@"3.0"] >= 0)
+        withPush = YES;
+    
     if (withPush) {
         if ([mainContext respondsToSelector:@selector(push:animated:)])
             [mainContext push:cvkPrefs animated:YES];
@@ -280,20 +283,6 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
                                   }
                               }
                           } failure:nil];
-    
-//    ColoredVKAlertController *alert = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"CRASH_OCCURED_MESSAGE") preferredStyle:UIAlertControllerStyleAlert];
-//    [alert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {}]];
-//    [alert present];
 }
-
-//- (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source;
-//{
-//    
-//}
-//
-//- (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed
-//{
-//    
-//}
 
 @end

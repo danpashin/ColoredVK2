@@ -1396,7 +1396,7 @@ CHOptimizedMethod(1, self, void, ChatController, viewWillAppear, BOOL, animated)
             if ([self.root respondsToSelector:@selector(inputPanelView)])
                 if ([self.root.inputPanelView respondsToSelector:@selector(gapToolbar)])
                     [self.root.inputPanelView.gapToolbar setBackgroundImage:[UIImage new] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
-    
+        
         setToolBar(self.inputPanel);
         if (enabled && messagesUseBlur)
             setBlur(self.inputPanel, YES, messagesBlurTone, messagesBlurStyle);
@@ -1696,6 +1696,20 @@ CHOptimizedMethod(3, self, void, MenuViewController, tableView, UITableView *, t
     if ((enabled && enabledMenuImage) && [view isKindOfClass:NSClassFromString(@"TablePrimaryHeaderView")]) {
         ((TablePrimaryHeaderView*)view).separator.alpha = 0.3;
     }
+}
+
+CHDeclareMethod(0, NSArray*, MenuViewController, menu)
+{
+    NSArray *origMenu = CHSuper(0, MenuViewController, menu);
+    
+    if (showMenuCell) {
+        NSMutableArray *tempArray = [origMenu mutableCopy];
+        [tempArray addObject:cvkMainController.menuCell];
+        
+        origMenu = [tempArray copy];
+    }
+    
+    return origMenu;
 }
 
 
@@ -3091,27 +3105,27 @@ CHOptimizedMethod(1, self, void, DiscoverFeedController, viewWillAppear, BOOL, a
 static void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
     reloadPrefs();
-//    if ([cvkMainController.vkMainController respondsToSelector:@selector(dialogsController)]) {
-//        DialogsController *dialogsController = (DialogsController *)cvkMainController.vkMainController.dialogsController;
-//        if ([dialogsController respondsToSelector:@selector(tableView)]) {
-//            [dialogsController.tableView reloadData];
-//            CVKLog(@"reload dialogs");
-//        }
-//    }
+    if ([cvkMainController.vkMainController respondsToSelector:@selector(dialogsController)]) {
+        DialogsController *dialogsController = (DialogsController *)cvkMainController.vkMainController.dialogsController;
+        if ([dialogsController respondsToSelector:@selector(tableView)]) {
+            [dialogsController.tableView reloadData];
+        }
+    }
     [cvkMainController reloadSwitch:enabled];
     
     setupTabbar();
 }
 
 static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
-{    
+{
     dispatch_async(dispatch_get_main_queue(), ^{
         BOOL shouldShow = (enabled && enabledMenuImage);
         
         VKMLiveController *menuController = nil;
-        if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]])
+        if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]]) {
             menuController = cvkMainController.vkMenuController;
-        else
+            [menuController viewWillAppear:YES];
+        } else
             menuController = cvkMainController.vkMainController;
         
         UITableView *menuTableView = menuController.tableView;
