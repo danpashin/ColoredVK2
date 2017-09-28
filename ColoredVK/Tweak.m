@@ -3124,7 +3124,12 @@ static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFS
         VKMLiveController *menuController = nil;
         if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]]) {
             menuController = cvkMainController.vkMenuController;
-            [menuController viewWillAppear:YES];
+            
+            if (menuController.navigationController.viewControllers.count > 0) {
+                if ([menuController.navigationController.viewControllers.lastObject isEqual:menuController]) {
+                    [menuController viewWillAppear:YES];
+                }
+            }
         } else
             menuController = cvkMainController.vkMainController;
         
