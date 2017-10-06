@@ -629,21 +629,8 @@ void setupAudioPlayer(UIView *hostView, UIColor *color)
     for (UIView *view in hostView.subviews) {
         view.backgroundColor = [UIColor clearColor];
         if ([view respondsToSelector:@selector(setTextColor:)]) ((UILabel *)view).textColor = color;
-        if ([view respondsToSelector:@selector(setImage:forState:)]) [(UIButton*)view setImage:[[(UIButton*)view imageForState:UIControlStateNormal] imageWithTintColor:color] forState:UIControlStateNormal];
-        if ([view isKindOfClass:MPVolumeView.class]) {
-            MPVolumeSlider *slider = ((MPVolumeView*)view).volumeSlider;
-            for (UIView *subview in slider.subviews) {
-                if ([subview isKindOfClass:UIImageView.class]) {
-                    NSString *assetName = ((UIImageView*)subview).image.imageAsset.assetName;
-                    if ([assetName containsString:@"/"]) assetName = [assetName componentsSeparatedByString:@"/"].lastObject;
-                    NSArray *namesToPass = @[@"volume_min", @"volume_max", @"volume_min_max"];
-                    if ([namesToPass containsObject:assetName]) {
-                        ((UIImageView*)subview).image = [((UIImageView*)subview).image imageWithTintColor:color.darkerColor];
-                        ((UIImageView*)subview).image.imageAsset.assetName = @"volume_min_max";
-                    }
-                }
-            }
-        }
+        if ([view respondsToSelector:@selector(setImage:forState:)]) 
+            [(UIButton*)view setImage:[[(UIButton*)view imageForState:UIControlStateNormal] imageWithTintColor:color] forState:UIControlStateNormal];
     }
 }
 
@@ -817,18 +804,26 @@ void setupTabbar()
 {
     UITabBarController *controller = (UITabBarController *)cvkMainController.vkMainController;
     if ([controller isKindOfClass:[UITabBarController class]]) {
+        UITabBar *tabbar = controller.tabBar;
         if (enabled && enabledTabbarColor) {
-            controller.tabBar.barTintColor = tabbarBackgroundColor;
-            controller.tabBar.unselectedItemTintColor = tabbarForegroundColor;
-            controller.tabBar.tintColor = tabbarSelForegroundColor;
+            tabbar.barTintColor = tabbarBackgroundColor;
+            tabbar.tintColor = tabbarSelForegroundColor;
+            if ([tabbar respondsToSelector:@selector(setUnselectedItemTintColor:)])
+                tabbar.unselectedItemTintColor = tabbarForegroundColor;
         } else {
-            controller.tabBar.barTintColor = [UIColor defaultColorForIdentifier:@"TabbarBackgroundColor"];
-            controller.tabBar.unselectedItemTintColor = [UIColor defaultColorForIdentifier:@"TabbarForegroundColor"];
-            controller.tabBar.tintColor = [UIColor defaultColorForIdentifier:@"TabbarSelForegroundColor"];
+            tabbar.barTintColor = [UIColor defaultColorForIdentifier:@"TabbarBackgroundColor"];
+            tabbar.tintColor = [UIColor defaultColorForIdentifier:@"TabbarSelForegroundColor"];
+            if ([tabbar respondsToSelector:@selector(setUnselectedItemTintColor:)])
+                tabbar.unselectedItemTintColor = [UIColor defaultColorForIdentifier:@"TabbarForegroundColor"];
         }
         
-        for (UITabBarItem *item in controller.tabBar.items) {
-            item.image = [item.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        for (UITabBarItem *item in tabbar.items) {
+            if (SYSTEM_VERSION_IS_MORE_THAN(@"10.0")) {
+                item.image = [item.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            } else {
+                UIColor *tintColor = (enabled && enabledTabbarColor) ? tabbarForegroundColor : [UIColor defaultColorForIdentifier:@"TabbarForegroundColor"];
+                 item.image = [item.image imageWithTintColor:tintColor];
+            }
             item.selectedImage = [item.selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         }
     }
@@ -1230,11 +1225,13 @@ CHOptimizedMethod(0, self, void, GroupsController, viewWillLayoutSubviews)
             self.segment.alpha = 0.9;
             
             UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;search.backgroundImage = [UIImage new];
-            search.scopeBarBackgroundImage = [UIImage new];
-            search.tag = 2;
-            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
-            NSDictionary *attributes = @{NSForegroundColorAttributeName:changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
-            search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder attributes:attributes];
+            if ([search isKindOfClass:[UISearchBar class]]) {
+                search.scopeBarBackgroundImage = [UIImage new];
+                search.tag = 2;
+                search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+                NSDictionary *attributes = @{NSForegroundColorAttributeName:changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
+                search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder attributes:attributes];
+            }
             
             if ([cvkMainController compareAppVersionWithVersion:@"2.5"] <= ColoredVKVersionCompareEqual) {
                 for (UIView *view in self.view.subviews) {
@@ -1301,7 +1298,7 @@ CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animat
         else
             search.tag = 1;
         
-        UIColor *placeholderColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1 alpha:0.7];
+        UIColor *placeholderColor = (enabled && changeMessagesListTextColor) ? messagesListTextColor : [UIColor colorWithRed:0.556863 green:0.556863 blue:0.576471 alpha:1.0f];
         if (enabled && enabledMessagesListImage) {
             self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
             self.tableView.separatorColor = (enabled && hideMessagesListSeparators)?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
@@ -1316,7 +1313,6 @@ CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animat
             self.rptr.tintColor = nil;
             self.tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
             if (search) {
-                placeholderColor = [UIColor colorWithRed:0.556863 green:0.556863 blue:0.576471 alpha:1.0f];
                 search.searchBarTextField.backgroundColor = nil;
                 search._scopeBarBackgroundView.superview.hidden = NO;
                 search.backgroundImage = [UIImage imageWithColor:[UIColor colorWithRed:235/255.0f green:237/255.0f blue:240/255.0f alpha:1.0f]];
@@ -1325,7 +1321,7 @@ CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animat
         
         if (search) {
             NSMutableAttributedString *placeholder = [search.searchBarTextField.attributedPlaceholder mutableCopy];
-            [placeholder addAttribute:NSForegroundColorAttributeName value:placeholderColor range:NSMakeRange(0, placeholder.mutableString.length)];
+            [placeholder addAttribute:NSForegroundColorAttributeName value:placeholderColor range:NSMakeRange(0, placeholder.string.length)];
             search.searchBarTextField.attributedPlaceholder = placeholder;
         }
         
@@ -1814,17 +1810,7 @@ CHOptimizedMethod(0, self, void, IOS7AudioController, viewDidLoad)
         setupAudioPlayer(self.hostView, audioPlayerTintColor);
         self.cover.hidden = YES;
         self.hostView.backgroundColor = [UIColor clearColor];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            UIImage *ppImage = [[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor];
-            UIImage *minimumTrackImage = [[self.seek minimumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:229/255.0f green:230/255.0f blue:231/255.0f alpha:1]];
-            UIImage *maximumTrackImage = [[self.seek maximumTrackImageForState:UIControlStateNormal] imageWithTintColor:[UIColor colorWithRed:200/255.0f green:201/255.0f blue:202/255.0f alpha:1]];
-            UIImage *thumbImage = [[self.seek thumbImageForState:UIControlStateNormal] imageWithTintColor:[UIColor blackColor]];
-            
-            [self.pp setImage:ppImage forState:UIControlStateSelected];
-            [self.seek setMinimumTrackImage:minimumTrackImage forState:UIControlStateNormal];
-            [self.seek setMaximumTrackImage:maximumTrackImage forState:UIControlStateNormal];
-            [self.seek setThumbImage:thumbImage forState:UIControlStateNormal];
-        });
+        [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
         
         cvkMainController.audioCover.updateCompletionBlock = ^(ColoredVKAudioCover *cover) {
             audioPlayerTintColor = cvkMainController.audioCover.color;
@@ -1872,7 +1858,7 @@ CHOptimizedMethod(0, self, void, AudioAlbumController, viewDidLoad)
     
     if ((enabled && enabledAudioImage) && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
         UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
-        if (search) {
+        if ([search isKindOfClass:[UISearchBar class]]) {
             search.backgroundImage = [UIImage new];
             search.tag = 3;
             search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
@@ -2131,7 +2117,7 @@ CHOptimizedMethod(0, self, void, AudioPlaylistsController, viewWillLayoutSubview
         self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
         
         UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
-        if (search) {
+        if ([search isKindOfClass:[UISearchBar class]]) {
             search.backgroundImage = [UIImage new];
             search.tag = 3;
             search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
@@ -2617,7 +2603,7 @@ CHOptimizedMethod(0, self, void, ProfileFriendsController, viewWillLayoutSubview
         self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
         
         UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
-        if (search) {
+        if ([search isKindOfClass:[UISearchBar class]]) {
             search.backgroundImage = [UIImage new];
             search.tag = 6;
             search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
@@ -2731,7 +2717,7 @@ CHOptimizedMethod(0, self, void, VideoAlbumController, viewWillLayoutSubviews)
         setBlur(self.toolbar, YES, videosBlurTone, videosBlurStyle);
         
         UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
-        if (search) {
+        if ([search isKindOfClass:[UISearchBar class]]) {
             search.backgroundImage = [UIImage new];
             search.tag = 6;
             search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
