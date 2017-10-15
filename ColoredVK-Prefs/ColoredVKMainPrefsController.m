@@ -88,27 +88,35 @@ NSArray <NSString *> *specifiersToEnable;
     if (!_freeVersionFooter) {
         UIView *contentView = [[UIView alloc] init];
         
-        UILabel *footerLabel = [[UILabel alloc] init];
+        UITextView *footerLabel = [[UITextView alloc] init];
         footerLabel.backgroundColor = [UIColor clearColor];
         footerLabel.text = CVKLocalizedString(@"YOU_HAVE_FREE_VERSION");
         footerLabel.textColor = @"CF000F".hexColorValue;
         footerLabel.textAlignment = NSTextAlignmentCenter;
-        footerLabel.font = [UIFont boldSystemFontOfSize:[UIFont smallSystemFontSize]];
-        footerLabel.numberOfLines = 0;
+        footerLabel.font = [UIFont boldSystemFontOfSize:[UIFont smallSystemFontSize]-0.5f];
+        footerLabel.editable = NO;
+        footerLabel.selectable = NO;
+        footerLabel.scrollEnabled = NO;
         [contentView addSubview:footerLabel];
         
         UIButton *hideButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [hideButton setTitle:CVKLocalizedString(@"HIDE") forState:UIControlStateNormal];
-        [hideButton setTitleColor:CVKMainColor forState:UIControlStateNormal];
-        hideButton.font = [UIFont boldSystemFontOfSize:[UIFont smallSystemFontSize]];
+        UIImage *image = [UIImage imageNamed:@"CloseIconAlt" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+        [hideButton setImage:image forState:UIControlStateNormal];
+        hideButton.accessibilityLabel = CVKLocalizedString(@"HIDE");
         [hideButton addTarget:self action:@selector(actionHideFreeVersionFooter) forControlEvents:UIControlEventTouchUpInside];
         [contentView addSubview:hideButton];
         
         footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[footerLabel]|" options:0 metrics:nil views:@{@"footerLabel":footerLabel}]];
+        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[label]-|" options:0 metrics:nil views:@{@"label":footerLabel}]];        
+        
         hideButton.translatesAutoresizingMaskIntoConstraints = NO;
-        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[footerLabel]-[hideButton(btnHeight)]|" options:0 metrics:@{@"btnHeight":@16} views:@{@"footerLabel":footerLabel, @"hideButton":hideButton}]];
-        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[footerLabel]-|" options:0 metrics:nil views:@{@"footerLabel":footerLabel}]];
-        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[hideButton]-|" options:0 metrics:nil views:@{ @"hideButton":hideButton}]];
+        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[button(44)]" options:0 metrics:nil views:@{@"button":hideButton}]];
+        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[button(44)]|" options:0 metrics:nil views:@{@"button":hideButton}]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            footerLabel.textContainer.exclusionPaths = @[ [UIBezierPath bezierPathWithRect:CGRectMake(CGRectGetWidth(contentView.frame)-48, 0, 48, 44)] ];
+        });
         
         _freeVersionFooter = contentView;
     }
@@ -143,7 +151,7 @@ NSArray <NSString *> *specifiersToEnable;
 {
     NSURL *url = [NSURL URLWithString:kPackageFaqLink];
     
-    if (SYSTEM_VERSION_IS_MORE_THAN(@"9.0")) {
+    if (@available(iOS 9.0, *)) {
         SFSafariViewController *sfController = [[SFSafariViewController alloc] initWithURL:url];
         [self presentViewController:sfController animated:YES completion:nil];
     } else {
@@ -189,7 +197,7 @@ NSArray <NSString *> *specifiersToEnable;
     CGFloat height = [super tableView:tableView heightForFooterInSection:section];
     
     if ((section == self.freeeVersionSection) && self.showFreeVersionFooter) {
-        height = 75;
+        height = 80;
     }
     
     return height;

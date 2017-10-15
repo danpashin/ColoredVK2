@@ -21,7 +21,8 @@
     
         NSFileManager *filemanager = [NSFileManager defaultManager];    
         for (NSString *filename in [filemanager contentsOfDirectoryAtPath:CVK_BACKUP_PATH error:nil]) {
-            if ([filename containsString:@"com.daniilpashin.coloredvk2"] && [filename containsString:@".zip"]) {
+            NSArray <NSString *> *extensions = @[@"zip", @"cvkb"];
+            if ([filename containsString:@"com.daniilpashin.coloredvk2"] && [extensions containsObject:filename.pathExtension]) {
                 NSMutableArray *components = [filename componentsSeparatedByString:@"_"].mutableCopy;
                 [components removeObjectAtIndex:0];
                 NSString *name = @"";
@@ -148,7 +149,7 @@
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
         dateFormatter.dateFormat = @"yyyy-MM-dd_HH:mm";
         NSString *backupName = [@"com.daniilpashin.coloredvk2_" stringByAppendingString:[dateFormatter stringFromDate:[NSDate date]]];
-        NSString *backupPath = [NSString stringWithFormat:@"%@/%@.zip", CVK_BACKUP_PATH, backupName];
+        NSString *backupPath = [NSString stringWithFormat:@"%@/%@.cvkb", CVK_BACKUP_PATH, backupName];
         
         BOOL success = [SSZipArchive createZipFileAtPath:backupPath withFilesAtPaths:files];
         success ? [hud showSuccess] : [hud showFailure];

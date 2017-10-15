@@ -28,7 +28,7 @@
         
         NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         
-        CGFloat size = IS_IPAD ? 20 : 15;
+        CGFloat size = 32;
         UIImage *deleteImage = [UIImage imageNamed:@"DeleteIcon" inBundle:cvkBundle compatibleWithTraitCollection:nil];
         
         self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -36,11 +36,14 @@
         [self.deleteButton setImage:deleteImage forState:UIControlStateNormal];
         [self.deleteButton addTarget:self action:@selector(actionDeleteColor) forControlEvents:UIControlEventTouchUpInside];
         self.deleteButton.alpha = 0.5;
+        self.deleteButton.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(5, 8, size/1.5, size/1.5) cornerRadius:size/2].CGPath;
+        self.deleteButton.layer.shadowOpacity = 0.2f;
+        self.deleteButton.layer.shadowRadius = 2.0f;
         [self.contentView addSubview:self.deleteButton];
         
         self.deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[deleteButton(size)]-5-|" options:0 metrics:@{@"size":@(size)} views:@{@"deleteButton":self.deleteButton}]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[deleteButton(size)]" options:0 metrics:@{@"size":@(size)} views:@{@"deleteButton":self.deleteButton}]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[deleteButton(size)]|" options:0 metrics:@{@"size":@(size)} views:@{@"deleteButton":self.deleteButton}]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[deleteButton(size)]" options:0 metrics:@{@"size":@(size)} views:@{@"deleteButton":self.deleteButton}]];
         
         self.colorPreview.translatesAutoresizingMaskIntoConstraints = NO;
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[colorPreview]|" options:0 metrics:nil views:@{@"colorPreview":self.colorPreview}]];

@@ -111,7 +111,8 @@
 @property(retain, nonatomic) NSURL *url;
 @end
 
-@interface VKMBrowserController : UIViewController 
+@interface VKMBrowserController : UIViewController
+@property(retain, nonatomic) UILabel *headerTitle;
 @property(retain, nonatomic) VKMBrowserTarget *target;
 @end
 

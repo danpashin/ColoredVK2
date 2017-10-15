@@ -393,9 +393,8 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
     
     CGSize collectionViewItemSize = CGSizeMake(120, 96);    //  for iPad
-    if (!IS_IPAD) {        
-        if (screenScale == 3.0f) collectionViewItemSize = CGSizeMake(90, 90);   //  for 3x scale devices
-        else                     collectionViewItemSize = CGSizeMake(70, 90);   //  for other devices
+    if (!IS_IPAD) {
+        collectionViewItemSize = CGSizeMake(90, 90);
         
         if (UIInterfaceOrientationIsLandscape(orientation) && (screenScale != 3.0f))
             collectionViewItemSize.height -= 10;

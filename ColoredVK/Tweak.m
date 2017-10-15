@@ -2331,7 +2331,9 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
     if ([self isKindOfClass:NSClassFromString(@"VKMBrowserController")]) {
         if (showFastDownloadButton) {
             self.navigationItem.rightBarButtonItem = [ColoredVKBarDownloadButton buttonWithURL:self.target.url.absoluteString rootController:self];
-            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:self.target.url] queue:[NSOperationQueue mainQueue] 
+            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.target.url];
+            request.HTTPMethod = @"HEAD";
+            [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] 
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
                                        if (![[response.MIMEType componentsSeparatedByString:@"/"].firstObject isEqualToString:@"image"]) self.navigationItem.rightBarButtonItem = nil;
                                    }];
