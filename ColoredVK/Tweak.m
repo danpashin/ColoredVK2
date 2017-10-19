@@ -21,11 +21,15 @@
 #import "ColoredVKUpdatesController.h"
 #import <dlfcn.h>
 #import "Preferences.h"
+#import "ColoredVKPrefs.h"
+#import "ColoredVKHeaderView.h"
 
 
 
 BOOL tweakEnabled = NO;
 BOOL VKSettingsEnabled;
+
+BOOL enableNightTheme;
 
 BOOL showFastDownloadButton;
 BOOL showMenuCell;
@@ -280,6 +284,8 @@ void reloadPrefs()
         showMenuCell = YES;
     
     if (prefs && tweakEnabled) {
+        
+        enableNightTheme = [prefs[@"enableNightTheme"] boolValue];
        
         changeSBColors = [prefs[@"changeSBColors"] boolValue];
         changeSwitchColor = [prefs[@"changeSwitchColor"] boolValue];
@@ -481,10 +487,39 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
     }
 }
 
+void removeTranslucent(UIView *view, UIColor *backColor)
+{    
+    if ([view respondsToSelector:@selector(_backgroundView)]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIView *backView = [view performSelector:@selector(_backgroundView)];
+            
+            if (![backView.subviews containsObject:[backView viewWithTag:4545]]) {
+                UIView *newBackView = [[UIView alloc] initWithFrame:view.bounds];
+                if ([view isKindOfClass:[UINavigationBar class]])
+                    newBackView.frame = CGRectMake(0, 0, CGRectGetWidth(newBackView.frame), 64);
+                newBackView.tag = 4545;
+                newBackView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+                newBackView.backgroundColor = backColor;
+                [backView addSubview:newBackView];
+                
+                for (UIView *subview in backView.subviews) {
+                    if ([subview isKindOfClass:[UIVisualEffectView class]]) {
+                        subview.hidden = YES;
+                    }
+                }
+            }
+        });
+    }
+}
+
 void setToolBar(UIToolbar *toolbar)
 {
     if (enabled && [toolbar respondsToSelector:@selector(setBarTintColor:)]) {
-        if (enabledToolBarColor) {
+        if (enableNightTheme) {
+            toolbar.barTintColor = cvkMainController.nightThemeScheme.backgroundColor;
+            toolbar.tintColor = cvkMainController.nightThemeScheme.textColor;
+            removeTranslucent(toolbar, cvkMainController.nightThemeScheme.navbackgroundColor);
+        } else if (enabledToolBarColor) {
             
             NSArray *controllersToChange = @[@"UIView", @"RootView"];
             if ([controllersToChange containsObject:CLASS_NAME(toolbar.superview)]) {
@@ -800,12 +835,20 @@ void uncaughtExceptionHandler(NSException *exception)
     [crash writeToFile:CVK_CRASH_PATH atomically:YES];
 }
 
+
+
 void setupTabbar()
 {
     UITabBarController *controller = (UITabBarController *)cvkMainController.vkMainController;
     if ([controller isKindOfClass:[UITabBarController class]]) {
         UITabBar *tabbar = controller.tabBar;
-        if (enabled && enabledTabbarColor) {
+        if (enabled && enableNightTheme) {
+            tabbar.barTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+            removeTranslucent(tabbar, cvkMainController.nightThemeScheme.navbackgroundColor);
+            tabbar.tintColor = cvkMainController.nightThemeScheme.textColor;
+            if ([tabbar respondsToSelector:@selector(setUnselectedItemTintColor:)])
+                tabbar.unselectedItemTintColor = cvkMainController.nightThemeScheme.textColor.darkerColor;
+        } else if (enabled && enabledTabbarColor) {
             tabbar.barTintColor = tabbarBackgroundColor;
             tabbar.tintColor = tabbarSelForegroundColor;
             if ([tabbar respondsToSelector:@selector(setUnselectedItemTintColor:)])
@@ -821,7 +864,7 @@ void setupTabbar()
             if (SYSTEM_VERSION_IS_MORE_THAN(@"10.0")) {
                 item.image = [item.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             } else {
-                UIColor *tintColor = (enabled && enabledTabbarColor) ? tabbarForegroundColor : [UIColor defaultColorForIdentifier:@"TabbarForegroundColor"];
+                UIColor *tintColor = (enabled && enabledTabbarColor) ? (enableNightTheme ? cvkMainController.nightThemeScheme.textColor.darkerColor : tabbarForegroundColor) : [UIColor defaultColorForIdentifier:@"TabbarForegroundColor"];
                  item.image = [item.image imageWithTintColor:tintColor];
             }
             item.selectedImage = [item.selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -840,31 +883,41 @@ void resetTabBar()
 void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *tableView)
 {
     void (^setColors)() = ^{
-        view.contentView.backgroundColor = [UIColor clearColor];
-        view.backgroundView.backgroundColor = [UIColor clearColor];
-        view.textLabel.backgroundColor = [UIColor clearColor];
-        view.textLabel.textColor = (tableView.tag == 24) ? UITableViewCellTextColor.darkerColor : UITableViewCellTextColor;
-        view.detailTextLabel.textColor = (tableView.tag == 24) ? UITableViewCellTextColor.darkerColor : UITableViewCellTextColor;
+        if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
+            view.contentView.backgroundColor = [UIColor clearColor];
+            view.backgroundView.backgroundColor = [UIColor clearColor];
+            view.textLabel.backgroundColor = [UIColor clearColor];
+            view.textLabel.textColor = (tableView.tag == 24) ? UITableViewCellTextColor.darkerColor : UITableViewCellTextColor;
+            view.detailTextLabel.textColor = (tableView.tag == 24) ? UITableViewCellTextColor.darkerColor : UITableViewCellTextColor;
+        }
     };
-    if (tableView.tag == 21) {
+    if (enableNightTheme) {
+        if ([view isKindOfClass:[UITableViewHeaderFooterView class]] && ![tableView.delegate isKindOfClass:[ColoredVKPrefs class]]) {
+            view.contentView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+            view.backgroundView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+        }
+    } else if (tableView.tag == 21) {
         setColors();
-        UIVisualEffectView *blurView = blurForView(view, 5);
-        if (![view.contentView.subviews containsObject:[view.contentView viewWithTag:5]]) [view.contentView addSubview:blurView];
+        
+        if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
+            UIVisualEffectView *blurView = blurForView(view, 5);
+            if (![view.contentView.subviews containsObject:[view.contentView viewWithTag:5]])   [view.contentView addSubview:blurView];
+        }
     } else if (tableView.tag == 22) {
         setColors();
-        view.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
         
+        if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
+            view.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+        }
     } else if (tableView.tag == 24) {
         setColors();
-        view.contentView.backgroundColor = [UIColor clearColor];
-        
     }
 }
 
 
 #pragma mark - AppDelegate
 CHDeclareClass(AppDelegate);
-CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, application, didFinishLaunchingWithOptions, NSDictionary *, options)
+CHDeclareMethod(2, BOOL, AppDelegate, application, UIApplication*, application, didFinishLaunchingWithOptions, NSDictionary *, options)
 {
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
@@ -885,7 +938,7 @@ CHOptimizedMethod(2, self, BOOL, AppDelegate, application, UIApplication*, appli
     return YES;
 }
 
-CHOptimizedMethod(1, self, void, AppDelegate, applicationDidBecomeActive, UIApplication *, application)
+CHDeclareMethod(1, void, AppDelegate, applicationDidBecomeActive, UIApplication *, application)
 {    
     CHSuper(1, AppDelegate, applicationDidBecomeActive, application);
     
@@ -914,10 +967,14 @@ CHOptimizedMethod(1, self, void, AppDelegate, applicationDidBecomeActive, UIAppl
 
 #pragma mark UINavigationBar
 CHDeclareClass(UINavigationBar);
-CHOptimizedMethod(1, self, void, UINavigationBar, setBarTintColor, UIColor*, barTintColor)
+CHDeclareMethod(1, void, UINavigationBar, setBarTintColor, UIColor*, barTintColor)
 {
     if (enabled) {
-        if (enabledBarImage) {
+        if (enableNightTheme) {
+            barTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+            removeTranslucent(self, cvkMainController.nightThemeScheme.navbackgroundColor);
+        }
+        else if (enabledBarImage) {
             if (cvkMainController.navBarImageView)  barTintColor = [UIColor colorWithPatternImage:cvkMainController.navBarImageView.imageView.image];
             else                                    barTintColor = barBackgroundColor;
         }
@@ -929,7 +986,7 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setBarTintColor, UIColor*, bar
     CHSuper(1, UINavigationBar, setBarTintColor, barTintColor);
 }
 
-CHOptimizedMethod(1, self, void, UINavigationBar, setTintColor, UIColor*, tintColor)
+CHDeclareMethod(1, void, UINavigationBar, setTintColor, UIColor*, tintColor)
 {
     if (enabled && enabledBarColor) {
         self.barTintColor = self.barTintColor;
@@ -939,7 +996,7 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setTintColor, UIColor*, tintCo
     CHSuper(1, UINavigationBar, setTintColor, tintColor);
 }
 
-CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDictionary*, attributes)
+CHDeclareMethod(1, void, UINavigationBar, setTitleTextAttributes, NSDictionary*, attributes)
 {
     if (enabled && enabledBarColor) {
         attributes = @{NSForegroundColorAttributeName:barForegroundColor};
@@ -951,13 +1008,13 @@ CHOptimizedMethod(1, self, void, UINavigationBar, setTitleTextAttributes, NSDict
 
 #pragma mark VKMController
 CHDeclareClass(VKMController);
-CHOptimizedMethod(0, self, void, VKMController, VKMNavigationBarUpdate)
+CHDeclareMethod(0, void, VKMController, VKMNavigationBarUpdate)
 {
     CHSuper(0, VKMController, VKMNavigationBarUpdate);
     
     UINavigationBar *navBar = self.navigationController.navigationBar;
     if (enabled) {
-        if (enabledBarImage) {
+        if (!enableNightTheme && enabledBarImage) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 BOOL containsImageView = [navBar._backgroundView.subviews containsObject:[navBar._backgroundView viewWithTag:24]];
                 BOOL containsBlur = [navBar._backgroundView.subviews containsObject:[navBar._backgroundView viewWithTag:10]];
@@ -982,13 +1039,15 @@ CHOptimizedMethod(0, self, void, VKMController, VKMNavigationBarUpdate)
 
 
 CHDeclareClass(VKSearchBarNoCancel);
-CHOptimizedMethod(0, self, void, VKSearchBarNoCancel, layoutSubviews)
+CHDeclareMethod(0, void, VKSearchBarNoCancel, layoutSubviews)
 {
     CHSuper(0, VKSearchBarNoCancel, layoutSubviews);
     
     if ([self isKindOfClass:NSClassFromString(@"VKSearchBarNoCancel")]) {
         if (enabled && [self.superview isKindOfClass:[UINavigationBar class]]) {
-            if (enabledBarImage)
+            if (enableNightTheme)
+                self.searchBarTextField.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+            else if (enabledBarImage)
                 self.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.2f];
            else if (enabledBarColor)
                 self.searchBarTextField.backgroundColor = barBackgroundColor.darkerColor;
@@ -999,10 +1058,15 @@ CHOptimizedMethod(0, self, void, VKSearchBarNoCancel, layoutSubviews)
 
 #pragma mark UITextInputTraits
 CHDeclareClass(UITextInputTraits);
-CHOptimizedMethod(0, self, UIKeyboardAppearance, UITextInputTraits, keyboardAppearance) 
+CHDeclareMethod(0, UIKeyboardAppearance, UITextInputTraits, keyboardAppearance) 
 {
-    if (enabled && (keyboardStyle != UIKeyboardAppearanceDefault))
-        return keyboardStyle;
+    if (enabled) {
+        if (enableNightTheme)
+            return UIKeyboardAppearanceDark;
+        
+        if (keyboardStyle != UIKeyboardAppearanceDefault)
+            return keyboardStyle;
+    }
     
     return CHSuper(0, UITextInputTraits, keyboardAppearance);
 }
@@ -1010,7 +1074,7 @@ CHOptimizedMethod(0, self, UIKeyboardAppearance, UITextInputTraits, keyboardAppe
 
 #pragma mark UISwitch
 CHDeclareClass(UISwitch);
-CHOptimizedMethod(0, self, void, UISwitch, layoutSubviews)
+CHDeclareMethod(0, void, UISwitch, layoutSubviews)
 {
     CHSuper(0, UISwitch, layoutSubviews);
     
@@ -1031,7 +1095,7 @@ CHOptimizedMethod(0, self, void, UISwitch, layoutSubviews)
 
 #pragma mark VKMLiveController 
 CHDeclareClass(VKMLiveController);
-CHOptimizedMethod(1, self, void, VKMLiveController, viewWillAppear, BOOL, animated)
+CHDeclareMethod(1, void, VKMLiveController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, VKMLiveController, viewWillAppear, animated);
     
@@ -1052,7 +1116,7 @@ CHOptimizedMethod(1, self, void, VKMLiveController, viewWillAppear, BOOL, animat
     }
 }
 
-CHOptimizedMethod(0, self, void, VKMLiveController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, VKMLiveController, viewWillLayoutSubviews)
 {
     CHSuper(0, VKMLiveController, viewWillLayoutSubviews);
     
@@ -1068,7 +1132,7 @@ CHOptimizedMethod(0, self, void, VKMLiveController, viewWillLayoutSubviews)
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, VKMLiveController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, VKMLiveController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, VKMLiveController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -1091,7 +1155,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMLiveController, tableView, UITab
 #pragma mark VKMTableController
     // Настройка бара навигации
 CHDeclareClass(VKMTableController);
-CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, animated)
+CHDeclareMethod(1, void, VKMTableController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, VKMTableController, viewWillAppear, animated);
     BOOL shouldAddBlur = NO;
@@ -1148,6 +1212,23 @@ CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, anima
         } else shouldAddBlur = NO;
     } else shouldAddBlur = NO;
     
+    if (enabled && enableNightTheme) {
+        shouldAddBlur = NO;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([self.tableView.tableHeaderView isKindOfClass:[UISearchBar class]]) {
+                UISearchBar *searchBar = (UISearchBar *)self.tableView.tableHeaderView;
+                
+                searchBar.barTintColor = cvkMainController.nightThemeScheme.foregroundColor;
+                searchBar.translucent = NO;
+                [searchBar setBackgroundImage:[UIImage imageWithColor:cvkMainController.nightThemeScheme.foregroundColor] 
+                               forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+                searchBar.searchBarTextField.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+                searchBar.scopeBarBackgroundImage = [UIImage imageWithColor:cvkMainController.nightThemeScheme.foregroundColor];
+            }
+        });
+    }
+    
     resetNavigationBar(self.navigationController.navigationBar);
     setBlur(self.navigationController.navigationBar, shouldAddBlur, blurColor, blurStyle);
     
@@ -1159,7 +1240,7 @@ CHOptimizedMethod(1, self, void, VKMTableController, viewWillAppear, BOOL, anima
 #pragma mark VKMToolbarController
     // Настройка тулбара
 CHDeclareClass(VKMToolbarController);
-CHOptimizedMethod(1, self, void, VKMToolbarController, viewWillAppear, BOOL, animated)
+CHDeclareMethod(1, void, VKMToolbarController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, VKMToolbarController, viewWillAppear, animated);
     if ([self respondsToSelector:@selector(toolbar)]) {
@@ -1180,18 +1261,22 @@ CHOptimizedMethod(1, self, void, VKMToolbarController, viewWillAppear, BOOL, ani
             } else shouldAddBlur = NO;
         } else shouldAddBlur = NO;
         
+        if (enabled && enableNightTheme) {
+            shouldAddBlur = NO;
+        }
+        
         setBlur(self.toolbar, shouldAddBlur, blurColor, blurStyle);
     }
 }
 
 #pragma mark NewsFeedController
 CHDeclareClass(NewsFeedController);
-CHOptimizedMethod(0, self, BOOL, NewsFeedController, VKMTableFullscreenEnabled)
+CHDeclareMethod(0, BOOL, NewsFeedController, VKMTableFullscreenEnabled)
 {
     if (enabled && showBar) return NO; 
     return CHSuper(0, NewsFeedController, VKMTableFullscreenEnabled);
 }
-CHOptimizedMethod(0, self, BOOL, NewsFeedController, VKMScrollViewFullscreenEnabled)
+CHDeclareMethod(0, BOOL, NewsFeedController, VKMScrollViewFullscreenEnabled)
 {
     if (enabled && showBar) return NO;
     return CHSuper(0, NewsFeedController, VKMScrollViewFullscreenEnabled);
@@ -1199,12 +1284,12 @@ CHOptimizedMethod(0, self, BOOL, NewsFeedController, VKMScrollViewFullscreenEnab
 
 #pragma mark PhotoFeedController
 CHDeclareClass(PhotoFeedController);
-CHOptimizedMethod(0, self, BOOL, PhotoFeedController, VKMTableFullscreenEnabled)
+CHDeclareMethod(0, BOOL, PhotoFeedController, VKMTableFullscreenEnabled)
 {
     if (enabled && showBar) return NO; 
     return CHSuper(0, PhotoFeedController, VKMTableFullscreenEnabled);
 }
-CHOptimizedMethod(0, self, BOOL, PhotoFeedController, VKMScrollViewFullscreenEnabled)
+CHDeclareMethod(0, BOOL, PhotoFeedController, VKMScrollViewFullscreenEnabled)
 {
     if (enabled && showBar) return NO; 
     return CHSuper(0, PhotoFeedController, VKMScrollViewFullscreenEnabled);
@@ -1213,7 +1298,7 @@ CHOptimizedMethod(0, self, BOOL, PhotoFeedController, VKMScrollViewFullscreenEna
 
 #pragma mark GroupsController - список групп
 CHDeclareClass(GroupsController);
-CHOptimizedMethod(0, self, void, GroupsController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, GroupsController, viewWillLayoutSubviews)
 {
     CHSuper(0, GroupsController, viewWillLayoutSubviews);
     if ([self isKindOfClass:NSClassFromString(@"GroupsController")]) {
@@ -1244,7 +1329,7 @@ CHOptimizedMethod(0, self, void, GroupsController, viewWillLayoutSubviews)
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, GroupsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, GroupsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, GroupsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     if ([self isKindOfClass:NSClassFromString(@"GroupsController")] && (enabled && enabledGroupsListImage)) {
@@ -1277,7 +1362,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, GroupsController, tableView, UITabl
 #pragma mark DialogsController - список диалогов
 CHDeclareClass(DialogsController);
 
-CHOptimizedMethod(0, self, void, DialogsController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, DialogsController, viewWillLayoutSubviews)
 {
     CHSuper(0, DialogsController, viewWillLayoutSubviews);
     if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && ([cvkMainController compareAppVersionWithVersion:@"3.0"] < 0)) {
@@ -1288,7 +1373,7 @@ CHOptimizedMethod(0, self, void, DialogsController, viewWillLayoutSubviews)
     }
 }
 
-CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animated)
+CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, DialogsController, viewWillAppear, animated);
     if ([self isKindOfClass:NSClassFromString(@"DialogsController")]) {
@@ -1336,11 +1421,26 @@ CHOptimizedMethod(1, self, void, DialogsController, viewWillAppear, BOOL, animat
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, DialogsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, DialogsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && enabled) {
         NewDialogCell *cell = (NewDialogCell *)CHSuper(2, DialogsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-        if (enabledMessagesListImage) {
+        if (enableNightTheme) {
+            performInitialCellSetup(cell);
+            cell.backgroundView.hidden = YES;
+            
+            if (!cell.dialog.head.read_state && cell.unread.hidden)
+                cell.contentView.backgroundColor = cvkMainController.nightThemeScheme.unreadBackgroundColor;
+            else cell.contentView.backgroundColor = [UIColor clearColor];
+            
+            cell.name.textColor = cvkMainController.nightThemeScheme.textColor;
+            cell.time.textColor = cvkMainController.nightThemeScheme.textColor;
+            cell.attach.textColor = cvkMainController.nightThemeScheme.textColor;
+            if ([cell respondsToSelector:@selector(dialogText)])
+                cell.dialogText.textColor = cvkMainController.nightThemeScheme.textColor;
+            if ([cell respondsToSelector:@selector(text)])
+                cell.text.textColor = cvkMainController.nightThemeScheme.textColor;
+        } else if (enabledMessagesListImage) {
             performInitialCellSetup(cell);
             cell.backgroundView.hidden = YES;
             
@@ -1360,12 +1460,14 @@ CHOptimizedMethod(2, self, UITableViewCell*, DialogsController, tableView, UITab
 
 #pragma mark BackgroundView
 CHDeclareClass(BackgroundView);
-CHOptimizedMethod(1, self, void, BackgroundView, drawRect, CGRect, rect)
+CHDeclareMethod(1, void, BackgroundView, drawRect, CGRect, rect)
 {
     if (enabled) {
         self.layer.cornerRadius = self.cornerRadius;
         self.layer.masksToBounds = YES;
-        if (enabledMessagesListImage)
+        if (enableNightTheme)
+            self.layer.backgroundColor = cvkMainController.nightThemeScheme.unreadBackgroundColor.CGColor;
+        else if (enabledMessagesListImage)
             self.layer.backgroundColor = useCustomDialogsUnreadColor ? dialogsUnreadColor.CGColor : [UIColor defaultColorForIdentifier:@"messageReadColor"].CGColor;
         else
             CHSuper(1, BackgroundView, drawRect, rect);
@@ -1374,7 +1476,7 @@ CHOptimizedMethod(1, self, void, BackgroundView, drawRect, CGRect, rect)
 
 #pragma mark DetailController + тулбар
 CHDeclareClass(DetailController);
-CHOptimizedMethod(1, self, void, DetailController, viewWillAppear, BOOL, animated)
+CHDeclareMethod(1, void, DetailController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, DetailController, viewWillAppear, animated);
     if ([self isKindOfClass:NSClassFromString(@"DetailController")]) setToolBar(self.inputPanel);
@@ -1383,7 +1485,7 @@ CHOptimizedMethod(1, self, void, DetailController, viewWillAppear, BOOL, animate
 
 #pragma mark ChatController + тулбар
 CHDeclareClass(ChatController);
-CHOptimizedMethod(1, self, void, ChatController, viewWillAppear, BOOL, animated)
+CHDeclareMethod(1, void, ChatController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, ChatController, viewWillAppear, animated);
     
@@ -1397,21 +1499,25 @@ CHOptimizedMethod(1, self, void, ChatController, viewWillAppear, BOOL, animated)
         if (enabled && messagesUseBlur)
             setBlur(self.inputPanel, YES, messagesBlurTone, messagesBlurStyle);
         
-        if (enabled && changeMessagesInput) {
-            UIButton *inputViewButton = self.inputPanel.inputViewButton;
-            [inputViewButton setImage:[[inputViewButton imageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-            inputViewButton.imageView.tintColor = messagesInputTextColor;
-            
-            self.inputPanel.overlay.backgroundColor = messagesInputBackColor;
-            self.inputPanel.overlay.layer.borderColor = messagesInputBackColor.CGColor;
-            self.inputPanel.textPanel.textColor = messagesInputTextColor;
-            self.inputPanel.textPanel.tintColor = messagesInputTextColor;
-            self.inputPanel.textPanel.placeholderLabel.textColor = messagesInputTextColor;
+        if (enabled) {
+            if (!enableNightTheme && changeMessagesInput) {
+                UIButton *inputViewButton = self.inputPanel.inputViewButton;
+                [inputViewButton setImage:[[inputViewButton imageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+                inputViewButton.imageView.tintColor = messagesInputTextColor;
+                
+                self.inputPanel.overlay.backgroundColor = messagesInputBackColor;
+                self.inputPanel.overlay.layer.borderColor = messagesInputBackColor.CGColor;
+                self.inputPanel.textPanel.textColor = messagesInputTextColor;
+                self.inputPanel.textPanel.tintColor = messagesInputTextColor;
+                self.inputPanel.textPanel.placeholderLabel.textColor = messagesInputTextColor;
+            }
         }
+        
     }
 }
 
-CHOptimizedMethod(0, self, void, ChatController, viewWillLayoutSubviews)
+
+CHDeclareMethod(0, void, ChatController, viewWillLayoutSubviews)
 {
     CHSuper(0, ChatController, viewWillLayoutSubviews);
     
@@ -1430,7 +1536,7 @@ CHOptimizedMethod(0, self, void, ChatController, viewWillLayoutSubviews)
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, ChatController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, ChatController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, ChatController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -1446,7 +1552,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, ChatController, tableView, UITableV
     return cell;
 }
 
-CHOptimizedMethod(0, self, UIButton*, ChatController, editForward)
+CHDeclareMethod(0, UIButton*, ChatController, editForward)
 {
     UIButton *forwardButton = CHSuper(0, ChatController, editForward);
     if (enabled && messagesUseBlur) {
@@ -1466,33 +1572,43 @@ CHOptimizedMethod(0, self, UIButton*, ChatController, editForward)
 
 #pragma mark MessageCell
 CHDeclareClass(MessageCell);
-CHOptimizedMethod(1, self, void, MessageCell, updateBackground, BOOL, animated)
+CHDeclareMethod(1, void, MessageCell, updateBackground, BOOL, animated)
 {
     CHSuper(1, MessageCell, updateBackground, animated);
     
-    if (enabled && enabledMessagesImage) {
+    if (enabled && (enabledMessagesImage || enableNightTheme)) {
         self.backgroundView = nil;
-        if (!self.message.read_state)
-            self.backgroundColor = useCustomMessageReadColor ? messageUnreadColor : [UIColor defaultColorForIdentifier:@"messageReadColor"];
-        else
-            self.backgroundColor = [UIColor clearColor];
+        if (!self.message.read_state) {
+            if (enableNightTheme)
+                self.backgroundColor = cvkMainController.nightThemeScheme.unreadBackgroundColor;
+            else
+                self.backgroundColor = useCustomMessageReadColor ? messageUnreadColor : [UIColor defaultColorForIdentifier:@"messageReadColor"];
+        } else {
+            if (enableNightTheme)
+                self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+            else
+                self.backgroundColor = [UIColor clearColor];
+        }
     }
 }
 
 #pragma mark ChatCell
 CHDeclareClass(ChatCell);
-CHOptimizedMethod(0, self, void, ChatCell, setBG)
+CHDeclareMethod(0, void, ChatCell, setBG)
 {
     self.bg.alpha = 0.f;
     
     CHSuper(0, ChatCell, setBG);
     
-    if (enabled && useMessageBubbleTintColor) {
+    if (enabled && (useMessageBubbleTintColor || enableNightTheme)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (self.bg.image.renderingMode != UIImageRenderingModeAlwaysTemplate) {
                 self.bg.image = [self.bg.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             }
-            self.bg.tintColor = self.message.incoming ? messageBubbleTintColor : messageBubbleSentTintColor;
+            if (enableNightTheme)
+                self.bg.tintColor = self.message.incoming ? cvkMainController.nightThemeScheme.incomingBackgroundColor : cvkMainController.nightThemeScheme.outgoingBackgroundColor;
+            else 
+                self.bg.tintColor = self.message.incoming ? messageBubbleTintColor : messageBubbleSentTintColor;
         });
     }
     self.bg.alpha = 1.f;
@@ -1502,7 +1618,7 @@ CHOptimizedMethod(0, self, void, ChatCell, setBG)
 
 #pragma mark VKMMainController
 CHDeclareClass(VKMMainController);
-CHOptimizedMethod(0, self, NSArray*, VKMMainController, menu)
+CHDeclareMethod(0, NSArray*, VKMMainController, menu)
 {
     NSArray *origMenu = CHSuper(0, VKMMainController, menu);
     
@@ -1526,7 +1642,7 @@ CHOptimizedMethod(0, self, NSArray*, VKMMainController, menu)
     return origMenu;
 }
 
-CHOptimizedMethod(0, self, void, VKMMainController, viewDidLoad)
+CHDeclareMethod(0, void, VKMMainController, viewDidLoad)
 {
     CHSuper(0, VKMMainController, viewDidLoad);
     if (!cvkMainController.vkMainController)
@@ -1551,7 +1667,7 @@ CHOptimizedMethod(0, self, void, VKMMainController, viewDidLoad)
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, VKMMainController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, VKMMainController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -1613,7 +1729,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMMainController, tableView, UITab
     return cell;
 }
 
-CHOptimizedMethod(0, self, id, VKMMainController, VKMTableCreateSearchBar)
+CHDeclareMethod(0, id, VKMMainController, VKMTableCreateSearchBar)
 {
     if (enabled && hideMenuSearch) return nil;
     return CHSuper(0, VKMMainController, VKMTableCreateSearchBar);
@@ -1623,7 +1739,7 @@ CHOptimizedMethod(0, self, id, VKMMainController, VKMTableCreateSearchBar)
 
 #pragma mark MenuViewController
 CHDeclareClass(MenuViewController);
-CHOptimizedMethod(0, self, void, MenuViewController, viewDidLoad)
+CHDeclareMethod(0, void, MenuViewController, viewDidLoad)
 {
     CHSuper(0, MenuViewController, viewDidLoad);
     if (!cvkMainController.vkMenuController)
@@ -1644,7 +1760,7 @@ CHOptimizedMethod(0, self, void, MenuViewController, viewDidLoad)
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, MenuViewController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, MenuViewController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, MenuViewController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -1652,7 +1768,10 @@ CHOptimizedMethod(2, self, UITableViewCell*, MenuViewController, tableView, UITa
     else if (enabled && !hideMenuSeparators) tableView.separatorColor = menuSeparatorColor; 
     else tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0 alpha:1.0f];
     
-    if (enabled && enabledMenuImage) {
+    if (enabled && enableNightTheme) {
+        cell.textLabel.textColor = cvkMainController.nightThemeScheme.textColor;
+        cell.contentView.backgroundColor = [UIColor clearColor];
+    } else if (enabled && enabledMenuImage) {
         cell.textLabel.textColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
         cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         cell.imageView.tintColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1.0f alpha:0.8f];
@@ -1686,7 +1805,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, MenuViewController, tableView, UITa
     return cell;
 }
 
-CHOptimizedMethod(3, self, void, MenuViewController, tableView, UITableView *, tableView, willDisplayHeaderView, UIView *, view, forSection, NSInteger, section)
+CHDeclareMethod(3, void, MenuViewController, tableView, UITableView *, tableView, willDisplayHeaderView, UIView *, view, forSection, NSInteger, section)
 {
     CHSuper(3, MenuViewController, tableView, tableView, willDisplayHeaderView, view, forSection, section);
     if ((enabled && enabledMenuImage) && [view isKindOfClass:NSClassFromString(@"TablePrimaryHeaderView")]) {
@@ -1714,13 +1833,13 @@ CHDeclareMethod(0, NSArray*, MenuViewController, menu)
 
 #pragma mark  HintsSearchDisplayController
 CHDeclareClass(HintsSearchDisplayController);
-CHOptimizedMethod(1, self, void, HintsSearchDisplayController, searchDisplayControllerWillBeginSearch, UISearchDisplayController*, controller)
+CHDeclareMethod(1, void, HintsSearchDisplayController, searchDisplayControllerWillBeginSearch, UISearchDisplayController*, controller)
 {
     if (enabled && enabledMenuImage) resetUISearchBar(controller.searchBar);
     CHSuper(1, HintsSearchDisplayController, searchDisplayControllerWillBeginSearch, controller);
 }
 
-CHOptimizedMethod(1, self, void, HintsSearchDisplayController, searchDisplayControllerDidEndSearch, UISearchDisplayController*, controller)
+CHDeclareMethod(1, void, HintsSearchDisplayController, searchDisplayControllerDidEndSearch, UISearchDisplayController*, controller)
 {
     if (enabled && enabledMenuImage) setupUISearchBar(controller.searchBar);
     CHSuper(1, HintsSearchDisplayController, searchDisplayControllerDidEndSearch, controller);
@@ -1732,13 +1851,13 @@ CHOptimizedMethod(1, self, void, HintsSearchDisplayController, searchDisplayCont
 
 #pragma mark IOS7AudioController
 CHDeclareClass(IOS7AudioController);
-CHOptimizedMethod(0, self, UIStatusBarStyle, IOS7AudioController, preferredStatusBarStyle)
+CHDeclareMethod(0, UIStatusBarStyle, IOS7AudioController, preferredStatusBarStyle)
 {
     if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")] && ( enabled && (enabledBarColor || changeAudioPlayerAppearance))) return UIStatusBarStyleLightContent;
     else return CHSuper(0, IOS7AudioController, preferredStatusBarStyle);
 }
 
-CHOptimizedMethod(0, self, void, IOS7AudioController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, IOS7AudioController, viewWillLayoutSubviews)
 {
     CHSuper(0, IOS7AudioController, viewWillLayoutSubviews);
     
@@ -1752,7 +1871,7 @@ CHOptimizedMethod(0, self, void, IOS7AudioController, viewWillLayoutSubviews)
     }
 }
 
-CHOptimizedMethod(0, self, void, IOS7AudioController, viewDidLoad)
+CHDeclareMethod(0, void, IOS7AudioController, viewDidLoad)
 {
     CHSuper(0, IOS7AudioController, viewDidLoad);
     
@@ -1822,7 +1941,7 @@ CHOptimizedMethod(0, self, void, IOS7AudioController, viewDidLoad)
 
 #pragma mark AudioPlayer
 CHDeclareClass(AudioPlayer);
-CHOptimizedMethod(2, self, void, AudioPlayer, switchTo, int, arg1, force, BOOL, force)
+CHDeclareMethod(2, void, AudioPlayer, switchTo, int, arg1, force, BOOL, force)
 {
     CHSuper(2, AudioPlayer, switchTo, arg1, force, force);
     if (enabled && changeAudioPlayerAppearance) {
@@ -1836,7 +1955,7 @@ CHOptimizedMethod(2, self, void, AudioPlayer, switchTo, int, arg1, force, BOOL, 
 
 #pragma mark VKAudioQueuePlayer
 CHDeclareClass(VKAudioQueuePlayer);
-CHOptimizedMethod(1, self, void, VKAudioQueuePlayer, switchTo, int, arg1)
+CHDeclareMethod(1, void, VKAudioQueuePlayer, switchTo, int, arg1)
 {
     CHSuper(1, VKAudioQueuePlayer, switchTo, arg1);
     if (enabled && changeAudioPlayerAppearance) {
@@ -1852,7 +1971,7 @@ CHOptimizedMethod(1, self, void, VKAudioQueuePlayer, switchTo, int, arg1)
 
 #pragma mark AudioAlbumController
 CHDeclareClass(AudioAlbumController);
-CHOptimizedMethod(0, self, void, AudioAlbumController, viewDidLoad)
+CHDeclareMethod(0, void, AudioAlbumController, viewDidLoad)
 {
     CHSuper(0, AudioAlbumController, viewDidLoad);
     
@@ -1868,7 +1987,7 @@ CHOptimizedMethod(0, self, void, AudioAlbumController, viewDidLoad)
         }
     }
 }
-CHOptimizedMethod(0, self, void, AudioAlbumController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, AudioAlbumController, viewWillLayoutSubviews)
 {
     CHSuper(0, AudioAlbumController, viewWillLayoutSubviews);
     
@@ -1880,7 +1999,7 @@ CHOptimizedMethod(0, self, void, AudioAlbumController, viewWillLayoutSubviews)
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, AudioAlbumController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, AudioAlbumController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, AudioAlbumController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -1897,12 +2016,12 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioAlbumController, tableView, UI
 
 #pragma mark AudioPlaylistController
 CHDeclareClass(AudioPlaylistController);
-CHOptimizedMethod(0, self, UIStatusBarStyle, AudioPlaylistController, preferredStatusBarStyle)
+CHDeclareMethod(0, UIStatusBarStyle, AudioPlaylistController, preferredStatusBarStyle)
 {
     if ([self isKindOfClass:NSClassFromString(@"AudioPlaylistController")] && (enabled && (enabledBarColor || enabledAudioImage))) return UIStatusBarStyleLightContent;
     else return CHSuper(0, AudioPlaylistController, preferredStatusBarStyle);
 }
-CHOptimizedMethod(1, self, void, AudioPlaylistController, viewWillAppear, BOOL, animated)
+CHDeclareMethod(1, void, AudioPlaylistController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, AudioPlaylistController, viewWillAppear, animated);
     
@@ -1913,7 +2032,7 @@ CHOptimizedMethod(1, self, void, AudioPlaylistController, viewWillAppear, BOOL, 
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, AudioPlaylistController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, AudioPlaylistController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, AudioPlaylistController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -1929,7 +2048,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioPlaylistController, tableView,
 
 #pragma mark AudioRenderer
 CHDeclareClass(AudioRenderer);
-CHOptimizedMethod(0, self, UIButton*, AudioRenderer, playIndicator)
+CHDeclareMethod(0, UIButton*, AudioRenderer, playIndicator)
 {
     UIButton *indicator = CHSuper(0, AudioRenderer, playIndicator);
     if (enabled && enabledAudioImage) {
@@ -1946,7 +2065,7 @@ CHOptimizedMethod(0, self, UIButton*, AudioRenderer, playIndicator)
  */
 #pragma mark AudioDashboardController
 CHDeclareClass(AudioDashboardController);
-CHOptimizedMethod(0, self, void, AudioDashboardController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, AudioDashboardController, viewWillLayoutSubviews)
 {
     CHSuper(0, AudioDashboardController, viewWillLayoutSubviews);
     
@@ -1958,7 +2077,7 @@ CHOptimizedMethod(0, self, void, AudioDashboardController, viewWillLayoutSubview
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, AudioDashboardController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, AudioDashboardController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, AudioDashboardController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -1974,7 +2093,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioDashboardController, tableView
 
 #pragma mark AudioCatalogController
 CHDeclareClass(AudioCatalogController);
-CHOptimizedMethod(0, self, void, AudioCatalogController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, AudioCatalogController, viewWillLayoutSubviews)
 {
     CHSuper(0, AudioCatalogController, viewWillLayoutSubviews);
     
@@ -1987,7 +2106,7 @@ CHOptimizedMethod(0, self, void, AudioCatalogController, viewWillLayoutSubviews)
 }
 
 
-CHOptimizedMethod(2, self, UITableViewCell*, AudioCatalogController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, AudioCatalogController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, AudioCatalogController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -2007,7 +2126,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioCatalogController, tableView, 
 
 #pragma mark AudioCatalogOwnersListController
 CHDeclareClass(AudioCatalogOwnersListController);
-CHOptimizedMethod(0, self, void, AudioCatalogOwnersListController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, AudioCatalogOwnersListController, viewWillLayoutSubviews)
 {
     CHSuper(0, AudioCatalogOwnersListController, viewWillLayoutSubviews);
     
@@ -2019,7 +2138,7 @@ CHOptimizedMethod(0, self, void, AudioCatalogOwnersListController, viewWillLayou
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, AudioCatalogOwnersListController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, AudioCatalogOwnersListController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, AudioCatalogOwnersListController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -2048,7 +2167,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioCatalogOwnersListController, t
 
 #pragma mark AudioCatalogAudiosListController
 CHDeclareClass(AudioCatalogAudiosListController);
-CHOptimizedMethod(0, self, void, AudioCatalogAudiosListController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, AudioCatalogAudiosListController, viewWillLayoutSubviews)
 {
     CHSuper(0, AudioCatalogAudiosListController, viewWillLayoutSubviews);
     
@@ -2060,7 +2179,7 @@ CHOptimizedMethod(0, self, void, AudioCatalogAudiosListController, viewWillLayou
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, AudioCatalogAudiosListController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, AudioCatalogAudiosListController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, AudioCatalogAudiosListController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -2078,7 +2197,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioCatalogAudiosListController, t
 
 #pragma mark AudioPlaylistDetailController
 CHDeclareClass(AudioPlaylistDetailController);
-CHOptimizedMethod(0, self, void, AudioPlaylistDetailController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, AudioPlaylistDetailController, viewWillLayoutSubviews)
 {
     CHSuper(0, AudioPlaylistDetailController, viewWillLayoutSubviews);
     
@@ -2090,7 +2209,7 @@ CHOptimizedMethod(0, self, void, AudioPlaylistDetailController, viewWillLayoutSu
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, AudioPlaylistDetailController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, AudioPlaylistDetailController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, AudioPlaylistDetailController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -2106,7 +2225,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioPlaylistDetailController, tabl
 
 #pragma mark AudioPlaylistsController
 CHDeclareClass(AudioPlaylistsController);
-CHOptimizedMethod(0, self, void, AudioPlaylistsController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, AudioPlaylistsController, viewWillLayoutSubviews)
 {
     CHSuper(0, AudioPlaylistsController, viewWillLayoutSubviews);
     
@@ -2128,7 +2247,7 @@ CHOptimizedMethod(0, self, void, AudioPlaylistsController, viewWillLayoutSubview
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, AudioPlaylistsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, AudioPlaylistsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, AudioPlaylistsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -2141,7 +2260,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, AudioPlaylistsController, tableView
 
 #pragma mark VKAudioPlayerListTableViewController
 CHDeclareClass(VKAudioPlayerListTableViewController);
-CHOptimizedMethod(0, self, void, VKAudioPlayerListTableViewController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, VKAudioPlayerListTableViewController, viewWillLayoutSubviews)
 {
     CHSuper(0, VKAudioPlayerListTableViewController, viewWillLayoutSubviews);
     
@@ -2152,7 +2271,7 @@ CHOptimizedMethod(0, self, void, VKAudioPlayerListTableViewController, viewWillL
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, VKAudioPlayerListTableViewController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, VKAudioPlayerListTableViewController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, VKAudioPlayerListTableViewController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -2171,7 +2290,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKAudioPlayerListTableViewControlle
 
 #pragma mark AudioAudiosBlockTableCell
 CHDeclareClass(AudioAudiosBlockTableCell);
-CHOptimizedMethod(0, self, void, AudioAudiosBlockTableCell, layoutSubviews)
+CHDeclareMethod(0, void, AudioAudiosBlockTableCell, layoutSubviews)
 {
     CHSuper(0, AudioAudiosBlockTableCell, layoutSubviews);
     
@@ -2184,7 +2303,7 @@ CHOptimizedMethod(0, self, void, AudioAudiosBlockTableCell, layoutSubviews)
 
 #pragma mark AudioPlaylistInlineCell
 CHDeclareClass(AudioPlaylistInlineCell);
-CHOptimizedMethod(0, self, void, AudioPlaylistInlineCell, layoutSubviews)
+CHDeclareMethod(0, void, AudioPlaylistInlineCell, layoutSubviews)
 {
     CHSuper(0, AudioPlaylistInlineCell, layoutSubviews);
     
@@ -2196,7 +2315,7 @@ CHOptimizedMethod(0, self, void, AudioPlaylistInlineCell, layoutSubviews)
 
 #pragma mark AudioOwnersBlockItemCollectionCell
 CHDeclareClass(AudioOwnersBlockItemCollectionCell);
-CHOptimizedMethod(0, self, void, AudioOwnersBlockItemCollectionCell, layoutSubviews)
+CHDeclareMethod(0, void, AudioOwnersBlockItemCollectionCell, layoutSubviews)
 {
     CHSuper(0, AudioOwnersBlockItemCollectionCell, layoutSubviews);
     
@@ -2208,7 +2327,7 @@ CHOptimizedMethod(0, self, void, AudioOwnersBlockItemCollectionCell, layoutSubvi
 
 #pragma mark AudioPlaylistCell
 CHDeclareClass(AudioPlaylistCell);
-CHOptimizedMethod(0, self, void, AudioPlaylistCell, layoutSubviews)
+CHDeclareMethod(0, void, AudioPlaylistCell, layoutSubviews)
 {
     CHSuper(0, AudioPlaylistCell, layoutSubviews);
     
@@ -2223,7 +2342,7 @@ CHOptimizedMethod(0, self, void, AudioPlaylistCell, layoutSubviews)
 
 #pragma mark AudioPlaylistsCell
 CHDeclareClass(AudioPlaylistsCell);
-CHOptimizedMethod(0, self, void, AudioPlaylistsCell, layoutSubviews)
+CHDeclareMethod(0, void, AudioPlaylistsCell, layoutSubviews)
 {
     CHSuper(0, AudioPlaylistsCell, layoutSubviews);
     
@@ -2237,7 +2356,7 @@ CHOptimizedMethod(0, self, void, AudioPlaylistsCell, layoutSubviews)
 
 #pragma mark AudioAudiosSpecialBlockView
 CHDeclareClass(AudioAudiosSpecialBlockView);
-CHOptimizedMethod(0, self, void, AudioAudiosSpecialBlockView, layoutSubviews)
+CHDeclareMethod(0, void, AudioAudiosSpecialBlockView, layoutSubviews)
 {
     CHSuper(0, AudioAudiosSpecialBlockView, layoutSubviews);
     
@@ -2257,7 +2376,7 @@ CHOptimizedMethod(0, self, void, AudioAudiosSpecialBlockView, layoutSubviews)
 
 #pragma mark AudioPlaylistView
 CHDeclareClass(AudioPlaylistView);
-CHOptimizedMethod(0, self, void, AudioPlaylistView, layoutSubviews)
+CHDeclareMethod(0, void, AudioPlaylistView, layoutSubviews)
 {
     CHSuper(0, AudioPlaylistView, layoutSubviews);
     
@@ -2285,7 +2404,7 @@ CHOptimizedMethod(0, self, void, AudioPlaylistView, layoutSubviews)
 
 #pragma mark PhotoBrowserController
 CHDeclareClass(PhotoBrowserController);
-CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, animated)
+CHDeclareMethod(1, void, PhotoBrowserController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, PhotoBrowserController, viewWillAppear, animated);
     if ([self isKindOfClass:NSClassFromString(@"PhotoBrowserController")]) {
@@ -2319,13 +2438,13 @@ CHOptimizedMethod(1, self, void, PhotoBrowserController, viewWillAppear, BOOL, a
 #pragma mark VKMBrowserController
 CHDeclareClass(VKMBrowserController);
 
-CHOptimizedMethod(0, self, UIStatusBarStyle, VKMBrowserController, preferredStatusBarStyle)
+CHDeclareMethod(0, UIStatusBarStyle, VKMBrowserController, preferredStatusBarStyle)
 {
     if ([self isKindOfClass:NSClassFromString(@"VKMBrowserController")] && (enabled && enabledBarColor)) return UIStatusBarStyleLightContent;
     else return CHSuper(0, VKMBrowserController, preferredStatusBarStyle);
 }
 
-CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, animated)
+CHDeclareMethod(1, void, VKMBrowserController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, VKMBrowserController, viewWillAppear, animated);
     if ([self isKindOfClass:NSClassFromString(@"VKMBrowserController")]) {
@@ -2351,7 +2470,7 @@ CHOptimizedMethod(1, self, void, VKMBrowserController, viewWillAppear, BOOL, ani
 
 #pragma mark VKGroupProfile
 CHDeclareClass(VKGroupProfile);
-CHOptimizedMethod(0, self, BOOL, VKGroupProfile, verified)
+CHDeclareMethod(0, BOOL, VKGroupProfile, verified)
 {
     if ([self.group.gid isEqual:@55161589])
         return YES;
@@ -2360,7 +2479,7 @@ CHOptimizedMethod(0, self, BOOL, VKGroupProfile, verified)
 
 #pragma mark VKProfile
 CHDeclareClass(VKProfile);
-CHOptimizedMethod(0, self, BOOL, VKProfile, verified)
+CHDeclareMethod(0, BOOL, VKProfile, verified)
 {
     NSArray *verifiedUsers = @[@89911723, @93264161, @125879328, @73369298, @147469494, @283990174];
     if ([verifiedUsers containsObject:self.user.uid])
@@ -2370,7 +2489,7 @@ CHOptimizedMethod(0, self, BOOL, VKProfile, verified)
 
 #pragma mark UserWallController
 CHDeclareClass(UserWallController);
-CHOptimizedMethod(0, self, void, UserWallController, updateProfile)
+CHDeclareMethod(0, void, UserWallController, updateProfile)
 {
     CHSuper(0, UserWallController, updateProfile);
     
@@ -2402,19 +2521,19 @@ CHOptimizedMethod(0, self, void, UserWallController, updateProfile)
 
 #pragma mark VKMLiveSearchController
 CHDeclareClass(VKMLiveSearchController);
-CHOptimizedMethod(1, self, void, VKMLiveSearchController, searchDisplayControllerWillBeginSearch, UISearchDisplayController*, controller)
+CHDeclareMethod(1, void, VKMLiveSearchController, searchDisplayControllerWillBeginSearch, UISearchDisplayController*, controller)
 {
     CHSuper(1, VKMLiveSearchController, searchDisplayControllerWillBeginSearch, controller);
     setupSearchController(controller, NO);
 }
 
-CHOptimizedMethod(1, self, void, VKMLiveSearchController, searchDisplayControllerWillEndSearch, UISearchDisplayController*, controller)
+CHDeclareMethod(1, void, VKMLiveSearchController, searchDisplayControllerWillEndSearch, UISearchDisplayController*, controller)
 {
     setupSearchController(controller, YES);
     CHSuper(1, VKMLiveSearchController, searchDisplayControllerWillEndSearch, controller);
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, VKMLiveSearchController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, VKMLiveSearchController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, VKMLiveSearchController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     setupCellForSearchController(cell, self);    
@@ -2423,20 +2542,20 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKMLiveSearchController, tableView,
 
 #pragma mark DialogsSearchController
 CHDeclareClass(DialogsSearchController);
-CHOptimizedMethod(1, self, void, DialogsSearchController, searchDisplayControllerWillBeginSearch, UISearchDisplayController*, controller)
+CHDeclareMethod(1, void, DialogsSearchController, searchDisplayControllerWillBeginSearch, UISearchDisplayController*, controller)
 {
     CHSuper(1, DialogsSearchController, searchDisplayControllerWillBeginSearch, controller);
     setupSearchController(controller, NO);
     if (enabled && enabledMessagesImage) controller.searchResultsTableView.separatorColor = [controller.searchResultsTableView.separatorColor colorWithAlphaComponent:0.2];
 }
 
-CHOptimizedMethod(1, self, void, DialogsSearchController, searchDisplayControllerWillEndSearch, UISearchDisplayController*, controller)
+CHDeclareMethod(1, void, DialogsSearchController, searchDisplayControllerWillEndSearch, UISearchDisplayController*, controller)
 {
     setupSearchController(controller, YES);
     CHSuper(1, DialogsSearchController, searchDisplayControllerWillEndSearch, controller);
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, DialogsSearchController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, DialogsSearchController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, DialogsSearchController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     setupCellForSearchController(cell, self);
@@ -2452,14 +2571,14 @@ CHOptimizedMethod(2, self, UITableViewCell*, DialogsSearchController, tableView,
 #pragma mark PSListController
 CHDeclareClass(PSListController);
 
-CHOptimizedMethod(1, self, void, PSListController, viewWillAppear, BOOL, animated)
+CHDeclareMethod(1, void, PSListController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, PSListController, viewWillAppear, animated);
     resetNavigationBar(self.navigationController.navigationBar);
     resetTabBar();
 }
 
-CHOptimizedMethod(0, self, UIStatusBarStyle, PSListController, preferredStatusBarStyle)
+CHDeclareMethod(0, UIStatusBarStyle, PSListController, preferredStatusBarStyle)
 {
     return UIStatusBarStyleLightContent;
 }
@@ -2467,7 +2586,7 @@ CHOptimizedMethod(0, self, UIStatusBarStyle, PSListController, preferredStatusBa
 #pragma mark SelectAccountTableViewController
 @interface SelectAccountTableViewController : UITableViewController @end
 CHDeclareClass(SelectAccountTableViewController);
-CHOptimizedMethod(1, self, void, SelectAccountTableViewController, viewWillAppear, BOOL, animated)
+CHDeclareMethod(1, void, SelectAccountTableViewController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, SelectAccountTableViewController, viewWillAppear, animated);
     resetNavigationBar(self.navigationController.navigationBar);
@@ -2477,7 +2596,7 @@ CHOptimizedMethod(1, self, void, SelectAccountTableViewController, viewWillAppea
 #pragma mark vksprefsListController
 @interface vksprefsListController : PSListController @end
 CHDeclareClass(vksprefsListController);
-CHOptimizedMethod(2, self, UITableViewCell *, vksprefsListController, tableView, UITableView *, tableView, cellForRowAtIndexPath, NSIndexPath *, indexPath)
+CHDeclareMethod(2, UITableViewCell *, vksprefsListController, tableView, UITableView *, tableView, cellForRowAtIndexPath, NSIndexPath *, indexPath)
 {
     UITableViewCell * cell = CHSuper(2, vksprefsListController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -2492,7 +2611,7 @@ CHOptimizedMethod(2, self, UITableViewCell *, vksprefsListController, tableView,
 
 #pragma mark - MessageController
 CHDeclareClass(MessageController);
-CHOptimizedMethod(1, self, void, MessageController, viewWillAppear, BOOL, animated)
+CHDeclareMethod(1, void, MessageController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, MessageController, viewWillAppear, animated);
     resetNavigationBar(self.navigationController.navigationBar);
@@ -2503,7 +2622,7 @@ CHOptimizedMethod(1, self, void, MessageController, viewWillAppear, BOOL, animat
 
 #pragma mark VKComment
 CHDeclareClass(VKComment);
-CHOptimizedMethod(0, self, BOOL, VKComment, separatorDisabled)
+CHDeclareMethod(0, BOOL, VKComment, separatorDisabled)
 {
     if (enabled) return showCommentSeparators;
     return CHSuper(0, VKComment, separatorDisabled);
@@ -2513,7 +2632,7 @@ CHOptimizedMethod(0, self, BOOL, VKComment, separatorDisabled)
 
 #pragma mark ProfileCoverInfo
 CHDeclareClass(ProfileCoverInfo);
-CHOptimizedMethod(0, self, BOOL, ProfileCoverInfo, enabled)
+CHDeclareMethod(0, BOOL, ProfileCoverInfo, enabled)
 {
     if (enabled && disableGroupCovers) return NO;
     return CHSuper(0, ProfileCoverInfo, enabled);
@@ -2523,11 +2642,14 @@ CHOptimizedMethod(0, self, BOOL, ProfileCoverInfo, enabled)
 
 #pragma mark ProfileCoverImageView
 CHDeclareClass(ProfileCoverImageView);
-CHOptimizedMethod(0, self, UIView *, ProfileCoverImageView, overlayView)
+CHDeclareMethod(0, UIView *, ProfileCoverImageView, overlayView)
 {
     UIView *overlayView = CHSuper(0, ProfileCoverImageView, overlayView);
     if (enabled) {
-        if (enabledBarImage) {
+        if (enableNightTheme) {
+            overlayView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+        }
+        else if (enabledBarImage) {
             if (![overlayView.subviews containsObject:[overlayView viewWithTag:23]]) {
                 ColoredVKWallpaperView *overlayImageView  = [ColoredVKWallpaperView viewWithFrame:overlayView.bounds imageName:@"barImage" blackout:navbarImageBlackout];
                 [overlayView addSubview:overlayImageView];
@@ -2545,7 +2667,7 @@ CHOptimizedMethod(0, self, UIView *, ProfileCoverImageView, overlayView)
 
 #pragma mark PostEditController
 CHDeclareClass(PostEditController);
-CHOptimizedMethod(0, self, UIStatusBarStyle, PostEditController, preferredStatusBarStyle)
+CHDeclareMethod(0, UIStatusBarStyle, PostEditController, preferredStatusBarStyle)
 {
     if ([self isKindOfClass:NSClassFromString(@"PostEditController")] && (enabled && enabledBarColor))
         return UIStatusBarStyleLightContent;
@@ -2554,7 +2676,7 @@ CHOptimizedMethod(0, self, UIStatusBarStyle, PostEditController, preferredStatus
 
 #pragma mark ProfileInfoEditController
 CHDeclareClass(ProfileInfoEditController);
-CHOptimizedMethod(0, self, UIStatusBarStyle, ProfileInfoEditController, preferredStatusBarStyle)
+CHDeclareMethod(0, UIStatusBarStyle, ProfileInfoEditController, preferredStatusBarStyle)
 {
     if ([self isKindOfClass:NSClassFromString(@"ProfileInfoEditController")] && (enabled && enabledBarColor))
         return UIStatusBarStyleLightContent;
@@ -2563,14 +2685,14 @@ CHOptimizedMethod(0, self, UIStatusBarStyle, ProfileInfoEditController, preferre
 
 #pragma mark OptionSelectionController
 CHDeclareClass(OptionSelectionController);
-CHOptimizedMethod(0, self, UIStatusBarStyle, OptionSelectionController, preferredStatusBarStyle)
+CHDeclareMethod(0, UIStatusBarStyle, OptionSelectionController, preferredStatusBarStyle)
 {
     if ([self isKindOfClass:NSClassFromString(@"OptionSelectionController")] && (enabled && enabledBarColor))
         return UIStatusBarStyleLightContent;
     return CHSuper(0, OptionSelectionController, preferredStatusBarStyle);
 }
 
-CHOptimizedMethod(1, self, void, OptionSelectionController, viewWillAppear, BOOL, animated)
+CHDeclareMethod(1, void, OptionSelectionController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, OptionSelectionController, viewWillAppear, animated);
     if ([self isKindOfClass:NSClassFromString(@"OptionSelectionController")]) {
@@ -2581,7 +2703,7 @@ CHOptimizedMethod(1, self, void, OptionSelectionController, viewWillAppear, BOOL
 
 #pragma mark VKRegionSelectionViewController
 CHDeclareClass(VKRegionSelectionViewController);
-CHOptimizedMethod(0, self, UIStatusBarStyle, VKRegionSelectionViewController, preferredStatusBarStyle)
+CHDeclareMethod(0, UIStatusBarStyle, VKRegionSelectionViewController, preferredStatusBarStyle)
 {
     if ([self isKindOfClass:NSClassFromString(@"VKRegionSelectionViewController")] && (enabled && enabledBarColor))
         return UIStatusBarStyleLightContent;
@@ -2592,7 +2714,7 @@ CHOptimizedMethod(0, self, UIStatusBarStyle, VKRegionSelectionViewController, pr
 
 #pragma mark ProfileFriendsController
 CHDeclareClass(ProfileFriendsController);
-CHOptimizedMethod(0, self, void, ProfileFriendsController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, ProfileFriendsController, viewWillLayoutSubviews)
 {
     CHSuper(0, ProfileFriendsController, viewWillLayoutSubviews);
     
@@ -2616,7 +2738,7 @@ CHOptimizedMethod(0, self, void, ProfileFriendsController, viewWillLayoutSubview
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, ProfileFriendsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, ProfileFriendsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, ProfileFriendsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -2640,7 +2762,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, ProfileFriendsController, tableView
 
 #pragma mark FriendsBDaysController
 CHDeclareClass(FriendsBDaysController);
-CHOptimizedMethod(0, self, void, FriendsBDaysController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, FriendsBDaysController, viewWillLayoutSubviews)
 {
     CHSuper(0, FriendsBDaysController, viewWillLayoutSubviews);
     
@@ -2653,7 +2775,7 @@ CHOptimizedMethod(0, self, void, FriendsBDaysController, viewWillLayoutSubviews)
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, FriendsBDaysController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, FriendsBDaysController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, FriendsBDaysController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -2673,7 +2795,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, FriendsBDaysController, tableView, 
 
 #pragma mark FriendsAllRequestsController
 CHDeclareClass(FriendsAllRequestsController);
-CHOptimizedMethod(1, self, void, FriendsAllRequestsController, viewWillAppear, BOOL, animated)
+CHDeclareMethod(1, void, FriendsAllRequestsController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, FriendsAllRequestsController, viewWillAppear, animated);
     
@@ -2686,7 +2808,7 @@ CHOptimizedMethod(1, self, void, FriendsAllRequestsController, viewWillAppear, B
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, FriendsAllRequestsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, FriendsAllRequestsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, FriendsAllRequestsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -2707,7 +2829,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, FriendsAllRequestsController, table
 
 #pragma mark VideoAlbumController
 CHDeclareClass(VideoAlbumController);
-CHOptimizedMethod(0, self, void, VideoAlbumController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, VideoAlbumController, viewWillLayoutSubviews)
 {
     CHSuper(0, VideoAlbumController, viewWillLayoutSubviews);
     
@@ -2730,7 +2852,7 @@ CHOptimizedMethod(0, self, void, VideoAlbumController, viewWillLayoutSubviews)
     }
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, VideoAlbumController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, VideoAlbumController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, VideoAlbumController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -2757,7 +2879,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VideoAlbumController, tableView, UI
 
 #pragma mark UITableView
 CHDeclareClass(UITableView);
-CHOptimizedMethod(6, self, UITableViewHeaderFooterView*, UITableView, _sectionHeaderView, BOOL, arg1, withFrame, CGRect, frame, forSection, NSInteger, section, floating, BOOL, floating, reuseViewIfPossible, BOOL, reuse, willDisplay, BOOL, display)
+CHDeclareMethod(6, UITableViewHeaderFooterView*, UITableView, _sectionHeaderView, BOOL, arg1, withFrame, CGRect, frame, forSection, NSInteger, section, floating, BOOL, floating, reuseViewIfPossible, BOOL, reuse, willDisplay, BOOL, display)
 {
     UITableViewHeaderFooterView *view = CHSuper(6, UITableView, _sectionHeaderView, arg1, withFrame, frame, forSection, section, floating, floating, reuseViewIfPossible, reuse, willDisplay, display);
     
@@ -2767,7 +2889,7 @@ CHOptimizedMethod(6, self, UITableViewHeaderFooterView*, UITableView, _sectionHe
     return view;
 }
 
-CHOptimizedMethod(1, self, void, UITableView, setBackgroundView, UIView*, backgroundView)
+CHDeclareMethod(1, void, UITableView, setBackgroundView, UIView*, backgroundView)
 {    
     if ([self.backgroundView isKindOfClass:[ColoredVKWallpaperView class]] && [backgroundView isKindOfClass:NSClassFromString(@"TeaserView")]) {
         TeaserView *teaserView = (TeaserView *)backgroundView;
@@ -2783,14 +2905,33 @@ CHOptimizedMethod(1, self, void, UITableView, setBackgroundView, UIView*, backgr
     }
 }
 
-CHOptimizedMethod(0, self, void, UITableView, layoutSubviews)
+CHDeclareMethod(2, void, UITableView, _configureCellForDisplay, UITableViewCell *, cell, forIndexPath, NSIndexPath *, indexPath)
+{
+    CHSuper(2, UITableView, _configureCellForDisplay, cell, forIndexPath, indexPath);
+    
+    if (enabled && enableNightTheme) {
+        UIView *selectedView = [UIView new];
+        selectedView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+        
+        cell.selectedBackgroundView = selectedView;
+    }
+}
+
+CHDeclareMethod(0, void, UITableView, layoutSubviews)
 {
     CHSuper(0, UITableView, layoutSubviews);
     
-    if (enabled && ([self.tableFooterView isKindOfClass:NSClassFromString(@"LoadingFooterView")] && [self.backgroundView isKindOfClass:[ColoredVKWallpaperView class]])) {
-        LoadingFooterView *footerView = (LoadingFooterView *)self.tableFooterView;
-        footerView.label.textColor = UITableViewCellTextColor;
-        footerView.anim.color = UITableViewCellTextColor;
+    if (enabled) {
+        if (enableNightTheme) {
+            self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+            self.separatorColor = cvkMainController.nightThemeScheme.backgroundColor;
+        }
+        
+        if ([self.tableFooterView isKindOfClass:NSClassFromString(@"LoadingFooterView")] && [self.backgroundView isKindOfClass:[ColoredVKWallpaperView class]]) {
+            LoadingFooterView *footerView = (LoadingFooterView *)self.tableFooterView;
+            footerView.label.textColor = UITableViewCellTextColor;
+            footerView.anim.color = UITableViewCellTextColor;
+        }
     }
 }
 
@@ -2798,7 +2939,7 @@ CHOptimizedMethod(0, self, void, UITableView, layoutSubviews)
 #pragma mark - UIViewController
 
 CHDeclareClass(UIViewController);
-CHOptimizedMethod(3, self, void, UIViewController, presentViewController, UIViewController *, viewControllerToPresent, animated, BOOL, flag, completion, id, completion)
+CHDeclareMethod(3, void, UIViewController, presentViewController, UIViewController *, viewControllerToPresent, animated, BOOL, flag, completion, id, completion)
 {
     if (![NSStringFromClass([self class]) containsString:@"ColoredVK"]) {
         NSArray <Class> *classes = @[[UIAlertController class], [UIActivityViewController class]];
@@ -2819,7 +2960,7 @@ CHOptimizedMethod(3, self, void, UIViewController, presentViewController, UIView
 #pragma mark - ModernSettingsController
 
 CHDeclareClass(ModernSettingsController);
-CHOptimizedMethod(2, self, NSInteger, ModernSettingsController, tableView, UITableView *, tableView, numberOfRowsInSection, NSInteger, section)
+CHDeclareMethod(2, NSInteger, ModernSettingsController, tableView, UITableView *, tableView, numberOfRowsInSection, NSInteger, section)
 {
     NSInteger rowsCount = CHSuper(2, ModernSettingsController, tableView, tableView, numberOfRowsInSection, section);
     if (section == 1) {
@@ -2829,7 +2970,7 @@ CHOptimizedMethod(2, self, NSInteger, ModernSettingsController, tableView, UITab
         
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, ModernSettingsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, ModernSettingsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, ModernSettingsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
@@ -2846,7 +2987,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, ModernSettingsController, tableView
     return cell;
 }
 
-CHOptimizedMethod(3, self, void, ModernSettingsController, tableView, UITableView*, tableView, willDisplayCell, UITableViewCell *, cell, forRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(3, void, ModernSettingsController, tableView, UITableView*, tableView, willDisplayCell, UITableViewCell *, cell, forRowAtIndexPath, NSIndexPath*, indexPath)
 {
     CHSuper(3, ModernSettingsController, tableView, tableView, willDisplayCell, cell, forRowAtIndexPath, indexPath);
     
@@ -2866,7 +3007,7 @@ CHOptimizedMethod(3, self, void, ModernSettingsController, tableView, UITableVie
     }
 }
 
-CHOptimizedMethod(2, self, void, ModernSettingsController, tableView, UITableView*, tableView, didSelectRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, void, ModernSettingsController, tableView, UITableView*, tableView, didSelectRowAtIndexPath, NSIndexPath*, indexPath)
 {
     CHSuper(2, ModernSettingsController, tableView, tableView, didSelectRowAtIndexPath, indexPath);
     
@@ -2877,7 +3018,7 @@ CHOptimizedMethod(2, self, void, ModernSettingsController, tableView, UITableVie
     }
 }
 
-CHOptimizedMethod(0, self, void, ModernSettingsController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, ModernSettingsController, viewWillLayoutSubviews)
 {
     CHSuper(0, ModernSettingsController, viewWillLayoutSubviews);
     
@@ -2958,7 +3099,7 @@ void setupExtraSettingsCell(UITableViewCell *cell)
 
 
 CHDeclareClass(BaseSectionedSettingsController);
-CHOptimizedMethod(0, self, void, BaseSectionedSettingsController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, BaseSectionedSettingsController, viewWillLayoutSubviews)
 {
     CHSuper(0, BaseSectionedSettingsController, viewWillLayoutSubviews);
     NSArray <Class> *settingsExtraClasses = @[NSClassFromString(@"ModernGeneralSettings"), NSClassFromString(@"ModernAccountSettings"), NSClassFromString(@"AboutViewController")];
@@ -2966,7 +3107,7 @@ CHOptimizedMethod(0, self, void, BaseSectionedSettingsController, viewWillLayout
          setupExtraSettingsController(self);
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, BaseSectionedSettingsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, BaseSectionedSettingsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, BaseSectionedSettingsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     NSArray <Class> *settingsExtraClasses = @[NSClassFromString(@"ModernGeneralSettings"), NSClassFromString(@"ModernAccountSettings"), NSClassFromString(@"AboutViewController")];
@@ -2977,14 +3118,14 @@ CHOptimizedMethod(2, self, UITableViewCell*, BaseSectionedSettingsController, ta
 
 #pragma mark ProfileBannedController
 CHDeclareClass(ProfileBannedController);
-CHOptimizedMethod(0, self, void, ProfileBannedController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, ProfileBannedController, viewWillLayoutSubviews)
 {
     CHSuper(0, ProfileBannedController, viewWillLayoutSubviews);
     if ([self isKindOfClass:NSClassFromString(@"ProfileBannedController")])
         setupExtraSettingsController(self);
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, ProfileBannedController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, ProfileBannedController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, ProfileBannedController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     if ([self isKindOfClass:NSClassFromString(@"ProfileBannedController")])
@@ -2994,14 +3135,14 @@ CHOptimizedMethod(2, self, UITableViewCell*, ProfileBannedController, tableView,
 
 #pragma mark SettingsPrivacyController
 CHDeclareClass(SettingsPrivacyController);
-CHOptimizedMethod(0, self, void, SettingsPrivacyController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, SettingsPrivacyController, viewWillLayoutSubviews)
 {
     CHSuper(0, SettingsPrivacyController, viewWillLayoutSubviews);
     if ([self isKindOfClass:NSClassFromString(@"SettingsPrivacyController")])
         setupExtraSettingsController(self);
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, SettingsPrivacyController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, SettingsPrivacyController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, SettingsPrivacyController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     if ([self isKindOfClass:NSClassFromString(@"SettingsPrivacyController")])
@@ -3011,14 +3152,14 @@ CHOptimizedMethod(2, self, UITableViewCell*, SettingsPrivacyController, tableVie
 
 #pragma mark PaymentsBalanceController
 CHDeclareClass(PaymentsBalanceController);
-CHOptimizedMethod(0, self, void, PaymentsBalanceController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, PaymentsBalanceController, viewWillLayoutSubviews)
 {
     CHSuper(0, PaymentsBalanceController, viewWillLayoutSubviews);
     if ([self isKindOfClass:NSClassFromString(@"PaymentsBalanceController")])
         setupExtraSettingsController(self);
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, PaymentsBalanceController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, PaymentsBalanceController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, PaymentsBalanceController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     if ([self isKindOfClass:NSClassFromString(@"PaymentsBalanceController")])
@@ -3028,14 +3169,14 @@ CHOptimizedMethod(2, self, UITableViewCell*, PaymentsBalanceController, tableVie
 
 #pragma mark SubscriptionsSettingsViewController
 CHDeclareClass(SubscriptionsSettingsViewController);
-CHOptimizedMethod(0, self, void, SubscriptionsSettingsViewController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, SubscriptionsSettingsViewController, viewWillLayoutSubviews)
 {
     CHSuper(0, SubscriptionsSettingsViewController, viewWillLayoutSubviews);
     if ([self isKindOfClass:NSClassFromString(@"SubscriptionsSettingsViewController")])
         setupExtraSettingsController(self);
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, SubscriptionsSettingsViewController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, SubscriptionsSettingsViewController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, SubscriptionsSettingsViewController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     if ([self isKindOfClass:NSClassFromString(@"SubscriptionsSettingsViewController")])
@@ -3045,14 +3186,14 @@ CHOptimizedMethod(2, self, UITableViewCell*, SubscriptionsSettingsViewController
 
 #pragma mark ModernPushSettingsController
 CHDeclareClass(ModernPushSettingsController);
-CHOptimizedMethod(0, self, void, ModernPushSettingsController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, ModernPushSettingsController, viewWillLayoutSubviews)
 {
     CHSuper(0, ModernPushSettingsController, viewWillLayoutSubviews);
     if ([self isKindOfClass:NSClassFromString(@"ModernPushSettingsController")])
         setupExtraSettingsController(self);
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, ModernPushSettingsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, ModernPushSettingsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, ModernPushSettingsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     if ([self isKindOfClass:NSClassFromString(@"ModernPushSettingsController")])
@@ -3062,14 +3203,14 @@ CHOptimizedMethod(2, self, UITableViewCell*, ModernPushSettingsController, table
 
 #pragma mark VKP2PViewController
 CHDeclareClass(VKP2PViewController);
-CHOptimizedMethod(0, self, void, VKP2PViewController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, VKP2PViewController, viewWillLayoutSubviews)
 {
     CHSuper(0, VKP2PViewController, viewWillLayoutSubviews);
     if ([self isKindOfClass:NSClassFromString(@"VKP2PViewController")])
         setupExtraSettingsController(self);
 }
 
-CHOptimizedMethod(2, self, UITableViewCell*, VKP2PViewController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(2, UITableViewCell*, VKP2PViewController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, VKP2PViewController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     if ([self isKindOfClass:NSClassFromString(@"VKP2PViewController")])
@@ -3078,7 +3219,7 @@ CHOptimizedMethod(2, self, UITableViewCell*, VKP2PViewController, tableView, UIT
 }
 
 CHDeclareClass(DiscoverFeedController);
-CHOptimizedMethod(1, self, void, DiscoverFeedController, viewWillAppear, BOOL, animated)
+CHDeclareMethod(1, void, DiscoverFeedController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, DiscoverFeedController, viewWillAppear, animated);
     
@@ -3087,6 +3228,311 @@ CHOptimizedMethod(1, self, void, DiscoverFeedController, viewWillAppear, BOOL, a
     }
 }
 
+#pragma mark -
+#pragma mark NIGHT THEME
+#pragma mark -
+
+CHDeclareClass(VKRenderedText);
+CHDeclareClassMethod(2, id, VKRenderedText, renderedText, NSAttributedString *, text, withSettings, id, withSettings)
+{
+    NSMutableAttributedString *mutableString = [[NSMutableAttributedString alloc] initWithAttributedString:text];
+    if (enabled && enableNightTheme) {
+        [mutableString enumerateAttributesInRange:NSMakeRange(0, mutableString.length) options:0 
+                                       usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
+                                           if (![attrs[NSForegroundColorAttributeName] isEqual:[UIColor blackColor]])
+                                               [mutableString addAttribute:NSForegroundColorAttributeName 
+                                                                     value:cvkMainController.nightThemeScheme.linkTextColor 
+                                                                     range:range];
+                                           else
+                                               [mutableString addAttribute:NSForegroundColorAttributeName 
+                                                                     value:cvkMainController.nightThemeScheme.textColor 
+                                                                     range:range];
+                                       }];
+    }
+    
+    return CHSuper(2, VKRenderedText, renderedText, mutableString, withSettings, withSettings);
+    
+}
+
+CHDeclareClass(ProfileView);
+CHDeclareMethod(0, void, ProfileView, layoutSubviews)
+{
+    CHSuper(0, ProfileView, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"ProfileView")]) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.buttonStatus setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateNormal];
+            [self.buttonStatus setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateSelected];
+            
+            [self.buttonStatus setBackgroundImage:[[self.buttonStatus backgroundImageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] 
+                                         forState:UIControlStateNormal];
+            [self.buttonStatus setBackgroundImage:[[self.buttonStatus backgroundImageForState:UIControlStateSelected] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] 
+                                         forState:UIControlStateSelected];
+            self.buttonStatus.tintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+        });
+    }
+}
+
+
+CHDeclareClass(UITableViewCell);
+CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
+{
+    CHSuper(0, UITableViewCell, layoutSubviews);
+    
+    if ([self isKindOfClass:[PSTableCell class]]) {
+        if ([((PSTableCell *)self).cellTarget isKindOfClass:[ColoredVKPrefs class]])
+            return;
+    }
+    if ([self isKindOfClass:NSClassFromString(@"MessageCell")])
+        return;
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UITableViewCell")]) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        self.textLabel.textColor = [UIColor whiteColor];
+        self.detailTextLabel.textColor = [UIColor whiteColor];
+        self.textLabel.backgroundColor = [UIColor clearColor];
+        self.detailTextLabel.backgroundColor = [UIColor clearColor];
+    }
+}
+
+
+CHDeclareClass(UIButton);
+CHDeclareMethod(0, void, UIButton, layoutSubviews)
+{
+    CHSuper(0, UIButton, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UIButton")]) {
+        [self setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateNormal];
+    }
+}
+
+CHDeclareClass(UILabel);
+CHDeclareMethod(0, void, UILabel, layoutSubviews)
+{
+    CHSuper(0, UILabel, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UILabel")]) {
+        self.backgroundColor = [UIColor clearColor];
+        self.textColor = cvkMainController.nightThemeScheme.textColor;
+    }
+}
+
+CHDeclareClass(UITextView);
+CHDeclareMethod(1, void, UITextView, setAttributedText, NSAttributedString *, text)
+{
+    CHSuper(1, UITextView, setAttributedText, text);
+    
+    if (enabled && enableNightTheme) {
+        self.textColor = cvkMainController.nightThemeScheme.textColor;
+    }
+}
+
+CHDeclareMethod(1, void, UITextView, insertText, id, text)
+{
+    CHSuper(1, UITextView, insertText, text);
+    
+    if (enabled && enableNightTheme) {
+        self.textColor = cvkMainController.nightThemeScheme.textColor;
+    }
+}
+
+
+
+CHDeclareMethod(0, void, UITextView, layoutSubviews)
+{
+    CHSuper(0, UITextView, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UITextView")]) {
+        self.backgroundColor = [UIColor clearColor];
+        self.tintColor = cvkMainController.nightThemeScheme.textColor;
+    }
+}
+
+//CHDeclareClass(UIImageView);
+//CHDeclareMethod(0, void, UIImageView, layoutSubviews)
+//{
+//    CHSuper(0, UIImageView, layoutSubviews);
+//    
+//    if (enabled && enableNightTheme) {
+//        self.alpha = 0.8f;
+//    }
+//}
+
+CHDeclareClass(UICollectionView);
+CHDeclareMethod(0, void, UICollectionView, layoutSubviews)
+{
+    CHSuper(0, UICollectionView, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionView")]) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+}
+
+CHDeclareClass(UICollectionViewCell);
+CHDeclareMethod(0, void, UICollectionViewCell, layoutSubviews)
+{
+    CHSuper(0, UICollectionViewCell, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionViewCell")]) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        self.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        self.backgroundView.hidden = YES;
+    }
+}
+
+CHDeclareClass(NewsFeedPostAndStoryCreationButtonBar);
+CHDeclareMethod(0, void, NewsFeedPostAndStoryCreationButtonBar, layoutSubviews)
+{
+    CHSuper(0, NewsFeedPostAndStoryCreationButtonBar, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"NewsFeedPostAndStoryCreationButtonBar")]) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+}
+
+CHDeclareClass(Node5TableViewCell);
+CHDeclareMethod(0, void, Node5TableViewCell, layoutSubviews)
+{
+    CHSuper(0, Node5TableViewCell, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"Node5TableViewCell")]) {
+        
+        for (UIView *subview in  self.contentView.subviews) {
+            subview.backgroundColor = [UIColor clearColor];
+        }
+    }
+}
+
+CHDeclareClass(Node5CollectionViewCell);
+CHDeclareMethod(0, void, Node5CollectionViewCell, layoutSubviews)
+{
+    CHSuper(0, Node5CollectionViewCell, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"Node5CollectionViewCell")]) {
+        
+        if (self.contentView.subviews > 0) {
+            for (UIView *subview in  self.contentView.subviews.firstObject.subviews) {
+                if ([CLASS_NAME(subview) isEqualToString:@"UIImageView"]) {
+                    subview.hidden = YES;
+                }
+            }
+        }
+    }
+}
+
+CHDeclareClass(InputPanelView);
+CHDeclareMethod(0, void, InputPanelView, layoutSubviews)
+{
+    CHSuper(0, InputPanelView, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"InputPanelView")]) {
+        self.overlay.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+        self.overlay.layer.borderColor = cvkMainController.nightThemeScheme.backgroundColor.CGColor;
+    }
+}
+
+CHDeclareClass(AdminInputPanelView);
+CHDeclareMethod(0, void, AdminInputPanelView, layoutSubviews)
+{
+    CHSuper(0, AdminInputPanelView, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"AdminInputPanelView")]) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+        if ([self respondsToSelector:@selector(gapToolbar)])
+            [self.gapToolbar setBackgroundImage:[UIImage imageWithColor:cvkMainController.nightThemeScheme.backgroundColor] 
+                             forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+    }
+}
+
+CHDeclareClass(UIView);
+CHDeclareMethod(1, void, UIView, setFrame, CGRect, frame)
+{
+    if ([CLASS_NAME(self) isEqualToString:@"UIView"]) {
+        if (enabled && enableNightTheme) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (CGRectGetHeight(frame) > 0.0f && CGRectGetHeight(frame) < 1.0f)  {
+                    self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+                }
+            });
+        }
+    }
+    
+    CHSuper(1, UIView, setFrame, frame);  
+}
+
+CHDeclareClass(UIScrollView);
+CHDeclareMethod(0, void, UIScrollView, layoutSubviews)
+{
+    CHSuper(0, UIScrollView, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UIScrollView")])
+        self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+}
+
+CHDeclareClass(PollAnswerButton);
+CHDeclareMethod(0, void, PollAnswerButton, layoutSubviews)
+{
+    CHSuper(0, PollAnswerButton, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"PollAnswerButton")]) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+        self.progressView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+    }
+}
+
+CHDeclareClass(VKAPBottomToolbar);
+CHDeclareMethod(0, void, VKAPBottomToolbar, layoutSubviews)
+{
+    CHSuper(0, VKAPBottomToolbar, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKAPBottomToolbar")]) {
+        self.bg.barTintColor = cvkMainController.nightThemeScheme.backgroundColor;
+        self.bg.tintColor = cvkMainController.nightThemeScheme.textColor;
+    }
+}
+
+CHDeclareClass(WallModeRenderer);
+CHDeclareMethod(0, UIButton *, WallModeRenderer, buttonAll)
+{
+    UIButton *buttonAll = CHSuper(0, WallModeRenderer, buttonAll);
+    
+    if (enabled && enableNightTheme) {
+        [buttonAll setTitleColor:cvkMainController.nightThemeScheme.textColor forState:buttonAll.state];
+        
+        UIImage *selectedImage = [[buttonAll backgroundImageForState:UIControlStateSelected] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        [buttonAll setBackgroundImage:selectedImage forState:UIControlStateSelected];
+        buttonAll.tintColor = cvkMainController.nightThemeScheme.backgroundColor;
+    }
+    
+    return buttonAll;
+}
+
+CHDeclareMethod(0, UIButton *, WallModeRenderer, buttonFilter)
+{
+    UIButton *buttonFilter = CHSuper(0, WallModeRenderer, buttonFilter);
+    
+    if (enabled && enableNightTheme) {
+        [buttonFilter setTitleColor:cvkMainController.nightThemeScheme.textColor forState:buttonFilter.state];
+        
+        UIImage *selectedImage = [[buttonFilter backgroundImageForState:UIControlStateSelected] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        [buttonFilter setBackgroundImage:selectedImage forState:UIControlStateSelected];
+        buttonFilter.tintColor = cvkMainController.nightThemeScheme.backgroundColor;
+    }
+    
+    return buttonFilter;
+}
+
+CHDeclareClass(UIAlertController);
+CHDeclareMethod(0, void, UIAlertController, viewDidLoad)
+{
+    CHSuper(0, UIAlertController, viewDidLoad);
+    
+    if (enabled && enableNightTheme) {
+        self.view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+        self.view.tintColor = cvkMainController.nightThemeScheme.linkTextColor;
+    }
+}
 
 
 #pragma mark Static methods
@@ -3174,13 +3620,15 @@ void updateCornerRadius(CFNotificationCenterRef center, void *observer, CFString
 CHConstructor
 {
     @autoreleasepool {
-//        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
+//        dlopen([[NSBundle mainBundle] pathForResource:@"VKMusicUnlocker" ofType:@"dylib"].UTF8String, RTLD_NOW);
+        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
         
         prefsPath = CVK_PREFS_PATH;
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         vksBundle = [NSBundle bundleWithPath:VKS_BUNDLE_PATH];
         cvkFolder = CVK_FOLDER_PATH;
         cvkMainController = [ColoredVKMainController new];
+        cvkMainController.nightThemeScheme = [ColoredVKNightThemeColorScheme colorSchemeForType:CVKNightThemeTypeDarkBlue];
         
         NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:prefsPath];
         if (![[NSFileManager defaultManager] fileExistsAtPath:prefsPath]) prefs = [NSMutableDictionary new];
@@ -3188,337 +3636,9 @@ CHConstructor
         [prefs writeToFile:prefsPath atomically:YES];
         VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil)?YES:NO;
         
-        if ([cvkMainController compareAppVersionWithVersion:@"2.2"]  >= ColoredVKVersionCompareEqual) {
-            CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-            CFNotificationCenterAddObserver(center, nil, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-            CFNotificationCenterAddObserver(center, nil, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-            CFNotificationCenterAddObserver(center, nil, updateCornerRadius, CFSTR("com.daniilpashin.coloredvk2.update.corners"),NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-            
-            
-            
-            CHLoadLateClass(MessageController);
-            CHHook(1, MessageController, viewWillAppear);
-             
-            CHLoadLateClass(VKMLiveSearchController);
-            CHHook(2, VKMLiveSearchController, tableView, cellForRowAtIndexPath);
-            CHHook(1, VKMLiveSearchController, searchDisplayControllerWillBeginSearch);
-            CHHook(1, VKMLiveSearchController, searchDisplayControllerWillEndSearch);
-            
-            
-            CHLoadLateClass(DialogsSearchController);
-            CHHook(2, DialogsSearchController, tableView, cellForRowAtIndexPath);
-            CHHook(1, DialogsSearchController, searchDisplayControllerWillBeginSearch);
-            CHHook(1, DialogsSearchController, searchDisplayControllerWillEndSearch);
-            
-            
-            CHLoadLateClass(AppDelegate);
-            CHHook(2,  AppDelegate, application, didFinishLaunchingWithOptions);
-            CHHook(1,  AppDelegate, applicationDidBecomeActive);
-            
-            
-            CHLoadLateClass(UINavigationBar);
-            CHHook(1, UINavigationBar, setBarTintColor);
-            CHHook(1, UINavigationBar, setTintColor);
-            CHHook(1, UINavigationBar, setTitleTextAttributes);
-            
-            CHLoadLateClass(VKMController);
-            CHHook(0, VKMController, VKMNavigationBarUpdate);
-            
-            CHLoadLateClass(VKSearchBarNoCancel);
-            CHHook(0, VKSearchBarNoCancel, layoutSubviews);
-            
-            
-            
-            CHLoadLateClass(UITextInputTraits);
-            CHHook(0, UITextInputTraits, keyboardAppearance);
-            
-            
-            CHLoadLateClass(UISwitch);
-            CHHook(0, UISwitch, layoutSubviews);
-            
-            
-            CHLoadLateClass(VKMTableController);
-            CHHook(1, VKMTableController, viewWillAppear);
-            
-            
-            CHLoadLateClass(ChatController);
-            CHHook(0, ChatController, viewWillLayoutSubviews);
-            CHHook(2, ChatController, tableView, cellForRowAtIndexPath);
-            CHHook(1, ChatController, viewWillAppear);
-            CHHook(0, ChatController, editForward);
-            
-            CHLoadLateClass(MessageCell);
-            CHHook(1, MessageCell, updateBackground);
-            
-            CHLoadLateClass(DialogsController);
-            CHHook(0, DialogsController, viewWillLayoutSubviews);
-            CHHook(1, DialogsController, viewWillAppear);
-            CHHook(2, DialogsController, tableView, cellForRowAtIndexPath);
-            
-            CHLoadLateClass(BackgroundView);
-            CHHook(1, BackgroundView, drawRect);
-            
-            
-            
-            CHLoadLateClass(VKMLiveController);
-            CHHook(2, VKMLiveController, tableView, cellForRowAtIndexPath);
-            CHHook(1, VKMLiveController, viewWillAppear);
-            CHHook(0, VKMLiveController, viewWillLayoutSubviews);
-            
-            
-            CHLoadLateClass(GroupsController);
-            CHHook(0, GroupsController, viewWillLayoutSubviews);
-            CHHook(2, GroupsController, tableView, cellForRowAtIndexPath);
-            
-            CHLoadLateClass(NewsFeedController);
-            CHHook(0, NewsFeedController, VKMTableFullscreenEnabled);
-            CHHook(0, NewsFeedController, VKMScrollViewFullscreenEnabled);
-            
-            CHLoadLateClass(PhotoFeedController);
-            CHHook(0, PhotoFeedController, VKMTableFullscreenEnabled);
-            CHHook(0, PhotoFeedController, VKMScrollViewFullscreenEnabled);
-            
-            
-            
-            CHLoadLateClass(VKMMainController);
-            CHHook(2, VKMMainController, tableView, cellForRowAtIndexPath);
-            CHHook(0, VKMMainController, VKMTableCreateSearchBar);
-            CHHook(0, VKMMainController, menu);
-            CHHook(0, VKMMainController, viewDidLoad);
-            
-            CHLoadLateClass(MenuViewController);
-            CHHook(2, MenuViewController, tableView, cellForRowAtIndexPath);
-            CHHook(0, MenuViewController, viewDidLoad);
-            CHHook(3, MenuViewController, tableView, willDisplayHeaderView, forSection);
-            
-            CHLoadLateClass(HintsSearchDisplayController);
-            CHHook(1, HintsSearchDisplayController, searchDisplayControllerWillBeginSearch);
-            CHHook(1, HintsSearchDisplayController, searchDisplayControllerDidEndSearch);
-            
-            
-            
-            CHLoadLateClass(PhotoBrowserController);
-            CHHook(1, PhotoBrowserController, viewWillAppear);
-            
-            
-            CHLoadLateClass(VKMBrowserController);
-            CHHook(0, VKMBrowserController, preferredStatusBarStyle);
-            CHHook(1, VKMBrowserController, viewWillAppear);
-            
-            CHLoadLateClass(VKMToolbarController);
-            CHHook(1, VKMToolbarController, viewWillAppear);
-            
-            
-            CHLoadLateClass(VKGroupProfile);
-            CHHook(0, VKGroupProfile, verified);
-            
-            CHLoadLateClass(VKProfile);
-            CHHook(0, VKProfile, verified);
-            
-            CHLoadLateClass(UserWallController);
-            CHHook(0, UserWallController, updateProfile);
-            
-            
-            
-            
-            
-            CHLoadLateClass(AudioAlbumController);
-            CHHook(0, AudioAlbumController, viewDidLoad);
-            CHHook(2, AudioAlbumController, tableView, cellForRowAtIndexPath);
-            CHHook(0, AudioAlbumController, viewWillLayoutSubviews);
-            
-            CHLoadLateClass(AudioPlaylistController);
-            CHHook(0, AudioPlaylistController, preferredStatusBarStyle);
-            CHHook(1, AudioPlaylistController, viewWillAppear);
-            CHHook(2, AudioPlaylistController, tableView, cellForRowAtIndexPath);
-            
-            CHLoadLateClass(AudioDashboardController);
-            CHHook(0, AudioDashboardController, viewWillLayoutSubviews);
-            CHHook(2, AudioDashboardController, tableView, cellForRowAtIndexPath);
-            
-            CHLoadLateClass(AudioCatalogController);
-            CHHook(0, AudioCatalogController, viewWillLayoutSubviews);
-            CHHook(2, AudioCatalogController, tableView, cellForRowAtIndexPath);
-            
-            CHLoadLateClass(AudioCatalogOwnersListController);
-            CHHook(0, AudioCatalogOwnersListController, viewWillLayoutSubviews);
-            CHHook(2, AudioCatalogOwnersListController, tableView, cellForRowAtIndexPath);
-            
-            CHLoadLateClass(AudioCatalogAudiosListController);
-            CHHook(0, AudioCatalogAudiosListController, viewWillLayoutSubviews);
-            CHHook(2, AudioCatalogAudiosListController, tableView, cellForRowAtIndexPath);
-            
-            CHLoadLateClass(AudioPlaylistDetailController);
-            CHHook(0, AudioPlaylistDetailController, viewWillLayoutSubviews);
-            CHHook(2, AudioPlaylistDetailController, tableView, cellForRowAtIndexPath);
-            
-            CHLoadLateClass(AudioPlaylistsController);
-            CHHook(0, AudioPlaylistsController, viewWillLayoutSubviews);
-            CHHook(2, AudioPlaylistsController, tableView, cellForRowAtIndexPath);
-            
-            CHLoadLateClass(VKAudioPlayerListTableViewController);
-            CHHook(0, VKAudioPlayerListTableViewController, viewWillLayoutSubviews);
-            CHHook(2, VKAudioPlayerListTableViewController, tableView, cellForRowAtIndexPath);
-            
-            CHLoadLateClass(AudioOwnersBlockItemCollectionCell);
-            CHHook(0, AudioOwnersBlockItemCollectionCell, layoutSubviews);
-            
-            CHLoadLateClass(AudioPlaylistInlineCell);
-            CHHook(0, AudioPlaylistInlineCell, layoutSubviews);
-            
-            CHLoadLateClass(AudioAudiosBlockTableCell);
-            CHHook(0, AudioAudiosBlockTableCell, layoutSubviews);
-            
-            CHLoadLateClass(AudioAudiosSpecialBlockView);
-            CHHook(0, AudioAudiosSpecialBlockView, layoutSubviews);
-            
-            CHLoadLateClass(AudioPlaylistCell);
-            CHHook(0, AudioPlaylistCell, layoutSubviews);
-            
-            CHLoadLateClass(AudioPlaylistsCell);
-            CHHook(0, AudioPlaylistsCell, layoutSubviews);
-            
-            CHLoadLateClass(AudioPlaylistView);
-            CHHook(0, AudioPlaylistView, layoutSubviews);
-            
-            
-            CHLoadLateClass(IOS7AudioController);
-            CHHook(0, IOS7AudioController, viewDidLoad);
-            CHHook(0, IOS7AudioController, viewWillLayoutSubviews);
-            CHHook(0, IOS7AudioController, preferredStatusBarStyle);
-            
-            CHLoadLateClass(AudioPlayer);
-            CHHook(2, AudioPlayer, switchTo, force);
-            
-            CHLoadLateClass(VKAudioQueuePlayer);
-            CHHook(1, VKAudioQueuePlayer, switchTo);
-            
-            CHLoadLateClass(AudioRenderer);
-            CHHook(0, AudioRenderer, playIndicator);
-            
-            
-            if ([cvkMainController compareAppVersionWithVersion:@"2.9"] >= ColoredVKVersionCompareEqual) {
-                CHLoadLateClass(ChatCell);
-                CHHook(0, ChatCell, setBG);
-            }
-            
-            
-            CHLoadLateClass(VKComment);
-            CHHook(0, VKComment, separatorDisabled);
-            
-            
-            CHLoadLateClass(DetailController);
-            CHHook(1, DetailController, viewWillAppear);
-            
-            
-            CHLoadLateClass(ProfileCoverInfo);
-            CHHook(0, ProfileCoverInfo, enabled);
-            
-            CHLoadLateClass(ProfileCoverImageView);
-            CHHook(0, ProfileCoverImageView, overlayView);
-            
-            
-            CHLoadLateClass(PostEditController);
-            CHHook(0, PostEditController, preferredStatusBarStyle);
-            
-            CHLoadLateClass(ProfileInfoEditController);
-            CHHook(0, ProfileInfoEditController, preferredStatusBarStyle);
-            
-            CHLoadLateClass(OptionSelectionController);
-            CHHook(0, OptionSelectionController, preferredStatusBarStyle);
-            CHHook(1, OptionSelectionController, viewWillAppear);
-            
-            CHLoadLateClass(VKRegionSelectionViewController);
-            CHHook(0, VKRegionSelectionViewController, preferredStatusBarStyle);
-            
-            
-            CHLoadLateClass(ProfileFriendsController);
-            CHHook(0, ProfileFriendsController, viewWillLayoutSubviews);
-            CHHook(2, ProfileFriendsController, tableView, cellForRowAtIndexPath);
-            
-            
-            CHLoadLateClass(FriendsBDaysController);
-            CHHook(0, FriendsBDaysController, viewWillLayoutSubviews);
-            CHHook(2, FriendsBDaysController, tableView, cellForRowAtIndexPath);
-            
-            
-            CHLoadLateClass(FriendsAllRequestsController);
-            CHHook(1, FriendsAllRequestsController, viewWillAppear);
-            CHHook(2, FriendsAllRequestsController, tableView, cellForRowAtIndexPath);
-            
-            
-            CHLoadLateClass(VideoAlbumController);
-            CHHook(0, VideoAlbumController, viewWillLayoutSubviews);
-            CHHook(2, VideoAlbumController, tableView, cellForRowAtIndexPath);
-            
-            
-            
-            CHLoadLateClass(UITableView);
-            CHHook(6, UITableView, _sectionHeaderView, withFrame, forSection, floating, reuseViewIfPossible, willDisplay);
-            CHHook(1, UITableView, setBackgroundView);
-            CHHook(0, UITableView, layoutSubviews);
-            
-            
-            CHLoadLateClass(UIViewController);
-            CHHook(3, UIViewController, presentViewController, animated, completion);
-            
-            
-            CHLoadLateClass(ModernSettingsController);
-            CHHook(2, ModernSettingsController, tableView, numberOfRowsInSection);
-            CHHook(2, ModernSettingsController, tableView, cellForRowAtIndexPath);
-            CHHook(3, ModernSettingsController, tableView, willDisplayCell, forRowAtIndexPath);
-            CHHook(2, ModernSettingsController, tableView, didSelectRowAtIndexPath);
-            CHHook(0, ModernSettingsController, viewWillLayoutSubviews);
-            
-            
-            
-            CHLoadLateClass(BaseSectionedSettingsController);
-            CHHook(2, BaseSectionedSettingsController, tableView, cellForRowAtIndexPath);
-            CHHook(0, BaseSectionedSettingsController, viewWillLayoutSubviews);
-            
-            CHLoadLateClass(ProfileBannedController);
-            CHHook(2, ProfileBannedController, tableView, cellForRowAtIndexPath);
-            CHHook(0, ProfileBannedController, viewWillLayoutSubviews);
-            
-            CHLoadLateClass(SettingsPrivacyController);
-            CHHook(2, SettingsPrivacyController, tableView, cellForRowAtIndexPath);
-            CHHook(0, SettingsPrivacyController, viewWillLayoutSubviews);
-            
-            CHLoadLateClass(PaymentsBalanceController);
-            CHHook(2, PaymentsBalanceController, tableView, cellForRowAtIndexPath);
-            CHHook(0, PaymentsBalanceController, viewWillLayoutSubviews);
-            
-            CHLoadLateClass(SubscriptionsSettingsViewController);
-            CHHook(2, SubscriptionsSettingsViewController, tableView, cellForRowAtIndexPath);
-            CHHook(0, SubscriptionsSettingsViewController, viewWillLayoutSubviews);
-            
-            CHLoadLateClass(ModernPushSettingsController);
-            CHHook(2, ModernPushSettingsController, tableView, cellForRowAtIndexPath);
-            CHHook(0, ModernPushSettingsController, viewWillLayoutSubviews);
-            
-            CHLoadLateClass(VKP2PViewController);
-            CHHook(2, VKP2PViewController, tableView, cellForRowAtIndexPath);
-            CHHook(0, VKP2PViewController, viewWillLayoutSubviews);
-            
-     
-            
-            CHLoadLateClass(vksprefsListController);
-            CHHook(2, vksprefsListController, tableView, cellForRowAtIndexPath);
-            
-            CHLoadLateClass(SelectAccountTableViewController);
-            CHHook(1, SelectAccountTableViewController, viewWillAppear);
-            
-            CHLoadLateClass(PSListController);
-            CHHook(1, PSListController, viewWillAppear);
-            CHHook(0, PSListController, preferredStatusBarStyle);
-            
-            
-            CHLoadLateClass(DiscoverFeedController);
-            CHHook(1, DiscoverFeedController, viewWillAppear);
-       
-
-        } else {
-            showAlertWithMessage([NSString stringWithFormat:CVKLocalizedString(@"VKAPP_VERSION_IS_TOO_LOW"), cvkMainController.appVersion, @"2.2"]);
-        }
+        CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
+        CFNotificationCenterAddObserver(center, nil, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(center, nil, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(center, nil, updateCornerRadius, CFSTR("com.daniilpashin.coloredvk2.update.corners"),NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
     }
 }

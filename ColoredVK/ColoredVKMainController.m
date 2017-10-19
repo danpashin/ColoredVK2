@@ -45,6 +45,9 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
 
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip parallaxEffect:(BOOL)parallaxEffect blurBackground:(BOOL)blurBackground
 {
+    if (enabled && enableNightTheme)
+        return;
+    
     if (tableView.backgroundView.tag != 23) {
         ColoredVKWallpaperView *wallView = [[ColoredVKWallpaperView alloc] initWithFrame:tableView.frame imageName:name 
                                                                                 blackout:blackout enableParallax:parallaxEffect blurBackground:blurBackground];

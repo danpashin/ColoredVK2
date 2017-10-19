@@ -10,6 +10,7 @@
 #import "ColoredVKAudioLyricsView.h"
 #import "ColoredVKAudioCover.h"
 #import "ColoredVKWallpaperView.h"
+#import "ColoredVKNightThemeColorScheme.h"
 
 
 typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
@@ -42,6 +43,7 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 @property (strong, nonatomic) ColoredVKWallpaperView *navBarImageView;
 @property (weak, nonatomic) VKMMainController *vkMainController;
 @property (weak, nonatomic) MenuViewController *vkMenuController;
+@property (strong, nonatomic) ColoredVKNightThemeColorScheme *nightThemeScheme;
 
 
 - (void)reloadSwitch:(BOOL)on;

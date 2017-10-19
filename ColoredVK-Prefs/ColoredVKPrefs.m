@@ -9,6 +9,8 @@
 #import "ColoredVKPrefs.h"
 #import "ColoredVKAlertController.h"
 #import "ColoredVKNewInstaller.h"
+#import "Tweak.h"
+#import "ColoredVKNightThemeColorScheme.h"
 
 
 @implementation ColoredVKPrefs
@@ -241,12 +243,20 @@
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
+{    
     CGFloat cornerRadius = 10.f;
     CGRect bounds = CGRectInset(cell.bounds, 8, 0);
     
     CAShapeLayer *layer = [CAShapeLayer layer];
     layer.fillColor = [UIColor whiteColor].CGColor;
+    
+    ColoredVKNightThemeColorScheme *colorScheme = nil;
+#ifndef COMPILE_APP
+    if (enabled && enableNightTheme) {
+        colorScheme = [ColoredVKNightThemeColorScheme colorSchemeForType:CVKNightThemeTypeDarkBlue];
+        layer.fillColor = colorScheme.foregroundColor.CGColor;
+    }
+#endif
     
     CGMutablePathRef pathRef = CGPathCreateMutable();
     BOOL addSeparatorLine = NO;
@@ -278,6 +288,12 @@
         lineLayer.frame = CGRectMake(CGRectGetMinX(bounds) + margin, 0, CGRectGetWidth(bounds) - (margin * 2), lineHeight);
         lineLayer.backgroundColor = [UIColor colorWithRed:232/255.0f green:233/255.0f blue:234/255.0f alpha:1.0f].CGColor;
         [layer addSublayer:lineLayer];
+        
+#ifndef COMPILE_APP
+        if (enabled && enableNightTheme) {
+            lineLayer.backgroundColor = colorScheme.foregroundColor.CGColor;
+        }
+#endif
     }
     
     UIView *backgroundView = [[UIView alloc] initWithFrame:bounds];

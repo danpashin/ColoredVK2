@@ -64,6 +64,7 @@
 {
     NSMutableAttributedString *string = [[super titleForEmptyDataSet:scrollView] mutableCopy];
     string.mutableString.string = NSLocalizedStringFromTableInBundle(@"NO_FILES_TO_RESTORE", @"ColoredVK", self.cvkBundle, nil);
+    [string addAttribute:NSFontAttributeName value:[UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline] range:NSMakeRange(0, string.length)];
     
     return string;
 }

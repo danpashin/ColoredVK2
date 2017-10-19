@@ -150,6 +150,20 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>ColoredVKGeneralPrefs</string>
+			<key>plistToLoad</key>
+			<string>NightTheme</string>
+			<key>id</key>
+			<string>nightThemeLink</string>
+			<key>label</key>
+			<string>NIGHT_THEME</string>
+			<key>icon</key>
+			<string>MoonIcon</string>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSGroupCell</string>
 		</dict>
 		<dict>

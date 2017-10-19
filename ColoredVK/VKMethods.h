@@ -549,3 +549,47 @@
 @interface DiscoverFeedController : VKMScrollViewController
 @end
 
+
+
+@interface Node5TableViewCell : UITableViewCell
+@end
+
+@interface ProfileView : UIView
+@property(retain, nonatomic) UIButton *buttonStatus;
+@property(retain, nonatomic) UIButton *buttonMessage;
+@end
+
+
+@interface NewsFeedPostAndStoryCreationButtonBar : UIView
+@property(retain, nonatomic) NSArray *separatorLines;
+@end
+
+@interface Node5CollectionViewCell : UICollectionViewCell
+@end
+
+@interface AdminInputPanelView : ExtraInputPanelView
+@end
+
+@interface PollAnswerButton : UIView
+@property(retain, nonatomic) UIView *progressView;
+@end
+
+
+@interface VKAPBottomToolbar : UIView
+
+@property(retain, nonatomic) UIButton *closeButton;
+@property(retain, nonatomic) UIButton *doneButton;
+@property(readonly, nonatomic) UIToolbar *bg;
+@property(readonly, nonatomic) UIView *hostView;
+
+@end
+
+@interface WallModeRenderer : Renderer
+
+@property(retain, nonatomic) UIButton *buttonFilter;
+@property(retain, nonatomic) UIButton *buttonAll;
+@property(retain, nonatomic) UISegmentedControl *segment;
+@property(retain, nonatomic) UIButton *composeButton;
+
+@end
+
