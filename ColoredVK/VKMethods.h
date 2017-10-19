@@ -557,6 +557,7 @@
 @interface ProfileView : UIView
 @property(retain, nonatomic) UIButton *buttonStatus;
 @property(retain, nonatomic) UIButton *buttonMessage;
+@property(retain, nonatomic) UIScrollView *blocksScroll;
 @end
 
 
@@ -585,11 +586,19 @@
 @end
 
 @interface WallModeRenderer : Renderer
+@end
 
-@property(retain, nonatomic) UIButton *buttonFilter;
-@property(retain, nonatomic) UIButton *buttonAll;
-@property(retain, nonatomic) UISegmentedControl *segment;
-@property(retain, nonatomic) UIButton *composeButton;
 
+
+@interface AudioAudiosPagingView : UIView
+@property(retain, nonatomic) UICollectionView *collectionView;
+@end
+
+@interface AudioAudiosBlockCell : VKMCell
+@property(retain, nonatomic) AudioAudiosPagingView *audiosPagingView;
+@end
+
+@interface MOCTRender : NSObject
+@property(retain, nonatomic) NSAttributedString *text;
 @end
 

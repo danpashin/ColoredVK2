@@ -201,6 +201,9 @@ UIBlurEffectStyle settingsExtraBlurStyle;
 ColoredVKMainController *cvkMainController;
 
 
+void resetUISearchBar(UISearchBar *searchBar);
+
+
 
 #pragma mark Static methods
 void reloadPrefs()
@@ -286,6 +289,12 @@ void reloadPrefs()
     if (prefs && tweakEnabled) {
         
         enableNightTheme = [prefs[@"enableNightTheme"] boolValue];
+        if (enableNightTheme) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                cvkMainController.menuBackgroundView.alpha = 0.0f;
+                resetUISearchBar((UISearchBar*)cvkMainController.vkMainController.tableView.tableHeaderView);
+            });
+        }
        
         changeSBColors = [prefs[@"changeSBColors"] boolValue];
         changeSwitchColor = [prefs[@"changeSwitchColor"] boolValue];
@@ -1540,13 +1549,14 @@ CHDeclareMethod(2, UITableViewCell*, ChatController, tableView, UITableView*, ta
 {
     UITableViewCell *cell = CHSuper(2, ChatController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled) {
-        if (enabledMessagesImage) {
-            for (id view in cell.contentView.subviews) { 
-                if ([view respondsToSelector:@selector(setTextColor:)]) [view setTextColor:changeMessagesTextColor?messagesTextColor:[UIColor colorWithWhite:1 alpha:0.7]]; 
+    if (enabled && (enabledMessagesImage || enableNightTheme)) {
+        if (!enableNightTheme) {
+            for (id view in cell.contentView.subviews) {
+                if ([view respondsToSelector:@selector(setTextColor:)])
+                    [view setTextColor:changeMessagesTextColor?messagesTextColor:[UIColor colorWithWhite:1 alpha:0.7]];
             }
-            if ([CLASS_NAME(cell) isEqualToString:@"UITableViewCell"]) cell.backgroundColor = [UIColor clearColor];
         }
+        if ([CLASS_NAME(cell) isEqualToString:@"UITableViewCell"]) cell.backgroundColor = [UIColor clearColor];
     }
     
     return cell;
@@ -1583,12 +1593,8 @@ CHDeclareMethod(1, void, MessageCell, updateBackground, BOOL, animated)
                 self.backgroundColor = cvkMainController.nightThemeScheme.unreadBackgroundColor;
             else
                 self.backgroundColor = useCustomMessageReadColor ? messageUnreadColor : [UIColor defaultColorForIdentifier:@"messageReadColor"];
-        } else {
-            if (enableNightTheme)
-                self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-            else
-                self.backgroundColor = [UIColor clearColor];
-        }
+        } else
+            self.backgroundColor = [UIColor clearColor];
     }
 }
 
@@ -1657,7 +1663,7 @@ CHDeclareMethod(0, void, VKMMainController, viewDidLoad)
                                                                                        imageName:@"menuBackgroundImage" blackout:menuImageBlackout enableParallax:useMenuParallax blurBackground:menuUseBackgroundBlur];
         }
         
-        if (enabled && enabledMenuImage) {
+        if (enabled && enabledMenuImage && !enableNightTheme) {
             [cvkMainController.menuBackgroundView addToBack:self.view animated:NO];
             setupUISearchBar((UISearchBar*)self.tableView.tableHeaderView);
             self.tableView.backgroundColor = [UIColor clearColor];
@@ -1678,11 +1684,15 @@ CHDeclareMethod(2, UITableViewCell*, VKMMainController, tableView, UITableView*,
     }
     
     
-    if (enabled && hideMenuSeparators) tableView.separatorColor = [UIColor clearColor]; 
-    else if (enabled && !hideMenuSeparators) tableView.separatorColor = menuSeparatorColor; 
-    else tableView.separatorColor = kMenuCellSeparatorColor;
+    if (enabled && !enableNightTheme)
+        tableView.separatorColor = hideMenuSeparators ? [UIColor clearColor] : menuSeparatorColor;    
+    else
+        tableView.separatorColor = kMenuCellSeparatorColor;
     
-    if (enabled && enabledMenuImage) {
+    if (enabled && enableNightTheme) {
+        cell.contentView.backgroundColor = [UIColor clearColor];
+    }
+    else if (enabled && enabledMenuImage) {
         cell.textLabel.textColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1 alpha:0.9];
         cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         cell.imageView.tintColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1 alpha:0.8];
@@ -1875,67 +1885,75 @@ CHDeclareMethod(0, void, IOS7AudioController, viewDidLoad)
 {
     CHSuper(0, IOS7AudioController, viewDidLoad);
     
-    if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")] && (enabled && changeAudioPlayerAppearance)) {
-        if (!cvkMainController.audioCover) {
-            cvkMainController.audioCover = [[ColoredVKAudioCover alloc] init];
-            [cvkMainController.audioCover updateCoverForArtist:self.actor.text title:self.song.text];
+    
+    if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")] && enabled) {
+        if (enableNightTheme) {
+            self.cover.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+            self.hostView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+            setupAudioPlayer(self.hostView, cvkMainController.nightThemeScheme.textColor);
         }
-        [cvkMainController.audioCover updateViewFrame:self.view.bounds andSeparationPoint:self.hostView.frame.origin];
-        [cvkMainController.audioCover addToView:self.view];
-        
-        audioPlayerTintColor = cvkMainController.audioCover.color;
-        
-        UINavigationBar *navBar = self.navigationController.navigationBar;
-        navBar.tag = 26;
-        navBar.topItem.titleView.hidden = YES;
-        navBar.shadowImage = [UIImage new];
-        [navBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-        navBar.tintColor = [UIColor whiteColor];
-        
-        if (enablePlayerGestures) {
-            navBar.topItem.leftBarButtonItems = @[];
-            navBar.topItem.rightBarButtonItems = @[];
-            self.navigationController.navigationBar.hidden = YES;
+        if (changeAudioPlayerAppearance) {
+            if (!cvkMainController.audioCover) {
+                cvkMainController.audioCover = [[ColoredVKAudioCover alloc] init];
+                [cvkMainController.audioCover updateCoverForArtist:self.actor.text title:self.song.text];
+            }
+            [cvkMainController.audioCover updateViewFrame:self.view.bounds andSeparationPoint:self.hostView.frame.origin];
+            [cvkMainController.audioCover addToView:self.view];
             
-            [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionDown 
-                                                                                   handler:^{
-                                                                                       if ([self respondsToSelector:@selector(done:)]) {
-                                                                                           [self done:nil];
-                                                                                       }
-                                                                                   }]];
-            
-            [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionLeft 
-                                                                                   handler:^{
-                                                                                       if ([self respondsToSelector:@selector(actionNext:)]) {
-                                                                                           [self actionNext:nil];
-                                                                                       }
-                                                                                   }]];
-            
-            [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionRight 
-                                                                                   handler:^{
-                                                                                       if ([self respondsToSelector:@selector(actionPrev:)]) {
-                                                                                           [self actionPrev:nil];
-                                                                                       }
-                                                                                   }]];
-            
-            [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionUp
-                                                                                   handler:^{
-                                                                                       if ([self respondsToSelector:@selector(actionPlaylist:)]) {
-                                                                                           [self actionPlaylist:nil];
-                                                                                       }
-                                                                                   }]];
-        }
-        
-        setupAudioPlayer(self.hostView, audioPlayerTintColor);
-        self.cover.hidden = YES;
-        self.hostView.backgroundColor = [UIColor clearColor];
-        [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
-        
-        cvkMainController.audioCover.updateCompletionBlock = ^(ColoredVKAudioCover *cover) {
             audioPlayerTintColor = cvkMainController.audioCover.color;
-            [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
+            
+            UINavigationBar *navBar = self.navigationController.navigationBar;
+            navBar.tag = 26;
+            navBar.topItem.titleView.hidden = YES;
+            navBar.shadowImage = [UIImage new];
+            [navBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+            navBar.tintColor = [UIColor whiteColor];
+            
+            if (enablePlayerGestures) {
+                navBar.topItem.leftBarButtonItems = @[];
+                navBar.topItem.rightBarButtonItems = @[];
+                self.navigationController.navigationBar.hidden = YES;
+                
+                [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionDown 
+                                                                                       handler:^{
+                                                                                           if ([self respondsToSelector:@selector(done:)]) {
+                                                                                               [self done:nil];
+                                                                                           }
+                                                                                       }]];
+                
+                [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionLeft 
+                                                                                       handler:^{
+                                                                                           if ([self respondsToSelector:@selector(actionNext:)]) {
+                                                                                               [self actionNext:nil];
+                                                                                           }
+                                                                                       }]];
+                
+                [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionRight 
+                                                                                       handler:^{
+                                                                                           if ([self respondsToSelector:@selector(actionPrev:)]) {
+                                                                                               [self actionPrev:nil];
+                                                                                           }
+                                                                                       }]];
+                
+                [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionUp
+                                                                                       handler:^{
+                                                                                           if ([self respondsToSelector:@selector(actionPlaylist:)]) {
+                                                                                               [self actionPlaylist:nil];
+                                                                                           }
+                                                                                       }]];
+            }
+            
             setupAudioPlayer(self.hostView, audioPlayerTintColor);
-        };
+            self.cover.hidden = YES;
+            self.hostView.backgroundColor = [UIColor clearColor];
+            [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
+            
+            cvkMainController.audioCover.updateCompletionBlock = ^(ColoredVKAudioCover *cover) {
+                audioPlayerTintColor = cvkMainController.audioCover.color;
+                [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
+                setupAudioPlayer(self.hostView, audioPlayerTintColor);
+            };
+        }
     }
 }
 
@@ -2236,7 +2254,7 @@ CHDeclareMethod(0, void, AudioPlaylistsController, viewWillLayoutSubviews)
         self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
         
         UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
-        if ([search isKindOfClass:[UISearchBar class]]) {
+        if ([search isKindOfClass:[UISearchBar class]] && !enableNightTheme) {
             search.backgroundImage = [UIImage new];
             search.tag = 3;
             search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
@@ -2294,10 +2312,15 @@ CHDeclareMethod(0, void, AudioAudiosBlockTableCell, layoutSubviews)
 {
     CHSuper(0, AudioAudiosBlockTableCell, layoutSubviews);
     
-    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioAudiosBlockTableCell")]) {
+    if (enabled && (enabledAudioImage || enableNightTheme) && [self isKindOfClass:NSClassFromString(@"AudioAudiosBlockTableCell")]) {
         performInitialCellSetup(self);
-        self.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
-        self.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+        if (enableNightTheme) {
+            self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        } else {
+            self.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+            self.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+        }
+        
     }
 }
 
@@ -2307,7 +2330,7 @@ CHDeclareMethod(0, void, AudioPlaylistInlineCell, layoutSubviews)
 {
     CHSuper(0, AudioPlaylistInlineCell, layoutSubviews);
     
-    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistInlineCell")]) {
+    if (enabled && enabledAudioImage && !enableNightTheme && [self isKindOfClass:NSClassFromString(@"AudioPlaylistInlineCell")]) {
         self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
         self.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
     }
@@ -2319,7 +2342,7 @@ CHDeclareMethod(0, void, AudioOwnersBlockItemCollectionCell, layoutSubviews)
 {
     CHSuper(0, AudioOwnersBlockItemCollectionCell, layoutSubviews);
     
-    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioOwnersBlockItemCollectionCell")]) {
+    if (enabled && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioOwnersBlockItemCollectionCell")]) {
         self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
     }
 }
@@ -2331,11 +2354,13 @@ CHDeclareMethod(0, void, AudioPlaylistCell, layoutSubviews)
 {
     CHSuper(0, AudioPlaylistCell, layoutSubviews);
     
-    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistCell")]) {
+    if (enabled && (enabledAudioImage || enableNightTheme) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistCell")]) {
         performInitialCellSetup(self);
-        self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
-        self.artistLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
-        self.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+        if (!enableNightTheme) {
+            self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+            self.artistLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+            self.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+        }
    }
 }
 
@@ -2346,11 +2371,16 @@ CHDeclareMethod(0, void, AudioPlaylistsCell, layoutSubviews)
 {
     CHSuper(0, AudioPlaylistsCell, layoutSubviews);
     
-    if ((enabled && enabledAudioImage) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistsCell")]) {
+    if (enabled && (enabledAudioImage || enableNightTheme) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistsCell")]) {
         performInitialCellSetup(self);
-        self.hostedView.backgroundColor = [UIColor clearColor];
-        self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
-        [self.showAllButton setTitleColor:changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor forState:UIControlStateNormal];
+        if (enableNightTheme) {
+            self.hostedView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        }
+        else if (enabledAudioImage) {
+            self.hostedView.backgroundColor = [UIColor clearColor];
+            self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+            [self.showAllButton setTitleColor:changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor forState:UIControlStateNormal];
+        }
     }
 }
 
@@ -3232,26 +3262,61 @@ CHDeclareMethod(1, void, DiscoverFeedController, viewWillAppear, BOOL, animated)
 #pragma mark NIGHT THEME
 #pragma mark -
 
-CHDeclareClass(VKRenderedText);
-CHDeclareClassMethod(2, id, VKRenderedText, renderedText, NSAttributedString *, text, withSettings, id, withSettings)
+NSAttributedString *attributedStringForNightTheme(NSAttributedString * text)
 {
     NSMutableAttributedString *mutableString = [[NSMutableAttributedString alloc] initWithAttributedString:text];
     if (enabled && enableNightTheme) {
         [mutableString enumerateAttributesInRange:NSMakeRange(0, mutableString.length) options:0 
-                                       usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
-                                           if (![attrs[NSForegroundColorAttributeName] isEqual:[UIColor blackColor]])
-                                               [mutableString addAttribute:NSForegroundColorAttributeName 
-                                                                     value:cvkMainController.nightThemeScheme.linkTextColor 
-                                                                     range:range];
-                                           else
-                                               [mutableString addAttribute:NSForegroundColorAttributeName 
-                                                                     value:cvkMainController.nightThemeScheme.textColor 
-                                                                     range:range];
+                                       usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {  
+                                           
+                                           void (^setColor)(BOOL isLink, BOOL forMOCTLabel) = ^(BOOL isLink, BOOL forMOCTLabel) {
+                                               NSString *attribute = forMOCTLabel ? @"CTForegroundColor" : NSForegroundColorAttributeName;
+                                               
+                                               id textColor = cvkMainController.nightThemeScheme.textColor;
+                                               if (isLink)
+                                                   textColor = cvkMainController.nightThemeScheme.linkTextColor;
+                                               
+                                               if (forMOCTLabel) {
+                                                   textColor = (id)((UIColor *)textColor).CGColor;
+                                                   if (isLink) {
+                                                       [mutableString addAttribute:@"MOCTLinkInactiveAttributeName" value:@{@"CTForegroundColor": textColor} range:range];
+                                                       [mutableString addAttribute:@"MOCTLinkActiveAttributeName" value:@{@"CTForegroundColor": textColor} range:range];
+                                                   }
+                                               }
+                                               [mutableString addAttribute:attribute value:textColor range:range];
+                                           };
+                                           
+                                           if (attrs[@"MOCTLinkAttributeName"])
+                                               setColor(YES, YES);
+                                           else if (attrs[@"VKTextLink"])
+                                               setColor(YES, NO);
+                                           else {
+                                               if (attrs[@"CTForegroundColor"])
+                                                   setColor(NO, YES);
+                                               else
+                                                   setColor(NO, NO);
+                                           }
                                        }];
     }
     
-    return CHSuper(2, VKRenderedText, renderedText, mutableString, withSettings, withSettings);
-    
+    return mutableString;
+}
+
+CHDeclareClass(VKRenderedText);
+CHDeclareClassMethod(2, id, VKRenderedText, renderedText, NSAttributedString *, text, withSettings, id, withSettings)
+{
+    NSAttributedString *newText = attributedStringForNightTheme(text);
+//    NSLog(@"%@", newText);
+    return CHSuper(2, VKRenderedText, renderedText, newText, withSettings, withSettings);
+}
+
+
+CHDeclareClass(MOCTRender);
+CHDeclareClassMethod(2, id, MOCTRender, render, NSAttributedString *, text, width, double, width)
+{
+    NSAttributedString *newText = attributedStringForNightTheme(text);
+//    NSLog(@"%@", newText);
+    return CHSuper(2, MOCTRender, render, newText, width, width);
 }
 
 CHDeclareClass(ProfileView);
@@ -3261,6 +3326,7 @@ CHDeclareMethod(0, void, ProfileView, layoutSubviews)
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"ProfileView")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        self.blocksScroll.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.buttonStatus setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateNormal];
             [self.buttonStatus setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateSelected];
@@ -3288,9 +3354,11 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
         return;
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UITableViewCell")]) {
-        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-        self.textLabel.textColor = [UIColor whiteColor];
-        self.detailTextLabel.textColor = [UIColor whiteColor];
+        if (![CLASS_NAME(self) isEqualToString:@"UITableViewCell"])
+            self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        
+        self.textLabel.textColor = cvkMainController.nightThemeScheme.textColor;
+        self.detailTextLabel.textColor = cvkMainController.nightThemeScheme.textColor;
         self.textLabel.backgroundColor = [UIColor clearColor];
         self.detailTextLabel.backgroundColor = [UIColor clearColor];
     }
