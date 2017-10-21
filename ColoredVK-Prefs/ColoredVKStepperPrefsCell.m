@@ -35,6 +35,9 @@
 
 - (void)stepperButton:(ColoredVKStepperButton *)stepperButton didUpdateValue:(CGFloat)value
 {
+    if (self.specifier.identifier.length == 0)
+        return;
+    
     NSMutableDictionary *tweakSettings = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     tweakSettings[self.specifier.identifier] = [NSString stringWithFormat:@"%.2f", value];
     [tweakSettings writeToFile:CVK_PREFS_PATH atomically:YES];

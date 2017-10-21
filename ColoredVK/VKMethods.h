@@ -317,6 +317,7 @@
 
 
 @interface MessageController : VKMController 
+@property(retain, nonatomic) UIScrollView *scroll;
 @end
 
 
@@ -600,5 +601,41 @@
 
 @interface MOCTRender : NSObject
 @property(retain, nonatomic) NSAttributedString *text;
+@end
+
+@interface SeparatorWithBorders : UIView
+@property(retain, nonatomic) UIColor *borderColor;
+@end
+
+
+@interface LookupAddressbookTeaserViewController : VKMController
+@property(retain, nonatomic) Component5HostView *componentView;
+@end
+
+@interface LookupFriendsViewController : VKMLiveController
+@end
+@interface LookupAddressBookFriendsViewController : LookupFriendsViewController
+@property(retain, nonatomic) LookupAddressbookTeaserViewController *lookupTeaserViewController;
+@end
+
+
+@interface BaseMarketGalleryCell : VKMCollectionCell
+@end
+@interface ProductMarketCell : BaseMarketGalleryCell
+@end
+@interface ProductMarketCellForProfileGallery : ProductMarketCell
+@end
+
+@interface MarketGalleryDecoration : UICollectionReusableView
+@end
+
+@interface StoreStockItemView : UIScrollView
+@end
+
+@interface VKPhotoPicker : UINavigationController
+@end
+
+
+@interface TouchHighlightControl : UIControl
 @end
 

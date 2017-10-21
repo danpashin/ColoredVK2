@@ -11,6 +11,8 @@
 #import "UIColor+ColoredVK.h"
 #import "PrefixHeader.h"
 #import "ColoredVKPrefs.h"
+#import "ColoredVKNightThemeColorScheme.h"
+#import "UIColor+ColoredVK.h"
 
 @implementation PSTableCell (ColoredVK)
 
@@ -39,15 +41,32 @@
         
         if ([self.accessoryView isKindOfClass:[UISwitch class]]) {
             NSDictionary *userPrefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-            BOOL userChangedColor = ([userPrefs[@"enabled"] boolValue] && [userPrefs[@"changeSwitchColor"] boolValue]);
-            if (![[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"])
-                userChangedColor = NO;
+            __block BOOL userChangedColor = ([userPrefs[@"enabled"] boolValue] && [userPrefs[@"changeSwitchColor"] boolValue]);
             
             dispatch_async(dispatch_get_main_queue(), ^{
+                ColoredVKNightThemeColorScheme *nightThemeColorScheme = objc_getAssociatedObject(self, "nightThemeColorScheme");
+                
+                NSNumber *app_is_vk = objc_getAssociatedObject(self, "app_is_vk");
+                if (!app_is_vk) 
+                    app_is_vk = @NO;
+                
+                if (!app_is_vk.boolValue)
+                    userChangedColor = NO;
+                
+                NSNumber *enableNightTheme = objc_getAssociatedObject(self, "enableNightTheme");
+                if (!enableNightTheme)
+                    enableNightTheme = @NO;
+                
                 UISwitch *switchView = (UISwitch *)self.accessoryView;
-                switchView.backgroundColor = [UIColor colorWithRed:234/255.0f green:234/255.0f blue:239/255.0f alpha:1.0f];
+                if (app_is_vk.boolValue && enableNightTheme.boolValue) {
+                    userChangedColor = NO;
+                    switchView.backgroundColor = nightThemeColorScheme.backgroundColor;
+                    switchView.thumbTintColor = nightThemeColorScheme.navbackgroundColor;
+                } else {
+                    switchView.backgroundColor = [UIColor colorWithRed:234/255.0f green:234/255.0f blue:239/255.0f alpha:1.0f];
+                    switchView.thumbTintColor = [UIColor whiteColor];
+                }
                 switchView.layer.cornerRadius = 16.0f;
-                switchView.thumbTintColor = [UIColor whiteColor];
                 
                 if (!userChangedColor) {
                     switchView.onTintColor = CVKMainColor;
@@ -65,11 +84,28 @@
         if (self.backgroundView && (self.backgroundView.layer.sublayers.count > 0)) {
             CAShapeLayer *shapeLayer = (CAShapeLayer *)self.backgroundView.layer.sublayers.firstObject;
             if ([shapeLayer isKindOfClass:[CAShapeLayer class]]) {
+                
+                ColoredVKNightThemeColorScheme *nightThemeColorScheme = objc_getAssociatedObject(self, "nightThemeColorScheme");
+                
+                NSNumber *app_is_vk = objc_getAssociatedObject(self, "app_is_vk");
+                if (!app_is_vk) 
+                    app_is_vk = @NO;
+                
+                NSNumber *enableNightTheme = objc_getAssociatedObject(self, "enableNightTheme");
+                if (!enableNightTheme)
+                    enableNightTheme = @NO;
+                
                 if (tapped && (self.type != PSSwitchCell)) {
-                    shapeLayer.fillColor = @"#dddddd".hexColorValue.CGColor;
+                    if (enableNightTheme.boolValue && app_is_vk.boolValue)
+                        shapeLayer.fillColor = nightThemeColorScheme.backgroundColor.CGColor;
+                    else
+                        shapeLayer.fillColor = @"#dddddd".hexColorValue.CGColor;
                 } else {
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        shapeLayer.fillColor = [UIColor whiteColor].CGColor;
+                        if (enableNightTheme.boolValue && app_is_vk.boolValue)
+                            shapeLayer.fillColor = nightThemeColorScheme.foregroundColor.CGColor;
+                        else
+                            shapeLayer.fillColor = [UIColor whiteColor].CGColor;
                     });
                 }
             }

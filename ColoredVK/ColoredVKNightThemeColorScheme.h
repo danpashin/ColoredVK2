@@ -8,15 +8,15 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSInteger, CVKNightThemeType) {
+typedef NS_ENUM(NSUInteger, CVKNightThemeType) {
     CVKNightThemeTypeDarkBlue = 0,
-    CVKNightThemeTypeBlack
+    CVKNightThemeTypeBlack,
+    CVKNightThemeTypeCustom
 };
 
 @interface ColoredVKNightThemeColorScheme : NSObject
 
 + (instancetype)colorSchemeForType:(CVKNightThemeType)type;
-
 
 @property (assign, nonatomic, readonly) CVKNightThemeType type;
 
@@ -30,6 +30,10 @@ typedef NS_ENUM(NSInteger, CVKNightThemeType) {
 @property (strong, nonatomic, readonly) UIColor *incomingBackgroundColor;
 @property (strong, nonatomic, readonly) UIColor *outgoingBackgroundColor;
 
+/**
+ Инициализирует темно-синюю схему
+ */
+- (instancetype)init;
 
 - (instancetype)initWithType:(CVKNightThemeType)type;
 - (void)updateForType:(CVKNightThemeType)type;

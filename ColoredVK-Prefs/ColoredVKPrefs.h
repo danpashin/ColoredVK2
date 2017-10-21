@@ -11,6 +11,7 @@
 #import "Preferences.h"
 #import "PrefixHeader.h"
 #import "UIScrollView+EmptyDataSet.h"
+#import "ColoredVKNightThemeColorScheme.h"
 
 @interface ColoredVKPrefs : PSListController <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 
@@ -18,6 +19,9 @@
 @property (nonatomic, readonly) NSString *tweakVersion;
 @property (nonatomic, readonly) NSString *vkAppVersion;
 @property (assign, nonatomic, readonly) BOOL app_is_vk;
+
+@property (strong, nonatomic) ColoredVKNightThemeColorScheme *nightThemeColorScheme;
+@property (assign, nonatomic) BOOL enableNightTheme;
 
 @property (strong, nonatomic, readonly) NSString *prefsPath;
 @property (strong, nonatomic, readonly) NSBundle *cvkBundle;

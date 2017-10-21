@@ -78,6 +78,9 @@ NSArray <NSString *> *specifiersToDisable;
     picker.dataSource = self;
     picker.statusBarNeedsHidden = NO;
     picker.backgroundStyle = ColoredVKWindowBackgroundStyleCustom;
+    picker.app_is_vk = self.app_is_vk;
+    picker.enableNightTheme = self.enableNightTheme;
+    picker.nightThemeColorScheme = self.nightThemeColorScheme;
     [picker show];
 }
 

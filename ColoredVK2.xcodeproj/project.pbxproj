@@ -167,6 +167,10 @@
 		A56147C21EA0157400B3D8C8 /* ColoredVKPrefs.m in Sources */ = {isa = PBXBuildFile; fileRef = A56147BE1EA0157400B3D8C8 /* ColoredVKPrefs.m */; };
 		A56147C31EA0157400B3D8C8 /* ColoredVKPrefs.m in Sources */ = {isa = PBXBuildFile; fileRef = A56147BE1EA0157400B3D8C8 /* ColoredVKPrefs.m */; };
 		A56147C41EA0157400B3D8C8 /* ColoredVKPrefs.m in Sources */ = {isa = PBXBuildFile; fileRef = A56147BE1EA0157400B3D8C8 /* ColoredVKPrefs.m */; };
+		A56A6BD91F9B7A4700C1C3E0 /* ColoredVKNightThemeColorScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = A52B8F3A1F991A2600898168 /* ColoredVKNightThemeColorScheme.m */; };
+		A56A6BDA1F9B7A4800C1C3E0 /* ColoredVKNightThemeColorScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = A52B8F3A1F991A2600898168 /* ColoredVKNightThemeColorScheme.m */; };
+		A56A6BDB1F9B7A4B00C1C3E0 /* ColoredVKNightThemeColorScheme.h in Headers */ = {isa = PBXBuildFile; fileRef = A52B8F391F991A2600898168 /* ColoredVKNightThemeColorScheme.h */; };
+		A56A6BDC1F9B7A4B00C1C3E0 /* ColoredVKNightThemeColorScheme.h in Headers */ = {isa = PBXBuildFile; fileRef = A52B8F391F991A2600898168 /* ColoredVKNightThemeColorScheme.h */; };
 		A56E89E31F31D31C0013BAE3 /* ColoredVKNetworkController.h in Headers */ = {isa = PBXBuildFile; fileRef = A56E89E11F31D31C0013BAE3 /* ColoredVKNetworkController.h */; };
 		A56E89E41F31D31C0013BAE3 /* ColoredVKNetworkController.h in Headers */ = {isa = PBXBuildFile; fileRef = A56E89E11F31D31C0013BAE3 /* ColoredVKNetworkController.h */; };
 		A56E89E51F31D31C0013BAE3 /* ColoredVKNetworkController.h in Headers */ = {isa = PBXBuildFile; fileRef = A56E89E11F31D31C0013BAE3 /* ColoredVKNetworkController.h */; };
@@ -1179,6 +1183,7 @@
 				A5BC53AB1F1234C200C4E1E0 /* ColoredVKAlertController.h in Headers */,
 				A5D979841DAEB8EA00607F06 /* LHBackgroundView.h in Headers */,
 				A5D979861DAEB8EA00607F06 /* LHProgressHUD.h in Headers */,
+				A56A6BDC1F9B7A4B00C1C3E0 /* ColoredVKNightThemeColorScheme.h in Headers */,
 				A5B1E29E1E509246001B8442 /* ColoredVKSettingsController.h in Headers */,
 				A5D979881DAEB8EA00607F06 /* UIImage+ColoredVK.h in Headers */,
 				A51D53711F769E4000F6952A /* ColoredVKImageProcessor.h in Headers */,
@@ -1218,6 +1223,7 @@
 				A5AB327B1F34F8E100C7537C /* ColoredVKTweakPrefsController.h in Headers */,
 				A56147B91EA0140900B3D8C8 /* ColoredVKAboutController.h in Headers */,
 				A5D56A7C1E70427300A8FFB5 /* LHAcvitityIndicator.h in Headers */,
+				A56A6BDB1F9B7A4B00C1C3E0 /* ColoredVKNightThemeColorScheme.h in Headers */,
 				A5A4E2D11F250A520001102F /* ColoredVKWebViewController.h in Headers */,
 				A5739D6F1EA015BB00367595 /* ColoredVKImageCell.h in Headers */,
 				A5788AA01EA0A5B600BC2B54 /* ColoredVKAccountController.h in Headers */,
@@ -1707,6 +1713,7 @@
 			files = (
 				A51D536E1F769E3900F6952A /* ColoredVKImageProcessor.m in Sources */,
 				A5DB61CB1F10DBF200FFAFF9 /* ColoredVKNewInstaller.m in Sources */,
+				A56A6BDA1F9B7A4800C1C3E0 /* ColoredVKNightThemeColorScheme.m in Sources */,
 				A510E7D01EF98866001D6798 /* ColoredVKColorCollectionViewCell.m in Sources */,
 				A599A8311EA140F600D747D7 /* ColoredVKGeneralPrefs.m in Sources */,
 				A5B607CF1F0943C4003529AF /* ColoredVKUpdatesController.m in Sources */,
@@ -1787,6 +1794,7 @@
 				A5D56AAF1E70427300A8FFB5 /* PSTableCell+ColoredVK.m in Sources */,
 				A599A8331EA140F600D747D7 /* ColoredVKGeneralPrefs.m in Sources */,
 				A5AE82FD1EC1DE25000B7F63 /* ColoredVKStepperButton.m in Sources */,
+				A56A6BD91F9B7A4700C1C3E0 /* ColoredVKNightThemeColorScheme.m in Sources */,
 				A5739D721EA015BB00367595 /* ColoredVKImageCell.m in Sources */,
 				A5D56AB21E70427300A8FFB5 /* ColoredVKHUD.m in Sources */,
 				A5B607D11F0943C4003529AF /* ColoredVKUpdatesController.m in Sources */,
@@ -1861,7 +1869,7 @@
 		A5D56AD61E70442900A8FFB5 /* Debug_APP */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.6.1-theux";
+				APP_VERSION = "4.0-theux";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -1977,7 +1985,7 @@
 		A5D979A51DAEBAD300607F06 /* Release_DEB */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.6.1-theux";
+				APP_VERSION = "4.0-theux";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -2054,7 +2062,7 @@
 		A5D979A81DAEBAD900607F06 /* Release_IPA */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "3.6.1-theux";
+				APP_VERSION = "4.0-theux";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;

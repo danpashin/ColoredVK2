@@ -6,6 +6,7 @@
 //
 
 #import "ColoredVKNightThemeColorScheme.h"
+#import "PrefixHeader.h"
 
 @implementation ColoredVKNightThemeColorScheme
 
@@ -20,6 +21,16 @@
     
     if (self) {
         [self updateForType:type];
+    }
+    return self;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        _type = CVKNightThemeTypeDarkBlue;
+        [self updateForType:self.type];
     }
     return self;
 }
@@ -39,6 +50,19 @@
         _unreadBackgroundColor = [UIColor colorWithRed:0.14f green:0.18f blue:0.22f alpha:1.0f];
         _incomingBackgroundColor = [UIColor colorWithRed:0.21f green:0.29f blue:0.36f alpha:1.0f];
         _outgoingBackgroundColor = [UIColor colorWithRed:0.21f green:0.37f blue:0.56f alpha:1.0f];
+    } 
+    else if (type == CVKNightThemeTypeCustom) {
+        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+        
+        _backgroundColor = [UIColor savedColorForIdentifier:@"nightThemeBackgroundColor" fromPrefs:prefs];
+        _navbackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeBavBackgroundColor" fromPrefs:prefs];
+        _foregroundColor = [UIColor savedColorForIdentifier:@"nightThemeForegroundColor" fromPrefs:prefs];
+        
+        _textColor = [UIColor savedColorForIdentifier:@"nightThemeTextColor" fromPrefs:prefs];
+        _linkTextColor = [UIColor savedColorForIdentifier:@"nightThemeLinkColor" fromPrefs:prefs];
+        _unreadBackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeUnreadBackgroundColor" fromPrefs:prefs];
+        _incomingBackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeIncomingBackgroundColor" fromPrefs:prefs];
+        _outgoingBackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeOutgoingBackgroundColor" fromPrefs:prefs];
     }
 }
 

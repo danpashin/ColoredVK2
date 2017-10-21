@@ -57,8 +57,27 @@
     
     if (self.contentViewWantsShadow) {
         self.contentView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.contentView.bounds cornerRadius:self.contentView.layer.cornerRadius].CGPath;
-        self.contentView.layer.shadowRadius = 4.0f;
         self.contentView.layer.shadowOpacity = 0.1f;
+    }
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    self.backgroundView.frame = self.view.bounds;
+    
+    if (self.view.subviews.count > 0 && [self.view.subviews[0] isEqual:self.backgroundView])
+        [self.view.subviews[0] removeFromSuperview];
+    
+    [self.view insertSubview:self.backgroundView atIndex:0];
+    
+    self.backgroundView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self.backgroundView}]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view":self.backgroundView}]];
+    
+    if (self.contentViewWantsShadow) {
+        self.contentView.layer.shadowRadius = 4.0f;
         self.contentView.layer.shadowOffset = CGSizeMake(0, 3);
         self.contentView.layer.shadowColor = [UIColor blackColor].CGColor;
         self.contentView.layer.rasterizationScale = [UIScreen mainScreen].scale;
@@ -127,27 +146,17 @@
         _backgroundView = backgroundView;
     }
     
-    self.backgroundView.frame = self.view.bounds;
-    self.backgroundView.tag = 2;
-    if (self.view.subviews.count > 0 && (self.view.subviews[0].tag == 2)) [self.view.subviews[0] removeFromSuperview];
-    
-    [self.view insertSubview:self.backgroundView atIndex:0];
-    
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
     tap.delegate = self;
     [self.backgroundView addGestureRecognizer:tap];
-    
-    self.backgroundView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self.backgroundView}]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view":self.backgroundView}]];
 }
 
 - (void)setContentView:(UIView *)contentView
 {
     _contentView = contentView;
     
-    self.contentView.tag = 3;
-    if (self.view.subviews.count > 1 && (self.view.subviews[1].tag != 3)) [self.view.subviews[1] removeFromSuperview];
+    if (self.view.subviews.count > 1 && [self.view.subviews[1] isEqual:self.contentView])
+        [self.view.subviews[1] removeFromSuperview];
     
     [self.view insertSubview:self.contentView atIndex:1];
 }
@@ -161,8 +170,11 @@
 - (void)setupDefaultContentView
 {
     self.contentView = [UIView new];
-    self.contentView.backgroundColor = [UIColor whiteColor];
     self.contentViewWantsShadow = YES;
+    if (self.app_is_vk && self.enableNightTheme)
+        self.contentView.backgroundColor = self.nightThemeColorScheme.foregroundColor;
+    else
+        self.contentView.backgroundColor = [UIColor whiteColor];
     
     int widthFromEdge = IS_IPAD?20:6;
     self.contentView.frame = (CGRect){{widthFromEdge, 0}, {self.view.frame.size.width - widthFromEdge*2, self.view.frame.size.height - widthFromEdge*10}};

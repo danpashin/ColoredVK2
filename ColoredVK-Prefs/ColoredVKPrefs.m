@@ -10,7 +10,7 @@
 #import "ColoredVKAlertController.h"
 #import "ColoredVKNewInstaller.h"
 #import "Tweak.h"
-#import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKStepperButton.h"
 
 
 @implementation ColoredVKPrefs
@@ -97,6 +97,15 @@
     self.prefsTableView.emptyDataSetSource = self;
     self.prefsTableView.emptyDataSetDelegate = self;
     
+    
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+    self.enableNightTheme = ([prefs[@"enabled"] boolValue] && [prefs[@"enableNightTheme"] boolValue]);
+    self.nightThemeColorScheme = [ColoredVKNightThemeColorScheme colorSchemeForType:[prefs[@"nightThemeType"] unsignedIntegerValue]];
+    
+    if (self.app_is_vk && self.enableNightTheme) {
+        self.prefsTableView.backgroundColor = self.nightThemeColorScheme.backgroundColor;
+        self.navigationController.navigationBar.barTintColor = self.nightThemeColorScheme.navbackgroundColor;
+    }
 }
 
 - (void)viewDidLoad
@@ -238,7 +247,10 @@
 {
     UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
-    
+    objc_setAssociatedObject(cell, "nightThemeColorScheme", self.nightThemeColorScheme, OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(cell, "app_is_vk", @(self.app_is_vk), OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(cell, "enableNightTheme", @(self.enableNightTheme), OBJC_ASSOCIATION_ASSIGN);
+        
     return cell;
 }
 
@@ -250,13 +262,14 @@
     CAShapeLayer *layer = [CAShapeLayer layer];
     layer.fillColor = [UIColor whiteColor].CGColor;
     
-    ColoredVKNightThemeColorScheme *colorScheme = nil;
-#ifndef COMPILE_APP
-    if (enabled && enableNightTheme) {
-        colorScheme = [ColoredVKNightThemeColorScheme colorSchemeForType:CVKNightThemeTypeDarkBlue];
-        layer.fillColor = colorScheme.foregroundColor.CGColor;
+    if (self.app_is_vk && self.enableNightTheme) {
+        cell.textLabel.textColor = self.nightThemeColorScheme.textColor;
+        layer.fillColor = self.nightThemeColorScheme.foregroundColor.CGColor;
+        cell.accessoryView.backgroundColor = self.nightThemeColorScheme.foregroundColor;
+        if ([cell.accessoryView isKindOfClass:[ColoredVKStepperButton class]]) {
+            ((UILabel *)[cell.accessoryView valueForKey:@"valueLabel"]).textColor = self.nightThemeColorScheme.textColor;
+        }
     }
-#endif
     
     CGMutablePathRef pathRef = CGPathCreateMutable();
     BOOL addSeparatorLine = NO;
@@ -289,11 +302,9 @@
         lineLayer.backgroundColor = [UIColor colorWithRed:232/255.0f green:233/255.0f blue:234/255.0f alpha:1.0f].CGColor;
         [layer addSublayer:lineLayer];
         
-#ifndef COMPILE_APP
-        if (enabled && enableNightTheme) {
-            lineLayer.backgroundColor = colorScheme.foregroundColor.CGColor;
+        if (self.app_is_vk && self.enableNightTheme) {
+            lineLayer.backgroundColor = self.nightThemeColorScheme.foregroundColor.CGColor;
         }
-#endif
     }
     
     UIView *backgroundView = [[UIView alloc] initWithFrame:bounds];
