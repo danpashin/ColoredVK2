@@ -111,9 +111,13 @@
 @property(retain, nonatomic) NSURL *url;
 @end
 
-@interface VKMBrowserController : UIViewController
+@interface VKMBrowserController : VKMController
 @property(retain, nonatomic) UILabel *headerTitle;
 @property(retain, nonatomic) VKMBrowserTarget *target;
+@property(retain, nonatomic) UIToolbar *toolbar;
+@property(retain, nonatomic) UIButton *safariButton;
+@property(retain, nonatomic) UIScrollView *webScrollView;
+@property(retain, nonatomic) UIWebView *webView;
 @end
 
 
@@ -179,6 +183,7 @@
 @property(retain, nonatomic) InputPanelViewTextView *textPanel;
 @end
 @interface ExtraInputPanelView : InputPanelView
+@property(retain, nonatomic) UIView *pushToTalkCoverView;
 @property(retain, nonatomic) UIButton *inputViewButton;
 @end
 
@@ -270,8 +275,9 @@
 
 
 
-
-@interface VKMNavigationController : UINavigationController
+@interface FixedNavigationController : UINavigationController
+@end
+@interface VKMNavigationController : FixedNavigationController
 @end
 
 
@@ -578,12 +584,7 @@
 
 
 @interface VKAPBottomToolbar : UIView
-
-@property(retain, nonatomic) UIButton *closeButton;
-@property(retain, nonatomic) UIButton *doneButton;
 @property(readonly, nonatomic) UIToolbar *bg;
-@property(readonly, nonatomic) UIView *hostView;
-
 @end
 
 @interface WallModeRenderer : Renderer
@@ -632,10 +633,47 @@
 @interface StoreStockItemView : UIScrollView
 @end
 
+@interface VKPPToolbar : UIView
+@property(readonly, retain, nonatomic) UIToolbar *bg;
+@end
+
 @interface VKPhotoPicker : UINavigationController
+@property(retain, nonatomic) VKPPToolbar *pickerToolbar;
 @end
 
 
 @interface TouchHighlightControl : UIControl
+@end
+
+@interface MainMenuPlayer : UIView
+@property(retain, nonatomic) UILabel *titleLabel;
+@end
+
+@interface VKMTableViewSearchHeaderView : UIToolbar
+@end
+
+@interface VKMAccessibilityTableView : UITableView
+@end
+
+@interface PersistentBackgroundColorView : UIView
+@property(retain, nonatomic) UIColor *persistentBackgroundColor;
+@end
+
+@interface GiftsCatalogSectionCell : VKMCell
+@end
+
+@interface GiftSendController : VKMLiveController
+@end
+
+@interface DefaultHighlightButton : UIButton
+@end
+
+
+
+@interface GiftsCatalogController : VKMLiveController
+@end
+
+@interface StoreController : VKMLiveController
+@property(retain, nonatomic) UIToolbar *toolbar;
 @end
 
