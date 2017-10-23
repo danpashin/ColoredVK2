@@ -853,9 +853,9 @@ void setupTabbar()
         if (enabled && enableNightTheme) {
             tabbar.barTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
             removeTranslucence(tabbar, cvkMainController.nightThemeScheme.navbackgroundColor);
-            tabbar.tintColor = cvkMainController.nightThemeScheme.textColor;
+            tabbar.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
             if ([tabbar respondsToSelector:@selector(setUnselectedItemTintColor:)])
-                tabbar.unselectedItemTintColor = cvkMainController.nightThemeScheme.textColor.darkerColor;
+                tabbar.unselectedItemTintColor = cvkMainController.nightThemeScheme.buttonColor;
         } else if (enabled && enabledTabbarColor) {
             tabbar.barTintColor = tabbarBackgroundColor;
             tabbar.tintColor = tabbarSelForegroundColor;
@@ -872,7 +872,7 @@ void setupTabbar()
             if (SYSTEM_VERSION_IS_MORE_THAN(@"10.0")) {
                 item.image = [item.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             } else {
-                UIColor *tintColor = (enabled && enabledTabbarColor) ? (enableNightTheme ? cvkMainController.nightThemeScheme.textColor.darkerColor : tabbarForegroundColor) : [UIColor defaultColorForIdentifier:@"TabbarForegroundColor"];
+                UIColor *tintColor = (enabled && enabledTabbarColor) ? (enableNightTheme ? cvkMainController.nightThemeScheme.buttonColor : tabbarForegroundColor) : [UIColor defaultColorForIdentifier:@"TabbarForegroundColor"];
                  item.image = [item.image imageWithTintColor:tintColor];
             }
             item.selectedImage = [item.selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -1001,7 +1001,7 @@ CHDeclareMethod(1, void, UINavigationBar, setTintColor, UIColor*, tintColor)
     if (enabled) {
         self.barTintColor = self.barTintColor;
         if (enableNightTheme)
-            tintColor = cvkMainController.nightThemeScheme.textColor;
+            tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
         else if (enabledBarColor)
             tintColor = barForegroundColor;
     }
@@ -1096,7 +1096,13 @@ CHDeclareMethod(0, void, UISwitch, layoutSubviews)
     CHSuper(0, UISwitch, layoutSubviews);
     
     if ([self isKindOfClass:[UISwitch class]]) {
-        if (enabled && changeSwitchColor) {
+        if (enabled && enableNightTheme) {
+            self.onTintColor = cvkMainController.nightThemeScheme.switchOnTintColor;
+            self.tintColor = [UIColor clearColor];
+            self.thumbTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+            self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+            self.layer.cornerRadius = 16.0f;
+        } else if (enabled && changeSwitchColor) {
             self.onTintColor = switchesOnTintColor;
             self.tintColor = switchesTintColor;
             self.thumbTintColor = nil;
@@ -2747,6 +2753,15 @@ CHDeclareMethod(0, UIStatusBarStyle, PostEditController, preferredStatusBarStyle
     return CHSuper(0, PostEditController, preferredStatusBarStyle);
 }
 
+CHDeclareMethod(0, void, PostEditController, viewDidLoad)
+{
+    CHSuper(0, PostEditController, viewDidLoad);
+    
+    if (enabled && enableNightTheme) {
+        self.view.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+}
+
 #pragma mark ProfileInfoEditController
 CHDeclareClass(ProfileInfoEditController);
 CHDeclareMethod(0, UIStatusBarStyle, ProfileInfoEditController, preferredStatusBarStyle)
@@ -3437,14 +3452,40 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
     }
 }
 
+CHDeclareMethod(1, void, UITableViewCell, setSelectedBackgroundView, UIView *, view)
+{
+    if (enabled && enableNightTheme) {
+        view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+    }
+    CHSuper(1, UITableViewCell, setSelectedBackgroundView, view);
+}
+
 
 CHDeclareClass(UIButton);
 CHDeclareMethod(0, void, UIButton, layoutSubviews)
 {
     CHSuper(0, UIButton, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UIButton")]) {
-        [self setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateNormal];
+    if (enabled && enableNightTheme && [self isKindOfClass:[UIButton class]] && ![self isKindOfClass:NSClassFromString(@"VKMImageButton")]) {
+        if ([CLASS_NAME(self) containsString:@"UINavigation"] || [CLASS_NAME(self.superview) containsString:@"UINavigation"])
+            [self setTitleColor:cvkMainController.nightThemeScheme.buttonSelectedColor forState:UIControlStateNormal];
+        else
+            [self setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateNormal];
+        
+        if (CGRectGetWidth(self.imageView.frame) <= 40.0f && CGRectGetHeight(self.imageView.frame) <= 40.0f) {
+            [self setImage:[[self imageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+            self.imageView.tintColor = cvkMainController.nightThemeScheme.buttonColor;
+        }
+    }
+}
+
+CHDeclareClass(UISegmentedControl);
+CHDeclareMethod(0, void, UISegmentedControl, layoutSubviews)
+{
+    CHSuper(0, UISegmentedControl, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UISegmentedControl")]) {
+        self.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
     }
 }
 
@@ -3454,8 +3495,14 @@ CHDeclareMethod(0, void, UILabel, layoutSubviews)
     CHSuper(0, UILabel, layoutSubviews);
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UILabel")]) {
-        self.backgroundColor = [UIColor clearColor];
-        self.textColor = cvkMainController.nightThemeScheme.textColor;
+        
+        if ([self isKindOfClass:NSClassFromString(@"HighlightableLabel")]) {
+            self.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+            self.textColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+        } else {
+            self.backgroundColor = [UIColor clearColor];
+            self.textColor = cvkMainController.nightThemeScheme.textColor;
+        }
     }
 }
 
@@ -3606,7 +3653,7 @@ CHDeclareMethod(1, void, UIView, setFrame, CGRect, frame)
                     objc_setAssociatedObject(self, "cachedBackgroundColor", self.backgroundColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
                     cachedBackgroundColor = self.backgroundColor;
                 }
-                if (CGRectGetHeight(self.frame) < 3.0f)
+                if ((CGRectGetHeight(self.frame) < 3.0f) && !CGSizeEqualToSize(CGSizeZero, self.frame.size))
                     self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
                 else
                     self.backgroundColor = cachedBackgroundColor;
@@ -3856,6 +3903,16 @@ CHDeclareMethod(0, void, DefaultHighlightButton, layoutSubviews)
     }
 }
 
+CHDeclareClass(_UITableViewHeaderFooterContentView);
+CHDeclareMethod(1, void, _UITableViewHeaderFooterContentView, setBackgroundColor, UIColor *, backgroundColor)
+{
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"_UITableViewHeaderFooterContentView")]) {
+        backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+    }
+    
+    CHSuper(1, _UITableViewHeaderFooterContentView, setBackgroundColor, backgroundColor);
+}
+
 CHDeclareClass(StoreController);
 CHDeclareMethod(0, void, StoreController, viewDidLoad)
 {
@@ -3866,6 +3923,16 @@ CHDeclareMethod(0, void, StoreController, viewDidLoad)
                       forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
     }
 }
+
+CHDeclareClass(UIRefreshControl);
+CHDeclareMethod(0, void, UIRefreshControl, layoutSubviews)
+{
+    CHSuper(0, UIRefreshControl, layoutSubviews);
+    
+    self.tintColor = cvkMainController.nightThemeScheme.buttonColor;
+}
+
+
 
 //CHDeclareClass(TouchHighlightControl);
 //CHDeclareMethod(0, void, TouchHighlightControl, layoutSubviews)

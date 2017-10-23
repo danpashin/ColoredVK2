@@ -132,15 +132,16 @@
     else
         _backgroundStyle = backgroundStyle;
 
-    self.backgroundView = [UIView new];
+    self.backgroundView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
 }
 
 - (void)setBackgroundView:(UIView *)backgroundView
 {
     if (self.backgroundStyle == ColoredVKWindowBackgroundStyleBlurred) {
-        _backgroundView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+        _backgroundView = [[UIVisualEffectView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        ((UIVisualEffectView *)_backgroundView).effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
     } else if (self.backgroundStyle == ColoredVKWindowBackgroundStyleDarkened) {
-        _backgroundView = [UIView new];
+        _backgroundView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
         _backgroundView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
     } else if (self.backgroundStyle == ColoredVKWindowBackgroundStyleCustom) {
         _backgroundView = backgroundView;

@@ -30,6 +30,11 @@ typedef NS_ENUM(NSUInteger, CVKNightThemeType) {
 @property (strong, nonatomic, readonly) UIColor *incomingBackgroundColor;
 @property (strong, nonatomic, readonly) UIColor *outgoingBackgroundColor;
 
+@property (strong, nonatomic, readonly) UIColor *buttonColor;
+@property (strong, nonatomic, readonly) UIColor *buttonSelectedColor;
+@property (strong, nonatomic, readonly) UIColor *switchTintColor;
+@property (strong, nonatomic, readonly) UIColor *switchOnTintColor;
+
 /**
  Инициализирует темно-синюю схему
  */

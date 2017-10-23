@@ -50,6 +50,11 @@
         _unreadBackgroundColor = [UIColor colorWithRed:0.14f green:0.18f blue:0.22f alpha:1.0f];
         _incomingBackgroundColor = [UIColor colorWithRed:0.21f green:0.29f blue:0.36f alpha:1.0f];
         _outgoingBackgroundColor = [UIColor colorWithRed:0.21f green:0.37f blue:0.56f alpha:1.0f];
+        
+        _buttonColor = [UIColor colorWithRed:0.49f green:0.56f blue:0.61f alpha:1.0f];
+        _buttonSelectedColor = [UIColor colorWithRed:0.1f green:0.59f blue:0.94f alpha:1.0f];
+        _switchTintColor = [UIColor colorWithRed:0.52f green:0.59f blue:0.66f alpha:1.0f];
+        _switchOnTintColor = [UIColor colorWithRed:0.15f green:0.6f blue:0.99f alpha:1.0f];
     } 
     else if (type == CVKNightThemeTypeCustom) {
         NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];

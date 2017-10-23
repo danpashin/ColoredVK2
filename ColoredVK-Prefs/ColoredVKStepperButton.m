@@ -41,7 +41,7 @@
 
 - (void)setupButton
 {
-    self.backgroundColor = [UIColor whiteColor];
+    self.backgroundColor = [UIColor clearColor];
     self.layer.masksToBounds = YES;
     self.layer.cornerRadius = 4;
     

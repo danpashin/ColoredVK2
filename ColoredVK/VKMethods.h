@@ -514,6 +514,7 @@
 
 
 @interface PostEditController : UIViewController
+@property(retain, nonatomic) MOTextView *textView;
 @end
 @interface ProfileInfoEditController : VKMTableController
 @end
@@ -666,6 +667,12 @@
 @end
 
 @interface DefaultHighlightButton : UIButton
+@end
+
+@interface HighlightableButton : UIButton
+@end
+
+@interface _UITableViewHeaderFooterContentView : UIView
 @end
 
 

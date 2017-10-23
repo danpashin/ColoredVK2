@@ -77,16 +77,6 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     self = [super init];
     if (self) {
         _identifier = identifier;
-    
-        self.customColor = [UIColor savedColorForIdentifier:self.identifier];
-        if (self.customColor == nil)
-            self.customColor = [UIColor clearColor];
-        
-        [self.customColor getHue:nil saturation:nil brightness:&_brightness alpha:nil];
-        
-        self.sliderView.color = self.customColor;
-        self.infoView.color = self.customColor;
-        self.colorMapView.color = self.customColor;
     }
     return self;
 }
@@ -195,7 +185,17 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     self.savedCollectionView.emptyDataSetDelegate = self;
     [self.savedColorsContainer addSubview:self.savedCollectionView];
     
-
+    
+    self.customColor = [UIColor savedColorForIdentifier:self.identifier];
+    if (self.customColor == nil)
+        self.customColor = [UIColor clearColor];
+    
+    [self.customColor getHue:nil saturation:nil brightness:&_brightness alpha:nil];
+    
+    self.sliderView.color = self.customColor;
+    self.infoView.color = self.customColor;
+    self.colorMapView.color = self.customColor;
+    
     [self updateSavedColorsFromPrefs];
 }
 

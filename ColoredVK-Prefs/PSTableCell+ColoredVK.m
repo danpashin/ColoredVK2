@@ -41,10 +41,10 @@
         
         if ([self.accessoryView isKindOfClass:[UISwitch class]]) {
             NSDictionary *userPrefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-            __block BOOL userChangedColor = ([userPrefs[@"enabled"] boolValue] && [userPrefs[@"changeSwitchColor"] boolValue]);
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                ColoredVKNightThemeColorScheme *nightThemeColorScheme = objc_getAssociatedObject(self, "nightThemeColorScheme");
+//                ColoredVKNightThemeColorScheme *nightThemeColorScheme = objc_getAssociatedObject(self, "nightThemeColorScheme");
+                BOOL userChangedColor = ([userPrefs[@"enabled"] boolValue] && [userPrefs[@"changeSwitchColor"] boolValue]);
                 
                 NSNumber *app_is_vk = objc_getAssociatedObject(self, "app_is_vk");
                 if (!app_is_vk) 
@@ -59,9 +59,9 @@
                 
                 UISwitch *switchView = (UISwitch *)self.accessoryView;
                 if (app_is_vk.boolValue && enableNightTheme.boolValue) {
-                    userChangedColor = NO;
-                    switchView.backgroundColor = nightThemeColorScheme.backgroundColor;
-                    switchView.thumbTintColor = nightThemeColorScheme.navbackgroundColor;
+                    userChangedColor = YES;
+//                    switchView.backgroundColor = nightThemeColorScheme.backgroundColor;
+//                    switchView.thumbTintColor = nightThemeColorScheme.navbackgroundColor;
                 } else {
                     switchView.backgroundColor = [UIColor colorWithRed:234/255.0f green:234/255.0f blue:239/255.0f alpha:1.0f];
                     switchView.thumbTintColor = [UIColor whiteColor];

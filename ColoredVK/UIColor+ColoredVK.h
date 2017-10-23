@@ -40,8 +40,9 @@ typedef NS_ENUM (NSUInteger, UIGradientStyle) {
 
 + (UIColor *)colorWithGradientStyle:(UIGradientStyle)gradientStyle withFrame:(CGRect)frame andColors:(NSArray<UIColor *> *)colors;
 
-
 @property (nonatomic, readonly, copy) NSString *stringValue;
 @property (nonatomic, readonly, copy) NSString *rgbStringValue;
 @property (nonatomic, readonly, copy) NSString *hexStringValue;
+
+- (BOOL)isEqualToColor:(UIColor *)color offset:(CGFloat)offset;
 @end

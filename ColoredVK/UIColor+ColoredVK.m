@@ -87,10 +87,8 @@
 + (UIColor *)colorWithGradientStyle:(UIGradientStyle)gradientStyle withFrame:(CGRect)frame andColors:(NSArray<UIColor *> *)colors
 {
     if (colors.count == 0) return [UIColor blackColor];
-        //Create our background gradient layer
-    CAGradientLayer *backgroundGradientLayer = [CAGradientLayer layer];
     
-        //Set the frame to our object's bounds
+    CAGradientLayer *backgroundGradientLayer = [CAGradientLayer layer];
     backgroundGradientLayer.frame = frame;
     
         //To simplfy formatting, we'll iterate through our colors array and create a mutable array with their CG counterparts
@@ -99,56 +97,6 @@
         [cgColors addObject:(id)color.CGColor];
     }
     switch (gradientStyle) {
-        case UIGradientStyleLeftToRight: {
-            
-                //Set out gradient's colors
-            backgroundGradientLayer.colors = cgColors;
-            
-                //Specify the direction our gradient will take
-            backgroundGradientLayer.startPoint = CGPointMake(0.0, 0.5);
-            backgroundGradientLayer.endPoint = CGPointMake(1.0, 0.5);
-            
-                //Convert our CALayer to a UIImage object
-            UIGraphicsBeginImageContextWithOptions(backgroundGradientLayer.bounds.size,NO, [UIScreen mainScreen].scale);
-            [backgroundGradientLayer renderInContext:UIGraphicsGetCurrentContext()];
-            UIImage *backgroundColorImage = UIGraphicsGetImageFromCurrentImageContext();
-            UIGraphicsEndImageContext();
-            
-            return [UIColor colorWithPatternImage:backgroundColorImage];
-        }
-        case UIGradientStyleRadial: {
-            UIGraphicsBeginImageContextWithOptions(frame.size,NO, [UIScreen mainScreen].scale);
-            
-                //Specific the spread of the gradient (For now this gradient only takes 2 locations)
-            CGFloat locations[2] = {0.0, 1.0};
-            
-                //Default to the RGB Colorspace
-            CGColorSpaceRef myColorspace = CGColorSpaceCreateDeviceRGB();
-            CFArrayRef arrayRef = (__bridge CFArrayRef)cgColors;
-            
-                //Create our Fradient
-            CGGradientRef myGradient = CGGradientCreateWithColors(myColorspace, arrayRef, locations);
-            
-            
-                // Normalise the 0-1 ranged inputs to the width of the image
-            CGPoint myCentrePoint = CGPointMake(0.5 * frame.size.width, 0.5 * frame.size.height);
-            float myRadius = MIN(frame.size.width, frame.size.height) * 0.5;
-            
-                // Draw our Gradient
-            CGContextDrawRadialGradient (UIGraphicsGetCurrentContext(), myGradient, myCentrePoint,
-                                         0, myCentrePoint, myRadius,
-                                         kCGGradientDrawsAfterEndLocation);
-            
-                // Grab it as an Image
-            UIImage *backgroundColorImage = UIGraphicsGetImageFromCurrentImageContext();
-            
-                // Clean up
-            CGColorSpaceRelease(myColorspace); // Necessary?
-            CGGradientRelease(myGradient); // Necessary?
-            UIGraphicsEndImageContext();
-            
-            return [UIColor colorWithPatternImage:backgroundColorImage];
-        }
         case UIGradientStyleTopToBottom:
         default: {
                 //Set out gradient's colors
@@ -165,5 +113,19 @@
             
     }
 
+}
+
+- (BOOL)isEqualToColor:(UIColor *)color offset:(CGFloat)offset
+{
+    CGFloat firstHue = 0, firstSaturation = 0, firstBright = 0, secondHue = 0, secondSaturation = 0, secondBright = 0;
+    
+    [self getHue:&firstHue saturation:&firstSaturation brightness:&firstBright alpha:nil];
+    [color getHue:&secondHue saturation:&secondSaturation brightness:&secondBright alpha:nil];
+    
+    BOOL hue_is_equal = ((secondHue - offset >= firstHue) && (secondHue + offset <= firstHue));
+    BOOL saturation_is_equal = ((secondSaturation - offset >= firstSaturation) && (secondSaturation + offset <= firstSaturation));
+    BOOL bright_is_equal = ((secondBright - offset >= firstBright) && (secondBright + offset <= firstBright));
+    
+    return (hue_is_equal && saturation_is_equal && bright_is_equal);
 }
 @end
