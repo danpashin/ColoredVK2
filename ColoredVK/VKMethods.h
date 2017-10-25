@@ -555,6 +555,7 @@
 
 
 @interface DiscoverFeedController : VKMScrollViewController
+@property(retain, nonatomic) UICollectionView *collectionView;
 @end
 
 
@@ -683,4 +684,11 @@
 @interface StoreController : VKMLiveController
 @property(retain, nonatomic) UIToolbar *toolbar;
 @end
+
+@interface DiscoverLayoutMask : UICollectionReusableView
+@end
+
+@interface DiscoverLayoutShadow : UICollectionReusableView
+@end
+
 
