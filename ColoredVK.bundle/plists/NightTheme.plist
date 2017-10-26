@@ -6,13 +6,45 @@
 	<array>
 		<dict>
 			<key>cell</key>
-			<string>PSSwitchCell</string>
+			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>ENABLE</string>
+			<string>THEME_STYLE</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>DISABLED</string>
 			<key>key</key>
-			<string>enableNightTheme</string>
-			<key>default</key>
-			<false/>
+			<string>nightThemeType</string>
+			<key>value</key>
+			<integer>-1</integer>
+			<key>id</key>
+			<string>nightThemeType</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>NIGHT_BLUE</string>
+			<key>key</key>
+			<string>nightThemeType</string>
+			<key>value</key>
+			<integer>0</integer>
+			<key>id</key>
+			<string>nightThemeType</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>DARK_NIGHT</string>
+			<key>key</key>
+			<string>nightThemeType</string>
+			<key>value</key>
+			<integer>1</integer>
+			<key>id</key>
+			<string>nightThemeType</string>
 		</dict>
 	</array>
 </dict>

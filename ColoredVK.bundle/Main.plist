@@ -152,7 +152,7 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>ColoredVKGeneralPrefs</string>
+			<string>ColoredVKThemePrefsController</string>
 			<key>plistToLoad</key>
 			<string>NightTheme</string>
 			<key>id</key>

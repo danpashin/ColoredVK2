@@ -185,7 +185,7 @@ NSArray <NSString *> *specifiersToEnable;
 {
     UIView *footer = [super tableView:tableView viewForFooterInSection:section];
     
-    if ((section == self.freeeVersionSection) && self.showFreeVersionFooter) {        
+    if ((section == self.freeeVersionSection) && self.showFreeVersionFooter) {
         footer = self.freeVersionFooter;
     }
     

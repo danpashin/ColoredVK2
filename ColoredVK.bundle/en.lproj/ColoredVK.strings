@@ -122,6 +122,11 @@
 "NO_ACCOUNT_QUESTION" = "No account yet?";
 "REGISTER" = "Register";
 
+"THEME_STYLE" = "Theme style";
+"DISABLED" = "Disabled";
+"NIGHT_BLUE" = "Night blue";
+"DARK_NIGHT" = "Dark";
+
 
 /*
  

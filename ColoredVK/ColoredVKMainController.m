@@ -156,6 +156,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.night.theme"), nil, nil, YES);
         CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), nil, nil, YES);
         CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), nil, nil, YES);
         CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.update.corners"), nil, nil, YES);

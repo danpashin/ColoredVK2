@@ -288,7 +288,9 @@ void reloadPrefs()
     
     if (prefs && tweakEnabled) {
         
-        enableNightTheme = [prefs[@"enableNightTheme"] boolValue];
+        enableNightTheme = prefs[@"nightThemeType"] ? ([prefs[@"nightThemeType"] integerValue] != -1) : NO;
+        [cvkMainController.nightThemeScheme updateForType:[prefs[@"nightThemeType"] integerValue]];
+        
         if (enableNightTheme && ([cvkMainController compareAppVersionWithVersion:@"3.0"] == ColoredVKVersionCompareLess)) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 cvkMainController.menuBackgroundView.alpha = 0.0f;
@@ -899,9 +901,12 @@ void setupTabbar()
 void resetTabBar()
 {
     if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]]) {
-        setBlur(((UITabBarController *)cvkMainController.vkMainController).tabBar, NO, nil, 0);
+        UITabBar *tabbar = ((UITabBarController *)cvkMainController.vkMainController).tabBar;
+        setupTranslucence(tabbar, nil, YES);
+        setBlur(tabbar, NO, nil, 0);
+        
+        setupTabbar();
     }
-    setupTabbar();
 }
 
 void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *tableView)
@@ -3541,16 +3546,24 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
     if ([self isKindOfClass:NSClassFromString(@"MessageCell")])
         return;
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UITableViewCell")]) {
+    if ([self isKindOfClass:NSClassFromString(@"UITableViewCell")]) {
         if ((self.textLabel.textAlignment == NSTextAlignmentCenter) && [CLASS_NAME(self) isEqualToString:@"UITableViewCell"])
             self.backgroundColor = [UIColor clearColor];
-        else
-            self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        else {
+            UIColor *cachedColor = objc_getAssociatedObject(self, "cachedBackgroundColor");
+            if (!cachedColor) {
+                objc_setAssociatedObject(self, "cachedBackgroundColor", self.backgroundColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+                cachedColor = self.backgroundColor;
+            }
+            self.backgroundColor = (enabled && enableNightTheme) ? cvkMainController.nightThemeScheme.foregroundColor : cachedColor;
+        }
         
-        self.textLabel.textColor = cvkMainController.nightThemeScheme.textColor;
-        self.detailTextLabel.textColor = cvkMainController.nightThemeScheme.textColor;
-        self.textLabel.backgroundColor = [UIColor clearColor];
-        self.detailTextLabel.backgroundColor = [UIColor clearColor];
+        if (enabled && enableNightTheme) {
+            self.textLabel.textColor = cvkMainController.nightThemeScheme.textColor;
+            self.detailTextLabel.textColor = cvkMainController.nightThemeScheme.textColor;
+            self.textLabel.backgroundColor = [UIColor clearColor];
+            self.detailTextLabel.backgroundColor = [UIColor clearColor];
+        }
     }
 }
 
@@ -3747,6 +3760,10 @@ static void setupNightSeparatorForView(UIView *view)
     if ([CLASS_NAME(view) isEqualToString:@"UIView"]) {
         if (enabled && enableNightTheme) {
             dispatch_async(dispatch_get_main_queue(), ^{
+                if ([cvkMainController.vkMainController respondsToSelector:@selector(tabBarShadowView)]) {
+                    if ([view isEqual:cvkMainController.vkMainController.tabBarShadowView])
+                        return;
+                }
                 UIColor *cachedBackgroundColor = objc_getAssociatedObject(view, "cachedBackgroundColor");
                 if (!cachedBackgroundColor) {
                     objc_setAssociatedObject(view, "cachedBackgroundColor", view.backgroundColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -4182,6 +4199,42 @@ void updateCornerRadius(CFNotificationCenterRef center, void *observer, CFString
     actionChangeCornerRadius();
 }
 
+void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
+{
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+    [cvkMainController.nightThemeScheme updateForType:[prefs[@"nightThemeType"] integerValue]];
+    
+    resetTabBar();
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([cvkMainController.vkMainController respondsToSelector:@selector(newsController)]) {
+            NewsSelectorController *newsSelector = (NewsSelectorController *)cvkMainController.vkMainController.newsController;
+            if ([newsSelector respondsToSelector:@selector(currentViewController)]) {
+                MainNewsFeedController *newsController = (MainNewsFeedController *)newsSelector.currentViewController;
+                if ([newsController respondsToSelector:@selector(VKMScrollViewReset)]) {
+                    [newsController VKMScrollViewReset];
+                }
+            }
+        }
+        
+        if ([cvkMainController.vkMainController respondsToSelector:@selector(dialogsController)]) {
+            DialogsController *dialogsController = (DialogsController *)cvkMainController.vkMainController.dialogsController;
+            if ([dialogsController respondsToSelector:@selector(VKMScrollViewReset)]) {
+                [dialogsController VKMScrollViewReset];
+                [dialogsController VKMScrollViewReloadData];
+            }
+        }
+        
+        if ([cvkMainController.vkMainController respondsToSelector:@selector(discoverController)]) {
+            VKMTableController *discoverController = (VKMTableController *)cvkMainController.vkMainController.discoverController;
+            if ([discoverController respondsToSelector:@selector(VKMScrollViewReset)]) {
+                [discoverController VKMScrollViewReset];
+                [discoverController VKMScrollViewReloadData];
+            }
+        }
+    });
+}
+
 CHConstructor
 {
     @autoreleasepool {
@@ -4201,8 +4254,9 @@ CHConstructor
         VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil)?YES:NO;
         
         CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-        CFNotificationCenterAddObserver(center, nil, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-        CFNotificationCenterAddObserver(center, nil, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-        CFNotificationCenterAddObserver(center, nil, updateCornerRadius, CFSTR("com.daniilpashin.coloredvk2.update.corners"),NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(center, nil, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), nil, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(center, nil, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   nil, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(center, nil, updateCornerRadius, CFSTR("com.daniilpashin.coloredvk2.update.corners"),nil, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(center, nil, updateNightTheme,   CFSTR("com.daniilpashin.coloredvk2.night.theme"),   nil, CFNotificationSuspensionBehaviorDeliverImmediately);
     }
 }

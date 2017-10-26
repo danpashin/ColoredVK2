@@ -99,8 +99,9 @@
     
     
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    self.enableNightTheme = ([prefs[@"enabled"] boolValue] && [prefs[@"enableNightTheme"] boolValue]);
-    self.nightThemeColorScheme = [ColoredVKNightThemeColorScheme colorSchemeForType:[prefs[@"nightThemeType"] unsignedIntegerValue]];
+    self.enableNightTheme = prefs[@"nightThemeType"] ? ([prefs[@"nightThemeType"] integerValue] != -1) : NO;
+    self.enableNightTheme = ([prefs[@"enabled"] boolValue] && self.enableNightTheme);
+    self.nightThemeColorScheme = [ColoredVKNightThemeColorScheme colorSchemeForType:[prefs[@"nightThemeType"] integerValue]];
     
     if (self.app_is_vk && self.enableNightTheme) {
         self.prefsTableView.backgroundColor = self.nightThemeColorScheme.backgroundColor;
@@ -137,14 +138,37 @@
                                         @"showMenuCell"];
     
     CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
+    
+    if ([specifier.identifier containsString:@"nightThemeType"]) {
+        [self updateNightTheme];
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), nil, nil, YES);
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.night.theme"), nil, nil, YES);
+    }
+    
     CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), nil, nil, YES);
     
     if ([identificsToReloadMenu containsObject:specifier.identifier])
         CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), nil, nil, YES);
     
     if ([specifier.identifier isEqualToString:@"enableTweakSwitch"]) {
+        [self updateNightTheme];
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.night.theme"), nil, nil, YES);
         CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.update.corners"), nil, nil, YES);
     }
+}
+
+- (void)updateNightTheme
+{
+    if (!self.app_is_vk)
+        return;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            self.prefsTableView.separatorColor = [UIColor clearColor];
+            self.prefsTableView.backgroundColor = [UIColor colorWithRed:0.937255f green:0.937255f blue:0.956863f alpha:1.0f];
+            self.navigationController.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
+        } completion:nil];
+    });
 }
 
 

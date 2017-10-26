@@ -21,6 +21,8 @@
 
 @interface VKMScrollViewController : VKMController
 @property(retain, nonatomic) UIRefreshControl *rptr;
+- (void)VKMScrollViewReloadData;
+- (void)VKMScrollViewReset;
 @end
 
 
@@ -40,6 +42,9 @@
 
 @interface VKMMainController ()
 @property(retain, nonatomic) UIViewController *dialogsController;
+@property(retain, nonatomic) UIViewController *newsController;
+@property(retain, nonatomic) VKMController *discoverController;
+@property(retain, nonatomic) UIView *tabBarShadowView;
 @end
 
 
@@ -287,6 +292,10 @@
 @interface VKSelectorContainerController : VKMViewControllerContainer
 @end
 @interface VKSelectorContainerControllerDropdown : VKSelectorContainerController
+//@property(retain, nonatomic) VKSelectorDropdownPresentation *vkSelectorPresentation;
+@property(retain, nonatomic) UIView *dimView;
+//@property(retain, nonatomic) NavigationButtonView *navigationButtonView;
+@property(retain, nonatomic) UIViewController *selectorViewController; 
 @end
 
 
@@ -691,4 +700,16 @@
 @interface DiscoverLayoutShadow : UICollectionReusableView
 @end
 
+@interface FeedController : VKMLiveController
+@end
 
+@interface NewsFeedController : FeedController
+@end
+
+@interface MainNewsFeedController : NewsFeedController
+- (void)checkFreshNews;
+@end
+
+
+@interface NewsSelectorController : VKSelectorContainerControllerDropdown
+@end
