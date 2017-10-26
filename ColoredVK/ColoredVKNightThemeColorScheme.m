@@ -47,7 +47,7 @@
         
         _textColor = [UIColor colorWithWhite:0.9f alpha:0.9f];
         _linkTextColor = [UIColor colorWithRed:0.21f green:0.64f blue:0.96f alpha:1.0f];
-        _unreadBackgroundColor = [UIColor colorWithRed:0.14f green:0.18f blue:0.22f alpha:1.0f];
+        _unreadBackgroundColor = [UIColor colorWithRed:0.14f green:0.2f blue:0.25f alpha:1.0f];
         _incomingBackgroundColor = [UIColor colorWithRed:0.21f green:0.29f blue:0.36f alpha:1.0f];
         _outgoingBackgroundColor = [UIColor colorWithRed:0.21f green:0.37f blue:0.56f alpha:1.0f];
         
@@ -58,12 +58,12 @@
     }
     else if (type == CVKNightThemeTypeBlack) {
         _backgroundColor = [UIColor blackColor];
-        _navbackgroundColor = [UIColor colorWithRed:0.1f green:0.1f blue:0.11f alpha:1.0f];
-        _foregroundColor = [UIColor colorWithRed:0.1f green:0.1f blue:0.11f alpha:1.0f];
+        _navbackgroundColor = [UIColor colorWithRed:0.12f green:0.12f blue:0.12f alpha:1.0f];
+        _foregroundColor = [UIColor colorWithRed:0.08f green:0.08f blue:0.08f alpha:1.0f];
         
         _textColor = [UIColor colorWithWhite:0.9f alpha:0.9f];
         _linkTextColor = [UIColor colorWithRed:0.0f green:0.6f blue:0.94f alpha:1.0f];
-        _unreadBackgroundColor = [UIColor colorWithRed:0.08f green:0.08f blue:0.08f alpha:1.0f];
+        _unreadBackgroundColor = [UIColor colorWithRed:0.1f green:0.1f blue:0.1f alpha:1.0f];
         _incomingBackgroundColor = [UIColor colorWithRed:0.11f green:0.11f blue:0.11f alpha:1.0f];
         _outgoingBackgroundColor = [UIColor colorWithRed:0.17f green:0.17f blue:0.17f alpha:1.0f];
         
