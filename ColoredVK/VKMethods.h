@@ -432,6 +432,12 @@
 @property(retain, nonatomic) UIButton *showAllButton;
 @end
 
+@interface BlockCellHeaderView : UIView
+@property(retain, nonatomic) UILabel *subtitleLabel;
+@property(retain, nonatomic) UILabel *titleLabel;
+@property(retain, nonatomic) UIButton *actionButton;
+@end
+
 @interface AudioAudiosSpecialBlockView : UIView
 @property(retain, nonatomic) UIButton *button;
 @property(retain, nonatomic) UILabel *subtitleLabel;

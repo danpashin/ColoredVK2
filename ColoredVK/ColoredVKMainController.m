@@ -278,7 +278,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         return;
     
     ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
-    [networkController uploadData:data toRemoteURL:@"http://danpashin.ru/api/v1.2/crash/"
+    [networkController uploadData:data toRemoteURL:[NSString stringWithFormat:@"%@/crash/", kPackageAPIURL]
                           success:^(NSHTTPURLResponse *response, NSData *rawData) {
                               NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:rawData options:0 error:nil];
                               if ([dict isKindOfClass:[NSDictionary class]]) {

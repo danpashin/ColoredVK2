@@ -1044,6 +1044,16 @@ CHDeclareMethod(1, void, UINavigationBar, setTitleTextAttributes, NSDictionary*,
     CHSuper(1, UINavigationBar, setTitleTextAttributes, mutableAttributes);
 }
 
+CHDeclareMethod(1, void, UINavigationBar, setFrame, CGRect, frame)
+{
+    CHSuper(1, UINavigationBar, setFrame, frame);
+    
+    if ([self isKindOfClass:[UINavigationBar class]]) {
+        self.tintColor = self.tintColor;
+        self.titleTextAttributes = self.titleTextAttributes;
+    }
+}
+
 
 #pragma mark VKMController
 CHDeclareClass(VKMController);
@@ -1470,8 +1480,8 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
 
 CHDeclareMethod(2, UITableViewCell*, DialogsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
+    NewDialogCell *cell = (NewDialogCell *)CHSuper(2, DialogsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && enabled) {
-        NewDialogCell *cell = (NewDialogCell *)CHSuper(2, DialogsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
         if (enableNightTheme) {
             performInitialCellSetup(cell);
             cell.backgroundView.hidden = YES;
@@ -1499,10 +1509,14 @@ CHDeclareMethod(2, UITableViewCell*, DialogsController, tableView, UITableView*,
             cell.attach.textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:0.95 alpha:0.9];
             if ([cell respondsToSelector:@selector(dialogText)]) cell.dialogText.textColor = cell.attach.textColor;
             if ([cell respondsToSelector:@selector(text)]) cell.text.textColor = cell.attach.textColor;
+        } else {
+            if (!cell.dialog.head.read_state && cell.unread.hidden)
+                cell.contentView.backgroundColor = [UIColor colorWithRed:0.92f green:0.94f blue:0.96f alpha:1.0f];
+            else
+                cell.contentView.backgroundColor = [UIColor whiteColor];
         }
-        return cell;
     }
-    return CHSuper(2, DialogsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    return cell;
 }
 
 #pragma mark BackgroundView
@@ -2175,11 +2189,26 @@ CHDeclareMethod(2, UITableViewCell*, AudioCatalogController, tableView, UITableV
     if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioCatalogController")]) {
         performInitialCellSetup(cell);
         
-        if ([cell respondsToSelector:@selector(headerView)] && [[cell valueForKey:@"headerView"] isKindOfClass:NSClassFromString(@"AudioBlockCellHeaderView")]) {
-            AudioBlockCellHeaderView *headerView = [cell valueForKey:@"headerView"];
-            headerView.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
-            headerView.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
-            [headerView.showAllButton setTitleColor:changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor forState:UIControlStateNormal];
+        void (^setupBlock)(UIView *view) = ^(UIView *view){
+            if ([view isKindOfClass:NSClassFromString(@"AudioBlockCellHeaderView")]) {
+                AudioBlockCellHeaderView *headerView = (AudioBlockCellHeaderView *)view;
+                headerView.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+                headerView.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+                [headerView.showAllButton setTitleColor:changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor forState:UIControlStateNormal];
+            } else if ([view isKindOfClass:NSClassFromString(@"BlockCellHeaderView")]) {
+                BlockCellHeaderView *headerView = (BlockCellHeaderView *)view;
+                headerView.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
+                headerView.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+                [headerView.actionButton setTitleColor:changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor forState:UIControlStateNormal];
+            }
+        };
+        
+        if ([cell respondsToSelector:@selector(headerView)]) {
+            setupBlock([cell valueForKey:@"headerView"]);
+        } else {
+            for (UIView *subview in cell.contentView.subviews) {
+                setupBlock(subview);
+            }
         }
     }
     
@@ -3549,13 +3578,9 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
     if ([self isKindOfClass:NSClassFromString(@"UITableViewCell")]) {
         if ((self.textLabel.textAlignment == NSTextAlignmentCenter) && [CLASS_NAME(self) isEqualToString:@"UITableViewCell"])
             self.backgroundColor = [UIColor clearColor];
-        else {
-            UIColor *cachedColor = objc_getAssociatedObject(self, "cachedBackgroundColor");
-            if (!cachedColor) {
-                objc_setAssociatedObject(self, "cachedBackgroundColor", self.backgroundColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-                cachedColor = self.backgroundColor;
-            }
-            self.backgroundColor = (enabled && enableNightTheme) ? cvkMainController.nightThemeScheme.foregroundColor : cachedColor;
+        else {            
+            if (enabled && enableNightTheme)
+                self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
         }
         
         if (enabled && enableNightTheme) {
@@ -3601,6 +3626,7 @@ CHDeclareMethod(0, void, UISegmentedControl, layoutSubviews)
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UISegmentedControl")]) {
         self.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+        self.backgroundColor = [UIColor clearColor];
     }
 }
 
@@ -3647,7 +3673,6 @@ CHDeclareMethod(1, void, UITextView, insertText, id, text)
     }
 }
 
-
 CHDeclareMethod(0, void, UITextView, layoutSubviews)
 {
     CHSuper(0, UITextView, layoutSubviews);
@@ -3655,6 +3680,19 @@ CHDeclareMethod(0, void, UITextView, layoutSubviews)
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UITextView")]) {
         self.backgroundColor = [UIColor clearColor];
         self.tintColor = cvkMainController.nightThemeScheme.textColor;
+    }
+}
+
+CHDeclareClass(UITextField);
+CHDeclareMethod(0, void, UITextField, layoutSubviews)
+{
+    CHSuper(0, UITextField, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UITextField")]) {
+        self.tintColor = cvkMainController.nightThemeScheme.textColor;
+        
+        if ([CLASS_NAME(self) isEqualToString:@"UITextField"])
+            self.backgroundColor = [UIColor clearColor];
     }
 }
 
@@ -3971,13 +4009,15 @@ CHDeclareMethod(0, void, MainMenuPlayer, highlightUpdated)
 }
 
 CHDeclareClass(VKMTableViewSearchHeaderView);
-CHDeclareMethod(1, void, VKMTableViewSearchHeaderView, VKMTableViewSearchHeaderView, CGRect, frame)
+CHDeclareMethod(1, VKMTableViewSearchHeaderView*, VKMTableViewSearchHeaderView, initWithFrame, CGRect, frame)
 {
-    CHSuper(1, VKMTableViewSearchHeaderView, VKMTableViewSearchHeaderView, frame);
+    VKMTableViewSearchHeaderView *headerView = CHSuper(1, VKMTableViewSearchHeaderView, initWithFrame, frame);
     
-    if ([self isKindOfClass:NSClassFromString(@"VKMTableViewSearchHeaderView")]) {
-        setupTranslucence(self, cvkMainController.nightThemeScheme.foregroundColor, !(enabled && enableNightTheme));
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKMTableViewSearchHeaderView")]) {
+        [self setBackgroundImage:[UIImage imageWithColor:cvkMainController.nightThemeScheme.foregroundColor] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
     }
+    
+    return headerView;
 }
 
 CHDeclareClass(VKMNavigationController);
@@ -4238,7 +4278,7 @@ void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRe
 CHConstructor
 {
     @autoreleasepool {
-//        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
+        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
         
         prefsPath = CVK_PREFS_PATH;
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];

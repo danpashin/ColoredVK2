@@ -9,7 +9,7 @@
 #import "ColoredVKWallpaperView.h"
 #import "PrefixHeader.h"
 
-const NSInteger PARALLAX_EFFECT_VALUE = 14;
+const NSInteger PARALLAX_EFFECT_VALUE = 20;
 const NSTimeInterval ANIMATION_DURANTION = 0.2;
 
 @interface ColoredVKWallpaperView ()
@@ -27,22 +27,28 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout enableParallax:(BOOL)enableParallax blurBackground:(BOOL)blurBackground
-{    
-    self = [super initWithFrame:frame];
+{
+    CGRect bounds = (![name isEqualToString:@"barImage"]) ? [UIScreen mainScreen].bounds : frame;
+    
+    self = [super initWithFrame:bounds];
     if (self) {
         self.tag = 23;
         self.backgroundColor = [UIColor blackColor];
         _name = name;
         
-        CGRect bounds = CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame));
         
-        self.imageView = [[UIImageView alloc] initWithFrame:bounds];
+        _imageView = [[UIImageView alloc] init];
+        if ([name isEqualToString:@"barImage"])
+            self.imageView.frame = CGRectMake(0, 0, bounds.size.width, bounds.size.height);
+        else
+            self.imageView.frame = CGRectMake(-20, -20, bounds.size.width + 40, bounds.size.height + 40);
+        
         self.imageView.contentMode = UIViewContentModeScaleAspectFill;
         self.imageView.layer.masksToBounds = YES;
         [self addSubview:self.imageView];
         
         self.frontView = [[UIView alloc] initWithFrame:bounds];
-        [self.imageView addSubview:self.frontView];
+        [self addSubview:self.frontView];
         
         self.blurStyle = _UIBackdropViewStyleBlur;
         self.blurView = [[_UIBackdropView alloc] initWithStyle:self.blurStyle];
@@ -236,8 +242,8 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[imageView]|" options:0 metrics:nil views:@{@"imageView":self.imageView}]];
     
     self.frontView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.imageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[frontView]|" options:0 metrics:nil views:@{@"frontView":self.frontView}]];
-    [self.imageView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[frontView]|" options:0 metrics:nil views:@{@"frontView":self.frontView}]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[frontView]|" options:0 metrics:nil views:@{@"frontView":self.frontView}]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[frontView]|" options:0 metrics:nil views:@{@"frontView":self.frontView}]];
     
     self.blurView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[blurView]|" options:0 metrics:nil views:@{@"blurView":self.blurView}]];

@@ -16,7 +16,7 @@
 
 @property (strong, nonatomic, readonly) NSString *name;
 @property (assign, nonatomic) CGFloat blackout;
-@property (strong, nonatomic) UIImageView *imageView;
+@property (strong, nonatomic, readonly) UIImageView *imageView;
 @property (assign, nonatomic) BOOL parallaxEnabled;
 @property (assign, nonatomic) BOOL flip;
 @property (assign, nonatomic) BOOL blurBackground;
