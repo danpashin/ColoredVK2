@@ -713,9 +713,11 @@
 @end
 
 @interface MainNewsFeedController : NewsFeedController
-- (void)checkFreshNews;
 @end
 
 
 @interface NewsSelectorController : VKSelectorContainerControllerDropdown
+@end
+
+@interface _UIAlertControlleriOSActionSheetCancelBackgroundView : UIView
 @end

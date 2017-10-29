@@ -31,6 +31,7 @@
         _configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
         self.configuration.timeoutIntervalForResource = 90.0f;
         self.configuration.allowsCellularAccess = YES;
+        self.configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalAndRemoteCacheData;
         
         self.operationQueue = [[NSOperationQueue alloc] init];
         self.operationQueue.name = @"com.daniilpashin.coloredvk2.network";

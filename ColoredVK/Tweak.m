@@ -3894,16 +3894,6 @@ CHDeclareMethod(0, UIButton *, WallModeRenderer, buttonFilter)
     return buttonFilter;
 }
 
-CHDeclareClass(UIAlertController);
-CHDeclareMethod(0, void, UIAlertController, viewDidLoad)
-{
-    CHSuper(0, UIAlertController, viewDidLoad);
-    
-    if (enabled && enableNightTheme) {       
-        self.view.tintColor = cvkMainController.nightThemeScheme.linkTextColor;
-        self.view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
-    }
-}
 
 CHDeclareClass(SeparatorWithBorders);
 CHDeclareMethod(0, void, SeparatorWithBorders, layoutSubviews)
@@ -4129,6 +4119,42 @@ CHDeclareMethod(0, void, DiscoverLayoutShadow, layoutSubviews)
     CHSuper(0, DiscoverLayoutShadow, layoutSubviews);
     
     self.hidden = (enabled && enableNightTheme);
+}
+
+CHDeclareClass(_UIBackdropViewSettings);
+CHDeclareClassMethod(1, id, _UIBackdropViewSettings, settingsForPrivateStyle, int, privateStyle)
+{
+    if (enabled && enableNightTheme)
+        privateStyle = 1;
+    
+    return CHSuper(1, _UIBackdropViewSettings, settingsForPrivateStyle, privateStyle);
+}
+
+CHDeclareClassMethod(1, id, _UIBackdropViewSettings, settingsForStyle, int, style)
+{
+    if (enabled && enableNightTheme)
+        style = 2050;
+    
+    return CHSuper(1, _UIBackdropViewSettings, settingsForStyle, style);
+}
+
+CHDeclareClass(_UIAlertControlleriOSActionSheetCancelBackgroundView);
+CHDeclareMethod(0, void, _UIAlertControlleriOSActionSheetCancelBackgroundView, layoutSubviews)
+{
+    CHSuper(0, _UIAlertControlleriOSActionSheetCancelBackgroundView, layoutSubviews);
+    
+    if (enabled && enableNightTheme && self.subviews.count > 0)
+        self.subviews.firstObject.backgroundColor = [UIColor clearColor];
+}
+
+CHDeclareClass(UIAlertController);
+CHDeclareMethod(0, void, UIAlertController, viewDidLoad)
+{
+    CHSuper(0, UIAlertController, viewDidLoad);
+    
+    if (enabled && enableNightTheme) {
+        self.view.tintColor = [UIColor colorWithRed:0.1f green:0.59f blue:0.94f alpha:1.0f];
+    }
 }
 
 
