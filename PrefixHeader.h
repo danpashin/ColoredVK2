@@ -72,6 +72,6 @@
 #define kPackageAPIURL [NSString stringWithFormat:@"https://danpashin.ru/api/v%@", kPackageAPIVersion]
 #define kPackageDevName @"danpashin"
 #define kPackageDevLink [NSString stringWithFormat:@"https://vk.com/%@", kPackageDevName]
-#define kPackageAccountRegisterLink @"https://danpashin.ru/projects/coloredvk/index.html#register"
-#define kPackageFaqLink @"https://danpashin.ru/projects/coloredvk/faq.html"
-#define kPackagePurchaseLink @"https://danpashin.ru/projects/coloredvk/purchase/"
+#define kPackageAccountRegisterLink @"http://danpashin.ru/projects/coloredvk/index.html#register"
+#define kPackageFaqLink @"http://danpashin.ru/projects/coloredvk/faq.html"
+#define kPackagePurchaseLink @"http://danpashin.ru/projects/coloredvk/purchase/"

@@ -130,8 +130,6 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
 
 - (void)actionOpenPreferencesPush:(BOOL)withPush
 {
-    VKMNavContext *mainContext = [[NSClassFromString(@"VKMNavContext") applicationNavRoot] rootNavContext];
-    
     NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     if (!cvkBundle.loaded) [cvkBundle load];
     ColoredVKMainPrefsController *cvkPrefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
@@ -139,6 +137,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     if ([self compareAppVersionWithVersion:@"3.0"] >= 0)
         withPush = YES;
     
+    VKMNavContext *mainContext = [[NSClassFromString(@"VKMNavContext") applicationNavRoot] rootNavContext];
     if (withPush) {
         if ([mainContext respondsToSelector:@selector(push:animated:)])
             [mainContext push:cvkPrefs animated:YES];
@@ -188,8 +187,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
                                device.systemVersion, [NSLocale preferredLanguages].firstObject, self.appVersionDetailed, 
                                device.identifierForVendor.UUIDString];
         
-        [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:stringURL]] 
-                                           queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {}];
+        [[ColoredVKNetworkController controller] sendJSONRequestWithMethod:@"GET" stringURL:stringURL parameters:nil success:nil failure:nil];
     }
 }
 

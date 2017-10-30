@@ -53,7 +53,7 @@
         
         _buttonColor = [UIColor colorWithRed:0.49f green:0.56f blue:0.61f alpha:1.0f];
         _buttonSelectedColor = [UIColor colorWithRed:0.1f green:0.59f blue:0.94f alpha:1.0f];
-        _switchTintColor = [UIColor colorWithRed:0.52f green:0.59f blue:0.66f alpha:1.0f];
+        _switchThumbTintColor = self.navbackgroundColor;
         _switchOnTintColor = [UIColor colorWithRed:0.15f green:0.6f blue:0.99f alpha:1.0f];
     }
     else if (type == CVKNightThemeTypeBlack) {
@@ -69,14 +69,14 @@
         
         _buttonColor = [UIColor colorWithRed:0.53f green:0.53f blue:0.53f alpha:1.0f];
         _buttonSelectedColor = [UIColor colorWithWhite:0.9f alpha:0.9f];
-        _switchTintColor = [UIColor colorWithRed:0.29f green:0.29f blue:0.29f alpha:1.0f];
+        _switchThumbTintColor = self.navbackgroundColor;
         _switchOnTintColor = [UIColor colorWithRed:0.66f green:0.66f blue:0.66f alpha:1.0f];
     } 
     else if (type == CVKNightThemeTypeCustom) {
         NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
         
         _backgroundColor = [UIColor savedColorForIdentifier:@"nightThemeBackgroundColor" fromPrefs:prefs];
-        _navbackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeBavBackgroundColor" fromPrefs:prefs];
+        _navbackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeNavBackgroundColor" fromPrefs:prefs];
         _foregroundColor = [UIColor savedColorForIdentifier:@"nightThemeForegroundColor" fromPrefs:prefs];
         
         _textColor = [UIColor savedColorForIdentifier:@"nightThemeTextColor" fromPrefs:prefs];
@@ -87,7 +87,7 @@
         
         _buttonColor = [UIColor savedColorForIdentifier:@"nightThemeButtonColor" fromPrefs:prefs];
         _buttonSelectedColor = [UIColor savedColorForIdentifier:@"nightThemeButtonSelectedColor" fromPrefs:prefs];
-        _switchTintColor = [UIColor savedColorForIdentifier:@"nightThemeSwitchTintColor" fromPrefs:prefs];
+        _switchThumbTintColor = [UIColor savedColorForIdentifier:@"nightThemeSwitchThumbColor" fromPrefs:prefs];
         _switchOnTintColor = [UIColor savedColorForIdentifier:@"nightThemeSwitchOnTintColor" fromPrefs:prefs];
     }
 }

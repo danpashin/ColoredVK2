@@ -126,7 +126,21 @@
 "DISABLED" = "Отключена";
 "NIGHT_BLUE" = "Ночная синяя";
 "DARK_NIGHT" = "Тёмная";
+"CUSTOM" = "Настраиваемая";
 
+"NAVIGATION" = "Навигация";
+"BUTTON_COLOR" = "Цвет кнопок";
+"SELECTED_BUTTON_COLOR" = "Цвет нажатой кнопки";
+"SWITCH_THUMB_COLOR" = "Цвет переключателей";
+"SWITCH_ON_COLOR" = "Цвет переключателей (2)";
+
+"MAIN_BACKGROUND_COLOR" = "Основной цвет фона";
+"ADDITIONAL_BACKGROUND_COLOR" = "Дополнительный цвет фона";
+"LINK_TEXT_COLOR" = "Цвет ссылок";
+
+"UNREAD_MESSAGE_COLOR" = "Цвет непрочитанных";
+"INCOMING_MESSAGE_COLOR" = "Цвет исходящих";
+"OUTGOING_MESSAGE_COLOR" = "Цвет входящих";
 
 /*
  

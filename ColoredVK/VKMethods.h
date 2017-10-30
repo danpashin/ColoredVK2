@@ -721,3 +721,26 @@
 
 @interface _UIAlertControlleriOSActionSheetCancelBackgroundView : UIView
 @end
+
+@interface VKP2PDetailedView : UIView
+@end
+
+@interface DialogSingleCell : NewDialogCell
+@end
+
+@interface FreshNewsButton : UIView
+@property(retain, nonatomic) UIButton *button;
+@end
+
+@interface VKLivePromoView : UIView
+@end
+
+@interface CommentSourcePickerController : UIViewController
+@property(retain, nonatomic) UIView *containerView;
+@end
+
+
+@interface HighlightableBackgroundButton : UIButton
+@end
+@interface NewsFeedPostCreationButton : HighlightableBackgroundButton
+@end

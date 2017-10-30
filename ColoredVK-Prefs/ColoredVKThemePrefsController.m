@@ -6,16 +6,80 @@
 //
 
 #import "ColoredVKThemePrefsController.h"
+#import "ColoredVKNightThemeColorScheme.h"
 
 @interface ColoredVKThemePrefsController ()
 
 @property (strong, nonatomic) NSIndexPath *indexPathForSelectedRow;
 @property (strong, nonatomic) UIView *closeAppFooter;
 
+@property (strong, nonatomic) NSMutableArray <PSSpecifier *> *customColorsSpecifiers;
+@property (assign, nonatomic) CVKNightThemeType nightThemeType;
+@property (assign, nonatomic) BOOL specifiersAlreadyInserted;
 @end
 
 @implementation ColoredVKThemePrefsController
 
+- (void)loadView
+{
+    [super loadView];
+    
+    self.customColorsSpecifiers = [NSMutableArray array];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+    self.nightThemeType = prefs[@"nightThemeType"] ? [prefs[@"nightThemeType"] integerValue] : CVKNightThemeTypeDisabled;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [self updateType];
+}
+
+- (void)updateType
+{
+    if (self.nightThemeType != CVKNightThemeTypeCustom) {
+        self.specifiersAlreadyInserted = NO;
+        [self removeContiguousSpecifiers:self.customColorsSpecifiers animated:YES];
+    } else if (!self.specifiersAlreadyInserted) {
+        [self insertContiguousSpecifiers:self.customColorsSpecifiers afterSpecifierID:@"customColorsGroup" animated:YES];
+    }
+}
+
+- (NSArray *)specifiers
+{
+    if (!_specifiers) {
+        NSArray *specifiers = super.specifiers;
+        
+        BOOL customColorsGroupFound = NO;
+        for (PSSpecifier *specifier in specifiers) {
+            if ([specifier.identifier isEqualToString:@"customColorsGroup"]) {
+                customColorsGroupFound = YES;
+            }
+            if (customColorsGroupFound) {
+                [self.customColorsSpecifiers addObject:specifier];
+            }
+        }
+        self.specifiersAlreadyInserted = YES;
+        
+        _specifiers = specifiers;
+    }
+    return _specifiers;
+}
+
+- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
+{
+    [super setPreferenceValue:value specifier:specifier];
+    
+    if ([specifier.identifier containsString:@"nightThemeType"]) {
+        self.nightThemeType = [value integerValue];
+        [self updateType];
+    }
+}
+
+
+#pragma mark -
+#pragma mark UITableViewDelegate
+#pragma mark -
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -23,7 +87,7 @@
     
     if ([cell isKindOfClass:[PSTableCell class]]) {
         if ([cell.specifier.identifier containsString:@"nightThemeType"]) {
-            if ([[self readPreferenceValue:cell.specifier] isEqual:[cell.specifier propertyForKey:@"value"]]) {
+            if ([[cell.specifier propertyForKey:@"value"] integerValue] == self.nightThemeType) {
                 cell.accessoryType = UITableViewCellAccessoryCheckmark;
                 self.indexPathForSelectedRow = indexPath;
             }
@@ -39,7 +103,7 @@
     
     PSTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if ([cell isKindOfClass:[PSTableCell class]]) {
-        if (cell.type == PSStaticTextCell) {
+        if ([cell.specifier.identifier containsString:@"nightThemeType"]) {
             if (self.indexPathForSelectedRow) {
                 [self deselectRowAtIndexPath:self.indexPathForSelectedRow inTableView:tableView];
             }
@@ -60,6 +124,30 @@
         }
     }
 }
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UIView *footer = [super tableView:tableView viewForFooterInSection:section];
+    
+    if (section == 0) {
+        footer = self.closeAppFooter;
+    }
+    
+    return footer;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    CGFloat height = [super tableView:tableView heightForFooterInSection:section];
+    
+    if (section == 0) {
+        height = 120;
+    }
+    
+    return height;
+}
+
+#pragma mark -
 
 - (UIView *)closeAppFooter
 {
@@ -97,28 +185,6 @@
     }
     
     return _closeAppFooter;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
-{
-    UIView *footer = [super tableView:tableView viewForFooterInSection:section];
-    
-    if (section == 0) {
-        footer = self.closeAppFooter;
-    }
-    
-    return footer;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-{
-    CGFloat height = [super tableView:tableView heightForFooterInSection:section];
-    
-    if (section == 0) {
-        height = 120;
-    }
-    
-    return height;
 }
 
 - (void)actionCloseApplication

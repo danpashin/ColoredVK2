@@ -8,7 +8,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSUInteger, CVKNightThemeType) {
+typedef NS_ENUM(NSInteger, CVKNightThemeType) {
+    CVKNightThemeTypeDisabled = -1,
     CVKNightThemeTypeDarkBlue = 0,
     CVKNightThemeTypeBlack,
     CVKNightThemeTypeCustom
@@ -32,7 +33,7 @@ typedef NS_ENUM(NSUInteger, CVKNightThemeType) {
 
 @property (strong, nonatomic, readonly) UIColor *buttonColor;
 @property (strong, nonatomic, readonly) UIColor *buttonSelectedColor;
-@property (strong, nonatomic, readonly) UIColor *switchTintColor;
+@property (strong, nonatomic, readonly) UIColor *switchThumbTintColor;
 @property (strong, nonatomic, readonly) UIColor *switchOnTintColor;
 
 /**

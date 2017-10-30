@@ -283,9 +283,6 @@ void reloadPrefs()
     showFastDownloadButton = prefs[@"showFastDownloadButton"] ? [prefs[@"showFastDownloadButton"] boolValue] : YES;
     showMenuCell = prefs[@"showMenuCell"] ? [prefs[@"showMenuCell"] boolValue] : YES;
     
-    if ([cvkMainController compareAppVersionWithVersion:@"2.4"] == ColoredVKVersionCompareLess)
-        showMenuCell = YES;
-    
     if (prefs && tweakEnabled) {
         
         enableNightTheme = prefs[@"nightThemeType"] ? ([prefs[@"nightThemeType"] integerValue] != -1) : NO;
@@ -945,6 +942,21 @@ void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *table
     }
 }
 
+void setupNewDialogCellFromNightTheme(NewDialogCell *dialogCell)
+{
+    if (enabled && enableNightTheme && [dialogCell isKindOfClass:NSClassFromString(@"NewDialogCell")]) {
+        dialogCell.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        dialogCell.name.textColor = cvkMainController.nightThemeScheme.textColor;
+        dialogCell.time.textColor = cvkMainController.nightThemeScheme.textColor;
+        dialogCell.attach.textColor = cvkMainController.nightThemeScheme.textColor;
+        
+        if ([dialogCell respondsToSelector:@selector(dialogText)])
+            dialogCell.dialogText.textColor = cvkMainController.nightThemeScheme.textColor;
+        if ([dialogCell respondsToSelector:@selector(text)])
+            dialogCell.text.textColor = cvkMainController.nightThemeScheme.textColor;
+    }
+}
+
 
 #pragma mark - AppDelegate
 CHDeclareClass(AppDelegate);
@@ -1131,7 +1143,7 @@ CHDeclareMethod(0, void, UISwitch, layoutSubviews)
         if (enabled && enableNightTheme) {
             self.tintColor = [UIColor clearColor];
             self.onTintColor = cvkMainController.nightThemeScheme.switchOnTintColor;
-            self.thumbTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+            self.thumbTintColor = cvkMainController.nightThemeScheme.switchThumbTintColor;
             self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
             self.layer.cornerRadius = 16.0f;
         } else if (enabled && changeSwitchColor) {
@@ -1373,15 +1385,7 @@ CHDeclareMethod(0, void, GroupsController, viewWillLayoutSubviews)
                 search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
                 NSDictionary *attributes = @{NSForegroundColorAttributeName:changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
                 search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder attributes:attributes];
-            }
-            
-            if ([cvkMainController compareAppVersionWithVersion:@"2.5"] <= ColoredVKVersionCompareEqual) {
-                for (UIView *view in self.view.subviews) {
-                         if ([view isKindOfClass:[UIToolbar class]] && groupsListUseBlur) { setBlur(view, YES, groupsListBlurTone, groupsListBlurStyle); break; }
-                    else if ([view isKindOfClass:[UIToolbar class]] && enabledToolBarColor) { setToolBar((UIToolbar*)view); break; } 
-                }
-            }
-            
+            }            
         }
     }
 }
@@ -1947,7 +1951,8 @@ CHDeclareMethod(0, void, IOS7AudioController, viewDidLoad)
             self.view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
             self.cover.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
             self.hostView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-            setupAudioPlayer(self.hostView, cvkMainController.nightThemeScheme.textColor);
+            [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:cvkMainController.nightThemeScheme.buttonColor] forState:UIControlStateSelected];
+            setupAudioPlayer(self.hostView, cvkMainController.nightThemeScheme.buttonColor);
         }
         if (changeAudioPlayerAppearance) {
             if (!cvkMainController.audioCover) {
@@ -3528,10 +3533,19 @@ CHDeclareMethod(1, void, ProfileView, setButtonEdit, UIButton *, buttonEdit)
         [buttonEdit setBackgroundImage:[[buttonEdit backgroundImageForState:UIControlStateHighlighted] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] 
                               forState:UIControlStateHighlighted];
         
-        if (cvkMainController.nightThemeScheme.type == CVKNightThemeTypeBlack)
-            buttonEdit.tintColor = cvkMainController.nightThemeScheme.backgroundColor;
-        else
-            buttonEdit.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+        switch (cvkMainController.nightThemeScheme.type) {
+            case CVKNightThemeTypeBlack:
+                buttonEdit.tintColor = cvkMainController.nightThemeScheme.backgroundColor;
+                break;
+                
+            case CVKNightThemeTypeCustom:
+                buttonEdit.tintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+                break;
+                
+            default:
+                buttonEdit.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+                break;
+        }
     }
     
     
@@ -3552,10 +3566,19 @@ CHDeclareMethod(1, void, ProfileView, setButtonMessage, UIButton *, buttonMessag
         [buttonMessage setBackgroundImage:[[buttonMessage backgroundImageForState:UIControlStateHighlighted] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] 
                                  forState:UIControlStateHighlighted];
         
-        if (cvkMainController.nightThemeScheme.type == CVKNightThemeTypeBlack)
-            buttonMessage.tintColor = cvkMainController.nightThemeScheme.backgroundColor;
-        else
-            buttonMessage.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+        switch (cvkMainController.nightThemeScheme.type) {
+            case CVKNightThemeTypeBlack:
+                buttonMessage.tintColor = cvkMainController.nightThemeScheme.backgroundColor;
+                break;
+                
+            case CVKNightThemeTypeCustom:
+                buttonMessage.tintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+                break;
+                
+            default:
+                buttonMessage.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+                break;
+        }
     }
     
     
@@ -3606,15 +3629,20 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
 {
     CHSuper(0, UIButton, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:[UIButton class]] && ![self isKindOfClass:NSClassFromString(@"VKMImageButton")] && ![self isKindOfClass:NSClassFromString(@"HighlightableButton")]) {
-        if ([CLASS_NAME(self) containsString:@"UINavigation"] || [CLASS_NAME(self.superview) containsString:@"UINavigation"])
-            [self setTitleColor:cvkMainController.nightThemeScheme.buttonSelectedColor forState:UIControlStateNormal];
-        else
-            [self setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateNormal];
+    if (enabled && enableNightTheme && [self isKindOfClass:[UIButton class]]) {
         
-        if (CGRectGetWidth(self.imageView.frame) <= 40.0f && CGRectGetHeight(self.imageView.frame) <= 40.0f) {
-            [self setImage:[[self imageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-            self.imageView.tintColor = cvkMainController.nightThemeScheme.buttonColor;
+        if (![self isKindOfClass:NSClassFromString(@"VKMImageButton")] && ![self isKindOfClass:NSClassFromString(@"HighlightableButton")]) {
+            if ([CLASS_NAME(self) containsString:@"UINavigation"] || [CLASS_NAME(self.superview) containsString:@"UINavigation"])
+                [self setTitleColor:cvkMainController.nightThemeScheme.buttonSelectedColor forState:UIControlStateNormal];
+            else
+                [self setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateNormal];
+            
+            if (![[self imageForState:UIControlStateNormal].imageAsset.assetName containsString:@"attachments/remove"]) {
+                if (CGRectGetWidth(self.imageView.frame) <= 40.0f && CGRectGetHeight(self.imageView.frame) <= 40.0f) {
+                    [self setImage:[[self imageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+                    self.imageView.tintColor = cvkMainController.nightThemeScheme.buttonColor;
+                }
+            }
         }
     }
 }
@@ -4121,21 +4149,20 @@ CHDeclareMethod(0, void, DiscoverLayoutShadow, layoutSubviews)
     self.hidden = (enabled && enableNightTheme);
 }
 
-CHDeclareClass(_UIBackdropViewSettings);
-CHDeclareClassMethod(1, id, _UIBackdropViewSettings, settingsForPrivateStyle, int, privateStyle)
+CHDeclareClass(UIVisualEffectView);
+CHDeclareMethod(0, void, UIVisualEffectView, didMoveToSuperview)
 {
-    if (enabled && enableNightTheme)
-        privateStyle = 1;
+    CHSuper(0, UIVisualEffectView, didMoveToSuperview);
     
-    return CHSuper(1, _UIBackdropViewSettings, settingsForPrivateStyle, privateStyle);
-}
-
-CHDeclareClassMethod(1, id, _UIBackdropViewSettings, settingsForStyle, int, style)
-{
-    if (enabled && enableNightTheme)
-        style = 2050;
-    
-    return CHSuper(1, _UIBackdropViewSettings, settingsForStyle, style);
+    if (enabled && enableNightTheme && [self.effect isKindOfClass:[UIBlurEffect class]]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSString *className = CLASS_NAME(self.superview.superview);
+            if ([className containsString:@"_UIAlertController"] || [className containsString:@"_UIPopoverView"]) {
+                self.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+                self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.6f];
+            }
+        });
+    }
 }
 
 CHDeclareClass(_UIAlertControlleriOSActionSheetCancelBackgroundView);
@@ -4157,29 +4184,100 @@ CHDeclareMethod(0, void, UIAlertController, viewDidLoad)
     }
 }
 
+CHDeclareClass(VKP2PDetailedView);
+CHDeclareMethod(0, void, VKP2PDetailedView, layoutSubviews)
+{
+    CHSuper(0, VKP2PDetailedView, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKP2PDetailedView")]) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+}
 
-//CHDeclareClass(TouchHighlightControl);
-//CHDeclareMethod(0, void, TouchHighlightControl, layoutSubviews)
-//{
-//    CHSuper(0, TouchHighlightControl, layoutSubviews);
-//    
-//    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"TouchHighlightControl")]) {
-//        if (self.subviews.count > 0) {
-//            UIImageView *imageView = self.subviews[0];
-//            if ([imageView isKindOfClass:[UIImageView class]]) {
-////                imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-////                NSLog(@"%@", imageView.image.imageAsset.assetName);
-////                imageView.tintColor = [UIColor redColor];
-//            }
-//        }
-//    }
-//}
+CHDeclareClass(NewDialogCell);
+CHDeclareMethod(0, void, NewDialogCell, layoutSubviews)
+{
+    CHSuper(0, NewDialogCell, layoutSubviews);
+    setupNewDialogCellFromNightTheme(self);
+}
 
-//CHDeclareClass(UIFont);
-//CHDeclareClassMethod(1, UIFont *, UIFont, systemFontOfSize, CGFloat, size)
-//{
-//    return [UIFont fontWithName:@"AppleSDGothicNeo-Regular" size:size];
-//}
+CHDeclareMethod(0, void, NewDialogCell, prepareForReuse)
+{
+    setupNewDialogCellFromNightTheme(self);
+    CHSuper(0, NewDialogCell, prepareForReuse);
+}
+
+
+CHDeclareClass(FreshNewsButton);
+CHDeclareMethod(1, id, FreshNewsButton, initWithFrame, CGRect, frame)
+{
+    FreshNewsButton *button = CHSuper(1, FreshNewsButton, initWithFrame, frame);
+    [button.button setBackgroundImage:[[button.button backgroundImageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+    button.button.imageView.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+    
+    return button;
+}
+
+CHDeclareClass(VKLivePromoView);
+CHDeclareMethod(0, void, VKLivePromoView, layoutSubviews)
+{
+    CHSuper(0, VKLivePromoView, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKLivePromoView")]) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+}
+
+CHDeclareClass(TouchHighlightControl);
+CHDeclareMethod(1, id, TouchHighlightControl, initWithFrame, CGRect, frame)
+{
+    TouchHighlightControl *control = CHSuper(1, TouchHighlightControl, initWithFrame, frame);
+    
+    if (enabled && enableNightTheme) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            for (UIView *subview in control.subviews) {
+                if ([subview isKindOfClass:[UIImageView class]]) {
+                    UIImageView *imageView = (UIImageView *)subview;
+                    if ([imageView.image.imageAsset.assetName containsString:@"post/settings"]) {
+                        imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                        imageView.tintColor = cvkMainController.nightThemeScheme.textColor;
+                    }
+                }
+            }
+        });
+    }
+    
+    return control;
+}
+
+CHDeclareClass(CommentSourcePickerController);
+CHDeclareMethod(0, void, CommentSourcePickerController, viewDidLayoutSubviews)
+{
+    CHSuper(0, CommentSourcePickerController, viewDidLayoutSubviews);
+    
+    if (enabled && enableNightTheme && [self respondsToSelector:@selector(containerView)]) {
+        if (self.containerView) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.containerView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+            });
+        }
+    }
+}
+
+CHDeclareClass(NewsFeedPostCreationButton);
+CHDeclareMethod(2, void, NewsFeedPostCreationButton, setBackgroundColor, UIColor *, color, forState, UIControlState, state)
+{
+    if (enabled && enableNightTheme) {
+            if (state == UIControlStateNormal)
+            color = cvkMainController.nightThemeScheme.foregroundColor;
+        else if (state == UIControlStateHighlighted)
+            color = cvkMainController.nightThemeScheme.backgroundColor;
+    }
+    
+    CHSuper(2, NewsFeedPostCreationButton, setBackgroundColor, color, forState, state);
+}
+
+
 
 
 
@@ -4304,7 +4402,7 @@ void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRe
 CHConstructor
 {
     @autoreleasepool {
-        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
+//        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
         
         prefsPath = CVK_PREFS_PATH;
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];

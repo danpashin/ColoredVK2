@@ -126,6 +126,21 @@
 "DISABLED" = "Disabled";
 "NIGHT_BLUE" = "Night blue";
 "DARK_NIGHT" = "Dark";
+"CUSTOM" = "Custom";
+
+"NAVIGATION" = "Navigation";
+"BUTTON_COLOR" = "Buttons color";
+"SELECTED_BUTTON_COLOR" = "Pressed button color";
+"SWITCH_THUMB_COLOR" = "Switch color";
+"SWITCH_ON_COLOR" = "Switch color (disabled)";
+
+"MAIN_BACKGROUND_COLOR" = "Main background color";
+"ADDITIONAL_BACKGROUND_COLOR" = "Additional background color";
+"LINK_TEXT_COLOR" = "Link text color";
+
+"UNREAD_MESSAGE_COLOR" = "Unread color";
+"INCOMING_MESSAGE_COLOR" = "Outgoing color";
+"OUTGOING_MESSAGE_COLOR" = "Incoming color";
 
 
 /*

@@ -5,8 +5,8 @@
 //  Created by Даниил on 26.10.17.
 //
 
-#import "ColoredVKPrefs.h"
+#import "ColoredVKGeneralPrefs.h"
 
-@interface ColoredVKThemePrefsController : ColoredVKPrefs
+@interface ColoredVKThemePrefsController : ColoredVKGeneralPrefs
 
 @end
