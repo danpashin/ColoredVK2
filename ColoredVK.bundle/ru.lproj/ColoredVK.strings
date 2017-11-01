@@ -131,8 +131,8 @@
 "NAVIGATION" = "Навигация";
 "BUTTON_COLOR" = "Цвет кнопок";
 "SELECTED_BUTTON_COLOR" = "Цвет нажатой кнопки";
-"SWITCH_THUMB_COLOR" = "Цвет переключателей";
-"SWITCH_ON_COLOR" = "Цвет переключателей (2)";
+"SWITCH_THUMB_COLOR" = "Цвет переключателей (thumb)";
+"SWITCH_ON_COLOR" = "Фон переключателей";
 
 "MAIN_BACKGROUND_COLOR" = "Основной цвет фона";
 "ADDITIONAL_BACKGROUND_COLOR" = "Дополнительный цвет фона";

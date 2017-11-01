@@ -945,7 +945,13 @@ void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *table
 void setupNewDialogCellFromNightTheme(NewDialogCell *dialogCell)
 {
     if (enabled && enableNightTheme && [dialogCell isKindOfClass:NSClassFromString(@"NewDialogCell")]) {
-        dialogCell.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        dialogCell.contentView.backgroundColor = [UIColor clearColor];
+        dialogCell.backgroundView.hidden = YES;
+        
+        if (!dialogCell.dialog.head.read_state && dialogCell.unread.hidden)
+            dialogCell.backgroundColor = cvkMainController.nightThemeScheme.unreadBackgroundColor;
+        else
+            dialogCell.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
         dialogCell.name.textColor = cvkMainController.nightThemeScheme.textColor;
         dialogCell.time.textColor = cvkMainController.nightThemeScheme.textColor;
         dialogCell.attach.textColor = cvkMainController.nightThemeScheme.textColor;
@@ -1485,23 +1491,8 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
 CHDeclareMethod(2, UITableViewCell*, DialogsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     NewDialogCell *cell = (NewDialogCell *)CHSuper(2, DialogsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && enabled) {
-        if (enableNightTheme) {
-            performInitialCellSetup(cell);
-            cell.backgroundView.hidden = YES;
-            
-            if (!cell.dialog.head.read_state && cell.unread.hidden)
-                cell.contentView.backgroundColor = cvkMainController.nightThemeScheme.unreadBackgroundColor;
-            else cell.contentView.backgroundColor = [UIColor clearColor];
-            
-            cell.name.textColor = cvkMainController.nightThemeScheme.textColor;
-            cell.time.textColor = cvkMainController.nightThemeScheme.textColor;
-            cell.attach.textColor = cvkMainController.nightThemeScheme.textColor;
-            if ([cell respondsToSelector:@selector(dialogText)])
-                cell.dialogText.textColor = cvkMainController.nightThemeScheme.textColor;
-            if ([cell respondsToSelector:@selector(text)])
-                cell.text.textColor = cvkMainController.nightThemeScheme.textColor;
-        } else if (enabledMessagesListImage) {
+    if ([self isKindOfClass:NSClassFromString(@"DialogsController")]) {
+        if (enabled && !enableNightTheme && enabledMessagesListImage ) {
             performInitialCellSetup(cell);
             cell.backgroundView.hidden = YES;
             
@@ -3693,8 +3684,17 @@ CHDeclareMethod(1, void, UITextView, setLinkTextAttributes, NSDictionary *, link
 }
 
 CHDeclareMethod(1, void, UITextView, insertText, id, text)
-{
+{    
     CHSuper(1, UITextView, insertText, text);
+    
+    if (enabled && enableNightTheme) {
+        self.textColor = cvkMainController.nightThemeScheme.textColor;
+    }
+}
+
+CHDeclareMethod(1, void, UITextView, paste, id, text)
+{    
+    CHSuper(1, UITextView, paste, text);
     
     if (enabled && enableNightTheme) {
         self.textColor = cvkMainController.nightThemeScheme.textColor;
@@ -4212,8 +4212,10 @@ CHDeclareClass(FreshNewsButton);
 CHDeclareMethod(1, id, FreshNewsButton, initWithFrame, CGRect, frame)
 {
     FreshNewsButton *button = CHSuper(1, FreshNewsButton, initWithFrame, frame);
-    [button.button setBackgroundImage:[[button.button backgroundImageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-    button.button.imageView.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+    if (enabled && enableNightTheme) {
+        [button.button setBackgroundImage:[[button.button backgroundImageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+        button.button.imageView.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+    }
     
     return button;
 }

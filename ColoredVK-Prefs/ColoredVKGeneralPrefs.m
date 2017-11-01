@@ -62,14 +62,6 @@ NSArray <NSString *> *specifiersToDisable;
     }
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
-    cell.userInteractionEnabled = YES;
-    
-    return cell;
-}
-
 
 - (void)showColorPicker:(PSSpecifier*)specifier
 {

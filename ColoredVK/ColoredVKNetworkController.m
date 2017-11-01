@@ -53,11 +53,6 @@
     }
     
     NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if ([stringURL containsString:@"https://"] && (((NSHTTPURLResponse *)response).statusCode == 401 || error.code == -1200 || error.code == 310 )) {
-            NSString *newURL = [stringURL stringByReplacingOccurrencesOfString:@"https://" withString:@"http://"];
-            [self sendJSONRequestWithMethod:method stringURL:newURL parameters:parameters success:sucess failure:failure];
-            return;
-        }
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if (!error && data) {
                 NSError *jsonError = nil;
@@ -101,12 +96,6 @@
             failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
     NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if ([request.URL.absoluteString containsString:@"https://"] && (error.code == -1200 || error.code == 310)) {
-            NSMutableURLRequest *mutableRequest = [request mutableCopy];
-            mutableRequest.URL = [NSURL URLWithString:[mutableRequest.URL.absoluteString stringByReplacingOccurrencesOfString:@"https://" withString:@"http://"]];
-            [self sendRequest:mutableRequest success:sucess failure:failure];
-            return;
-        }
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if (!error && data) {
                 if (sucess)
@@ -132,10 +121,6 @@
     }
     
     NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if ([url containsString:@"https://"] && (error.code == -1200 || error.code == 310)) {
-            NSString *newURL = [url stringByReplacingOccurrencesOfString:@"https://" withString:@"http://"];
-            [self sendRequestWithMethod:method url:newURL parameters:parameters success:sucess failure:failure];
-        }
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if (!error && data) {
                 if (sucess)
@@ -163,10 +148,6 @@
         
         NSURLSessionDataTask *task = [self.session uploadTaskWithRequest:request fromData:dataToUpload 
                                                        completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                                           if ([remoteURL containsString:@"https://"] && error.code == -1200) {
-                                                               NSString *newURL = [remoteURL stringByReplacingOccurrencesOfString:@"https://" withString:@"http://"];
-                                                               [self uploadData:dataToUpload toRemoteURL:newURL success:sucess failure:failure];
-                                                           }
                                                            if (!error) {
                                                                if (sucess)
                                                                    sucess((NSHTTPURLResponse *)response, data);
@@ -192,10 +173,6 @@
     
     NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:request
                                                          completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
-                                                             if ([stringURL containsString:@"https://"] && (error.code == -1200 || error.code == 310)) {
-                                                                 NSString *newURL = [stringURL stringByReplacingOccurrencesOfString:@"https://" withString:@"http://"];
-                                                                 [self downloadDataFromURL:newURL success:sucess failure:failure];
-                                                             }
                                                              if (!error) {
                                                                  NSData *data = [NSData dataWithContentsOfURL:location];
                                                                  if (sucess)
@@ -254,6 +231,16 @@
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
     
     return request;
+}
+
+- (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler
+{
+    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+        if ([challenge.protectionSpace.host isEqualToString:@"danpashin.ru"] || [challenge.protectionSpace.host isEqualToString:@"itunes.apple.com"]) {
+            NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+            completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
+        }
+    }
 }
 
 @end

@@ -339,7 +339,7 @@ void installerActionLogout(NSString *password, void(^completionBlock)(void))
         
         [newInstaller hideHud];
         if (error.code == 1050)
-            [newInstaller showAlertWithTitle:nil text:error.localizedDescription buttons:nil];
+            [newInstaller showAlertWithTitle:nil text:[NSString stringWithFormat:@"%@ (Code %@)", error.localizedDescription, @(error.code)] buttons:nil];
         
         if (completionBlock)
             completionBlock();
@@ -397,7 +397,7 @@ void installerActionLogout(NSString *password, void(^completionBlock)(void))
 static void download(id parameters,BOOL isAuthorisation, void(^completionBlock)(void))
 {
     void (^showAlertBlock)(NSError *error) = ^(NSError *error) {
-        NSString *text = error.localizedDescription;
+        NSString *text = [NSString stringWithFormat:@"%@ (Code %@)", error.localizedDescription, @(error.code)];
         
         if ((int)error.code == 1050) {
             writeFreeLicence(NO);

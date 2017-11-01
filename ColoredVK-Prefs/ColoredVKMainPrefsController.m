@@ -173,14 +173,6 @@ NSArray <NSString *> *specifiersToEnable;
 #pragma mark UITableViewDelegate
 #pragma mark -
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
-    cell.userInteractionEnabled = YES;
-    
-    return cell;
-}
-
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView *footer = [super tableView:tableView viewForFooterInSection:section];

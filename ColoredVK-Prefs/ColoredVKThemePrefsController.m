@@ -7,15 +7,18 @@
 
 #import "ColoredVKThemePrefsController.h"
 #import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKNewInstaller.h"
 
 @interface ColoredVKThemePrefsController ()
 
 @property (strong, nonatomic) NSIndexPath *indexPathForSelectedRow;
 @property (strong, nonatomic) UIView *closeAppFooter;
+@property (strong, nonatomic) UIImageView *tickImageView;
 
 @property (strong, nonatomic) NSMutableArray <PSSpecifier *> *customColorsSpecifiers;
 @property (assign, nonatomic) CVKNightThemeType nightThemeType;
 @property (assign, nonatomic) BOOL specifiersAlreadyInserted;
+
 @end
 
 @implementation ColoredVKThemePrefsController
@@ -32,6 +35,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.tickImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+    self.tickImageView.image = [UIImage imageNamed:@"TickIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    
     [self updateType];
 }
 
@@ -88,7 +95,7 @@
     if ([cell isKindOfClass:[PSTableCell class]]) {
         if ([cell.specifier.identifier containsString:@"nightThemeType"]) {
             if ([[cell.specifier propertyForKey:@"value"] integerValue] == self.nightThemeType) {
-                cell.accessoryType = UITableViewCellAccessoryCheckmark;
+                cell.accessoryView = self.tickImageView;
                 self.indexPathForSelectedRow = indexPath;
             }
         }
@@ -101,6 +108,10 @@
 {
     [super tableView:tableView didSelectRowAtIndexPath:indexPath];
     
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];    
+    if (!newInstaller.tweakPurchased || !newInstaller.tweakActivated)
+        return;
+    
     PSTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if ([cell isKindOfClass:[PSTableCell class]]) {
         if ([cell.specifier.identifier containsString:@"nightThemeType"]) {
@@ -108,7 +119,7 @@
                 [self deselectRowAtIndexPath:self.indexPathForSelectedRow inTableView:tableView];
             }
             self.indexPathForSelectedRow = indexPath;
-            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            cell.accessoryView = self.tickImageView;
             
             [self setPreferenceValue:[cell.specifier propertyForKey:@"value"] specifier:cell.specifier];
         }
@@ -120,7 +131,7 @@
     PSTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if ([cell isKindOfClass:[PSTableCell class]]) {
         if (cell.type == PSStaticTextCell) {
-            cell.accessoryType = UITableViewCellAccessoryNone;
+            cell.accessoryView = nil;
         }
     }
 }
@@ -141,7 +152,7 @@
     CGFloat height = [super tableView:tableView heightForFooterInSection:section];
     
     if (section == 0) {
-        height = 120;
+        height = 100;
     }
     
     return height;
@@ -177,7 +188,8 @@
         footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
         closeAppButton.translatesAutoresizingMaskIntoConstraints = NO;
         NSDictionary *views = @{@"footerLabel":footerLabel, @"button":closeAppButton};
-        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[footerLabel]-[button(44)]|" options:0 metrics:nil views:views]];
+        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[footerLabel]-|" options:0 metrics:nil views:views]];
+        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[button(44)]|" options:0 metrics:nil views:views]];
         [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[footerLabel]-|" options:0 metrics:nil views:views]];
         [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[button]-|" options:0 metrics:nil views:views]];
         

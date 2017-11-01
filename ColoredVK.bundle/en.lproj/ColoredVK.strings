@@ -131,8 +131,8 @@
 "NAVIGATION" = "Navigation";
 "BUTTON_COLOR" = "Buttons color";
 "SELECTED_BUTTON_COLOR" = "Pressed button color";
-"SWITCH_THUMB_COLOR" = "Switch color";
-"SWITCH_ON_COLOR" = "Switch color (disabled)";
+"SWITCH_THUMB_COLOR" = "Switch color (thumb)";
+"SWITCH_ON_COLOR" = "Switch background color (enabled)";
 
 "MAIN_BACKGROUND_COLOR" = "Main background color";
 "ADDITIONAL_BACKGROUND_COLOR" = "Additional background color";
