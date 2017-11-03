@@ -31,7 +31,7 @@
 
 - (BOOL)openURL:(NSURL *)url;
 - (void)presentPopover:(UIViewController *)controller;
-- (NSArray *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize addFooter:(BOOL)addFooter;
+- (NSArray <PSSpecifier*> *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize addFooter:(BOOL)addFooter;
 - (void)showPurchaseAlert;
 
 - (id)readPreferenceValue:(PSSpecifier *)specifier;

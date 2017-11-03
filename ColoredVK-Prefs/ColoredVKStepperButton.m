@@ -164,7 +164,7 @@
 - (void)changeValueWithGesture:(UILongPressGestureRecognizer *)recognizer
 {
     if (recognizer.state == UIGestureRecognizerStateBegan) {
-        self.timer = [NSTimer timerWithTimeInterval:0.3f target:self selector:@selector(timerAction:) userInfo:@{@"recognizer":recognizer} repeats:YES];
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:0.3f target:self selector:@selector(timerAction:) userInfo:@{@"recognizer":recognizer} repeats:YES];
         [self.timer fire];
     } else if (recognizer.state == UIGestureRecognizerStateEnded) {
         [self.timer invalidate];

@@ -11,12 +11,12 @@
 
 @interface ColoredVKThemePrefsController ()
 
-@property (strong, nonatomic) NSIndexPath *indexPathForSelectedRow;
+//@property (strong, nonatomic) NSIndexPath *indexPathForSelectedRow;
 @property (strong, nonatomic) UIView *closeAppFooter;
-@property (strong, nonatomic) UIImageView *tickImageView;
+//@property (strong, nonatomic) UIImageView *tickImageView;
 
-@property (strong, nonatomic) NSMutableArray <PSSpecifier *> *customColorsSpecifiers;
-@property (assign, nonatomic) CVKNightThemeType nightThemeType;
+@property (strong, nonatomic) NSArray <PSSpecifier *> *customColorsSpecifiers;
+@property (assign, nonatomic) NSNumber *nightThemeType;
 @property (assign, nonatomic) BOOL specifiersAlreadyInserted;
 
 @end
@@ -27,24 +27,25 @@
 {
     [super loadView];
     
-    self.customColorsSpecifiers = [NSMutableArray array];
+//    self.customColorsSpecifiers = [NSMutableArray array];
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    self.nightThemeType = prefs[@"nightThemeType"] ? [prefs[@"nightThemeType"] integerValue] : CVKNightThemeTypeDisabled;
+    self.nightThemeType = prefs[@"nightThemeType"] ? prefs[@"nightThemeType"] : @(CVKNightThemeTypeDisabled);
+    
+    self.customColorsSpecifiers = [self specifiersForPlistName:@"plists/NightTheme" localize:YES addFooter:NO];
+    NSLog(@"%@", self.customColorsSpecifiers);
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    self.tickImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-    self.tickImageView.image = [UIImage imageNamed:@"TickIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
-    
     [self updateType];
 }
 
 - (void)updateType
 {
-    if (self.nightThemeType != CVKNightThemeTypeCustom) {
+    NSLog(@"Should visually update type");
+    if (![self.nightThemeType isEqual:@(CVKNightThemeTypeCustom)]) {
         self.specifiersAlreadyInserted = NO;
         [self removeContiguousSpecifiers:self.customColorsSpecifiers animated:YES];
     } else if (!self.specifiersAlreadyInserted) {
@@ -55,17 +56,9 @@
 - (NSArray *)specifiers
 {
     if (!_specifiers) {
-        NSArray *specifiers = super.specifiers;
+        NSMutableArray *specifiers = [super.specifiers mutableCopy];
         
-        BOOL customColorsGroupFound = NO;
-        for (PSSpecifier *specifier in specifiers) {
-            if ([specifier.identifier isEqualToString:@"customColorsGroup"]) {
-                customColorsGroupFound = YES;
-            }
-            if (customColorsGroupFound) {
-                [self.customColorsSpecifiers addObject:specifier];
-            }
-        }
+        [specifiers addObjectsFromArray:self.customColorsSpecifiers];
         self.specifiersAlreadyInserted = YES;
         
         _specifiers = specifiers;
@@ -77,8 +70,10 @@
 {
     [super setPreferenceValue:value specifier:specifier];
     
+    NSLog(@"%@", specifier.identifier);
+    
     if ([specifier.identifier containsString:@"nightThemeType"]) {
-        self.nightThemeType = [value integerValue];
+        self.nightThemeType = value;
         [self updateType];
     }
 }
@@ -88,53 +83,53 @@
 #pragma mark UITableViewDelegate
 #pragma mark -
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    PSTableCell *cell = (PSTableCell *)[super tableView:tableView cellForRowAtIndexPath:indexPath];
-    
-    if ([cell isKindOfClass:[PSTableCell class]]) {
-        if ([cell.specifier.identifier containsString:@"nightThemeType"]) {
-            if ([[cell.specifier propertyForKey:@"value"] integerValue] == self.nightThemeType) {
-                cell.accessoryView = self.tickImageView;
-                self.indexPathForSelectedRow = indexPath;
-            }
-        }
-    }
-    
-    return cell;
-}
+//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    PSTableCell *cell = (PSTableCell *)[super tableView:tableView cellForRowAtIndexPath:indexPath];
+//    
+//    if ([cell isKindOfClass:[PSTableCell class]]) {
+//        if ([cell.specifier.identifier containsString:@"nightThemeType"]) {
+//            if ([[cell.specifier propertyForKey:@"value"] integerValue] == self.nightThemeType) {
+//                cell.accessoryView = self.tickImageView;
+//                self.indexPathForSelectedRow = indexPath;
+//            }
+//        }
+//    }
+//    
+//    return cell;
+//}
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
-    
-    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];    
-    if (!newInstaller.tweakPurchased || !newInstaller.tweakActivated)
-        return;
-    
-    PSTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    if ([cell isKindOfClass:[PSTableCell class]]) {
-        if ([cell.specifier.identifier containsString:@"nightThemeType"]) {
-            if (self.indexPathForSelectedRow) {
-                [self deselectRowAtIndexPath:self.indexPathForSelectedRow inTableView:tableView];
-            }
-            self.indexPathForSelectedRow = indexPath;
-            cell.accessoryView = self.tickImageView;
-            
-            [self setPreferenceValue:[cell.specifier propertyForKey:@"value"] specifier:cell.specifier];
-        }
-    }
-}
-
-- (void)deselectRowAtIndexPath:(NSIndexPath *)indexPath inTableView:(UITableView *)tableView
-{
-    PSTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    if ([cell isKindOfClass:[PSTableCell class]]) {
-        if (cell.type == PSStaticTextCell) {
-            cell.accessoryView = nil;
-        }
-    }
-}
+//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+//    
+//    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];    
+//    if (!newInstaller.tweakPurchased || !newInstaller.tweakActivated)
+//        return;
+//    
+//    PSTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+//    if ([cell isKindOfClass:[PSTableCell class]]) {
+//        if ([cell.specifier.identifier containsString:@"nightThemeType"]) {
+//            if (self.indexPathForSelectedRow) {
+//                [self deselectRowAtIndexPath:self.indexPathForSelectedRow inTableView:tableView];
+//            }
+//            self.indexPathForSelectedRow = indexPath;
+//            cell.accessoryView = self.tickImageView;
+//            
+//            [self setPreferenceValue:[cell.specifier propertyForKey:@"value"] specifier:cell.specifier];
+//        }
+//    }
+//}
+//
+//- (void)deselectRowAtIndexPath:(NSIndexPath *)indexPath inTableView:(UITableView *)tableView
+//{
+//    PSTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+//    if ([cell isKindOfClass:[PSTableCell class]]) {
+//        if (cell.type == PSStaticTextCell) {
+//            cell.accessoryView = nil;
+//        }
+//    }
+//}
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {

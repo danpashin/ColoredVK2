@@ -201,7 +201,7 @@
     
     if ([parameters isKindOfClass:[NSDictionary class]]) {
         NSDictionary *dictParameters = (NSDictionary *)parameters;
-        for (NSString *key in dictParameters.allKeys) {
+        for (NSString *key in [dictParameters.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]) {
             [stringParameters appendFormat:@"%@=%@&", key, dictParameters[key]];
         }
     } else if ([parameters isKindOfClass:[NSString class]]) {

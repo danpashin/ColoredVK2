@@ -153,7 +153,7 @@
 			<string>PSLinkCell</string>
 			<key>detail</key>
 			<string>ColoredVKThemePrefsController</string>
-			<key>plistToLoad</key>
+			<key>#plistToLoad</key>
 			<string>NightTheme</string>
 			<key>id</key>
 			<string>nightThemeLink</string>
@@ -161,6 +161,24 @@
 			<string>NIGHT_THEME</string>
 			<key>icon</key>
 			<string>MoonIcon</string>
+			<key>selectorDefaultValue</key>
+			<integer>-1</integer>
+			<key>selectorKey</key>
+			<string>nightThemeType</string>
+			<key>selectorKeys</key>
+			<array>
+				<string>DISABLED</string>
+				<string>NIGHT_BLUE</string>
+				<string>DARK_NIGHT</string>
+				<string>CUSTOM</string>
+			</array>
+			<key>selectorValues</key>
+			<array>
+				<string>-1</string>
+				<string>0</string>
+				<string>1</string>
+				<string>2</string>
+			</array>
 		</dict>
 		<dict>
 			<key>cell</key>
