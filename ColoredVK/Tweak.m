@@ -461,7 +461,7 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
             UITabBar *tabbar = (UITabBar *)bar;
             verticalFormat = @"V:|[view(0.5)]";
             
-            if (![tabbar.subviews containsObject:[tabbar viewWithTag:10]]) {        
+            if (![tabbar.subviews containsObject:[tabbar viewWithTag:10]]) {
                 blurEffectView.frame = CGRectMake(0, 0, tabbar.frame.size.width, tabbar.frame.size.height);
                 borderView.frame = CGRectMake(0, 0, tabbar.frame.size.width, 0.5);
                 
@@ -794,7 +794,10 @@ void resetUISearchBar(UISearchBar *searchBar)
     if (![searchBar isKindOfClass:[UISearchBar class]])
         return;
     
-    searchBar.backgroundColor = kMenuCellBackgroundColor;
+    if (enabled && enableNightTheme)
+        searchBar.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    else
+        searchBar.backgroundColor = kMenuCellBackgroundColor;
     
     UIView *barBackground = searchBar.subviews[0].subviews[0];
     if ([barBackground.subviews containsObject: [barBackground viewWithTag:102] ]) [[barBackground viewWithTag:102] removeFromSuperview];
@@ -988,7 +991,7 @@ CHDeclareMethod(2, BOOL, AppDelegate, application, UIApplication*, application, 
 }
 
 CHDeclareMethod(1, void, AppDelegate, applicationDidBecomeActive, UIApplication *, application)
-{    
+{
     CHSuper(1, AppDelegate, applicationDidBecomeActive, application);
     
     actionChangeCornerRadius();
@@ -1008,7 +1011,7 @@ CHDeclareMethod(1, void, AppDelegate, applicationDidBecomeActive, UIApplication 
         [cvkMainController.audioCover updateColorScheme];
     }
     
-    [cvkMainController sendStats];
+//    [cvkMainController sendStats];
     [cvkMainController checkCrashes];
 }
 
@@ -1720,6 +1723,18 @@ CHDeclareMethod(0, void, VKMMainController, viewDidLoad)
         }
     } else {
         setupTabbar();
+    }
+}
+
+CHDeclareMethod(0, void, VKMMainController, viewWillLayoutSubviews)
+{
+    CHSuper(0, VKMMainController, viewWillLayoutSubviews);
+    
+    if (![self isKindOfClass:[UITabBarController class]] && enabled && enableNightTheme) {
+        self.view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+        if ([self.tableView.tableHeaderView isKindOfClass:[UISearchBar class]]) {
+            self.tableView.tableHeaderView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        }
     }
 }
 
@@ -2501,7 +2516,7 @@ CHDeclareMethod(0, void, AudioPlaylistView, layoutSubviews)
     if (enabled && enableNightTheme) {
         self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
-    else if (enabled && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioPlaylistView")]) {        
+    else if (enabled && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioPlaylistView")]) {
         self.backgroundColor = [UIColor clearColor];
         for (UIView *subview in self.subviews) {
             if ([subview isKindOfClass:[UILabel class]]) {
@@ -3069,7 +3084,7 @@ CHDeclareMethod(0, void, UITableView, layoutSubviews)
     self.backgroundColor = self.backgroundColor;
     self.separatorColor = self.separatorColor;
     
-    if (enabled) {        
+    if (enabled) {
         if ([self.tableFooterView isKindOfClass:NSClassFromString(@"LoadingFooterView")] && [self.backgroundView isKindOfClass:[ColoredVKWallpaperView class]]) {
             LoadingFooterView *footerView = (LoadingFooterView *)self.tableFooterView;
             footerView.label.textColor = UITableViewCellTextColor;
@@ -3408,7 +3423,7 @@ NSAttributedString *attributedStringForNightTheme(NSAttributedString * text)
     NSMutableAttributedString *mutableString = [[NSMutableAttributedString alloc] initWithAttributedString:text];
     if (enabled && enableNightTheme) {
         [mutableString enumerateAttributesInRange:NSMakeRange(0, mutableString.length) options:0 
-                                       usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {  
+                                       usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
                                            
                                            void (^setColor)(BOOL isLink, BOOL forMOCTLabel) = ^(BOOL isLink, BOOL forMOCTLabel) {
                                                NSString *attribute = forMOCTLabel ? @"CTForegroundColor" : NSForegroundColorAttributeName;
@@ -3592,7 +3607,7 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
     if ([self isKindOfClass:NSClassFromString(@"UITableViewCell")]) {
         if ((self.textLabel.textAlignment == NSTextAlignmentCenter) && [CLASS_NAME(self) isEqualToString:@"UITableViewCell"])
             self.backgroundColor = [UIColor clearColor];
-        else {            
+        else {
             if (enabled && enableNightTheme)
                 self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
         }
@@ -3684,7 +3699,7 @@ CHDeclareMethod(1, void, UITextView, setLinkTextAttributes, NSDictionary *, link
 }
 
 CHDeclareMethod(1, void, UITextView, insertText, id, text)
-{    
+{
     CHSuper(1, UITextView, insertText, text);
     
     if (enabled && enableNightTheme) {
@@ -3693,7 +3708,7 @@ CHDeclareMethod(1, void, UITextView, insertText, id, text)
 }
 
 CHDeclareMethod(1, void, UITextView, paste, id, text)
-{    
+{
     CHSuper(1, UITextView, paste, text);
     
     if (enabled && enableNightTheme) {
@@ -3719,9 +3734,27 @@ CHDeclareMethod(0, void, UITextField, layoutSubviews)
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UITextField")]) {
         self.tintColor = cvkMainController.nightThemeScheme.textColor;
         
-        if ([CLASS_NAME(self) isEqualToString:@"UITextField"])
+        if ([CLASS_NAME(self) isEqualToString:@"UITextField"] || [CLASS_NAME(self) isEqualToString:@"_UIAlertControllerTextField"])
             self.backgroundColor = [UIColor clearColor];
     }
+}
+
+CHDeclareMethod(1, void, UITextField, paste, id, paste)
+{
+    if (enabled && enableNightTheme) {
+        self.textColor = cvkMainController.nightThemeScheme.textColor;
+    }
+    
+    CHSuper(1, UITextField, paste, paste);
+}
+
+CHDeclareMethod(0, void, UITextField, _updateLabel)
+{
+    if (enabled && enableNightTheme) {
+        self.textColor = cvkMainController.nightThemeScheme.textColor;
+    }
+    
+    CHSuper(0, UITextField, _updateLabel);
 }
 
 CHDeclareClass(UIImageView);
@@ -4017,7 +4050,13 @@ CHDeclareMethod(0, void, MainMenuPlayer, highlightUpdated)
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"MainMenuPlayer")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
-        self.titleLabel.textColor = cvkMainController.nightThemeScheme.textColor;
+        if ([self respondsToSelector:@selector(titleLabel)]) {
+            self.titleLabel.textColor = cvkMainController.nightThemeScheme.textColor;
+        } 
+        if ([self respondsToSelector:@selector(playerTitle)]) {
+            self.playerTitle.textColor = cvkMainController.nightThemeScheme.textColor;
+        }
+        
         for (UIView *subview in self.subviews) {
             if ([subview isKindOfClass:[UIToolbar class]]) {
                 subview.hidden = YES;
@@ -4279,6 +4318,84 @@ CHDeclareMethod(2, void, NewsFeedPostCreationButton, setBackgroundColor, UIColor
     CHSuper(2, NewsFeedPostCreationButton, setBackgroundColor, color, forState, state);
 }
 
+CHDeclareClass(LandingPageController);
+CHDeclareMethod(0, void, LandingPageController, viewDidLoad)
+{
+    CHSuper(0, LandingPageController, viewDidLoad);
+    
+    if (enabled && enableNightTheme) {
+        self.view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+        
+        for (UIView *subview in self.view.subviews) {
+            if ([subview isKindOfClass:[UIButton class]]) {
+                UIButton *button = (UIButton *)subview;
+                [button setBackgroundImage:[[button backgroundImageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+                [button setBackgroundImage:[[button backgroundImageForState:UIControlStateHighlighted] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateHighlighted];
+                button.tintColor = cvkMainController.nightThemeScheme.foregroundColor;
+            }
+        }
+    }
+}
+
+CHDeclareClass(UITableViewIndex);
+CHDeclareMethod(0, void, UITableViewIndex, layoutSubviews)
+{
+    CHSuper(0, UITableViewIndex, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UITableViewIndex")]) {
+        self.indexBackgroundColor = [UIColor clearColor];
+    }
+}
+
+CHDeclareClass(SketchViewController);
+CHDeclareMethod(0, void, SketchViewController, viewDidLoad)
+{
+    CHSuper(0, SketchViewController, viewDidLoad);
+    
+    if (enabled && enableNightTheme) {
+        if ([self respondsToSelector:@selector(drawView)])
+            self.drawView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        
+        for (UIView *subview in self.view.subviews) {
+            if ([CLASS_NAME(subview) isEqualToString:@"UIView"]) {
+                subview.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+            }
+        }
+    }
+}
+
+CHDeclareClass(SketchController);
+CHDeclareMethod(0, void, SketchController, viewDidLoad)
+{
+    CHSuper(0, SketchController, viewDidLoad);
+    
+    if (enabled && enableNightTheme && [self respondsToSelector:@selector(sketchView)]) {
+        self.sketchView.drawView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        self.sketchView.colorPaletteView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+        self.sketchView.colorPaletteView.collectionView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+        self.sketchView.backgroundColor = [UIColor redColor];
+        
+        for (UIView *subview in self.sketchView.subviews) {
+            if ([subview isKindOfClass:[UIToolbar class]]) {
+                UIToolbar *toolbar = (UIToolbar *)subview;
+                [toolbar setBackgroundImage:[UIImage imageWithColor:cvkMainController.nightThemeScheme.navbackgroundColor] 
+                         forToolbarPosition:UIBarPositionAny 
+                                 barMetrics:UIBarMetricsDefault];
+            }
+        }
+    }
+}
+
+CHDeclareClass(EmojiSelectionView);
+CHDeclareMethod(0, void, EmojiSelectionView, layoutSubviews)
+{
+    CHSuper(0, EmojiSelectionView, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"EmojiSelectionView")]) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+}
+
 
 
 
@@ -4312,13 +4429,15 @@ static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFS
                     [menuController viewWillAppear:YES];
                 }
             }
-        } else
+        } else {
             menuController = cvkMainController.vkMainController;
+            menuController.view.backgroundColor = (enabled && enableNightTheme) ? cvkMainController.nightThemeScheme.backgroundColor : kMenuCellBackgroundColor;
+        }
         
         UITableView *menuTableView = menuController.tableView;
         
         UISearchBar *searchBar = (UISearchBar *)menuTableView.tableHeaderView;
-        if (menuTableView) {
+        if (searchBar) {
             shouldShow ? setupUISearchBar(searchBar) : resetUISearchBar(searchBar);
             [menuTableView deselectRowAtIndexPath:menuTableView.indexPathForSelectedRow animated:YES];
         }
@@ -4344,7 +4463,7 @@ static void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFS
                     if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]])
                         menuTableView.backgroundColor = [UIColor colorWithRed:235/255.0f green:237/255.0f blue:240/255.0f alpha:1.0f];
                     else
-                        menuTableView.backgroundColor = [UIColor colorWithRed:56.0/255.0f green:69.0/255.0f blue:84.0/255.0f alpha:1];
+                        menuTableView.backgroundColor = kMenuCellBackgroundColor;
                     [menuTableView reloadData];
                     resetUISearchBar(searchBar);
                 }

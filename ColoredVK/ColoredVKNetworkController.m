@@ -8,6 +8,7 @@
 
 #import "ColoredVKNetworkController.h"
 #import "ColoredVKCrypto.h"
+#import "PrefixHeader.h"
 
 
 @interface ColoredVKNetworkController  () <NSURLSessionDelegate>
@@ -31,7 +32,7 @@
         _configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
         self.configuration.timeoutIntervalForResource = 90.0f;
         self.configuration.allowsCellularAccess = YES;
-        self.configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+        self.configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalAndRemoteCacheData;
         
         self.operationQueue = [[NSOperationQueue alloc] init];
         self.operationQueue.name = @"com.daniilpashin.coloredvk2.network";
@@ -228,7 +229,11 @@
         request.HTTPBody = [stringParameters dataUsingEncoding:NSUTF8StringEncoding];
     
     request.HTTPMethod = method.uppercaseString;
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:[NSString stringWithFormat:@"ColoredVK2/%@ (%@/%@ | %@/%@)", 
+                       kPackageVersion, [NSBundle mainBundle].bundleIdentifier, 
+                       [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], [UIDevice currentDevice].model, 
+                       [UIDevice currentDevice].systemVersion] forHTTPHeaderField:@"User-Agent"];
     
     return request;
 }
@@ -236,10 +241,7 @@
 - (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler
 {
     if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-        if ([challenge.protectionSpace.host isEqualToString:@"danpashin.ru"] || [challenge.protectionSpace.host isEqualToString:@"itunes.apple.com"]) {
-            NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
-            completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
-        }
+        completionHandler(NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);
     }
 }
 

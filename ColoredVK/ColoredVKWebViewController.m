@@ -9,7 +9,7 @@
 #import "ColoredVKWebViewController.h"
 #import <WebKit/WebKit.h>
 #import "PrefixHeader.h"
-#import "ColoredVKNetworkController.h"
+#import "ColoredVKNewInstaller.h"
 
 @interface ColoredVKWebViewController () <UIWebViewDelegate, WKNavigationDelegate>
 
@@ -63,7 +63,7 @@
     }
     
     
-    ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
+    ColoredVKNetworkController *networkController = [ColoredVKNewInstaller sharedInstaller].networkController;
     [networkController sendRequest:self.request 
                            success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData) {
                                NSString *html = [[NSString alloc] initWithData:rawData encoding:NSUTF8StringEncoding];

@@ -39,7 +39,7 @@
 
 + (UIColor *)defaultColorForIdentifier:(NSString *)identifier
 {
-    if      ([identifier isEqualToString:@"BarBackgroundColor"])         return [UIColor colorWithRed:60.00/255.0f green:112.0/255.0f blue:169.0/255.0f alpha:1];
+    if      ([identifier isEqualToString:@"BarBackgroundColor"])         return [UIColor colorWithRed:0.27f green:0.46f blue:0.68f alpha:1];
     else if ([identifier isEqualToString:@"BarForegroundColor"])         return [UIColor whiteColor];
     else if ([identifier isEqualToString:@"ToolBarBackgroundColor"])     return [UIColor colorWithRed:245.0/255.0f green:245.0/255.0f blue:248.0/255.0f alpha:1];
     else if ([identifier isEqualToString:@"ToolBarForegroundColor"])     return [UIColor colorWithRed:127.0/255.0f green:131.0/255.0f blue:137.0/255.0f alpha:1];
@@ -55,9 +55,9 @@
     else if ([identifier containsString:@"TextColor"])                   return [UIColor colorWithWhite:1 alpha:0.9];
     else if ([identifier containsString:@"BlurTone"])                    return [UIColor clearColor];
     else if ([identifier isEqualToString:@"menuSelectionColor"])         return [UIColor whiteColor];
-    else if ([identifier isEqualToString:@"TabbarForegroundColor"])      return [UIColor colorWithWhite:0.573f alpha:1.0f];
+    else if ([identifier isEqualToString:@"TabbarForegroundColor"])      return [UIColor colorWithRed:0.6f green:0.63f blue:0.67f alpha:1.0f];
     else if ([identifier isEqualToString:@"TabbarBackgroundColor"])      return [UIColor colorWithWhite:1.0f alpha:0.9f];
-    else if ([identifier isEqualToString:@"TabbarSelForegroundColor"])   return [UIColor colorWithRed:92/255.0f green:156/255.0f blue:230/255.0f alpha:1.0f];
+    else if ([identifier isEqualToString:@"TabbarSelForegroundColor"])   return [UIColor colorWithRed:0.28f green:0.5f blue:0.77f alpha:1.0f];
     else if ([identifier isEqualToString:@"messagesInputBackColor"])     return [UIColor whiteColor];
     else if ([identifier isEqualToString:@"messagesInputTextColor"])     return [UIColor blackColor];
     else                                                                 return [UIColor blackColor];

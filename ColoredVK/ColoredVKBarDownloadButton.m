@@ -15,7 +15,6 @@
 
 @interface ColoredVKBarDownloadButton ()
 @property (strong, nonatomic) NSArray *downloadInfo;
-@property (strong, nonatomic) ColoredVKImageProcessor *processor;
 @end
 
 
@@ -40,7 +39,6 @@
         self.url = url;
         self.rootViewController = controller;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            self.processor = [ColoredVKImageProcessor new];
             self.downloadInfo = self.downloadInfo;
         });
     }
@@ -59,19 +57,19 @@
         UIAlertAction *action = [UIAlertAction actionWithTitle:CVKLocalizedStringFromTable(dict[@"title"], @"ColoredVK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             ColoredVKHUD *hud = [ColoredVKHUD showHUD];
             
-            NSString *stringPath = [CVK_FOLDER_PATH stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]];
-            [self.processor processImageFromURL:[NSURL URLWithString:self.url] identifier:identifier 
-                                   andSaveToURL:[NSURL fileURLWithPath:stringPath] 
-                                completionBlock:^(BOOL success, NSError *error) {
-                                    success ? [hud showSuccess] : [hud showFailure];
-                                    
-                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil 
-                                                                                      userInfo:@{@"identifier" : identifier}];
-                                    
-                                    if ([identifier isEqualToString:@"menuBackgroundImage"]) {
-                                        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-                                    }
-                                }];
+            ColoredVKImageProcessor *processor = [ColoredVKImageProcessor new];
+            [processor processImageFromURL:[NSURL URLWithString:self.url] identifier:identifier 
+                              andSaveToURL:[NSURL fileURLWithPath:[CVK_FOLDER_PATH stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]]] 
+                           completionBlock:^(BOOL success, NSError *error) {
+                               success ? [hud showSuccess] : [hud showFailureWithStatus:error.localizedDescription];
+                               
+                               [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil 
+                                                                                 userInfo:@{@"identifier" : identifier}];
+                               
+                               if ([identifier isEqualToString:@"menuBackgroundImage"]) {
+                                   CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+                               }
+                           }];
         }];
         [actionController addAction:action image:dict[@"icon"]];
     }

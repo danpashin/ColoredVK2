@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "PrefixHeader.h"
 #import "NSDate+DateTools.h"
-#import "ColoredVKNetworkController.h"
+#import "ColoredVKNewInstaller.h"
 #import "ColoredVKAlertController.h"
 
 @interface ColoredVKUpdatesController ()
@@ -43,13 +43,14 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
 - (void)checkUpdates
 {    
     NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php", kPackageAPIURL];
-    NSMutableDictionary *parameters = [@{@"userVers": kPackageVersion, @"product": kPackageIdentifier} mutableCopy];
+    NSMutableDictionary *parameters = [@{@"userVers": kPackageVersion, @"product": kPackageIdentifier, @"ios_version":[UIDevice currentDevice].systemVersion, 
+                                         @"vk_version":[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]} mutableCopy];
     
 #ifndef COMPILE_FOR_JAIL
     parameters[@"getIPA"] = @1;
 #endif
     
-    ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
+    ColoredVKNetworkController *networkController = [ColoredVKNewInstaller sharedInstaller].networkController;
     [networkController sendJSONRequestWithMethod:@"GET" stringURL:stringURL parameters:parameters
                                       success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
                                           

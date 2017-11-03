@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "ColoredVKHeaderView.h"
+#import "ColoredVKNetworkController.h"
 
 @interface ColoredVKNewInstaller : NSObject
 
@@ -18,6 +19,7 @@ FOUNDATION_EXPORT void installerActionLogout(NSString *password, void(^completio
 
 + (instancetype)sharedInstaller;
 
+@property (strong, nonatomic, readonly) ColoredVKNetworkController *networkController;
 @property (strong, nonatomic, readonly) NSString *userLogin;
 @property (strong, nonatomic, readonly) NSNumber *userID;
 @property (strong, nonatomic, readonly) NSString *token;

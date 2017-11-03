@@ -14,7 +14,6 @@
 #import <SafariServices/SafariServices.h>
 #import "ColoredVKHUD.h"
 #import "ColoredVKWebViewController.h"
-#import "ColoredVKNetworkController.h"
 #import "ColoredVKAlertController.h"
 
 
@@ -63,6 +62,7 @@ NSString *userPassword;
 {
     self = [super init];
     if (self) {
+        _networkController = [ColoredVKNetworkController controller];
         key = AES256EncryptStringForAPI([NSProcessInfo processInfo].globallyUniqueString);
         uname(&systemInfo);
         
@@ -155,11 +155,9 @@ NSString *userPassword;
             ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
             webController.url = [NSURL URLWithString:kPackagePurchaseLink];
             
-            ColoredVKNetworkController *network = [ColoredVKNetworkController controller];
-            network.configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalAndRemoteCacheData;
             NSError *requestError = nil;
             NSDictionary *params = @{@"user_id" :self.userID, @"profile_team_id": provisionTeamID, @"profile_team_name": provisionTeamName, @"from": from};
-            NSURLRequest *request = [network requestWithMethod:@"POST" URLString:webController.url.absoluteString parameters:params error:&requestError];
+            NSURLRequest *request = [self.networkController requestWithMethod:@"POST" URLString:webController.url.absoluteString parameters:params error:&requestError];
             
             if (!requestError) {
                 webController.request = request;
@@ -260,31 +258,30 @@ NSString *userPassword;
         NSString *url = [NSString stringWithFormat:@"%@/payment/get_info.php", kPackageAPIURL];
         NSDictionary *parameters = @{@"user_id":self.userID, @"token":self.token};
         
-        ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
-        [networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:parameters
-                                          success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
-                                              if (!json[@"error"]) {
-                                                  NSDictionary *response = json[@"response"];
-                                                  
-                                                  self.api_banned = [response[@"is_banned"] boolValue];
-                                                  self.api_purchased = [response[@"is_purchased"] boolValue];
-                                                  self.api_activated = [response[@"is_activated"] boolValue];
-                                                  
-                                                  NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
-                                                  NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
-                                                  dict[@"purchased"] = @(self.api_purchased);
-                                                  dict[@"activated"] = @(self.api_activated);
-                                                  NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
-                                                  [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
-                                              }
-                                              
-                                              if (completionBlock) {
-                                                  completionBlock();
-                                                  
-                                                  [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
-                                              }
-                                          } 
-                                          failure:nil];
+        [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:parameters
+                                                  success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+                                                      if (!json[@"error"]) {
+                                                          NSDictionary *response = json[@"response"];
+                                                          
+                                                          self.api_banned = [response[@"is_banned"] boolValue];
+                                                          self.api_purchased = [response[@"is_purchased"] boolValue];
+                                                          self.api_activated = [response[@"is_activated"] boolValue];
+                                                          
+                                                          NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
+                                                          NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
+                                                          dict[@"purchased"] = @(self.api_purchased);
+                                                          dict[@"activated"] = @(self.api_activated);
+                                                          NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
+                                                          [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
+                                                      }
+                                                      
+                                                      if (completionBlock) {
+                                                          completionBlock();
+                                                          
+                                                          [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
+                                                      }
+                                                  } 
+                                                  failure:nil];
     } else {
         self.api_banned = NO;
         self.api_purchased = NO;
@@ -350,7 +347,7 @@ void installerActionLogout(NSString *password, void(^completionBlock)(void))
                                  @"version": kDRMPackageVersion, @"device": device, @"key": key
                                  };
     
-    ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
+    ColoredVKNetworkController *networkController = [ColoredVKNewInstaller sharedInstaller].networkController;
     [networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters 
                                       success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
                                           if (!json[@"error"]) {
@@ -417,7 +414,7 @@ static void download(id parameters,BOOL isAuthorisation, void(^completionBlock)(
             completionBlock();
     };
     
-    ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
+    ColoredVKNetworkController *networkController = [ColoredVKNewInstaller sharedInstaller].networkController;
     [networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters
                                       success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
                                           if (!json[@"error"]) {

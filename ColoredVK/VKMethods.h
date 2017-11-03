@@ -664,6 +664,7 @@
 
 @interface MainMenuPlayer : UIView
 @property(retain, nonatomic) UILabel *titleLabel;
+@property(retain, nonatomic) UILabel *playerTitle;
 @end
 
 @interface VKMTableViewSearchHeaderView : UIToolbar
@@ -743,4 +744,51 @@
 @interface HighlightableBackgroundButton : UIButton
 @end
 @interface NewsFeedPostCreationButton : HighlightableBackgroundButton
+@end
+
+@interface LandingPageController : UIViewController
+@end
+
+@interface UITableViewIndex : UIControl
+@property(retain, nonatomic) UIColor *indexBackgroundColor;
+@end
+
+@interface SketchDrawView : UIView
+@end
+
+@interface SketchViewController : UIViewController
+
+@property(retain, nonatomic) UIButton *eraserButton;
+@property(retain, nonatomic) UIButton *undoButton;
+@property(retain, nonatomic) UIButton *sendButton;
+
+@property(retain, nonatomic) NSArray *paletteButtons;
+@property(retain, nonatomic) SketchDrawView *drawView;
+
+@end
+
+
+
+@interface DrawView : UIView
+@end
+
+@interface ColorPaletteView : UIView
+@property(retain, nonatomic) UICollectionView *collectionView;
+@end
+
+@interface SketchView : UIView
+@property(retain, nonatomic) ColorPaletteView *colorPaletteView;
+@property(retain, nonatomic) DrawView *drawView;
+@end
+
+@interface SketchController : UIViewController
+@property(retain, nonatomic) SketchView *sketchView;
+@end
+
+
+
+@interface EmojiSelectionView : UIView 
+@property(retain, nonatomic) UIScrollView *scrollView;
+//@property(retain, nonatomic) EmojiGridView *emojiGridView;
+//@property(retain, nonatomic) EmojiPopup *emojiPopup;
 @end

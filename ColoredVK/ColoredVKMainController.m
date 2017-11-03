@@ -13,7 +13,7 @@
 #import "ColoredVKWallpaperView.h"
 #import <sys/utsname.h>
 #import "UIGestureRecognizer+BlocksKit.h"
-#import "ColoredVKNetworkController.h"
+#import "ColoredVKNewInstaller.h"
 #import "ColoredVKAlertController.h"
 
 @interface ColoredVKMainController ()
@@ -93,7 +93,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         switchView.tag = 228;
         switchView.on = enabled;
         switchView.onTintColor = [UIColor defaultColorForIdentifier:@"switchesOnTintColor"];
-        [switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventTouchUpInside];
+        [switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventValueChanged];
         objc_setAssociatedObject(self, (__bridge const void *)(switchViewKey), switchView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         [cell.contentView addSubview:switchView];
         
@@ -187,7 +187,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
                                device.systemVersion, [NSLocale preferredLanguages].firstObject, self.appVersionDetailed, 
                                device.identifierForVendor.UUIDString];
         
-        [[ColoredVKNetworkController controller] sendJSONRequestWithMethod:@"GET" stringURL:stringURL parameters:nil success:nil failure:nil];
+        [[ColoredVKNewInstaller sharedInstaller].networkController sendJSONRequestWithMethod:@"GET" stringURL:stringURL parameters:nil success:nil failure:nil];
     }
 }
 
@@ -275,7 +275,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     if (error)
         return;
     
-    ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
+    ColoredVKNetworkController *networkController = [ColoredVKNewInstaller sharedInstaller].networkController;
     [networkController uploadData:data toRemoteURL:[NSString stringWithFormat:@"%@/crash/", kPackageAPIURL]
                           success:^(NSHTTPURLResponse *response, NSData *rawData) {
                               NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:rawData options:0 error:nil];

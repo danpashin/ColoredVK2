@@ -280,7 +280,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{    
+{
     CGFloat cornerRadius = 10.f;
     CGRect bounds = CGRectInset(cell.bounds, 8, 0);
     
@@ -296,24 +296,22 @@
     }
     
     CGMutablePathRef pathRef = CGPathCreateMutable();
-    BOOL addSeparatorLine = NO;
+    BOOL addSeparatorLine = YES;
     if (indexPath.row == 0 && indexPath.row == [tableView numberOfRowsInSection:indexPath.section]-1) {
         CGPathAddRoundedRect(pathRef, nil, bounds, cornerRadius, cornerRadius);
+        addSeparatorLine = NO;
     } else if (indexPath.row == 0) {
         CGPathMoveToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMaxY(bounds));
         CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMinY(bounds), CGRectGetMidX(bounds), CGRectGetMinY(bounds), cornerRadius);
         CGPathAddArcToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMinY(bounds), CGRectGetMaxX(bounds), CGRectGetMidY(bounds), cornerRadius);
         CGPathAddLineToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMaxY(bounds));
-        addSeparatorLine = YES;
     } else if (indexPath.row == [tableView numberOfRowsInSection:indexPath.section]-1) {
         CGPathMoveToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMinY(bounds));
         CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMaxY(bounds), CGRectGetMidX(bounds), CGRectGetMaxY(bounds), cornerRadius);
         CGPathAddArcToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMaxY(bounds), CGRectGetMaxX(bounds), CGRectGetMidY(bounds), cornerRadius);
         CGPathAddLineToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMinY(bounds));
-        addSeparatorLine = YES;
     } else {
         CGPathAddRect(pathRef, nil, bounds);
-        addSeparatorLine = YES;
     }
     layer.path = pathRef;
     CFRelease(pathRef);
