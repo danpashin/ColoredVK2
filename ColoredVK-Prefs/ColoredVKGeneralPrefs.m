@@ -11,11 +11,51 @@
 #import "ColoredVKSettingsController.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKImageProcessor.h"
+#import <Photos/Photos.h>
+
+
+@interface VKPPService : NSObject
++ (id)standartService;
+@end
+
+@interface VKPPSelector : NSObject
+@property(nonatomic) BOOL forceCrop;
+@property(nonatomic) BOOL disableEdits;
+@property(nonatomic) BOOL selectSingle; 
+@property(nonatomic) unsigned long long selectLimit;
+@property(readonly, retain, nonatomic) NSMutableDictionary *assetsEditData;
+@property(readonly, retain, nonatomic) NSMutableDictionary *selectedAssets;
+@end
+
+@interface VKPPAssetData : NSObject <NSCopying>
+@property(nonatomic) long long assetFilesize;
+@property(retain, nonatomic) NSString *assetFilename;
+@property(retain, nonatomic) NSURL *assetURL;
+@property(retain, nonatomic) NSString *assetId;
+@property(retain, nonatomic) VKPPService *service;
+@property(retain, nonatomic) id enhanceFilters;
+@property(retain, nonatomic) UIImage *thumbnail; 
+@property(retain, nonatomic) NSString *text;
+@property(retain, nonatomic) NSString *filter;
+@property(nonatomic) BOOL enhance;
+@property(nonatomic) BOOL cropForced;
+@property(nonatomic) struct CGAffineTransform crop;
+@end
+
+@interface VKPPGroupController : UIViewController
+@end
+
+@interface VKPhotoPicker : UINavigationController
++ (VKPhotoPicker *)photoPickerWithService:(VKPPService *)service mediaTypes:(long long)arg2;
+@property(copy, nonatomic) void (^handler)(VKPhotoPicker *picker, NSArray <VKPPAssetData *> *assetData);
+@property(retain, nonatomic) VKPPSelector *selector;
+- (void)handleCompleteNotification:(id)arg1;
+- (VKPPGroupController *)currentGroupController;
+@end
+
 
 
 @implementation ColoredVKGeneralPrefs
-
-NSArray <NSString *> *specifiersToDisable;
 
 - (NSArray *)specifiers
 {
@@ -26,7 +66,7 @@ NSArray <NSString *> *specifiersToDisable;
         BOOL shouldDisable = (!newInstaller.tweakPurchased || !newInstaller.tweakActivated);
         
         for (PSSpecifier *specifier in specifiersArray) {
-            if (([specifiersToDisable containsObject:specifier.identifier] && shouldDisable) || ![[self.specifier propertyForKey:@"enabled"] boolValue]) {
+            if (shouldDisable || ![[self.specifier propertyForKey:@"enabled"] boolValue]) {
                 [specifier setProperty:@NO forKey:@"enabled"];
             } else {
                 [specifier setProperty:@YES forKey:@"enabled"];
@@ -36,13 +76,6 @@ NSArray <NSString *> *specifiersToDisable;
         _specifiers = specifiersArray.copy;
     }
     return _specifiers;
-}
-
-- (void)loadView
-{
-    [super loadView];
-    
-    specifiersToDisable = @[];
 }
 
 #pragma mark -
@@ -158,10 +191,53 @@ NSArray <NSString *> *specifiersToDisable;
 - (void)chooseImage:(PSSpecifier*)specifier
 {
     self.lastImageIdentifier = specifier.identifier;
-    UIImagePickerController *picker = [UIImagePickerController new];
-    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    picker.delegate = self;
-    [self presentPopover:picker];
+    
+    Class photoPickerClass = NSClassFromString(@"VKPhotoPicker");
+    if (photoPickerClass) {
+        VKPPService *ppService = [NSClassFromString(@"VKPPService") standartService];
+        VKPhotoPicker *photoPicker = [NSClassFromString(@"VKPhotoPicker") photoPickerWithService:ppService mediaTypes:2];
+        
+        photoPicker.selector.selectSingle = YES;
+        photoPicker.selector.disableEdits = YES;
+        
+        photoPicker.handler = ^(VKPhotoPicker *picker, NSArray <VKPPAssetData *> *assetDataArray) {
+            [picker.currentGroupController dismissViewControllerAnimated:YES completion:nil];
+            
+            ColoredVKHUD *hud = [ColoredVKHUD showHUDForView:picker.view];
+            hud.didHiddenBlock = ^{
+                [picker dismissViewControllerAnimated:YES completion:nil];
+            };
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{                
+                PHFetchOptions *options = [PHFetchOptions new];
+                PHFetchResult<PHAsset *> *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetDataArray.firstObject.assetId] options:options];
+                if (fetchResult.count == 1) {
+                    PHImageRequestOptions *requestOptions = [PHImageRequestOptions new];
+                    requestOptions.networkAccessAllowed = YES;
+                    
+                    PHImageManager *imageManager = [PHImageManager defaultManager];
+                    [imageManager requestImageDataForAsset:fetchResult.firstObject options:requestOptions 
+                                             resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+                                                 UIImage *image = [UIImage imageWithData:imageData];
+                                                 if (image) {
+                                                     [self processImage:image handler:^(BOOL success, NSError *error) {
+                                                         success ? [hud showSuccess] : [hud showFailureWithStatus:error.localizedDescription];
+                                                     }];
+                                                 } else {
+                                                     [hud showFailureWithStatus:@"Cannot decrypt image data.\n(Code -1000)"];
+                                                 }
+                                             }];
+                } else {
+                    [hud showFailureWithStatus:@"Did not find asset with vk asset identifier or found multiple assets.\n(Code -1001)"];
+                }
+            });
+        };
+        [self.navigationController presentViewController:photoPicker animated:YES completion:nil];
+    } else {
+        UIImagePickerController *picker = [UIImagePickerController new];
+        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        picker.delegate = self;
+        [self presentPopover:picker];
+    }
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
@@ -171,18 +247,27 @@ NSArray <NSString *> *specifiersToDisable;
         [picker dismissViewControllerAnimated:YES completion:nil];
     };
     
+    [self processImage:image handler:^(BOOL success, NSError *error) {
+        success ? [hud showSuccess] : [hud showFailureWithStatus:error.localizedDescription];
+    }];
+}
+
+- (void)processImage:(UIImage *)image handler:( void(^)(BOOL success, NSError *error) )handler
+{    
     ColoredVKImageProcessor *processor = [ColoredVKImageProcessor new];
     NSString *stringPath = [CVK_FOLDER_PATH stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.lastImageIdentifier]];
     [processor processImage:image identifier:self.lastImageIdentifier andSaveToURL:[NSURL fileURLWithPath:stringPath] 
-                   completionBlock:^(BOOL success, NSError *error) {
-                       success ? [hud showSuccess] : [hud showFailureWithStatus:error.localizedDescription];
-                       
-                       [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{@"identifier" : self.lastImageIdentifier}];
-                       
-                       if ([self.lastImageIdentifier isEqualToString:@"menuBackgroundImage"]) {
-                           CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-                       }
-                   }];
+            completionBlock:^(BOOL success, NSError *error) {
+                if (handler) {
+                    handler(success, error);
+                }
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{@"identifier" : self.lastImageIdentifier}];
+                
+                if ([self.lastImageIdentifier isEqualToString:@"menuBackgroundImage"]) {
+                    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+                }
+            }];
 }
 
 

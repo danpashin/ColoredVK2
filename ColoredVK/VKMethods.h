@@ -789,6 +789,4 @@
 
 @interface EmojiSelectionView : UIView 
 @property(retain, nonatomic) UIScrollView *scrollView;
-//@property(retain, nonatomic) EmojiGridView *emojiGridView;
-//@property(retain, nonatomic) EmojiPopup *emojiPopup;
 @end

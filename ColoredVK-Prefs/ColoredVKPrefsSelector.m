@@ -102,10 +102,6 @@
 {
     [super tableView:tableView didSelectRowAtIndexPath:indexPath];
     
-    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];    
-    if (!newInstaller.tweakPurchased || !newInstaller.tweakActivated)
-        return;
-    
     PSTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if ([cell isKindOfClass:[PSTableCell class]]) {
         if ([[cell.specifier propertyForKey:@"selectorType"] isEqualToString:@"SelectorOption"]) {
