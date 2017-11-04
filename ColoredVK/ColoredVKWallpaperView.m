@@ -146,8 +146,6 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
         if (animated) [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:blurBlock completion:nil];
         else          blurBlock();
     });
-    
-    
 }
 
 - (void)updateViewWithBlackout:(CGFloat)blackout

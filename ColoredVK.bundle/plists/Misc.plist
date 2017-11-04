@@ -112,7 +112,7 @@
 			<key>key</key>
 			<string>keyboardStyle</string>
 			<key>default</key>
-			<string>0</string>
+			<integer>0</integer>
 			<key>validTitles</key>
 			<array>
 				<string>DEFAULT</string>
@@ -121,14 +121,10 @@
 			</array>
 			<key>validValues</key>
 			<array>
-				<string>0</string>
-				<string>2</string>
-				<string>1</string>
+				<integer>0</integer>
+				<integer>2</integer>
+				<integer>1</integer>
 			</array>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
 		</dict>
 		<dict>
 			<key>cell</key>

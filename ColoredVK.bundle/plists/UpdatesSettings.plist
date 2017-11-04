@@ -18,21 +18,21 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSLinkListCell</string>
+			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>PSListItemsController</string>
+			<string>ColoredVKPrefsSelector</string>
 			<key>label</key>
 			<string>CHECK_UPDATES_INTERVAL</string>
 			<key>key</key>
 			<string>updatesInterval</string>
 			<key>default</key>
-			<string>1</string>
+			<integer>1</integer>
 			<key>validValues</key>
 			<array>
-				<string>1</string>
-				<string>7</string>
-				<string>14</string>
-				<string>30</string>
+				<integer>1</integer>
+				<integer>7</integer>
+				<integer>14</integer>
+				<integer>30</integer>
 			</array>
 			<key>validTitles</key>
 			<array>

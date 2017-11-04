@@ -1108,19 +1108,19 @@ CHDeclareMethod(0, void, VKMController, VKMNavigationBarUpdate)
 }
 
 
-CHDeclareClass(VKSearchBarNoCancel);
-CHDeclareMethod(0, void, VKSearchBarNoCancel, layoutSubviews)
+CHDeclareClass(UISearchBar);
+CHDeclareMethod(0, void, UISearchBar, layoutSubviews)
 {
-    CHSuper(0, VKSearchBarNoCancel, layoutSubviews);
+    CHSuper(0, UISearchBar, layoutSubviews);
     
-    if ([self isKindOfClass:NSClassFromString(@"VKSearchBarNoCancel")]) {
-        if (enabled && [self.superview isKindOfClass:[UINavigationBar class]]) {
-            if (enableNightTheme) {
-                self.searchBarTextField.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-            } else if (enabledBarImage)
+    if ([self.superview isKindOfClass:[UINavigationBar class]]) {
+        if (enabled) {
+            if (enabledBarImage)
                 self.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.2f];
-           else if (enabledBarColor)
+            else if (enabledBarColor)
                 self.searchBarTextField.backgroundColor = barBackgroundColor.darkerColor;
+        } else {
+            self.searchBarTextField.backgroundColor = [UIColor colorWithRed:0.078f green:0.227f blue:0.4f alpha:0.8f];
         }
     }
 }
@@ -1359,25 +1359,12 @@ CHDeclareMethod(0, BOOL, NewsFeedController, VKMScrollViewFullscreenEnabled)
     return CHSuper(0, NewsFeedController, VKMScrollViewFullscreenEnabled);
 }
 
-#pragma mark PhotoFeedController
-CHDeclareClass(PhotoFeedController);
-CHDeclareMethod(0, BOOL, PhotoFeedController, VKMTableFullscreenEnabled)
-{
-    if (enabled && showBar) return NO; 
-    return CHSuper(0, PhotoFeedController, VKMTableFullscreenEnabled);
-}
-CHDeclareMethod(0, BOOL, PhotoFeedController, VKMScrollViewFullscreenEnabled)
-{
-    if (enabled && showBar) return NO; 
-    return CHSuper(0, PhotoFeedController, VKMScrollViewFullscreenEnabled);
-}
-
 
 #pragma mark GroupsController - список групп
 CHDeclareClass(GroupsController);
-CHDeclareMethod(0, void, GroupsController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, GroupsController, viewDidLoad)
 {
-    CHSuper(0, GroupsController, viewWillLayoutSubviews);
+    CHSuper(0, GroupsController, viewDidLoad);
     if ([self isKindOfClass:NSClassFromString(@"GroupsController")]) {
         if (enabled && !enableNightTheme && enabledGroupsListImage) {
             [ColoredVKMainController setImageToTableView:self.tableView withName:@"groupsListBackgroundImage" blackout:groupsListImageBlackout
@@ -1432,9 +1419,9 @@ CHDeclareMethod(2, UITableViewCell*, GroupsController, tableView, UITableView*, 
 #pragma mark DialogsController - список диалогов
 CHDeclareClass(DialogsController);
 
-CHDeclareMethod(0, void, DialogsController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, DialogsController, viewDidLoad)
 {
-    CHSuper(0, DialogsController, viewWillLayoutSubviews);
+    CHSuper(0, DialogsController, viewDidLoad);
     if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && ([cvkMainController compareAppVersionWithVersion:@"3.0"] < 0)) {
         if (enabled && !enableNightTheme && enabledMessagesListImage) {
             [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
@@ -1560,7 +1547,8 @@ CHDeclareMethod(1, void, ChatController, viewWillAppear, BOOL, animated)
         
         if (enabled) {
             if (enableNightTheme) {
-                self.inputPanel.pushToTalkCoverView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+                if ([self.inputPanel respondsToSelector:@selector(pushToTalkCoverView)])
+                    self.inputPanel.pushToTalkCoverView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
             }
             else if (changeMessagesInput) {
                 UIButton *inputViewButton = self.inputPanel.inputViewButton;
@@ -1579,9 +1567,9 @@ CHDeclareMethod(1, void, ChatController, viewWillAppear, BOOL, animated)
 }
 
 
-CHDeclareMethod(0, void, ChatController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, ChatController, viewDidLoad)
 {
-    CHSuper(0, ChatController, viewWillLayoutSubviews);
+    CHSuper(0, ChatController, viewDidLoad);
     
     if ([self isKindOfClass:NSClassFromString(@"ChatController")]) {
         if (enabled) {
@@ -4523,7 +4511,7 @@ void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRe
 CHConstructor
 {
     @autoreleasepool {
-//        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
+        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
         
         prefsPath = CVK_PREFS_PATH;
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];

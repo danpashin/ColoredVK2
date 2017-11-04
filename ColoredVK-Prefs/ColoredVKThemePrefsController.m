@@ -11,15 +11,12 @@
 
 @interface ColoredVKThemePrefsController ()
 
-//@property (strong, nonatomic) NSIndexPath *indexPathForSelectedRow;
 @property (strong, nonatomic) UIView *closeAppFooter;
-//@property (strong, nonatomic) UIImageView *tickImageView;
-
 @property (strong, nonatomic) NSArray <PSSpecifier *> *customColorsSpecifiers;
-@property (assign, nonatomic) NSNumber *nightThemeType;
 @property (assign, nonatomic) BOOL specifiersAlreadyInserted;
 
 @end
+
 
 @implementation ColoredVKThemePrefsController
 
@@ -27,12 +24,7 @@
 {
     [super loadView];
     
-//    self.customColorsSpecifiers = [NSMutableArray array];
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    self.nightThemeType = prefs[@"nightThemeType"] ? prefs[@"nightThemeType"] : @(CVKNightThemeTypeDisabled);
-    
     self.customColorsSpecifiers = [self specifiersForPlistName:@"plists/NightTheme" localize:YES addFooter:NO];
-    NSLog(@"%@", self.customColorsSpecifiers);
 }
 
 - (void)viewDidLoad
@@ -44,11 +36,11 @@
 
 - (void)updateType
 {
-    NSLog(@"Should visually update type");
-    if (![self.nightThemeType isEqual:@(CVKNightThemeTypeCustom)]) {
+    if ([self.selectorCurrentValue integerValue] != CVKNightThemeTypeCustom) {
         self.specifiersAlreadyInserted = NO;
         [self removeContiguousSpecifiers:self.customColorsSpecifiers animated:YES];
-    } else if (!self.specifiersAlreadyInserted) {
+    } 
+    else if (!self.specifiersAlreadyInserted) {
         [self insertContiguousSpecifiers:self.customColorsSpecifiers afterSpecifierID:@"customColorsGroup" animated:YES];
     }
 }
@@ -61,75 +53,31 @@
         [specifiers addObjectsFromArray:self.customColorsSpecifiers];
         self.specifiersAlreadyInserted = YES;
         
+        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller]; 
+        BOOL shouldDisable = (!newInstaller.tweakPurchased || !newInstaller.tweakActivated);
+        for (PSSpecifier *specifier in specifiers) {
+            if (shouldDisable || ![[self.specifier propertyForKey:@"enabled"] boolValue]) {
+                [specifier setProperty:@NO forKey:@"enabled"];
+            } else {
+                [specifier setProperty:@YES forKey:@"enabled"];
+            }
+        }
+        
         _specifiers = specifiers;
     }
     return _specifiers;
 }
 
-- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
+- (void)didSelectValue:(id)value forKey:(NSString *)key
 {
-    [super setPreferenceValue:value specifier:specifier];
-    
-    NSLog(@"%@", specifier.identifier);
-    
-    if ([specifier.identifier containsString:@"nightThemeType"]) {
-        self.nightThemeType = value;
-        [self updateType];
-    }
+    [super didSelectValue:value forKey:key];
+    [self updateType];
 }
 
 
 #pragma mark -
 #pragma mark UITableViewDelegate
 #pragma mark -
-
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    PSTableCell *cell = (PSTableCell *)[super tableView:tableView cellForRowAtIndexPath:indexPath];
-//    
-//    if ([cell isKindOfClass:[PSTableCell class]]) {
-//        if ([cell.specifier.identifier containsString:@"nightThemeType"]) {
-//            if ([[cell.specifier propertyForKey:@"value"] integerValue] == self.nightThemeType) {
-//                cell.accessoryView = self.tickImageView;
-//                self.indexPathForSelectedRow = indexPath;
-//            }
-//        }
-//    }
-//    
-//    return cell;
-//}
-
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
-//    
-//    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];    
-//    if (!newInstaller.tweakPurchased || !newInstaller.tweakActivated)
-//        return;
-//    
-//    PSTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-//    if ([cell isKindOfClass:[PSTableCell class]]) {
-//        if ([cell.specifier.identifier containsString:@"nightThemeType"]) {
-//            if (self.indexPathForSelectedRow) {
-//                [self deselectRowAtIndexPath:self.indexPathForSelectedRow inTableView:tableView];
-//            }
-//            self.indexPathForSelectedRow = indexPath;
-//            cell.accessoryView = self.tickImageView;
-//            
-//            [self setPreferenceValue:[cell.specifier propertyForKey:@"value"] specifier:cell.specifier];
-//        }
-//    }
-//}
-//
-//- (void)deselectRowAtIndexPath:(NSIndexPath *)indexPath inTableView:(UITableView *)tableView
-//{
-//    PSTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-//    if ([cell isKindOfClass:[PSTableCell class]]) {
-//        if (cell.type == PSStaticTextCell) {
-//            cell.accessoryView = nil;
-//        }
-//    }
-//}
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
@@ -155,6 +103,7 @@
 
 #pragma mark -
 
+
 - (UIView *)closeAppFooter
 {
     if (!_closeAppFooter) {
@@ -179,13 +128,12 @@
         [closeAppButton addTarget:self action:@selector(actionCloseApplication) forControlEvents:UIControlEventTouchUpInside];
         [contentView addSubview:closeAppButton];
         
-        
         footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
         closeAppButton.translatesAutoresizingMaskIntoConstraints = NO;
         NSDictionary *views = @{@"footerLabel":footerLabel, @"button":closeAppButton};
         [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[footerLabel]-|" options:0 metrics:nil views:views]];
-        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[button(44)]|" options:0 metrics:nil views:views]];
         [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[footerLabel]-|" options:0 metrics:nil views:views]];
+        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[button(44)]|" options:0 metrics:nil views:views]];
         [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[button]-|" options:0 metrics:nil views:views]];
         
         _closeAppFooter = contentView;

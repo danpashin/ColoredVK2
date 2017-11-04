@@ -21,6 +21,8 @@
 			<string>CHANGE_BACKGROUND</string>
 			<key>id</key>
 			<string>settingsBackgroundImage</string>
+			<key>icon</key>
+			<string>PhotosIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -121,6 +123,8 @@
 			<string>CHANGE_BACKGROUND</string>
 			<key>id</key>
 			<string>settingsExtraBackgroundImage</string>
+			<key>icon</key>
+			<string>PhotosIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>

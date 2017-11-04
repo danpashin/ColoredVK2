@@ -394,7 +394,7 @@ void installerActionLogout(NSString *password, void(^completionBlock)(void))
 static void download(id parameters,BOOL isAuthorisation, void(^completionBlock)(void))
 {
     void (^showAlertBlock)(NSError *error) = ^(NSError *error) {
-        NSString *text = [NSString stringWithFormat:@"%@ (Code %@)", error.localizedDescription, @(error.code)];
+        NSString *text = [NSString stringWithFormat:@"%@\n(Code %@)", error.localizedDescription, @(error.code)];
         
         if ((int)error.code == 1050) {
             writeFreeLicence(NO);

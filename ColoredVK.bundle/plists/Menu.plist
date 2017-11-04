@@ -21,6 +21,8 @@
 			<string>CHANGE_BACKGROUND</string>
 			<key>id</key>
 			<string>menuBackgroundImage</string>
+			<key>icon</key>
+			<string>PhotosIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -108,12 +110,12 @@
 			<key>id</key>
 			<string>menuSelectionStyle</string>
 			<key>default</key>
-			<string>1</string>
+			<integer>1</integer>
 			<key>validValues</key>
 			<array>
-				<string>0</string>
-				<string>1</string>
-				<string>2</string>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
 			</array>
 			<key>validTitles</key>
 			<array>

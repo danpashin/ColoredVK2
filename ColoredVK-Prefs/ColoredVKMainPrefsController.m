@@ -115,7 +115,7 @@ NSArray <NSString *> *specifiersToEnable;
         [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[button(44)]|" options:0 metrics:nil views:@{@"button":hideButton}]];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            footerLabel.textContainer.exclusionPaths = @[ [UIBezierPath bezierPathWithRect:CGRectMake(CGRectGetWidth(contentView.frame)-48, 0, 48, 44)] ];
+            footerLabel.textContainer.exclusionPaths = @[ [UIBezierPath bezierPathWithRect:CGRectMake(CGRectGetWidth(self.prefsTableView.frame)-48, 0, 48, 44)] ];
         });
         
         _freeVersionFooter = contentView;

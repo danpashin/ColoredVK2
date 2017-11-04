@@ -61,6 +61,8 @@
 			<string>ENABLED_IMAGE</string>
 			<key>id</key>
 			<string>barImage</string>
+			<key>icon</key>
+			<string>PhotosIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>

@@ -9,4 +9,10 @@
 
 @interface ColoredVKPrefsSelector : ColoredVKGeneralPrefs
 
+@property (copy, nonatomic) NSString *selectorKey;
+@property (strong, nonatomic) id selectorDefaultValue;
+@property (strong, nonatomic) id selectorCurrentValue;
+
+- (void)didSelectValue:(id)value forKey:(NSString *)key;
+
 @end

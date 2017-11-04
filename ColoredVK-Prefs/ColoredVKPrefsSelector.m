@@ -9,13 +9,8 @@
 #import "ColoredVKNewInstaller.h"
 
 @interface ColoredVKPrefsSelector ()
-
-@property (copy, nonatomic) NSString *selectorKey;
-@property (strong, nonatomic) id selectorDefaultValue;
-
 @property (strong, nonatomic) NSIndexPath *indexPathForSelectedRow;
 @property (strong, nonatomic) UIImageView *tickImageView;
-
 @end
 
 @implementation ColoredVKPrefsSelector
@@ -23,26 +18,19 @@
 - (NSArray *)specifiers
 {
     if (!_specifiers) {
-        NSMutableArray <PSSpecifier *> *specifiers = [NSMutableArray array];
+        NSMutableArray <PSSpecifier *> *specifiers = [NSMutableArray array];        
         
-        if (self.selectorKey) {
-            ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller]; 
-            BOOL shouldDisable = (!newInstaller.tweakPurchased || !newInstaller.tweakActivated);
-            
-            NSArray <NSString *> *allKeys = [self.specifier propertyForKey:@"selectorKeys"];
-            NSArray *allValues = [self.specifier propertyForKey:@"selectorValues"];
+        if (self.selectorKey) {            
+            NSArray <NSString *> *allKeys = [self.specifier propertyForKey:@"validTitles"];
+            NSArray *allValues = [self.specifier propertyForKey:@"validValues"];
             if (allKeys.count > 0 && allValues.count > 0) {
-                for (int i=0; i<allKeys.count; i++) {                    
+                for (int i=0; i<allKeys.count; i++) {
                     PSSpecifier *specifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedStringFromTableInBundle(allKeys[i], @"ColoredVK", self.cvkBundle, nil)
-                                                                            target:self set:nil get:nil detail:nil cell:PSListItemCell edit:nil];
-                    [specifier setProperty:allValues[i] forKey:@"key"];
+                                                                            target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:)
+                                                                            detail:nil cell:PSStaticTextCell edit:nil];
+                    [specifier setProperty:allValues[i] forKey:@"selectorValue"];
                     [specifier setProperty:@"SelectorOption" forKey:@"selectorType"];
-                    
-                    if (shouldDisable || ![[self.specifier propertyForKey:@"enabled"] boolValue]) {
-                        [specifier setProperty:@NO forKey:@"enabled"];
-                    } else {
-                        [specifier setProperty:@YES forKey:@"enabled"];
-                    }
+                    [specifier setProperty:@YES forKey:@"enabled"];
                     
                     [specifiers addObject:specifier];
                 }
@@ -58,8 +46,11 @@
 {
     [super loadView];
     
-    self.selectorKey = [self.specifier propertyForKey:@"selectorKey"];
-    self.selectorDefaultValue = [self.specifier propertyForKey:@"selectorDefaultValue"];
+    self.selectorKey = [self.specifier propertyForKey:@"key"];
+    self.selectorDefaultValue = [self.specifier propertyForKey:@"default"];
+    
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+    self.selectorCurrentValue = prefs[self.selectorKey] ? prefs[self.selectorKey] : self.selectorDefaultValue;
 }
 
 - (void)viewDidLoad
@@ -70,22 +61,35 @@
     self.tickImageView.image = [UIImage imageNamed:@"TickIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
 }
 
+- (id)readPreferenceValue:(PSSpecifier *)specifier
+{
+    if (specifier.properties[@"selectorValue"])
+        return nil;
+    
+    return [super readPreferenceValue:specifier];
+}
+
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
 {
-    PSSpecifier *newSpecifier = [PSSpecifier preferenceSpecifierNamed:specifier.name target:self set:nil get:nil detail:nil cell:PSListItemCell edit:nil];
-    [newSpecifier setProperty:self.selectorKey forKey:@"key"];
-    newSpecifier.identifier = self.selectorKey;
-    [super setPreferenceValue:value specifier:newSpecifier];
-    
-    NSLog(@"setValue %@ forKey: %@", value, self.selectorKey);
+    if (specifier.properties[@"selectorValue"]) {
+        PSSpecifier *newSpecifier = [PSSpecifier preferenceSpecifierNamed:specifier.name target:self set:nil get:nil detail:nil cell:PSListItemCell edit:nil];
+        [newSpecifier setProperty:self.selectorKey forKey:@"key"];
+        newSpecifier.identifier = self.selectorKey;
+        [super setPreferenceValue:value specifier:newSpecifier];
+    } else {
+        [super setPreferenceValue:value specifier:specifier];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     PSTableCell *cell = (PSTableCell *)[super tableView:tableView cellForRowAtIndexPath:indexPath];
     
+    cell.userInteractionEnabled = YES;
+    cell.cellEnabled = YES;
+    
     if ([cell isKindOfClass:[PSTableCell class]]) {
-        if ([[cell.specifier propertyForKey:@"key"] isEqual:self.selectorDefaultValue]) {
+        if ([[cell.specifier propertyForKey:@"selectorValue"] isEqual:self.selectorCurrentValue]) {
             cell.accessoryView = self.tickImageView;
             self.indexPathForSelectedRow = indexPath;
         }
@@ -112,11 +116,18 @@
                 self.indexPathForSelectedRow = indexPath;
                 cell.accessoryView = self.tickImageView;
                 
-                [self setPreferenceValue:[cell.specifier propertyForKey:@"key"] specifier:cell.specifier];
+                self.selectorCurrentValue = [cell.specifier propertyForKey:@"selectorValue"];
+                [self setPreferenceValue:self.selectorCurrentValue specifier:cell.specifier];
+                
+                [self didSelectValue:self.selectorCurrentValue forKey:self.selectorKey];
             }
         }
     }
 }
 
+- (void)didSelectValue:(id)value forKey:(NSString *)key
+{
+    
+}
 
 @end

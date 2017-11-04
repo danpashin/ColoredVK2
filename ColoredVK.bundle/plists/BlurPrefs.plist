@@ -46,7 +46,7 @@
 			<key>key</key>
 			<string>BlurStyle</string>
 			<key>default</key>
-			<string>1</string>
+			<integer>1</integer>
 			<key>validTitles</key>
 			<array>
 				<string>LIGHT</string>
@@ -54,8 +54,8 @@
 			</array>
 			<key>validValues</key>
 			<array>
-				<string>1</string>
-				<string>2</string>
+				<integer>1</integer>
+				<integer>2</integer>
 			</array>
 		</dict>
 		<dict>
