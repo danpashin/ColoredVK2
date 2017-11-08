@@ -280,6 +280,10 @@ void reloadPrefs()
     dialogsUnreadColor =        [[UIColor savedColorForIdentifier:@"dialogsUnreadColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
     messageUnreadColor =        [[UIColor savedColorForIdentifier:@"messageReadColor"           fromPrefs:prefs] colorWithAlphaComponent:0.2];
     
+    if (!hideMenuSeparators && !prefs[@"MenuSeparatorColor"] && [cvkMainController compareAppVersionWithVersion:@"3.0"] == ColoredVKVersionCompareMore) {
+        menuSeparatorColor  = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0 alpha:1.0f];
+    }
+    
     showFastDownloadButton = prefs[@"showFastDownloadButton"] ? [prefs[@"showFastDownloadButton"] boolValue] : YES;
     showMenuCell = prefs[@"showMenuCell"] ? [prefs[@"showMenuCell"] boolValue] : YES;
     
@@ -1115,7 +1119,9 @@ CHDeclareMethod(0, void, UISearchBar, layoutSubviews)
     
     if ([self.superview isKindOfClass:[UINavigationBar class]]) {
         if (enabled) {
-            if (enabledBarImage)
+            if (enableNightTheme)
+                self.searchBarTextField.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+            else if (enabledBarImage)
                 self.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.2f];
             else if (enabledBarColor)
                 self.searchBarTextField.backgroundColor = barBackgroundColor.darkerColor;
@@ -3631,8 +3637,11 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
             else
                 [self setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateNormal];
             
-            if (![[self imageForState:UIControlStateNormal].imageAsset.assetName containsString:@"attachments/remove"]) {
-                if (CGRectGetWidth(self.imageView.frame) <= 40.0f && CGRectGetHeight(self.imageView.frame) <= 40.0f) {
+            BOOL shouldChangeColor = ((NSNumber *)objc_getAssociatedObject(self, "shouldChangeImageColor")).boolValue;
+            
+            NSArray <NSString *> *namesToExclude = @[@"attachments/remove", @"search/clear"];
+            if (![namesToExclude containsObject:[self imageForState:UIControlStateNormal].imageAsset.assetName] || shouldChangeColor) {
+                if ((CGRectGetWidth(self.imageView.frame) <= 40.0f && CGRectGetHeight(self.imageView.frame) <= 40.0f) || shouldChangeColor) {
                     [self setImage:[[self imageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
                     self.imageView.tintColor = cvkMainController.nightThemeScheme.buttonColor;
                 }
@@ -3751,7 +3760,6 @@ CHDeclareMethod(0, void, UIImageView, layoutSubviews)
     CHSuper(0, UIImageView, layoutSubviews);
     
     if (enabled && enableNightTheme) {
-//        self.alpha = 0.8f;
         self.backgroundColor = [UIColor clearColor];
     }
 }
@@ -4247,16 +4255,6 @@ CHDeclareMethod(1, id, FreshNewsButton, initWithFrame, CGRect, frame)
     return button;
 }
 
-CHDeclareClass(VKLivePromoView);
-CHDeclareMethod(0, void, VKLivePromoView, layoutSubviews)
-{
-    CHSuper(0, VKLivePromoView, layoutSubviews);
-    
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKLivePromoView")]) {
-        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-    }
-}
-
 CHDeclareClass(TouchHighlightControl);
 CHDeclareMethod(1, id, TouchHighlightControl, initWithFrame, CGRect, frame)
 {
@@ -4381,6 +4379,72 @@ CHDeclareMethod(0, void, EmojiSelectionView, layoutSubviews)
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"EmojiSelectionView")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+}
+
+CHDeclareClass(LicensesViewController);
+CHDeclareMethod(0, void, LicensesViewController, viewDidLoad)
+{
+    CHSuper(0, LicensesViewController, viewDidLoad);
+    
+    if (enabled && enableNightTheme) {
+        self.view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+    }
+}
+
+CHDeclareClass(VKAudioPlayerViewController);
+CHDeclareMethod(0, UIStatusBarStyle, VKAudioPlayerViewController, preferredStatusBarStyle)
+{
+    if (enabled && enableNightTheme)
+        return UIStatusBarStyleLightContent;
+    
+    return CHSuper(0, VKAudioPlayerViewController, preferredStatusBarStyle);
+}
+
+CHDeclareMethod(0, void, VKAudioPlayerViewController, viewDidLoad)
+{
+    CHSuper(0, VKAudioPlayerViewController, viewDidLoad);
+    
+    if (enabled && enableNightTheme) {
+        self.view.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        self.pageController.view.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        self.backgroundView.hidden = YES;
+        
+        UIView *effectView = [[UIView alloc] initWithFrame:self.toolbarView.bounds];
+        effectView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        effectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        [self.toolbarView.contentView addSubview:effectView];
+        [self.toolbarView.contentView sendSubviewToBack:effectView];
+        
+        for (UIView *subview in self.view.subviews) {
+            if ([subview isKindOfClass:[UIImageView class]]) {
+                subview.hidden = YES;
+            }
+        }
+    }
+}
+
+CHDeclareClass(PopupWindowView);
+CHDeclareMethod(0, UIView *, PopupWindowView, contentView)
+{
+    UIView *contentView = CHSuper(0, PopupWindowView, contentView);
+    
+    if (enabled && enableNightTheme) {
+        contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+    
+    return contentView;
+}
+
+CHDeclareClass(VKAudioPlayerControlsViewController);
+CHDeclareMethod(0, void, VKAudioPlayerControlsViewController, viewDidLoad)
+{
+    CHSuper(0, VKAudioPlayerControlsViewController, viewDidLoad);
+    
+    if (enabled && enableNightTheme) {            
+            objc_setAssociatedObject(self.pp,   "shouldChangeImageColor", @1, OBJC_ASSOCIATION_ASSIGN);
+            objc_setAssociatedObject(self.prev, "shouldChangeImageColor", @1, OBJC_ASSOCIATION_ASSIGN);
+            objc_setAssociatedObject(self.next, "shouldChangeImageColor", @1, OBJC_ASSOCIATION_ASSIGN);
     }
 }
 

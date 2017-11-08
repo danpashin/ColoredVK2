@@ -13,46 +13,29 @@
 #import "ColoredVKImageProcessor.h"
 #import <Photos/Photos.h>
 
-
 @interface VKPPService : NSObject
 + (id)standartService;
 @end
 
 @interface VKPPSelector : NSObject
-@property(nonatomic) BOOL forceCrop;
-@property(nonatomic) BOOL disableEdits;
-@property(nonatomic) BOOL selectSingle; 
-@property(nonatomic) unsigned long long selectLimit;
-@property(readonly, retain, nonatomic) NSMutableDictionary *assetsEditData;
-@property(readonly, retain, nonatomic) NSMutableDictionary *selectedAssets;
+@property (nonatomic) BOOL forceCrop;
+@property (nonatomic) BOOL disableEdits;
+@property (nonatomic) BOOL selectSingle; 
+@property (nonatomic) unsigned long long selectLimit;
 @end
 
 @interface VKPPAssetData : NSObject <NSCopying>
-@property(nonatomic) long long assetFilesize;
-@property(retain, nonatomic) NSString *assetFilename;
-@property(retain, nonatomic) NSURL *assetURL;
-@property(retain, nonatomic) NSString *assetId;
-@property(retain, nonatomic) VKPPService *service;
-@property(retain, nonatomic) id enhanceFilters;
-@property(retain, nonatomic) UIImage *thumbnail; 
-@property(retain, nonatomic) NSString *text;
-@property(retain, nonatomic) NSString *filter;
-@property(nonatomic) BOOL enhance;
-@property(nonatomic) BOOL cropForced;
-@property(nonatomic) struct CGAffineTransform crop;
-@end
-
-@interface VKPPGroupController : UIViewController
+@property (retain, nonatomic) NSString *assetFilename;
+@property (retain, nonatomic) NSURL *assetURL;
+@property (retain, nonatomic) NSString *assetId;
 @end
 
 @interface VKPhotoPicker : UINavigationController
-+ (VKPhotoPicker *)photoPickerWithService:(VKPPService *)service mediaTypes:(long long)arg2;
-@property(copy, nonatomic) void (^handler)(VKPhotoPicker *picker, NSArray <VKPPAssetData *> *assetData);
-@property(retain, nonatomic) VKPPSelector *selector;
-- (void)handleCompleteNotification:(id)arg1;
-- (VKPPGroupController *)currentGroupController;
++ (VKPhotoPicker *)photoPickerWithService:(VKPPService *)service mediaTypes:(NSInteger)arg2;
+@property (copy, nonatomic) void (^handler)(VKPhotoPicker *picker, NSArray <VKPPAssetData *> *assetData);
+@property (retain, nonatomic) VKPPSelector *selector;
+@property (nonatomic, readonly, strong) UIViewController *currentGroupController;
 @end
-
 
 
 @implementation ColoredVKGeneralPrefs
@@ -66,7 +49,7 @@
         BOOL shouldDisable = (!newInstaller.tweakPurchased || !newInstaller.tweakActivated);
         
         for (PSSpecifier *specifier in specifiersArray) {
-            if (shouldDisable || ![[self.specifier propertyForKey:@"enabled"] boolValue]) {
+            if (shouldDisable && ![[self.specifier propertyForKey:@"enabled"] boolValue]) {
                 [specifier setProperty:@NO forKey:@"enabled"];
             } else {
                 [specifier setProperty:@YES forKey:@"enabled"];
@@ -201,7 +184,13 @@
         photoPicker.selector.disableEdits = YES;
         
         photoPicker.handler = ^(VKPhotoPicker *picker, NSArray <VKPPAssetData *> *assetDataArray) {
+            
             [picker.currentGroupController dismissViewControllerAnimated:YES completion:nil];
+            
+            if (assetDataArray.count != 1) {
+                [picker dismissViewControllerAnimated:YES completion:nil];
+                return;
+            }
             
             ColoredVKHUD *hud = [ColoredVKHUD showHUDForView:picker.view];
             hud.didHiddenBlock = ^{

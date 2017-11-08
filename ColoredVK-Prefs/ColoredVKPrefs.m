@@ -98,9 +98,10 @@
     self.prefsTableView.emptyDataSetDelegate = self;
     
     
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller]; 
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     self.enableNightTheme = prefs[@"nightThemeType"] ? ([prefs[@"nightThemeType"] integerValue] != -1) : NO;
-    self.enableNightTheme = ([prefs[@"enabled"] boolValue] && self.enableNightTheme);
+    self.enableNightTheme = ([prefs[@"enabled"] boolValue] && self.enableNightTheme && newInstaller.tweakPurchased && newInstaller.tweakActivated);
     self.nightThemeColorScheme = [ColoredVKNightThemeColorScheme colorSchemeForType:[prefs[@"nightThemeType"] integerValue]];
     
     if (self.app_is_vk && self.enableNightTheme) {

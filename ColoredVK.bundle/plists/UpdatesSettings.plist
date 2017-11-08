@@ -26,7 +26,7 @@
 			<key>key</key>
 			<string>updatesInterval</string>
 			<key>default</key>
-			<integer>1</integer>
+			<integer>7</integer>
 			<key>validValues</key>
 			<array>
 				<integer>1</integer>

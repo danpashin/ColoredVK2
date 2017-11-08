@@ -67,6 +67,37 @@ NSString *userPassword;
         uname(&systemInfo);
         
         [self createFolders];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
+            NSError *error = nil;
+            NSURL *provisionURL = [[NSBundle mainBundle] URLForResource:@"embedded" withExtension:@"mobileprovision"];
+            NSString *provisionString = [[NSString alloc] initWithContentsOfURL:provisionURL encoding:NSISOLatin1StringEncoding error:&error];
+            
+            if (!error) {         
+                NSString *provisionDictString = @"";
+                
+                NSScanner *scanner = [NSScanner scannerWithString:provisionString];
+                [scanner scanUpToString:@"<plist" intoString:nil];
+                [scanner scanUpToString:@"</plist>" intoString:&provisionDictString];
+                provisionDictString = [@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n" stringByAppendingString:provisionDictString];
+                provisionDictString = [provisionDictString stringByAppendingString:@"</plist>"];
+                
+                NSString *tempPath = [NSTemporaryDirectory() stringByAppendingString:@"/embedded_mobileprovision.plist"];
+                [[provisionDictString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:tempPath atomically:YES];
+                
+                NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:tempPath];
+                if (dict) {
+                    _appTeamIdentifier = ((NSArray *)dict[@"TeamIdentifier"]).firstObject;
+                    _appTeamName = dict[@"TeamName"];
+                }
+                [[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
+            }
+            
+            if (NSClassFromString(@"Activation") != nil) {
+                _sellerName = @"iapps";
+            }
+        });
     }
     return self;
 }
@@ -74,12 +105,6 @@ NSString *userPassword;
 - (void)createFolders
 {
     NSFileManager *fileManager = [NSFileManager defaultManager];
-#ifdef CVK_CACHE_PATH_OLD
-    if ([fileManager fileExistsAtPath:CVK_CACHE_PATH_OLD]) [fileManager removeItemAtPath:CVK_CACHE_PATH_OLD error:nil];
-#endif
-#ifdef CVK_CACHE_PATH_OLD1
-    if ([fileManager fileExistsAtPath:CVK_CACHE_PATH_OLD1]) [fileManager removeItemAtPath:CVK_CACHE_PATH_OLD1 error:nil];
-#endif
     
     if (![fileManager fileExistsAtPath:CVK_FOLDER_PATH])  [fileManager createDirectoryAtPath:CVK_FOLDER_PATH withIntermediateDirectories:NO attributes:nil error:nil];
     if (![fileManager fileExistsAtPath:CVK_CACHE_PATH]) [fileManager createDirectoryAtPath:CVK_CACHE_PATH  withIntermediateDirectories:NO attributes:nil error:nil];
@@ -116,56 +141,20 @@ NSString *userPassword;
 
 - (void)actionPurchase
 {
-    if (self.userID) {        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            
-            NSError *error = nil;
-            NSURL *provisionURL = [[NSBundle mainBundle] URLForResource:@"embedded" withExtension:@"mobileprovision"];
-            NSString *provisionString = [[NSString alloc] initWithContentsOfURL:provisionURL encoding:NSISOLatin1StringEncoding error:&error];
-            
-            NSString *provisionTeamID = @"";
-            NSString *provisionTeamName = @"";
-            
-            if (!error) {         
-                NSString *provisionDictString = @"";
-                
-                NSScanner *scanner = [NSScanner scannerWithString:provisionString];
-                [scanner scanUpToString:@"<plist" intoString:nil];
-                [scanner scanUpToString:@"</plist>" intoString:&provisionDictString];
-                provisionDictString = [@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n" stringByAppendingString:provisionDictString];
-                provisionDictString = [provisionDictString stringByAppendingString:@"</plist>"];
-                
-                NSString *tempPath = [NSTemporaryDirectory() stringByAppendingString:@"/embedded_mobileprovision.plist"];
-                [[provisionDictString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:tempPath atomically:YES];
-                
-                NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:tempPath];
-                if (dict) {
-                    provisionTeamID = ((NSArray *)dict[@"TeamIdentifier"]).firstObject;
-                    provisionTeamName = dict[@"TeamName"];
-                }
-                [[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
-            }
-            
-            NSString *from = @"";
-            NSArray *contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSBundle mainBundle].bundlePath error:nil];
-            if ([contents containsObject:@"iappsDefender.dylib"]) {
-                from = @"iapps";
-            }
-            
-            ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
-            webController.url = [NSURL URLWithString:kPackagePurchaseLink];
-            
-            NSError *requestError = nil;
-            NSDictionary *params = @{@"user_id" :self.userID, @"profile_team_id": provisionTeamID, @"profile_team_name": provisionTeamName, @"from": from};
-            NSURLRequest *request = [self.networkController requestWithMethod:@"POST" URLString:webController.url.absoluteString parameters:params error:&requestError];
-            
-            if (!requestError) {
-                webController.request = request;
-                [webController present];
-            } else {
-                [self showAlertWithTitle:nil text:[NSString stringWithFormat:@"Unknown error:\n%@", error.localizedDescription] buttons:nil];
-            }
-        });
+    if (self.userID) {
+        ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
+        webController.url = [NSURL URLWithString:kPackagePurchaseLink];
+        
+        NSError *requestError = nil;
+        NSDictionary *params = @{@"user_id" :self.userID, @"profile_team_id": self.appTeamIdentifier, @"profile_team_name": self.appTeamName, @"from": self.sellerName};
+        NSURLRequest *request = [self.networkController requestWithMethod:@"POST" URLString:webController.url.absoluteString parameters:params error:&requestError];
+        
+        if (!requestError) {
+            webController.request = request;
+            [webController present];
+        } else {
+            [self showAlertWithTitle:nil text:[NSString stringWithFormat:@"Error while creating purchase reuest:\n%@", requestError.localizedDescription] buttons:nil];
+        }
     } else {
         [self showAlertWithTitle:CVKLocalizedString(@"WARNING") text:CVKLocalizedString(@"ENTER_ACCOUNT_FIRST") buttons:nil];
     }
@@ -333,10 +322,10 @@ void installerActionLogout(NSString *password, void(^completionBlock)(void))
     
     void (^newCompletionBlock)(NSError *error) = ^(NSError *error){
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-        
         [newInstaller hideHud];
-        if (error.code == 1050)
-            [newInstaller showAlertWithTitle:nil text:[NSString stringWithFormat:@"%@ (Code %@)", error.localizedDescription, @(error.code)] buttons:nil];
+        
+        if (error)
+            [newInstaller showAlertWithTitle:nil text:[NSString stringWithFormat:@"%@\n(Code %@)", error.localizedDescription, @(error.code)] buttons:nil];
         
         if (completionBlock)
             completionBlock();
@@ -375,15 +364,21 @@ void installerActionLogout(NSString *password, void(^completionBlock)(void))
                                                           NSError *writingError;
                                                           NSData *licenceEncryptedData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:licenceDict], kDRMLicenceKey);
                                                           [licenceEncryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
-                                                          if (!writingError)  newCompletionBlock([NSError errorWithDomain:@"" code:1060 userInfo:nil]);
-                                                          else newCompletionBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error (-6)"}]);
-                                                      } else newCompletionBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error (-5)"}]);
+                                                          
+                                                          if (!writingError) {
+                                                              newCompletionBlock(nil);
+                                                          } else 
+                                                              newCompletionBlock([NSError errorWithDomain:NSCocoaErrorDomain code:106 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}]);
+                                                      } else 
+                                                          newCompletionBlock([NSError errorWithDomain:NSCocoaErrorDomain code:105 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}]);
                                                       
-                                                  } else newCompletionBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error (-0)"}]);
-                                              } else newCompletionBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error (-1)"}]);
+                                                  } else 
+                                                      newCompletionBlock([NSError errorWithDomain:NSCocoaErrorDomain code:104 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}]);
+                                              } else 
+                                                  newCompletionBlock([NSError errorWithDomain:NSCocoaErrorDomain code:103 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}]);
                                           } else {
-                                              NSString *errorMessages = json ? json[@"error"] : @"Unknown error (-2)";
-                                              newCompletionBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);
+                                              NSString *errorMessages = json ? json[@"error"] : @"Unknown error";
+                                              newCompletionBlock([NSError errorWithDomain:NSCocoaErrorDomain code:102 userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);
                                           }
                                       } 
                                       failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
@@ -394,21 +389,14 @@ void installerActionLogout(NSString *password, void(^completionBlock)(void))
 static void download(id parameters,BOOL isAuthorisation, void(^completionBlock)(void))
 {
     void (^showAlertBlock)(NSError *error) = ^(NSError *error) {
-        NSString *text = [NSString stringWithFormat:@"%@\n(Code %@)", error.localizedDescription, @(error.code)];
         
-        if ((int)error.code == 1050) {
-            writeFreeLicence(NO);
-        }
-        if ((int)error.code == 1060) {
-            text = CVKLocalizedString(@"LICENCE_SUCCESSFULLY_INSTALLED");
-        }
-        if ((int)error.code == 1070) {
-            text = @"";
-        }
         ColoredVKNewInstaller *installer = [ColoredVKNewInstaller sharedInstaller];
         [installer hideHud];
-        if ((int)text.length > 0)
-            [installer showAlertWithTitle:nil text:text buttons:nil];
+        
+        if (error) {
+            writeFreeLicence(NO);
+            [installer showAlertWithTitle:nil text:[NSString stringWithFormat:@"%@\n(Code %@)", error.localizedDescription, @(error.code)] buttons:nil];
+        }
         
         if (completionBlock)
             completionBlock();
@@ -445,7 +433,7 @@ static void download(id parameters,BOOL isAuthorisation, void(^completionBlock)(
                                                       [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
                                                       
                                                       if (!writingError) {
-                                                          showAlertBlock([NSError errorWithDomain:@"" code:1070 userInfo:nil]);
+                                                          showAlertBlock(nil);
                                                           CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
                                                           
                                                           BOOL purchased = ([json[@"activated"] boolValue] && [json[@"purchased"] boolValue]);
@@ -454,11 +442,11 @@ static void download(id parameters,BOOL isAuthorisation, void(^completionBlock)(
                                                               installerCompletionBlock(YES);
                                                       }
                                                       else showAlertBlock(writingError);
-                                                  } else showAlertBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error (-0)"}]);
-                                              } else showAlertBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error (-1)"}]);
+                                                  } else showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain code:103 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}]);
+                                              } else showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain code:102 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}]);
                                           } else {
-                                              NSString *errorMessages = json ? json[@"error"] : @"Unknown error (-2)";
-                                              showAlertBlock([NSError errorWithDomain:@"" code:1050 userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);
+                                              NSString *errorMessages = json ? json[@"error"] : @"Unknown error";
+                                              showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain code:101 userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);
                                           }
                                       } 
                                       failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {

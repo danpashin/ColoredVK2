@@ -41,10 +41,13 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
 }
 
 - (void)checkUpdates
-{    
+{
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php", kPackageAPIURL];
     NSMutableDictionary *parameters = [@{@"userVers": kPackageVersion, @"product": kPackageIdentifier, @"ios_version":[UIDevice currentDevice].systemVersion, 
-                                         @"vk_version":[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]} mutableCopy];
+                                         @"vk_version":[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"],
+                                         @"appTeamName": newInstaller.appTeamName, @"appTeamIdentifier": newInstaller.appTeamIdentifier,
+                                         @"sellerName": newInstaller.sellerName } mutableCopy];
     
 #ifndef COMPILE_FOR_JAIL
     parameters[@"getIPA"] = @1;
@@ -125,7 +128,7 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
         dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
         NSInteger daysAgo = [dateFormatter dateFromString:lastCheckForUpdates].daysAgo;
         
-        BOOL allDaysPast = beta ? (daysAgo >= 1) : (daysAgo >= updatesInterval);
+        BOOL allDaysPast = beta ? (daysAgo >= 7) : (daysAgo >= updatesInterval);
         if (!lastCheckForUpdates || allDaysPast)
             return YES;
     }

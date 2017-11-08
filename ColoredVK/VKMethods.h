@@ -16,11 +16,11 @@
 @end
 
 @interface VKMController : UIViewController
-@property(retain, nonatomic) Model *model;
+@property (retain, nonatomic) Model *model;
 @end
 
 @interface VKMScrollViewController : VKMController
-@property(retain, nonatomic) UIRefreshControl *rptr;
+@property (retain, nonatomic) UIRefreshControl *rptr;
 - (void)VKMScrollViewReloadData;
 - (void)VKMScrollViewReset;
 @end
@@ -30,7 +30,7 @@
 @end
 
 @interface VKMTableController : VKMScrollViewController
-@property(retain, nonatomic) UITableView *tableView;
+@property (retain, nonatomic) UITableView *tableView;
 @end
 
 @interface VKMLiveController : VKMTableController
@@ -41,10 +41,10 @@
 @end
 
 @interface VKMMainController ()
-@property(retain, nonatomic) UIViewController *dialogsController;
-@property(retain, nonatomic) UIViewController *newsController;
-@property(retain, nonatomic) VKMController *discoverController;
-@property(retain, nonatomic) UIView *tabBarShadowView;
+@property (retain, nonatomic) UIViewController *dialogsController;
+@property (retain, nonatomic) UIViewController *newsController;
+@property (retain, nonatomic) VKMController *discoverController;
+@property (retain, nonatomic) UIView *tabBarShadowView;
 @end
 
 
@@ -54,7 +54,7 @@
 @end
 
 @interface MenuViewController : VKMLiveController
-@property(retain, nonatomic) NSArray *menu;
+@property (retain, nonatomic) NSArray *menu;
 @end
 
 @interface VKMNavContext : NSObject 
@@ -63,27 +63,27 @@
 - (void)push:(UIViewController *)arg1;
 - (void)push:(UIViewController *)arg1 animated:(BOOL)arg2;
 @property (readonly, strong) VKMNavContext *rootNavContext;
-@property(retain, nonatomic) UINavigationController *navController;
+@property (retain, nonatomic) UINavigationController *navController;
 @end
 
 
 
 @interface VKAudio : NSObject
-@property(retain, nonatomic) NSNumber *lyrics_id;
-@property(retain, nonatomic) NSString *title;
-@property(retain, nonatomic) NSString *performer;
+@property (retain, nonatomic) NSNumber *lyrics_id;
+@property (retain, nonatomic) NSString *title;
+@property (retain, nonatomic) NSString *performer;
 @end
 
 @interface AudioPlayer : NSObject
-@property(retain, nonatomic) VKAudio *audio;
-@property(nonatomic) int state;
+@property (retain, nonatomic) VKAudio *audio;
+@property (nonatomic) int state;
 @end
 
 @interface AudioController : UIViewController
-@property(retain, nonatomic) UIButton *pp;
-@property(retain, nonatomic) UILabel *song;
-@property(retain, nonatomic) UILabel *actor;
-@property(retain, nonatomic) UISlider *seek;
+@property (retain, nonatomic) UIButton *pp;
+@property (retain, nonatomic) UILabel *song;
+@property (retain, nonatomic) UILabel *actor;
+@property (retain, nonatomic) UISlider *seek;
 - (void)done:(id)arg;
 - (void)actionNext:(id)arg1;
 - (void)actionPrev:(id)arg1;
@@ -92,48 +92,48 @@
 
 
 @interface IOS7AudioController : AudioController
-@property(retain, nonatomic) UIView *hostView;
-@property(retain, nonatomic) UIImageView *cover;
+@property (retain, nonatomic) UIView *hostView;
+@property (retain, nonatomic) UIImageView *cover;
 @end
 
 @interface VKImageVariant : NSObject
-@property(nonatomic) int type;
-@property(retain, nonatomic) NSString *src; 
+@property (nonatomic) int type;
+@property (retain, nonatomic) NSString *src; 
 @end
 
 @interface VKPhoto : NSObject
-@property(retain, nonatomic) NSMutableDictionary *variants;
+@property (retain, nonatomic) NSMutableDictionary *variants;
 @end
 @interface VKPhotoSized : VKPhoto
 @end
 
 @interface PhotoBrowserController : UIViewController
-@property(retain, nonatomic) UIScrollView *paging;
+@property (retain, nonatomic) UIScrollView *paging;
 - (VKPhotoSized *)photoForPage:(NSInteger)page;
 @end
 
 @interface VKMBrowserTarget : NSObject
-@property(retain, nonatomic) NSURL *url;
+@property (retain, nonatomic) NSURL *url;
 @end
 
 @interface VKMBrowserController : VKMController
-@property(retain, nonatomic) UILabel *headerTitle;
-@property(retain, nonatomic) VKMBrowserTarget *target;
-@property(retain, nonatomic) UIToolbar *toolbar;
-@property(retain, nonatomic) UIButton *safariButton;
-@property(retain, nonatomic) UIScrollView *webScrollView;
-@property(retain, nonatomic) UIWebView *webView;
+@property (retain, nonatomic) UILabel *headerTitle;
+@property (retain, nonatomic) VKMBrowserTarget *target;
+@property (retain, nonatomic) UIToolbar *toolbar;
+@property (retain, nonatomic) UIButton *safariButton;
+@property (retain, nonatomic) UIScrollView *webScrollView;
+@property (retain, nonatomic) UIWebView *webView;
 @end
 
 
 
 @interface VKMessage : NSObject
-@property(nonatomic) BOOL read_state;
-@property(nonatomic) BOOL incoming;
+@property (nonatomic) BOOL read_state;
+@property (nonatomic) BOOL incoming;
 @end
 
 @interface MessageCell : UITableViewCell
-@property(retain, nonatomic) VKMessage *message;
+@property (retain, nonatomic) VKMessage *message;
 @end
 
 @interface ChatCell : MessageCell
@@ -142,20 +142,20 @@
 
 
 @interface VKDialog : NSObject
-@property(retain, nonatomic) VKMessage *head;
+@property (retain, nonatomic) VKMessage *head;
 @end
 
 @interface BackgroundView : UILabel
-@property(nonatomic) int cornerRadius;
+@property (nonatomic) int cornerRadius;
 @end
 @interface NewDialogCell : UITableViewCell
-@property(readonly, retain, nonatomic) BackgroundView *unread;
-@property(readonly, retain, nonatomic) UILabel *attach;
-@property(readonly, retain, nonatomic) UILabel *dialogText;
-@property(readonly, retain, nonatomic) UILabel *time;
-@property(readonly, retain, nonatomic) UILabel *name;
-@property(retain, nonatomic) VKDialog *dialog;
-@property(readonly, retain, nonatomic) UILabel *text;
+@property (readonly, retain, nonatomic) BackgroundView *unread;
+@property (readonly, retain, nonatomic) UILabel *attach;
+@property (readonly, retain, nonatomic) UILabel *dialogText;
+@property (readonly, retain, nonatomic) UILabel *time;
+@property (readonly, retain, nonatomic) UILabel *name;
+@property (retain, nonatomic) VKDialog *dialog;
+@property (readonly, retain, nonatomic) UILabel *text;
 @end
 
 
@@ -174,8 +174,8 @@
 
 
 @interface MOTextView : UITextView
-@property(retain, nonatomic) UILabel *placeholderLabel;
-@property(retain, nonatomic) UIView *footerView;
+@property (retain, nonatomic) UILabel *placeholderLabel;
+@property (retain, nonatomic) UIView *footerView;
 @end
 
 @interface InputPanelViewTextView : MOTextView
@@ -183,27 +183,27 @@
 @end
 
 @interface InputPanelView : UIToolbar
-@property(retain, nonatomic) UIView *overlay;
-@property(retain, nonatomic) UIToolbar *gapToolbar;
-@property(retain, nonatomic) InputPanelViewTextView *textPanel;
+@property (retain, nonatomic) UIView *overlay;
+@property (retain, nonatomic) UIToolbar *gapToolbar;
+@property (retain, nonatomic) InputPanelViewTextView *textPanel;
 @end
 @interface ExtraInputPanelView : InputPanelView
-@property(retain, nonatomic) UIView *pushToTalkCoverView;
-@property(retain, nonatomic) UIButton *inputViewButton;
+@property (retain, nonatomic) UIView *pushToTalkCoverView;
+@property (retain, nonatomic) UIButton *inputViewButton;
 @end
 
 @interface RootView : UIView
-@property(retain, nonatomic) ExtraInputPanelView *inputPanelView;
+@property (retain, nonatomic) ExtraInputPanelView *inputPanelView;
 @end
 
 @interface ChatController : VKMTableController
-@property(retain, nonatomic) RootView *root;
-@property(retain, nonatomic) ExtraInputPanelView *inputPanel;
-@property(retain, nonatomic) UIButton *editForward;
-@property(retain, nonatomic) UIButton *editDelete;
-@property(retain, nonatomic) UIView *editToolbar;
-@property(retain, nonatomic) VKMImageButton *headerImage;
-@property(retain, nonatomic) Component5HostView *componentTitleView;
+@property (retain, nonatomic) RootView *root;
+@property (retain, nonatomic) ExtraInputPanelView *inputPanel;
+@property (retain, nonatomic) UIButton *editForward;
+@property (retain, nonatomic) UIButton *editDelete;
+@property (retain, nonatomic) UIView *editToolbar;
+@property (retain, nonatomic) VKMImageButton *headerImage;
+@property (retain, nonatomic) Component5HostView *componentTitleView;
 @end
 
 
@@ -211,16 +211,16 @@
 @interface VKMCell : UITableViewCell
 @end
 @interface GroupCell : VKMCell
-@property(readonly, retain, nonatomic) UILabel *status;
-@property(readonly, retain, nonatomic) UILabel *name;
+@property (readonly, retain, nonatomic) UILabel *status;
+@property (readonly, retain, nonatomic) UILabel *name;
 @end
 
 
 @interface VKMEditableController : VKMLiveController
 @end
 @interface VKMToolbarController : VKMEditableController
-@property(readonly, retain, nonatomic) UISegmentedControl *segment;
-@property(readonly, retain, nonatomic) UIToolbar *toolbar;
+@property (readonly, retain, nonatomic) UISegmentedControl *segment;
+@property (readonly, retain, nonatomic) UIToolbar *toolbar;
 @end
 
 @interface VKMMultiIndexController : VKMToolbarController
@@ -235,12 +235,12 @@
 
 
 @interface VKUser : NSObject
-@property(retain, nonatomic) NSNumber *uid;
+@property (retain, nonatomic) NSNumber *uid;
 @end
 
 @interface VKProfile : NSObject
-@property(nonatomic) BOOL verified;
-@property(retain, nonatomic) VKUser *user;
+@property (nonatomic) BOOL verified;
+@property (retain, nonatomic) VKUser *user;
 @end
 
 
@@ -270,12 +270,12 @@
 @interface Renderer : NSObject
 @end
 @interface VKMRendererCell : UITableViewCell
-@property(retain, nonatomic) Renderer *renderer;
+@property (retain, nonatomic) Renderer *renderer;
 @end
 @interface AudioRenderer : Renderer
-@property(retain, nonatomic) UILabel *durationLabel;
-@property(retain, nonatomic) UIButton *playIndicator;
-@property(retain, nonatomic) AudioPlayer *player;
+@property (retain, nonatomic) UILabel *durationLabel;
+@property (retain, nonatomic) UIButton *playIndicator;
+@property (retain, nonatomic) AudioPlayer *player;
 @end
 
 
@@ -287,15 +287,13 @@
 
 
 @interface VKMViewControllerContainer : VKMController
-@property(retain, nonatomic) UIViewController *currentViewController;
+@property (retain, nonatomic) UIViewController *currentViewController;
 @end
 @interface VKSelectorContainerController : VKMViewControllerContainer
 @end
 @interface VKSelectorContainerControllerDropdown : VKSelectorContainerController
-//@property(retain, nonatomic) VKSelectorDropdownPresentation *vkSelectorPresentation;
-@property(retain, nonatomic) UIView *dimView;
-//@property(retain, nonatomic) NavigationButtonView *navigationButtonView;
-@property(retain, nonatomic) UIViewController *selectorViewController; 
+@property (retain, nonatomic) UIView *dimView;
+@property (retain, nonatomic) UIViewController *selectorViewController; 
 @end
 
 
@@ -323,8 +321,8 @@
 
 
 @interface BaseUserCell : VKMCell
-@property(readonly, retain, nonatomic) UILabel *last;
-@property(readonly, retain, nonatomic) UILabel *first;
+@property (readonly, retain, nonatomic) UILabel *last;
+@property (readonly, retain, nonatomic) UILabel *first;
 @end
 
 @interface SourceCell : BaseUserCell
@@ -332,7 +330,7 @@
 
 
 @interface MessageController : VKMController 
-@property(retain, nonatomic) UIScrollView *scroll;
+@property (retain, nonatomic) UIScrollView *scroll;
 @end
 
 
@@ -342,7 +340,7 @@
 
 
 @interface DetailController : VKMLiveController
-@property(retain, nonatomic) ExtraInputPanelView *inputPanel;
+@property (retain, nonatomic) ExtraInputPanelView *inputPanel;
 @end
 
 
@@ -354,8 +352,8 @@
 @end
 
 @interface FriendBdayCell : VKMCell
-@property(retain, nonatomic) UILabel *status;
-@property(retain, nonatomic) UILabel *name;
+@property (retain, nonatomic) UILabel *status;
+@property (retain, nonatomic) UILabel *name;
 @end
 
 @interface FriendsAllRequestsController : VKMToolbarController
@@ -363,17 +361,17 @@
 
 
 @interface VideoAlbumsInfoToolbar : UIToolbar
-@property(retain, nonatomic) UISegmentedControl *segmentedControl;
+@property (retain, nonatomic) UISegmentedControl *segmentedControl;
 @end
 
 @interface VideoAlbumController : VKMLiveController
-@property(retain, nonatomic) VideoAlbumsInfoToolbar *toolbar;
+@property (retain, nonatomic) VideoAlbumsInfoToolbar *toolbar;
 @end
 
 @interface VideoCell : VKMCell
-@property(readonly, retain, nonatomic) UILabel *viewCountLabel;
-@property(readonly, retain, nonatomic) UILabel *authorLabel;
-@property(readonly, retain, nonatomic) UILabel *videoTitleLabel;
+@property (readonly, retain, nonatomic) UILabel *viewCountLabel;
+@property (readonly, retain, nonatomic) UILabel *authorLabel;
+@property (readonly, retain, nonatomic) UILabel *videoTitleLabel;
 @end
 
 
@@ -390,9 +388,9 @@
 @end
 
 @interface AudioPlaylistsCell : VKMCell
-@property(readonly, retain, nonatomic) UIButton *showAllButton;
-@property(readonly, retain, nonatomic) UILabel *titleLabel;
-@property(retain, nonatomic) UIView *hostedView;
+@property (readonly, retain, nonatomic) UIButton *showAllButton;
+@property (readonly, retain, nonatomic) UILabel *titleLabel;
+@property (retain, nonatomic) UIView *hostedView;
 @end
 
 @interface VKMCollectionCell : UICollectionViewCell
@@ -400,8 +398,8 @@
 
 @interface AudioPlaylistInlineCell : VKMCollectionCell
 
-@property(readonly, retain, nonatomic) UILabel *subtitleLabel;
-@property(readonly, retain, nonatomic) UILabel *titleLabel;
+@property (readonly, retain, nonatomic) UILabel *subtitleLabel;
+@property (readonly, retain, nonatomic) UILabel *titleLabel;
 
 @end
 
@@ -419,7 +417,7 @@
 
 
 @interface AudioImageAndTitleItemCollectionCell : VKMCollectionCell
-@property(retain, nonatomic) UILabel *titleLabel;
+@property (retain, nonatomic) UILabel *titleLabel;
 @end
 
 @interface AudioOwnersBlockItemCollectionCell : AudioImageAndTitleItemCollectionCell
@@ -427,21 +425,21 @@
 
 
 @interface AudioBlockCellHeaderView : UIView
-@property(retain, nonatomic) UILabel *subtitleLabel;
-@property(retain, nonatomic) UILabel *titleLabel;
-@property(retain, nonatomic) UIButton *showAllButton;
+@property (retain, nonatomic) UILabel *subtitleLabel;
+@property (retain, nonatomic) UILabel *titleLabel;
+@property (retain, nonatomic) UIButton *showAllButton;
 @end
 
 @interface BlockCellHeaderView : UIView
-@property(retain, nonatomic) UILabel *subtitleLabel;
-@property(retain, nonatomic) UILabel *titleLabel;
-@property(retain, nonatomic) UIButton *actionButton;
+@property (retain, nonatomic) UILabel *subtitleLabel;
+@property (retain, nonatomic) UILabel *titleLabel;
+@property (retain, nonatomic) UIButton *actionButton;
 @end
 
 @interface AudioAudiosSpecialBlockView : UIView
-@property(retain, nonatomic) UIButton *button;
-@property(retain, nonatomic) UILabel *subtitleLabel;
-@property(retain, nonatomic) UILabel *titleLabel;
+@property (retain, nonatomic) UIButton *button;
+@property (retain, nonatomic) UILabel *subtitleLabel;
+@property (retain, nonatomic) UILabel *titleLabel;
 @end
 
 
@@ -450,9 +448,9 @@
 
 
 @interface AudioPlaylistCell : VKMCell
-@property(readonly, retain, nonatomic) UILabel *subtitleLabel;
-@property(readonly, retain, nonatomic) UILabel *artistLabel;
-@property(readonly, retain, nonatomic) UILabel *titleLabel;
+@property (readonly, retain, nonatomic) UILabel *subtitleLabel;
+@property (readonly, retain, nonatomic) UILabel *artistLabel;
+@property (readonly, retain, nonatomic) UILabel *titleLabel;
 @end
 
 
@@ -465,20 +463,20 @@
 @end
 
 @interface TeaserView : UIView
-@property(retain, nonatomic) UILabel *labelText;
-@property(retain, nonatomic) UILabel *labelTitle;
+@property (retain, nonatomic) UILabel *labelText;
+@property (retain, nonatomic) UILabel *labelTitle;
 @end
 
 
 @interface VKAudioQueuePlayer : NSObject
-@property(nonatomic) int state;
+@property (nonatomic) int state;
 @property (nonatomic, readonly, copy) NSString *title;
 @property (nonatomic, readonly, copy) NSString *performer;
 @end
 
 @interface LoadingFooterView : UIView
-@property(readonly, retain, nonatomic) UILabel *label;
-@property(readonly, retain, nonatomic) UIActivityIndicatorView *anim;
+@property (readonly, retain, nonatomic) UILabel *label;
+@property (readonly, retain, nonatomic) UIActivityIndicatorView *anim;
 @end
 
 @interface VKAudioPlayerListTableViewController : UITableViewController
@@ -498,19 +496,19 @@
 
 
 @interface ProfileModel : NSObject
-@property(readonly, retain, nonatomic) VKProfile *item;
+@property (readonly, retain, nonatomic) VKProfile *item;
 @end
 
 @interface UserWallController : UIViewController
-@property(retain, nonatomic) ProfileModel *profile;
+@property (retain, nonatomic) ProfileModel *profile;
 @end
 
 @interface VKGroup : NSObject
-@property(retain, nonatomic) NSNumber *gid;
+@property (retain, nonatomic) NSNumber *gid;
 @end
 
 @interface VKGroupProfile : NSObject
-@property(retain, nonatomic) VKGroup *group;
+@property (retain, nonatomic) VKGroup *group;
 @end
 
 
@@ -529,7 +527,7 @@
 
 
 @interface PostEditController : UIViewController
-@property(retain, nonatomic) MOTextView *textView;
+@property (retain, nonatomic) MOTextView *textView;
 @end
 @interface ProfileInfoEditController : VKMTableController
 @end
@@ -541,8 +539,8 @@
 
 
 @interface CommunityCommentsCell : VKMCell
-@property(readonly, nonatomic) UILabel *subtitleLabel;
-@property(readonly, nonatomic) UILabel *titleLabel;
+@property (readonly, nonatomic) UILabel *subtitleLabel;
+@property (readonly, nonatomic) UILabel *titleLabel;
 @end
 
 @interface VKSearchBarNoCancel : UISearchBar
@@ -551,26 +549,26 @@
 
 
 @interface MenuSubtitleCell : VKMCell
-@property(retain, nonatomic) UIView *separator;
-@property(retain, nonatomic) UIImageView *verified;
-@property(readonly, nonatomic) UIButton *online;
-@property(readonly, retain, nonatomic) UILabel *status;
-@property(readonly, retain, nonatomic) UILabel *name;
+@property (retain, nonatomic) UIView *separator;
+@property (retain, nonatomic) UIImageView *verified;
+@property (readonly, nonatomic) UIButton *online;
+@property (readonly, retain, nonatomic) UILabel *status;
+@property (readonly, retain, nonatomic) UILabel *name;
 @end
 @interface HintsCell : MenuSubtitleCell
 @end
 @interface MenuBirthdayCell : HintsCell
-@property(retain, nonatomic) UIButton *giftButton;
+@property (retain, nonatomic) UIButton *giftButton;
 @end
 
 @interface TablePrimaryHeaderView : UITableViewHeaderFooterView
-@property(retain, nonatomic) UIButton *button;
-@property(retain, nonatomic) UIView *separator;
+@property (retain, nonatomic) UIButton *button;
+@property (retain, nonatomic) UIView *separator;
 @end
 
 
 @interface DiscoverFeedController : VKMScrollViewController
-@property(retain, nonatomic) UICollectionView *collectionView;
+@property (retain, nonatomic) UICollectionView *collectionView;
 @end
 
 
@@ -579,14 +577,14 @@
 @end
 
 @interface ProfileView : UIView
-@property(retain, nonatomic) UIButton *buttonStatus;
-@property(retain, nonatomic) UIButton *buttonMessage;
-@property(retain, nonatomic) UIScrollView *blocksScroll;
+@property (retain, nonatomic) UIButton *buttonStatus;
+@property (retain, nonatomic) UIButton *buttonMessage;
+@property (retain, nonatomic) UIScrollView *blocksScroll;
 @end
 
 
 @interface NewsFeedPostAndStoryCreationButtonBar : UIView
-@property(retain, nonatomic) NSArray *separatorLines;
+@property (retain, nonatomic) NSArray *separatorLines;
 @end
 
 @interface Node5CollectionViewCell : UICollectionViewCell
@@ -596,12 +594,12 @@
 @end
 
 @interface PollAnswerButton : UIView
-@property(retain, nonatomic) UIView *progressView;
+@property (retain, nonatomic) UIView *progressView;
 @end
 
 
 @interface VKAPBottomToolbar : UIView
-@property(readonly, nonatomic) UIToolbar *bg;
+@property (readonly, nonatomic) UIToolbar *bg;
 @end
 
 @interface WallModeRenderer : Renderer
@@ -610,30 +608,30 @@
 
 
 @interface AudioAudiosPagingView : UIView
-@property(retain, nonatomic) UICollectionView *collectionView;
+@property (retain, nonatomic) UICollectionView *collectionView;
 @end
 
 @interface AudioAudiosBlockCell : VKMCell
-@property(retain, nonatomic) AudioAudiosPagingView *audiosPagingView;
+@property (retain, nonatomic) AudioAudiosPagingView *audiosPagingView;
 @end
 
 @interface MOCTRender : NSObject
-@property(retain, nonatomic) NSAttributedString *text;
+@property (retain, nonatomic) NSAttributedString *text;
 @end
 
 @interface SeparatorWithBorders : UIView
-@property(retain, nonatomic) UIColor *borderColor;
+@property (retain, nonatomic) UIColor *borderColor;
 @end
 
 
 @interface LookupAddressbookTeaserViewController : VKMController
-@property(retain, nonatomic) Component5HostView *componentView;
+@property (retain, nonatomic) Component5HostView *componentView;
 @end
 
 @interface LookupFriendsViewController : VKMLiveController
 @end
 @interface LookupAddressBookFriendsViewController : LookupFriendsViewController
-@property(retain, nonatomic) LookupAddressbookTeaserViewController *lookupTeaserViewController;
+@property (retain, nonatomic) LookupAddressbookTeaserViewController *lookupTeaserViewController;
 @end
 
 
@@ -651,11 +649,11 @@
 @end
 
 @interface VKPPToolbar : UIView
-@property(readonly, retain, nonatomic) UIToolbar *bg;
+@property (readonly, retain, nonatomic) UIToolbar *bg;
 @end
 
 @interface VKPhotoPicker : UINavigationController
-@property(retain, nonatomic) VKPPToolbar *pickerToolbar;
+@property (retain, nonatomic) VKPPToolbar *pickerToolbar;
 @end
 
 
@@ -663,8 +661,8 @@
 @end
 
 @interface MainMenuPlayer : UIView
-@property(retain, nonatomic) UILabel *titleLabel;
-@property(retain, nonatomic) UILabel *playerTitle;
+@property (retain, nonatomic) UILabel *titleLabel;
+@property (retain, nonatomic) UILabel *playerTitle;
 @end
 
 @interface VKMTableViewSearchHeaderView : UIToolbar
@@ -674,7 +672,7 @@
 @end
 
 @interface PersistentBackgroundColorView : UIView
-@property(retain, nonatomic) UIColor *persistentBackgroundColor;
+@property (retain, nonatomic) UIColor *persistentBackgroundColor;
 @end
 
 @interface GiftsCatalogSectionCell : VKMCell
@@ -698,7 +696,7 @@
 @end
 
 @interface StoreController : VKMLiveController
-@property(retain, nonatomic) UIToolbar *toolbar;
+@property (retain, nonatomic) UIToolbar *toolbar;
 @end
 
 @interface DiscoverLayoutMask : UICollectionReusableView
@@ -730,14 +728,14 @@
 @end
 
 @interface FreshNewsButton : UIView
-@property(retain, nonatomic) UIButton *button;
+@property (retain, nonatomic) UIButton *button;
 @end
 
 @interface VKLivePromoView : UIView
 @end
 
 @interface CommentSourcePickerController : UIViewController
-@property(retain, nonatomic) UIView *containerView;
+@property (retain, nonatomic) UIView *containerView;
 @end
 
 
@@ -750,7 +748,7 @@
 @end
 
 @interface UITableViewIndex : UIControl
-@property(retain, nonatomic) UIColor *indexBackgroundColor;
+@property (retain, nonatomic) UIColor *indexBackgroundColor;
 @end
 
 @interface SketchDrawView : UIView
@@ -758,12 +756,12 @@
 
 @interface SketchViewController : UIViewController
 
-@property(retain, nonatomic) UIButton *eraserButton;
-@property(retain, nonatomic) UIButton *undoButton;
-@property(retain, nonatomic) UIButton *sendButton;
+@property (retain, nonatomic) UIButton *eraserButton;
+@property (retain, nonatomic) UIButton *undoButton;
+@property (retain, nonatomic) UIButton *sendButton;
 
-@property(retain, nonatomic) NSArray *paletteButtons;
-@property(retain, nonatomic) SketchDrawView *drawView;
+@property (retain, nonatomic) NSArray *paletteButtons;
+@property (retain, nonatomic) SketchDrawView *drawView;
 
 @end
 
@@ -773,20 +771,41 @@
 @end
 
 @interface ColorPaletteView : UIView
-@property(retain, nonatomic) UICollectionView *collectionView;
+@property (retain, nonatomic) UICollectionView *collectionView;
 @end
 
 @interface SketchView : UIView
-@property(retain, nonatomic) ColorPaletteView *colorPaletteView;
-@property(retain, nonatomic) DrawView *drawView;
+@property (retain, nonatomic) ColorPaletteView *colorPaletteView;
+@property (retain, nonatomic) DrawView *drawView;
 @end
 
 @interface SketchController : UIViewController
-@property(retain, nonatomic) SketchView *sketchView;
+@property (retain, nonatomic) SketchView *sketchView;
 @end
 
 
 
 @interface EmojiSelectionView : UIView 
-@property(retain, nonatomic) UIScrollView *scrollView;
+@property (retain, nonatomic) UIScrollView *scrollView;
 @end
+
+@interface LicensesViewController : VKMController
+@end
+
+@interface VKAudioPlayerViewController : VKMController
+@property (retain, nonatomic) UIVisualEffectView *toolbarView;
+@property (retain, nonatomic) UIVisualEffectView *backgroundView;
+@property (retain, nonatomic) UIPageViewController *pageController;
+@end
+
+@interface PopupWindowView : UIView
+@property (readonly, nonatomic) UIView *contentView;
+@end
+
+
+@interface VKAudioPlayerControlsViewController : VKMController
+@property (retain, nonatomic) UIButton *next;
+@property (retain, nonatomic) UIButton *prev;
+@property (retain, nonatomic) UIButton *pp;
+@end
+

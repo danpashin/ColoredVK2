@@ -20,14 +20,18 @@ FOUNDATION_EXPORT void installerActionLogout(NSString *password, void(^completio
 + (instancetype)sharedInstaller;
 
 @property (strong, nonatomic, readonly) ColoredVKNetworkController *networkController;
-@property (strong, nonatomic, readonly) NSString *userLogin;
+@property (copy, nonatomic, readonly) NSString *userLogin;
 @property (strong, nonatomic, readonly) NSNumber *userID;
-@property (strong, nonatomic, readonly) NSString *token;
+@property (copy, nonatomic, readonly) NSString *token;
 @property (assign, nonatomic, readonly, getter=isTweakPurchased) BOOL tweakPurchased;
 @property (assign, nonatomic, readonly, getter=isTweakActivated) BOOL tweakActivated;
 @property (assign, nonatomic) BOOL api_purchased;
 @property (assign, nonatomic) BOOL api_activated;
 @property (assign, nonatomic) BOOL api_banned;
+
+@property (copy, nonatomic, readonly) NSString *appTeamIdentifier;
+@property (copy, nonatomic, readonly) NSString *appTeamName;
+@property (copy, nonatomic, readonly) NSString *sellerName;
 
 - (void)checkStatusAndShowAlert:(BOOL)showAlert;
 - (void)actionPurchase;
