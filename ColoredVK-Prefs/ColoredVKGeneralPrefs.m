@@ -264,13 +264,13 @@
 - (void)clearCoversCache
 {
     ColoredVKHUD *hud = [ColoredVKHUD showHUD];
-    hud.operation = [NSBlockOperation blockOperationWithBlock:^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         NSError *error = nil;
         BOOL success = [[NSFileManager defaultManager] removeItemAtPath:CVK_CACHE_PATH error:&error];
         if (success && !error) [hud showSuccess];
         else [hud showFailureWithStatus:[NSString stringWithFormat:@"%@\n%@", error.localizedDescription, error.localizedFailureReason]];
         [self reloadSpecifiers];
-    }];
+    });
 }
 
 - (NSString *)cacheSize

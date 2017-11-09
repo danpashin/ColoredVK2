@@ -273,6 +273,8 @@
     UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.userInteractionEnabled = YES;
+    cell.layoutMargins = UIEdgeInsetsMake(0, 18, 0, 18);
+    
     objc_setAssociatedObject(cell, "nightThemeColorScheme", self.nightThemeColorScheme, OBJC_ASSOCIATION_ASSIGN);
     objc_setAssociatedObject(cell, "app_is_vk", @(self.app_is_vk), OBJC_ASSOCIATION_ASSIGN);
     objc_setAssociatedObject(cell, "enableNightTheme", @(self.enableNightTheme), OBJC_ASSOCIATION_ASSIGN);
@@ -282,8 +284,14 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    cell.backgroundColor = [UIColor clearColor];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
     CGFloat cornerRadius = 10.f;
     CGRect bounds = CGRectInset(cell.bounds, 8, 0);
+    
+    if (CGSizeEqualToSize(cell.backgroundView.frame.size, bounds.size))
+        return;
     
     CAShapeLayer *layer = [CAShapeLayer layer];
     layer.fillColor = [UIColor whiteColor].CGColor;
@@ -334,8 +342,6 @@
     backgroundView.backgroundColor = [UIColor clearColor];
     [backgroundView.layer insertSublayer:layer atIndex:0];
     
-    cell.backgroundColor = [UIColor clearColor];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundView = backgroundView;
 }
 

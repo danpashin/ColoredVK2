@@ -51,6 +51,7 @@
 		A510E7D91EF99CE9001D6798 /* ColoredVKSimpleAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = A510E7D41EF99CE9001D6798 /* ColoredVKSimpleAlertController.m */; };
 		A510E7DA1EF99CE9001D6798 /* ColoredVKSimpleAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = A510E7D41EF99CE9001D6798 /* ColoredVKSimpleAlertController.m */; };
 		A513AB351F43666E0045F530 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F09DA51F101A5200024198 /* SafariServices.framework */; };
+		A5144F791FB4CC6C00DB1B89 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5EE64AC1FAE4C9E0050C156 /* Photos.framework */; };
 		A51D536D1F769E3900F6952A /* ColoredVKImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */; };
 		A51D536E1F769E3900F6952A /* ColoredVKImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */; };
 		A51D536F1F769E3A00F6952A /* ColoredVKImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */; };
@@ -714,6 +715,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5144F791FB4CC6C00DB1B89 /* Photos.framework in Frameworks */,
 				A5C988D91F2BBDB20054AC62 /* SafariServices.framework in Frameworks */,
 				A5A4E2D71F250D0D0001102F /* WebKit.framework in Frameworks */,
 				A5D56AB81E70427300A8FFB5 /* libz.tbd in Frameworks */,

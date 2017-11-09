@@ -988,7 +988,7 @@ CHDeclareMethod(2, BOOL, AppDelegate, application, UIApplication*, application, 
             tweakEnabled = purchased;
             reloadPrefs();
         };
-        [newInstaller checkStatusAndShowAlert:NO];
+        [newInstaller checkStatus];
     });
     
     return YES;
@@ -999,17 +999,6 @@ CHDeclareMethod(1, void, AppDelegate, applicationDidBecomeActive, UIApplication 
     CHSuper(1, AppDelegate, applicationDidBecomeActive, application);
     
     actionChangeCornerRadius();
-    
-    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-    [newInstaller updateAccountInfo:^{
-        [newInstaller checkStatusAndShowAlert:NO];
-    }];
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
-        if (updatesController.shouldCheckUpdates)
-            [updatesController checkUpdates];
-    });
     
     if (cvkMainController.audioCover) {
         [cvkMainController.audioCover updateColorScheme];
@@ -3731,7 +3720,7 @@ CHDeclareMethod(0, void, UITextField, layoutSubviews)
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UITextField")]) {
         self.tintColor = cvkMainController.nightThemeScheme.textColor;
         
-        if ([CLASS_NAME(self) isEqualToString:@"UITextField"] || [CLASS_NAME(self) isEqualToString:@"_UIAlertControllerTextField"])
+        if ([CLASS_NAME(self) isEqualToString:@"UITextField"])
             self.backgroundColor = [UIColor clearColor];
     }
 }
@@ -3770,6 +3759,11 @@ CHDeclareMethod(0, void, UICollectionView, layoutSubviews)
     CHSuper(0, UICollectionView, layoutSubviews);
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionView")]) {
+        
+        NSNumber *shouldDisableBackgroundColor = (NSNumber*)objc_getAssociatedObject(self, "shouldDisableBackgroundColor");
+        if ([shouldDisableBackgroundColor isKindOfClass:[NSNumber class]] && shouldDisableBackgroundColor.boolValue)
+            self.backgroundColor = [UIColor clearColor];
+        else
         self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
 }
@@ -3779,7 +3773,7 @@ CHDeclareMethod(0, void, UICollectionViewCell, layoutSubviews)
 {
     CHSuper(0, UICollectionViewCell, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionViewCell")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionViewCell")] && ![self isKindOfClass:NSClassFromString(@"_UIAlertControllerTextFieldViewCollectionCell")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
         self.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
         self.backgroundView.hidden = YES;
@@ -4219,6 +4213,52 @@ CHDeclareMethod(0, void, UIAlertController, viewDidLoad)
     }
 }
 
+CHDeclareMethod(1, void, UIAlertController, addTextFieldWithConfigurationHandler, id, handler)
+{
+    if (![self isKindOfClass:[ColoredVKAlertController class]]) {
+        void (^newHandler)(UITextField * _Nonnull textField) = ^(UITextField * _Nonnull textField){
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                UIView *viewToRoundSuperView = textField.superview.superview;
+                if (viewToRoundSuperView) {
+                    for (UIView *subview in textField.superview.superview.subviews) {
+                        subview.backgroundColor = [UIColor clearColor];
+                        if ([subview isKindOfClass:[UIVisualEffectView class]])
+                            subview.hidden = YES;
+                    }
+                    UIView *viewToRound = textField.superview;
+                    textField.backgroundColor = (enabled && enableNightTheme) ? cvkMainController.nightThemeScheme.backgroundColor : [UIColor whiteColor];
+                    viewToRound.backgroundColor = (enabled && enableNightTheme) ? cvkMainController.nightThemeScheme.backgroundColor : [UIColor whiteColor];
+                    viewToRound.layer.cornerRadius = 5.0f;
+                    viewToRound.layer.borderWidth = 0.5f;
+                    viewToRound.layer.borderColor = (enabled && enableNightTheme) ? [UIColor clearColor].CGColor : [UIColor colorWithWhite:0.85f alpha:1.0f].CGColor;
+                    viewToRound.layer.masksToBounds = YES;
+                }
+            });
+            
+            void (^configurationHandler)(UITextField *textField) = handler;
+            
+            configurationHandler(textField);
+        };
+        CHSuper(1,  UIAlertController, addTextFieldWithConfigurationHandler, newHandler);
+        
+    } else {
+        CHSuper(1,  UIAlertController, addTextFieldWithConfigurationHandler, handler);
+    }
+}
+
+CHDeclareClass(_UIAlertControllerTextFieldViewController);
+CHDeclareMethod(0, void, _UIAlertControllerTextFieldViewController, viewDidLoad)
+{
+    CHSuper(0, _UIAlertControllerTextFieldViewController, viewDidLoad);
+    
+    if (enabled && enableNightTheme) {
+        objc_setAssociatedObject(self.collectionView, "shouldDisableBackgroundColor", @1, OBJC_ASSOCIATION_ASSIGN);
+    }
+}
+
+
+
 CHDeclareClass(VKP2PDetailedView);
 CHDeclareMethod(0, void, VKP2PDetailedView, layoutSubviews)
 {
@@ -4575,7 +4615,7 @@ void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRe
 CHConstructor
 {
     @autoreleasepool {
-//        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
+        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
         
         prefsPath = CVK_PREFS_PATH;
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];

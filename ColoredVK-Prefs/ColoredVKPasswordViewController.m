@@ -112,30 +112,31 @@
 {
     [[UIApplication sharedApplication] sendAction:@selector(resignFirstResponder) to:nil from:nil forEvent:nil];
     
-    NSString *login = [ColoredVKNewInstaller sharedInstaller].userLogin;
     NSString *currentPass = AES256EncryptStringForAPI(self.currentPassCell.textField.text);
     NSString *newPass = AES256EncryptStringForAPI(self.passNewCell.textField.text);
     
     self.hud = [ColoredVKHUD showHUDForView:self.view];
-    ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
+    
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     
     NSString *url = [NSString stringWithFormat:@"%@/changePassword.php", kPackageAPIURL];
-    [networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:@{@"login": login, @"password":currentPass, @"new_password": newPass} 
-                                         success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
-                                             if (!json[@"error"]) {
-                                                 if (json[@"status"]) {
-                                                     [self.hud showSuccessWithStatus:json[@"status"]];
-                                                     
-                                                     self.hud.didHiddenBlock = ^{
-                                                         [self dismiss];
-                                                     };
-                                                     
-                                                 } else [self.hud showFailureWithStatus:@"Unknown error (-3)"];
-                                             } else [self.hud showFailureWithStatus:json[@"error"]];
-                                         } 
-                                         failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                             [self.hud showFailureWithStatus:error.localizedDescription];
-                                         }];
+    [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:@{@"login": newInstaller.userName, @"password":currentPass, 
+                                                                                                 @"new_password": newPass, @"user_id":newInstaller.userID} 
+                                                      success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+                                                          if (!json[@"error"]) {
+                                                              if (json[@"status"]) {
+                                                                  [self.hud showSuccessWithStatus:json[@"status"]];
+                                                                  
+                                                                  self.hud.didHiddenBlock = ^{
+                                                                      [self dismiss];
+                                                                  };
+                                                                  
+                                                              } else [self.hud showFailureWithStatus:@"Unknown error (-3)"];
+                                                          } else [self.hud showFailureWithStatus:json[@"error"]];
+                                                      } 
+                                                      failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+                                                          [self.hud showFailureWithStatus:error.localizedDescription];
+                                                      }];
 }
 
 - (void)passwordCellChangedText:(ColoredVKPasswordCell *)cell

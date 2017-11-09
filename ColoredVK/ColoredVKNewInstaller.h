@@ -14,13 +14,12 @@
 @interface ColoredVKNewInstaller : NSObject
 
 FOUNDATION_EXPORT void(^installerCompletionBlock)(BOOL purchased);
-FOUNDATION_EXPORT void installerActionLogin(NSString *login, NSString *password, void(^completionBlock)(void));
-FOUNDATION_EXPORT void installerActionLogout(NSString *password, void(^completionBlock)(void));
 
 + (instancetype)sharedInstaller;
 
 @property (strong, nonatomic, readonly) ColoredVKNetworkController *networkController;
-@property (copy, nonatomic, readonly) NSString *userLogin;
+@property (assign, nonatomic, readonly) BOOL userAuthorized;
+@property (copy, nonatomic, readonly) NSString *userName;
 @property (strong, nonatomic, readonly) NSNumber *userID;
 @property (copy, nonatomic, readonly) NSString *token;
 @property (assign, nonatomic, readonly, getter=isTweakPurchased) BOOL tweakPurchased;
@@ -33,8 +32,11 @@ FOUNDATION_EXPORT void installerActionLogout(NSString *password, void(^completio
 @property (copy, nonatomic, readonly) NSString *appTeamName;
 @property (copy, nonatomic, readonly) NSString *sellerName;
 
-- (void)checkStatusAndShowAlert:(BOOL)showAlert;
+- (void)checkStatus;
 - (void)actionPurchase;
 - (void)updateAccountInfo:( void(^)(void) )completionBlock;
+
+- (void)actionLogoutWithPassword:(NSString *)password completionBlock:( void(^)(void) )completionBlock;
+- (void)actionLoginWithUsername:(NSString *)login password:(NSString *)password completionBlock:( void(^)(void) )completionBlock;
 
 @end

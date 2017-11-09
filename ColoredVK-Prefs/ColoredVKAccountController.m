@@ -76,7 +76,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
             
-            self.userLoggedIn = newInstaller.userLogin ? YES : NO;
+            self.userLoggedIn = newInstaller.userAuthorized;
             self.accountPaid = newInstaller.api_purchased;
             self.accountActivated = newInstaller.api_activated;
             self.accountPaymentStatus = self.accountPaid ? CVKLocalizedStringFromTable(@"ACCOUNT_PAID", @"ColoredVK") : @"";
@@ -153,7 +153,7 @@
             cell.detailTextLabel.textColor = [UIColor grayColor];
             cell.detailTextLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize] - 1.0f];
         } else {
-            cell.textLabel.text = [ColoredVKNewInstaller sharedInstaller].userLogin;
+            cell.textLabel.text = [ColoredVKNewInstaller sharedInstaller].userName;
             cell.textLabel.textColor = [UIColor darkGrayColor];
             cell.detailTextLabel.text = @"";
         }
@@ -216,9 +216,11 @@
         textField.secureTextEntry = YES;
     }];
     [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"AUTHORISE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        installerActionLogin(alertController.textFields[0].text, alertController.textFields[1].text, ^{
+        NSString *username = alertController.textFields[0].text;
+        NSString *password = alertController.textFields[1].text;
+        [[ColoredVKNewInstaller sharedInstaller] actionLoginWithUsername:username password:password completionBlock:^{
             [self updateActivationInfo];
-        });
+        }];
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     
@@ -233,11 +235,11 @@
         textField.placeholder = UIKitLocalizedString(@"Password");
         textField.secureTextEntry = YES;
     }];
-    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"ACTION_LOG_OUT") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-        installerActionLogout(alertController.textFields[0].text, ^{
+    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"ACTION_LOG_OUT") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {        
+        [[ColoredVKNewInstaller sharedInstaller] actionLogoutWithPassword:alertController.textFields[1].text completionBlock:^{
             [self resetStatus];
             [self updateActivationInfo];
-        });
+        }];
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     
