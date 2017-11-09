@@ -428,7 +428,7 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
         UIView *borderView = [UIView new];
         borderView.backgroundColor = [UIColor whiteColor];
         borderView.alpha = 0.15;
-        [blurEffectView addSubview:borderView];
+        [blurEffectView.contentView addSubview:borderView];
         
         NSString *verticalFormat = @"";
         if ([bar isKindOfClass:[UINavigationBar class]]) {
@@ -477,8 +477,8 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
         
         if (verticalFormat.length > 2) {
             borderView.translatesAutoresizingMaskIntoConstraints = NO;
-            [blurEffectView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:verticalFormat options:0 metrics:nil views:@{@"view":borderView}]];
-            [blurEffectView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|"  options:0 metrics:nil views:@{@"view":borderView}]];
+            [blurEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:verticalFormat options:0 metrics:nil views:@{@"view":borderView}]];
+            [blurEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|"  options:0 metrics:nil views:@{@"view":borderView}]];
         }
     } else {
         if ([bar isKindOfClass:[UINavigationBar class]]) {
@@ -3110,7 +3110,7 @@ CHDeclareMethod(1, void, UITableView, setBackgroundColor, UIColor *, backgroundC
 CHDeclareClass(UIViewController);
 CHDeclareMethod(3, void, UIViewController, presentViewController, UIViewController *, viewControllerToPresent, animated, BOOL, flag, completion, id, completion)
 {
-    if (![NSStringFromClass([self class]) containsString:@"ColoredVK"]) {
+    if (![CLASS_NAME(self) containsString:@"ColoredVK"] || ![CLASS_NAME(viewControllerToPresent) containsString:@"ColoredVK"]) {
         NSArray <Class> *classes = @[[UIAlertController class], [UIActivityViewController class]];
         
         if ([classes containsObject:[viewControllerToPresent class]] && IS_IPAD) {
@@ -4615,7 +4615,7 @@ void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRe
 CHConstructor
 {
     @autoreleasepool {
-        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
+//        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
         
         prefsPath = CVK_PREFS_PATH;
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];

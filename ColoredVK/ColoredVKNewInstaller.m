@@ -64,7 +64,7 @@ BOOL _innerUserAuthorized = NO;
         uname(&systemInfo);
         
         _userName = licenceValueForKey(@"Login");
-        _sellerName = @"";
+        _sellerName = @"theux";
         _appTeamIdentifier = @"";
         _appTeamName = @"";
         

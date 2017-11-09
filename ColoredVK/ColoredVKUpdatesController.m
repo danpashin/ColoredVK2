@@ -44,7 +44,7 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
 {
     ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php", kPackageAPIURL];
-    NSMutableDictionary *parameters = [@{@"userVers": kPackageVersion, @"product": kPackageIdentifier, @"ios_version":[UIDevice currentDevice].systemVersion, 
+    NSMutableDictionary *parameters = [@{@"userVers": kPackageVersion, @"ios_version":[UIDevice currentDevice].systemVersion, 
                                          @"vk_version":[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"],
                                          @"appTeamName": newInstaller.appTeamName, @"appTeamIdentifier": newInstaller.appTeamIdentifier,
                                          @"sellerName": newInstaller.sellerName } mutableCopy];
@@ -53,7 +53,7 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
     parameters[@"getIPA"] = @1;
 #endif
     
-    ColoredVKNetworkController *networkController = [ColoredVKNewInstaller sharedInstaller].networkController;
+    ColoredVKNetworkController *networkController = newInstaller.networkController;
     [networkController sendJSONRequestWithMethod:@"GET" stringURL:stringURL parameters:parameters
                                       success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
                                           
