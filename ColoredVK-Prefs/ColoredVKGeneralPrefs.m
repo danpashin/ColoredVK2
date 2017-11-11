@@ -11,11 +11,34 @@
 #import "ColoredVKSettingsController.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKImageProcessor.h"
+#import <Photos/Photos.h>
+
+@interface VKPPService : NSObject
++ (id)standartService;
+@end
+
+@interface VKPPSelector : NSObject
+@property (nonatomic) BOOL forceCrop;
+@property (nonatomic) BOOL disableEdits;
+@property (nonatomic) BOOL selectSingle; 
+@property (nonatomic) unsigned long long selectLimit;
+@end
+
+@interface VKPPAssetData : NSObject <NSCopying>
+@property (retain, nonatomic) NSString *assetFilename;
+@property (retain, nonatomic) NSURL *assetURL;
+@property (retain, nonatomic) NSString *assetId;
+@end
+
+@interface VKPhotoPicker : UINavigationController
++ (VKPhotoPicker *)photoPickerWithService:(VKPPService *)service mediaTypes:(NSInteger)arg2;
+@property (copy, nonatomic) void (^handler)(VKPhotoPicker *picker, NSArray <VKPPAssetData *> *assetData);
+@property (retain, nonatomic) VKPPSelector *selector;
+@property (nonatomic, readonly, strong) UIViewController *currentGroupController;
+@end
 
 
 @implementation ColoredVKGeneralPrefs
-
-NSArray <NSString *> *specifiersToDisable;
 
 - (NSArray *)specifiers
 {
@@ -26,7 +49,7 @@ NSArray <NSString *> *specifiersToDisable;
         BOOL shouldDisable = (!newInstaller.tweakPurchased || !newInstaller.tweakActivated);
         
         for (PSSpecifier *specifier in specifiersArray) {
-            if (([specifiersToDisable containsObject:specifier.identifier] && shouldDisable) || ![[self.specifier propertyForKey:@"enabled"] boolValue]) {
+            if (shouldDisable && ![[self.specifier propertyForKey:@"enabled"] boolValue]) {
                 [specifier setProperty:@NO forKey:@"enabled"];
             } else {
                 [specifier setProperty:@YES forKey:@"enabled"];
@@ -36,13 +59,6 @@ NSArray <NSString *> *specifiersToDisable;
         _specifiers = specifiersArray.copy;
     }
     return _specifiers;
-}
-
-- (void)loadView
-{
-    [super loadView];
-    
-    specifiersToDisable = @[];
 }
 
 #pragma mark -
@@ -158,10 +174,59 @@ NSArray <NSString *> *specifiersToDisable;
 - (void)chooseImage:(PSSpecifier*)specifier
 {
     self.lastImageIdentifier = specifier.identifier;
-    UIImagePickerController *picker = [UIImagePickerController new];
-    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    picker.delegate = self;
-    [self presentPopover:picker];
+    
+    Class photoPickerClass = NSClassFromString(@"VKPhotoPicker");
+    if (photoPickerClass) {
+        VKPPService *ppService = [NSClassFromString(@"VKPPService") standartService];
+        VKPhotoPicker *photoPicker = [NSClassFromString(@"VKPhotoPicker") photoPickerWithService:ppService mediaTypes:2];
+        
+        photoPicker.selector.selectSingle = YES;
+        photoPicker.selector.disableEdits = YES;
+        
+        photoPicker.handler = ^(VKPhotoPicker *picker, NSArray <VKPPAssetData *> *assetDataArray) {
+            
+            [picker.currentGroupController dismissViewControllerAnimated:YES completion:nil];
+            
+            if (assetDataArray.count != 1) {
+                [picker dismissViewControllerAnimated:YES completion:nil];
+                return;
+            }
+            
+            ColoredVKHUD *hud = [ColoredVKHUD showHUDForView:picker.view];
+            hud.didHiddenBlock = ^{
+                [picker dismissViewControllerAnimated:YES completion:nil];
+            };
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{                
+                PHFetchOptions *options = [PHFetchOptions new];
+                PHFetchResult<PHAsset *> *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetDataArray.firstObject.assetId] options:options];
+                if (fetchResult.count == 1) {
+                    PHImageRequestOptions *requestOptions = [PHImageRequestOptions new];
+                    requestOptions.networkAccessAllowed = YES;
+                    
+                    PHImageManager *imageManager = [PHImageManager defaultManager];
+                    [imageManager requestImageDataForAsset:fetchResult.firstObject options:requestOptions 
+                                             resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+                                                 UIImage *image = [UIImage imageWithData:imageData];
+                                                 if (image) {
+                                                     [self processImage:image handler:^(BOOL success, NSError *error) {
+                                                         success ? [hud showSuccess] : [hud showFailureWithStatus:error.localizedDescription];
+                                                     }];
+                                                 } else {
+                                                     [hud showFailureWithStatus:@"Cannot decrypt image data.\n(Code -1000)"];
+                                                 }
+                                             }];
+                } else {
+                    [hud showFailureWithStatus:@"Did not find asset with vk asset identifier or found multiple assets.\n(Code -1001)"];
+                }
+            });
+        };
+        [self.navigationController presentViewController:photoPicker animated:YES completion:nil];
+    } else {
+        UIImagePickerController *picker = [UIImagePickerController new];
+        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        picker.delegate = self;
+        [self presentPopover:picker];
+    }
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
@@ -171,18 +236,27 @@ NSArray <NSString *> *specifiersToDisable;
         [picker dismissViewControllerAnimated:YES completion:nil];
     };
     
+    [self processImage:image handler:^(BOOL success, NSError *error) {
+        success ? [hud showSuccess] : [hud showFailureWithStatus:error.localizedDescription];
+    }];
+}
+
+- (void)processImage:(UIImage *)image handler:( void(^)(BOOL success, NSError *error) )handler
+{    
     ColoredVKImageProcessor *processor = [ColoredVKImageProcessor new];
     NSString *stringPath = [CVK_FOLDER_PATH stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.lastImageIdentifier]];
     [processor processImage:image identifier:self.lastImageIdentifier andSaveToURL:[NSURL fileURLWithPath:stringPath] 
-                   completionBlock:^(BOOL success, NSError *error) {
-                       success ? [hud showSuccess] : [hud showFailureWithStatus:error.localizedDescription];
-                       
-                       [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{@"identifier" : self.lastImageIdentifier}];
-                       
-                       if ([self.lastImageIdentifier isEqualToString:@"menuBackgroundImage"]) {
-                           CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-                       }
-                   }];
+            completionBlock:^(BOOL success, NSError *error) {
+                if (handler) {
+                    handler(success, error);
+                }
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{@"identifier" : self.lastImageIdentifier}];
+                
+                if ([self.lastImageIdentifier isEqualToString:@"menuBackgroundImage"]) {
+                    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+                }
+            }];
 }
 
 
@@ -190,13 +264,13 @@ NSArray <NSString *> *specifiersToDisable;
 - (void)clearCoversCache
 {
     ColoredVKHUD *hud = [ColoredVKHUD showHUD];
-    hud.operation = [NSBlockOperation blockOperationWithBlock:^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         NSError *error = nil;
         BOOL success = [[NSFileManager defaultManager] removeItemAtPath:CVK_CACHE_PATH error:&error];
         if (success && !error) [hud showSuccess];
         else [hud showFailureWithStatus:[NSString stringWithFormat:@"%@\n%@", error.localizedDescription, error.localizedFailureReason]];
         [self reloadSpecifiers];
-    }];
+    });
 }
 
 - (NSString *)cacheSize

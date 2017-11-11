@@ -18,32 +18,20 @@
 
 + (instancetype)showHUD
 {
-    return [[self alloc] initHUDWithOperation:nil andView:nil];
+    return [[self alloc] initHudForView:nil];
 }
 
 + (instancetype)showHUDForView:(UIView *)view
 {
-    return [[self alloc] initHUDWithOperation:nil andView:view];
+    return [[self alloc] initHudForView:view];
 }
 
-+ (instancetype)showHUDForOperation:(NSOperation *)operation
-{
-    return [[self alloc] initHUDWithOperation:operation andView:nil];
-}
-
-+ (instancetype)showHUDForOperation:(NSOperation *)operation andView:(UIView *)view
-{
-    return [[self alloc] initHUDWithOperation:operation andView:view];
-}
-
-- (instancetype)initHUDWithOperation:(NSOperation *)operation andView:(UIView *)view
+- (instancetype)initHudForView:(UIView *)view
 {
     if (!view) view = UIApplication.sharedApplication.keyWindow.rootViewController.view;
     
     self = [super initWithAttachedView:view mode:LHProgressHUDModeNormal subMode:LHProgressHUDSubModeAnimating animated:YES];
     if (self) {
-        self.operation = operation;
-        self.dismissByTap = NO;
         [self setupHUD];
     }
     return self;
@@ -51,6 +39,7 @@
 
 - (void)setupHUD
 {
+    self.dismissByTap = NO;
     self.centerBackgroundView.blurStyle = LHBlurEffectStyleExtraLight;
     self.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
     self.centerBackgroundView.layer.cornerRadius = 10;
@@ -59,29 +48,11 @@
     self.textLabel.textColor = [UIColor colorWithWhite:0.55 alpha:1];
 }
 
-- (void)setOperation:(NSOperation *)operation
-{
-    _operation = operation;
-    
-    if (self.operation) {
-        [self.operation addObserver:self forKeyPath:@"isFinished" options:NSKeyValueObservingOptionNew context:nil];
-        [self.operation start];
-    }
-}
-
-
 - (void)commonInit
 {
     [super commonInit];
     
     [self.lhSpinner addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapRecognized:)]];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
-{
-    if ([object isKindOfClass:[NSBlockOperation class]] && [keyPath isEqualToString:@"isFinished"]) {
-        if ([change[@"new"] boolValue]) [self showSuccess];
-    }
 }
 
 - (void)showSuccess
@@ -116,15 +87,9 @@
     });
 }
 
-- (void)dealloc
-{
-    [self.operation removeObserver:self forKeyPath:@"isFinished"];
-}
-
 - (void)tapRecognized:(UITapGestureRecognizer *)recognizer
 {
     if (self.dismissByTap && (recognizer.state == UIGestureRecognizerStateRecognized)) {
-        if (self.operation && !self.operation.isFinished) [self.operation cancel];
         [super hide];
     }
 }

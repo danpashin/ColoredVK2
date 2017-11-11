@@ -10,14 +10,11 @@
 
 @interface ColoredVKHUD : LHProgressHUD
 
-@property (strong, nonatomic) NSOperation *operation;
 @property (assign, nonatomic) BOOL dismissByTap;
 @property (nonatomic, copy) void (^executionBlock)(ColoredVKHUD *parentHud);
 
 + (instancetype)showHUD;
 + (instancetype)showHUDForView:(UIView *)view;
-+ (instancetype)showHUDForOperation:(NSOperation *)operation;
-+ (instancetype)showHUDForOperation:(NSOperation *)operation andView:(UIView *)view;
 
 - (void)showSuccess;
 - (void)showFailure;

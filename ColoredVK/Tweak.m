@@ -280,6 +280,10 @@ void reloadPrefs()
     dialogsUnreadColor =        [[UIColor savedColorForIdentifier:@"dialogsUnreadColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
     messageUnreadColor =        [[UIColor savedColorForIdentifier:@"messageReadColor"           fromPrefs:prefs] colorWithAlphaComponent:0.2];
     
+    if (!hideMenuSeparators && !prefs[@"MenuSeparatorColor"] && [cvkMainController compareAppVersionWithVersion:@"3.0"] == ColoredVKVersionCompareMore) {
+        menuSeparatorColor  = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0 alpha:1.0f];
+    }
+    
     showFastDownloadButton = prefs[@"showFastDownloadButton"] ? [prefs[@"showFastDownloadButton"] boolValue] : YES;
     showMenuCell = prefs[@"showMenuCell"] ? [prefs[@"showMenuCell"] boolValue] : YES;
     
@@ -424,7 +428,7 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
         UIView *borderView = [UIView new];
         borderView.backgroundColor = [UIColor whiteColor];
         borderView.alpha = 0.15;
-        [blurEffectView addSubview:borderView];
+        [blurEffectView.contentView addSubview:borderView];
         
         NSString *verticalFormat = @"";
         if ([bar isKindOfClass:[UINavigationBar class]]) {
@@ -473,8 +477,8 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
         
         if (verticalFormat.length > 2) {
             borderView.translatesAutoresizingMaskIntoConstraints = NO;
-            [blurEffectView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:verticalFormat options:0 metrics:nil views:@{@"view":borderView}]];
-            [blurEffectView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|"  options:0 metrics:nil views:@{@"view":borderView}]];
+            [blurEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:verticalFormat options:0 metrics:nil views:@{@"view":borderView}]];
+            [blurEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|"  options:0 metrics:nil views:@{@"view":borderView}]];
         }
     } else {
         if ([bar isKindOfClass:[UINavigationBar class]]) {
@@ -984,7 +988,7 @@ CHDeclareMethod(2, BOOL, AppDelegate, application, UIApplication*, application, 
             tweakEnabled = purchased;
             reloadPrefs();
         };
-        [newInstaller checkStatusAndShowAlert:NO];
+        [newInstaller checkStatus];
     });
     
     return YES;
@@ -995,17 +999,6 @@ CHDeclareMethod(1, void, AppDelegate, applicationDidBecomeActive, UIApplication 
     CHSuper(1, AppDelegate, applicationDidBecomeActive, application);
     
     actionChangeCornerRadius();
-    
-    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-    [newInstaller updateAccountInfo:^{
-        [newInstaller checkStatusAndShowAlert:NO];
-    }];
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
-        if (updatesController.shouldCheckUpdates)
-            [updatesController checkUpdates];
-    });
     
     if (cvkMainController.audioCover) {
         [cvkMainController.audioCover updateColorScheme];
@@ -1108,19 +1101,21 @@ CHDeclareMethod(0, void, VKMController, VKMNavigationBarUpdate)
 }
 
 
-CHDeclareClass(VKSearchBarNoCancel);
-CHDeclareMethod(0, void, VKSearchBarNoCancel, layoutSubviews)
+CHDeclareClass(UISearchBar);
+CHDeclareMethod(0, void, UISearchBar, layoutSubviews)
 {
-    CHSuper(0, VKSearchBarNoCancel, layoutSubviews);
+    CHSuper(0, UISearchBar, layoutSubviews);
     
-    if ([self isKindOfClass:NSClassFromString(@"VKSearchBarNoCancel")]) {
-        if (enabled && [self.superview isKindOfClass:[UINavigationBar class]]) {
-            if (enableNightTheme) {
-                self.searchBarTextField.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-            } else if (enabledBarImage)
+    if ([self.superview isKindOfClass:[UINavigationBar class]]) {
+        if (enabled) {
+            if (enableNightTheme)
+                self.searchBarTextField.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+            else if (enabledBarImage)
                 self.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.2f];
-           else if (enabledBarColor)
+            else if (enabledBarColor)
                 self.searchBarTextField.backgroundColor = barBackgroundColor.darkerColor;
+        } else {
+            self.searchBarTextField.backgroundColor = [UIColor colorWithRed:0.078f green:0.227f blue:0.4f alpha:0.8f];
         }
     }
 }
@@ -1359,25 +1354,12 @@ CHDeclareMethod(0, BOOL, NewsFeedController, VKMScrollViewFullscreenEnabled)
     return CHSuper(0, NewsFeedController, VKMScrollViewFullscreenEnabled);
 }
 
-#pragma mark PhotoFeedController
-CHDeclareClass(PhotoFeedController);
-CHDeclareMethod(0, BOOL, PhotoFeedController, VKMTableFullscreenEnabled)
-{
-    if (enabled && showBar) return NO; 
-    return CHSuper(0, PhotoFeedController, VKMTableFullscreenEnabled);
-}
-CHDeclareMethod(0, BOOL, PhotoFeedController, VKMScrollViewFullscreenEnabled)
-{
-    if (enabled && showBar) return NO; 
-    return CHSuper(0, PhotoFeedController, VKMScrollViewFullscreenEnabled);
-}
-
 
 #pragma mark GroupsController - список групп
 CHDeclareClass(GroupsController);
-CHDeclareMethod(0, void, GroupsController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, GroupsController, viewDidLoad)
 {
-    CHSuper(0, GroupsController, viewWillLayoutSubviews);
+    CHSuper(0, GroupsController, viewDidLoad);
     if ([self isKindOfClass:NSClassFromString(@"GroupsController")]) {
         if (enabled && !enableNightTheme && enabledGroupsListImage) {
             [ColoredVKMainController setImageToTableView:self.tableView withName:@"groupsListBackgroundImage" blackout:groupsListImageBlackout
@@ -1432,9 +1414,9 @@ CHDeclareMethod(2, UITableViewCell*, GroupsController, tableView, UITableView*, 
 #pragma mark DialogsController - список диалогов
 CHDeclareClass(DialogsController);
 
-CHDeclareMethod(0, void, DialogsController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, DialogsController, viewDidLoad)
 {
-    CHSuper(0, DialogsController, viewWillLayoutSubviews);
+    CHSuper(0, DialogsController, viewDidLoad);
     if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && ([cvkMainController compareAppVersionWithVersion:@"3.0"] < 0)) {
         if (enabled && !enableNightTheme && enabledMessagesListImage) {
             [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
@@ -1560,7 +1542,8 @@ CHDeclareMethod(1, void, ChatController, viewWillAppear, BOOL, animated)
         
         if (enabled) {
             if (enableNightTheme) {
-                self.inputPanel.pushToTalkCoverView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+                if ([self.inputPanel respondsToSelector:@selector(pushToTalkCoverView)])
+                    self.inputPanel.pushToTalkCoverView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
             }
             else if (changeMessagesInput) {
                 UIButton *inputViewButton = self.inputPanel.inputViewButton;
@@ -1579,9 +1562,9 @@ CHDeclareMethod(1, void, ChatController, viewWillAppear, BOOL, animated)
 }
 
 
-CHDeclareMethod(0, void, ChatController, viewWillLayoutSubviews)
+CHDeclareMethod(0, void, ChatController, viewDidLoad)
 {
-    CHSuper(0, ChatController, viewWillLayoutSubviews);
+    CHSuper(0, ChatController, viewDidLoad);
     
     if ([self isKindOfClass:NSClassFromString(@"ChatController")]) {
         if (enabled) {
@@ -3127,7 +3110,7 @@ CHDeclareMethod(1, void, UITableView, setBackgroundColor, UIColor *, backgroundC
 CHDeclareClass(UIViewController);
 CHDeclareMethod(3, void, UIViewController, presentViewController, UIViewController *, viewControllerToPresent, animated, BOOL, flag, completion, id, completion)
 {
-    if (![NSStringFromClass([self class]) containsString:@"ColoredVK"]) {
+    if (![CLASS_NAME(self) containsString:@"ColoredVK"] || ![CLASS_NAME(viewControllerToPresent) containsString:@"ColoredVK"]) {
         NSArray <Class> *classes = @[[UIAlertController class], [UIActivityViewController class]];
         
         if ([classes containsObject:[viewControllerToPresent class]] && IS_IPAD) {
@@ -3643,8 +3626,11 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
             else
                 [self setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateNormal];
             
-            if (![[self imageForState:UIControlStateNormal].imageAsset.assetName containsString:@"attachments/remove"]) {
-                if (CGRectGetWidth(self.imageView.frame) <= 40.0f && CGRectGetHeight(self.imageView.frame) <= 40.0f) {
+            BOOL shouldChangeColor = ((NSNumber *)objc_getAssociatedObject(self, "shouldChangeImageColor")).boolValue;
+            
+            NSArray <NSString *> *namesToExclude = @[@"attachments/remove", @"search/clear"];
+            if (![namesToExclude containsObject:[self imageForState:UIControlStateNormal].imageAsset.assetName] || shouldChangeColor) {
+                if ((CGRectGetWidth(self.imageView.frame) <= 40.0f && CGRectGetHeight(self.imageView.frame) <= 40.0f) || shouldChangeColor) {
                     [self setImage:[[self imageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
                     self.imageView.tintColor = cvkMainController.nightThemeScheme.buttonColor;
                 }
@@ -3734,7 +3720,7 @@ CHDeclareMethod(0, void, UITextField, layoutSubviews)
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UITextField")]) {
         self.tintColor = cvkMainController.nightThemeScheme.textColor;
         
-        if ([CLASS_NAME(self) isEqualToString:@"UITextField"] || [CLASS_NAME(self) isEqualToString:@"_UIAlertControllerTextField"])
+        if ([CLASS_NAME(self) isEqualToString:@"UITextField"])
             self.backgroundColor = [UIColor clearColor];
     }
 }
@@ -3763,7 +3749,6 @@ CHDeclareMethod(0, void, UIImageView, layoutSubviews)
     CHSuper(0, UIImageView, layoutSubviews);
     
     if (enabled && enableNightTheme) {
-//        self.alpha = 0.8f;
         self.backgroundColor = [UIColor clearColor];
     }
 }
@@ -3774,7 +3759,12 @@ CHDeclareMethod(0, void, UICollectionView, layoutSubviews)
     CHSuper(0, UICollectionView, layoutSubviews);
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionView")]) {
-        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        
+        NSNumber *shouldDisableBackgroundColor = (NSNumber*)objc_getAssociatedObject(self, "shouldDisableBackgroundColor");
+        if ([shouldDisableBackgroundColor isKindOfClass:[NSNumber class]] && shouldDisableBackgroundColor.boolValue)
+            self.backgroundColor = [UIColor clearColor];
+        else
+            self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
 }
 
@@ -3783,10 +3773,14 @@ CHDeclareMethod(0, void, UICollectionViewCell, layoutSubviews)
 {
     CHSuper(0, UICollectionViewCell, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionViewCell")]) {
-        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-        self.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-        self.backgroundView.hidden = YES;
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionViewCell")] && ![self isKindOfClass:NSClassFromString(@"_UIAlertControllerTextFieldViewCollectionCell")]) {
+        
+        NSNumber *shouldDisableBackgroundColor = (NSNumber*)objc_getAssociatedObject(self, "shouldDisableBackgroundColor");
+        if (!([shouldDisableBackgroundColor isKindOfClass:[NSNumber class]] && shouldDisableBackgroundColor.boolValue)) {
+            self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+            self.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+            self.backgroundView.hidden = YES;
+        }
     }
 }
 
@@ -4032,6 +4026,13 @@ CHDeclareMethod(0, void, StoreStockItemView, layoutSubviews)
 }
 
 CHDeclareClass(VKPhotoPicker);
+CHDeclareMethod(0, UIStatusBarStyle, VKPhotoPicker, preferredStatusBarStyle)
+{
+    if ([self isKindOfClass:NSClassFromString(@"VKPhotoPicker")] && enabled && (enabledBarColor || enableNightTheme || enabledBarImage))
+        return UIStatusBarStyleLightContent;
+    else return CHSuper(0, VKPhotoPicker, preferredStatusBarStyle);
+}
+
 CHDeclareMethod(0, void, VKPhotoPicker, viewDidLoad)
 {
     CHSuper(0, VKPhotoPicker, viewDidLoad);
@@ -4223,6 +4224,52 @@ CHDeclareMethod(0, void, UIAlertController, viewDidLoad)
     }
 }
 
+CHDeclareMethod(1, void, UIAlertController, addTextFieldWithConfigurationHandler, id, handler)
+{
+    if (![self isKindOfClass:[ColoredVKAlertController class]]) {
+        void (^newHandler)(UITextField * _Nonnull textField) = ^(UITextField * _Nonnull textField){
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                UIView *viewToRoundSuperView = textField.superview.superview;
+                if (viewToRoundSuperView) {
+                    for (UIView *subview in textField.superview.superview.subviews) {
+                        subview.backgroundColor = [UIColor clearColor];
+                        if ([subview isKindOfClass:[UIVisualEffectView class]])
+                            subview.hidden = YES;
+                    }
+                    UIView *viewToRound = textField.superview;
+                    textField.backgroundColor = (enabled && enableNightTheme) ? cvkMainController.nightThemeScheme.backgroundColor : [UIColor whiteColor];
+                    viewToRound.backgroundColor = (enabled && enableNightTheme) ? cvkMainController.nightThemeScheme.backgroundColor : [UIColor whiteColor];
+                    viewToRound.layer.cornerRadius = 5.0f;
+                    viewToRound.layer.borderWidth = 0.5f;
+                    viewToRound.layer.borderColor = (enabled && enableNightTheme) ? [UIColor clearColor].CGColor : [UIColor colorWithWhite:0.85f alpha:1.0f].CGColor;
+                    viewToRound.layer.masksToBounds = YES;
+                }
+            });
+            
+            void (^configurationHandler)(UITextField *textField) = handler;
+            
+            configurationHandler(textField);
+        };
+        CHSuper(1,  UIAlertController, addTextFieldWithConfigurationHandler, newHandler);
+        
+    } else {
+        CHSuper(1,  UIAlertController, addTextFieldWithConfigurationHandler, handler);
+    }
+}
+
+CHDeclareClass(_UIAlertControllerTextFieldViewController);
+CHDeclareMethod(0, void, _UIAlertControllerTextFieldViewController, viewDidLoad)
+{
+    CHSuper(0, _UIAlertControllerTextFieldViewController, viewDidLoad);
+    
+    if (enabled && enableNightTheme) {
+        objc_setAssociatedObject(self.collectionView, "shouldDisableBackgroundColor", @1, OBJC_ASSOCIATION_ASSIGN);
+    }
+}
+
+
+
 CHDeclareClass(VKP2PDetailedView);
 CHDeclareMethod(0, void, VKP2PDetailedView, layoutSubviews)
 {
@@ -4257,16 +4304,6 @@ CHDeclareMethod(1, id, FreshNewsButton, initWithFrame, CGRect, frame)
     }
     
     return button;
-}
-
-CHDeclareClass(VKLivePromoView);
-CHDeclareMethod(0, void, VKLivePromoView, layoutSubviews)
-{
-    CHSuper(0, VKLivePromoView, layoutSubviews);
-    
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKLivePromoView")]) {
-        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-    }
 }
 
 CHDeclareClass(TouchHighlightControl);
@@ -4396,6 +4433,113 @@ CHDeclareMethod(0, void, EmojiSelectionView, layoutSubviews)
     }
 }
 
+CHDeclareClass(LicensesViewController);
+CHDeclareMethod(0, void, LicensesViewController, viewDidLoad)
+{
+    CHSuper(0, LicensesViewController, viewDidLoad);
+    
+    if (enabled && enableNightTheme) {
+        self.view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+    }
+}
+
+CHDeclareClass(VKAudioPlayerViewController);
+CHDeclareMethod(0, UIStatusBarStyle, VKAudioPlayerViewController, preferredStatusBarStyle)
+{
+    if (enabled && enableNightTheme)
+        return UIStatusBarStyleLightContent;
+    
+    return CHSuper(0, VKAudioPlayerViewController, preferredStatusBarStyle);
+}
+
+CHDeclareMethod(0, void, VKAudioPlayerViewController, viewDidLoad)
+{
+    CHSuper(0, VKAudioPlayerViewController, viewDidLoad);
+    
+    if (enabled && enableNightTheme) {
+        self.view.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        self.pageController.view.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        self.backgroundView.hidden = YES;
+        
+        UIView *effectView = [[UIView alloc] initWithFrame:self.toolbarView.bounds];
+        effectView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        effectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        [self.toolbarView.contentView addSubview:effectView];
+        [self.toolbarView.contentView sendSubviewToBack:effectView];
+        
+        for (UIView *subview in self.view.subviews) {
+            if ([subview isKindOfClass:[UIImageView class]]) {
+                subview.hidden = YES;
+            }
+        }
+    }
+}
+
+CHDeclareClass(PopupWindowView);
+CHDeclareMethod(0, UIView *, PopupWindowView, contentView)
+{
+    UIView *contentView = CHSuper(0, PopupWindowView, contentView);
+    
+    if (enabled && enableNightTheme) {
+        contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+    
+    return contentView;
+}
+
+CHDeclareClass(VKAudioPlayerControlsViewController);
+CHDeclareMethod(0, void, VKAudioPlayerControlsViewController, viewDidLoad)
+{
+    CHSuper(0, VKAudioPlayerControlsViewController, viewDidLoad);
+    
+    if (enabled && enableNightTheme) {
+            objc_setAssociatedObject(self.pp,   "shouldChangeImageColor", @1, OBJC_ASSOCIATION_ASSIGN);
+            objc_setAssociatedObject(self.prev, "shouldChangeImageColor", @1, OBJC_ASSOCIATION_ASSIGN);
+            objc_setAssociatedObject(self.next, "shouldChangeImageColor", @1, OBJC_ASSOCIATION_ASSIGN);
+    }
+}
+
+
+CHDeclareClass(MasksController);
+CHDeclareMethod(0, void, MasksController, viewDidLoad)
+{
+    CHSuper(0, MasksController, viewDidLoad);
+    
+    if (enabled && enableNightTheme) {
+        objc_setAssociatedObject(self.collectionView, "shouldDisableBackgroundColor", @1, OBJC_ASSOCIATION_ASSIGN);
+    }
+}
+
+CHDeclareMethod(2, UICollectionViewCell *, MasksController, collectionView, UICollectionView *, collectionView, cellForItemAtIndexPath, NSIndexPath *, indexPath)
+{
+    UICollectionViewCell *cell = CHSuper(2, MasksController, collectionView, collectionView, cellForItemAtIndexPath, indexPath);
+    objc_setAssociatedObject(cell, "shouldDisableBackgroundColor", @1, OBJC_ASSOCIATION_ASSIGN);
+    return cell;
+}
+
+CHDeclareClass(VKPPNoAccessView);
+CHDeclareMethod(0, void, VKPPNoAccessView, layoutSubviews)
+{
+    CHSuper(0, VKPPNoAccessView, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKPPNoAccessView")]) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+}
+
+CHDeclareClass(UIImage);
+CHDeclareClassMethod(1, UIImage *, UIImage, imageNamed, NSString *, name)
+{
+    UIImage *orig = CHSuper(1, UIImage, imageNamed, name);
+    
+    if (enabled && enableNightTheme) {
+        if ([orig.imageAsset.assetName containsString:@"badge"]) {
+            orig = [orig imageWithTintColor:cvkMainController.nightThemeScheme.backgroundColor];
+        }
+    }
+    
+    return orig;
+}
 
 
 

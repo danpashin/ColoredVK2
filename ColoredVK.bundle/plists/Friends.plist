@@ -21,6 +21,8 @@
 			<string>CHANGE_BACKGROUND</string>
 			<key>id</key>
 			<string>friendsBackgroundImage</string>
+			<key>icon</key>
+			<string>PhotosIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>

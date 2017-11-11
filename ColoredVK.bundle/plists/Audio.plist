@@ -21,6 +21,8 @@
 			<string>CHANGE_BACKGROUND</string>
 			<key>id</key>
 			<string>audioBackgroundImage</string>
+			<key>icon</key>
+			<string>PhotosIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -115,6 +117,8 @@
 			<string>NEW_DESIGN</string>
 			<key>default</key>
 			<false/>
+			<key>icon</key>
+			<string>MusicPlayerIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -149,6 +153,8 @@
 			<string>CUSTOM_COVER</string>
 			<key>id</key>
 			<string>audioCoverImage</string>
+			<key>icon</key>
+			<string>PhotosIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>

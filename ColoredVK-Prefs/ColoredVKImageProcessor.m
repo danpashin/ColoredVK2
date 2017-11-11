@@ -50,7 +50,11 @@
         
         if (!writingError) {
             CGSize screenSize = [UIScreen mainScreen].bounds.size;
-            if ([identifier isEqualToString:@"barImage"]) screenSize.height = 64;
+            screenSize.width += 40.0f;
+            screenSize.height += 40.0f;
+            if ([identifier isEqualToString:@"barImage"])
+                screenSize.height = 64;
+            
             UIImage *newImage = [self resizeImage:image toSize:screenSize];
             
             NSError *writingFullImageError = nil;

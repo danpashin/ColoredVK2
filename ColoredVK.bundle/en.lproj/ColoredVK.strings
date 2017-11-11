@@ -152,7 +152,7 @@
 "MANAGE_SETTINGS_FOOTER" = "Backups are stored in %@. When you restore the device in iTunes they will be removed.";
 "CUSTOM_COVER_FOOTER" = "If you don't like ColoredVK 2 standard cover, you can change it to your.";
 "CACHE_COVERS_FOOTER" = "Caching of covers will help to reduce the load time, but will require more space on the device.";
-"NEW_PLAYER_DESIGN_FOOTER" = "This option will make the player more minimalist - cover will vary depending on the song, and the colors will be more readable. Also, a window with the song lyrics will be added. Just click the cover!";
+"NEW_PLAYER_DESIGN_FOOTER" = "This option will make the player more minimalist - cover will vary depending on the song, and the colors will be more readable. Also, a window with the song lyrics will be added. Just click the cover!\n\nDoes not work in VK App 3.0.2!";
 "PLAYER_GESTURES_FOOTER" = "Swipe down to close the player, swipe up - show playlist, swipe left/right - change the track.";
 "ALWAYS_SHOW_NAVIGATION_BAR_FOOTER" = "By default VK App hides the navigation bar in the news when scrolling. This function disables this concealment.";
 "MESSAGE_BUBBLE_COLOR_FOOTER" = "This function changes the color of the message bubble. Will only work in VK App 2.9 and later.";

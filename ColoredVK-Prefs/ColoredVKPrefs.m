@@ -29,7 +29,7 @@
     return _specifiers;
 }
 
-- (NSArray *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize addFooter:(BOOL)addFooter
+- (NSArray <PSSpecifier*> *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize addFooter:(BOOL)addFooter
 {
     NSMutableArray *specifiersArray = [NSMutableArray new];
     if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
@@ -98,9 +98,10 @@
     self.prefsTableView.emptyDataSetDelegate = self;
     
     
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller]; 
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     self.enableNightTheme = prefs[@"nightThemeType"] ? ([prefs[@"nightThemeType"] integerValue] != -1) : NO;
-    self.enableNightTheme = ([prefs[@"enabled"] boolValue] && self.enableNightTheme);
+    self.enableNightTheme = ([prefs[@"enabled"] boolValue] && self.enableNightTheme && newInstaller.tweakPurchased && newInstaller.tweakActivated);
     self.nightThemeColorScheme = [ColoredVKNightThemeColorScheme colorSchemeForType:[prefs[@"nightThemeType"] integerValue]];
     
     if (self.app_is_vk && self.enableNightTheme) {
@@ -272,6 +273,8 @@
     UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.userInteractionEnabled = YES;
+    cell.layoutMargins = UIEdgeInsetsMake(0, 18, 0, 18);
+    
     objc_setAssociatedObject(cell, "nightThemeColorScheme", self.nightThemeColorScheme, OBJC_ASSOCIATION_ASSIGN);
     objc_setAssociatedObject(cell, "app_is_vk", @(self.app_is_vk), OBJC_ASSOCIATION_ASSIGN);
     objc_setAssociatedObject(cell, "enableNightTheme", @(self.enableNightTheme), OBJC_ASSOCIATION_ASSIGN);
@@ -281,8 +284,14 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    cell.backgroundColor = [UIColor clearColor];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
     CGFloat cornerRadius = 10.f;
     CGRect bounds = CGRectInset(cell.bounds, 8, 0);
+    
+    if (CGSizeEqualToSize(cell.backgroundView.frame.size, bounds.size))
+        return;
     
     CAShapeLayer *layer = [CAShapeLayer layer];
     layer.fillColor = [UIColor whiteColor].CGColor;
@@ -333,8 +342,6 @@
     backgroundView.backgroundColor = [UIColor clearColor];
     [backgroundView.layer insertSublayer:layer atIndex:0];
     
-    cell.backgroundColor = [UIColor clearColor];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundView = backgroundView;
 }
 
