@@ -809,10 +809,11 @@
 @property (retain, nonatomic) UIButton *pp;
 @end
 
-@interface _UIAlertControllerTextFieldView : UIView
-@property (retain, nonatomic) UIView *containerView;
+@interface _UIAlertControllerTextFieldViewController : UICollectionViewController
 @end
 
-@interface _UIAlertControllerTextFieldViewController : UICollectionViewController
+@interface MasksController : UICollectionViewController
+@end
 
+@interface VKPPNoAccessView : UIView
 @end

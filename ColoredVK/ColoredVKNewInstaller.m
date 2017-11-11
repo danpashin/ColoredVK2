@@ -327,7 +327,6 @@ void writeFreeLicence()
 {
     [self showHudWithText:CVKLocalizedString(@"PLEASE_WAIT")];
     
-    NSString *userName = [ColoredVKNewInstaller sharedInstaller].userName;
     NSString *userPassword = AES256EncryptStringForAPI(password);
     
     __weak typeof(self) weakSelf = self;
@@ -342,7 +341,7 @@ void writeFreeLicence()
     };
     
     NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", @(systemInfo.machine), [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];
-    NSDictionary *parameters = @{@"login": userName, @"password": userPassword, @"action": @"logout", 
+    NSDictionary *parameters = @{@"login": self.userName, @"password": userPassword, @"action": @"logout", 
                                  @"version": kDRMPackageVersion, @"device": device, @"key": key
                                  };
     

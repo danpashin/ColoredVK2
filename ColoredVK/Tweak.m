@@ -3764,7 +3764,7 @@ CHDeclareMethod(0, void, UICollectionView, layoutSubviews)
         if ([shouldDisableBackgroundColor isKindOfClass:[NSNumber class]] && shouldDisableBackgroundColor.boolValue)
             self.backgroundColor = [UIColor clearColor];
         else
-        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+            self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
 }
 
@@ -3774,9 +3774,13 @@ CHDeclareMethod(0, void, UICollectionViewCell, layoutSubviews)
     CHSuper(0, UICollectionViewCell, layoutSubviews);
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionViewCell")] && ![self isKindOfClass:NSClassFromString(@"_UIAlertControllerTextFieldViewCollectionCell")]) {
-        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-        self.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-        self.backgroundView.hidden = YES;
+        
+        NSNumber *shouldDisableBackgroundColor = (NSNumber*)objc_getAssociatedObject(self, "shouldDisableBackgroundColor");
+        if (!([shouldDisableBackgroundColor isKindOfClass:[NSNumber class]] && shouldDisableBackgroundColor.boolValue)) {
+            self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+            self.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+            self.backgroundView.hidden = YES;
+        }
     }
 }
 
@@ -4022,6 +4026,13 @@ CHDeclareMethod(0, void, StoreStockItemView, layoutSubviews)
 }
 
 CHDeclareClass(VKPhotoPicker);
+CHDeclareMethod(0, UIStatusBarStyle, VKPhotoPicker, preferredStatusBarStyle)
+{
+    if ([self isKindOfClass:NSClassFromString(@"VKPhotoPicker")] && enabled && (enabledBarColor || enableNightTheme || enabledBarImage))
+        return UIStatusBarStyleLightContent;
+    else return CHSuper(0, VKPhotoPicker, preferredStatusBarStyle);
+}
+
 CHDeclareMethod(0, void, VKPhotoPicker, viewDidLoad)
 {
     CHSuper(0, VKPhotoPicker, viewDidLoad);
@@ -4481,13 +4492,54 @@ CHDeclareMethod(0, void, VKAudioPlayerControlsViewController, viewDidLoad)
 {
     CHSuper(0, VKAudioPlayerControlsViewController, viewDidLoad);
     
-    if (enabled && enableNightTheme) {            
+    if (enabled && enableNightTheme) {
             objc_setAssociatedObject(self.pp,   "shouldChangeImageColor", @1, OBJC_ASSOCIATION_ASSIGN);
             objc_setAssociatedObject(self.prev, "shouldChangeImageColor", @1, OBJC_ASSOCIATION_ASSIGN);
             objc_setAssociatedObject(self.next, "shouldChangeImageColor", @1, OBJC_ASSOCIATION_ASSIGN);
     }
 }
 
+
+CHDeclareClass(MasksController);
+CHDeclareMethod(0, void, MasksController, viewDidLoad)
+{
+    CHSuper(0, MasksController, viewDidLoad);
+    
+    if (enabled && enableNightTheme) {
+        objc_setAssociatedObject(self.collectionView, "shouldDisableBackgroundColor", @1, OBJC_ASSOCIATION_ASSIGN);
+    }
+}
+
+CHDeclareMethod(2, UICollectionViewCell *, MasksController, collectionView, UICollectionView *, collectionView, cellForItemAtIndexPath, NSIndexPath *, indexPath)
+{
+    UICollectionViewCell *cell = CHSuper(2, MasksController, collectionView, collectionView, cellForItemAtIndexPath, indexPath);
+    objc_setAssociatedObject(cell, "shouldDisableBackgroundColor", @1, OBJC_ASSOCIATION_ASSIGN);
+    return cell;
+}
+
+CHDeclareClass(VKPPNoAccessView);
+CHDeclareMethod(0, void, VKPPNoAccessView, layoutSubviews)
+{
+    CHSuper(0, VKPPNoAccessView, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKPPNoAccessView")]) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+}
+
+CHDeclareClass(UIImage);
+CHDeclareClassMethod(1, UIImage *, UIImage, imageNamed, NSString *, name)
+{
+    UIImage *orig = CHSuper(1, UIImage, imageNamed, name);
+    
+    if (enabled && enableNightTheme) {
+        if ([orig.imageAsset.assetName containsString:@"badge"]) {
+            orig = [orig imageWithTintColor:cvkMainController.nightThemeScheme.backgroundColor];
+        }
+    }
+    
+    return orig;
+}
 
 
 
