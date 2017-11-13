@@ -471,19 +471,17 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 - (void)actionSaveColor
 {    
-    [self.savedCollectionView performBatchUpdates:^{
-        if (![self.savedColors containsObject:self.customHexColor]) {
-            [self.savedColors insertObject:self.customHexColor atIndex:0];
-            
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-            [self.savedCollectionView insertItemsAtIndexPaths:@[indexPath]];
-            
+    if (![self.savedColors containsObject:self.customHexColor]) {
+        [self.savedColors insertObject:self.customHexColor atIndex:0];
+        
+        [self.savedCollectionView performBatchUpdates:^{
+            [self.savedCollectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]];
+            [self.savedCollectionView reloadData];
+        } completion:^(BOOL finished) {
             if ([self.delegate respondsToSelector:@selector(colorPicker:didSaveColor:)])
                 [self.delegate colorPicker:self didSaveColor:self.customHexColor];
-            
-            [self.savedCollectionView reloadData];
-        }
-    } completion:nil];
+        }];
+    }
 }
 
 
@@ -523,20 +521,18 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 - (void)colorCell:(ColoredVKColorCollectionViewCell *)cell deleteColor:(NSString *)hexColor
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.savedCollectionView performBatchUpdates:^{
-            if ([self.savedColors containsObject:hexColor]) {
-                NSUInteger index = [self.savedColors indexOfObject:hexColor];
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-                
-                [self.savedColors removeObject:hexColor];
+        if ([self.savedColors containsObject:hexColor]) {
+            [self.savedCollectionView performBatchUpdates:^{
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.savedColors indexOfObject:hexColor] inSection:0];
                 [self.savedCollectionView deleteItemsAtIndexPaths:@[indexPath]];
+                [self.savedCollectionView reloadData];
+            } completion:^(BOOL finished) {
+                [self.savedColors removeObject:hexColor];
                 
                 if ([self.delegate respondsToSelector:@selector(colorPicker:didDeleteColor:)])
                     [self.delegate colorPicker:self didDeleteColor:hexColor];
-                
-                [self.savedCollectionView reloadData];
-            }
-        } completion:nil];
+            }];
+        }
     });
 }
 

@@ -29,13 +29,23 @@
 }
 
 - (void)updateColorViewForIdentifier:(NSString *)identifier
-{	
-    UIView *colorPreview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 28, 28)];
+{
+    UIView *colorPreview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 26.0f, 26.0f)];
     colorPreview.backgroundColor = [UIColor savedColorForIdentifier:identifier];
-    colorPreview.layer.borderColor = colorPreview.backgroundColor.darkerColor.CGColor;
-    colorPreview.layer.borderWidth = 1.0f; 
-    colorPreview.layer.cornerRadius = colorPreview.frame.size.height / 2;
-	self.accessoryView = colorPreview;
+    
+    CGFloat red = 0, green = 0, blue = 0, colorAlpha = 1.0f;
+    [colorPreview.backgroundColor getRed:&red green:&green blue:&blue alpha:&colorAlpha];
+    if (colorAlpha == 0.0f)
+        colorPreview.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.9f];
+    
+    colorPreview.layer.cornerRadius = colorPreview.frame.size.height / 2.0f;
+    colorPreview.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:colorPreview.frame cornerRadius:colorPreview.layer.cornerRadius].CGPath;
+    colorPreview.layer.shadowRadius = 3.5f;
+    colorPreview.layer.shadowOffset = CGSizeZero;
+    colorPreview.layer.shadowColor = [UIColor blackColor].CGColor;
+    colorPreview.layer.shadowOpacity = 0.15f;
+    
+    self.accessoryView = colorPreview;
 }
 
 - (void)dealloc

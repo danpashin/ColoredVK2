@@ -45,33 +45,15 @@ static CGFloat const viewsHeight = 32.0f;
     
     CGFloat width = self.view.frame.size.width - 10;
     
-    
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, width, viewsHeight * 1.5)];
-    self.titleLabel.textAlignment = NSTextAlignmentCenter;
-    self.titleLabel.numberOfLines = 2;
+    self.titleLabel.frame = CGRectMake(0, 0, width, viewsHeight * 1.5);
     [self.contentView addSubview:self.titleLabel];
     
     
-    self.textField = [[UITextField alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.titleLabel.frame), width, viewsHeight)];
-    self.textField.borderStyle = UITextBorderStyleRoundedRect;
-    self.textField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    self.textField.returnKeyType = UIReturnKeyDone;
-    self.textField.textAlignment = NSTextAlignmentCenter;
-    self.textField.layer.cornerRadius = 5.0f;
-    self.textField.layer.masksToBounds = YES;
-    self.textField.layer.borderWidth = 1.0f;
-    self.textField.layer.borderColor = [UIColor clearColor].CGColor;
+    self.textField.frame = CGRectMake(0, CGRectGetMaxY(self.titleLabel.frame), width, viewsHeight);
     [self.contentView addSubview:self.textField];
     
     
-    self.button = [[UIButton alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, viewsHeight)];
-    self.button.layer.masksToBounds = YES;
-    self.button.layer.cornerRadius = 5;
-    self.button.titleLabel.adjustsFontSizeToFitWidth = YES;
-    self.button.titleLabel.textAlignment = NSTextAlignmentCenter;
-    [self.button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [self.button setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:80/255.0f green:102/255.0f blue:151/255.0f alpha:1.0]] forState:UIControlStateNormal];
-    [self.button setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:60/255.0f green:82/255.0f blue:131/255.0f alpha:1.0]] forState:UIControlStateHighlighted];
+    self.button.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, viewsHeight);
     [self.contentView addSubview:self.button];
     
     [self setupConstraints];
@@ -184,6 +166,54 @@ static CGFloat const viewsHeight = 32.0f;
 - (void)dealloc
 {
     [NSNotificationCenter.defaultCenter removeObserver:self];
+}
+
+- (UILabel *)titleLabel
+{
+    if (!_titleLabel) {
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        titleLabel.textAlignment = NSTextAlignmentCenter;
+        titleLabel.numberOfLines = 2;
+        
+        _titleLabel = titleLabel;
+    }
+    return _titleLabel;
+}
+
+- (UITextField *)textField
+{
+    if (!_textField) {
+        UITextField *textField = [[UITextField alloc] initWithFrame:CGRectZero];
+        textField.borderStyle = UITextBorderStyleRoundedRect;
+        textField.clearButtonMode = UITextFieldViewModeWhileEditing;
+        textField.returnKeyType = UIReturnKeyDone;
+        textField.textAlignment = NSTextAlignmentCenter;
+        textField.layer.cornerRadius = 5.0f;
+        textField.layer.masksToBounds = YES;
+        textField.layer.borderWidth = 1.0f;
+        textField.layer.borderColor = [UIColor clearColor].CGColor;
+        
+        _textField = textField;
+    }
+    
+    return _textField;
+}
+
+- (UIButton *)button
+{
+    if (!_button) {
+        UIButton *button = [[UIButton alloc] initWithFrame:CGRectZero];
+        button.layer.masksToBounds = YES;
+        button.layer.cornerRadius = 5;
+        button.titleLabel.adjustsFontSizeToFitWidth = YES;
+        button.titleLabel.textAlignment = NSTextAlignmentCenter;
+        [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [button setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:80/255.0f green:102/255.0f blue:151/255.0f alpha:1.0]] forState:UIControlStateNormal];
+        [button setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:60/255.0f green:82/255.0f blue:131/255.0f alpha:1.0]] forState:UIControlStateHighlighted];
+        
+        _button = button;
+    }
+    return _button;
 }
 
 @end

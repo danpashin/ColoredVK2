@@ -2570,13 +2570,6 @@ CHDeclareMethod(1, void, VKMBrowserController, viewWillAppear, BOOL, animated)
     if ([self isKindOfClass:NSClassFromString(@"VKMBrowserController")]) {
         if (showFastDownloadButton) {
             self.navigationItem.rightBarButtonItem = [ColoredVKBarDownloadButton buttonWithURL:self.target.url.absoluteString rootController:self];
-            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.target.url];
-            request.HTTPMethod = @"HEAD";
-            [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] 
-                                   completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                                       if (![[response.MIMEType componentsSeparatedByString:@"/"].firstObject isEqualToString:@"image"]) self.navigationItem.rightBarButtonItem = nil;
-                                   }];
-            
         }
         setupTranslucence(self.toolbar, cvkMainController.nightThemeScheme.navbackgroundColor, !(enabled && enableNightTheme));
         
@@ -2591,6 +2584,30 @@ CHDeclareMethod(1, void, VKMBrowserController, viewWillAppear, BOOL, animated)
         resetNavigationBar(self.navigationController.navigationBar);
         resetTabBar();
     }
+}
+
+void hideFastButtonForController(VKMBrowserController *browserController)
+{
+    if (showFastDownloadButton) {
+        NSString *imageURL = [browserController.webView stringByEvaluatingJavaScriptFromString:@"(function(){ var allImages = document.querySelectorAll('img'); if (allImages.length == 1) return allImages[0].src; else return \"\"; })();"];
+        
+        NSString *title = [browserController.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+        if (imageURL.length == 0 || ([title containsString:@"jpg"] || [title containsString:@"png"])) {
+            browserController.navigationItem.rightBarButtonItem = nil;
+        }
+    }
+}
+
+CHDeclareMethod(1, void, VKMBrowserController, webViewDidFinishLoad, UIWebView *, webView)
+{
+    CHSuper(1, VKMBrowserController, webViewDidFinishLoad, webView);
+    hideFastButtonForController(self);
+}
+
+CHDeclareMethod(2, void, VKMBrowserController, webView, UIWebView *, webView, didFailLoadWithError, NSError *, error)
+{
+    CHSuper(2, VKMBrowserController, webView, webView, didFailLoadWithError, error);
+    hideFastButtonForController(self);
 }
 
 
