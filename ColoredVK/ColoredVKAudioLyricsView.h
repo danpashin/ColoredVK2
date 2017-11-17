@@ -15,6 +15,7 @@
 @property (strong, nonatomic) UIColor *textColor;
 @property (strong, nonatomic) _UIBackdropView *blurView;
 @property (assign, nonatomic) BOOL hide;
+
 - (void)resetState;
 
 @end

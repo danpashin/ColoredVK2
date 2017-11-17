@@ -20,6 +20,16 @@ static CGFloat const viewsHeight = 32.0f;
     return self;
 }
 
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    return [self init];
+}
+
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    return [self init];
+}
+
 - (BOOL)prefersStatusBarHidden
 {
     return NO;

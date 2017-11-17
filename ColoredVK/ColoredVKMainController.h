@@ -31,9 +31,13 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 + (void)forceUpdateTableView:(UITableView *)tableView withBlackout:(CGFloat)blackout blurBackground:(BOOL)blurBackground;
 
 /**
- * Returns application version from Info.plist
+ * Возвращает версию приложения из Info.plist
  */
 @property (readonly, copy, nonatomic) NSString *appVersion;
+
+/**
+ * Возвращает версию приложения с номером билда из Info.plist
+ */
 @property (readonly, copy, nonatomic) NSString *appVersionDetailed;
 
 @property (strong, nonatomic) MenuCell *menuCell;

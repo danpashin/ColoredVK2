@@ -65,6 +65,16 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
     return self;
 }
 
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    return [self initWithFrame:frame imageName:@"" blackout:0.0f enableParallax:NO blurBackground:NO];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    return [self initWithFrame:CGRectZero imageName:@"" blackout:0.0f enableParallax:NO blurBackground:NO];
+}
+
 - (void)setParallaxEnabled:(BOOL)parallaxEnabled
 {
     _parallaxEnabled = parallaxEnabled;

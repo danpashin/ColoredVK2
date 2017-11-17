@@ -39,9 +39,9 @@ typedef NS_ENUM(NSInteger, CVKNightThemeType) {
 /**
  Инициализирует темно-синюю схему
  */
-- (instancetype)init;
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
 
-- (instancetype)initWithType:(CVKNightThemeType)type;
+- (instancetype)initWithType:(CVKNightThemeType)type NS_DESIGNATED_INITIALIZER;
 - (void)updateForType:(CVKNightThemeType)type;
 
 @end

@@ -308,6 +308,11 @@ void writeFreeLicence()
 
 - (void)actionLoginWithUsername:(NSString *)userName password:(NSString *)password completionBlock:( void(^)(void) )completionBlock
 {
+    if (userName.length == 0 || password.length == 0) {
+        [self showHudWithText:nil];
+        [self.hud showFailureWithStatus:@"Username or password is nil"];
+        return;
+    }
     [self showHudWithText:CVKLocalizedString(@"PLEASE_WAIT")];
     
     NSString *userPassword = AES256EncryptStringForAPI(password);
@@ -323,6 +328,11 @@ void writeFreeLicence()
 
 - (void)actionLogoutWithPassword:(NSString *)password completionBlock:( void(^)(void) )completionBlock;
 {
+    if (password.length == 0) {
+        [self showHudWithText:@""];
+        [self.hud showFailureWithStatus:@"Password is nil"];
+        return;
+    }
     [self showHudWithText:CVKLocalizedString(@"PLEASE_WAIT")];
     
     NSString *userPassword = AES256EncryptStringForAPI(password);
@@ -332,7 +342,7 @@ void writeFreeLicence()
         [weakSelf hideHud];
         
         if (error)
-            [weakSelf showAlertWithTitle:nil text:[NSString stringWithFormat:@"%@\n(Code %@)", error.localizedDescription, @(error.code)] buttons:nil];
+            [weakSelf showAlertWithTitle:CVKLocalizedString(@"ERROR") text:[NSString stringWithFormat:@"%@\n(Code %@)", error.localizedDescription, @(error.code)] buttons:nil];
         
         if (completionBlock)
             completionBlock();
@@ -399,7 +409,7 @@ static void download(id parameters,BOOL isAuthorisation, void(^completionBlock)(
         
         if (error) {
             writeFreeLicence();
-            [installer showAlertWithTitle:nil text:[NSString stringWithFormat:@"%@\n(Code %@)", error.localizedDescription, @(error.code)] buttons:nil];
+            [installer showAlertWithTitle:CVKLocalizedString(@"ERROR") text:[NSString stringWithFormat:@"%@\n(Code %@)", error.localizedDescription, @(error.code)] buttons:nil];
         }
         
         if (completionBlock)

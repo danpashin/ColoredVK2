@@ -14,6 +14,7 @@
 
 
 @interface ColoredVKBarDownloadButton ()
+@property (strong, nonatomic) NSString *url;
 @property (strong, nonatomic) NSArray *downloadInfo;
 @end
 

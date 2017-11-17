@@ -10,11 +10,10 @@
 
 @interface ColoredVKBarDownloadButton : UIBarButtonItem
 
-+ (instancetype)buttonWithURL:(NSString *)url rootController:(UIViewController *)controller;
 + (instancetype)button;
++ (instancetype)buttonWithURL:(NSString *)url rootController:(UIViewController *)controller;
 
-@property (strong, nonatomic) NSString *url;
-@property (strong, nonatomic) NSString*(^urlBlock)(void);
+@property (strong, nonatomic) NSString *(^urlBlock)(void);
 @property (weak, nonatomic) UIViewController *rootViewController;
 
 - (instancetype)initWithURL:(NSString *)url rootController:(UIViewController *)controller;
