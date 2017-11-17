@@ -15,9 +15,9 @@
 
 @interface ColoredVKImageCell ()
 
-@property (strong, nonatomic) NSString *prefsPath;
-@property (strong, nonatomic) NSString *cvkFolder;
-@property (strong, nonatomic) NSString *key;
+@property (strong, nonatomic, readonly) NSString *prefsPath;
+@property (strong, nonatomic, readonly) NSString *cvkFolder;
+@property (strong, nonatomic, readonly) NSString *key;
 
 @property (strong, nonatomic) UIImageView *previewImageView;
 @property (strong, nonatomic) UISwitch *switchView;
@@ -31,48 +31,48 @@
 {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier specifier:specifier];
     if (self) {        
-        self.prefsPath = CVK_PREFS_PATH;
-        self.cvkFolder = CVK_FOLDER_PATH;
+        _prefsPath = CVK_PREFS_PATH;
+        _cvkFolder = CVK_FOLDER_PATH;
         
         NSString *identifier = specifier.identifier;
-        if ([identifier isEqualToString:@"barImage"]) self.key = @"enabledBarImage"; 
-        if ([identifier isEqualToString:@"menuBackgroundImage"]) self.key = @"enabledMenuImage"; 
-        if ([identifier isEqualToString:@"messagesBackgroundImage"]) self.key = @"enabledMessagesImage"; 
-        if ([identifier isEqualToString:@"messagesListBackgroundImage"]) self.key = @"enabledMessagesListImage";
-        if ([identifier isEqualToString:@"groupsListBackgroundImage"]) self.key = @"enabledGroupsListImage";
-        if ([identifier isEqualToString:@"audioBackgroundImage"]) self.key = @"enabledAudioImage";
-        if ([identifier isEqualToString:@"audioCoverImage"]) self.key = @"enabledAudioCustomCover";
-        if ([identifier isEqualToString:@"friendsBackgroundImage"]) self.key = @"enabledFriendsImage";
-        if ([identifier isEqualToString:@"videosBackgroundImage"]) self.key = @"enabledVideosImage";
-        if ([identifier isEqualToString:@"settingsBackgroundImage"]) self.key = @"enabledSettingsImage";
-        if ([identifier isEqualToString:@"settingsExtraBackgroundImage"]) self.key = @"enabledSettingsExtraImage";
+        if ([identifier isEqualToString:@"barImage"]) _key = @"enabledBarImage"; 
+        if ([identifier isEqualToString:@"menuBackgroundImage"]) _key = @"enabledMenuImage"; 
+        if ([identifier isEqualToString:@"messagesBackgroundImage"]) _key = @"enabledMessagesImage"; 
+        if ([identifier isEqualToString:@"messagesListBackgroundImage"]) _key = @"enabledMessagesListImage";
+        if ([identifier isEqualToString:@"groupsListBackgroundImage"]) _key = @"enabledGroupsListImage";
+        if ([identifier isEqualToString:@"audioBackgroundImage"]) _key = @"enabledAudioImage";
+        if ([identifier isEqualToString:@"audioCoverImage"]) _key = @"enabledAudioCustomCover";
+        if ([identifier isEqualToString:@"friendsBackgroundImage"]) _key = @"enabledFriendsImage";
+        if ([identifier isEqualToString:@"videosBackgroundImage"]) _key = @"enabledVideosImage";
+        if ([identifier isEqualToString:@"settingsBackgroundImage"]) _key = @"enabledSettingsImage";
+        if ([identifier isEqualToString:@"settingsExtraBackgroundImage"]) _key = @"enabledSettingsExtraImage";
         
         int imageViewSize = 30;
-        self.previewImageView = [UIImageView new];
-        self.previewImageView.frame = CGRectMake(UIScreen.mainScreen.bounds.size.width/1.3 - imageViewSize, (self.contentView.frame.size.height - imageViewSize)/2, imageViewSize, imageViewSize);
-        self.previewImageView.backgroundColor = [UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f];
-        self.previewImageView.contentMode = UIViewContentModeScaleAspectFill;
-        self.previewImageView.userInteractionEnabled = YES;
-        self.previewImageView.layer.masksToBounds = YES;
-        self.previewImageView.layer.cornerRadius = CGRectGetHeight(self.previewImageView.frame) / 4;
-        [self.contentView addSubview:self.previewImageView];
+        _previewImageView = [UIImageView new];
+        _previewImageView.frame = CGRectMake(UIScreen.mainScreen.bounds.size.width/1.3 - imageViewSize, (self.contentView.frame.size.height - imageViewSize)/2, imageViewSize, imageViewSize);
+        _previewImageView.backgroundColor = [UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f];
+        _previewImageView.contentMode = UIViewContentModeScaleAspectFill;
+        _previewImageView.userInteractionEnabled = YES;
+        _previewImageView.layer.masksToBounds = YES;
+        _previewImageView.layer.cornerRadius = CGRectGetHeight(_previewImageView.frame) / 4;
+        [self.contentView addSubview:_previewImageView];
         
-        self.previewImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        _previewImageView.translatesAutoresizingMaskIntoConstraints = NO;
         NSDictionary *metrics = @{@"width":@(imageViewSize)};
-        NSDictionary *views = @{@"view":self.previewImageView};
+        NSDictionary *views = @{@"view":_previewImageView};
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[view(width)]-|"   options:0 metrics:metrics views:views]];
-        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.previewImageView attribute:NSLayoutAttributeCenterY 
+        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:_previewImageView attribute:NSLayoutAttributeCenterY 
                                                                      relatedBy:0 toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1.0f constant:0.0f]];
-        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.previewImageView attribute:NSLayoutAttributeHeight 
+        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:_previewImageView attribute:NSLayoutAttributeHeight 
                                                                      relatedBy:0 toItem:nil attribute:0 multiplier:1.0f constant:imageViewSize]];
         
         
-        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
-        self.switchView = [UISwitch new];
-        [self.switchView addTarget:self action:@selector(switchTriggerred:) forControlEvents:UIControlEventValueChanged];
-        self.switchView.on = prefs?[prefs[self.key] boolValue]:NO;
-        self.switchView.enabled = NO;
-        self.accessoryView = self.switchView;
+        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:_prefsPath];
+        _switchView = [UISwitch new];
+        [_switchView addTarget:self action:@selector(switchTriggerred:) forControlEvents:UIControlEventValueChanged];
+        _switchView.on = prefs?[prefs[_key] boolValue]:NO;
+        _switchView.enabled = NO;
+        self.accessoryView = _switchView;
         
         UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showActionsController:)];
         longPress.minimumPressDuration = 1.0;

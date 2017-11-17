@@ -31,8 +31,8 @@
         
         NSURL *storeURL = [self.cachePath URLByAppendingPathComponent:@"ColoredVK2.sqlite"];
         NSError *error = nil;
-        self.coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:managedObjectModel];
-        if (![self.coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
+        _coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:managedObjectModel];
+        if (![_coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
             CVKLog(@"Unresolved error %@, %@", error, error.userInfo);
             [self showWarningAlert:error.userInfo];
         }

@@ -32,20 +32,15 @@
     
     self = [super initWithAttachedView:view mode:LHProgressHUDModeNormal subMode:LHProgressHUDSubModeAnimating animated:YES];
     if (self) {
-        [self setupHUD];
+        _dismissByTap = NO;
+        self.centerBackgroundView.blurStyle = LHBlurEffectStyleExtraLight;
+        self.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
+        self.centerBackgroundView.layer.cornerRadius = 10;
+        self.infoColor = [UIColor colorWithWhite:0.55 alpha:1];
+        self.spinnerColor = [UIColor colorWithWhite:0.55 alpha:1];
+        self.textLabel.textColor = [UIColor colorWithWhite:0.55 alpha:1];
     }
     return self;
-}
-
-- (void)setupHUD
-{
-    self.dismissByTap = NO;
-    self.centerBackgroundView.blurStyle = LHBlurEffectStyleExtraLight;
-    self.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
-    self.centerBackgroundView.layer.cornerRadius = 10;
-    self.infoColor = [UIColor colorWithWhite:0.55 alpha:1];
-    self.spinnerColor = [UIColor colorWithWhite:0.55 alpha:1];
-    self.textLabel.textColor = [UIColor colorWithWhite:0.55 alpha:1];
 }
 
 - (void)commonInit

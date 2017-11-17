@@ -47,6 +47,9 @@ typedef NS_ENUM(NSUInteger, ColoredVKWindowBackgroundStyle) {
 @property (assign, nonatomic) BOOL enableNightTheme;
 @property (assign, nonatomic) BOOL app_is_vk;
 
++ (id)new NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
+
 - (void)hide;
 - (void)show;
 

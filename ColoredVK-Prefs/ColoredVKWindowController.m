@@ -12,24 +12,26 @@
 @interface ColoredVKWindowController ()
 
 @property (assign, nonatomic) BOOL isPresented;
+@property (strong, nonatomic) UITapGestureRecognizer *closeTapRecognizer;
 
 @end
 
 
 @implementation ColoredVKWindowController
 
-- (instancetype)init
+@synthesize backgroundView = _backgroundView;
+
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    self = [super init];
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.hideByTouch = YES;
-        self.statusBarNeedsHidden = YES;
-        self.animationDuration = 0.3;
-        self.backgroundStyle = ColoredVKWindowBackgroundStyleDarkened;
-        
+        _hideByTouch = YES;
+        _statusBarNeedsHidden = YES;
+        _animationDuration = 0.3;
+        _backgroundStyle = ColoredVKWindowBackgroundStyleDarkened;
         
         _window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-        self.window.rootViewController = self;
+        _window.rootViewController = self;
     }
     return self;
 }
@@ -131,9 +133,8 @@
         _backgroundStyle = ColoredVKWindowBackgroundStyleDarkened;
     else
         _backgroundStyle = backgroundStyle;
-
-    self.backgroundView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
 }
+
 
 - (void)setBackgroundView:(UIView *)backgroundView
 {
@@ -147,9 +148,26 @@
         _backgroundView = backgroundView;
     }
     
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
-    tap.delegate = self;
-    [self.backgroundView addGestureRecognizer:tap];
+    [self.backgroundView addGestureRecognizer:self.closeTapRecognizer];
+}
+
+- (UIView *)backgroundView
+{
+    if (!_backgroundView) {
+        _backgroundView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        [self.backgroundView addGestureRecognizer:self.closeTapRecognizer];
+    }
+    
+    return _backgroundView;
+}
+
+- (UITapGestureRecognizer *)closeTapRecognizer
+{
+    if (!_closeTapRecognizer) {
+        _closeTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
+        _closeTapRecognizer.delegate = self;
+    }
+    return _closeTapRecognizer;
 }
 
 - (void)setContentView:(UIView *)contentView

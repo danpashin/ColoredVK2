@@ -17,4 +17,6 @@
 @property (strong, nonatomic) NSString*(^urlBlock)(void);
 @property (weak, nonatomic) UIViewController *rootViewController;
 
+- (instancetype)initWithURL:(NSString *)url rootController:(UIViewController *)controller;
+
 @end

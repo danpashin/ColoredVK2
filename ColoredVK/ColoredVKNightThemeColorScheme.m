@@ -30,7 +30,7 @@
     self = [super init];
     if (self) {
         _type = CVKNightThemeTypeDarkBlue;
-        [self updateForType:self.type];
+        [self updateForType:_type];
     }
     return self;
 }

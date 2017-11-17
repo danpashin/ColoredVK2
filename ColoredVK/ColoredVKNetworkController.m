@@ -30,14 +30,14 @@
     self = [super init];
     if (self) {
         _configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-        self.configuration.timeoutIntervalForResource = 90.0f;
-        self.configuration.allowsCellularAccess = YES;
-        self.configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalAndRemoteCacheData;
+        _configuration.timeoutIntervalForResource = 90.0f;
+        _configuration.allowsCellularAccess = YES;
+        _configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalAndRemoteCacheData;
         
-        self.operationQueue = [[NSOperationQueue alloc] init];
-        self.operationQueue.name = @"com.daniilpashin.coloredvk2.network";
+        _operationQueue = [[NSOperationQueue alloc] init];
+        _operationQueue.name = @"com.daniilpashin.coloredvk2.network";
         
-        self.session = [NSURLSession sessionWithConfiguration:self.configuration delegate:self delegateQueue:self.operationQueue];
+        _session = [NSURLSession sessionWithConfiguration:_configuration delegate:self delegateQueue:_operationQueue];
     }
     return self;
 }

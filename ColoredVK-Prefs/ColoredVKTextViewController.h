@@ -11,6 +11,6 @@
 
 @interface ColoredVKTextViewController : ColoredVKWindowController
 
-- (instancetype)initWithFile:(NSString *)fileName localized:(BOOL)localized;
+- (instancetype)initWithFile:(NSString *)fileName localized:(BOOL)localized NS_DESIGNATED_INITIALIZER;
 
 @end

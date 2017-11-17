@@ -31,7 +31,7 @@
 
 @interface ColoredVKColorPickerController : ColoredVKWindowController
 
-+ (instancetype)pickerWithIdentifier:(NSString *)identifier;
+- (instancetype)initWithIdentifier:(NSString *)identifier NS_DESIGNATED_INITIALIZER;
 
 @property (strong, nonatomic, readonly) NSString *identifier;
 @property (weak, nonatomic) id <ColoredVKColorPickerControllerDelegate> delegate;

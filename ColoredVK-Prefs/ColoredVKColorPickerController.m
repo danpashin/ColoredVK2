@@ -15,7 +15,6 @@
 #import "ColoredVKColorCollectionViewCell.h"
 #import "ColoredVKSimpleAlertController.h"
 #import "UIScrollView+EmptyDataSet.h"
-#import "ColoredVKResponsiveButton.h"
 #import "ColoredVKAlertController.h"
 #import "OAStackView.h"
 
@@ -27,8 +26,8 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 @interface ColoredVKColorPickerController () <UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate, ColoredVKColorCollectionViewCellDelegate>
 
-@property (strong, nonatomic) NSBundle *cvkBundle;
-@property (strong, nonatomic) NSString *prefsPath;
+@property (strong, nonatomic, readonly) NSBundle *cvkBundle;
+@property (strong, nonatomic, readonly) NSString *prefsPath;
 @property (assign, nonatomic) ColoredVKColorPickerState state;
 @property (assign, nonatomic) CGFloat brightness;
 @property (strong, nonatomic) UIColor *customColor;
@@ -39,7 +38,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 @property (strong, nonatomic) ColoredVKColorPreview *infoView;
 @property (strong, nonatomic) HRBrightnessSlider *sliderView;
 @property (strong, nonatomic) HRColorMapView *colorMapView;
-@property (strong, nonatomic) ColoredVKResponsiveButton *saveColorButton;
+@property (strong, nonatomic) UIButton *saveColorButton;
 @property (strong, nonatomic) UILabel *savedColorsLabel;
 @property (strong, nonatomic) UICollectionView *savedCollectionView;
 
@@ -49,6 +48,8 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 @property (strong, nonatomic) OAStackView *stackView;
 @property (strong, nonatomic) UIView *stackContainerView;
+
+@property (assign, nonatomic) UIEdgeInsets saveButtonLabelInsets;
 
 @end
 
@@ -61,20 +62,19 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 @implementation ColoredVKColorPickerController
 
-+ (instancetype)pickerWithIdentifier:(NSString *)identifier
+- (instancetype)initWithCoder:(NSCoder *)coder
 {
-    return [[ColoredVKColorPickerController alloc] initWithIdentifier:identifier];
+    return [self initWithIdentifier:@""];
 }
 
-- (instancetype)init
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    @throw [NSException exceptionWithName:NSGenericException reason:[NSString stringWithFormat:@"%s is forbidden.", __FUNCTION__] userInfo:nil];
-    return nil;
+    return [self initWithIdentifier:@""];
 }
 
 - (instancetype)initWithIdentifier:(NSString *)identifier
 {
-    self = [super init];
+    self = [super initWithNibName:nil bundle:nil];
     if (self) {
         _identifier = identifier;
     }
@@ -85,8 +85,8 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 {
     [super viewDidLoad];
     
-    self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    self.prefsPath = CVK_PREFS_PATH;
+    _cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    _prefsPath = CVK_PREFS_PATH;
     
     [self setupDefaultContentView];
     [self.contentView addSubview:self.contentViewNavigationBar];
@@ -140,15 +140,15 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     [self.infoView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionShowHexWindow)]];
     [self.colorPreviewContainer addSubview:self.infoView];
     
-    self.saveColorButton = [ColoredVKResponsiveButton buttonWithType:UIButtonTypeCustom];
+    self.saveColorButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.saveColorButton.frame = CGRectMake(CGRectGetMaxX(self.infoView.frame) + 20, CGRectGetMinY(self.infoView.frame), CGRectGetWidth(self.colorPreviewContainer.frame)-(CGRectGetMaxX(self.infoView.frame) + 30), 32);
     UIImage *plusImage = [UIImage imageNamed:@"SaveIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
     [self.saveColorButton setImage:plusImage forState:UIControlStateNormal];
     [self.saveColorButton setImage:plusImage forState:UIControlStateSelected];
     [self.saveColorButton setTitle:UIKitLocalizedString(@"Save") forState:UIControlStateNormal];
     [self.saveColorButton setTitleColor:[UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1.0] forState:UIControlStateNormal];
-    self.saveColorButton.cachedTitleEdgeInsets = UIEdgeInsetsMake(0, 15, 0, 0);
-    self.saveColorButton.titleEdgeInsets = self.saveColorButton.cachedTitleEdgeInsets;
+    self.saveButtonLabelInsets = UIEdgeInsetsMake(0, 15, 0, 0);
+    self.saveColorButton.titleEdgeInsets = self.saveButtonLabelInsets;
     [self.saveColorButton addTarget:self action:@selector(actionSaveColor) forControlEvents:UIControlEventTouchUpInside];
     [self.colorPreviewContainer addSubview:self.saveColorButton];
     
@@ -216,8 +216,9 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
         [self.saveColorButton setTitle:@"" forState:UIControlStateNormal];
         self.saveColorButton.titleEdgeInsets = UIEdgeInsetsZero;
     } else {
-        [self.saveColorButton setTitle:self.saveColorButton.cachedTitle forState:UIControlStateNormal];
-        self.saveColorButton.titleEdgeInsets = self.saveColorButton.cachedTitleEdgeInsets;
+        self.saveColorButton.titleLabel.hidden = NO;
+        [self.saveColorButton setTitle:UIKitLocalizedString(@"Save") forState:UIControlStateNormal];
+        self.saveColorButton.titleEdgeInsets = self.saveButtonLabelInsets;
         self.savedColorsLabel.font = [self.savedColorsLabel.font fontWithSize:20.0f];
     }
 }
@@ -436,7 +437,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 - (void)actionShowHexWindow
 {
-    ColoredVKSimpleAlertController *hexWindow = [ColoredVKSimpleAlertController new];
+    ColoredVKSimpleAlertController *hexWindow = [[ColoredVKSimpleAlertController alloc] init];
     hexWindow.textField.placeholder = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"EXAMPLE_ALERT_MESSAGE", nil, self.cvkBundle, nil), self.customColor.hexStringValue];
     hexWindow.textField.delegate = self;
     NSString *buttonTitle = NSLocalizedStringFromTableInBundle(@"COPY_SAVED", nil, self.cvkBundle, nil);
@@ -524,11 +525,10 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
         if ([self.savedColors containsObject:hexColor]) {
             [self.savedCollectionView performBatchUpdates:^{
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.savedColors indexOfObject:hexColor] inSection:0];
+                [self.savedColors removeObject:hexColor];
                 [self.savedCollectionView deleteItemsAtIndexPaths:@[indexPath]];
                 [self.savedCollectionView reloadData];
             } completion:^(BOOL finished) {
-                [self.savedColors removeObject:hexColor];
-                
                 if ([self.delegate respondsToSelector:@selector(colorPicker:didDeleteColor:)])
                     [self.delegate colorPicker:self didDeleteColor:hexColor];
             }];

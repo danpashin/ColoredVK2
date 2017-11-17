@@ -11,20 +11,26 @@
 
 @interface ColoredVKTextViewController ()
 @property (strong, nonatomic) UITextView *textView;
+@property (strong, nonatomic) NSAttributedString *attributedText;
 @end
 
 @implementation ColoredVKTextViewController
 
-- (BOOL)prefersStatusBarHidden
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    return NO;
+    return [self initWithFile:@"" localized:NO];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    return [self initWithFile:@"" localized:NO];
 }
 
 - (instancetype)initWithFile:(NSString *)fileName localized:(BOOL)localized
 {
-    self = [super init];
+    self = [super initWithNibName:nil bundle:nil];
     if (self) {        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (fileName) {
             NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
             NSString *extension = @"rtf";
             
@@ -34,12 +40,17 @@
             else
                 path = [cvkBundle URLForResource:fileName withExtension:extension subdirectory:@"plists"];
             
-            self.textView.attributedText = [[NSAttributedString alloc] initWithFileURL:path 
-                                                                               options:@{NSDocumentTypeDocumentAttribute:NSRTFTextDocumentType} 
-                                                                    documentAttributes:nil error:nil];
-        });
+            _attributedText = [[NSAttributedString alloc] initWithFileURL:path 
+                                                                  options:@{NSDocumentTypeDocumentAttribute:NSRTFTextDocumentType} 
+                                                       documentAttributes:nil error:nil];
+        }
     }
     return self;
+}
+
+- (BOOL)prefersStatusBarHidden
+{
+    return NO;
 }
 
 - (void)viewDidLoad
@@ -53,6 +64,7 @@
     self.textView = [[UITextView alloc] initWithFrame:self.contentView.bounds];
     self.textView.backgroundColor = [UIColor clearColor];
     self.textView.editable = NO;
+    self.textView.attributedText = self.attributedText;
     [self.contentView addSubview:self.textView];
     
     self.textView.translatesAutoresizingMaskIntoConstraints = NO;

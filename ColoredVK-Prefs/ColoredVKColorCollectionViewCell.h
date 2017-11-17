@@ -21,7 +21,6 @@
 
 @interface ColoredVKColorCollectionViewCell : UICollectionViewCell
 
-@property (strong, nonatomic) ColoredVKColorPreview *colorPreview;
 @property (strong, nonatomic) NSString *hexColor;
 @property (weak, nonatomic) id <ColoredVKColorCollectionViewCellDelegate> delegate;
 

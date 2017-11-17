@@ -45,59 +45,54 @@
     self.layer.masksToBounds = YES;
     self.layer.cornerRadius = 4;
     
-    self.height = 32;
-    self.value = 0;
-    self.minValue = 0;
-    self.maxValue = 5;
-    self.step = 1;
-    self.shouldShake = YES;
+    _height = 32;
+    _value = 0;
+    _minValue = 0;
+    _maxValue = 5;
+    _step = 1;
+    _shouldShake = YES;
     
     
-    self.decreaseButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.decreaseButton setTitle:@"-" forState:UIControlStateNormal];
-    self.decreaseButton.titleLabel.font = [UIFont boldSystemFontOfSize:21];
-    [self.decreaseButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    [self.decreaseButton addTarget:self action:@selector(actionDecrease) forControlEvents:UIControlEventTouchUpInside];
+    _decreaseButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [_decreaseButton setTitle:@"-" forState:UIControlStateNormal];
+    _decreaseButton.titleLabel.font = [UIFont boldSystemFontOfSize:21];
+    [_decreaseButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [_decreaseButton addTarget:self action:@selector(actionDecrease) forControlEvents:UIControlEventTouchUpInside];
     
     UILongPressGestureRecognizer *decreasePress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(changeValueWithGesture:)];
     decreasePress.accessibilityLabel = @"decrease";
-    [self.decreaseButton addGestureRecognizer:decreasePress];
+    [_decreaseButton addGestureRecognizer:decreasePress];
     
     
-    self.increaseButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.increaseButton setTitle:@"+" forState:UIControlStateNormal];
-    self.increaseButton.titleLabel.font = [UIFont boldSystemFontOfSize:21];
-    [self.increaseButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    [self.increaseButton addTarget:self action:@selector(actionIncrease) forControlEvents:UIControlEventTouchUpInside];
+    _increaseButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [_increaseButton setTitle:@"+" forState:UIControlStateNormal];
+    _increaseButton.titleLabel.font = [UIFont boldSystemFontOfSize:21];
+    [_increaseButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [_increaseButton addTarget:self action:@selector(actionIncrease) forControlEvents:UIControlEventTouchUpInside];
     
     UILongPressGestureRecognizer *increasePress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(changeValueWithGesture:)];
     increasePress.accessibilityLabel = @"increase";
-    [self.increaseButton addGestureRecognizer:increasePress];
+    [_increaseButton addGestureRecognizer:increasePress];
     
-    self.valueLabel = [UILabel new];
-    self.valueLabel.textAlignment = NSTextAlignmentCenter;
-    self.valueLabel.font = [UIFont systemFontOfSize:15.0f];
+    _valueLabel = [UILabel new];
+    _valueLabel.textAlignment = NSTextAlignmentCenter;
+    _valueLabel.font = [UIFont systemFontOfSize:15.0f];
     
-    [self addSubview:self.decreaseButton];
-    [self addSubview:self.increaseButton];
-    [self addSubview:self.valueLabel];
+    [self addSubview:_decreaseButton];
+    [self addSubview:_increaseButton];
+    [self addSubview:_valueLabel];
     
-    [self setupConstraints];
-}
-
-- (void)setupConstraints
-{
-    self.decreaseButton.translatesAutoresizingMaskIntoConstraints = NO;
-    self.increaseButton.translatesAutoresizingMaskIntoConstraints = NO;
-    self.valueLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _decreaseButton.translatesAutoresizingMaskIntoConstraints = NO;
+    _increaseButton.translatesAutoresizingMaskIntoConstraints = NO;
+    _valueLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self.decreaseButton}]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self.increaseButton}]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self.valueLabel}]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":_decreaseButton}]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":_increaseButton}]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":_valueLabel}]];
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[decreaseButton(buttonWidth)][valueLabel][increaseButton(buttonWidth)]|" 
-                                                                 options:0 metrics:@{@"buttonWidth":@(self.height)} 
-                                                                   views:@{@"decreaseButton":self.decreaseButton, @"valueLabel":self.valueLabel, @"increaseButton":self.increaseButton}]];
+                                                                 options:0 metrics:@{@"buttonWidth":@(_height)} 
+                                                                   views:@{@"decreaseButton":_decreaseButton, @"valueLabel":_valueLabel, @"increaseButton":_increaseButton}]];
 }
 
 #pragma mark - Setters

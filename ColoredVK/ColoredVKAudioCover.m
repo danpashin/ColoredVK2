@@ -48,43 +48,44 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
 {
     self = [super init];
     if (self) {
-        self.coverView = [[UIView alloc] init];
-        self.coverView.tag = 265;
+        _coverView = [[UIView alloc] init];
+        _coverView.tag = 265;
         
-        self.defaultCover = YES;
-        self.manager = [SDWebImageManager sharedManager];
-        self.coredata = [ColoredVKCoreData new];
-        self.artist = @"";
-        self.track = @"";
+        _defaultCover = YES;
+        _manager = [SDWebImageManager sharedManager];
+        _coredata = [ColoredVKCoreData new];
+        _artist = @"";
+        _track = @"";
         _color = [UIColor whiteColor];
-        self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+        _cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         [self updatePrefs:nil];
         
-        self.topImageView = [[UIImageView alloc] initWithImage:self.noCover];
-        self.topImageView.backgroundColor = [UIColor blackColor];
-        self.topImageView.contentMode = UIViewContentModeScaleAspectFill;
-        self.topImageView.layer.masksToBounds = YES;
-        [self.coverView addSubview:self.topImageView];
+        _topImageView = [[UIImageView alloc] initWithImage:self.noCover];
+        _topImageView.backgroundColor = [UIColor blackColor];
+        _topImageView.contentMode = UIViewContentModeScaleAspectFill;
+        _topImageView.layer.masksToBounds = YES;
+        [_coverView addSubview:_topImageView];
         
-        self.bottomImageView = [UIImageView new];
-        self.bottomImageView.backgroundColor = [UIColor blackColor];
-        self.bottomImageView.contentMode = UIViewContentModeScaleAspectFill;
-        if (self.customCover) self.bottomImageView.image = self.noCover;
+        _bottomImageView = [UIImageView new];
+        _bottomImageView.backgroundColor = [UIColor blackColor];
+        _bottomImageView.contentMode = UIViewContentModeScaleAspectFill;
+        if (_customCover)
+            _bottomImageView.image = self.noCover;
         
-        self.blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
-        self.blurEffectView.frame = self.bottomImageView.bounds;
-        [self.bottomImageView addSubview:self.blurEffectView];
+        _blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+        _blurEffectView.frame = _bottomImageView.bounds;
+        [_bottomImageView addSubview:_blurEffectView];
         
-        [self.coverView addSubview:self.bottomImageView];
-        [self.coverView sendSubviewToBack:self.bottomImageView];
+        [_coverView addSubview:_bottomImageView];
+        [_coverView sendSubviewToBack:_bottomImageView];
         
-        self.audioLyricsView = [[ColoredVKAudioLyricsView alloc] init];
-        [self.coverView addSubview:self.audioLyricsView];
+        _audioLyricsView = [[ColoredVKAudioLyricsView alloc] init];
+        [_coverView addSubview:_audioLyricsView];
         
-        self.topCoverGradient = [CAGradientLayer layer];
-        self.topCoverGradient.colors = @[ (id)[UIColor colorWithWhite:0 alpha:0.5].CGColor, (id)[UIColor clearColor].CGColor ];
-        self.topCoverGradient.locations = @[ @0, @0.95];
-        [self.topImageView.layer addSublayer:self.topCoverGradient];
+        _topCoverGradient = [CAGradientLayer layer];
+        _topCoverGradient.colors = @[ (id)[UIColor colorWithWhite:0 alpha:0.5].CGColor, (id)[UIColor clearColor].CGColor ];
+        _topCoverGradient.locations = @[ @0, @0.95];
+        [_topImageView.layer addSublayer:_topCoverGradient];
         
         [self updateColorSchemeForImage:self.noCover];
         
@@ -336,7 +337,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@" %@; artist '%@'; track '%@'; frame %@; separationPoint %@; ", super.description, self.artist, self.track, 
+    return [NSString stringWithFormat:@"<%@: %p artist '%@', track '%@', frame %@, separationPoint %@>", [self class], self, self.artist, self.track, 
             NSStringFromCGRect(self.coverView.frame), NSStringFromCGPoint(CGPointMake(0, CGRectGetMinY(self.bottomImageView.frame)))];
 }
 

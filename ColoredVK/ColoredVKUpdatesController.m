@@ -15,7 +15,7 @@
 
 @interface ColoredVKUpdatesController ()
 
-@property (copy, nonatomic) NSString *prefsPath;
+@property (copy, nonatomic, readonly) NSString *prefsPath;
 
 @end
 
@@ -34,8 +34,8 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
 {
     self = [super init];
     if (self) {
-        self.showErrorAlert = NO;
-        self.prefsPath = CVK_PREFS_PATH;
+        _showErrorAlert = NO;
+        _prefsPath = CVK_PREFS_PATH;
     }
     return self;
 }

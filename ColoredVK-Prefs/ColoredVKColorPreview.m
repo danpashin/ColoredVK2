@@ -23,31 +23,31 @@ static CGFloat const kColorPreviewCornerRadius = 6.0f;
 
 @implementation ColoredVKColorPreview
 
-- (instancetype)init
+- (instancetype)initWithFrame:(CGRect)frame
 {
-    self = [super init];
+    self = [super initWithFrame:frame];
     if (self) {
-        self.colorPreview = [UIView new];
-        self.colorPreview.frame = self.bounds;
-        self.colorPreview.layer.cornerRadius = kColorPreviewCornerRadius;
-        self.colorPreview.layer.masksToBounds = YES;
-        [self addSubview:self.colorPreview];
+        _colorPreview = [UIView new];
+        _colorPreview.frame = CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame));
+        _colorPreview.layer.cornerRadius = kColorPreviewCornerRadius;
+        _colorPreview.layer.masksToBounds = YES;
+        [self addSubview:_colorPreview];
         
-        self.rgbLabel = [UILabel new];
-        self.rgbLabel.frame = CGRectMake(0, CGRectGetHeight(self.frame) - kHexLabelHeight, CGRectGetWidth(self.frame), kHexLabelHeight / 2);
-        self.rgbLabel.textAlignment = NSTextAlignmentCenter;
-        self.rgbLabel.backgroundColor = [UIColor whiteColor];
-        self.rgbLabel.font = [UIFont systemFontOfSize:10];
-        self.rgbLabel.textColor = [UIColor colorWithWhite:0.5 alpha:1];
-        [self.colorPreview addSubview:self.rgbLabel];
+        _rgbLabel = [UILabel new];
+        _rgbLabel.frame = CGRectMake(0, CGRectGetHeight(frame) - kHexLabelHeight, CGRectGetWidth(frame), kHexLabelHeight / 2);
+        _rgbLabel.textAlignment = NSTextAlignmentCenter;
+        _rgbLabel.backgroundColor = [UIColor whiteColor];
+        _rgbLabel.font = [UIFont systemFontOfSize:10];
+        _rgbLabel.textColor = [UIColor colorWithWhite:0.5 alpha:1];
+        [_colorPreview addSubview:_rgbLabel];
         
-        self.hexLabel = [UILabel new];
-        self.hexLabel.frame = CGRectMake(0, CGRectGetHeight(self.frame) - 2 * kHexLabelHeight, CGRectGetWidth(self.frame), kHexLabelHeight);
-        self.hexLabel.textAlignment = NSTextAlignmentCenter;
-        self.hexLabel.backgroundColor = [UIColor whiteColor];
-        self.hexLabel.font = [UIFont systemFontOfSize:12];
-        self.hexLabel.textColor = [UIColor colorWithWhite:0.5 alpha:1];
-        [self.colorPreview addSubview:self.hexLabel];
+        _hexLabel = [UILabel new];
+        _hexLabel.frame = CGRectMake(0, CGRectGetHeight(frame) - 2 * kHexLabelHeight, CGRectGetWidth(frame), kHexLabelHeight);
+        _hexLabel.textAlignment = NSTextAlignmentCenter;
+        _hexLabel.backgroundColor = [UIColor whiteColor];
+        _hexLabel.font = [UIFont systemFontOfSize:12];
+        _hexLabel.textColor = [UIColor colorWithWhite:0.5 alpha:1];
+        [_colorPreview addSubview:_hexLabel];
         
         self.layer.shadowRadius = 3.5f;
         self.layer.shadowOpacity = 0.15f;
@@ -56,27 +56,22 @@ static CGFloat const kColorPreviewCornerRadius = 6.0f;
         self.layer.rasterizationScale = [UIScreen mainScreen].scale;
         self.layer.shouldRasterize = YES;
         
-        [self setupConstraints];
+        _colorPreview.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[colorPreview]|" options:0 metrics:nil views:@{@"colorPreview":_colorPreview}]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[colorPreview]|" options:0 metrics:nil views:@{@"colorPreview":_colorPreview}]];
+        
+        _hexLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        _rgbLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        [_colorPreview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[hexLabel]|" options:0 metrics:nil views:@{@"hexLabel":_hexLabel}]];
+        [_colorPreview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[rgbLabel]|" options:0 metrics:nil views:@{@"rgbLabel":_rgbLabel}]];
+        [_colorPreview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[hexLabel(hexHeight)][rgbLabel(rgbHeight)]|"
+                                                                                  options:0 metrics:@{@"hexHeight":@(kHexLabelHeight), @"rgbHeight":@(kHexLabelHeight / 2)} 
+                                                                                    views:@{@"hexLabel":_hexLabel, @"rgbLabel":_rgbLabel}]];
+        
+        CGFloat constant = IS_IPAD ? 2.5 : 2.0;
+        self.minHeight = (CGRectGetHeight(self.rgbLabel.frame) + CGRectGetHeight(self.hexLabel.frame)) * constant;
     }
     return self;
-}
-
-- (void)setupConstraints
-{
-    self.colorPreview.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[colorPreview]|" options:0 metrics:nil views:@{@"colorPreview":self.colorPreview}]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[colorPreview]|" options:0 metrics:nil views:@{@"colorPreview":self.colorPreview}]];
-    
-    self.hexLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    self.rgbLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.colorPreview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[hexLabel]|" options:0 metrics:nil views:@{@"hexLabel":self.hexLabel}]];
-    [self.colorPreview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[rgbLabel]|" options:0 metrics:nil views:@{@"rgbLabel":self.rgbLabel}]];
-    [self.colorPreview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[hexLabel(hexHeight)][rgbLabel(rgbHeight)]|"
-                                                                              options:0 metrics:@{@"hexHeight":@(kHexLabelHeight), @"rgbHeight":@(kHexLabelHeight / 2)} 
-                                                                                views:@{@"hexLabel":self.hexLabel, @"rgbLabel":self.rgbLabel}]];
-    
-    CGFloat constant = IS_IPAD ? 2.5 : 2.0;
-    self.minHeight = (CGRectGetHeight(self.rgbLabel.frame) + CGRectGetHeight(self.hexLabel.frame)) * constant;
 }
 
 - (void)setColor:(UIColor *)color

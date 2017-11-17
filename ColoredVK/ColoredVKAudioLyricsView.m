@@ -22,23 +22,23 @@
     if (self) {
         [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(actionShow:)]];
         
-        self.blurView = [[_UIBackdropView alloc] initWithSettings:[_UIBackdropViewSettings settingsForStyle:_UIBackdropViewStyleLight]];
-        self.blurView.layer.cornerRadius = 14;
-        self.blurView.layer.masksToBounds = YES;
-        self.blurView.userInteractionEnabled = YES;
-        [self addSubview:self.blurView];
+        _blurView = [[_UIBackdropView alloc] initWithSettings:[_UIBackdropViewSettings settingsForStyle:_UIBackdropViewStyleLight]];
+        _blurView.layer.cornerRadius = 14;
+        _blurView.layer.masksToBounds = YES;
+        _blurView.userInteractionEnabled = YES;
+        [self addSubview:_blurView];
               
-        self.textView = [UITextView new];
-        self.textView.backgroundColor = [UIColor clearColor];
-        self.textView.editable = NO;
-        self.textView.selectable = NO;
-        self.textView.textAlignment = NSTextAlignmentCenter;
-        self.textView.textColor = [UIColor whiteColor];
-        self.textView.userInteractionEnabled = YES;
-        self.textView.font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
-        [self.blurView addSubview:self.textView];
+        _textView = [UITextView new];
+        _textView.backgroundColor = [UIColor clearColor];
+        _textView.editable = NO;
+        _textView.selectable = NO;
+        _textView.textAlignment = NSTextAlignmentCenter;
+        _textView.textColor = [UIColor whiteColor];
+        _textView.userInteractionEnabled = YES;
+        _textView.font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+        [_blurView addSubview:_textView];
         
-        self.blurView.alpha = 0.0;
+        _blurView.alpha = 0.0;
         _hide = YES;
     }
     return self;
@@ -114,7 +114,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@" %@; textColor %@; hidden %@ ", super.description, self.textColor, @(self.hide)];
+    return [NSString stringWithFormat:@"<%@ %p: textColor %@, hidden %@>", [self class], self, self.textColor, @(self.hide)];
 }
 
 @end

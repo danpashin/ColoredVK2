@@ -14,6 +14,12 @@ static CGFloat const viewsHeight = 32.0f;
 
 @implementation ColoredVKSimpleAlertController
 
+- (instancetype)init
+{
+    self = [super initWithNibName:nil bundle:nil];
+    return self;
+}
+
 - (BOOL)prefersStatusBarHidden
 {
     return NO;

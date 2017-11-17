@@ -12,6 +12,7 @@
 
 @interface ColoredVKColorCollectionViewCell ()
 
+@property (strong, nonatomic) ColoredVKColorPreview *colorPreview;
 @property (strong, nonatomic) UIButton *deleteButton;
 
 @end
@@ -22,32 +23,31 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.colorPreview = [ColoredVKColorPreview new];
-        self.colorPreview.frame = self.bounds;
-        [self.contentView addSubview:self.colorPreview];
+        _colorPreview = [[ColoredVKColorPreview alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame))];
+        [self.contentView addSubview:_colorPreview];
         
         NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         
         CGFloat size = 32;
         UIImage *deleteImage = [UIImage imageNamed:@"DeleteIcon" inBundle:cvkBundle compatibleWithTraitCollection:nil];
         
-        self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        self.deleteButton.frame = CGRectMake(0, 0, size, size);
-        [self.deleteButton setImage:deleteImage forState:UIControlStateNormal];
-        [self.deleteButton addTarget:self action:@selector(actionDeleteColor) forControlEvents:UIControlEventTouchUpInside];
-        self.deleteButton.alpha = 0.5;
-        self.deleteButton.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(5, 8, size/1.5, size/1.5) cornerRadius:size/2].CGPath;
-        self.deleteButton.layer.shadowOpacity = 0.2f;
-        self.deleteButton.layer.shadowRadius = 2.0f;
-        [self.contentView addSubview:self.deleteButton];
+        _deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _deleteButton.frame = CGRectMake(0, 0, size, size);
+        [_deleteButton setImage:deleteImage forState:UIControlStateNormal];
+        [_deleteButton addTarget:self action:@selector(actionDeleteColor) forControlEvents:UIControlEventTouchUpInside];
+        _deleteButton.alpha = 0.5;
+        _deleteButton.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(5, 8, size/1.5, size/1.5) cornerRadius:size/2].CGPath;
+        _deleteButton.layer.shadowOpacity = 0.2f;
+        _deleteButton.layer.shadowRadius = 2.0f;
+        [self.contentView addSubview:_deleteButton];
         
-        self.deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[deleteButton(size)]|" options:0 metrics:@{@"size":@(size)} views:@{@"deleteButton":self.deleteButton}]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[deleteButton(size)]" options:0 metrics:@{@"size":@(size)} views:@{@"deleteButton":self.deleteButton}]];
+        _deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[deleteButton(size)]|" options:0 metrics:@{@"size":@(size)} views:@{@"deleteButton":_deleteButton}]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[deleteButton(size)]" options:0 metrics:@{@"size":@(size)} views:@{@"deleteButton":_deleteButton}]];
         
-        self.colorPreview.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[colorPreview]|" options:0 metrics:nil views:@{@"colorPreview":self.colorPreview}]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[colorPreview]|" options:0 metrics:nil views:@{@"colorPreview":self.colorPreview}]];
+        _colorPreview.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[colorPreview]|" options:0 metrics:nil views:@{@"colorPreview":_colorPreview}]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[colorPreview]|" options:0 metrics:nil views:@{@"colorPreview":_colorPreview}]];
     }
     return self;
 }

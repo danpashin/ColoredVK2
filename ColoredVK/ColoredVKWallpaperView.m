@@ -39,25 +39,25 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
         
         _imageView = [[UIImageView alloc] init];
         if ([name isEqualToString:@"barImage"])
-            self.imageView.frame = CGRectMake(0, 0, bounds.size.width, bounds.size.height);
+            _imageView.frame = CGRectMake(0, 0, bounds.size.width, bounds.size.height);
         else
-            self.imageView.frame = CGRectMake(-20, -20, bounds.size.width + 40, bounds.size.height + 40);
+            _imageView.frame = CGRectMake(-20, -20, bounds.size.width + 40, bounds.size.height + 40);
         
-        self.imageView.contentMode = UIViewContentModeScaleAspectFill;
-        self.imageView.layer.masksToBounds = YES;
-        [self addSubview:self.imageView];
+        _imageView.contentMode = UIViewContentModeScaleAspectFill;
+        _imageView.layer.masksToBounds = YES;
+        [self addSubview:_imageView];
         
-        self.frontView = [[UIView alloc] initWithFrame:bounds];
-        [self addSubview:self.frontView];
+        _frontView = [[UIView alloc] initWithFrame:bounds];
+        [self addSubview:_frontView];
         
-        self.blurStyle = _UIBackdropViewStyleBlur;
-        self.blurView = [[_UIBackdropView alloc] initWithStyle:self.blurStyle];
-        self.blurView.frame = bounds;
-        [self addSubview:self.blurView];
+        _blurStyle = _UIBackdropViewStyleBlur;
+        _blurView = [[_UIBackdropView alloc] initWithStyle:_blurStyle];
+        _blurView.frame = bounds;
+        [self addSubview:_blurView];
         
-        self.blackout = blackout;
-        self.parallaxEnabled = enableParallax;
-        self.blurBackground = blurBackground;
+        _blackout = blackout;
+        _parallaxEnabled = enableParallax;
+        _blurBackground = blurBackground;
         
         [self updateImage];
     }
@@ -157,10 +157,10 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
 - (void)updateImage
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        UIImage *image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, self.name]];
+        UIImage *image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, _name]];
         dispatch_async(dispatch_get_main_queue(), ^{
             [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                self.imageView.image = image;
+                _imageView.image = image;
             } completion:nil];
         });
     });
@@ -261,7 +261,7 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@" %@; imageName '%@'; blackout %.2f; parallax '%@' ", super.description, self.name, self.blackout, self.parallaxEnabled ? @"Enabled": @"Disabled"];
+    return [NSString stringWithFormat:@"<%@: %p, imageName '%@', blackout %.2f, parallax '%@'>", [self class], self, self.name, self.blackout, self.parallaxEnabled ? @"Enabled": @"Disabled"];
 }
 
 @end

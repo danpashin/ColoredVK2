@@ -17,13 +17,23 @@
 
 @implementation ColoredVKAlertController
 
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    return [self init];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    return [self init];
+}
+
 - (instancetype)init
 {
-    self = [super init];
+    self = [super initWithNibName:nil bundle:nil];
     if (self) {
-        self.shouldReconfigureTextFields = YES;
-        self.shouldUseCustomTintColor = YES;
-        self.presentInCenter = YES;
+        _shouldReconfigureTextFields = YES;
+        _shouldUseCustomTintColor = YES;
+        _presentInCenter = YES;
     }
     return self;
 }
@@ -102,9 +112,9 @@
     [super addAction:action];
 }
 
-- (void)dealloc
-{
-    [self.view removeFromSuperview];
-}
+//- (void)dealloc
+//{
+//    [self.view removeFromSuperview];
+//}
 
 @end

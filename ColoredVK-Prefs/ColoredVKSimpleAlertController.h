@@ -11,13 +11,15 @@
 
 @interface ColoredVKSimpleAlertController : ColoredVKWindowController
 
-- (void)show;
-
 @property (strong, nonatomic) UILabel *titleLabel;
 @property (strong, nonatomic) UITextField *textField;
 @property (strong, nonatomic) UIButton *button;
 @property (strong, nonatomic) UIScrollView *scrollView;
 
 @property (assign, nonatomic) CGFloat prefferedWidth;
+
+
+- (instancetype)init;
+- (void)show;
 
 @end

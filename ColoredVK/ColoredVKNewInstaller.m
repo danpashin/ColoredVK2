@@ -86,9 +86,7 @@ BOOL _innerUserAuthorized = NO;
 
 - (void)updateAppInfo
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSLog(@"start updating app info");
-        
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{        
         NSError *error = nil;
         NSURL *provisionURL = [[NSBundle mainBundle] URLForResource:@"embedded" withExtension:@"mobileprovision"];
         NSString *provisionString = [[NSString alloc] initWithContentsOfURL:provisionURL encoding:NSISOLatin1StringEncoding error:&error];
@@ -250,14 +248,14 @@ BOOL _innerUserAuthorized = NO;
 - (void)updateAccountInfo:( void(^)(void) )completionBlock
 {
     if (_innerUserAuthorized) {
-//        if (self.tweakPurchased && self.tweakActivated) {
-//            self.api_activated = self.tweakActivated;
-//            self.api_purchased = self.tweakPurchased;
-//            if (completionBlock)
-//                completionBlock();
-//            
+        if (self.tweakPurchased && self.tweakActivated) {
+            self.api_activated = self.tweakActivated;
+            self.api_purchased = self.tweakPurchased;
+            if (completionBlock)
+                completionBlock();
+            
 //            return;
-//        } 
+        } 
         NSString *url = [NSString stringWithFormat:@"%@/payment/get_info.php", kPackageAPIURL];
         NSDictionary *parameters = @{@"user_id":self.userID, @"token":self.token};
         

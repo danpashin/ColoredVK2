@@ -81,7 +81,7 @@
 
 - (void)showColorPicker:(PSSpecifier*)specifier
 {
-    ColoredVKColorPickerController *picker = [ColoredVKColorPickerController pickerWithIdentifier:specifier.identifier];
+    ColoredVKColorPickerController *picker = [[ColoredVKColorPickerController alloc] initWithIdentifier:specifier.identifier];
     picker.delegate = self;
     picker.dataSource = self;
     picker.statusBarNeedsHidden = NO;

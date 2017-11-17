@@ -23,16 +23,6 @@
 @implementation ColoredVKMainController
 static NSString const *switchViewKey = @"cvkCellSwitchKey";
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        
-    }
-    return self;
-}
-
-
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect
 {
     [self setImageToTableView:tableView withName:name blackout:blackout flip:NO parallaxEffect:parallaxEffect blurBackground:NO];

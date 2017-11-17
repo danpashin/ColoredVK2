@@ -30,16 +30,15 @@
     return [[self alloc] initWithURL:url rootController:controller];
 }
 
-
 - (instancetype)initWithURL:(NSString *)url rootController:(UIViewController *)controller
 {
     UIImage *downloadIcon = [UIImage imageNamed:@"downloadCloudIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
     self = [super initWithImage:downloadIcon style:UIBarButtonItemStylePlain target:self action:@selector(actionDownloadImage)];
     if (self)  {
-        self.url = url;
-        self.rootViewController = controller;
+        _url = url;
+        _rootViewController = controller;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            self.downloadInfo = self.downloadInfo;
+            _downloadInfo = self.downloadInfo;
         });
     }
     return self;
@@ -79,7 +78,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@" %@; url '%@'; rootViewController %@; ", super.description, self.url, self.rootViewController];
+    return [NSString stringWithFormat:@"<%@: %p, url '%@', rootViewController %@>", [self class], self, self.url, self.rootViewController];
 }
 
 - (NSArray *)downloadInfo

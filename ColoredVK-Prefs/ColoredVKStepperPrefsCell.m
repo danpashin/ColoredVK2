@@ -6,9 +6,16 @@
 //  Copyright (c) 2016 Daniil Pashin. All rights reserved.
 //
 
-
 #import "ColoredVKStepperPrefsCell.h"
+#import "ColoredVKStepperButton.h"
 #import "PrefixHeader.h"
+
+@interface ColoredVKStepperPrefsCell () <ColoredVKStepperButtonDelegate>
+
+@property (strong, nonatomic) ColoredVKStepperButton *stepperButton;
+
+@end
+
 
 @implementation ColoredVKStepperPrefsCell
 
@@ -19,13 +26,13 @@
         
         NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
         
-        self.stepperButton = [[ColoredVKStepperButton alloc] initWithFrame:CGRectMake(0, 0, 100, 32)];
-        self.stepperButton.minValue = [[specifier propertyForKey:@"minValue"] floatValue];
-        self.stepperButton.maxValue =  [[specifier propertyForKey:@"maxValue"] floatValue];
-        self.stepperButton.step = [specifier propertyForKey:@"step"] ? [[specifier propertyForKey:@"step"] floatValue] : 0.1f;
-        self.stepperButton.value = [prefs[specifier.identifier] floatValue];
-        self.stepperButton.delegate = self;
-        self.accessoryView = self.stepperButton;
+        _stepperButton = [[ColoredVKStepperButton alloc] initWithFrame:CGRectMake(0, 0, 100, 32)];
+        _stepperButton.minValue = [[specifier propertyForKey:@"minValue"] floatValue];
+        _stepperButton.maxValue =  [[specifier propertyForKey:@"maxValue"] floatValue];
+        _stepperButton.step = [specifier propertyForKey:@"step"] ? [[specifier propertyForKey:@"step"] floatValue] : 0.1f;
+        _stepperButton.value = [prefs[specifier.identifier] floatValue];
+        _stepperButton.delegate = self;
+        self.accessoryView = _stepperButton;
 	}
     return self;
 }

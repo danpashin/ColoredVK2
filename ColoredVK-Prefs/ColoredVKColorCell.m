@@ -40,7 +40,7 @@
     
     colorPreview.layer.cornerRadius = colorPreview.frame.size.height / 2.0f;
     colorPreview.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:colorPreview.frame cornerRadius:colorPreview.layer.cornerRadius].CGPath;
-    colorPreview.layer.shadowRadius = 3.5f;
+    colorPreview.layer.shadowRadius = 2.5f;
     colorPreview.layer.shadowOffset = CGSizeZero;
     colorPreview.layer.shadowColor = [UIColor blackColor].CGColor;
     colorPreview.layer.shadowOpacity = 0.15f;
