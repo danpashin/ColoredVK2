@@ -503,7 +503,7 @@ void setupTranslucence(UIView *view, UIColor *backColor, BOOL remove)
 {
     if ([view respondsToSelector:@selector(_backgroundView)]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            UIView *backView = [view performSelector:@selector(_backgroundView)];
+            UIView *backView = objc_msgSend(view, @selector(_backgroundView));
             
             if (remove) {
                 if ([backView.subviews containsObject:[backView viewWithTag:4545]]) {
@@ -3462,7 +3462,7 @@ CHDeclareClass(VKRenderedText);
 CHDeclareClassMethod(2, id, VKRenderedText, renderedText, NSAttributedString *, text, withSettings, id, withSettings)
 {
     NSAttributedString *newText = attributedStringForNightTheme(text);
-//    NSLog(@"%@", newText);
+//    CVKLog(@"%@", newText);
     return CHSuper(2, VKRenderedText, renderedText, newText, withSettings, withSettings);
 }
 
@@ -3471,7 +3471,7 @@ CHDeclareClass(MOCTRender);
 CHDeclareClassMethod(2, id, MOCTRender, render, NSAttributedString *, text, width, double, width)
 {
     NSAttributedString *newText = attributedStringForNightTheme(text);
-//    NSLog(@"%@", newText);
+//    CVKLog(@"%@", newText);
     return CHSuper(2, MOCTRender, render, newText, width, width);
 }
 

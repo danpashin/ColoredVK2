@@ -56,10 +56,12 @@
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller]; 
         BOOL shouldDisable = (!newInstaller.tweakPurchased || !newInstaller.tweakActivated);
         for (PSSpecifier *specifier in specifiers) {
-            if (shouldDisable || ![[self.specifier propertyForKey:@"enabled"] boolValue]) {
-                [specifier setProperty:@NO forKey:@"enabled"];
-            } else {
-                [specifier setProperty:@YES forKey:@"enabled"];
+            @autoreleasepool {
+                if (shouldDisable || ![[self.specifier propertyForKey:@"enabled"] boolValue]) {
+                    [specifier setProperty:@NO forKey:@"enabled"];
+                } else {
+                    [specifier setProperty:@YES forKey:@"enabled"];
+                }
             }
         }
         
@@ -144,7 +146,7 @@
 
 - (void)actionCloseApplication
 {
-    [[UIApplication sharedApplication] performSelector:@selector(suspend)];
+    objc_msgSend([UIApplication sharedApplication], @selector(suspend));
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         exit(0);

@@ -86,7 +86,11 @@ BOOL _innerUserAuthorized = NO;
 
 - (void)updateAppInfo
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{        
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        if (NSClassFromString(@"Activation") != nil) {
+            _sellerName = @"iapps";
+        }
+        
         NSError *error = nil;
         NSURL *provisionURL = [[NSBundle mainBundle] URLForResource:@"embedded" withExtension:@"mobileprovision"];
         NSString *provisionString = [[NSString alloc] initWithContentsOfURL:provisionURL encoding:NSISOLatin1StringEncoding error:&error];
@@ -107,15 +111,15 @@ BOOL _innerUserAuthorized = NO;
             if (dict) {
                 _appTeamIdentifier = ((NSArray *)dict[@"TeamIdentifier"]).firstObject;
                 _appTeamName = dict[@"TeamName"];
+                
+                if (![_sellerName isEqualToString:@"iapps"] && [_appTeamIdentifier isEqualToString:@"FL663S8EYD"])
+                    _sellerName = @"ishmv";
             }
             [[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
         }
         
-        if (NSClassFromString(@"Activation") != nil) {
-            _sellerName = @"iapps";
-        }
-        
         ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
+        updatesController.checkedAutomatically = YES;
         if (updatesController.shouldCheckUpdates)
             [updatesController checkUpdates];
     });

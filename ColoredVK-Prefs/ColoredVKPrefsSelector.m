@@ -25,14 +25,16 @@
             NSArray *allValues = [self.specifier propertyForKey:@"validValues"];
             if (allKeys.count > 0 && allValues.count > 0) {
                 for (int i=0; i<allKeys.count; i++) {
-                    PSSpecifier *specifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedStringFromTableInBundle(allKeys[i], @"ColoredVK", self.cvkBundle, nil)
-                                                                            target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:)
-                                                                            detail:nil cell:PSStaticTextCell edit:nil];
-                    [specifier setProperty:allValues[i] forKey:@"selectorValue"];
-                    [specifier setProperty:@"SelectorOption" forKey:@"selectorType"];
-                    [specifier setProperty:@YES forKey:@"enabled"];
-                    
-                    [specifiers addObject:specifier];
+                    @autoreleasepool {
+                        PSSpecifier *specifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedStringFromTableInBundle(allKeys[i], @"ColoredVK", self.cvkBundle, nil)
+                                                                                target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:)
+                                                                                detail:nil cell:PSStaticTextCell edit:nil];
+                        [specifier setProperty:allValues[i] forKey:@"selectorValue"];
+                        [specifier setProperty:@"SelectorOption" forKey:@"selectorType"];
+                        [specifier setProperty:@YES forKey:@"enabled"];
+                        
+                        [specifiers addObject:specifier];
+                    }
                 }
             }
         }

@@ -21,8 +21,6 @@
 #define CVK_PREFS_PATH      @"/var/mobile/Library/Preferences/com.daniilpashin.coloredvk2.plist"
 #define CVK_FOLDER_PATH     @"/var/mobile/Library/Preferences/ColoredVK2"
 #define CVK_CACHE_PATH      [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/ColoredVK2"]
-#define CVK_CACHE_PATH_OLD1 @"/var/mobile/Library/Caches/com.daniilpashin.coloredvk2/"
-#define CVK_CACHE_PATH_OLD  @"/var/mobile/Library/Preferences/ColoredVK2/Cache"
 #define CVK_BACKUP_PATH     @"/var/mobile/Documents/ColoredVK2_Backups/"
 
 #elif defined COMPILE_APP
@@ -68,10 +66,8 @@
 #define kPackageIdentifier @"com.daniilpashin.coloredvk2"
 #define kPackageName @"ColoredVK 2"
 #define kPackageVersion @"4.0.3-theux"
-#define kPackageAPIVersion @"1.2"
-#define kPackageAPIURL [NSString stringWithFormat:@"https://api.danpashin.ru/v%@", kPackageAPIVersion]
-#define kPackageDevName @"danpashin"
-#define kPackageDevLink [NSString stringWithFormat:@"https://vk.com/%@", kPackageDevName]
+#define kPackageAPIURL  @"https://api.danpashin.ru/v1.2"
+#define kPackageDevLink @"https://vk.com/danpashin"
 #define kPackageAccountRegisterLink @"https://danpashin.ru/projects/coloredvk/index.html#register"
 #define kPackageFaqLink @"https://danpashin.ru/projects/coloredvk/faq.html"
 #define kPackagePurchaseLink @"https://danpashin.ru/projects/coloredvk/purchase/"

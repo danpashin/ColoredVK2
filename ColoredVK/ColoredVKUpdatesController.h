@@ -31,6 +31,8 @@
  */
 @property (nonatomic, copy) void (^checkCompletionHandler)(ColoredVKUpdatesController *controller);
 
+@property (assign, nonatomic) BOOL checkedAutomatically;
+
 /**
  *  Инициализирует алгоритм проверки обновлений, показывает алерт, если найдено обновление и вызывает checkCompletionHandler
  */

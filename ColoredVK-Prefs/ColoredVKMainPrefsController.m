@@ -38,10 +38,12 @@ NSArray <NSString *> *specifiersToEnable;
         self.showFreeVersionFooter = shouldDisable;
         
         for (PSSpecifier *specifier in specifiersArray) {
-            if (![specifiersToEnable containsObject:specifier.identifier] && shouldDisable) {
-                [specifier setProperty:@NO forKey:@"enabled"];
-            } else {
-                [specifier setProperty:@YES forKey:@"enabled"];
+            @autoreleasepool {
+                if (![specifiersToEnable containsObject:specifier.identifier] && shouldDisable) {
+                    [specifier setProperty:@NO forKey:@"enabled"];
+                } else {
+                    [specifier setProperty:@YES forKey:@"enabled"];
+                }
             }
         }
         
@@ -61,7 +63,7 @@ NSArray <NSString *> *specifiersToEnable;
     
     self.prefsTableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.prefsTableView];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTable) name:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadSpecifiers) name:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
     
     
     ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
@@ -74,13 +76,6 @@ NSArray <NSString *> *specifiersToEnable;
     [super viewDidLoad];
     
     self.navigationItem.title = @"";
-}
-
-- (void)reloadTable
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self reloadSpecifiers];
-    });
 }
 
 - (UIView *)freeVersionFooter
@@ -144,7 +139,7 @@ NSArray <NSString *> *specifiersToEnable;
     [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
     
     self.showFreeVersionFooter = NO;
-    [self reloadTable];
+    [self reloadSpecifiers];
 }
 
 - (void)actionOpenFaq

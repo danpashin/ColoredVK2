@@ -22,7 +22,7 @@
 
 - (void)openDeveloperProfile
 {
-    [self openURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://vk.com/%@", kPackageDevName]]];
+    [self openURL:[NSURL URLWithString:@"https://vk.com/danpashin"]];
 }
 
 - (void)openTesterProfile:(PSSpecifier *)specifier

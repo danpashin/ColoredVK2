@@ -55,9 +55,9 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
         _blurView.frame = bounds;
         [self addSubview:_blurView];
         
-        _blackout = blackout;
-        _parallaxEnabled = enableParallax;
-        _blurBackground = blurBackground;
+        self.blackout = blackout;
+        self.parallaxEnabled = enableParallax;
+        self.blurBackground = blurBackground;
         
         [self updateImage];
     }
@@ -133,7 +133,7 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
 }
 
 - (void)setBlurBackground:(BOOL)blurBackground
-{    
+{
     [self setBlurBackground:blurBackground animated:NO];
 }
 

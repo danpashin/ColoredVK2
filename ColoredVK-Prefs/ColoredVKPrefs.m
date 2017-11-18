@@ -44,32 +44,34 @@
     
     if (localize) {
         for (PSSpecifier *specifier in specifiersArray) {
-            specifier.name = NSLocalizedStringFromTableInBundle(specifier.name, @"ColoredVK", self.bundle, nil);
-            
-            if (specifier.properties[@"footerText"]) {
-                if ([specifier.properties[@"footerText"] isEqualToString:@"AVAILABLE_IN_%@_AND_HIGHER"]) {
-                    NSString *string = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil), specifier.properties[@"requiredVersion"]];
-                    [specifier setProperty:string forKey:@"footerText"];
-                } else
-                    [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil) forKey:@"footerText"];
+            @autoreleasepool {
+                specifier.name = NSLocalizedStringFromTableInBundle(specifier.name, @"ColoredVK", self.bundle, nil);
+                
+                if (specifier.properties[@"footerText"]) {
+                    if ([specifier.properties[@"footerText"] isEqualToString:@"AVAILABLE_IN_%@_AND_HIGHER"]) {
+                        NSString *string = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil), specifier.properties[@"requiredVersion"]];
+                        [specifier setProperty:string forKey:@"footerText"];
+                    } else
+                        [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil) forKey:@"footerText"];
+                }
+                if (specifier.properties[@"label"])
+                    [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"label"], @"ColoredVK", self.bundle, nil) forKey:@"label"];
+                if (specifier.properties[@"detailedLabel"])
+                    [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"detailedLabel"], @"ColoredVK", self.bundle, nil) forKey:@"detailedLabel"];
+                
+                if (specifier.properties[@"validTitles"]) {
+                    NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
+                    for (NSString *key in specifier.titleDictionary.allKeys) 
+                        [tempDict setValue:NSLocalizedStringFromTableInBundle(specifier.titleDictionary[key], @"ColoredVK", self.bundle, nil) forKey:key];
+                    specifier.titleDictionary = [tempDict copy];
+                }
+                
+                if ([specifier.identifier isEqualToString:@"checkUpdates"] && [kPackageVersion containsString:@"beta"])
+                    [specifier setProperty:@NO forKey:@"enabled"];
+                if ([specifier.identifier isEqualToString:@"manageSettingsFooter"] && specifier.properties[@"footerText"])
+                    [specifier setProperty:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil), CVK_BACKUP_PATH]
+                                    forKey:@"footerText"];
             }
-            if (specifier.properties[@"label"])
-                [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"label"], @"ColoredVK", self.bundle, nil) forKey:@"label"];
-            if (specifier.properties[@"detailedLabel"])
-                [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"detailedLabel"], @"ColoredVK", self.bundle, nil) forKey:@"detailedLabel"];
-            
-            if (specifier.properties[@"validTitles"]) {
-                NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
-                for (NSString *key in specifier.titleDictionary.allKeys) 
-                    [tempDict setValue:NSLocalizedStringFromTableInBundle(specifier.titleDictionary[key], @"ColoredVK", self.bundle, nil) forKey:key];
-                specifier.titleDictionary = [tempDict copy];
-            }
-            
-            if ([specifier.identifier isEqualToString:@"checkUpdates"] && [kPackageVersion containsString:@"beta"])
-                [specifier setProperty:@NO forKey:@"enabled"];
-            if ([specifier.identifier isEqualToString:@"manageSettingsFooter"] && specifier.properties[@"footerText"])
-                 [specifier setProperty:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil), CVK_BACKUP_PATH]
-                                 forKey:@"footerText"];
         }
     }
     
@@ -140,7 +142,7 @@
     
     CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
     
-    if ([specifier.identifier containsString:@"nightThemeType"]) {
+    if ([specifier.identifier isEqualToString:@"nightThemeType"]) {
         [self updateNightTheme];
         CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), nil, nil, YES);
         CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.night.theme"), nil, nil, YES);
@@ -148,7 +150,7 @@
     
     CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), nil, nil, YES);
     
-    if ([identificsToReloadMenu containsObject:specifier.identifier])
+    if ([identificsToReloadMenu containsObject:specifier.identifier] && ![specifier.identifier isEqualToString:@"nightThemeType"])
         CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), nil, nil, YES);
     
     if ([specifier.identifier isEqualToString:@"enableTweakSwitch"]) {
@@ -169,6 +171,13 @@
             self.prefsTableView.backgroundColor = [UIColor colorWithRed:0.937255f green:0.937255f blue:0.956863f alpha:1.0f];
             self.navigationController.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
         } completion:nil];
+    });
+}
+
+- (void)reloadSpecifiers
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [super reloadSpecifiers];
     });
 }
 

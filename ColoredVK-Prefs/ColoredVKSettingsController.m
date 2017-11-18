@@ -21,25 +21,27 @@
     
         NSFileManager *filemanager = [NSFileManager defaultManager];    
         for (NSString *filename in [filemanager contentsOfDirectoryAtPath:CVK_BACKUP_PATH error:nil]) {
-            NSArray <NSString *> *extensions = @[@"zip", @"cvkb"];
-            if ([filename containsString:@"com.daniilpashin.coloredvk2"] && [extensions containsObject:filename.pathExtension]) {
-                NSMutableArray *components = [filename componentsSeparatedByString:@"_"].mutableCopy;
-                [components removeObjectAtIndex:0];
-                NSString *name = @"";
-                for (NSString *str in components) {
-                    name = [name stringByAppendingString:[NSString stringWithFormat:@"%@_", str]];
+            @autoreleasepool {
+                NSArray <NSString *> *extensions = @[@"zip", @"cvkb"];
+                if ([filename containsString:@"com.daniilpashin.coloredvk2"] && [extensions containsObject:filename.pathExtension]) {
+                    NSMutableArray *components = [filename componentsSeparatedByString:@"_"].mutableCopy;
+                    [components removeObjectAtIndex:0];
+                    NSString *name = @"";
+                    for (NSString *str in components) {
+                        name = [name stringByAppendingString:[NSString stringWithFormat:@"%@_", str]];
+                    }
+                    name = [name substringToIndex:name.length-1];
+                    
+                    
+                    CGFloat fileSize = [filemanager attributesOfItemAtPath:[NSString stringWithFormat:@"%@/%@", CVK_BACKUP_PATH, filename] error:nil].fileSize;
+                    fileSize = fileSize / 1024.0f / 1024.0f;
+                    
+                    name = [NSString stringWithFormat:@"%@  (%.1f MB)", name, fileSize];
+                    
+                    PSSpecifier *specifier = [PSSpecifier preferenceSpecifierNamed:name target:self set:nil get:nil detail:nil cell:PSTitleValueCell edit:nil];
+                    (specifier.properties)[@"filename"] = filename;
+                    [specifiers addObject:specifier];
                 }
-                name = [name substringToIndex:name.length-1];
-                
-                
-                CGFloat fileSize = [filemanager attributesOfItemAtPath:[NSString stringWithFormat:@"%@/%@", CVK_BACKUP_PATH, filename] error:nil].fileSize;
-                fileSize = fileSize / 1024.0f / 1024.0f;
-                
-                name = [NSString stringWithFormat:@"%@  (%.1f MB)", name, fileSize];
-                
-                PSSpecifier *specifier = [PSSpecifier preferenceSpecifierNamed:name target:self set:nil get:nil detail:nil cell:PSTitleValueCell edit:nil];
-                (specifier.properties)[@"filename"] = filename;
-                [specifiers addObject:specifier];
             }
         }
         
@@ -230,9 +232,7 @@
     CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
     CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   NULL, NULL, YES);
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self reloadSpecifiers];
-        
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{        
         UINavigationBar *navBar = self.navigationController.navigationBar;
         navBar.barTintColor = navBar.barTintColor;
         navBar.tintColor = navBar.tintColor;

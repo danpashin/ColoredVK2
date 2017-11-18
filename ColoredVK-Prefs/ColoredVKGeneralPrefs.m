@@ -49,10 +49,12 @@
         BOOL shouldDisable = (!newInstaller.tweakPurchased || !newInstaller.tweakActivated);
         
         for (PSSpecifier *specifier in specifiersArray) {
-            if (shouldDisable && ![[self.specifier propertyForKey:@"enabled"] boolValue]) {
-                [specifier setProperty:@NO forKey:@"enabled"];
-            } else {
-                [specifier setProperty:@YES forKey:@"enabled"];
+            @autoreleasepool {
+                if (shouldDisable && ![[self.specifier propertyForKey:@"enabled"] boolValue]) {
+                    [specifier setProperty:@NO forKey:@"enabled"];
+                } else {
+                    [specifier setProperty:@YES forKey:@"enabled"];
+                }
             }
         }
         
@@ -123,8 +125,6 @@
             navBar.barTintColor = navBar.barTintColor;
             navBar.tintColor = navBar.tintColor;
             navBar.titleTextAttributes = navBar.titleTextAttributes;
-            
-            [self reloadSpecifiers];
         });
     }
 }
@@ -175,10 +175,10 @@
 {
     self.lastImageIdentifier = specifier.identifier;
     
-    Class photoPickerClass = NSClassFromString(@"VKPhotoPicker");
+    Class photoPickerClass = objc_getClass("VKPhotoPicker");
     if (photoPickerClass) {
-        VKPPService *ppService = [NSClassFromString(@"VKPPService") standartService];
-        VKPhotoPicker *photoPicker = [NSClassFromString(@"VKPhotoPicker") photoPickerWithService:ppService mediaTypes:2];
+        VKPPService *ppService = [objc_getClass("VKPPService") standartService];
+        VKPhotoPicker *photoPicker = [objc_getClass("VKPhotoPicker") photoPickerWithService:ppService mediaTypes:2];
         
         photoPicker.selector.selectSingle = YES;
         photoPicker.selector.disableEdits = YES;
@@ -216,7 +216,7 @@
                                                  }
                                              }];
                 } else {
-                    [hud showFailureWithStatus:@"Did not find asset with vk asset identifier or found multiple assets.\n(Code -1001)"];
+                    [hud showFailureWithStatus:@"Could not find asset with vk asset identifier or found multiple assets.\n(Code -1001)"];
                 }
             });
         };
@@ -265,23 +265,24 @@
 {
     ColoredVKHUD *hud = [ColoredVKHUD showHUD];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        NSError *error = nil;
-        BOOL success = [[NSFileManager defaultManager] removeItemAtPath:CVK_CACHE_PATH error:&error];
-        if (success && !error) [hud showSuccess];
-        else [hud showFailureWithStatus:[NSString stringWithFormat:@"%@\n%@", error.localizedDescription, error.localizedFailureReason]];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:CVK_CACHE_PATH])
+            [[NSFileManager defaultManager] removeItemAtPath:CVK_CACHE_PATH error:nil];
+        [hud showSuccess];
         [self reloadSpecifiers];
     });
 }
 
 - (NSString *)cacheSize
 {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    float size = 0;
-    for (NSString *fileName in [fileManager subpathsOfDirectoryAtPath:CVK_CACHE_PATH error:nil]) {
-        size += [[fileManager attributesOfItemAtPath:[CVK_CACHE_PATH stringByAppendingPathComponent:fileName] error:nil][NSFileSize] floatValue];
+    @autoreleasepool {
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        float size = 0;
+        for (NSString *fileName in [fileManager subpathsOfDirectoryAtPath:CVK_CACHE_PATH error:nil]) {
+            size += [[fileManager attributesOfItemAtPath:[CVK_CACHE_PATH stringByAppendingPathComponent:fileName] error:nil][NSFileSize] floatValue];
+        }
+        size = size / 1024.0f / 1024.0f;
+        return [NSString stringWithFormat:@"%.1f MB", size];
     }
-    size = size / 1024.0f / 1024.0f;
-    return [NSString stringWithFormat:@"%.1f MB", size];
 }
 
 - (void)resetSettings

@@ -35,6 +35,7 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
     self = [super init];
     if (self) {
         _showErrorAlert = NO;
+        _checkedAutomatically = NO;
         _prefsPath = CVK_PREFS_PATH;
     }
     return self;
@@ -47,7 +48,7 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
     NSMutableDictionary *parameters = [@{@"userVers": kPackageVersion, @"ios_version":[UIDevice currentDevice].systemVersion, 
                                          @"vk_version":[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"],
                                          @"appTeamName": newInstaller.appTeamName, @"appTeamIdentifier": newInstaller.appTeamIdentifier,
-                                         @"sellerName": newInstaller.sellerName } mutableCopy];
+                                         @"sellerName": newInstaller.sellerName, @"checkedAutomatically":@(self.checkedAutomatically)} mutableCopy];
     
 #ifndef COMPILE_FOR_JAIL
     parameters[@"getIPA"] = @1;

@@ -41,21 +41,20 @@
         
         if ([self.accessoryView isKindOfClass:[UISwitch class]]) {
             NSDictionary *userPrefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+            __block BOOL userChangedColor = ([userPrefs[@"enabled"] boolValue] && [userPrefs[@"changeSwitchColor"] boolValue]);
+            
+            NSNumber *app_is_vk = objc_getAssociatedObject(self, "app_is_vk");
+            if (!app_is_vk) 
+                app_is_vk = @NO;
+            
+            if (!app_is_vk.boolValue)
+                userChangedColor = NO;
+            
+            NSNumber *enableNightTheme = objc_getAssociatedObject(self, "enableNightTheme");
+            if (!enableNightTheme)
+                enableNightTheme = @NO;
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                BOOL userChangedColor = ([userPrefs[@"enabled"] boolValue] && [userPrefs[@"changeSwitchColor"] boolValue]);
-                
-                NSNumber *app_is_vk = objc_getAssociatedObject(self, "app_is_vk");
-                if (!app_is_vk) 
-                    app_is_vk = @NO;
-                
-                if (!app_is_vk.boolValue)
-                    userChangedColor = NO;
-                
-                NSNumber *enableNightTheme = objc_getAssociatedObject(self, "enableNightTheme");
-                if (!enableNightTheme)
-                    enableNightTheme = @NO;
-                
                 UISwitch *switchView = (UISwitch *)self.accessoryView;
                 if (app_is_vk.boolValue && enableNightTheme.boolValue) {
                     userChangedColor = YES;
