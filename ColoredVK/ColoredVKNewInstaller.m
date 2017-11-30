@@ -251,7 +251,7 @@ BOOL _innerUserAuthorized = NO;
 #pragma mark -
 - (void)updateAccountInfo:( void(^)(void) )completionBlock
 {
-    if (_innerUserAuthorized) {
+    if (_innerUserAuthorized && self.userID) {
         if (self.tweakPurchased && self.tweakActivated) {
             self.api_activated = self.tweakActivated;
             self.api_purchased = self.tweakPurchased;
@@ -332,9 +332,12 @@ void writeFreeLicence()
 
 - (void)actionLogoutWithPassword:(NSString *)password completionBlock:( void(^)(void) )completionBlock;
 {
+    if (!_innerUserAuthorized)
+        return;
+    
     if (password.length == 0) {
         [self showHudWithText:@""];
-        [self.hud showFailureWithStatus:@"Password is nil"];
+        [self.hud showFailureWithStatus:CVKLocalizedString(@"INVALID_PASSWORD")];
         return;
     }
     [self showHudWithText:CVKLocalizedString(@"PLEASE_WAIT")];

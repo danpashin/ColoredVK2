@@ -637,6 +637,7 @@
 		A5F09D9B1F0FFA5D00024198 /* ColoredVKCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKCrypto.h; sourceTree = "<group>"; };
 		A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKCrypto.m; sourceTree = "<group>"; };
 		A5F09DA51F101A5200024198 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
+		A5FB4C731FCC795A004D46C7 /* VKPhotoPicker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VKPhotoPicker.h; sourceTree = "<group>"; };
 		BBE85DF3354DA269BB402E2F /* libPods-ColoredVK-Prefs-App.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ColoredVK-Prefs-App.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCDFE814C3CA76BB9D3F7FC6 /* libPods-ColoredVK-NonJail.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ColoredVK-NonJail.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C065C479B2C25F581EB06241 /* Pods-ColoredVK-Prefs-App.debug_app.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK-Prefs-App.debug_app.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK-Prefs-App/Pods-ColoredVK-Prefs-App.debug_app.xcconfig"; sourceTree = "<group>"; };
@@ -1036,6 +1037,7 @@
 		A5DD93FE1D3E0F560006E470 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				A5FB4C731FCC795A004D46C7 /* VKPhotoPicker.h */,
 				A5D56ACB1E7043B700A8FFB5 /* App */,
 				A504C0621DAFE839006C5FBC /* DateTools */,
 				A5DA87BC1D944E0F00763B5F /* LHProgressHUD */,

@@ -7,34 +7,19 @@
 //
 
 #import "ColoredVKGeneralPrefs.h"
+
+#import "ColoredVKColorPickerController.h"
 #import "ColoredVKHUD.h"
 #import "ColoredVKSettingsController.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKImageProcessor.h"
+#import "VKPhotoPicker.h"
 #import <Photos/Photos.h>
 
-@interface VKPPService : NSObject
-+ (id)standartService;
-@end
 
-@interface VKPPSelector : NSObject
-@property (nonatomic) BOOL forceCrop;
-@property (nonatomic) BOOL disableEdits;
-@property (nonatomic) BOOL selectSingle; 
-@property (nonatomic) unsigned long long selectLimit;
-@end
 
-@interface VKPPAssetData : NSObject <NSCopying>
-@property (retain, nonatomic) NSString *assetFilename;
-@property (retain, nonatomic) NSURL *assetURL;
-@property (retain, nonatomic) NSString *assetId;
-@end
-
-@interface VKPhotoPicker : UINavigationController
-+ (VKPhotoPicker *)photoPickerWithService:(VKPPService *)service mediaTypes:(NSInteger)arg2;
-@property (copy, nonatomic) void (^handler)(VKPhotoPicker *picker, NSArray <VKPPAssetData *> *assetData);
-@property (retain, nonatomic) VKPPSelector *selector;
-@property (nonatomic, readonly, strong) UIViewController *currentGroupController;
+@interface ColoredVKGeneralPrefs () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, ColoredVKColorPickerControllerDelegate, ColoredVKColorPickerControllerDataSource>
+@property (strong, nonatomic) NSString *lastImageIdentifier;
 @end
 
 

@@ -159,18 +159,19 @@
 - (void)changeValueWithGesture:(UILongPressGestureRecognizer *)recognizer
 {
     if (recognizer.state == UIGestureRecognizerStateBegan) {
-        self.timer = [NSTimer scheduledTimerWithTimeInterval:0.3f target:self selector:@selector(timerAction:) userInfo:@{@"recognizer":recognizer} repeats:YES];
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:0.3f target:self selector:@selector(timerAction:) userInfo:recognizer repeats:YES];
         [self.timer fire];
     } else if (recognizer.state == UIGestureRecognizerStateEnded) {
         [self.timer invalidate];
+        self.timer = nil;
     }
 }
 
 - (void)timerAction:(NSTimer *)timer
 {
-    UILongPressGestureRecognizer *recognizer = timer.userInfo ? timer.userInfo[@"recognizer"] : nil;
+    UILongPressGestureRecognizer *recognizer = timer.userInfo;
     
-    if (recognizer) {
+    if ([recognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
         if ([recognizer.accessibilityLabel isEqualToString:@"increase"])
             [self actionIncrease];
         else if ([recognizer.accessibilityLabel isEqualToString:@"decrease"])

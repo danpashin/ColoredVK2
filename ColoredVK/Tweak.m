@@ -2529,10 +2529,11 @@ CHDeclareMethod(1, void, PhotoBrowserController, viewWillAppear, BOOL, animated)
     if ([self isKindOfClass:NSClassFromString(@"PhotoBrowserController")]) {
         if (showFastDownloadButton) {
             ColoredVKBarDownloadButton *saveButton = [ColoredVKBarDownloadButton button];
+            __weak typeof(self) weakSelf = self;
             saveButton.urlBlock = ^NSString*() {
                 NSString *imageSource = @"";
-                int indexOfPage = self.paging.contentOffset.x / self.paging.frame.size.width;
-                VKPhotoSized *photo = [self photoForPage:indexOfPage];
+                int indexOfPage = weakSelf.paging.contentOffset.x / weakSelf.paging.frame.size.width;
+                VKPhotoSized *photo = [weakSelf photoForPage:indexOfPage];
                 if (photo.variants != nil) {
                     int maxVariantIndex = 0;
                     for (VKImageVariant *variant in photo.variants.allValues) {
@@ -2589,10 +2590,8 @@ CHDeclareMethod(1, void, VKMBrowserController, viewWillAppear, BOOL, animated)
 void hideFastButtonForController(VKMBrowserController *browserController)
 {
     if (showFastDownloadButton) {
-        NSString *imageURL = [browserController.webView stringByEvaluatingJavaScriptFromString:@"(function(){ var allImages = document.querySelectorAll('img'); if (allImages.length == 1) return allImages[0].src; else return \"\"; })();"];
-        
-        NSString *title = [browserController.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-        if (imageURL.length == 0 || ([title containsString:@"jpg"] || [title containsString:@"png"])) {
+        NSString *title = [browserController.webView stringByEvaluatingJavaScriptFromString:@"document.title"].lowercaseString;
+        if (!([title containsString:@"jpg"] || [title containsString:@"png"])) {
             browserController.navigationItem.rightBarButtonItem = nil;
         }
     }
