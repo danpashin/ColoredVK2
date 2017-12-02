@@ -179,14 +179,15 @@
         if (!self.userLoggedIn) {
             [self actionLogin];
         } else {
+            __weak typeof(self) weakSelf = self;
             ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
             UIAlertAction *logout = [UIAlertAction actionWithTitle:CVKLocalizedString(@"ACTION_LOG_OUT") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-                [self actionLogout];
+                [weakSelf actionLogout];
             }];
             [alertController addAction:logout image:@"LogoutIcon"];
             
             UIAlertAction *changePass = [UIAlertAction actionWithTitle:CVKLocalizedString(@"CHANGE_PASSWORD") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                [self actionChangePassword];
+                [weakSelf actionChangePassword];
             }];
             [alertController addAction:changePass image:@"LockIcon"];
             [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
@@ -215,11 +216,13 @@
         textField.placeholder = UIKitLocalizedString(@"Password");
         textField.secureTextEntry = YES;
     }];
+    
+    __weak typeof(self) weakSelf = self;
     [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"AUTHORISE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSString *username = alertController.textFields[0].text;
         NSString *password = alertController.textFields[1].text;
         [[ColoredVKNewInstaller sharedInstaller] actionLoginWithUsername:username password:password completionBlock:^{
-            [self updateActivationInfo];
+            [weakSelf updateActivationInfo];
         }];
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
@@ -228,17 +231,19 @@
 }
 
 - (void)actionLogout
-{    
+{
     ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:CVKLocalizedString(@"WARNING") message:CVKLocalizedString(@"ENTER_PASS_FOR_ACTION") 
                                                                                     preferredStyle:UIAlertControllerStyleAlert];
     [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
         textField.placeholder = UIKitLocalizedString(@"Password");
         textField.secureTextEntry = YES;
     }];
+    
+    __weak typeof(self) weakSelf = self;
     [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"ACTION_LOG_OUT") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {        
-        [[ColoredVKNewInstaller sharedInstaller] actionLogoutWithPassword:alertController.textFields[1].text completionBlock:^{
-            [self resetStatus];
-            [self updateActivationInfo];
+        [[ColoredVKNewInstaller sharedInstaller] actionLogoutWithPassword:alertController.textFields[0].text completionBlock:^{
+            [weakSelf resetStatus];
+            [weakSelf updateActivationInfo];
         }];
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
@@ -247,7 +252,7 @@
 }
 
 - (void)actionChangePassword
-{    
+{
     ColoredVKPasswordViewController *passController = [ColoredVKPasswordViewController new];
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:passController];

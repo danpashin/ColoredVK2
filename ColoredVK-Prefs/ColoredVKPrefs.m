@@ -122,9 +122,14 @@
 - (id)readPreferenceValue:(PSSpecifier *)specifier
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
-    if (prefs == nil) { prefs = [NSMutableDictionary new]; [prefs writeToFile:self.prefsPath atomically:YES]; }
+    if (!prefs) {
+        prefs = [NSDictionary new];
+        [prefs writeToFile:self.prefsPath atomically:YES];
+    }
     
-    if (!prefs[specifier.properties[@"key"]]) return specifier.properties[@"default"];
+    if (!prefs[specifier.properties[@"key"]])
+        return specifier.properties[@"default"];
+    
     return prefs[specifier.properties[@"key"]];
 }
 
@@ -132,8 +137,11 @@
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
 {
     NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
-    if (value) [prefs setValue:value forKey:specifier.properties[@"key"]];
-    else [prefs removeObjectForKey:specifier.properties[@"key"]];
+    if (value)
+        [prefs setValue:value forKey:specifier.properties[@"key"]];
+    else
+        [prefs removeObjectForKey:specifier.properties[@"key"]];
+    
     [prefs writeToFile:self.prefsPath atomically:YES];
     
     NSArray *identificsToReloadMenu = @[@"enableTweakSwitch", @"menuSelectionStyle", @"hideMenuSeparators", 
@@ -193,7 +201,7 @@
 
 - (NSString *)tweakVersion
 {
-    return [kPackageVersion stringByReplacingOccurrencesOfString:@"-" withString:@" "];
+    return [kPackageVersion stringByReplacingOccurrencesOfString:@"-theux" withString:@""];
 }
 
 - (NSString *)vkAppVersion
@@ -287,7 +295,7 @@
     objc_setAssociatedObject(cell, "nightThemeColorScheme", self.nightThemeColorScheme, OBJC_ASSOCIATION_ASSIGN);
     objc_setAssociatedObject(cell, "app_is_vk", @(self.app_is_vk), OBJC_ASSOCIATION_ASSIGN);
     objc_setAssociatedObject(cell, "enableNightTheme", @(self.enableNightTheme), OBJC_ASSOCIATION_ASSIGN);
-        
+    
     return cell;
 }
 

@@ -29,16 +29,14 @@
         _statusBarNeedsHidden = YES;
         _animationDuration = 0.3;
         _backgroundStyle = ColoredVKWindowBackgroundStyleDarkened;
-        
-        _window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-        _window.rootViewController = self;
     }
     return self;
 }
 
 - (BOOL)prefersStatusBarHidden
 {
-    if (self.isPresented) return self.statusBarNeedsHidden;
+    if (self.isPresented)
+        return self.statusBarNeedsHidden;
     
     return NO;
 }
@@ -67,12 +65,12 @@
 {
     [super viewDidLoad];
     
+    _window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+    _window.rootViewController = self;
+    
+    self.backgroundView = [UIView new];
     self.backgroundView.frame = self.view.bounds;
-    
-    if (self.view.subviews.count > 0 && [self.view.subviews[0] isEqual:self.backgroundView])
-        [self.view.subviews[0] removeFromSuperview];
-    
-    [self.view insertSubview:self.backgroundView atIndex:0];
+    [self.view addSubview:self.backgroundView];
     
     self.backgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self.backgroundView}]];
@@ -182,7 +180,9 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {    
-    if ([touch.view isDescendantOfView:self.backgroundView] && self.hideByTouch) return YES;
+    if ([touch.view isDescendantOfView:self.backgroundView] && self.hideByTouch)
+        return YES;
+    
     return NO;
 }
 

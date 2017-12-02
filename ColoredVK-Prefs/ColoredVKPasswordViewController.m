@@ -127,8 +127,9 @@
                                                               if (json[@"status"]) {
                                                                   [self.hud showSuccessWithStatus:json[@"status"]];
                                                                   
+                                                                  __weak typeof(self) weakSelf = self;
                                                                   self.hud.didHiddenBlock = ^{
-                                                                      [self dismiss];
+                                                                      [weakSelf dismiss];
                                                                   };
                                                                   
                                                               } else [self.hud showFailureWithStatus:@"Unknown error (-3)"];
