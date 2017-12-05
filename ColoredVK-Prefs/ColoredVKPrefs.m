@@ -201,7 +201,7 @@
 
 - (NSString *)tweakVersion
 {
-    return [kPackageVersion stringByReplacingOccurrencesOfString:@"-theux" withString:@""];
+    return [kPackageVersion stringByReplacingOccurrencesOfString:@"-" withString:@" "];
 }
 
 - (NSString *)vkAppVersion
