@@ -24,7 +24,7 @@
 {
     [super loadView];
     
-    self.customColorsSpecifiers = [self specifiersForPlistName:@"plists/NightTheme" localize:YES addFooter:NO];
+    self.customColorsSpecifiers = [self specifiersForPlistName:@"plists/NightTheme" localize:YES];
 }
 
 - (void)viewDidLoad

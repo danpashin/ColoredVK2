@@ -24,12 +24,12 @@
 {
     if (!_specifiers) {
         NSString *plistName = [@"plists/" stringByAppendingString:self.specifier.properties[@"plistToLoad"]];
-        _specifiers = [self specifiersForPlistName:plistName localize:YES addFooter:NO];
+        _specifiers = [self specifiersForPlistName:plistName localize:YES];
     }
     return _specifiers;
 }
 
-- (NSArray <PSSpecifier*> *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize addFooter:(BOOL)addFooter
+- (NSArray <PSSpecifier*> *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize 
 {
     NSMutableArray *specifiersArray = [NSMutableArray new];
     if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
@@ -43,42 +43,45 @@
     }
     
     if (localize) {
+        __block NSDictionary *localizable = [NSDictionary dictionaryWithContentsOfFile:[self.cvkBundle pathForResource:@"ColoredVK" ofType:@"strings"]];
+        NSString *(^localizedStringForKey)(NSString *key) = ^NSString *(NSString *key) {
+            return localizable[key] ? localizable[key] : key;
+        };
+        
         for (PSSpecifier *specifier in specifiersArray) {
             @autoreleasepool {
-                specifier.name = NSLocalizedStringFromTableInBundle(specifier.name, @"ColoredVK", self.bundle, nil);
+                specifier.name = localizedStringForKey(specifier.name);
                 
                 if (specifier.properties[@"footerText"]) {
                     if ([specifier.properties[@"footerText"] isEqualToString:@"AVAILABLE_IN_%@_AND_HIGHER"]) {
-                        NSString *string = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil), specifier.properties[@"requiredVersion"]];
+                        NSString *string = [NSString stringWithFormat:localizedStringForKey(specifier.properties[@"footerText"]), specifier.properties[@"requiredVersion"]];
                         [specifier setProperty:string forKey:@"footerText"];
                     } else
-                        [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil) forKey:@"footerText"];
+                        [specifier setProperty:localizedStringForKey(specifier.properties[@"footerText"]) forKey:@"footerText"];
                 }
                 if (specifier.properties[@"label"])
-                    [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"label"], @"ColoredVK", self.bundle, nil) forKey:@"label"];
+                    [specifier setProperty:localizedStringForKey(specifier.properties[@"label"]) forKey:@"label"];
                 if (specifier.properties[@"detailedLabel"])
-                    [specifier setProperty:NSLocalizedStringFromTableInBundle(specifier.properties[@"detailedLabel"], @"ColoredVK", self.bundle, nil) forKey:@"detailedLabel"];
+                    [specifier setProperty:localizedStringForKey(specifier.properties[@"detailedLabel"]) forKey:@"detailedLabel"];
                 
                 if (specifier.properties[@"validTitles"]) {
                     NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
-                    for (NSString *key in specifier.titleDictionary.allKeys) 
-                        [tempDict setValue:NSLocalizedStringFromTableInBundle(specifier.titleDictionary[key], @"ColoredVK", self.bundle, nil) forKey:key];
+                    for (NSString *key in specifier.titleDictionary.allKeys) {
+                        [tempDict setValue:localizedStringForKey(specifier.titleDictionary[key]) forKey:key];
+                    }
                     specifier.titleDictionary = [tempDict copy];
                 }
                 
                 if ([specifier.identifier isEqualToString:@"checkUpdates"] && [kPackageVersion containsString:@"beta"])
                     [specifier setProperty:@NO forKey:@"enabled"];
                 if ([specifier.identifier isEqualToString:@"manageSettingsFooter"] && specifier.properties[@"footerText"])
-                    [specifier setProperty:[NSString stringWithFormat:NSLocalizedStringFromTableInBundle(specifier.properties[@"footerText"], @"ColoredVK", self.bundle, nil), CVK_BACKUP_PATH]
-                                    forKey:@"footerText"];
+                    [specifier setProperty:[NSString stringWithFormat:localizedStringForKey(specifier.properties[@"footerText"]), CVK_BACKUP_PATH] forKey:@"footerText"];
             }
         }
     }
     
     if (specifiersArray.count == 0) {
         specifiersArray = [NSMutableArray new];
-    } else {
-        if (addFooter) [specifiersArray addObject:self.footer];
     }
     
     return [specifiersArray copy];
@@ -190,14 +193,14 @@
 }
 
 
-- (PSSpecifier *)footer
-{
-    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.bundle, nil), self.tweakVersion, self.vkAppVersion ];
-    PSSpecifier *footer = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-    [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2017"] forKey:@"footerText"];
-    [footer setProperty:@"1" forKey:@"footerAlignment"];
-    return footer;
-}
+//- (PSSpecifier *)footer
+//{
+//    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.bundle, nil), self.tweakVersion, self.vkAppVersion ];
+//    PSSpecifier *footer = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
+//    [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2017"] forKey:@"footerText"];
+//    [footer setProperty:@"1" forKey:@"footerAlignment"];
+//    return footer;
+//}
 
 - (NSString *)tweakVersion
 {
@@ -247,7 +250,7 @@
             controller.popoverPresentationController.sourceView = self.view;
             controller.popoverPresentationController.sourceRect = self.view.bounds;
         }
-        [self.navigationController presentViewController:controller animated:YES completion:nil];
+        [self presentViewController:controller animated:YES completion:nil];
     });
 }
 

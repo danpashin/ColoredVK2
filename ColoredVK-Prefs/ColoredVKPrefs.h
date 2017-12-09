@@ -15,7 +15,6 @@
 
 @interface ColoredVKPrefs : PSListController <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 
-@property (nonatomic, readonly) PSSpecifier *footer;
 @property (nonatomic, readonly) NSString *tweakVersion;
 @property (nonatomic, readonly) NSString *vkAppVersion;
 @property (assign, nonatomic, readonly) BOOL app_is_vk;
@@ -31,7 +30,7 @@
 
 - (BOOL)openURL:(NSURL *)url;
 - (void)presentPopover:(UIViewController *)controller;
-- (NSArray <PSSpecifier*> *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize addFooter:(BOOL)addFooter;
+- (NSArray <PSSpecifier*> *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize;
 - (void)showPurchaseAlert;
 
 - (id)readPreferenceValue:(PSSpecifier *)specifier;

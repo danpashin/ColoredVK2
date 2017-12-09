@@ -14,7 +14,7 @@
 - (NSArray *)specifiers
 {
     if (!_specifiers) {
-        NSArray *specifiers = [self specifiersForPlistName:@"plists/BlurPrefs" localize:YES addFooter:NO];
+        NSArray *specifiers = [self specifiersForPlistName:@"plists/BlurPrefs" localize:YES];
         
         if (self.specifier.properties[@"prefix"]) {
             for (PSSpecifier *specifier in specifiers) {
