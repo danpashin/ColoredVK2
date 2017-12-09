@@ -34,7 +34,7 @@
 {
     ColoredVKTextViewController *controller = [[ColoredVKTextViewController alloc] initWithFile:specifier.properties[@"fileName"] 
                                                                                       localized:[specifier.properties[@"localized"] boolValue]];
-    controller.backgroundStyle = ColoredVKWindowBackgroundStyleBlurred;
+    controller.backgroundStyle = ColoredVKWindowBackgroundStyleCustom;
     controller.app_is_vk = self.app_is_vk;
     controller.enableNightTheme = self.enableNightTheme;
     controller.nightThemeColorScheme = self.nightThemeColorScheme;

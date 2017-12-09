@@ -18,12 +18,14 @@
         
         if (self.specifier.properties[@"prefix"]) {
             for (PSSpecifier *specifier in specifiers) {
-                NSString *postfix = specifier.properties[@"key"] ? specifier.properties[@"key"] : specifier.identifier;
-                NSString *key = [self.specifier.properties[@"prefix"] stringByAppendingString:postfix];
-                specifier.identifier = key;
-                if (specifier.properties[@"key"]) specifier.properties[@"key"] = key;
-                
                 [specifier setProperty:@YES forKey:@"enabled"];
+                
+                NSString *key = specifier.properties[@"key"] ? specifier.properties[@"key"] : specifier.identifier;
+                if (key) {
+                    NSString *newKey = [self.specifier.properties[@"prefix"] stringByAppendingString:key];
+                    specifier.identifier = newKey;
+                    if (specifier.properties[@"key"]) specifier.properties[@"key"] = key;
+                }
             }
         } else specifiers = @[];
         

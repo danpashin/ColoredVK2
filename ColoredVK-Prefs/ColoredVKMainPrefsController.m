@@ -33,7 +33,7 @@ NSArray <NSString *> *specifiersToEnable;
         NSMutableArray *specifiersArray = [self specifiersForPlistName:@"Main" localize:NO].mutableCopy;
         
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller]; 
-        BOOL shouldDisable = (!newInstaller.tweakPurchased || !newInstaller.tweakActivated);
+        BOOL shouldDisable = (!newInstaller.purchased || !newInstaller.activated);
         
         self.showFreeVersionFooter = shouldDisable;
         

@@ -106,7 +106,7 @@
     ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller]; 
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     self.enableNightTheme = prefs[@"nightThemeType"] ? ([prefs[@"nightThemeType"] integerValue] != -1) : NO;
-    self.enableNightTheme = ([prefs[@"enabled"] boolValue] && self.enableNightTheme && newInstaller.tweakPurchased && newInstaller.tweakActivated);
+    self.enableNightTheme = ([prefs[@"enabled"] boolValue] && self.enableNightTheme && newInstaller.purchased && newInstaller.activated);
     self.nightThemeColorScheme = [ColoredVKNightThemeColorScheme colorSchemeForType:[prefs[@"nightThemeType"] integerValue]];
     
     if (self.app_is_vk && self.enableNightTheme) {
@@ -191,16 +191,6 @@
         [super reloadSpecifiers];
     });
 }
-
-
-//- (PSSpecifier *)footer
-//{
-//    NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.bundle, nil), self.tweakVersion, self.vkAppVersion ];
-//    PSSpecifier *footer = [PSSpecifier preferenceSpecifierNamed:@"" target:self set:nil get:nil detail:nil cell:PSGroupCell edit:nil];
-//    [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2017"] forKey:@"footerText"];
-//    [footer setProperty:@"1" forKey:@"footerAlignment"];
-//    return footer;
-//}
 
 - (NSString *)tweakVersion
 {

@@ -67,7 +67,7 @@
 "PURCHASE" = "Purchase";
 "ENTER_PASS_FOR_ACTION" = "To confirm this action, enter your password.";
 "HIDE" = "Hide";
-"INVALID_PASSWORD" = "Please, fill in your account password";
+"ENTER_CORRECT_LOGIN_PASS" = "Please enter the correct username and password.";
 
 
 

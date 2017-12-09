@@ -46,7 +46,7 @@
 			<key>id</key>
 			<string>accountPaid</string>
 			<key>get</key>
-			<string>getAccountPaymentStatus</string>
+			<string>accountPaymentStatus</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -56,7 +56,7 @@
 			<key>id</key>
 			<string>accountActivated</string>
 			<key>get</key>
-			<string>getAccountActivationStatus</string>
+			<string>accountActivationStatus</string>
 		</dict>
 		<dict>
 			<key>cell</key>

@@ -18,6 +18,10 @@
 #define kNavigationBarBarTintColor [UIColor colorWithRed:0.235294 green:0.439216 blue:0.662745 alpha:1]
 #define kVKMainColor [UIColor colorWithRed:88/255.0f green:133/255.0f blue:184/255.0f alpha:1.0f]
 
+#define UITableViewCellTextColor         [UIColor colorWithWhite:1 alpha:0.9]
+#define UITableViewCellDetailedTextColor [UIColor colorWithWhite:0.8 alpha:0.9]
+#define UITableViewCellBackgroundColor   [UIColor clearColor]
+
 typedef NS_ENUM(NSInteger, CVKCellSelectionStyle) {
     CVKCellSelectionStyleNone = 0,
     CVKCellSelectionStyleTransparent,

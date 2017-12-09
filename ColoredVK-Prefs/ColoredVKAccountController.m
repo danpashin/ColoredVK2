@@ -19,9 +19,9 @@
 
 @property (assign, nonatomic) BOOL accountPaid;
 @property (assign, nonatomic) BOOL accountActivated;
-@property (assign, nonatomic) BOOL userLoggedIn;
-@property (strong, nonatomic, getter=getAccountPaymentStatus) NSString *accountPaymentStatus;
-@property (strong, nonatomic, getter=getAccountActivationStatus) NSString *accountActivationStatus;
+@property (assign, nonatomic) BOOL authenticated;
+@property (strong, nonatomic) NSString *accountPaymentStatus;
+@property (strong, nonatomic) NSString *accountActivationStatus;
 
 @property (strong, nonatomic) UIButton *purchaseButton;
 
@@ -34,7 +34,7 @@
     if (!_specifiers) {
         NSMutableArray *specifiers = [super.specifiers mutableCopy];
         
-        if (self.userLoggedIn) {
+        if (self.authenticated) {
             NSArray <NSString *> *specifiersIDToRemove = @[@"registerButton", @"registerGroup"];
             NSMutableArray <PSSpecifier *> *specifiersToRemove = [NSMutableArray array];
             
@@ -64,7 +64,7 @@
             }
         }
         
-        _specifiers = [specifiers copy];
+        _specifiers = specifiers;
     }
     
     return _specifiers;
@@ -73,20 +73,17 @@
 - (void)updateActivationInfo
 {
     [[ColoredVKNewInstaller sharedInstaller] updateAccountInfo:^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-            
-            self.userLoggedIn = newInstaller.userAuthorized;
-            self.accountPaid = newInstaller.api_purchased;
-            self.accountActivated = newInstaller.api_activated;
-            self.accountPaymentStatus = self.accountPaid ? CVKLocalizedStringFromTable(@"ACCOUNT_PAID", @"ColoredVK") : @"";
-            self.accountActivationStatus = self.accountActivated ? CVKLocalizedStringFromTable(@"ACCOUNT_ACTIVATED", @"ColoredVK") : @"";
-            if (self.accountPaid && !self.accountActivated)
-                self.accountActivationStatus = CVKLocalizedString(@"WAIT_ACTIVATION");
-            
-            
-            [self reloadSpecifiers];
-        });
+        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
+        
+        self.authenticated = newInstaller.authenticated;
+        self.accountPaid = newInstaller.purchased;
+        self.accountActivated = newInstaller.activated;
+        self.accountPaymentStatus = self.accountPaid ? CVKLocalizedStringFromTable(@"ACCOUNT_PAID", @"ColoredVK") : @"";
+        self.accountActivationStatus = self.accountActivated ? CVKLocalizedStringFromTable(@"ACCOUNT_ACTIVATED", @"ColoredVK") : @"";
+        if (self.accountPaid && !self.accountActivated)
+            self.accountActivationStatus = CVKLocalizedString(@"WAIT_ACTIVATION");
+        
+        [self reloadSpecifiers];
     }];
 }
 
@@ -96,13 +93,11 @@
     [super viewDidLoad];
     
     [self updateActivationInfo];
-    
-    
 }
 
 - (void)resetStatus
 {
-    self.userLoggedIn =  NO;
+    self.authenticated =  NO;
     self.accountPaymentStatus = CVKLocalizedString(@"UPDATING...");
     self.accountActivationStatus = CVKLocalizedString(@"UPDATING...");
 }
@@ -145,7 +140,7 @@
         [self.loginCell refreshCellContentsWithSpecifier:specifier];
         
         cell.textLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize] + 2.0f];
-        if (!self.userLoggedIn) {
+        if (!self.authenticated) {
             cell.textLabel.text = CVKLocalizedStringFromTable(@"ENTER_ACCOUNT", @"ColoredVK");
             cell.textLabel.textColor = CVKMainColor;
             
@@ -159,7 +154,7 @@
         }
     }
     
-    if ([cell.specifier.identifier isEqualToString:@"accountPaid"] && (!self.accountPaid && self.userLoggedIn)) {
+    if ([cell.specifier.identifier isEqualToString:@"accountPaid"] && (!self.accountPaid && self.authenticated)) {
         cell.accessoryView = self.purchaseButton;
     }
     
@@ -176,7 +171,7 @@
     
     if ([specifier.identifier isEqualToString:@"loginCell"]) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        if (!self.userLoggedIn) {
+        if (!self.authenticated) {
             [self actionLogin];
         } else {
             __weak typeof(self) weakSelf = self;
@@ -221,7 +216,7 @@
     [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"AUTHORISE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSString *username = alertController.textFields[0].text;
         NSString *password = alertController.textFields[1].text;
-        [[ColoredVKNewInstaller sharedInstaller] actionLoginWithUsername:username password:password completionBlock:^{
+        [[ColoredVKNewInstaller sharedInstaller] authWithUsername:username password:password completionBlock:^{
             [weakSelf updateActivationInfo];
         }];
     }]];
@@ -232,23 +227,10 @@
 
 - (void)actionLogout
 {
-    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:CVKLocalizedString(@"WARNING") message:CVKLocalizedString(@"ENTER_PASS_FOR_ACTION") 
-                                                                                    preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-        textField.placeholder = UIKitLocalizedString(@"Password");
-        textField.secureTextEntry = YES;
+    [[ColoredVKNewInstaller sharedInstaller] logoutWithСompletionBlock:^{
+        [self resetStatus];
+        [self updateActivationInfo];
     }];
-    
-    __weak typeof(self) weakSelf = self;
-    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"ACTION_LOG_OUT") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {        
-        [[ColoredVKNewInstaller sharedInstaller] actionLogoutWithPassword:alertController.textFields[0].text completionBlock:^{
-            [weakSelf resetStatus];
-            [weakSelf updateActivationInfo];
-        }];
-    }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-    
-    [alertController presentFromController:self];
 }
 
 - (void)actionChangePassword
@@ -257,8 +239,7 @@
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:passController];
     nav.modalPresentationStyle = UIModalPresentationFormSheet;
-    
-    [self.navigationController presentViewController:nav animated:YES completion:nil];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)actionPurchase

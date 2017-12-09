@@ -28,10 +28,10 @@
 - (NSArray *)specifiers
 {
     if (!_specifiers) {
-        NSMutableArray *specifiersArray = super.specifiers.mutableCopy;
+        NSArray *specifiersArray = super.specifiers;
         
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller]; 
-        BOOL shouldDisable = (!newInstaller.tweakPurchased || !newInstaller.tweakActivated);
+        BOOL shouldDisable = (!newInstaller.purchased || !newInstaller.activated);
         
         for (PSSpecifier *specifier in specifiersArray) {
             @autoreleasepool {
@@ -43,7 +43,7 @@
             }
         }
         
-        _specifiers = specifiersArray.copy;
+        _specifiers = specifiersArray;
     }
     return _specifiers;
 }
