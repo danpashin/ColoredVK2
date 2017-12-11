@@ -299,6 +299,8 @@
 		A5AE82FB1EC1DE25000B7F63 /* ColoredVKStepperButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AE82F71EC1DE25000B7F63 /* ColoredVKStepperButton.m */; };
 		A5AE82FC1EC1DE25000B7F63 /* ColoredVKStepperButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AE82F71EC1DE25000B7F63 /* ColoredVKStepperButton.m */; };
 		A5AE82FD1EC1DE25000B7F63 /* ColoredVKStepperButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AE82F71EC1DE25000B7F63 /* ColoredVKStepperButton.m */; };
+		A5AF3CFA1FDD2BC400638AC2 /* TweakFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AF3CF91FDD2BC300638AC2 /* TweakFunctions.m */; };
+		A5AF3CFB1FDD2CBD00638AC2 /* TweakFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AF3CF91FDD2BC300638AC2 /* TweakFunctions.m */; };
 		A5B124D71EA3873D00FAEE76 /* ColoredVKPasswordViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B124D51EA3873D00FAEE76 /* ColoredVKPasswordViewController.h */; };
 		A5B124D81EA3873D00FAEE76 /* ColoredVKPasswordViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B124D51EA3873D00FAEE76 /* ColoredVKPasswordViewController.h */; };
 		A5B124D91EA3873D00FAEE76 /* ColoredVKPasswordViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B124D51EA3873D00FAEE76 /* ColoredVKPasswordViewController.h */; };
@@ -591,6 +593,7 @@
 		A5AD46761DD38AF200740E30 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		A5AE82F61EC1DE25000B7F63 /* ColoredVKStepperButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKStepperButton.h; sourceTree = "<group>"; };
 		A5AE82F71EC1DE25000B7F63 /* ColoredVKStepperButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKStepperButton.m; sourceTree = "<group>"; };
+		A5AF3CF91FDD2BC300638AC2 /* TweakFunctions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TweakFunctions.m; sourceTree = "<group>"; };
 		A5B124D51EA3873D00FAEE76 /* ColoredVKPasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKPasswordViewController.h; sourceTree = "<group>"; };
 		A5B124D61EA3873D00FAEE76 /* ColoredVKPasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKPasswordViewController.m; sourceTree = "<group>"; };
 		A5B124DD1EA38B1600FAEE76 /* ColoredVKPasswordCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKPasswordCell.h; sourceTree = "<group>"; };
@@ -859,6 +862,7 @@
 				A53D12911D467016009567B5 /* PrefixHeader.h */,
 				A55434FA1E636B19003B4256 /* Tweak.h */,
 				A53D91961CCA82B400E45A49 /* Tweak.m */,
+				A5AF3CF91FDD2BC300638AC2 /* TweakFunctions.m */,
 				A528D8821DE9FCAF00B299C1 /* ColoredVKMainController.h */,
 				A528D8831DE9FCAF00B299C1 /* ColoredVKMainController.m */,
 				A526A6BE1DD50D4700B47104 /* ColoredVKAudioLyricsView.h */,
@@ -1631,6 +1635,7 @@
 				A5F09DA11F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */,
 				A528D8861DE9FCAF00B299C1 /* ColoredVKMainController.m in Sources */,
 				A5210C961DE785C1004F7E11 /* LHBackgroundView.m in Sources */,
+				A5AF3CFA1FDD2BC400638AC2 /* TweakFunctions.m in Sources */,
 				A54249971E0522560018D3E3 /* SDWebImageDownloaderOperation.m in Sources */,
 				A5210C981DE785C1004F7E11 /* LHProgressHUD.m in Sources */,
 				A54249831E0522560018D3E3 /* SDImageCache.m in Sources */,
@@ -1697,6 +1702,7 @@
 				A5739D791EA015C300367595 /* ColoredVKStepperPrefsCell.m in Sources */,
 				A5D9A6881FACDBD900403A49 /* ColoredVKPrefsSelector.m in Sources */,
 				A54249881E0522560018D3E3 /* SDImageCacheConfig.m in Sources */,
+				A5AF3CFB1FDD2CBD00638AC2 /* TweakFunctions.m in Sources */,
 				A5B124DB1EA3873D00FAEE76 /* ColoredVKPasswordViewController.m in Sources */,
 				A576D1BB1DC6220C0039884F /* LHAcvitityIndicator.m in Sources */,
 				A5F09DA31F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */,
@@ -1837,6 +1843,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"$(PROJECT_DIR)/**",
 					"$(PROJECT_DIR)",
 				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
@@ -1851,6 +1858,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"$(PROJECT_DIR)/**",
 					"$(PROJECT_DIR)",
 				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
@@ -1981,6 +1989,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
+					"$(PROJECT_DIR)/**",
 					"$(PROJECT_DIR)",
 				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;

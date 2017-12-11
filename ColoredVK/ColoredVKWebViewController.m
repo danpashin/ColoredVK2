@@ -10,6 +10,7 @@
 #import <WebKit/WebKit.h>
 #import "PrefixHeader.h"
 #import "ColoredVKNewInstaller.h"
+#import <sys/utsname.h>
 
 @interface ColoredVKWebViewController () <UIWebViewDelegate, WKNavigationDelegate>
 
@@ -18,6 +19,7 @@
 
 @property (strong, nonatomic) UIProgressView *progressView;
 @property (assign, nonatomic) BOOL pageLoaded;
+@property (assign, nonatomic) BOOL useNewWebview;
 
 @end
 
@@ -43,7 +45,12 @@
     closeImage = [closeImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:closeImage style:UIBarButtonItemStyleDone target:self action:@selector(dismiss)];
     
-    if (SYSTEM_VERSION_IS_MORE_THAN(@"9.0")) {
+    struct utsname systemInfo;
+    uname(&systemInfo);
+    
+    self.useNewWebview = (SYSTEM_VERSION_IS_MORE_THAN(@"9.0") && ![@(systemInfo.machine) containsString:@"iPhone4,1"]);
+    
+    if (self.useNewWebview) {
         self.wkWebView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:[WKWebViewConfiguration new]];
         self.wkWebView.backgroundColor = [UIColor whiteColor];
         self.wkWebView.navigationDelegate = self;
@@ -67,7 +74,7 @@
     [networkController sendRequest:self.request 
                            success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData) {
                                NSString *html = [[NSString alloc] initWithData:rawData encoding:NSUTF8StringEncoding];
-                               if (SYSTEM_VERSION_IS_MORE_THAN(@"9.0")) {
+                               if (self.useNewWebview) {
                                    [self.wkWebView loadHTMLString:html baseURL:request.URL];
                                } else {
                                    [self.webView loadHTMLString:html baseURL:request.URL];
@@ -87,7 +94,7 @@
 {
     [self.view removeConstraints:self.view.constraints];
     
-    if (SYSTEM_VERSION_IS_MORE_THAN(@"9.0")) {
+    if (self.useNewWebview) {
         CGFloat navBarHeight = (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation) && !IS_IPAD) ? 64.0f : 32.0f;
         
         self.wkWebView.translatesAutoresizingMaskIntoConstraints = NO;

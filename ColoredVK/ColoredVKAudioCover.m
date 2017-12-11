@@ -39,7 +39,7 @@
 
 @implementation ColoredVKAudioCover
 
-void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
+void corePrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.audio.prefs.update" object:nil userInfo:nil];
 }
@@ -91,7 +91,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         
         
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updatePrefs:) name:@"com.daniilpashin.coloredvk2.audio.prefs.update" object:nil];
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, corePrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
     }
     return self;
 }

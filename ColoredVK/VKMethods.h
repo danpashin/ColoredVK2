@@ -817,3 +817,44 @@
 
 @interface VKPPNoAccessView : UIView
 @end
+
+
+@interface VKSearchBarConfig : NSObject
+@property(retain, nonatomic) UIColor *segmentBorderColor;
+@property(retain, nonatomic) UIColor *segmentTintColor;
+@property(retain, nonatomic) UIColor *textfieldTextColor;
+@property(retain, nonatomic) UIColor *textfieldTintColor; 
+@property(retain, nonatomic) UIColor *textfieldBackgroundColor;
+@property(retain, nonatomic) UIColor *backgroundColor;
+@property(retain, nonatomic) UIColor *placeholderBackgroundColor;
+@property(retain, nonatomic) UIColor *placeholderTextColor;
+@end
+
+@interface VKSearchBar : UIView
+
+@property(retain, nonatomic) UIView *separator;
+@property(retain, nonatomic) UILabel *placeholderLabel;
+@property(retain, nonatomic) UITextField *textField;
+@property(retain, nonatomic) UIView *textFieldBackground;
+@property(retain, nonatomic) UIView *backgroundView;
+@property(retain, nonatomic) UISegmentedControl *segmentedControl;
+@property(readonly, nonatomic) VKSearchBarConfig *config;
+@end
+
+@interface VKSearchScrollTopBackgroundView : UIView
+@end
+
+
+@interface DialogsSearchResultsController : UIViewController
+@property(retain, nonatomic) UITableView *tableView;
+@end
+
+@interface SendMessagePopupView : UIView
+@property(retain, nonatomic) UIToolbar *headerToolBar;
+@property(retain, nonatomic) UIImageView *backgroundImageView;
+@end
+
+
+@interface StoryEditorSendViewController : UIViewController
+@property(retain, nonatomic) UIButton *sendButton;
+@end

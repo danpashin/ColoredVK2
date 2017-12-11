@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "_UIBackdropView.h"
 
-@interface ColoredVKWallpaperView : UIView
+@interface ColoredVKWallpaperView : UIView <NSCopying>
 
 + (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout;
 - (instancetype)initWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout enableParallax:(BOOL)enableParallax blurBackground:(BOOL)blurBackground NS_DESIGNATED_INITIALIZER;

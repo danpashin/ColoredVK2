@@ -274,4 +274,14 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
     return [NSString stringWithFormat:@"<%@: %p, imageName '%@', blackout %.2f, parallax '%@'>", [self class], self, self.name, self.blackout, self.parallaxEnabled ? @"Enabled": @"Disabled"];
 }
 
+- (id)copyWithZone:(nullable NSZone *)zone
+{
+    ColoredVKWallpaperView *copy = [[[self class] alloc] initWithFrame:self.frame 
+                                                                       imageName:[self.name copy] 
+                                                                        blackout:self.blackout
+                                                                  enableParallax:self.parallaxEnabled 
+                                                                  blurBackground:self.blurBackground];
+    return copy;
+}
+
 @end
