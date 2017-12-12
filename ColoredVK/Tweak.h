@@ -34,7 +34,7 @@ typedef NS_ENUM(NSInteger, CVKCellSelectionStyle) {
     CVKCellSelectionStyleBlurred
 };
 
-void reloadPrefs();
+void reloadPrefs(void);
 void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 void updateCornerRadius(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
@@ -46,14 +46,14 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style);
 void setToolBar(UIToolbar *toolbar);
 void setupTranslucence(UIView *view, UIColor *backColor, BOOL remove);
 
-void setupTabbar();
-void resetTabBar();
+void setupTabbar(void);
+void resetTabBar(void);
 void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *tableView);
 void setupNewDialogCellFromNightTheme(NewDialogCell *dialogCell);
 
 void performInitialCellSetup(UITableViewCell *cell);
 void setupAudioPlayer(UIView *hostView, UIColor *color);
-void actionChangeCornerRadius();
+void actionChangeCornerRadius(void);
 
 void resetUISearchBar(UISearchBar *searchBar);
 void setupUISearchBar(UISearchBar *searchBar);

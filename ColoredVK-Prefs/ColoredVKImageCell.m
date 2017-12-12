@@ -9,7 +9,7 @@
 
 #import "ColoredVKImageCell.h"
 #import "PrefixHeader.h"
-#import "PSSpecifier.h"
+#import <Preferences/PSSpecifier.h>
 #import "ColoredVKHUD.h"
 #import "ColoredVKAlertController.h"
 

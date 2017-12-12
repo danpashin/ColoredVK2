@@ -92,8 +92,6 @@
 		A5363B0E1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.h in Headers */ = {isa = PBXBuildFile; fileRef = A5363B0B1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.h */; };
 		A5363B0F1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A5363B0C1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.m */; };
 		A5363B101E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A5363B0C1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.m */; };
-		A53D11D81D462022009567B5 /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A53D11D71D462022009567B5 /* Preferences.framework */; };
-		A53D11D91D462022009567B5 /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A53D11D71D462022009567B5 /* Preferences.framework */; };
 		A53D41681DD0AC2600584B13 /* ColoredVKWallpaperView.h in Headers */ = {isa = PBXBuildFile; fileRef = A53D41661DD0AC2600584B13 /* ColoredVKWallpaperView.h */; };
 		A53D41691DD0AC2600584B13 /* ColoredVKWallpaperView.h in Headers */ = {isa = PBXBuildFile; fileRef = A53D41661DD0AC2600584B13 /* ColoredVKWallpaperView.h */; };
 		A53D416A1DD0AC2600584B13 /* ColoredVKWallpaperView.m in Sources */ = {isa = PBXBuildFile; fileRef = A53D41671DD0AC2600584B13 /* ColoredVKWallpaperView.m */; };
@@ -332,7 +330,6 @@
 		A5B6ED071D3D659800383425 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FB51CC92157005B9693 /* Foundation.framework */; };
 		A5B6ED081D3D659800383425 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FCA1CC9261B005B9693 /* UIKit.framework */; };
 		A5B6ED451D3D68F000383425 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A50731D41CD535130088EF9F /* QuartzCore.framework */; };
-		A5BB10F11EA3FABC00B05EE2 /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5BB10F01EA3FAB200B05EE2 /* Preferences.framework */; };
 		A5BC53AA1F1234C200C4E1E0 /* ColoredVKAlertController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5BC53A81F1234C200C4E1E0 /* ColoredVKAlertController.h */; };
 		A5BC53AB1F1234C200C4E1E0 /* ColoredVKAlertController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5BC53A81F1234C200C4E1E0 /* ColoredVKAlertController.h */; };
 		A5BC53AC1F1234C200C4E1E0 /* ColoredVKAlertController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5BC53A81F1234C200C4E1E0 /* ColoredVKAlertController.h */; };
@@ -347,6 +344,9 @@
 		A5D0A2A01DB270EC00720E41 /* libMobileGestalt.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A50311E31D853E800075B177 /* libMobileGestalt.tbd */; };
 		A5D2DFB51DE741CF00DCDC84 /* ColoredVKAudioCover.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D2DFB31DE741CF00DCDC84 /* ColoredVKAudioCover.h */; };
 		A5D2DFB61DE741CF00DCDC84 /* ColoredVKAudioCover.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D2DFB31DE741CF00DCDC84 /* ColoredVKAudioCover.h */; };
+		A5D3D0391FE012FD007AAEF7 /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5D3D0381FE012FC007AAEF7 /* Preferences.framework */; };
+		A5D3D03A1FE0130D007AAEF7 /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5D3D0381FE012FC007AAEF7 /* Preferences.framework */; };
+		A5D3D03B1FE01310007AAEF7 /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5D3D0381FE012FC007AAEF7 /* Preferences.framework */; };
 		A5D56A591E70427300A8FFB5 /* ColoredVKMainPrefsController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D9799D1DAEB96500607F06 /* ColoredVKMainPrefsController.h */; };
 		A5D56A5B1E70427300A8FFB5 /* ColoredVKHeaderView.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D979931DAEB96500607F06 /* ColoredVKHeaderView.h */; };
 		A5D56A5C1E70427300A8FFB5 /* ColoredVKHUD.h in Headers */ = {isa = PBXBuildFile; fileRef = A52CDBAA1E33EB2400D69AD3 /* ColoredVKHUD.h */; };
@@ -380,7 +380,6 @@
 		A5D56ABC1E70427300A8FFB5 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5DA87DD1D944EAC00763B5F /* ImageIO.framework */; };
 		A5D56ABE1E70427300A8FFB5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A50731D41CD535130088EF9F /* QuartzCore.framework */; };
 		A5D56ABF1E70427300A8FFB5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FB51CC92157005B9693 /* Foundation.framework */; };
-		A5D56AC01E70427300A8FFB5 /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A53D11D71D462022009567B5 /* Preferences.framework */; };
 		A5D56AC11E70427300A8FFB5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FCA1CC9261B005B9693 /* UIKit.framework */; };
 		A5D56AC31E70427300A8FFB5 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5D979A41DAEBA1000607F06 /* Images.xcassets */; };
 		A5D56ACD1E7043DC00A8FFB5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5D56ACC1E7043DC00A8FFB5 /* Main.storyboard */; };
@@ -492,22 +491,6 @@
 		A53104C51EC4D08C003DEB83 /* ColoredVKWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKWindowController.m; sourceTree = "<group>"; };
 		A5363B0B1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIGestureRecognizer+BlocksKit.h"; sourceTree = "<group>"; };
 		A5363B0C1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIGestureRecognizer+BlocksKit.m"; sourceTree = "<group>"; };
-		A53D11D71D462022009567B5 /* Preferences.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Preferences.framework; sourceTree = "<group>"; };
-		A53D12641D46241A009567B5 /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Preferences.h; sourceTree = "<group>"; };
-		A53D12651D46241A009567B5 /* PreferencesAppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesAppController.h; sourceTree = "<group>"; };
-		A53D12661D46241A009567B5 /* PSBundleController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSBundleController.h; sourceTree = "<group>"; };
-		A53D12671D46241A009567B5 /* PSControlTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSControlTableCell.h; sourceTree = "<group>"; };
-		A53D12681D46241A009567B5 /* PSDiscreteSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSDiscreteSlider.h; sourceTree = "<group>"; };
-		A53D12691D46241A009567B5 /* PSEditableTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSEditableTableCell.h; sourceTree = "<group>"; };
-		A53D126A1D46241A009567B5 /* PSHeaderFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSHeaderFooterView.h; sourceTree = "<group>"; };
-		A53D126B1D46241A009567B5 /* PSListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSListController.h; sourceTree = "<group>"; };
-		A53D126C1D46241A009567B5 /* PSListItemsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSListItemsController.h; sourceTree = "<group>"; };
-		A53D126D1D46241A009567B5 /* PSRootController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSRootController.h; sourceTree = "<group>"; };
-		A53D126E1D46241A009567B5 /* PSSliderTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSSliderTableCell.h; sourceTree = "<group>"; };
-		A53D126F1D46241A009567B5 /* PSSpecifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSSpecifier.h; sourceTree = "<group>"; };
-		A53D12701D46241A009567B5 /* PSSwitchTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSSwitchTableCell.h; sourceTree = "<group>"; };
-		A53D12711D46241A009567B5 /* PSTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSTableCell.h; sourceTree = "<group>"; };
-		A53D12721D46241A009567B5 /* PSViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSViewController.h; sourceTree = "<group>"; };
 		A53D12911D467016009567B5 /* PrefixHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.h; sourceTree = SOURCE_ROOT; };
 		A53D41661DD0AC2600584B13 /* ColoredVKWallpaperView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKWallpaperView.h; sourceTree = "<group>"; };
 		A53D41671DD0AC2600584B13 /* ColoredVKWallpaperView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKWallpaperView.m; sourceTree = "<group>"; };
@@ -606,11 +589,11 @@
 		A5B607C91F0943C4003529AF /* ColoredVKUpdatesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKUpdatesController.m; sourceTree = "<group>"; };
 		A5B6ED061D3D659800383425 /* ColoredVK2.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ColoredVK2.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5B6ED691D3D703600383425 /* ColoredVK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ColoredVK.bundle; sourceTree = "<group>"; };
-		A5BB10F01EA3FAB200B05EE2 /* Preferences.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Preferences.framework; sourceTree = "<group>"; };
 		A5BC53A81F1234C200C4E1E0 /* ColoredVKAlertController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKAlertController.h; sourceTree = "<group>"; };
 		A5BC53A91F1234C200C4E1E0 /* ColoredVKAlertController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKAlertController.m; sourceTree = "<group>"; };
 		A5C5FAB31E41168D0032A8AF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A5D2DFB31DE741CF00DCDC84 /* ColoredVKAudioCover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKAudioCover.h; sourceTree = "<group>"; };
+		A5D3D0381FE012FC007AAEF7 /* Preferences.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Preferences.framework; path = ../../../../opt/iOSOpenDev/frameworks/Preferences.framework; sourceTree = "<group>"; };
 		A5D56AC71E70427300A8FFB5 /* ColoredVK-Prefs copy.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "ColoredVK-Prefs copy.bundle"; path = ColoredVK2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5D56ACC1E7043DC00A8FFB5 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		A5D56ACE1E7043EF00A8FFB5 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
@@ -661,7 +644,6 @@
 				A5DA87DF1D944EB700763B5F /* ImageIO.framework in Frameworks */,
 				A50731D51CD535130088EF9F /* QuartzCore.framework in Frameworks */,
 				A5079FCB1CC9261B005B9693 /* UIKit.framework in Frameworks */,
-				A53D11D81D462022009567B5 /* Preferences.framework in Frameworks */,
 				A5079FB61CC92157005B9693 /* Foundation.framework in Frameworks */,
 				2C09F2E2ED3F21C2C0A4AA3D /* libPods-ColoredVK.a in Frameworks */,
 			);
@@ -671,11 +653,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5D3D0391FE012FD007AAEF7 /* Preferences.framework in Frameworks */,
 				A5EE64AD1FAE4C9E0050C156 /* Photos.framework in Frameworks */,
 				A5C988DB1F2BBE410054AC62 /* SafariServices.framework in Frameworks */,
 				A525A3901F2A381300F86EFF /* WebKit.framework in Frameworks */,
 				A585E1751EAF210C005B30F7 /* CoreData.framework in Frameworks */,
-				A5BB10F11EA3FABC00B05EE2 /* Preferences.framework in Frameworks */,
 				A5B1E2991E505698001B8442 /* libz.tbd in Frameworks */,
 				A5ED14581DE874DA00138A65 /* OpenGLES.framework in Frameworks */,
 				A589F66C1DE1B2F800467138 /* MediaPlayer.framework in Frameworks */,
@@ -693,6 +675,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5D3D03B1FE01310007AAEF7 /* Preferences.framework in Frameworks */,
 				A513AB351F43666E0045F530 /* SafariServices.framework in Frameworks */,
 				A525A3911F2A381A00F86EFF /* WebKit.framework in Frameworks */,
 				A5B1E29B1E5056AB001B8442 /* libz.tbd in Frameworks */,
@@ -701,7 +684,6 @@
 				A5DA87DE1D944EAC00763B5F /* ImageIO.framework in Frameworks */,
 				A5B6ED451D3D68F000383425 /* QuartzCore.framework in Frameworks */,
 				A5B6ED071D3D659800383425 /* Foundation.framework in Frameworks */,
-				A53D11D91D462022009567B5 /* Preferences.framework in Frameworks */,
 				A5B6ED081D3D659800383425 /* UIKit.framework in Frameworks */,
 				F7AB979798AEAAD3FC44A993 /* libPods-ColoredVK-Prefs.a in Frameworks */,
 			);
@@ -711,6 +693,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5D3D03A1FE0130D007AAEF7 /* Preferences.framework in Frameworks */,
 				A5144F791FB4CC6C00DB1B89 /* Photos.framework in Frameworks */,
 				A5C988D91F2BBDB20054AC62 /* SafariServices.framework in Frameworks */,
 				A5A4E2D71F250D0D0001102F /* WebKit.framework in Frameworks */,
@@ -720,7 +703,6 @@
 				A5D56ABC1E70427300A8FFB5 /* ImageIO.framework in Frameworks */,
 				A5D56ABE1E70427300A8FFB5 /* QuartzCore.framework in Frameworks */,
 				A5D56ABF1E70427300A8FFB5 /* Foundation.framework in Frameworks */,
-				A5D56AC01E70427300A8FFB5 /* Preferences.framework in Frameworks */,
 				A5D56AC11E70427300A8FFB5 /* UIKit.framework in Frameworks */,
 				FD0217739BE2B73EFAC5F5F5 /* libPods-ColoredVK-Prefs-App.a in Frameworks */,
 			);
@@ -783,12 +765,12 @@
 		A5079FB41CC92157005B9693 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A5D3D0381FE012FC007AAEF7 /* Preferences.framework */,
 				A5EE64AC1FAE4C9E0050C156 /* Photos.framework */,
 				A57620431F2B76BF0076CD5B /* Security.framework */,
 				A5A4E2D61F250D0D0001102F /* WebKit.framework */,
 				A5F09DA51F101A5200024198 /* SafariServices.framework */,
 				A585E1741EAF210C005B30F7 /* CoreData.framework */,
-				A5BB10F01EA3FAB200B05EE2 /* Preferences.framework */,
 				A5B1E2981E505698001B8442 /* libz.tbd */,
 				A5C5FAB31E41168D0032A8AF /* AVFoundation.framework */,
 				A5ED14571DE874DA00138A65 /* OpenGLES.framework */,
@@ -799,8 +781,6 @@
 				A5EB1CC91D85418500C97A91 /* libMobileGestaltExtensions.tbd */,
 				A50311E31D853E800075B177 /* libMobileGestalt.tbd */,
 				A517D7991D78A25700DD153E /* MobileCoreServices.framework */,
-				A53D12631D46241A009567B5 /* Preferences */,
-				A53D11D71D462022009567B5 /* Preferences.framework */,
 				A50731D41CD535130088EF9F /* QuartzCore.framework */,
 				A5079FCA1CC9261B005B9693 /* UIKit.framework */,
 				A5079FB51CC92157005B9693 /* Foundation.framework */,
@@ -828,28 +808,6 @@
 				A57B18481E24F3D500A2A622 /* NSData+AESCrypt.m */,
 			);
 			path = AES;
-			sourceTree = "<group>";
-		};
-		A53D12631D46241A009567B5 /* Preferences */ = {
-			isa = PBXGroup;
-			children = (
-				A53D12641D46241A009567B5 /* Preferences.h */,
-				A53D12651D46241A009567B5 /* PreferencesAppController.h */,
-				A53D12661D46241A009567B5 /* PSBundleController.h */,
-				A53D12671D46241A009567B5 /* PSControlTableCell.h */,
-				A53D12681D46241A009567B5 /* PSDiscreteSlider.h */,
-				A53D12691D46241A009567B5 /* PSEditableTableCell.h */,
-				A53D126A1D46241A009567B5 /* PSHeaderFooterView.h */,
-				A53D126B1D46241A009567B5 /* PSListController.h */,
-				A53D126C1D46241A009567B5 /* PSListItemsController.h */,
-				A53D126D1D46241A009567B5 /* PSRootController.h */,
-				A53D126E1D46241A009567B5 /* PSSliderTableCell.h */,
-				A53D126F1D46241A009567B5 /* PSSpecifier.h */,
-				A53D12701D46241A009567B5 /* PSSwitchTableCell.h */,
-				A53D12711D46241A009567B5 /* PSTableCell.h */,
-				A53D12721D46241A009567B5 /* PSViewController.h */,
-			);
-			path = Preferences;
 			sourceTree = "<group>";
 		};
 		A53D91941CCA82B400E45A49 /* ColoredVK */ = {
@@ -1843,8 +1801,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/**",
-					"$(PROJECT_DIR)",
+					/opt/iOSOpenDev/frameworks,
 				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1858,8 +1815,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/**",
-					"$(PROJECT_DIR)",
+					/opt/iOSOpenDev/frameworks,
 				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1873,6 +1829,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/iOSOpenDev/frameworks,
+				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
@@ -1889,6 +1849,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/iOSOpenDev/frameworks,
+				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
@@ -1901,7 +1865,7 @@
 		A5D56AD61E70442900A8FFB5 /* Debug_APP */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "4.0.3-theux";
+				APP_VERSION = "4.1-theux";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -1915,7 +1879,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = NO;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1928,7 +1892,7 @@
 				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(iOSOpenDevPath)/frameworks/**",
-					"$(SDKROOT)/System/Library/PrivateFrameworks",
+					"$(PROJECT_DIR)",
 				);
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = COMPILE_APP;
@@ -1959,10 +1923,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0B58120A8B7E45F6585D53CB /* Pods-ColoredVK.debug_app.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 			};
 			name = Debug_APP;
@@ -1971,6 +1931,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 631857E675D094524CB703CA /* Pods-ColoredVK-Prefs.debug_app.xcconfig */;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/iOSOpenDev/frameworks,
+				);
 				INSTALL_PATH = /Library/PreferenceBundles;
 				WRAPPER_EXTENSION = bundle;
 			};
@@ -1989,8 +1953,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/**",
-					"$(PROJECT_DIR)",
+					/opt/iOSOpenDev/frameworks,
 				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -2004,6 +1967,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 62DQNF58FV;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/iOSOpenDev/frameworks,
+				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
@@ -2017,7 +1984,7 @@
 		A5D979A51DAEBAD300607F06 /* Release_DEB */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "4.0.3-theux";
+				APP_VERSION = "4.1-theux";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -2031,7 +1998,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = NO;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -2043,7 +2010,7 @@
 				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(iOSOpenDevPath)/frameworks/**",
-					"$(SDKROOT)/System/Library/PrivateFrameworks",
+					"$(PROJECT_DIR)",
 				);
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = COMPILE_FOR_JAIL;
@@ -2073,10 +2040,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8280A3CCA9498A53F2C1EBE2 /* Pods-ColoredVK.release_deb.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 			};
 			name = Release_DEB;
@@ -2085,6 +2048,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 387AF2E9EB2BA45D2EDEAF7D /* Pods-ColoredVK-Prefs.release_deb.xcconfig */;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/iOSOpenDev/frameworks,
+				);
 				INSTALL_PATH = /Library/PreferenceBundles;
 				WRAPPER_EXTENSION = bundle;
 			};
@@ -2093,7 +2060,7 @@
 		A5D979A81DAEBAD900607F06 /* Release_IPA */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "4.0.3-theux";
+				APP_VERSION = "4.1-theux";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -2107,7 +2074,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = NO;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -2119,7 +2086,7 @@
 				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.gch (*) .DS_Store CVS .svn .git .hg *.xcodeproj *.xcode *.pbproj *.pbxproj";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(iOSOpenDevPath)/frameworks/**",
-					"$(SDKROOT)/System/Library/PrivateFrameworks",
+					"$(PROJECT_DIR)",
 				);
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2148,10 +2115,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9E8BB3164FD3E144BEEF6B51 /* Pods-ColoredVK.release_ipa.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 			};
 			name = Release_IPA;
@@ -2160,6 +2123,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 86C2C35891F936D0F9488A29 /* Pods-ColoredVK-Prefs.release_ipa.xcconfig */;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/iOSOpenDev/frameworks,
+				);
 				INSTALL_PATH = /Library/PreferenceBundles;
 				WRAPPER_EXTENSION = bundle;
 			};

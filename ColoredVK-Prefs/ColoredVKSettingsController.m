@@ -200,7 +200,7 @@
 
 - (void)actionReset
 {
-    void (^resetSettingsBlock)() = ^{
+    void (^resetSettingsBlock)(void) = ^(void){
         
         ColoredVKHUD *hud = [ColoredVKHUD showHUD];
         

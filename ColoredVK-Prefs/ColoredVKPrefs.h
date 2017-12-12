@@ -8,7 +8,7 @@
 
 
 #import <UIKit/UIKit.h>
-#import "Preferences.h"
+#import <Preferences/Preferences.h>
 #import "PrefixHeader.h"
 #import "UIScrollView+EmptyDataSet.h"
 #import "ColoredVKNightThemeColorScheme.h"

@@ -24,7 +24,7 @@
                 if (key) {
                     NSString *newKey = [self.specifier.properties[@"prefix"] stringByAppendingString:key];
                     specifier.identifier = newKey;
-                    if (specifier.properties[@"key"]) specifier.properties[@"key"] = key;
+                    specifier.properties[@"key"] = newKey;
                 }
             }
         } else specifiers = @[];

@@ -569,6 +569,7 @@
 
 @interface DiscoverFeedController : VKMScrollViewController
 @property (retain, nonatomic) UICollectionView *collectionView;
+@property(retain, nonatomic) UIView *topGradientBackgroundView;
 @end
 
 
@@ -858,3 +859,15 @@
 @interface StoryEditorSendViewController : UIViewController
 @property(retain, nonatomic) UIButton *sendButton;
 @end
+
+@interface StoryRepliesController : VKMController
+@property(retain, nonatomic) UIView *containerView;
+@end
+
+@interface StoryRepliesTipController : UIViewController
+@property(retain, nonatomic) UIView *container;
+@end
+
+@interface CameraCaptureButtonTip : UIView
+@end
+

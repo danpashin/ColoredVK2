@@ -149,7 +149,7 @@
     
     NSArray *identificsToReloadMenu = @[@"enableTweakSwitch", @"menuSelectionStyle", @"hideMenuSeparators", 
                                         @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor", 
-                                        @"showMenuCell"];
+                                        @"showMenuCell", @"menuUseBackgroundBlur"];
     
     CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
     

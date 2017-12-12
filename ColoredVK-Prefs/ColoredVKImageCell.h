@@ -8,7 +8,7 @@
 
 
 #import <UIKit/UIKit.h>
-#import "PSTableCell.h"
+#import <Preferences/PSTableCell.h>
 
 @interface ColoredVKImageCell : PSTableCell
 

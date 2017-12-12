@@ -526,7 +526,7 @@ void resetTabBar()
 
 void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *tableView)
 {
-    void (^setColors)() = ^{
+    void (^setColors)(void) = ^(void){
         if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
             view.contentView.backgroundColor = [UIColor clearColor];
             view.backgroundView.backgroundColor = [UIColor clearColor];

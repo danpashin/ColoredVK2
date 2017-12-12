@@ -15,7 +15,7 @@
 #import "ColoredVKBarDownloadButton.h"
 #import "ColoredVKUpdatesController.h"
 #import <dlfcn.h>
-#import "Preferences.h"
+#import <Preferences/Preferences.h>
 
 
 
@@ -1106,7 +1106,7 @@ CHDeclareMethod(0, void, ChatCell, setBG)
     CHSuper(0, ChatCell, setBG);
     
     if (enabled && (useMessageBubbleTintColor || enableNightTheme)) {
-        void (^bgHandler)() = ^{
+        void (^bgHandler)(void) = ^(void){
             if (self.bg.image.renderingMode != UIImageRenderingModeAlwaysTemplate) {
                 self.bg.image = [self.bg.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             }
@@ -2888,6 +2888,10 @@ CHDeclareMethod(1, void, DiscoverFeedController, viewWillAppear, BOOL, animated)
     
     if ([self isKindOfClass:NSClassFromString(@"DiscoverFeedController")]) {
         resetTabBar();
+        
+        if ([self respondsToSelector:@selector(topGradientBackgroundView)]) {
+            self.topGradientBackgroundView.hidden = (enabled && enableNightTheme);
+        }
     }
 }
 
@@ -4014,13 +4018,23 @@ CHDeclareMethod(0, void, VKSearchBar, layoutSubviews)
     if (!customized)
         customized = @NO;
     
-    if (enabled && enableNightTheme) {
-        self.backgroundView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-        self.textFieldBackground.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
-        self.segmentedControl.layer.borderColor = cvkMainController.nightThemeScheme.buttonSelectedColor.CGColor;
-    } else if (!customized.boolValue || !enabled) {
-        resetNewSearchBar(self);
-    }
+    void (^changeBlock)(void) = ^(void){
+        if (enabled && enableNightTheme) {
+            if ([self.superview isKindOfClass:NSClassFromString(@"DiscoverFeedTitleView")] || [self.superview isKindOfClass:[UINavigationBar class]]) {
+                self.backgroundView.backgroundColor = [UIColor clearColor];
+                self.textFieldBackground.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+            } else {
+                self.backgroundView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+                self.textFieldBackground.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+            }
+            
+            self.segmentedControl.layer.borderColor = cvkMainController.nightThemeScheme.buttonSelectedColor.CGColor;
+        } else if (!customized.boolValue || !enabled) {
+            resetNewSearchBar(self);
+        }
+    };
+    changeBlock();
+    dispatch_async(dispatch_get_main_queue(), changeBlock);
 }
 
 CHDeclareClass(SendMessagePopupView);
@@ -4050,6 +4064,51 @@ CHDeclareMethod(0, void, StoryEditorSendViewController, viewWillLayoutSubviews)
         self.sendButton.superview.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
     }
 }
+
+CHDeclareClass(StoryRepliesController);
+CHDeclareMethod(0, void, StoryRepliesController, viewWillLayoutSubviews)
+{
+    CHSuper(0, StoryRepliesController, viewWillLayoutSubviews);
+    
+    if (enabled && enableNightTheme) {
+        void (^changeBlock)(void) = ^(void){
+            self.containerView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        };
+        changeBlock();
+        dispatch_async(dispatch_get_main_queue(), changeBlock);
+    }
+}
+
+CHDeclareClass(StoryRepliesTipController);
+CHDeclareMethod(0, void, StoryRepliesTipController, viewWillLayoutSubviews)
+{
+    CHSuper(0, StoryRepliesTipController, viewWillLayoutSubviews);
+    
+    if (enabled && enableNightTheme) {
+        void (^changeBlock)(void) = ^(void){
+            self.container.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        };
+        changeBlock();
+        dispatch_async(dispatch_get_main_queue(), changeBlock);
+    }
+}
+
+CHDeclareClass(CameraCaptureButtonTip);
+CHDeclareMethod(0, id, CameraCaptureButtonTip, init)
+{
+    CameraCaptureButtonTip *tip = CHSuper(0, CameraCaptureButtonTip, init);
+    if (tip && enabled && enableNightTheme) {
+        for (UIView *subview in tip.subviews) {
+            if ([subview isKindOfClass:[UIImageView class]]) {
+                UIImageView *imageView = (UIImageView *)subview;
+                imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                imageView.tintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+            }
+        }
+    }
+    return tip;
+}
+
 
 
 CHConstructor
