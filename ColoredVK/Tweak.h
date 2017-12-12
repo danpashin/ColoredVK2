@@ -98,6 +98,7 @@ extern BOOL hideSettingsSeparators;
 extern BOOL showFastDownloadButton;
 extern BOOL useMenuParallax;
 extern BOOL menuUseBackgroundBlur;
+extern BOOL enabledBarImage;
 
 extern UIColor *barForegroundColor;
 extern UIColor *toolBarBackgroundColor;

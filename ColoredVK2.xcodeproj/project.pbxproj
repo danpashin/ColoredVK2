@@ -347,6 +347,8 @@
 		A5D3D0391FE012FD007AAEF7 /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5D3D0381FE012FC007AAEF7 /* Preferences.framework */; };
 		A5D3D03A1FE0130D007AAEF7 /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5D3D0381FE012FC007AAEF7 /* Preferences.framework */; };
 		A5D3D03B1FE01310007AAEF7 /* Preferences.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5D3D0381FE012FC007AAEF7 /* Preferences.framework */; };
+		A5D3D06F1FE063D0007AAEF7 /* TweakNightTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D3D06E1FE063D0007AAEF7 /* TweakNightTheme.m */; };
+		A5D3D0701FE063D0007AAEF7 /* TweakNightTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D3D06E1FE063D0007AAEF7 /* TweakNightTheme.m */; };
 		A5D56A591E70427300A8FFB5 /* ColoredVKMainPrefsController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D9799D1DAEB96500607F06 /* ColoredVKMainPrefsController.h */; };
 		A5D56A5B1E70427300A8FFB5 /* ColoredVKHeaderView.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D979931DAEB96500607F06 /* ColoredVKHeaderView.h */; };
 		A5D56A5C1E70427300A8FFB5 /* ColoredVKHUD.h in Headers */ = {isa = PBXBuildFile; fileRef = A52CDBAA1E33EB2400D69AD3 /* ColoredVKHUD.h */; };
@@ -594,6 +596,7 @@
 		A5C5FAB31E41168D0032A8AF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A5D2DFB31DE741CF00DCDC84 /* ColoredVKAudioCover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKAudioCover.h; sourceTree = "<group>"; };
 		A5D3D0381FE012FC007AAEF7 /* Preferences.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Preferences.framework; path = ../../../../opt/iOSOpenDev/frameworks/Preferences.framework; sourceTree = "<group>"; };
+		A5D3D06E1FE063D0007AAEF7 /* TweakNightTheme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TweakNightTheme.m; sourceTree = "<group>"; };
 		A5D56AC71E70427300A8FFB5 /* ColoredVK-Prefs copy.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "ColoredVK-Prefs copy.bundle"; path = ColoredVK2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5D56ACC1E7043DC00A8FFB5 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		A5D56ACE1E7043EF00A8FFB5 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
@@ -821,6 +824,7 @@
 				A55434FA1E636B19003B4256 /* Tweak.h */,
 				A53D91961CCA82B400E45A49 /* Tweak.m */,
 				A5AF3CF91FDD2BC300638AC2 /* TweakFunctions.m */,
+				A5D3D06E1FE063D0007AAEF7 /* TweakNightTheme.m */,
 				A528D8821DE9FCAF00B299C1 /* ColoredVKMainController.h */,
 				A528D8831DE9FCAF00B299C1 /* ColoredVKMainController.m */,
 				A526A6BE1DD50D4700B47104 /* ColoredVKAudioLyricsView.h */,
@@ -859,12 +863,7 @@
 				A54249461E0522560018D3E3 /* SDWebImage */,
 				A5363B0A1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit */,
 				A53BFBCA1D8573960071D9A2 /* AES */,
-				A58F341C1D5A3BBA00838814 /* UIImage+ColoredVK.h */,
-				A58F341D1D5A3BBA00838814 /* UIImage+ColoredVK.m */,
-				A58F34111D5A378100838814 /* UIColor+ColoredVK.h */,
-				A58F34101D5A378100838814 /* UIColor+ColoredVK.m */,
-				A58F34131D5A378100838814 /* NSString+ColoredVK.h */,
-				A58F34121D5A378100838814 /* NSString+ColoredVK.m */,
+				A5D3D0731FE06521007AAEF7 /* Categories */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -968,6 +967,19 @@
 				A5DD93FE1D3E0F560006E470 /* Supporting Files */,
 			);
 			path = "ColoredVK-Prefs";
+			sourceTree = "<group>";
+		};
+		A5D3D0731FE06521007AAEF7 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				A58F34111D5A378100838814 /* UIColor+ColoredVK.h */,
+				A58F34101D5A378100838814 /* UIColor+ColoredVK.m */,
+				A58F34131D5A378100838814 /* NSString+ColoredVK.h */,
+				A58F34121D5A378100838814 /* NSString+ColoredVK.m */,
+				A58F341C1D5A3BBA00838814 /* UIImage+ColoredVK.h */,
+				A58F341D1D5A3BBA00838814 /* UIImage+ColoredVK.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 		A5D56ACB1E7043B700A8FFB5 /* App */ = {
@@ -1585,6 +1597,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A57B184D1E24F3E500A2A622 /* NSData+AESCrypt.m in Sources */,
+				A5D3D06F1FE063D0007AAEF7 /* TweakNightTheme.m in Sources */,
 				A5A4E2D21F250A520001102F /* ColoredVKWebViewController.m in Sources */,
 				A5210C951DE785C1004F7E11 /* LHAcvitityIndicator.m in Sources */,
 				A5F09D971F0FF88200024198 /* ColoredVKNewInstaller.m in Sources */,
@@ -1639,6 +1652,7 @@
 				A54249A21E0522560018D3E3 /* SDWebImagePrefetcher.m in Sources */,
 				A576D1A41DC6220C0039884F /* ColoredVKMainPrefsController.m in Sources */,
 				A5739D591EA0159700367595 /* ColoredVKColorPickerController.m in Sources */,
+				A5D3D0701FE063D0007AAEF7 /* TweakNightTheme.m in Sources */,
 				A576D1A51DC6220C0039884F /* ColoredVKHeaderView.m in Sources */,
 				A54249941E0522560018D3E3 /* SDWebImageDownloader.m in Sources */,
 				A5788AA21EA0A5B600BC2B54 /* ColoredVKAccountController.m in Sources */,
