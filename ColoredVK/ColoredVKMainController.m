@@ -268,12 +268,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     ColoredVKNetworkController *networkController = [ColoredVKNewInstaller sharedInstaller].networkController;
     [networkController uploadData:data toRemoteURL:[NSString stringWithFormat:@"%@/crash/", kPackageAPIURL]
                           success:^(NSHTTPURLResponse *response, NSData *rawData) {
-                              NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:rawData options:0 error:nil];
-                              if ([dict isKindOfClass:[NSDictionary class]]) {
-                                  if (!dict[@"error"]) {
-                                      [[NSFileManager defaultManager] removeItemAtPath:CVK_CRASH_PATH error:nil];
-                                  }
-                              }
+                              [[NSFileManager defaultManager] removeItemAtPath:CVK_CRASH_PATH error:nil];
                           } failure:nil];
 }
 

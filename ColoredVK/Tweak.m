@@ -770,6 +770,9 @@ CHDeclareMethod(1, void, VKMToolbarController, viewWillAppear, BOOL, animated)
     CHSuper(1, VKMToolbarController, viewWillAppear, animated);
     if ([self respondsToSelector:@selector(toolbar)]) {
         setToolBar(self.toolbar);
+        if (!enableNightTheme && enabled && enabledToolBarColor) {
+            self.segment.tintColor = toolBarForegroundColor;
+        }
         
         BOOL shouldAddBlur = NO;
         UIColor *blurColor = [UIColor clearColor];
@@ -4114,7 +4117,7 @@ CHDeclareMethod(0, id, CameraCaptureButtonTip, init)
 CHConstructor
 {
     @autoreleasepool {
-//        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
+        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
         
         prefsPath = CVK_PREFS_PATH;
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
