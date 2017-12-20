@@ -182,6 +182,24 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
                     groupCell.status.backgroundColor = [UIColor clearColor];
                 }
             }
+            
+            if ([self isKindOfClass:NSClassFromString(@"VKMRendererCell")]) {
+                VKMRendererCell *rendererCell = (VKMRendererCell *)self;
+                if ([rendererCell.renderer isKindOfClass:NSClassFromString(@"CommentRenderer")]) {
+                    BOOL firstLabelFound = NO;
+                    for (UIView *subview in rendererCell.renderer.views) {
+                        if ([subview isKindOfClass:[UILabel class]]) {
+                            UILabel *label = (UILabel *)subview;
+                            objc_setAssociatedObject(label, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+                            label.textColor = firstLabelFound ? cvkMainController.nightThemeScheme.detailTextColor : cvkMainController.nightThemeScheme.linkTextColor;
+                            label.backgroundColor = [UIColor clearColor];
+                            firstLabelFound = YES;
+                        }
+                    }
+                }
+            }
+            
+            
         }
     }
 }
@@ -330,19 +348,13 @@ CHDeclareMethod(0, void, UITextField, layoutSubviews)
 
 CHDeclareMethod(1, void, UITextField, paste, id, paste)
 {
-    if (enabled && enableNightTheme) {
-        self.textColor = cvkMainController.nightThemeScheme.textColor;
-    }
-    
+    setupNightTextField(self);
     CHSuper(1, UITextField, paste, paste);
 }
 
 CHDeclareMethod(0, void, UITextField, _updateLabel)
 {
-    if (enabled && enableNightTheme) {
-        self.textColor = cvkMainController.nightThemeScheme.textColor;
-    }
-    
+    setupNightTextField(self);
     CHSuper(0, UITextField, _updateLabel);
 }
 

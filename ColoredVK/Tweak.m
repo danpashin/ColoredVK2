@@ -215,7 +215,9 @@ void reloadPrefs()
     dispatch_async(dispatch_get_main_queue(), ^{
         UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
         if (statusBar != nil) {
-            if (enabled && changeSBColors) {
+            if (enabled && enableNightTheme) {
+                statusBar.foregroundColor = [UIColor whiteColor];
+            } else if (enabled && changeSBColors) {
                 statusBar.foregroundColor = SBForegroundColor;
                 statusBar.backgroundColor = SBBackgroundColor;
             } else {
@@ -2968,7 +2970,7 @@ CHDeclareMethod(0, void, VKSearchBar, layoutSubviews)
 CHConstructor
 {
     @autoreleasepool {
-        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
+//        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
         
         prefsPath = CVK_PREFS_PATH;
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];

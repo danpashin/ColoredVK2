@@ -872,3 +872,17 @@ void resetNewSearchBar(VKSearchBar *searchBar)
     searchBar.segmentedControl.layer.borderColor = searchBar.config.segmentBorderColor.CGColor;
     
 }
+
+
+void setupNightTextField(UITextField *textField)
+{
+    if (enabled && enableNightTheme) {
+        textField.textColor = cvkMainController.nightThemeScheme.textColor;
+        
+        UILabel *placeholderLabel = [textField valueForKeyPath:@"_placeholderLabel"];
+        if (placeholderLabel) {
+            objc_setAssociatedObject(placeholderLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+            placeholderLabel.textColor = cvkMainController.nightThemeScheme.detailTextColor;
+        }
+    }
+}

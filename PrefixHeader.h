@@ -60,7 +60,7 @@
 
 #define kPackageIdentifier @"com.daniilpashin.coloredvk2"
 #define kPackageName @"ColoredVK 2"
-#define kPackageVersion @"4.1-theux"
+#define kPackageVersion @"4.1.1-theux"
 #define kPackageAPIURL  @"https://api.danpashin.ru/v1.2"
 #define kPackageDevLink @"https://vk.com/danpashin"
 #define kPackageAccountRegisterLink @"https://danpashin.ru/projects/coloredvk/index.html#register"

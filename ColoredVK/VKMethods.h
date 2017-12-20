@@ -268,6 +268,7 @@
 
 
 @interface Renderer : NSObject
+@property(retain, nonatomic) NSArray *views;
 @end
 @interface VKMRendererCell : UITableViewCell
 @property (retain, nonatomic) Renderer *renderer;

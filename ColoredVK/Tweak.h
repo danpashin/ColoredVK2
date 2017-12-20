@@ -67,7 +67,10 @@ void hideFastButtonForController(VKMBrowserController *browserController);
 
 void setupExtraSettingsController(VKMTableController *controller);
 void setupExtraSettingsCell(UITableViewCell *cell);
+
 void setupNightSeparatorForView(UIView *view);
+void setupNightTextField(UITextField *textField);
+
 void setupNewSearchBar(VKSearchBar *searchBar, UIColor *tintColor, UIColor *blurTone, UIBlurEffectStyle blurStyle);
 void resetNewSearchBar(VKSearchBar *searchBar);
 

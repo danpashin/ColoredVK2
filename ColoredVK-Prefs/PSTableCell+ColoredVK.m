@@ -30,12 +30,19 @@
             } else {
                 self.titleLabel.textColor = CVKMainColor;
             }
-        } else if ([self.contentView.subviews[0] isKindOfClass:[UIControl class]]) {
-            UIControl *control = self.contentView.subviews[0];
+        } else if ([self.contentView.subviews.firstObject isKindOfClass:[UIControl class]]) {
+            UIControl *control = self.contentView.subviews.firstObject;
             control.tintColor = CVKMainColor;
             
             if ([self.specifier propertyForKey:@"enabled"]) {
                 control.enabled = [[self.specifier propertyForKey:@"enabled"] boolValue];
+            }
+            
+            if ([control isKindOfClass:[UISegmentedControl class]]) {
+                control.layer.cornerRadius = CGRectGetHeight(control.bounds) / 2;
+                control.layer.borderWidth = 1.0f;
+                control.layer.borderColor = control.tintColor.CGColor;
+                control.layer.masksToBounds = YES;
             }
         }
         
