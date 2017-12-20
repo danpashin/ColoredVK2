@@ -571,13 +571,23 @@ void setupNewDialogCellFromNightTheme(NewDialogCell *dialogCell)
         else
             dialogCell.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
         dialogCell.name.textColor = cvkMainController.nightThemeScheme.textColor;
-        dialogCell.time.textColor = cvkMainController.nightThemeScheme.textColor;
-        dialogCell.attach.textColor = cvkMainController.nightThemeScheme.textColor;
         
-        if ([dialogCell respondsToSelector:@selector(dialogText)])
-            dialogCell.dialogText.textColor = cvkMainController.nightThemeScheme.textColor;
-        if ([dialogCell respondsToSelector:@selector(text)])
-            dialogCell.text.textColor = cvkMainController.nightThemeScheme.textColor;
+        objc_setAssociatedObject(dialogCell.attach, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+        dialogCell.attach.textColor = cvkMainController.nightThemeScheme.detailTextColor;
+        
+        objc_setAssociatedObject(dialogCell.time, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+        dialogCell.time.textColor = cvkMainController.nightThemeScheme.detailTextColor;
+        
+        if ([dialogCell respondsToSelector:@selector(dialogText)]) {
+            objc_setAssociatedObject(dialogCell.dialogText, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+            dialogCell.dialogText.textColor = cvkMainController.nightThemeScheme.detailTextColor;
+        }
+        if ([dialogCell respondsToSelector:@selector(text)]) {
+            if (dialogCell.text) {
+                objc_setAssociatedObject(dialogCell.text, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+                dialogCell.text.textColor = cvkMainController.nightThemeScheme.detailTextColor;
+            }
+        }
     }
 }
 
@@ -638,12 +648,14 @@ NSAttributedString *attributedStringForNightTheme(NSAttributedString * text)
         [mutableString enumerateAttributesInRange:NSMakeRange(0, mutableString.length) options:0 
                                        usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
                                            
-                                           void (^setColor)(BOOL isLink, BOOL forMOCTLabel) = ^(BOOL isLink, BOOL forMOCTLabel) {
+                                           void (^setColor)(BOOL isLink, BOOL forMOCTLabel, BOOL detailed) = ^(BOOL isLink, BOOL forMOCTLabel, BOOL detailed) {
                                                NSString *attribute = forMOCTLabel ? @"CTForegroundColor" : NSForegroundColorAttributeName;
                                                
                                                id textColor = cvkMainController.nightThemeScheme.textColor;
                                                if (isLink)
                                                    textColor = cvkMainController.nightThemeScheme.linkTextColor;
+                                               if (detailed)
+                                                   textColor = cvkMainController.nightThemeScheme.detailTextColor;
                                                
                                                if (forMOCTLabel) {
                                                    textColor = (id)((UIColor *)textColor).CGColor;
@@ -656,14 +668,16 @@ NSAttributedString *attributedStringForNightTheme(NSAttributedString * text)
                                            };
                                            
                                            if (attrs[@"MOCTLinkAttributeName"])
-                                               setColor(YES, YES);
+                                               setColor(YES, YES, NO);
                                            else if (attrs[@"VKTextLink"] || attrs[@"NSLink"])
-                                               setColor(YES, NO);
+                                               setColor(YES, NO, NO);
                                            else {
                                                if (attrs[@"CTForegroundColor"])
-                                                   setColor(NO, YES);
+                                                   setColor(NO, YES, NO);
+                                               else if (attrs[@"CVKDetailed"])
+                                                   setColor(NO, NO, YES);
                                                else
-                                                   setColor(NO, NO);
+                                                   setColor(NO, NO, NO);
                                            }
                                        }];
     }
@@ -700,13 +714,12 @@ void hideFastButtonForController(VKMBrowserController *browserController)
 {
     if (showFastDownloadButton) {
         NSString *title = [browserController.webView stringByEvaluatingJavaScriptFromString:@"document.title"].lowercaseString;
-        if (!([title containsString:@"jpg"] || [title containsString:@"png"])) {
+        if (!([title containsString:@"jpg"] || [title containsString:@"jpeg"] || [title containsString:@"png"])) {
             browserController.navigationItem.rightBarButtonItem = nil;
         }
     }
 }
 
-//#pragma mark Static methods
 void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
     reloadPrefs();

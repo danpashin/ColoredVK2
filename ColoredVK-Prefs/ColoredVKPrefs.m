@@ -289,6 +289,10 @@
     objc_setAssociatedObject(cell, "app_is_vk", @(self.app_is_vk), OBJC_ASSOCIATION_ASSIGN);
     objc_setAssociatedObject(cell, "enableNightTheme", @(self.enableNightTheme), OBJC_ASSOCIATION_ASSIGN);
     
+    NSDictionary *userPrefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    BOOL changeSwitchColor = ([userPrefs[@"enabled"] boolValue] && [userPrefs[@"changeSwitchColor"] boolValue]);
+    objc_setAssociatedObject(cell, "change_switch_color", @(changeSwitchColor), OBJC_ASSOCIATION_ASSIGN);
+    
     return cell;
 }
 

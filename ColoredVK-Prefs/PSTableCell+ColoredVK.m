@@ -40,15 +40,15 @@
         }
         
         if ([self.accessoryView isKindOfClass:[UISwitch class]]) {
-            NSDictionary *userPrefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-            __block BOOL userChangedColor = ([userPrefs[@"enabled"] boolValue] && [userPrefs[@"changeSwitchColor"] boolValue]);
+            self.accessoryView.tag = 228;
             
             NSNumber *app_is_vk = objc_getAssociatedObject(self, "app_is_vk");
             if (!app_is_vk) 
                 app_is_vk = @NO;
             
-            if (!app_is_vk.boolValue)
-                userChangedColor = NO;
+            NSNumber *userChangedColor = objc_getAssociatedObject(self, "change_switch_color");
+            if (!userChangedColor)
+                userChangedColor = @NO;
             
             NSNumber *enableNightTheme = objc_getAssociatedObject(self, "enableNightTheme");
             if (!enableNightTheme)
@@ -56,15 +56,13 @@
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 UISwitch *switchView = (UISwitch *)self.accessoryView;
-                if (app_is_vk.boolValue && enableNightTheme.boolValue) {
-                    userChangedColor = YES;
-                } else {
+                if (!enableNightTheme.boolValue) {
                     switchView.backgroundColor = [UIColor colorWithRed:234/255.0f green:234/255.0f blue:239/255.0f alpha:1.0f];
                     switchView.thumbTintColor = [UIColor whiteColor];
                 }
                 switchView.layer.cornerRadius = 16.0f;
                 
-                if (!userChangedColor) {
+                if (!userChangedColor.boolValue) {
                     switchView.onTintColor = CVKMainColor;
                     switchView.tintColor = [UIColor clearColor];
                 }

@@ -25,6 +25,7 @@ typedef NS_ENUM(NSInteger, CVKNightThemeType) {
 @property (strong, nonatomic, readonly) UIColor *navbackgroundColor;
 @property (strong, nonatomic, readonly) UIColor *foregroundColor;
 
+@property (strong, nonatomic, readonly) UIColor *detailTextColor;
 @property (strong, nonatomic, readonly) UIColor *textColor;
 @property (strong, nonatomic, readonly) UIColor *linkTextColor;
 @property (strong, nonatomic, readonly) UIColor *unreadBackgroundColor;

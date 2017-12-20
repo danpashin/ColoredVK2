@@ -41,13 +41,14 @@
     _type = type;
     
     if (type == CVKNightThemeTypeDarkBlue) {
-        _backgroundColor = [UIColor colorWithRed:0.08f green:0.11f blue:0.15f alpha:1.0f];
-        _navbackgroundColor = [UIColor colorWithRed:0.15f green:0.20f blue:0.27f alpha:1.0f];
-        _foregroundColor = [UIColor colorWithRed:0.11f green:0.16f blue:0.21f alpha:1.0f];
+        _backgroundColor = [UIColor colorWithRed:0.078f green:0.114f blue:0.149f alpha:1.0f];
+        _navbackgroundColor = [UIColor colorWithRed:0.141f green:0.204f blue:0.278f alpha:1.0f];
+        _foregroundColor = [UIColor colorWithRed:0.106f green:0.157f blue:0.212f alpha:1.0f];
         
+        _detailTextColor = [UIColor colorWithRed:0.53f green:0.6f blue:0.65f alpha:1.0f];
         _textColor = [UIColor colorWithWhite:0.9f alpha:0.9f];
         _linkTextColor = [UIColor colorWithRed:0.21f green:0.64f blue:0.96f alpha:1.0f];
-        _unreadBackgroundColor = [UIColor colorWithRed:0.14f green:0.2f blue:0.25f alpha:1.0f];
+        _unreadBackgroundColor = [UIColor colorWithRed:0.141f green:0.207f blue:0.278f alpha:0.9f];
         _incomingBackgroundColor = [UIColor colorWithRed:0.21f green:0.29f blue:0.36f alpha:1.0f];
         _outgoingBackgroundColor = [UIColor colorWithRed:0.21f green:0.37f blue:0.56f alpha:1.0f];
         

@@ -76,7 +76,9 @@ CHDeclareMethod(1, void, ProfileView, setButtonStatus, UIButton *, buttonStatus)
 CHDeclareMethod(1, void, ProfileView, setButtonEdit, UIButton *, buttonEdit)
 {
     if (enabled && enableNightTheme) {
-        [buttonEdit setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateNormal];
+        objc_setAssociatedObject(buttonEdit, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+        objc_setAssociatedObject(buttonEdit.titleLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+        [buttonEdit setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [buttonEdit setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateSelected];
         [buttonEdit setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateHighlighted];
         
@@ -109,7 +111,9 @@ CHDeclareMethod(1, void, ProfileView, setButtonEdit, UIButton *, buttonEdit)
 CHDeclareMethod(1, void, ProfileView, setButtonMessage, UIButton *, buttonMessage)
 {
     if (enabled && enableNightTheme) {
-        [buttonMessage setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateNormal];
+        objc_setAssociatedObject(buttonMessage, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+        objc_setAssociatedObject(buttonMessage.titleLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+        [buttonMessage setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [buttonMessage setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateSelected];
         [buttonMessage setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateHighlighted];
         
@@ -152,7 +156,7 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
     if ([self isKindOfClass:NSClassFromString(@"MessageCell")])
         return;
     
-    if ([self isKindOfClass:NSClassFromString(@"UITableViewCell")]) {
+    if ([self isKindOfClass:[UITableViewCell class]]) {
         if ((self.textLabel.textAlignment == NSTextAlignmentCenter) && [CLASS_NAME(self) isEqualToString:@"UITableViewCell"])
             self.backgroundColor = [UIColor clearColor];
         else {
@@ -162,9 +166,22 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
         
         if (enabled && enableNightTheme) {
             self.textLabel.textColor = cvkMainController.nightThemeScheme.textColor;
-            self.detailTextLabel.textColor = cvkMainController.nightThemeScheme.textColor;
             self.textLabel.backgroundColor = [UIColor clearColor];
-            self.detailTextLabel.backgroundColor = [UIColor clearColor];
+            
+            if (self.detailTextLabel) {
+                objc_setAssociatedObject(self.detailTextLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+                self.detailTextLabel.textColor = cvkMainController.nightThemeScheme.detailTextColor;
+                self.detailTextLabel.backgroundColor = [UIColor clearColor];
+            }
+            
+            if ([self isKindOfClass:NSClassFromString(@"GroupCell")]) {
+                GroupCell *groupCell = (GroupCell *)self;
+                if (groupCell.status) {
+                    objc_setAssociatedObject(groupCell.status, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+                    groupCell.status.textColor = cvkMainController.nightThemeScheme.detailTextColor;
+                    groupCell.status.backgroundColor = [UIColor clearColor];
+                }
+            }
         }
     }
 }
@@ -184,12 +201,19 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
     CHSuper(0, UIButton, layoutSubviews);
     
     if (enabled && enableNightTheme && [self isKindOfClass:[UIButton class]]) {
+        NSNumber *should_customize = objc_getAssociatedObject(self, "should_customize");
+        if (!should_customize)
+            should_customize = @YES;
+        
+        if (!should_customize.boolValue)
+            return;
         
         if (![self isKindOfClass:NSClassFromString(@"VKMImageButton")] && ![self isKindOfClass:NSClassFromString(@"HighlightableButton")] && ![self isKindOfClass:NSClassFromString(@"LinkButton")] && ![self isKindOfClass:NSClassFromString(@"BorderButton")]) {
             if ([CLASS_NAME(self) containsString:@"UINavigation"] || [CLASS_NAME(self.superview) containsString:@"UINavigation"])
                 [self setTitleColor:cvkMainController.nightThemeScheme.buttonSelectedColor forState:UIControlStateNormal];
-            else
-                [self setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateNormal];
+            else {
+                [self setTitleColor:cvkMainController.nightThemeScheme.detailTextColor forState:UIControlStateNormal];
+            }
             
             NSNumber *changeImageColor = objc_getAssociatedObject(self, "shouldChangeImageColor");
             if (!changeImageColor)
@@ -222,14 +246,26 @@ CHDeclareMethod(0, void, UILabel, layoutSubviews)
 {
     CHSuper(0, UILabel, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UILabel")] && ![CLASS_NAME(self.superview) isEqualToString:@"HighlightableButton"]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UILabel")] && ![CLASS_NAME(self.superview) isEqualToString:@"HighlightableButton"] && ![CLASS_NAME(self.superview) isEqualToString:@"VKPPBadge"]) {
+        
+        NSNumber *should_customize = objc_getAssociatedObject(self, "should_customize");
+        if (!should_customize)
+            should_customize = @YES;
+        
+        if (!should_customize.boolValue)
+            return;
         
         if ([self isKindOfClass:NSClassFromString(@"HighlightableLabel")]) {
             self.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
             self.textColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
         } else {
             self.backgroundColor = [UIColor clearColor];
-            self.textColor = cvkMainController.nightThemeScheme.textColor;
+            
+            if ([self.superview isKindOfClass:[UIButton class]] || [self isKindOfClass:NSClassFromString(@"_UITableViewHeaderFooterViewLabel")]) {
+                self.textColor = cvkMainController.nightThemeScheme.detailTextColor;
+            } else {
+                self.textColor = cvkMainController.nightThemeScheme.textColor;
+            }
         }
     }
 }
@@ -1076,7 +1112,9 @@ CHDeclareClassMethod(1, UIImage *, UIImage, imageNamed, NSString *, name)
     UIImage *orig = CHSuper(1, UIImage, imageNamed, name);
     
     if (enabled && enableNightTheme) {
-        if ([orig.imageAsset.assetName containsString:@"badge"]) {
+        NSString *assetName = orig.imageAsset.assetName;
+        if (([cvkMainController compareAppVersionWithVersion:@"3.0"] == ColoredVKVersionCompareMore) && [assetName containsString:@"badge"]) {
+//            CVKLog(@"assetName: %@", assetName);
             orig = [orig imageWithTintColor:cvkMainController.nightThemeScheme.backgroundColor];
         }
     }
@@ -1164,4 +1202,23 @@ CHDeclareMethod(0, id, CameraCaptureButtonTip, init)
         }
     }
     return tip;
+}
+
+CHDeclareClass(InputPanelViewTextView);
+CHDeclareMethod(0, void, InputPanelViewTextView, layoutSubviews)
+{
+    CHSuper(0, InputPanelViewTextView, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"InputPanelViewTextView")]) {
+        objc_setAssociatedObject(self.placeholderLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+        self.placeholderLabel.textColor = cvkMainController.nightThemeScheme.detailTextColor;
+    }
+}
+
+CHDeclareClass(VKProfileInfoItem);
+CHDeclareMethod(1, void, VKProfileInfoItem, setValue, NSAttributedString *, value)
+{
+    NSMutableAttributedString *mutableValue = [value mutableCopy];
+    [mutableValue addAttribute:@"CVKDetailed" value:@1 range:NSMakeRange(0, mutableValue.length)];
+    CHSuper(1, VKProfileInfoItem, setValue, mutableValue);
 }

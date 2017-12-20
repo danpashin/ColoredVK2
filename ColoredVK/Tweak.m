@@ -581,7 +581,7 @@ CHDeclareMethod(0, void, UISwitch, layoutSubviews)
             self.thumbTintColor = nil;
             self.backgroundColor = nil;
         } else {
-            self.tintColor = nil;
+            self.tintColor = (self.tag == 228) ? [UIColor clearColor] : nil;
             self.onTintColor = (self.tag == 228) ? CVKMainColor : nil;
             self.thumbTintColor = nil;
             self.backgroundColor = nil;
@@ -1172,6 +1172,13 @@ CHDeclareMethod(0, void, VKMMainController, viewDidLoad)
             [cvkMainController.menuBackgroundView addToBack:self.view animated:NO];
             setupUISearchBar((UISearchBar*)self.tableView.tableHeaderView);
             self.tableView.backgroundColor = [UIColor clearColor];
+        } else {
+            
+            UIView *backView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+            self.tableView.backgroundView = backView;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                backView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+            });
         }
     } else {
         setupTabbar();
@@ -1182,8 +1189,8 @@ CHDeclareMethod(0, void, VKMMainController, viewWillLayoutSubviews)
 {
     CHSuper(0, VKMMainController, viewWillLayoutSubviews);
     
-    if (![self isKindOfClass:[UITabBarController class]] && enabled && enableNightTheme) {
-        self.view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+    if (![self isKindOfClass:[UITabBarController class]] && enabled && enableNightTheme) {        
+        self.view.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
         if ([self.tableView.tableHeaderView isKindOfClass:[UISearchBar class]]) {
             self.tableView.tableHeaderView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
         }
@@ -1296,6 +1303,8 @@ CHDeclareMethod(2, UITableViewCell*, MenuViewController, tableView, UITableView*
     else tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0 alpha:1.0f];
     
     if (enabled && enableNightTheme) {
+        cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        cell.imageView.tintColor = cvkMainController.nightThemeScheme.buttonColor;
         cell.textLabel.textColor = cvkMainController.nightThemeScheme.textColor;
         cell.contentView.backgroundColor = [UIColor clearColor];
     } else if (enabled && enabledMenuImage) {
@@ -2657,7 +2666,7 @@ CHDeclareMethod(1, void, UITableView, setBackgroundColor, UIColor *, backgroundC
 CHDeclareClass(UIViewController);
 CHDeclareMethod(3, void, UIViewController, presentViewController, UIViewController *, viewControllerToPresent, animated, BOOL, flag, completion, id, completion)
 {
-    if (![CLASS_NAME(self) containsString:@"ColoredVK"] || ![CLASS_NAME(viewControllerToPresent) containsString:@"ColoredVK"]) {
+    if (![CLASS_NAME(self) containsString:@"ColoredVK"] && ![CLASS_NAME(viewControllerToPresent) containsString:@"ColoredVK"]) {
         NSArray <Class> *classes = @[[UIAlertController class], [UIActivityViewController class]];
         
         if ([classes containsObject:[viewControllerToPresent class]] && IS_IPAD) {
@@ -2910,8 +2919,8 @@ CHDeclareMethod(2, void, VKSearchBar, setActive, BOOL, active, animated, BOOL, a
     if (!enableNightTheme) {
         if (enabled && customized.boolValue) {
             if (active) {
-                UIColor *blurColor =  objc_getAssociatedObject(self, "cvk_blurColor");            
-                NSNumber *blurStyle =  objc_getAssociatedObject(self, "cvk_blurStyle");
+                UIColor *blurColor = objc_getAssociatedObject(self, "cvk_blurColor");            
+                NSNumber *blurStyle = objc_getAssociatedObject(self, "cvk_blurStyle");
                 if (!blurStyle)
                     blurStyle = @(UIBlurEffectStyleLight);
                 setBlur(self.backgroundView, YES, blurColor, blurStyle.integerValue);
@@ -2942,6 +2951,9 @@ CHDeclareMethod(0, void, VKSearchBar, layoutSubviews)
                 self.textFieldBackground.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
             }
             
+            objc_setAssociatedObject(self.placeholderLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+            self.placeholderLabel.textColor = cvkMainController.nightThemeScheme.detailTextColor;
+            
             self.segmentedControl.layer.borderColor = cvkMainController.nightThemeScheme.buttonSelectedColor.CGColor;
         } else if (!customized.boolValue || !enabled) {
             resetNewSearchBar(self);
@@ -2956,7 +2968,7 @@ CHDeclareMethod(0, void, VKSearchBar, layoutSubviews)
 CHConstructor
 {
     @autoreleasepool {
-//        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
+        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
         
         prefsPath = CVK_PREFS_PATH;
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];

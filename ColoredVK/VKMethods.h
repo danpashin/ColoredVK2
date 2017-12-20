@@ -179,7 +179,7 @@
 @end
 
 @interface InputPanelViewTextView : MOTextView
-
+@property(retain, nonatomic) UILabel *placeholderLabel;
 @end
 
 @interface InputPanelView : UIToolbar
@@ -870,4 +870,6 @@
 
 @interface CameraCaptureButtonTip : UIView
 @end
+
+
 

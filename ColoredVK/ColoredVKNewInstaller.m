@@ -76,8 +76,8 @@ BOOL _innerBanned = NO;
         _appTeamIdentifier = @"";
         _appTeamName = @"";
         
-        [self checkStatus];
         [self createFolders];
+        [self checkStatus];
         [self updateAppInfo];
     }
     return self;
@@ -180,7 +180,7 @@ BOOL _innerBanned = NO;
         webController.url = [NSURL URLWithString:kPackagePurchaseLink];
         
         NSError *requestError = nil;
-        NSDictionary *params = @{@"user_id" :self.userID, @"profile_team_id": self.appTeamIdentifier, @"profile_team_name": self.appTeamName, @"from": self.sellerName};
+        NSDictionary *params = @{@"user_id" :self.userID, @"profile_team_id": self.appTeamIdentifier, @"from": self.sellerName};
         NSURLRequest *request = [self.networkController requestWithMethod:@"POST" URLString:webController.url.absoluteString parameters:params error:&requestError];
         
         if (!requestError) {
@@ -202,13 +202,11 @@ BOOL _innerBanned = NO;
     if (!title)
         title = kDRMPackageName;
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:title message:text preferredStyle:UIAlertControllerStyleAlert];
-        for (UIAlertAction *action in buttons) {
-            [alertController addAction:action];
-        }
-        [alertController present];
-    });
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:title message:text preferredStyle:UIAlertControllerStyleAlert];
+    for (UIAlertAction *action in buttons) {
+        [alertController addAction:action];
+    }
+    [alertController present];
 }
 
 - (void)showHudWithText:(NSString *)text
@@ -446,42 +444,11 @@ BOOL _innerBanned = NO;
                                               success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
                                                   if (!json[@"error"]) {
                                                       if ([json[@"key"] isEqualToString:key]) {
-                                                          NSData *licenceDecryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
-                                                          NSMutableDictionary *licenceDict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:licenceDecryptedData] mutableCopy];
-                                                          
-                                                          if ([licenceDict isKindOfClass:[NSDictionary class]] && (licenceDict.allKeys.count>0)) {
-                                                              if (licenceDict[@"Login"])
-                                                                  [licenceDict removeObjectForKey:@"Login"];
-                                                              if (licenceDict[@"user_id"])
-                                                                  [licenceDict removeObjectForKey:@"user_id"];
-                                                              if (licenceDict[@"token"])
-                                                                  [licenceDict removeObjectForKey:@"token"];
-                                                              if (licenceDict[@"purchased"])
-                                                                  [licenceDict removeObjectForKey:@"purchased"];
-                                                              if (licenceDict[@"activated"])
-                                                                  [licenceDict removeObjectForKey:@"activated"];
-                                                              
-                                                              [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
-                                                              if (installerCompletionBlock)
-                                                                  installerCompletionBlock(NO);
-                                                              
-                                                              NSError *writingError;
-                                                              NSData *licenceEncryptedData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:licenceDict], kDRMLicenceKey);
-                                                              [licenceEncryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
-                                                              
-                                                              if (!writingError) {
-                                                                  _innerUserAuthorized = NO;
-                                                                  _innerActivated = NO;
-                                                                  _innerPurchased = NO;
-                                                                  _token = nil;
-                                                                  _userID = nil;
-                                                                  _userName = nil;
-                                                                  newCompletionBlock(nil);
-                                                              } else 
-                                                                  newCompletionBlock([NSError errorWithDomain:NSCocoaErrorDomain code:106 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}]);
-                                                          } else 
-                                                              newCompletionBlock([NSError errorWithDomain:NSCocoaErrorDomain code:105 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}]);
-                                                          
+                                                          [self writeFreeLicence];
+                                                          newCompletionBlock(nil);
+                                                        if (installerCompletionBlock)
+                                                            installerCompletionBlock(NO);
+                                                          [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
                                                       } else 
                                                           newCompletionBlock([NSError errorWithDomain:NSCocoaErrorDomain code:104 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}]);
                                                   } else {
