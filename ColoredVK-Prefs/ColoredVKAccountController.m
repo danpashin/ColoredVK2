@@ -12,6 +12,7 @@
 #import "ColoredVKAlertController.h"
 #import <SafariServices/SafariServices.h>
 #import "ColoredVKWebViewController.h"
+#import "ColoredVKAuthPageController.h"
 
 @interface ColoredVKAccountController ()
 
@@ -201,28 +202,14 @@
 
 - (void)actionLogin
 {
-    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"ENTER_LOGIN_PASSWORD") 
-                                                                                    preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-        textField.placeholder = CVKLocalizedString(@"USERNAME");
-    
-    }];
-    [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-        textField.placeholder = UIKitLocalizedString(@"Password");
-        textField.secureTextEntry = YES;
-    }];
+    ColoredVKAuthPageController *authController = [ColoredVKAuthPageController new];
     
     __weak typeof(self) weakSelf = self;
-    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"AUTHORISE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        NSString *username = alertController.textFields[0].text;
-        NSString *password = alertController.textFields[1].text;
-        [[ColoredVKNewInstaller sharedInstaller] authWithUsername:username password:password completionBlock:^{
-            [weakSelf updateActivationInfo];
-        }];
-    }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+    authController.completionBlock = ^{
+        [weakSelf updateActivationInfo];
+    };
     
-    [alertController presentFromController:self];
+    [authController showFromController:self];
 }
 
 - (void)actionLogout

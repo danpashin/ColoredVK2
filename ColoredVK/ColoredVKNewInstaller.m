@@ -312,18 +312,16 @@ BOOL _innerBanned = NO;
 
 - (void)writeFreeLicence
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        _innerBanned = NO;
-        _innerActivated = NO;
-        _innerPurchased = NO;
-        _innerUserAuthorized = NO;
-        _token = nil;
-        _userName = nil;
-        _userID = nil;
-        NSDictionary *dict = @{@"purchased":@NO, @"activated":@NO, @"Device":self.deviceModel};
-        NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
-        [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
-    });
+    _innerBanned = NO;
+    _innerActivated = NO;
+    _innerPurchased = NO;
+    _innerUserAuthorized = NO;
+    _token = nil;
+    _userName = nil;
+    _userID = nil;
+    NSDictionary *dict = @{@"purchased":@NO, @"activated":@NO, @"Device":self.deviceModel};
+    NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
+    [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
 }
 
 

@@ -18,9 +18,12 @@ makeIPA () {
     
     echo "[->] Compiling additional resources..."
     ${DEVELOPER_BIN_DIR}/actool --minimum-deployment-target ${IPHONEOS_DEPLOYMENT_TARGET} --platform ${PLATFORM_NAME} --compile "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" "${PROJECT_DIR}/ColoredVK-Prefs/Images.xcassets" >/dev/null
-    find ${PROJECT_DIR} -iname '*.xib' -exec bash -c 'FULL_XIB=$(basename {}); XIB_NAME="${FULL_XIB%.*}"; ${DEVELOPER_BIN_DIR}/ibtool --compile "${BUILT_PRODUCTS_DIR}/$XIB_NAME.nib" {} >/dev/null' \;
+    find ${PROJECT_DIR} -iname '*.xib' -exec bash -c 'FULL_XIB=$(basename {}); XIB_NAME="${FULL_XIB%.*}"; ${DEVELOPER_BIN_DIR}/ibtool --compile "${BUILT_PRODUCTS_DIR}/$XIB_NAME.nib" {} >> /dev/null' \;
+    find ${PROJECT_DIR} -iname '*.storyboard' -exec bash -c 'FULL_SB=$(basename {}); SB_NAME="${FULL_SB%.*}"; ${DEVELOPER_BIN_DIR}/ibtool --target-device iphone --target-device ipad --minimum-deployment-target 9.0 --compilation-directory "${BUILT_PRODUCTS_DIR}" "{}" >> /dev/null' \;
     rm -rf ${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/*.nib
+    rm -rf ${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/*.storyboardc
     mv ${BUILT_PRODUCTS_DIR}/*.nib "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/"
+    mv ${BUILT_PRODUCTS_DIR}/*.storyboardc "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/"
     
     echo "[->] Copying resources to temp directory (2)..."
     TEMP_FOLDER="${BUILT_PRODUCTS_DIR}/Temp"

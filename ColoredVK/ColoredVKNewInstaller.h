@@ -7,8 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import "ColoredVKHeaderView.h"
 #import "ColoredVKNetworkController.h"
 
 @interface ColoredVKNewInstaller : NSObject
