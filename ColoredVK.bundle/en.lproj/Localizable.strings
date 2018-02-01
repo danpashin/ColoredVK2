@@ -69,6 +69,21 @@
 "HIDE" = "Hide";
 "ENTER_CORRECT_LOGIN_PASS" = "Please enter the correct username and password.";
 
+    // Восстановление пароля
+"ACTION_LOG_IN" = "Log in";
+"COLOREDVK_AUTH" = "Log into ColoredVK 2";
+"FORGOT_PASSWORD" = "Forgot password?";
+"RECOVER_ACCESS" = "Recover access";
+"EMAIL" = "Email";
+"CONTACT_DEV_IF_YOU_USE_FREE_ACCOUNT" = "For technical reasons, the restoration of some free accounts is impossible. If you use this type of account, please contact the developer.";
+"NEXT" = "Next";
+"YOU_HAVE_BEEN_SENT_RECOVER_EMAIL" = "A message with a recovery code was sent to your email.";
+"CODE_VALIDALITY_IS_OVER" = "The sent code has expired.\n\nTap to send a new code.";
+"CODE_IS_VALID_FOR_%i_SECONDS" = "%i seconds left until code expires.";
+"ENTER_NEW_PASSWORD" = "Enter a new password";
+"CONFIRM_NEW_PASSWORD" = "Confirm the password";
+"CHANGE" = "Change";
+
 
 
 "PASSWORD" = "Password";
