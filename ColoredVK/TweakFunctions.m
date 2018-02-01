@@ -536,7 +536,7 @@ void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *table
         }
     };
     if (enableNightTheme) {
-        if (![tableView.delegate isKindOfClass:[ColoredVKPrefs class]]) {
+        if (![tableView.delegate isKindOfClass:NSClassFromString(@"ColoredVKPrefs")]) {
             if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
                 view.contentView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
                 view.backgroundView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;

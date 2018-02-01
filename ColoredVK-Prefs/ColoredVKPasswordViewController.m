@@ -40,10 +40,10 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     
-    self.navigationController.navigationBar.topItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismiss)];
-    self.navigationController.navigationBar.topItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(save)];
-    self.navigationController.navigationBar.topItem.rightBarButtonItem.enabled = NO;
-    self.navigationController.navigationBar.topItem.title = CVKLocalizedStringFromTableInBundle(@"CHANGE_PASSWORD", @"ColoredVK", self.cvkBundle);
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismiss)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(save)];
+    self.navigationItem.rightBarButtonItem.enabled = NO;
+    self.title = CVKLocalizedStringFromTableInBundle(@"CHANGE_PASSWORD", @"ColoredVK", self.cvkBundle);
     
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     self.tableView.delegate = self;
@@ -105,7 +105,13 @@
 
 - (void)dismiss
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.currentPassCell.textField endEditing:YES];
+    [self.passNewCell.textField endEditing:YES];
+    [self.confirmCell.textField endEditing:YES];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self dismissViewControllerAnimated:YES completion:nil];
+    });
 }
 
 - (void)save

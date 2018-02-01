@@ -21,4 +21,8 @@
 - (void)showFailureWithStatus:(NSString *)status;
 - (void)showSuccessWithStatus:(NSString *)status;
 
+- (void)hide;
+- (void)hideAfterDelay:(CGFloat)delay;
+- (void)hideAfterDelay:(CGFloat)delay hiddenBlock:(void (^)(void))hiddenBlock;
+
 @end

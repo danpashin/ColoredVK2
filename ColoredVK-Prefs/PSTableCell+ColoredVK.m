@@ -49,9 +49,9 @@
         if ([self.accessoryView isKindOfClass:[UISwitch class]]) {
             self.accessoryView.tag = 228;
             
-            NSNumber *app_is_vk = objc_getAssociatedObject(self, "app_is_vk");
-            if (!app_is_vk) 
-                app_is_vk = @NO;
+//            NSNumber *app_is_vk = objc_getAssociatedObject(self, "app_is_vk");
+//            if (!app_is_vk) 
+//                app_is_vk = @NO;
             
             NSNumber *userChangedColor = objc_getAssociatedObject(self, "change_switch_color");
             if (!userChangedColor)

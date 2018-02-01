@@ -313,7 +313,7 @@
     if (self.app_is_vk && self.enableNightTheme) {
         cell.textLabel.textColor = self.nightThemeColorScheme.textColor;
         layer.fillColor = self.nightThemeColorScheme.foregroundColor.CGColor;
-        if ([cell.accessoryView isKindOfClass:[ColoredVKStepperButton class]]) {
+        if ([cell.accessoryView isKindOfClass:NSClassFromString(@"ColoredVKStepperButton")]) {
             ((UILabel *)[cell.accessoryView valueForKey:@"valueLabel"]).textColor = self.nightThemeColorScheme.textColor;
         }
     }

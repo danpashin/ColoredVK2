@@ -18,8 +18,6 @@
 
 @property (assign, nonatomic) CGFloat prefferedWidth;
 
-
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
 - (void)show;
 
 @end

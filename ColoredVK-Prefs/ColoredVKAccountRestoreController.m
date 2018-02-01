@@ -37,21 +37,25 @@
 {
     [super viewDidLoad];
     
+    self.navigationItem.title = CVKLocalizedStringFromTableInBundle(@"RECOVER_ACCESS", nil, self.cvkBundle);
+    self.footerLabel.text = CVKLocalizedStringFromTableInBundle(@"CONTACT_DEV_IF_YOU_USE_FREE_ACCOUNT", nil, self.cvkBundle);
+    self.restoreNavButton.title = CVKLocalizedStringFromTableInBundle(@"NEXT", nil, self.cvkBundle);
+    self.codeFooterLabel.text = CVKLocalizedStringFromTableInBundle(@"YOU_HAVE_BEEN_SENT_RECOVER_EMAIL", nil, self.cvkBundle);
+    self.loginTextField.placeholder = CVKLocalizedStringFromTableInBundle(@"USERNAME", nil, self.cvkBundle);
+    self.emailTextField.placeholder = CVKLocalizedStringFromTableInBundle(@"EMAIL", nil, self.cvkBundle);
+    self.navigationItem.backBarButtonItem.title = @"";
+    
     self.loginTextField.text = self.login;
     self.loginTextField.delegate = self;
     self.emailTextField.delegate = self;
     self.codeTextView.delegate = self;
     
-    self.navigationItem.title = @"Восстановление доступа";
-    self.footerLabel.text = @"Если Вы пользуетесь бесплатной версией аккаунта, пожалуйста, напишите разработчику.";
-    self.restoreNavButton.title = @"Далее";
     self.codeResendButton.userInteractionEnabled = NO;
     self.codeResendButton.titleLabel.numberOfLines = 0;
-    self.codeFooterLabel.text = @"На Вашу почту было отправлено сообщение с кодом восстановления.";
+    self.codeResendButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     
     self.resetStackView.hidden = NO;
     self.codeStackView.hidden = YES;
-    self.navigationItem.backBarButtonItem.title = @"";
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -105,10 +109,11 @@
         [self.codeResendButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
         [self.codeResendButton setTitleColor:[UIColor blueColor] forState:UIControlStateFocused];
         [self.codeResendButton setTitleColor:[UIColor blueColor] forState:UIControlStateSelected];
-        [self.codeResendButton setTitle:@"Отправить код заново" forState:UIControlStateNormal];
+        [self.codeResendButton setTitle:CVKLocalizedStringFromTableInBundle(@"CODE_VALIDALITY_IS_OVER", nil, self.cvkBundle)
+                               forState:UIControlStateNormal];
         return;
     }
-    NSString *resendButtonTitle = [NSString stringWithFormat:@"До окончания действия пароля осталось %i секунд.", (int)self.codeValidDate.timeIntervalSinceNow];
+    NSString *resendButtonTitle = [NSString stringWithFormat:CVKLocalizedStringFromTableInBundle(@"CODE_IS_VALID_FOR_%i_SECONDS", nil, self.cvkBundle), (int)self.codeValidDate.timeIntervalSinceNow];
     [self.codeResendButton setTitle:resendButtonTitle forState:UIControlStateNormal];
 }
 
@@ -286,6 +291,7 @@
 
 - (void)sendRequestWithName:(NSString *)scriptName params:(NSDictionary *)params successBlock:( void(^)(NSDictionary *response) )successBlock
 {
+    // ТОЛЬКО ДЛЯ ДЕБАГА
 //    if (successBlock)
 //        dispatch_async(dispatch_get_main_queue(), ^{
 //            successBlock(@{@"token":@"come_ctm_token", @"valid_until":@([NSDate date].timeIntervalSince1970 + 10), @"message":self.loginTextField.text});
@@ -307,7 +313,7 @@
                     });
                 
             } else {
-                [hud showFailureWithStatus:[NSString stringWithFormat:@"При выполнении произошла внутренняя ошибка\n(%li)", (long)status]];
+                [hud showFailureWithStatus:[NSString stringWithFormat:@"Internal error\n(%li)", (long)status]];
             }
         } else if (json[@"error"]) {
             NSDictionary *errorDict = json[@"error"];

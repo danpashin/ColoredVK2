@@ -11,7 +11,6 @@
 @interface ColoredVKTextField : UITextField
 
 @property (assign, nonatomic) BOOL error;
-@property (assign, nonatomic) ColoredVKTextFieldType type;
 
 - (void)shake;
 - (void)clear;

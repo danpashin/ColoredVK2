@@ -16,6 +16,7 @@
 @property (strong, nonatomic) IBOutlet ColoredVKTextField *loginTextField;
 @property (strong, nonatomic) IBOutlet ColoredVKTextField *passTextField;
 @property (strong, nonatomic) IBOutlet UIImageView *navBackgroundView;
+@property (strong, nonatomic) IBOutlet UIButton *forgotPassFooterButton;
 
 @end
 
@@ -41,8 +42,13 @@
     self.passTextField.delegate = self;
     self.passTextField.secureTextEntry = YES;
     
-    self.navigationItem.title = @"Вход в ColoredVK 2";
+    self.navigationItem.title = CVKLocalizedStringFromTableInBundle(@"COLOREDVK_AUTH", nil, self.cvkBundle);
     self.navigationItem.backBarButtonItem.title = @"";
+    self.loginTextField.placeholder = CVKLocalizedStringFromTableInBundle(@"USERNAME", nil, self.cvkBundle);
+    self.passTextField.placeholder = CVKLocalizedStringFromTableInBundle(@"PASSWORD", nil, self.cvkBundle);
+    
+    NSString *forgotPassString = CVKLocalizedStringFromTableInBundle(@"FORGOT_PASSWORD", nil, self.cvkBundle);
+    [self.forgotPassFooterButton setTitle:forgotPassString forState:UIControlStateNormal];
 }
 
 #pragma mark -

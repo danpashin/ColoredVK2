@@ -54,6 +54,7 @@
     }
     
     NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if (!error && data) {
                 NSError *jsonError = nil;
@@ -89,6 +90,7 @@
         });
     }];
     
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     [task resume];
 }
 
@@ -97,6 +99,7 @@
             failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
     NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if (!error && data) {
                 if (sucess)
@@ -107,6 +110,7 @@
             }
         });
     }];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     [task resume];
 }
 
@@ -122,6 +126,7 @@
     }
     
     NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             if (!error && data) {
                 if (sucess)
@@ -132,6 +137,7 @@
             }
         });
     }];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     [task resume];
 }
 
@@ -149,6 +155,7 @@
         
         NSURLSessionDataTask *task = [self.session uploadTaskWithRequest:request fromData:dataToUpload 
                                                        completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                                           [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                                                            if (!error) {
                                                                if (sucess)
                                                                    sucess((NSHTTPURLResponse *)response, data);
@@ -157,6 +164,7 @@
                                                                    failure((NSHTTPURLResponse *)response, error);
                                                            }
                                                        }];
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
         [task resume];
     }
 }
@@ -174,6 +182,7 @@
     
     NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:request
                                                          completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
+                                                             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                                                              if (!error) {
                                                                  NSData *data = [NSData dataWithContentsOfURL:location];
                                                                  if (sucess)
@@ -184,6 +193,7 @@
                                                                      failure((NSHTTPURLResponse *)response, error);
                                                              }
                                                          }];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     [task resume];
 }
 

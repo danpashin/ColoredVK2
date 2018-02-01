@@ -30,10 +30,10 @@
     self.passTextField.delegate = self;
     self.confPassTextField.delegate = self;
     
-    self.passTextField.placeholder = @"Введите новый пароль";
-    self.confPassTextField.placeholder = @"Подтвердите пароль";
-    self.footerLabel.text = CVKLocalizedStringFromTableInBundle(@"PASSWORD_WARNING", nil, [NSBundle bundleWithPath:CVK_BUNDLE_PATH]);
-    self.changeButton.title = @"Сменить";
+    self.passTextField.placeholder = CVKLocalizedStringFromTableInBundle(@"ENTER_NEW_PASSWORD", nil, self.cvkBundle);
+    self.confPassTextField.placeholder = CVKLocalizedStringFromTableInBundle(@"CONFIRM_NEW_PASSWORD", nil, self.cvkBundle);
+    self.footerLabel.text = CVKLocalizedStringFromTableInBundle(@"PASSWORD_WARNING", nil, self.cvkBundle);
+    self.changeButton.title = CVKLocalizedStringFromTableInBundle(@"CHANGE", nil, self.cvkBundle);
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -134,7 +134,7 @@
                                                                                          
                                                                                          int code = [responseDict[@"code"] intValue];
                                                                                          if (code != 1) {
-                                                                                             NSString *message = [NSString stringWithFormat:@"При выполнени запроса произошла неизвестная ошибка\n(%i)", code];
+                                                                                             NSString *message = [NSString stringWithFormat:@"Unknow error\n(%i)", code];
                                                                                              [hud showFailureWithStatus:message];
                                                                                          } else {
                                                                                              hud.didHiddenBlock = ^{

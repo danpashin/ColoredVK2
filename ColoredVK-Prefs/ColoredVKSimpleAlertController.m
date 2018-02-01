@@ -14,22 +14,6 @@ static CGFloat const viewsHeight = 32.0f;
 
 @implementation ColoredVKSimpleAlertController
 
-- (instancetype)init
-{
-    self = [super initWithNibName:nil bundle:nil];
-    return self;
-}
-
-- (instancetype)initWithCoder:(NSCoder *)coder
-{
-    return [self init];
-}
-
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    return [self init];
-}
-
 - (BOOL)prefersStatusBarHidden
 {
     return NO;
@@ -53,7 +37,6 @@ static CGFloat const viewsHeight = 32.0f;
     
     self.contentView = [UIView new];
     self.contentView.frame = CGRectMake(0, 0, self.view.frame.size.width - 60, 120);
-    self.contentView.backgroundColor = [UIColor whiteColor];
     self.contentView.layer.masksToBounds = YES;
     self.contentView.layer.cornerRadius = 6;
     [self.scrollView addSubview:self.contentView];
@@ -76,6 +59,17 @@ static CGFloat const viewsHeight = 32.0f;
     
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHide) name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    if (self.app_is_vk && self.enableNightTheme) {
+        self.textField.backgroundColor = self.nightThemeColorScheme.backgroundColor;
+        self.contentView.backgroundColor = self.nightThemeColorScheme.foregroundColor;
+    } else 
+        self.contentView.backgroundColor = [UIColor whiteColor];
 }
 
 - (void)setupConstraints

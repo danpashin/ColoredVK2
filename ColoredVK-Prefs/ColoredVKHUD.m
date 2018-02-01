@@ -78,7 +78,28 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [super showFailureWithStatus:status animated:YES];
-        [super hideAfterDelay:2.5];
+        [super hideAfterDelay:2.8f];
+    });
+}
+
+- (void)hide
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [super hide];
+    });
+}
+
+- (void)hideAfterDelay:(CGFloat)delay
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [super hideAfterDelay:delay];
+    });
+}
+
+- (void)hideAfterDelay:(CGFloat)delay hiddenBlock:(void (^)(void))hiddenBlock
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [super hideAfterDelay:delay hiddenBlock:hiddenBlock];
     });
 }
 

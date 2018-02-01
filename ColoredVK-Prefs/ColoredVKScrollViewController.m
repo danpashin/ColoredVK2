@@ -22,6 +22,8 @@
 {
     [super viewDidLoad];
     
+    self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    
     self.scrollView.delegate = self;   
     
     if (SYSTEM_VERSION_IS_LESS_THAN(@"10.3.3")) {
