@@ -111,13 +111,19 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
             for (UIAlertAction *action in actions) {
                 [alertController addAction:action];
             }
-            [alertController presentFromController:[UIApplication sharedApplication].keyWindow.rootViewController];
+            [alertController present];
         }
     });
 }
 
 - (BOOL)shouldCheckUpdates
 {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunreachable-code"
+#ifdef COMPILE_APP
+    return NO;
+#endif
+    
     NSMutableDictionary *tweakPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
     BOOL shouldCheckUpdates = tweakPrefs[prefsCheckUpdatesKey] ? [tweakPrefs[prefsCheckUpdatesKey] boolValue] : YES;
     NSTimeInterval updatesInterval = tweakPrefs[prefsUpdatesCheckIntervalKey] ? [tweakPrefs[prefsUpdatesCheckIntervalKey] doubleValue] : 1.0;
@@ -135,6 +141,7 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
     }
     
     return NO;
+#pragma pop
 }
 
 - (NSString *)localizedLastCheckForUpdates

@@ -88,7 +88,6 @@
 
 - (void)presentFromController:(UIViewController *)viewController
 {
-    
     dispatch_async(dispatch_get_main_queue(), ^{
         if (IS_IPAD && self.presentInCenter) {
             self.modalPresentationStyle = UIModalPresentationPopover;

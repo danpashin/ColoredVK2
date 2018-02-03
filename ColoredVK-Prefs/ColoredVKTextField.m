@@ -67,9 +67,9 @@
 
 - (void)clear
 {
-    if ([self.delegate respondsToSelector:@selector(textField:shouldChangeCharactersInRange:replacementString:)]) {
+    if ([self.delegate respondsToSelector:@selector(textField:shouldChangeCharactersInRange:replacementString:)])
         [self.delegate textField:self shouldChangeCharactersInRange:NSMakeRange(0, self.text.length) replacementString:@""];
-    }
+    
     self.text = @"";
 }
 
@@ -79,11 +79,15 @@
     if ([self.delegate respondsToSelector:@selector(textFieldShouldRemoveWhiteSpaces:)])
         removeWhiteSpaces = [self.delegate textFieldShouldRemoveWhiteSpaces:self];
     
-    if (removeWhiteSpaces)
+    if (removeWhiteSpaces) {
         self.text = [self.text stringByReplacingOccurrencesOfString:@" " withString:@""];
-    
-    if ([self.delegate respondsToSelector:@selector(textField:didChangeText:)])
-        [self.delegate textField:self didChangeText:self.text];
+        
+        if ([self.delegate respondsToSelector:@selector(textField:shouldChangeCharactersInRange:replacementString:)])
+            [self.delegate textField:self shouldChangeCharactersInRange:NSMakeRange(0, self.text.length) replacementString:self.text];
+        
+        if ([self.delegate respondsToSelector:@selector(textField:didChangeText:)])
+            [self.delegate textField:self didChangeText:self.text];
+    }
 }
 
 - (void)updateSecureState
