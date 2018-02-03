@@ -16,7 +16,6 @@
 #import "ColoredVKSimpleAlertController.h"
 #import "UIScrollView+EmptyDataSet.h"
 #import "ColoredVKAlertController.h"
-#import "OAStackView.h"
 
 typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     ColoredVKColorPickerStateDismiss = 1,
@@ -46,7 +45,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 @property (strong, nonatomic) UIView *colorPreviewContainer;
 @property (strong, nonatomic) UIView *savedColorsContainer;
 
-@property (strong, nonatomic) OAStackView *stackView;
+@property (strong, nonatomic) UIStackView *stackView;
 @property (strong, nonatomic) UIView *stackContainerView;
 
 @property (assign, nonatomic) UIEdgeInsets saveButtonLabelInsets;
@@ -100,12 +99,12 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     self.stackContainerView.frame = CGRectMake(8, CGRectGetMaxY(self.contentViewNavigationBar.frame), CGRectGetWidth(self.contentView.frame)-16.0f, CGRectGetHeight(self.contentView.frame) - 64);
     [self.contentView addSubview:self.stackContainerView];
     
-    self.stackView = [[OAStackView alloc] initWithArrangedSubviews:@[]];
+    self.stackView = [[UIStackView alloc] initWithArrangedSubviews:@[]];
     self.stackView.frame = CGRectMake(8, CGRectGetMaxY(self.contentViewNavigationBar.frame), CGRectGetWidth(self.contentView.frame)-16.0f, CGRectGetHeight(self.contentView.frame) - 64);
     self.stackView.axis = UILayoutConstraintAxisVertical;
     self.stackView.spacing = 8.0f;
-    self.stackView.alignment = OAStackViewAlignmentFill;
-    self.stackView.distribution = OAStackViewDistributionFill;
+    self.stackView.alignment = UIStackViewAlignmentFill;
+    self.stackView.distribution = UIStackViewDistributionFill;
     [self.stackContainerView addSubview:self.stackView];
     
     

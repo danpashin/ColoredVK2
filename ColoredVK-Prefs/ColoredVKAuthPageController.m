@@ -11,7 +11,7 @@
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKAccountRestoreController.h"
 
-@interface ColoredVKAuthPageController () <UITextFieldDelegate>
+@interface ColoredVKAuthPageController () <ColoredVKTextFieldDelegate>
 
 @property (strong, nonatomic) IBOutlet ColoredVKTextField *loginTextField;
 @property (strong, nonatomic) IBOutlet ColoredVKTextField *passTextField;

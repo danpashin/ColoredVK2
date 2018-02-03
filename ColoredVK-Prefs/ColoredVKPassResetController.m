@@ -11,7 +11,7 @@
 #import "ColoredVKHUD.h"
 #import "ColoredVKNewInstaller.h"
 
-@interface ColoredVKPassResetController () <UITextFieldDelegate>
+@interface ColoredVKPassResetController () <ColoredVKTextFieldDelegate>
 
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *changeButton;
 

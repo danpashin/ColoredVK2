@@ -11,37 +11,33 @@
 
 @interface ColoredVKTextField () <CAAnimationDelegate, UITextFieldDelegate>
 
-@property (strong, nonatomic) UIButton *showButton;
+@property (strong, nonatomic) UIButton *securedShowButton;
 
 @end
 
 @implementation ColoredVKTextField
+
+@dynamic delegate;
 
 - (void)awakeFromNib
 {
     _error = NO;
     
     [super awakeFromNib];
-    [self setupLayout];
-}
-
-- (void)setupLayout
-{
+    
     self.layer.cornerRadius = 8.0f;
     self.backgroundColor = [UIColor colorWithRed:250/255.0f green:250/255.0f blue:250/255.0f alpha:1.0f];
     self.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
     [self setError:NO animated:NO];
     
-    if (![self.subviews containsObject:self.showButton]) {
-        [self addSubview:self.showButton];
+    if ([self respondsToSelector:@selector(textContentType)]) {
+        if ([self.textContentType containsString:@"pass"]) {
+            self.rightView = self.securedShowButton;
+            self.rightViewMode = UITextFieldViewModeWhileEditing;
+        }
     }
     
-    if (!CGSizeEqualToSize(self.frame.size, CGSizeZero)) {        
-        self.showButton.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[showButton]|" options:0 metrics:nil views:@{@"showButton":self.showButton}]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[showButton(width)]-4-|" options:0 metrics:@{@"width":@(CGRectGetHeight(self.frame))}
-                                                                       views:@{@"showButton":self.showButton}]];
-    }
+    [self addTarget:self action:@selector(didChangeText) forControlEvents:UIControlEventEditingChanged];
 }
 
 - (void)didMoveToSuperview
@@ -74,22 +70,35 @@
     if ([self.delegate respondsToSelector:@selector(textField:shouldChangeCharactersInRange:replacementString:)]) {
         [self.delegate textField:self shouldChangeCharactersInRange:NSMakeRange(0, self.text.length) replacementString:@""];
     }
-    self.text = nil;
+    self.text = @"";
+}
+
+- (void)didChangeText
+{    
+    BOOL removeWhiteSpaces = NO;
+    if ([self.delegate respondsToSelector:@selector(textFieldShouldRemoveWhiteSpaces:)])
+        removeWhiteSpaces = [self.delegate textFieldShouldRemoveWhiteSpaces:self];
+    
+    if (removeWhiteSpaces)
+        self.text = [self.text stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    if ([self.delegate respondsToSelector:@selector(textField:didChangeText:)])
+        [self.delegate textField:self didChangeText:self.text];
+}
+
+- (void)updateSecureState
+{
+    self.secureTextEntry = !self.secureTextEntry;
+    
+    NSString *text = self.text;
+    self.text = @"";
+    self.text = text;
 }
 
 
 #pragma mark -
 #pragma mark Setters
 #pragma mark -
-
-- (void)setFrame:(CGRect)frame
-{
-    super.frame = frame;
-    
-    CGFloat height = CGRectGetHeight(frame);
-    self.showButton.frame = CGRectMake(CGRectGetMaxX(frame) - height - 8, 0, height, height);
-    [self setupLayout];
-}
 
 - (void)setError:(BOOL)error
 {
@@ -136,33 +145,38 @@
 #pragma mark Getters
 #pragma mark -
 
-- (UIButton *)showButton
+- (UIButton *)securedShowButton
 {
-    if (!_showButton) {
-        _showButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        UIImage *clearImage = [UIImage imageNamed:@"DeleteIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
-        clearImage = [clearImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        [_showButton setImage:clearImage forState:UIControlStateNormal];
-        _showButton.tintColor = [UIColor colorWithWhite:0.8f alpha:1.0f];
-        _showButton.hidden = YES;
-        _showButton.alpha = 0.7f;
-        [_showButton addTarget:self action:@selector(clearText) forControlEvents:UIControlEventTouchUpInside];
+    if (!_securedShowButton) {
+        _securedShowButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _securedShowButton.frame = [self rightViewRectForBounds:self.bounds];
+        UIImage *clearImage = [UIImage imageNamed:@"ViewIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
+        [_securedShowButton setImage:clearImage forState:UIControlStateNormal];
+        [_securedShowButton addTarget:self action:@selector(updateSecureState) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _showButton;
+    return _securedShowButton;
 }
 
 - (CGRect)textRectForBounds:(CGRect)bounds
 {    
     CGRect origRect = [super textRectForBounds:bounds];  
     
-    return CGRectInset(origRect, 16, 0);
+    return CGRectInset(origRect, 16.0f, 0.0f);
 }
 
 - (CGRect)editingRectForBounds:(CGRect)bounds
 {
     CGRect origRect = [super editingRectForBounds:bounds];
     
-    return CGRectInset(origRect, 16, 0);
+    return CGRectInset(origRect, 16.0f, 0.0f);
+}
+
+- (CGRect)rightViewRectForBounds:(CGRect)bounds
+{
+    CGFloat boundsHeight = CGRectGetHeight(self.bounds);
+    CGFloat boundsWidth = CGRectGetWidth(self.bounds);
+    
+    return CGRectMake(boundsWidth - boundsHeight, 0, boundsHeight, boundsHeight);
 }
 
 @end

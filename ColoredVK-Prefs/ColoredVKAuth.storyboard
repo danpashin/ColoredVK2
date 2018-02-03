@@ -145,16 +145,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mMW-S5-DMY">
-                                <rect key="frame" x="0.0" y="64" width="0.0" height="583"/>
+                                <rect key="frame" x="8" y="64" width="359" height="583"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Yv-x9-75E" userLabel="Container">
-                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="583"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="359" height="583"/>
                                         <subviews>
                                             <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="MsE-RG-o4Q" userLabel="Reset stack view">
-                                                <rect key="frame" x="0.0" y="37" width="0.0" height="180"/>
+                                                <rect key="frame" x="20" y="37" width="319" height="180"/>
                                                 <subviews>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Username" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Nwc-lo-ut4" customClass="ColoredVKTextField">
-                                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="50"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="319" height="50"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="50" id="HCf-ye-yPj"/>
@@ -164,7 +164,7 @@
                                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="username"/>
                                                     </textField>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="a54-Q3-iDU" customClass="ColoredVKTextField">
-                                                        <rect key="frame" x="0.0" y="58" width="0.0" height="50"/>
+                                                        <rect key="frame" x="0.0" y="58" width="319" height="50"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="50" id="2OM-l7-cjs"/>
@@ -174,7 +174,7 @@
                                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="continue" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="email"/>
                                                     </textField>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MlB-Qk-dMR">
-                                                        <rect key="frame" x="0.0" y="116" width="0.0" height="64"/>
+                                                        <rect key="frame" x="0.0" y="116" width="319" height="64"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="64" id="Hff-vd-IKw"/>
                                                         </constraints>
@@ -185,10 +185,10 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="wl7-kg-vEM">
-                                                <rect key="frame" x="0.0" y="37" width="0.0" height="222"/>
+                                                <rect key="frame" x="20" y="37" width="319" height="222"/>
                                                 <subviews>
                                                     <textView clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" text="- - - -" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="abB-Lx-Ot0">
-                                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="72"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="319" height="72"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="72" id="Ht2-J7-d34"/>
@@ -197,7 +197,7 @@
                                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="numberPad" returnKeyType="next" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
                                                     </textView>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Header label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="qVl-L1-dgZ">
-                                                        <rect key="frame" x="0.0" y="80" width="0.0" height="50"/>
+                                                        <rect key="frame" x="0.0" y="80" width="319" height="50"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="rv4-74-vdF"/>
@@ -207,7 +207,7 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="efq-Gc-bez">
-                                                        <rect key="frame" x="0.0" y="138" width="0.0" height="84"/>
+                                                        <rect key="frame" x="0.0" y="138" width="319" height="84"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="84" id="9hS-Sm-pm1"/>
@@ -290,16 +290,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vrt-yf-lDZ">
-                                <rect key="frame" x="16" y="64" width="343" height="583"/>
+                                <rect key="frame" x="16" y="64" width="375" height="583"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qLp-1p-XsD" userLabel="Container">
-                                        <rect key="frame" x="0.0" y="0.0" width="343" height="583"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="583"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="BDj-Ta-9uj">
-                                                <rect key="frame" x="20" y="37" width="303" height="188"/>
+                                                <rect key="frame" x="20" y="37" width="375" height="188"/>
                                                 <subviews>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="new password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9xx-sa-buy" customClass="ColoredVKTextField">
-                                                        <rect key="frame" x="0.0" y="0.0" width="303" height="50"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="50" id="6sB-xb-yd0"/>
                                                         </constraints>
@@ -308,7 +308,7 @@
                                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
                                                     </textField>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="confirm password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="npJ-vZ-s6l" customClass="ColoredVKTextField">
-                                                        <rect key="frame" x="0.0" y="58" width="303" height="50"/>
+                                                        <rect key="frame" x="0.0" y="58" width="375" height="50"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="50" id="FAU-mP-wVP"/>
                                                         </constraints>
@@ -317,7 +317,7 @@
                                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
                                                     </textField>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="footer" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yZY-hN-eDf">
-                                                        <rect key="frame" x="0.0" y="116" width="303" height="72"/>
+                                                        <rect key="frame" x="0.0" y="116" width="375" height="72"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="72" id="S0n-hf-C5d"/>
                                                         </constraints>
@@ -358,7 +358,7 @@
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="qDo-0n-rqi">
                         <barButtonItem key="rightBarButtonItem" title="Change" id="c2v-4M-6BW">
                             <connections>
-                                <action selector="actionChangePass" destination="4gc-Iz-IKP" id="T10-WJ-0Jd"/>
+                                <action selector="actionChangePass" destination="4gc-Iz-IKP" id="18X-Hd-TGb"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

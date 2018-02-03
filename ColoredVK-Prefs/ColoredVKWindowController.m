@@ -195,34 +195,37 @@
     else
         self.contentView.backgroundColor = [UIColor whiteColor];
     
-    int widthFromEdge = IS_IPAD?20:6;
+    CGFloat widthFromEdge = IS_IPAD?20:6;
     self.contentView.frame = (CGRect){{widthFromEdge, 0}, {self.view.frame.size.width - widthFromEdge*2, self.view.frame.size.height - widthFromEdge*10}};
     self.contentView.center = self.view.center;
-    self.contentView.layer.cornerRadius = 20;
+    self.contentView.layer.cornerRadius = 20.0f;
     self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
     
+    UILayoutGuide *guide = self.view.layoutMarginsGuide;
+    CGFloat topConstant = 24.0f;
+    CGFloat bottomConstant = -24.0f;
+    CGFloat leftConstant = -8.0f;
+    CGFloat rightConstant = 8.0f;
+    
     if (@available(iOS 11.0, *)) {
-        UILayoutGuide *guide = self.view.safeAreaLayoutGuide;
-        
-        [self.contentView.topAnchor constraintEqualToSystemSpacingBelowAnchor:guide.topAnchor multiplier:1.0f].active = YES;
-        
-        NSLayoutConstraint *bottomConstraint = [self.contentView.bottomAnchor constraintEqualToSystemSpacingBelowAnchor:guide.bottomAnchor multiplier:1.0f];
-        bottomConstraint.constant = -(widthFromEdge*3);
-        bottomConstraint.active = YES;
-        
-        NSLayoutConstraint *leftConstraint = [self.contentView.leadingAnchor constraintEqualToSystemSpacingAfterAnchor:guide.leadingAnchor multiplier:1.0f];
-        leftConstraint.constant = widthFromEdge;
-        leftConstraint.active = YES;
-        
-        NSLayoutConstraint *rightConstraint = [self.contentView.trailingAnchor constraintEqualToSystemSpacingAfterAnchor:guide.trailingAnchor multiplier:1.0];
-        rightConstraint.constant = -widthFromEdge;
-        rightConstraint.active = YES;
-    } else {
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-fromEdge-[contentView]-fromEdge-|" options:0 
-                                                                          metrics:@{@"fromEdge":@(widthFromEdge*4)} views:@{@"contentView":self.contentView}]];
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-fromEdge-[contentView]-fromEdge-|" options:0 
-                                                                          metrics:@{@"fromEdge":IS_IPAD?@(widthFromEdge*3):@(widthFromEdge)} views:@{@"contentView":self.contentView}]];
+        guide = self.view.safeAreaLayoutGuide;
+        topConstant = 20.0f;
+        bottomConstant = -20.0f;
+        leftConstant = 8.0f;
+        rightConstant = -8.0f;
     }
+    
+    if (IS_IPAD) {
+        topConstant = widthFromEdge * 3;
+        bottomConstant = -topConstant;
+        leftConstant = topConstant;
+        rightConstant = -topConstant;
+    }
+    
+    [self.contentView.topAnchor constraintEqualToAnchor:guide.topAnchor constant:topConstant].active = YES;
+    [self.contentView.bottomAnchor constraintEqualToAnchor:guide.bottomAnchor constant:bottomConstant].active = YES;
+    [self.contentView.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor constant:leftConstant].active = YES;
+    [self.contentView.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor constant:rightConstant].active = YES;
 }
 
 - (UINavigationBar *)contentViewNavigationBar

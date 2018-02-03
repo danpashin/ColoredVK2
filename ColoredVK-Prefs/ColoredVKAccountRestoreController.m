@@ -12,7 +12,7 @@
 #import "PrefixHeader.h"
 #import "ColoredVKPassResetController.h"
 
-@interface ColoredVKAccountRestoreController () <UITextFieldDelegate, UITextViewDelegate>
+@interface ColoredVKAccountRestoreController () <ColoredVKTextFieldDelegate, UITextViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *restoreNavButton;
 @property (assign, nonatomic) NSUInteger emailsSendCount;
@@ -119,18 +119,11 @@
 
 
 #pragma mark -
-#pragma mark UITextFieldDelegate
+#pragma mark ColoredVKTextFieldDelegate
 #pragma mark -
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    if ([string isEqualToString:@" "]) {
-        if ([textField isKindOfClass:[ColoredVKTextField class]]) {
-            [(ColoredVKTextField *)textField shake];
-        }
-        return NO;
-    }
-    
     NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     
     if ([textField isEqual:self.emailTextField]) {
@@ -159,6 +152,11 @@
         [self actionRestore:nil];
     }
     
+    return YES;
+}
+
+- (BOOL)textFieldShouldRemoveWhiteSpaces:(ColoredVKTextField *)textField
+{
     return YES;
 }
 
@@ -197,7 +195,7 @@
 #pragma mark -
 
 - (IBAction)actionRestore:(UIBarButtonItem *)sender
-{    
+{
     if (self.emailsSendCount > 0)
         return;
     
@@ -264,7 +262,7 @@
 }
 
 - (void)actionCheckCode
-{    
+{
     NSString *code = [self.codeTextView.text stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSDictionary *params = @{@"code":code, @"login":self.login};
     [self sendRequestWithName:@"check.php" params:params successBlock:^(NSDictionary *response) {        

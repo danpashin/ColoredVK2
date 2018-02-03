@@ -26,15 +26,20 @@
     
     self.scrollView.delegate = self;   
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide) name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
     if (SYSTEM_VERSION_IS_LESS_THAN(@"10.3.3")) {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.scrollView.contentInset = UIEdgeInsetsZero;
             self.scrollView.contentOffset = CGPointZero;
         });
     }
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)keyboardWillShow:(NSNotification *)notification
