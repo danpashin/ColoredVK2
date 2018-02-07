@@ -40,7 +40,6 @@
     
     self.loginTextField.delegate = self;
     self.passTextField.delegate = self;
-    self.passTextField.secureTextEntry = YES;
     
     self.navigationItem.title = CVKLocalizedStringFromTableInBundle(@"COLOREDVK_AUTH", nil, self.cvkBundle);
     self.navigationItem.backBarButtonItem.title = @"";
@@ -52,18 +51,11 @@
 }
 
 #pragma mark -
-#pragma mark UITextFieldDelegate
+#pragma mark ColoredVKTextFieldDelegate
 #pragma mark -
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    if ([string isEqualToString:@" "]) {
-        if ([textField isKindOfClass:[ColoredVKTextField class]]) {
-            [(ColoredVKTextField *)textField shake];
-        }
-        return NO;
-    }
-    
     NSUInteger newStringLength = [textField.text stringByReplacingCharactersInRange:range withString:string].length;
     if ([textField isEqual:self.loginTextField]) {
         self.loginTextField.error = (newStringLength == 0);
@@ -100,6 +92,11 @@
     if (textField.text.length == 0 && [textField respondsToSelector:@selector(error)]) {
         ((ColoredVKTextField *)textField).error = YES;
     }
+}
+
+- (BOOL)textFieldShouldRemoveWhiteSpaces:(ColoredVKTextField *)textField
+{
+    return YES;
 }
 
 

@@ -10,16 +10,19 @@ target 'ColoredVK-NonJail' do
 	pod 'DZNEmptyDataSet'
 	pod 'LEColorPicker'
 	pod 'Color-Picker-for-iOS'
+	pod 'MXParallaxHeader'
 end
 
 target 'ColoredVK-Prefs' do
 	pod 'SSZipArchive'
 	pod 'DZNEmptyDataSet'
 	pod 'Color-Picker-for-iOS'
+	pod 'MXParallaxHeader'
 end
 
 target 'ColoredVK-Prefs-App' do
 	pod 'SSZipArchive'
 	pod 'DZNEmptyDataSet'
 	pod 'Color-Picker-for-iOS'
+	pod 'MXParallaxHeader'
 end

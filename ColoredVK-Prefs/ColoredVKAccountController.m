@@ -7,192 +7,224 @@
 //
 
 #import "ColoredVKAccountController.h"
+
+#import "PrefixHeader.h"
+#import "ColoredVKUserInfoView.h"
+#import "UITableViewCell+ColoredVK.h"
 #import "ColoredVKPasswordViewController.h"
 #import "ColoredVKNewInstaller.h"
-#import "ColoredVKAlertController.h"
-#import <SafariServices/SafariServices.h>
-#import "ColoredVKWebViewController.h"
 #import "ColoredVKAuthPageController.h"
+#import <SafariServices/SafariServices.h>
+#import <MXParallaxHeader.h>
 
-@interface ColoredVKAccountController ()
+#import <SDWebImageManager.h>
 
-@property (strong, nonatomic) PSTableCell *loginCell;
+@interface UINavigationBar ()
+@property (nonatomic, readonly, strong) UIView *_backgroundView;
+@end
 
-@property (assign, nonatomic) BOOL accountPaid;
-@property (assign, nonatomic) BOOL accountActivated;
-@property (assign, nonatomic) BOOL authenticated;
-@property (strong, nonatomic) NSString *accountPaymentStatus;
-@property (strong, nonatomic) NSString *accountActivationStatus;
+@interface ColoredVKAccountController () <UITableViewDelegate, UITableViewDataSource, ColoredVKUserInfoViewDelegate>
 
-@property (strong, nonatomic) UIButton *purchaseButton;
+@property (assign, nonatomic) BOOL controllerIsShown;
+
+@property (assign, nonatomic) BOOL userAuthorized;
+@property (strong, nonatomic) NSBundle *cvkBundle;
+@property (strong, nonatomic) IBOutlet UITableView *tableView;
+
+@property (strong, nonatomic) IBOutlet ColoredVKUserInfoView *infoHeaderView;
 
 @end
 
 @implementation ColoredVKAccountController
 
-- (NSArray *)specifiers
++ (id)new
 {
-    if (!_specifiers) {
-        NSMutableArray *specifiers = [super.specifiers mutableCopy];
-        
-        if (self.authenticated) {
-            NSArray <NSString *> *specifiersIDToRemove = @[@"registerButton", @"registerGroup"];
-            NSMutableArray <PSSpecifier *> *specifiersToRemove = [NSMutableArray array];
-            
-            for (PSSpecifier *specifier in specifiers) {
-                if ([specifiersIDToRemove containsObject:specifier.identifier]) {
-                    [specifiersToRemove addObject:specifier];
-                }
-            }
-            
-            for (PSSpecifier *specifier in specifiersToRemove) {
-                [specifiers removeObject:specifier];
-            }
-        }
-        
-        if (self.accountActivated) {
-            NSArray <NSString *> *specifiersIDToRemove = @[@"accountActivationFooter"];
-            NSMutableArray <PSSpecifier *> *specifiersToRemove = [NSMutableArray array];
-            
-            for (PSSpecifier *specifier in specifiers) {
-                if ([specifiersIDToRemove containsObject:specifier.identifier]) {
-                    [specifiersToRemove addObject:specifier];
-                }
-            }
-            
-            for (PSSpecifier *specifier in specifiersToRemove) {
-                [specifiers removeObject:specifier];
-            }
-        }
-        
-        _specifiers = specifiers;
-    }
+    NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"ColoredVKAuth" bundle:cvkBundle];
+    ColoredVKAccountController *accountController = [storyboard instantiateViewControllerWithIdentifier:@"accountController"];
+    accountController.cvkBundle = cvkBundle;
     
-    return _specifiers;
+    return accountController;
 }
 
-- (void)updateActivationInfo
+- (UIStatusBarStyle)preferredStatusBarStyle
 {
-    [[ColoredVKNewInstaller sharedInstaller] updateAccountInfo:^{
-        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-        
-        self.authenticated = newInstaller.authenticated;
-        self.accountPaid = newInstaller.purchased;
-        self.accountActivated = newInstaller.activated;
-        self.accountPaymentStatus = self.accountPaid ? CVKLocalizedStringFromTable(@"ACCOUNT_PAID", @"ColoredVK") : @"";
-        self.accountActivationStatus = self.accountActivated ? CVKLocalizedStringFromTable(@"ACCOUNT_ACTIVATED", @"ColoredVK") : @"";
-        if (self.accountPaid && !self.accountActivated)
-            self.accountActivationStatus = CVKLocalizedString(@"WAIT_ACTIVATION");
-        
-        [self reloadSpecifiers];
-    }];
+    return UIStatusBarStyleLightContent;
 }
 
 - (void)viewDidLoad
 {
-    [self resetStatus];
     [super viewDidLoad];
     
-    [self updateActivationInfo];
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    self.tableView.separatorColor = [UIColor clearColor];
+    
+    NSArray *nibViews = [self.cvkBundle loadNibNamed:NSStringFromClass([ColoredVKUserInfoView class]) owner:self options:nil];
+    self.infoHeaderView =  nibViews.firstObject;
+    CGRect headerFrame = self.infoHeaderView.frame;
+    headerFrame.size = CGSizeMake(CGRectGetWidth(self.tableView.frame), 176.0f);
+    self.infoHeaderView.frame = headerFrame;
+    self.infoHeaderView.delegate = self;
+    
+    self.tableView.parallaxHeader.view = self.infoHeaderView;
+    self.tableView.parallaxHeader.height = 130.0f;
+    self.tableView.parallaxHeader.mode = MXParallaxHeaderModeFill;
+    
+    [self updateAccountInfo];
 }
 
-- (void)resetStatus
+- (void)viewWillAppear:(BOOL)animated
 {
-    self.authenticated =  NO;
-    self.accountPaymentStatus = CVKLocalizedString(@"UPDATING...");
-    self.accountActivationStatus = CVKLocalizedString(@"UPDATING...");
+    [super viewWillAppear:animated];
+    
+    self.controllerIsShown = YES;
 }
 
-- (UIButton *)purchaseButton
+- (void)viewWillDisappear:(BOOL)animated
 {
-    if (!_purchaseButton) {
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        NSString *title = CVKLocalizedString(@"PURCHASE");
-        CGSize btnSize = [title sizeWithAttributes:@{NSFontAttributeName:button.titleLabel.font}];
-        button.frame = CGRectMake(0, 0, btnSize.width + 5, 32);
-        
-        [button setTitle:title forState:UIControlStateNormal];
-        [button setTitleColor:CVKMainColor forState:UIControlStateNormal];
-        [button setTitleColor:CVKMainColor.darkerColor forState:UIControlStateHighlighted];
-        [button addTarget:self action:@selector(actionPurchase) forControlEvents:UIControlEventTouchUpInside];
-        
-        _purchaseButton = button;
+    self.controllerIsShown = NO;
+    
+    [super viewWillDisappear:animated];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"_backgroundView.alpha"] && ([change[NSKeyValueChangeNewKey] floatValue] != 0)) {
+        UINavigationBar *navBar = object;
+        navBar._backgroundView.alpha = 0.0f;
     }
-    return _purchaseButton;
 }
+
+- (void)setControllerIsShown:(BOOL)controllerIsShown
+{
+    _controllerIsShown = controllerIsShown;
+    
+    UINavigationBar *navBar = self.navigationController.navigationBar;
+    if (controllerIsShown)
+        [navBar addObserver:self forKeyPath:@"_backgroundView.alpha" options:NSKeyValueObservingOptionNew context:nil];
+    else
+        [navBar removeObserver:self forKeyPath:@"_backgroundView.alpha"];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        navBar.tag = controllerIsShown ? 26 : 30;
+        navBar.tintColor = [UIColor whiteColor];
+        
+        [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            navBar._backgroundView.alpha = controllerIsShown ? 0.0f : 1.0f;
+        } completion:nil];
+    });
+}
+
+
+#pragma mark -
+#pragma mark ColoredVKUserInfoViewDelegate
+#pragma mark -
+
+- (void)infoView:(ColoredVKUserInfoView *)infoView didUpdateHeight:(CGFloat)height
+{
+    self.tableView.parallaxHeader.height = height;
+}
+
+
+#pragma mark -
+#pragma mark UITableViewDataSource
+#pragma mark -
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    if (!self.userAuthorized)
+        return 2;
+    
+    return 3;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if (self.userAuthorized && section == 0)
+        return 2;
+    
+    return 1;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = nil;
+    if (self.userAuthorized) {
+        if (indexPath.section == 0 && indexPath.row == 0) {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"accountStatusCell" forIndexPath:indexPath];
+        } else if (indexPath.section == 0 && indexPath.row == 1) {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"aboutStatusCell" forIndexPath:indexPath];
+        } else if (indexPath.section == 1 && indexPath.row == 0) {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"changePasswordCell" forIndexPath:indexPath];
+        } else if (indexPath.section == 2 && indexPath.row == 0) {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"logoutCell" forIndexPath:indexPath];
+        }
+    } else {
+        if (indexPath.section == 0 && indexPath.row == 0) {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"signinCell" forIndexPath:indexPath];
+        } else if (indexPath.section == 1 && indexPath.row == 0) {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"signupCell" forIndexPath:indexPath];
+        }
+    }
+    
+    if (!cell)
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+    
+    cell.layoutMargins = UIEdgeInsetsMake(0, 18, 0, 18);
+    
+    return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 0 && indexPath.row == 0) {
+        return 56.0f;
+    }
+    
+    return 56.0f;
+}
+
+- (nullable NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    if (section == 0) {
+        return @"Управление аккаунтом";
+    }
+    
+    if (section == 1) {
+        return self.userAuthorized ? @"Настройки безопасности" : @"Нет аккаунта?";
+    }
+    
+    return @"";
+}
+
 
 #pragma mark -
 #pragma mark UITableViewDelegate
 #pragma mark -
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PSTableCell *cell = (PSTableCell *)[super tableView:tableView cellForRowAtIndexPath:indexPath];
-    
-    if ([cell.specifier.identifier isEqualToString:@"loginCell"]) {
-        PSSpecifier *specifier = cell.specifier;
-        NSString *reuseIdentifier = [cell.reuseIdentifier copy];
-        
-        if (!self.loginCell) {
-            self.loginCell = [[PSTableCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier specifier:specifier];
-            self.loginCell.specifier = specifier;
-        }
-        cell = self.loginCell;
-        [self.loginCell refreshCellContentsWithSpecifier:specifier];
-        
-        cell.textLabel.font = [UIFont systemFontOfSize:[UIFont systemFontSize] + 2.0f];
-        if (!self.authenticated) {
-            cell.textLabel.text = CVKLocalizedStringFromTable(@"ENTER_ACCOUNT", @"ColoredVK");
-            cell.textLabel.textColor = CVKMainColor;
-            
-            cell.detailTextLabel.text = CVKLocalizedStringFromTable(@"TO_UNLOCK_FULL_VERSION", @"ColoredVK");
-            cell.detailTextLabel.textColor = [UIColor grayColor];
-            cell.detailTextLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize] - 1.0f];
-        } else {
-            cell.textLabel.text = [ColoredVKNewInstaller sharedInstaller].userName;
-            cell.textLabel.textColor = [UIColor darkGrayColor];
-            cell.detailTextLabel.text = @"";
-        }
-    }
-    
-    if ([cell.specifier.identifier isEqualToString:@"accountPaid"] && (!self.accountPaid && self.authenticated)) {
-        cell.accessoryView = self.purchaseButton;
-    }
-    
-    objc_setAssociatedObject(cell, "nightThemeColorScheme", self.nightThemeColorScheme, OBJC_ASSOCIATION_ASSIGN);
-    objc_setAssociatedObject(cell, "app_is_vk", @(self.app_is_vk), OBJC_ASSOCIATION_ASSIGN);
-    objc_setAssociatedObject(cell, "enableNightTheme", @(self.enableNightTheme), OBJC_ASSOCIATION_ASSIGN);
-    
-    return cell;
+    [cell renderBackgroundForTableView:tableView indexPath:indexPath];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PSSpecifier *specifier = [self specifierForIndexPath:indexPath];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    if ([specifier.identifier isEqualToString:@"loginCell"]) {
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        if (!self.authenticated) {
-            [self actionLogin];
-        } else {
-            __weak typeof(self) weakSelf = self;
-            ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-            UIAlertAction *logout = [UIAlertAction actionWithTitle:CVKLocalizedString(@"ACTION_LOG_OUT") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-                [weakSelf actionLogout];
-            }];
-            [alertController addAction:logout image:@"LogoutIcon"];
-            
-            UIAlertAction *changePass = [UIAlertAction actionWithTitle:CVKLocalizedString(@"CHANGE_PASSWORD") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                [weakSelf actionChangePassword];
-            }];
-            [alertController addAction:changePass image:@"LockIcon"];
-            [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-            
-            [alertController presentFromController:self];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([cell.reuseIdentifier isEqualToString:@"signinCell"]) {
+            [self actionSignIn];
+        } else if ([cell.reuseIdentifier isEqualToString:@"signupCell"]) {
+            [self actionSignUp];
+        } else if ([cell.reuseIdentifier isEqualToString:@"logoutCell"]) {
+            [self actionLogout];
+        } else if ([cell.reuseIdentifier isEqualToString:@"changePasswordCell"]) {
+            [self actionChangePassword];
         }
-    } else {
-        [super tableView:tableView didSelectRowAtIndexPath:indexPath];
-    }
+    });
 }
 
 
@@ -200,23 +232,92 @@
 #pragma mark Actions
 #pragma mark -
 
-- (void)actionLogin
+- (void)updateAccountInfo
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
+        self.userAuthorized = newInstaller.authenticated;
+        self.infoHeaderView.username = newInstaller.userName;
+        self.infoHeaderView.email = nil;
+        [self updateAvatar];
+        
+        [self.tableView reloadData];
+    });
+}
+
+- (void)updateAvatar
+{
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
+    NSNumber *vkUserID = newInstaller.vkUserID;
+    
+    if (vkUserID.integerValue != 0) {
+        
+        SDWebImageManager *imageManager = [SDWebImageManager sharedManager];
+        NSString *imageCacheKey = [NSString stringWithFormat:@"cvk_vk_user_%@", vkUserID];
+        UIImage *cachedAvatar = [imageManager.imageCache imageFromCacheForKey:imageCacheKey];
+        if (cachedAvatar) {
+            self.infoHeaderView.avatar = cachedAvatar;
+            return;
+        }
+        NSString *jsonURL = @"https://api.vk.com/method/users.get";
+        NSDictionary *params = @{@"user_ids":vkUserID, @"fields":@"photo_100", @"v":@"5.71"};
+        NSError *requestError = nil;
+        NSMutableURLRequest *request = [newInstaller.networkController requestWithMethod:@"GET" URLString:jsonURL 
+                                                                              parameters:params error:&requestError];
+        if (!requestError) {
+            [request setValue:@"VK" forHTTPHeaderField:@"User-Agent"];
+            [newInstaller.networkController sendRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData) {
+                NSDictionary *json = [NSJSONSerialization JSONObjectWithData:rawData options:0 error:nil];
+                if ([json isKindOfClass:[NSDictionary class]]) {
+                    NSArray *array = json[@"response"];
+                    if ([array isKindOfClass:[NSArray class]]) {
+                        NSDictionary *responseDict = array.firstObject;
+                        if ([responseDict isKindOfClass:[NSDictionary class]]) {
+                            NSString *photoURL = responseDict[@"photo_100"];
+                            if (photoURL) {
+                                [imageManager loadImageWithURL:[NSURL URLWithString:photoURL] 
+                                                       options:SDWebImageHighPriority|SDWebImageCacheMemoryOnly progress:nil 
+                                                     completed:^(UIImage *image, NSData *data, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                                         [imageManager.imageCache storeImage:image forKey:imageCacheKey completion:nil];
+                                                         self.infoHeaderView.avatar = image;
+                                                     }];
+
+                            }
+                        }
+                    }
+                    
+                    
+                }
+            } failure:nil];
+        }
+    }
+}
+
+- (void)actionSignIn
 {
     ColoredVKAuthPageController *authController = [ColoredVKAuthPageController new];
     
     __weak typeof(self) weakSelf = self;
     authController.completionBlock = ^{
-        [weakSelf updateActivationInfo];
+        [weakSelf updateAccountInfo];
     };
     
     [authController showFromController:self];
 }
 
+- (void)actionSignUp
+{
+    NSURL *url = [NSURL URLWithString:kPackageAccountRegisterLink];
+    
+    SFSafariViewController *sfController = [[SFSafariViewController alloc] initWithURL:url];
+    [self presentViewController:sfController animated:YES completion:nil];
+}
+
 - (void)actionLogout
 {
+    __weak typeof(self) weakSelf = self;
     [[ColoredVKNewInstaller sharedInstaller] logoutWithСompletionBlock:^{
-        [self resetStatus];
-        [self updateActivationInfo];
+        [weakSelf updateAccountInfo];
     }];
 }
 
@@ -227,26 +328,6 @@
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:passController];
     nav.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:nav animated:YES completion:nil];
-}
-
-- (void)actionPurchase
-{
-    [[ColoredVKNewInstaller sharedInstaller] actionPurchase];
-}
-
-- (void)actionRegister
-{
-    NSURL *url = [NSURL URLWithString:kPackageAccountRegisterLink];
-    
-    if (SYSTEM_VERSION_IS_MORE_THAN(@"9.0")) {
-        SFSafariViewController *sfController = [[SFSafariViewController alloc] initWithURL:url];
-        [self presentViewController:sfController animated:YES completion:nil];
-    } else {
-        ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
-        webController.url = url;
-        webController.request = [NSURLRequest requestWithURL:webController.url];
-        [webController presentFromController:self];
-    }
 }
 
 @end

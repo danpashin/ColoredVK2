@@ -15,7 +15,7 @@
 @interface ColoredVKAccountRestoreController () <ColoredVKTextFieldDelegate, UITextViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *restoreNavButton;
-@property (assign, nonatomic) NSUInteger emailsSendCount;
+@property (assign, nonatomic) BOOL emailSent;
 @property (strong, nonatomic) NSDate *codeValidDate;
 @property (strong, nonatomic) NSTimer *codeTimer;
 
@@ -62,7 +62,7 @@
 {
     [super viewDidAppear:animated];
     
-    if (self.emailsSendCount > 0) {
+    if (self.emailSent) {
         [self.codeTextView becomeFirstResponder];
     } else {
         if (self.loginTextField.text.length > 0) {
@@ -196,9 +196,6 @@
 
 - (IBAction)actionRestore:(UIBarButtonItem *)sender
 {
-    if (self.emailsSendCount > 0)
-        return;
-    
     if (self.loginTextField.error || self.loginTextField.text.length == 0) {
         [self.loginTextField shake];
         return;
@@ -211,7 +208,7 @@
     
     NSDictionary *params = @{@"login":self.loginTextField.text, @"email":self.emailTextField.text};
     [self sendRequestWithName:@"reset.php" params:params successBlock:^(NSDictionary *response) {
-        self.emailsSendCount++;
+        self.emailSent = YES;
         self.codeValidDate = [NSDate dateWithTimeIntervalSince1970:[response[@"valid_until"] doubleValue]];
         self.login = response[@"message"];
         self.navigationItem.rightBarButtonItem = nil;
@@ -255,7 +252,6 @@
     
     NSDictionary *params = @{@"login":self.loginTextField.text, @"email":self.emailTextField.text};
     [self sendRequestWithName:@"reset.php" params:params successBlock:^(NSDictionary *response) {
-        self.emailsSendCount++;
         self.codeValidDate = [NSDate dateWithTimeIntervalSince1970:[response[@"valid_until"] doubleValue]];
         self.login = response[@"message"];
     }];

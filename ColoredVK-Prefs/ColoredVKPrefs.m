@@ -11,7 +11,7 @@
 #import "ColoredVKNewInstaller.h"
 #import "Tweak.h"
 #import "ColoredVKStepperButton.h"
-
+#import "UITableViewCell+ColoredVK.h"
 
 @implementation ColoredVKPrefs
 
@@ -103,7 +103,7 @@
     self.prefsTableView.emptyDataSetDelegate = self;
     
     
-    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller]; 
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     self.enableNightTheme = prefs[@"nightThemeType"] ? ([prefs[@"nightThemeType"] integerValue] != -1) : NO;
     self.enableNightTheme = ([prefs[@"enabled"] boolValue] && self.enableNightTheme && newInstaller.purchased && newInstaller.activated);
@@ -248,10 +248,12 @@
 {
     ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"AVAILABLE_IN_FULL_VERSION")
                                                                                     preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"THINK_LATER") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OF_COURSE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [[ColoredVKNewInstaller sharedInstaller] actionPurchase];
-    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"THINK_LATER") style:UIAlertActionStyleCancel 
+                                                      handler:^(UIAlertAction *action) {}]];
+    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OF_COURSE") style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction *action) {
+                                                          [[ColoredVKNewInstaller sharedInstaller] actionPurchase];
+                                                      }]];
     [alertController presentFromController:self];
 }
 
@@ -298,73 +300,24 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    cell.backgroundColor = [UIColor clearColor];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-    CGFloat cornerRadius = 10.f;
-    CGRect bounds = CGRectInset(cell.bounds, 8, 0);
-    
-    if (CGSizeEqualToSize(cell.backgroundView.frame.size, bounds.size))
-        return;
-    
-    CAShapeLayer *layer = [CAShapeLayer layer];
-    layer.fillColor = [UIColor whiteColor].CGColor;
+    UIColor *backgroundColor = cell.renderedBackroundColor;
+    UIColor *separatorColor = cell.renderedSeparatorColor;
     
     if (self.app_is_vk && self.enableNightTheme) {
         cell.textLabel.textColor = self.nightThemeColorScheme.textColor;
-        layer.fillColor = self.nightThemeColorScheme.foregroundColor.CGColor;
+        backgroundColor = self.nightThemeColorScheme.foregroundColor;
+        separatorColor = self.nightThemeColorScheme.foregroundColor;
         if ([cell.accessoryView isKindOfClass:NSClassFromString(@"ColoredVKStepperButton")]) {
             ((UILabel *)[cell.accessoryView valueForKey:@"valueLabel"]).textColor = self.nightThemeColorScheme.textColor;
         }
     }
     
-    CGMutablePathRef pathRef = CGPathCreateMutable();
-    BOOL addSeparatorLine = YES;
-    if (indexPath.row == 0 && indexPath.row == [tableView numberOfRowsInSection:indexPath.section]-1) {
-        CGPathAddRoundedRect(pathRef, nil, bounds, cornerRadius, cornerRadius);
-        addSeparatorLine = NO;
-    } else if (indexPath.row == 0) {
-        CGPathMoveToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMaxY(bounds));
-        CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMinY(bounds), CGRectGetMidX(bounds), CGRectGetMinY(bounds), cornerRadius);
-        CGPathAddArcToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMinY(bounds), CGRectGetMaxX(bounds), CGRectGetMidY(bounds), cornerRadius);
-        CGPathAddLineToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMaxY(bounds));
-    } else if (indexPath.row == [tableView numberOfRowsInSection:indexPath.section]-1) {
-        CGPathMoveToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMinY(bounds));
-        CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMaxY(bounds), CGRectGetMidX(bounds), CGRectGetMaxY(bounds), cornerRadius);
-        CGPathAddArcToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMaxY(bounds), CGRectGetMaxX(bounds), CGRectGetMidY(bounds), cornerRadius);
-        CGPathAddLineToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMinY(bounds));
-    } else {
-        CGPathAddRect(pathRef, nil, bounds);
-    }
-    layer.path = pathRef;
-    CFRelease(pathRef);
-    
-    if (addSeparatorLine) {
-        CALayer *lineLayer = [CALayer layer];
-        CGFloat lineHeight = (1.0f / [UIScreen mainScreen].scale);
-        CGFloat margin = 8.0f;
-        lineLayer.frame = CGRectMake(CGRectGetMinX(bounds) + margin, 0, CGRectGetWidth(bounds) - (margin * 2), lineHeight);
-        lineLayer.backgroundColor = [UIColor colorWithRed:232/255.0f green:233/255.0f blue:234/255.0f alpha:1.0f].CGColor;
-        [layer addSublayer:lineLayer];
-        
-        if (self.app_is_vk && self.enableNightTheme) {
-            lineLayer.backgroundColor = self.nightThemeColorScheme.foregroundColor.CGColor;
-        }
-    }
-    
-    UIView *backgroundView = [[UIView alloc] initWithFrame:bounds];
-    backgroundView.backgroundColor = [UIColor clearColor];
-    [backgroundView.layer insertSublayer:layer atIndex:0];
-    
-    cell.backgroundView = backgroundView;
+    [cell renderBackgroundWithColor:backgroundColor separatorColor:separatorColor forTableView:tableView indexPath:indexPath];
+    [cell updateRenderedBackgroundWithBackgroundColor:backgroundColor separatorColor:separatorColor];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PSSpecifier *specifier = [self specifierForIndexPath:indexPath];
-    if ([specifier.properties[@"cell"] isEqualToString:@"PSGiantIconCell"])
-        return 64.0f;
-    
     return 48.0f;
 }
 

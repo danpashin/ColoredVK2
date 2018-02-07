@@ -16,4 +16,6 @@
 - (void)processImage:(UIImage *)image identifier:(NSString *)identifier andSaveToURL:(NSURL *)urlToSave 
      completionBlock:( void (^)(BOOL success, NSError *error) )completionBlock;
 
+- (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size;
+
 @end

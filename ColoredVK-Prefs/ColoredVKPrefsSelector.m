@@ -74,7 +74,8 @@
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
 {
     if (specifier.properties[@"selectorValue"]) {
-        PSSpecifier *newSpecifier = [PSSpecifier preferenceSpecifierNamed:specifier.name target:self set:nil get:nil detail:nil cell:PSListItemCell edit:nil];
+        PSSpecifier *newSpecifier = [PSSpecifier preferenceSpecifierNamed:specifier.name target:self set:nil get:nil 
+                                                                   detail:nil cell:PSListItemCell edit:nil];
         [newSpecifier setProperty:self.selectorKey forKey:@"key"];
         newSpecifier.identifier = self.selectorKey;
         [super setPreferenceValue:value specifier:newSpecifier];

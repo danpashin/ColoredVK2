@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="KGk-i7-Jjw" userLabel="ColoredVK User Info View" customClass="ColoredVKUserInfoView">
+            <rect key="frame" x="0.0" y="0.0" width="470" height="220"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="-10" translatesAutoresizingMaskIntoConstraints="NO" id="OYp-28-Oaz">
+                    <rect key="frame" x="0.0" y="142" width="470" height="70"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZaO-H7-GLq">
+                            <rect key="frame" x="168" y="0.0" width="134" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="40" id="ej1-el-zXJ"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="28"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                            <size key="shadowOffset" width="0.0" height="0.0"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Email" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BID-UJ-OKR">
+                            <rect key="frame" x="216.5" y="30" width="37" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="40" id="PAs-bM-aQl"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <color key="textColor" red="0.88235294117647056" green="0.88235294117647056" blue="0.88235294117647056" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="70" id="Fgt-my-KEI"/>
+                    </constraints>
+                </stackView>
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="aDx-Xm-moa">
+                    <rect key="frame" x="195" y="54" width="80" height="80"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="80" id="Be9-U0-e45"/>
+                        <constraint firstAttribute="width" constant="80" id="qtM-La-ZNz"/>
+                    </constraints>
+                </imageView>
+            </subviews>
+            <color key="backgroundColor" red="0.25490196078431371" green="0.49019607843137253" blue="0.83921568627450982" alpha="1" colorSpace="deviceRGB"/>
+            <constraints>
+                <constraint firstItem="OYp-28-Oaz" firstAttribute="top" secondItem="aDx-Xm-moa" secondAttribute="bottom" constant="8" id="NBd-Fg-lwx"/>
+                <constraint firstItem="aDx-Xm-moa" firstAttribute="centerX" secondItem="KGk-i7-Jjw" secondAttribute="centerX" id="cj1-J5-8Ci"/>
+                <constraint firstAttribute="bottom" secondItem="OYp-28-Oaz" secondAttribute="bottom" constant="8" id="czs-Uz-XyN"/>
+                <constraint firstAttribute="trailing" secondItem="OYp-28-Oaz" secondAttribute="trailing" id="nNh-3I-OWP"/>
+                <constraint firstItem="OYp-28-Oaz" firstAttribute="leading" secondItem="KGk-i7-Jjw" secondAttribute="leading" id="slF-1N-1oq"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="avatarImageView" destination="aDx-Xm-moa" id="G00-fg-ZGb"/>
+                <outlet property="emailLabel" destination="BID-UJ-OKR" id="Ur4-y5-1Tm"/>
+                <outlet property="nameLabel" destination="ZaO-H7-GLq" id="lHA-rI-VRL"/>
+                <outlet property="stackBottomConstraint" destination="czs-Uz-XyN" id="Whr-8q-paT"/>
+                <outlet property="stackView" destination="OYp-28-Oaz" id="ScG-p0-eEO"/>
+            </connections>
+            <point key="canvasLocation" x="253" y="-283"/>
+        </view>
+    </objects>
+</document>

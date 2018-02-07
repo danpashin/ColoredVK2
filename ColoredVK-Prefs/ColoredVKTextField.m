@@ -144,6 +144,15 @@
     });
 }
 
+- (void)setTextContentType:(UITextContentType)textContentType
+{
+    super.textContentType = textContentType;
+    
+    if ([textContentType containsString:@"pass"]) {
+        self.secureTextEntry = YES;
+    }
+}
+
 
 #pragma mark -
 #pragma mark Getters

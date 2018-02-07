@@ -6,8 +6,8 @@
 //
 //
 
-#import "ColoredVKPrefs.h"
+#import <UIKit/UIKit.h>
 
-@interface ColoredVKAccountController : ColoredVKPrefs
+@interface ColoredVKAccountController : UIViewController
 
 @end

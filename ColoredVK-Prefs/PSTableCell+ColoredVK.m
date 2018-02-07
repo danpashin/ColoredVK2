@@ -49,10 +49,6 @@
         if ([self.accessoryView isKindOfClass:[UISwitch class]]) {
             self.accessoryView.tag = 228;
             
-//            NSNumber *app_is_vk = objc_getAssociatedObject(self, "app_is_vk");
-//            if (!app_is_vk) 
-//                app_is_vk = @NO;
-            
             NSNumber *userChangedColor = objc_getAssociatedObject(self, "change_switch_color");
             if (!userChangedColor)
                 userChangedColor = @NO;
@@ -77,55 +73,6 @@
             
         }
     }
-}
-
-- (void)setShapeColor:(BOOL)tapped
-{
-    if ([self.cellTarget isKindOfClass:[ColoredVKPrefs class]]) {
-        if (self.backgroundView && (self.backgroundView.layer.sublayers.count > 0)) {
-            CAShapeLayer *shapeLayer = (CAShapeLayer *)self.backgroundView.layer.sublayers.firstObject;
-            if ([shapeLayer isKindOfClass:[CAShapeLayer class]]) {
-                
-                ColoredVKNightThemeColorScheme *nightThemeColorScheme = objc_getAssociatedObject(self, "nightThemeColorScheme");
-                
-                NSNumber *app_is_vk = objc_getAssociatedObject(self, "app_is_vk");
-                if (!app_is_vk) 
-                    app_is_vk = @NO;
-                
-                NSNumber *enableNightTheme = objc_getAssociatedObject(self, "enableNightTheme");
-                if (!enableNightTheme)
-                    enableNightTheme = @NO;
-                
-                if (tapped && self.type != PSSwitchCell && self.type != PSTitleValueCell) {
-                    if (enableNightTheme.boolValue && app_is_vk.boolValue)
-                        shapeLayer.fillColor = nightThemeColorScheme.backgroundColor.CGColor;
-                    else
-                        shapeLayer.fillColor = @"#cccccc".hexColorValue.CGColor;
-                } else {
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        if (enableNightTheme.boolValue && app_is_vk.boolValue)
-                            shapeLayer.fillColor = nightThemeColorScheme.foregroundColor.CGColor;
-                        else
-                            shapeLayer.fillColor = [UIColor whiteColor].CGColor;
-                    });
-                }
-            }
-        }
-    }
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
-    [super setSelected:selected animated:animated];
-    
-    [self setShapeColor:selected];
-}
-
-- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
-{
-    [super setHighlighted:highlighted animated:animated];
-    
-    [self setShapeColor:highlighted];
 }
 
 @end
