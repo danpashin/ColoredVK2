@@ -124,7 +124,7 @@
                                                   if (self.completionBlock)
                                                       self.completionBlock();
                                                   
-                                                  if ([ColoredVKNewInstaller sharedInstaller].authenticated) {
+                                                  if ([ColoredVKNewInstaller sharedInstaller].user.authenticated) {
                                                       [self dismiss];
                                                   }
                                               }];

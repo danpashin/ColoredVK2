@@ -43,7 +43,10 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismiss)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(save)];
     self.navigationItem.rightBarButtonItem.enabled = NO;
-    self.title = CVKLocalizedStringFromTableInBundle(@"CHANGE_PASSWORD", @"ColoredVK", self.cvkBundle);
+    self.title = CVKLocalizedStringFromTableInBundle(@"CHANGE_PASSWORD_TITLE", nil, self.cvkBundle);
+    if (@available(iOS 11.0, *)) {
+        self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAlways;
+    }
     
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     self.tableView.delegate = self;
@@ -105,18 +108,23 @@
 
 - (void)dismiss
 {
-    [self.currentPassCell.textField endEditing:YES];
-    [self.passNewCell.textField endEditing:YES];
-    [self.confirmCell.textField endEditing:YES];
+    [self hideKeyboard];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self dismissViewControllerAnimated:YES completion:nil];
     });
 }
 
+- (void)hideKeyboard
+{
+    [self.currentPassCell.textField endEditing:YES];
+    [self.passNewCell.textField endEditing:YES];
+    [self.confirmCell.textField endEditing:YES];
+}
+
 - (void)save
 {
-    [[UIApplication sharedApplication] sendAction:@selector(resignFirstResponder) to:nil from:nil forEvent:nil];
+    [self hideKeyboard];
     
     NSString *currentPass = AES256EncryptStringForAPI(self.currentPassCell.textField.text);
     NSString *newPass = AES256EncryptStringForAPI(self.passNewCell.textField.text);
@@ -126,8 +134,8 @@
     ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     
     NSString *url = [NSString stringWithFormat:@"%@/changePassword.php", kPackageAPIURL];
-    [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:@{@"login": newInstaller.userName, @"password":currentPass, 
-                                                                                                 @"new_password": newPass, @"user_id":newInstaller.userID} 
+    [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:@{@"login": newInstaller.user.name, @"password":currentPass, 
+                                                                                                 @"new_password": newPass, @"user_id":newInstaller.user.userID} 
                                                       success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
                                                           if (!json[@"error"]) {
                                                               if (json[@"status"]) {

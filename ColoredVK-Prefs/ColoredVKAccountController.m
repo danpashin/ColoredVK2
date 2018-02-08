@@ -16,22 +16,27 @@
 #import "ColoredVKAuthPageController.h"
 #import <SafariServices/SafariServices.h>
 #import <MXParallaxHeader.h>
-
-#import <SDWebImageManager.h>
+#import "ColoredVKNavigationController.h"
 
 @interface UINavigationBar ()
 @property (nonatomic, readonly, strong) UIView *_backgroundView;
 @end
 
+@interface MXParallaxHeader ()
+- (void)adjustScrollViewTopInset:(CGFloat)top;
+@end
+
 @interface ColoredVKAccountController () <UITableViewDelegate, UITableViewDataSource, ColoredVKUserInfoViewDelegate>
 
 @property (assign, nonatomic) BOOL controllerIsShown;
-
 @property (assign, nonatomic) BOOL userAuthorized;
 @property (strong, nonatomic) NSBundle *cvkBundle;
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 
 @property (strong, nonatomic) IBOutlet ColoredVKUserInfoView *infoHeaderView;
+@property (strong, nonatomic) UINavigationController *superNavController;
+
+@property (assign, nonatomic) ColoredVKUserAccountStatus accountStatus;
 
 @end
 
@@ -70,6 +75,7 @@
     self.tableView.parallaxHeader.view = self.infoHeaderView;
     self.tableView.parallaxHeader.height = 130.0f;
     self.tableView.parallaxHeader.mode = MXParallaxHeaderModeFill;
+    self.tableView.parallaxHeader.minimumHeight = 64.0f;
     
     [self updateAccountInfo];
 }
@@ -78,17 +84,23 @@
 {
     [super viewWillAppear:animated];
     
+    self.superNavController = self.navigationController;
+    [self.superNavController.navigationBar addObserver:self forKeyPath:@"_backgroundView.alpha" 
+                                               options:NSKeyValueObservingOptionNew context:nil];
     self.controllerIsShown = YES;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     self.controllerIsShown = NO;
+    [self.superNavController.navigationBar removeObserver:self forKeyPath:@"_backgroundView.alpha"];
+    self.superNavController = nil;
     
     [super viewWillDisappear:animated];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change 
+                       context:(void *)context
 {
     if ([keyPath isEqualToString:@"_backgroundView.alpha"] && ([change[NSKeyValueChangeNewKey] floatValue] != 0)) {
         UINavigationBar *navBar = object;
@@ -100,14 +112,8 @@
 {
     _controllerIsShown = controllerIsShown;
     
-    UINavigationBar *navBar = self.navigationController.navigationBar;
-    if (controllerIsShown)
-        [navBar addObserver:self forKeyPath:@"_backgroundView.alpha" options:NSKeyValueObservingOptionNew context:nil];
-    else
-        [navBar removeObserver:self forKeyPath:@"_backgroundView.alpha"];
-    
+    UINavigationBar *navBar = self.superNavController.navigationBar;    
     dispatch_async(dispatch_get_main_queue(), ^{
-        navBar.tag = controllerIsShown ? 26 : 30;
         navBar.tintColor = [UIColor whiteColor];
         
         [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
@@ -123,6 +129,11 @@
 
 - (void)infoView:(ColoredVKUserInfoView *)infoView didUpdateHeight:(CGFloat)height
 {
+    if (SYSTEM_VERSION_IS_LESS_THAN(@"10.3.3")) {
+        height += 64.0f;
+        [self.tableView.parallaxHeader adjustScrollViewTopInset:height];
+    }
+    
     self.tableView.parallaxHeader.height = height;
 }
 
@@ -153,18 +164,41 @@
     if (self.userAuthorized) {
         if (indexPath.section == 0 && indexPath.row == 0) {
             cell = [tableView dequeueReusableCellWithIdentifier:@"accountStatusCell" forIndexPath:indexPath];
+            cell.textLabel.text = @"Статус аккаунта";
+            if (self.accountStatus == ColoredVKUserAccountStatusPaid) {
+                cell.detailTextLabel.text = @"Оплачен";
+                if (!cell.accessoryView) {
+                    UIView *contentAccessoryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 44, 30)];
+                    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 0, 30, 30)];
+                    imageView.image = [UIImage imageNamed:@"TickIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+                    imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                    imageView.tintColor = [UIColor colorWithRed:102/255.0f green:179/255.0f blue:46/255.0f alpha:1.0f];
+                    [contentAccessoryView addSubview:imageView];
+                    cell.accessoryView = contentAccessoryView;
+                } else {
+                    cell.accessoryView.hidden = NO;
+                }
+            } else {
+                cell.detailTextLabel.text = @"Бесплатный";
+                cell.accessoryView.hidden = YES;
+            }
         } else if (indexPath.section == 0 && indexPath.row == 1) {
             cell = [tableView dequeueReusableCellWithIdentifier:@"aboutStatusCell" forIndexPath:indexPath];
+            cell.textLabel.text = @"Подробнее о статусах";
         } else if (indexPath.section == 1 && indexPath.row == 0) {
             cell = [tableView dequeueReusableCellWithIdentifier:@"changePasswordCell" forIndexPath:indexPath];
+            cell.textLabel.text = @"Изменить пароль";
         } else if (indexPath.section == 2 && indexPath.row == 0) {
             cell = [tableView dequeueReusableCellWithIdentifier:@"logoutCell" forIndexPath:indexPath];
+            cell.textLabel.text = @"Выйти из аккаунта";
         }
     } else {
         if (indexPath.section == 0 && indexPath.row == 0) {
             cell = [tableView dequeueReusableCellWithIdentifier:@"signinCell" forIndexPath:indexPath];
+            cell.textLabel.text = @"Войдите в свой аккаунт";
         } else if (indexPath.section == 1 && indexPath.row == 0) {
             cell = [tableView dequeueReusableCellWithIdentifier:@"signupCell" forIndexPath:indexPath];
+            cell.textLabel.text = @"Зарегистрировать";
         }
     }
     
@@ -236,9 +270,10 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-        self.userAuthorized = newInstaller.authenticated;
-        self.infoHeaderView.username = newInstaller.userName;
-        self.infoHeaderView.email = nil;
+        self.userAuthorized = newInstaller.user.authenticated;
+        self.infoHeaderView.username = newInstaller.user.name;
+        self.infoHeaderView.email = newInstaller.user.email;
+        self.accountStatus = newInstaller.user.accountStatus;
         [self updateAvatar];
         
         [self.tableView reloadData];
@@ -250,46 +285,8 @@
     ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     NSNumber *vkUserID = newInstaller.vkUserID;
     
-    if (vkUserID.integerValue != 0) {
-        
-        SDWebImageManager *imageManager = [SDWebImageManager sharedManager];
-        NSString *imageCacheKey = [NSString stringWithFormat:@"cvk_vk_user_%@", vkUserID];
-        UIImage *cachedAvatar = [imageManager.imageCache imageFromCacheForKey:imageCacheKey];
-        if (cachedAvatar) {
-            self.infoHeaderView.avatar = cachedAvatar;
-            return;
-        }
-        NSString *jsonURL = @"https://api.vk.com/method/users.get";
-        NSDictionary *params = @{@"user_ids":vkUserID, @"fields":@"photo_100", @"v":@"5.71"};
-        NSError *requestError = nil;
-        NSMutableURLRequest *request = [newInstaller.networkController requestWithMethod:@"GET" URLString:jsonURL 
-                                                                              parameters:params error:&requestError];
-        if (!requestError) {
-            [request setValue:@"VK" forHTTPHeaderField:@"User-Agent"];
-            [newInstaller.networkController sendRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData) {
-                NSDictionary *json = [NSJSONSerialization JSONObjectWithData:rawData options:0 error:nil];
-                if ([json isKindOfClass:[NSDictionary class]]) {
-                    NSArray *array = json[@"response"];
-                    if ([array isKindOfClass:[NSArray class]]) {
-                        NSDictionary *responseDict = array.firstObject;
-                        if ([responseDict isKindOfClass:[NSDictionary class]]) {
-                            NSString *photoURL = responseDict[@"photo_100"];
-                            if (photoURL) {
-                                [imageManager loadImageWithURL:[NSURL URLWithString:photoURL] 
-                                                       options:SDWebImageHighPriority|SDWebImageCacheMemoryOnly progress:nil 
-                                                     completed:^(UIImage *image, NSData *data, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                                         [imageManager.imageCache storeImage:image forKey:imageCacheKey completion:nil];
-                                                         self.infoHeaderView.avatar = image;
-                                                     }];
-
-                            }
-                        }
-                    }
-                    
-                    
-                }
-            } failure:nil];
-        }
+    if (vkUserID) {
+        [self.infoHeaderView loadVKAvatarForUserID:vkUserID];
     }
 }
 
@@ -324,8 +321,7 @@
 - (void)actionChangePassword
 {
     ColoredVKPasswordViewController *passController = [ColoredVKPasswordViewController new];
-    
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:passController];
+    ColoredVKNavigationController *nav = [[ColoredVKNavigationController alloc] initWithRootViewController:passController];
     nav.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:nav animated:YES completion:nil];
 }

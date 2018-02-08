@@ -14,6 +14,7 @@
 #import "ColoredVKAlertController.h"
 #import <SafariServices/SafariServices.h>
 #import "ColoredVKWebViewController.h"
+#import "ColoredVKAccountController.h"
 
 @interface ColoredVKMainPrefsController ()
 
@@ -33,7 +34,7 @@ NSArray <NSString *> *specifiersToEnable;
         NSMutableArray *specifiersArray = [self specifiersForPlistName:@"Main" localize:NO].mutableCopy;
         
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller]; 
-        BOOL shouldDisable = (!newInstaller.purchased || !newInstaller.activated);
+        BOOL shouldDisable = (newInstaller.user.accountStatus != ColoredVKUserAccountStatusPaid);
         
         self.showFreeVersionFooter = shouldDisable;
         
@@ -47,7 +48,8 @@ NSArray <NSString *> *specifiersToEnable;
             }
         }
         
-        NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.bundle, nil), self.tweakVersion, self.vkAppVersion ];
+        NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.bundle, nil), 
+                                self.tweakVersion, self.vkAppVersion];
         PSSpecifier *footer = [PSSpecifier emptyGroupSpecifier];
         [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2017"] forKey:@"footerText"];
         [footer setProperty:@"1" forKey:@"footerAlignment"];
@@ -194,6 +196,17 @@ NSArray <NSString *> *specifiersToEnable;
     }
     
     return height;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    PSSpecifier *specifier = [self specifierForIndexPath:indexPath];
+    if ([specifier.identifier isEqualToString:@"manageAccount"]) {
+        ColoredVKAccountController *accountController = [ColoredVKAccountController new];
+        [self.navigationController pushViewController:accountController animated:YES];
+    } else {
+        [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+    }
 }
 
 @end

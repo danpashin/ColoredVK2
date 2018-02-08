@@ -90,8 +90,9 @@
     }
 }
 
-- (void)updateSecureState
+- (void)updateSecureState:(UIButton *)sender
 {
+    sender.selected = !sender.selected;
     self.secureTextEntry = !self.secureTextEntry;
     
     NSString *text = self.text;
@@ -163,9 +164,13 @@
     if (!_securedShowButton) {
         _securedShowButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _securedShowButton.frame = [self rightViewRectForBounds:self.bounds];
-        UIImage *clearImage = [UIImage imageNamed:@"ViewIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
-        [_securedShowButton setImage:clearImage forState:UIControlStateNormal];
-        [_securedShowButton addTarget:self action:@selector(updateSecureState) forControlEvents:UIControlEventTouchUpInside];
+        [_securedShowButton addTarget:self action:@selector(updateSecureState:) forControlEvents:UIControlEventTouchUpInside];
+        
+        NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+        UIImage *viewIcon = [UIImage imageNamed:@"ViewIcon" inBundle:cvkBundle compatibleWithTraitCollection:nil];
+        UIImage *viewIconSelected = [UIImage imageNamed:@"ViewIcon-selected" inBundle:cvkBundle compatibleWithTraitCollection:nil];
+        [_securedShowButton setImage:viewIcon forState:UIControlStateNormal];
+        [_securedShowButton setImage:viewIconSelected forState:UIControlStateSelected];
     }
     return _securedShowButton;
 }

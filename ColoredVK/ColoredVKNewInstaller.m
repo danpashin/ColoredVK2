@@ -31,7 +31,6 @@
 @interface ColoredVKNewInstaller ()
 
 @property (copy, nonatomic) NSString *deviceModel;
-@property (copy, nonatomic) NSString *token;
 
 @property (strong, nonatomic) UIWindow *hudWindow;
 @property (weak, nonatomic) ColoredVKHUD *hud;
@@ -43,11 +42,6 @@
 
 void(^installerCompletionBlock)(BOOL purchased);
 NSString *key;
-
-BOOL _innerUserAuthorized = NO;
-BOOL _innerPurchased = NO;
-BOOL _innerActivated = NO;
-BOOL _innerBanned = NO;
 
 
 
@@ -67,6 +61,7 @@ BOOL _innerBanned = NO;
     if (self) {
         _networkController = [ColoredVKNetworkController controller];
         key = AES256EncryptStringForAPI([NSProcessInfo processInfo].globallyUniqueString);
+        _user = [ColoredVKUser new];
         
         struct utsname systemInfo;
         uname(&systemInfo);
@@ -142,28 +137,35 @@ BOOL _innerBanned = NO;
         NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
         if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0)) {
             if (dict[@"Device"]) {
+#ifndef COMPILE_APP
                 if (![dict[@"Device"] isEqualToString:self.deviceModel]) {
                     [self writeFreeLicence];
                 } else {
-                    self.token = dict[@"token"];
-                    _userID = dict[@"user_id"];
-                    _userName = dict[@"Login"];
-                    if (_userName.length > 0) {
-                        _innerUserAuthorized = YES;
+#endif
+                    self.user.name = dict[@"Login"];
+                    self.user.userID = dict[@"user_id"];
+                    self.user.accessToken = dict[@"token"];
+                    self.user.email = dict[@"email"];
+                    if (self.user.name.length > 0) {
+                        self.user.authenticated = YES;
                         
-                        NSString *tokenString = [NSString stringWithFormat:@"%@", self.token];
+                        NSString *tokenString = [NSString stringWithFormat:@"%@", self.user.accessToken];
                         tokenString = [tokenString stringByReplacingOccurrencesOfString:@" " withString:@""];
                         if (tokenString.length < 20) {
                             [self forceUpdateToken];
                         }
                     }
-                    
-                    _innerPurchased = [dict[@"purchased"] boolValue];
-                    _innerActivated = [dict[@"activated"] boolValue];
-                    if (_innerPurchased && _innerActivated && installerCompletionBlock) {
-                        installerCompletionBlock(YES);
+                    BOOL purchased = [dict[@"purchased"] boolValue];
+                    if (purchased) {
+                        self.user.accountStatus = ColoredVKUserAccountStatusPaid;
+                        
+                        if (installerCompletionBlock) {
+                            installerCompletionBlock(YES);
+                        }
                     }
+#ifndef COMPILE_APP
                 }
+#endif
             } else {
                 [self writeFreeLicence];
             }
@@ -175,12 +177,12 @@ BOOL _innerBanned = NO;
 
 - (void)actionPurchase
 {
-    if (self.userID) {
+    if (self.user.userID) {
         ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
         webController.url = [NSURL URLWithString:kPackagePurchaseLink];
         
         NSError *requestError = nil;
-        NSDictionary *params = @{@"user_id" :self.userID, @"profile_team_id": self.appTeamIdentifier, @"from": self.sellerName};
+        NSDictionary *params = @{@"user_id" :self.user.userID, @"profile_team_id": self.appTeamIdentifier, @"from": self.sellerName};
         NSURLRequest *request = [self.networkController requestWithMethod:@"POST" URLString:webController.url.absoluteString parameters:params error:&requestError];
         
         if (!requestError) {
@@ -240,58 +242,36 @@ BOOL _innerBanned = NO;
 
 
 #pragma mark -
-#pragma mark Getters
-#pragma mark -
-
-- (BOOL)purchased
-{    
-    return _innerPurchased;
-}
-
-- (BOOL)activated
-{    
-    return _innerActivated;
-}
-
-- (BOOL)authenticated
-{
-    return _innerUserAuthorized;
-}
-
-- (BOOL)banned
-{
-    return _innerBanned;
-}
-
-
-#pragma mark -
 #pragma mark Backend
 #pragma mark -
 - (void)updateAccountInfo:( void(^)(void) )completionBlock
 {
-    if (_innerUserAuthorized && self.userID) {
-        if (_innerPurchased && _innerActivated) {
-            if (completionBlock)
-                completionBlock();
+    if (self.user.userID) {
+        if ((self.user.accountStatus == ColoredVKUserAccountStatusPaid) && completionBlock) {
+            completionBlock();
         } 
         NSString *url = [NSString stringWithFormat:@"%@/payment/get_info.php", kPackageAPIURL];
-        NSDictionary *parameters = @{@"user_id":self.userID, @"token":self.token};
+        NSDictionary *parameters = @{@"user_id":self.user.userID, @"token":self.user.accessToken};
         
         [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:parameters
                                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
                                                       if (!json[@"error"]) {
                                                           NSDictionary *response = json[@"response"];
-                                                          
-                                                          _innerBanned = [response[@"is_banned"] boolValue];
-                                                          _innerPurchased = [response[@"is_purchased"] boolValue];
-                                                          _innerActivated = [response[@"is_activated"] boolValue];
-                                                          
-                                                          NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
-                                                          NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
-                                                          dict[@"purchased"] = @(_innerPurchased);
-                                                          dict[@"activated"] = @(_innerActivated);
-                                                          NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
-                                                          [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
+                                                          if ([response isKindOfClass:[NSDictionary class]]) {
+                                                              BOOL purchased = [response[@"is_purchased"] boolValue];
+                                                              if (purchased)
+                                                                  self.user.accountStatus = ColoredVKUserAccountStatusPaid;
+                                                              
+                                                              BOOL banned = [response[@"is_banned"] boolValue];
+                                                              if (banned)
+                                                                  self.user.accountStatus = ColoredVKUserAccountStatusBanned;
+                                                              
+                                                              NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
+                                                              NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
+                                                              dict[@"purchased"] = @(purchased);
+                                                              NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
+                                                              [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
+                                                          }
                                                       }
                                                       
                                                       if (completionBlock) {
@@ -302,7 +282,7 @@ BOOL _innerBanned = NO;
                                                   } 
                                                   failure:nil];
     } else {
-        _innerBanned = NO;
+        [self.user clearUser];
         if (completionBlock)
             completionBlock();
     }
@@ -312,14 +292,9 @@ BOOL _innerBanned = NO;
 
 - (void)writeFreeLicence
 {
-    _innerBanned = NO;
-    _innerActivated = NO;
-    _innerPurchased = NO;
-    _innerUserAuthorized = NO;
-    _token = nil;
-    _userName = nil;
-    _userID = nil;
-    NSDictionary *dict = @{@"purchased":@NO, @"activated":@NO, @"Device":self.deviceModel};
+    [self.user clearUser];
+    
+    NSDictionary *dict = @{@"purchased":@NO, @"Device":self.deviceModel};
     NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
     [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
 }
@@ -337,7 +312,6 @@ BOOL _innerBanned = NO;
     [self showHudWithText:CVKLocalizedString(@"PLEASE_WAIT")];
     
     NSString *userPassword = AES256EncryptStringForAPI(password);
-    _userName = userName;
     
     NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", self.deviceModel, [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];    
     NSDictionary *parameters = @{@"login": userName, @"password": userPassword, @"action": @"login", 
@@ -364,27 +338,22 @@ BOOL _innerBanned = NO;
                                                  if ([json[@"key"] isEqualToString:key]) {
                                                      NSMutableDictionary *dict = @{@"Device":self.deviceModel}.mutableCopy;
                                                      
+                                                     self.user.name = userName;
+                                                     self.user.userID = json[@"user_id"];
+                                                     self.user.email = json[@"user_email"];
+                                                     self.user.accessToken = json[@"user_token"];
+                                                     self.user.authenticated = YES;
+                                                     
+                                                     NSNumber *purchased = json[@"purchased"];
+                                                     if (purchased.boolValue)
+                                                         self.user.accountStatus = ColoredVKUserAccountStatusPaid;
+                                                     
                                                      dict[@"Login"] = userName;
+                                                     dict[@"user_id"] = self.user.userID;
+                                                     dict[@"email"] = self.user.email;
+                                                     dict[@"token"] = self.user.accessToken;
+                                                     dict[@"purchased"] = purchased;
                                                      
-                                                     if (json[@"user_id"]) {
-                                                         dict[@"user_id"] = json[@"user_id"];
-                                                         _userID = json[@"user_id"];
-                                                     }
-                                                     
-                                                     if (json[@"user_token"]) {
-                                                         dict[@"token"] = json[@"user_token"];
-                                                         _token = json[@"user_token"];
-                                                     }
-                                                     
-                                                     if (json[@"purchased"]) {
-                                                         dict[@"purchased"] = json[@"purchased"];
-                                                         _innerPurchased = [json[@"purchased"] boolValue];
-                                                     }
-                                                     
-                                                     if (json[@"activated"]) {
-                                                         dict[@"activated"] = json[@"activated"];
-                                                         _innerActivated = [json[@"activated"] boolValue];
-                                                     }
                                                      
                                                      [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
                                                      
@@ -393,11 +362,8 @@ BOOL _innerBanned = NO;
                                                      [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
                                                      
                                                      if (!writingError) {
-                                                         _innerUserAuthorized = YES;
                                                          showAlertBlock(nil);
                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-                                                         
-                                                         BOOL purchased = ([json[@"activated"] boolValue] && [json[@"purchased"] boolValue]);
                                                          
                                                          if (purchased && installerCompletionBlock) 
                                                              installerCompletionBlock(YES);
@@ -417,7 +383,7 @@ BOOL _innerBanned = NO;
 
 - (void)logoutWithСompletionBlock:( void(^)(void) )completionBlock;
 {
-    if (!_innerUserAuthorized)
+    if (!self.user.authenticated)
         return;
     
     [self showHudWithText:CVKLocalizedString(@"PLEASE_WAIT")];
@@ -434,7 +400,7 @@ BOOL _innerBanned = NO;
     };
     
     NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", self.deviceModel, [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];
-    NSDictionary *parameters = @{@"login": self.userName, @"token": self.token, @"action": @"logout", 
+    NSDictionary *parameters = @{@"login": self.user.name, @"token": self.user.accessToken, @"action": @"logout", 
                                  @"version": kDRMPackageVersion, @"device": device, @"key": key
                                  };
     
@@ -444,6 +410,7 @@ BOOL _innerBanned = NO;
                                                       if ([json[@"key"] isEqualToString:key]) {
                                                           [self writeFreeLicence];
                                                           newCompletionBlock(nil);
+                                                          self.user.authenticated = NO;
                                                         if (installerCompletionBlock)
                                                             installerCompletionBlock(NO);
                                                           [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
@@ -461,14 +428,14 @@ BOOL _innerBanned = NO;
 
 - (void)forceUpdateToken
 {
-    if (!self.userName)
+    if (!self.user.name)
         return;
     
     NSString *url = [NSString stringWithFormat:@"%@/updateToken.php", kPackageAPIURL];
-    [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters: @{@"user_login": self.userName} 
+    [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters: @{@"user_login": self.user.name} 
                                               success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
                                                   if (json[@"new_token"]) {
-                                                      self.token = json[@"new_token"];
+                                                      self.user.accessToken = json[@"new_token"];
                                                       
                                                       NSData *licenceDecryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
                                                       NSMutableDictionary *licenceDict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:licenceDecryptedData] mutableCopy];

@@ -83,7 +83,7 @@
 
 - (void)present
 {
-    [self presentFromController:[UIApplication sharedApplication].keyWindow.rootViewController];
+    [self presentFromController:[UIApplication sharedApplication].keyWindow.rootViewController.presentedViewController];
 }
 
 - (void)presentFromController:(UIViewController *)viewController

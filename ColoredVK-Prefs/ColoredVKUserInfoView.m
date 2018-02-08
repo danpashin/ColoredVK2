@@ -7,6 +7,8 @@
 
 #import "ColoredVKUserInfoView.h"
 #import "PrefixHeader.h"
+#import "SDWebImageManager.h"
+#import "ColoredVKNewInstaller.h"
 
 @interface ColoredVKUserInfoView ()
 
@@ -69,6 +71,7 @@
         self.avatarImageView.image = imageToChange;
     });
 }
+
 - (void)setupConstraints
 {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -77,7 +80,7 @@
         if (self.nameLabel.text.length == 0 && self.emailLabel.text.length == 0) {
             stackBottomConstant = -CGRectGetHeight(self.stackView.frame) + 2 * stackBottomConstant;
         } else if (self.nameLabel.text.length > 0 && self.emailLabel.text.length == 0) {
-            stackBottomConstant = -stackBottomConstant * 2;
+            stackBottomConstant = -stackBottomConstant * 2.0f;
         }
         
         self.stackBottomConstraint.constant = stackBottomConstant;
@@ -91,6 +94,49 @@
         if ([self.delegate respondsToSelector:@selector(infoView:didUpdateHeight:)])
             [self.delegate infoView:self didUpdateHeight:self.preferredHeight];
     });
+}
+
+- (void)loadVKAvatarForUserID:(NSNumber *)userID
+{
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
+    SDWebImageManager *imageManager = [SDWebImageManager sharedManager];
+    NSString *imageCacheKey = [NSString stringWithFormat:@"cvk_vk_user_%@", userID];
+    UIImage *cachedAvatar = [imageManager.imageCache imageFromCacheForKey:imageCacheKey];
+    if (cachedAvatar) {
+        self.avatar = cachedAvatar;
+        return;
+    }
+    NSString *jsonURL = @"https://api.vk.com/method/users.get";
+    NSDictionary *params = @{@"user_ids":userID, @"fields":@"photo_100", @"v":@"5.71"};
+    NSError *requestError = nil;
+    NSMutableURLRequest *request = [newInstaller.networkController requestWithMethod:@"GET" URLString:jsonURL 
+                                                                          parameters:params error:&requestError];
+    if (!requestError) {
+        [request setValue:@"VK" forHTTPHeaderField:@"User-Agent"];
+        [newInstaller.networkController sendRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData) {
+            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:rawData options:0 error:nil];
+            if ([json isKindOfClass:[NSDictionary class]]) {
+                NSArray *array = json[@"response"];
+                if ([array isKindOfClass:[NSArray class]]) {
+                    NSDictionary *responseDict = array.firstObject;
+                    if ([responseDict isKindOfClass:[NSDictionary class]]) {
+                        NSString *photoURL = responseDict[@"photo_100"];
+                        if (photoURL) {
+                            [imageManager loadImageWithURL:[NSURL URLWithString:photoURL] 
+                                                   options:SDWebImageHighPriority|SDWebImageCacheMemoryOnly 
+                                                  progress:nil 
+                                                 completed:^(UIImage *image, NSData *data, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                                     [imageManager.imageCache storeImage:image forKey:imageCacheKey completion:nil];
+                                                     self.avatar = image;
+                                                 }];
+                        }
+                    }
+                }
+                
+                
+            }
+        } failure:nil];
+    }
 }
 
 @end
