@@ -215,8 +215,6 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
-			<key>detail</key>
-			<string>ColoredVKAccountController</string>
 			<key>plistToLoad</key>
 			<string>ManageAccount</string>
 			<key>label</key>

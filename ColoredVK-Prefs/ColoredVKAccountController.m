@@ -11,7 +11,7 @@
 #import "PrefixHeader.h"
 #import "ColoredVKUserInfoView.h"
 #import "UITableViewCell+ColoredVK.h"
-#import "ColoredVKPasswordViewController.h"
+#import "ColoredVKPassChangeController.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKAuthPageController.h"
 #import <SafariServices/SafariServices.h>
@@ -320,10 +320,8 @@
 
 - (void)actionChangePassword
 {
-    ColoredVKPasswordViewController *passController = [ColoredVKPasswordViewController new];
-    ColoredVKNavigationController *nav = [[ColoredVKNavigationController alloc] initWithRootViewController:passController];
-    nav.modalPresentationStyle = UIModalPresentationFormSheet;
-    [self presentViewController:nav animated:YES completion:nil];
+    ColoredVKPassChangeController *passController = [ColoredVKPassChangeController allocFromStoryboard];
+    [passController showFromViewController:self];
 }
 
 @end

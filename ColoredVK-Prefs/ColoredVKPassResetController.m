@@ -56,7 +56,7 @@
 
 
 #pragma mark -
-#pragma mark UITextFieldDelegate
+#pragma mark ColoredVKTextFieldDelegate
 #pragma mark -
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;
@@ -92,6 +92,11 @@
         return NO;
     }
     
+    return YES;
+}
+
+- (BOOL)textFieldShouldRemoveWhiteSpaces:(ColoredVKTextField *)textField
+{
     return YES;
 }
 
@@ -132,9 +137,9 @@
                                                                                      if (json[@"response"]) {
                                                                                          NSDictionary *responseDict = json[@"response"];
                                                                                          
-                                                                                         int code = [responseDict[@"code"] intValue];
+                                                                                         NSInteger code = [responseDict[@"code"] integerValue];
                                                                                          if (code != 1) {
-                                                                                             NSString *message = [NSString stringWithFormat:@"Unknow error\n(%i)", code];
+                                                                                             NSString *message = [NSString stringWithFormat:@"Unknow error\n(%ld)", (long)code];
                                                                                              [hud showFailureWithStatus:message];
                                                                                          } else {
                                                                                              hud.didHiddenBlock = ^{

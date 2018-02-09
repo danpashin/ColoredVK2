@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ColoredVKNetworkController.h"
-#import "ColoredVKUser.h"
+#import "ColoredVKUserModel.h"
 
 @interface ColoredVKNewInstaller : NSObject
 
@@ -17,7 +17,7 @@ FOUNDATION_EXPORT void(^installerCompletionBlock)(BOOL purchased);
 + (instancetype)sharedInstaller;
 
 @property (strong, nonatomic, readonly) ColoredVKNetworkController *networkController;
-@property (strong, nonatomic, readonly) ColoredVKUser *user;
+@property (strong, nonatomic, readonly) ColoredVKUserModel *user;
 @property (strong, nonatomic) NSNumber *vkUserID;
 
 @property (copy, nonatomic, readonly) NSString *appTeamIdentifier;

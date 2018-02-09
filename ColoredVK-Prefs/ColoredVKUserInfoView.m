@@ -29,7 +29,7 @@
 {
     [super awakeFromNib];
     
-    self.avatarImageView.layer.cornerRadius = CGRectGetHeight(self.avatarImageView.frame) / 2;
+    self.avatarImageView.layer.cornerRadius = CGRectGetHeight(self.avatarImageView.frame) / 2.0f;
     self.avatarImageView.layer.masksToBounds = YES;
     
     self.defaultAvatar = [UIImage imageNamed:@"UserBigIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH]
@@ -78,7 +78,7 @@
         CGFloat stackBottomConstant = 8.0f;
         
         if (self.nameLabel.text.length == 0 && self.emailLabel.text.length == 0) {
-            stackBottomConstant = -CGRectGetHeight(self.stackView.frame) + 2 * stackBottomConstant;
+            stackBottomConstant = -CGRectGetHeight(self.stackView.frame) + 2.0f * stackBottomConstant;
         } else if (self.nameLabel.text.length > 0 && self.emailLabel.text.length == 0) {
             stackBottomConstant = -stackBottomConstant * 2.0f;
         }
@@ -87,7 +87,6 @@
         
         CGFloat bottomConstantForHeight = (stackBottomConstant > 0.0f) ? stackBottomConstant : 0.0f;
         CGFloat heightForLabels = (self.nameLabel.text.length > 0) ? 40.0f : 0.0f;
-        heightForLabels *= (self.emailLabel.text.length > 0) ? 2.0f : 1.0f;
         
         _preferredHeight = bottomConstantForHeight + heightForLabels + 8.0f + CGRectGetHeight(self.avatarImageView.frame);
         
@@ -99,6 +98,11 @@
 - (void)loadVKAvatarForUserID:(NSNumber *)userID
 {
     ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
+    if (!newInstaller.user.authenticated) {
+        self.avatar = nil;
+        return;
+    }
+    
     SDWebImageManager *imageManager = [SDWebImageManager sharedManager];
     NSString *imageCacheKey = [NSString stringWithFormat:@"cvk_vk_user_%@", userID];
     UIImage *cachedAvatar = [imageManager.imageCache imageFromCacheForKey:imageCacheKey];
