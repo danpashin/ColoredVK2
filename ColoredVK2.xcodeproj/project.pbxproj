@@ -22,12 +22,6 @@
 
 /* Begin PBXBuildFile section */
 		2C09F2E2ED3F21C2C0A4AA3D /* libPods-ColoredVK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AACAFDE1D7437A5F773B73B /* libPods-ColoredVK.a */; };
-		A50138D4201F1CD10007300C /* ColoredVKNavigationBar.h in Headers */ = {isa = PBXBuildFile; fileRef = A50138D2201F1CD10007300C /* ColoredVKNavigationBar.h */; };
-		A50138D5201F1CD10007300C /* ColoredVKNavigationBar.h in Headers */ = {isa = PBXBuildFile; fileRef = A50138D2201F1CD10007300C /* ColoredVKNavigationBar.h */; };
-		A50138D6201F1CD10007300C /* ColoredVKNavigationBar.h in Headers */ = {isa = PBXBuildFile; fileRef = A50138D2201F1CD10007300C /* ColoredVKNavigationBar.h */; };
-		A50138D7201F1CD10007300C /* ColoredVKNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A50138D3201F1CD10007300C /* ColoredVKNavigationBar.m */; };
-		A50138D8201F1CD10007300C /* ColoredVKNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A50138D3201F1CD10007300C /* ColoredVKNavigationBar.m */; };
-		A50138D9201F1CD10007300C /* ColoredVKNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A50138D3201F1CD10007300C /* ColoredVKNavigationBar.m */; };
 		A50138DC201F2D070007300C /* ColoredVKAccountRestoreController.h in Headers */ = {isa = PBXBuildFile; fileRef = A50138DA201F2D070007300C /* ColoredVKAccountRestoreController.h */; };
 		A50138DD201F2D070007300C /* ColoredVKAccountRestoreController.h in Headers */ = {isa = PBXBuildFile; fileRef = A50138DA201F2D070007300C /* ColoredVKAccountRestoreController.h */; };
 		A50138DE201F2D070007300C /* ColoredVKAccountRestoreController.h in Headers */ = {isa = PBXBuildFile; fileRef = A50138DA201F2D070007300C /* ColoredVKAccountRestoreController.h */; };
@@ -48,14 +42,14 @@
 		A50731D51CD535130088EF9F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A50731D41CD535130088EF9F /* QuartzCore.framework */; };
 		A5079FB61CC92157005B9693 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FB51CC92157005B9693 /* Foundation.framework */; };
 		A5079FCB1CC9261B005B9693 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FCA1CC9261B005B9693 /* UIKit.framework */; };
-		A50883A61FFA48BC00C05E2A /* ColoredVKUser.h in Headers */ = {isa = PBXBuildFile; fileRef = A50883A41FFA48BC00C05E2A /* ColoredVKUser.h */; };
-		A50883A71FFA48BC00C05E2A /* ColoredVKUser.h in Headers */ = {isa = PBXBuildFile; fileRef = A50883A41FFA48BC00C05E2A /* ColoredVKUser.h */; };
-		A50883A81FFA48BC00C05E2A /* ColoredVKUser.h in Headers */ = {isa = PBXBuildFile; fileRef = A50883A41FFA48BC00C05E2A /* ColoredVKUser.h */; };
-		A50883A91FFA48BC00C05E2A /* ColoredVKUser.h in Headers */ = {isa = PBXBuildFile; fileRef = A50883A41FFA48BC00C05E2A /* ColoredVKUser.h */; };
-		A50883AA1FFA48BC00C05E2A /* ColoredVKUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A50883A51FFA48BC00C05E2A /* ColoredVKUser.m */; };
-		A50883AB1FFA48BC00C05E2A /* ColoredVKUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A50883A51FFA48BC00C05E2A /* ColoredVKUser.m */; };
-		A50883AC1FFA48BC00C05E2A /* ColoredVKUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A50883A51FFA48BC00C05E2A /* ColoredVKUser.m */; };
-		A50883AD1FFA48BC00C05E2A /* ColoredVKUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A50883A51FFA48BC00C05E2A /* ColoredVKUser.m */; };
+		A50883A61FFA48BC00C05E2A /* ColoredVKUserModel.h in Headers */ = {isa = PBXBuildFile; fileRef = A50883A41FFA48BC00C05E2A /* ColoredVKUserModel.h */; };
+		A50883A71FFA48BC00C05E2A /* ColoredVKUserModel.h in Headers */ = {isa = PBXBuildFile; fileRef = A50883A41FFA48BC00C05E2A /* ColoredVKUserModel.h */; };
+		A50883A81FFA48BC00C05E2A /* ColoredVKUserModel.h in Headers */ = {isa = PBXBuildFile; fileRef = A50883A41FFA48BC00C05E2A /* ColoredVKUserModel.h */; };
+		A50883A91FFA48BC00C05E2A /* ColoredVKUserModel.h in Headers */ = {isa = PBXBuildFile; fileRef = A50883A41FFA48BC00C05E2A /* ColoredVKUserModel.h */; };
+		A50883AA1FFA48BC00C05E2A /* ColoredVKUserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = A50883A51FFA48BC00C05E2A /* ColoredVKUserModel.m */; };
+		A50883AB1FFA48BC00C05E2A /* ColoredVKUserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = A50883A51FFA48BC00C05E2A /* ColoredVKUserModel.m */; };
+		A50883AC1FFA48BC00C05E2A /* ColoredVKUserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = A50883A51FFA48BC00C05E2A /* ColoredVKUserModel.m */; };
+		A50883AD1FFA48BC00C05E2A /* ColoredVKUserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = A50883A51FFA48BC00C05E2A /* ColoredVKUserModel.m */; };
 		A50883B01FFA4E5E00C05E2A /* ColoredVKAuthPageController.h in Headers */ = {isa = PBXBuildFile; fileRef = A50883AE1FFA4E5E00C05E2A /* ColoredVKAuthPageController.h */; };
 		A50883B11FFA4E5E00C05E2A /* ColoredVKAuthPageController.h in Headers */ = {isa = PBXBuildFile; fileRef = A50883AE1FFA4E5E00C05E2A /* ColoredVKAuthPageController.h */; };
 		A50883B21FFA4E5E00C05E2A /* ColoredVKAuthPageController.h in Headers */ = {isa = PBXBuildFile; fileRef = A50883AE1FFA4E5E00C05E2A /* ColoredVKAuthPageController.h */; };
@@ -207,6 +201,9 @@
 		A54E41FA1EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */; };
 		A55434FB1E636B19003B4256 /* Tweak.h in Headers */ = {isa = PBXBuildFile; fileRef = A55434FA1E636B19003B4256 /* Tweak.h */; };
 		A55434FC1E636B19003B4256 /* Tweak.h in Headers */ = {isa = PBXBuildFile; fileRef = A55434FA1E636B19003B4256 /* Tweak.h */; };
+		A559969D202DB59500E1861D /* ColoredVKPassChangeController.h in Headers */ = {isa = PBXBuildFile; fileRef = A559969A202DB59500E1861D /* ColoredVKPassChangeController.h */; };
+		A559969E202DB59500E1861D /* ColoredVKPassChangeController.h in Headers */ = {isa = PBXBuildFile; fileRef = A559969A202DB59500E1861D /* ColoredVKPassChangeController.h */; };
+		A55996A1202DB59500E1861D /* ColoredVKPassChangeController.m in Sources */ = {isa = PBXBuildFile; fileRef = A559969B202DB59500E1861D /* ColoredVKPassChangeController.m */; };
 		A56147B71EA0140900B3D8C8 /* ColoredVKAboutController.h in Headers */ = {isa = PBXBuildFile; fileRef = A56147B51EA0140900B3D8C8 /* ColoredVKAboutController.h */; };
 		A56147B81EA0140900B3D8C8 /* ColoredVKAboutController.h in Headers */ = {isa = PBXBuildFile; fileRef = A56147B51EA0140900B3D8C8 /* ColoredVKAboutController.h */; };
 		A56147B91EA0140900B3D8C8 /* ColoredVKAboutController.h in Headers */ = {isa = PBXBuildFile; fileRef = A56147B51EA0140900B3D8C8 /* ColoredVKAboutController.h */; };
@@ -219,6 +216,9 @@
 		A56147C21EA0157400B3D8C8 /* ColoredVKPrefs.m in Sources */ = {isa = PBXBuildFile; fileRef = A56147BE1EA0157400B3D8C8 /* ColoredVKPrefs.m */; };
 		A56147C31EA0157400B3D8C8 /* ColoredVKPrefs.m in Sources */ = {isa = PBXBuildFile; fileRef = A56147BE1EA0157400B3D8C8 /* ColoredVKPrefs.m */; };
 		A56147C41EA0157400B3D8C8 /* ColoredVKPrefs.m in Sources */ = {isa = PBXBuildFile; fileRef = A56147BE1EA0157400B3D8C8 /* ColoredVKPrefs.m */; };
+		A5630798202E2635001CD95B /* ColoredVKPassChangeController.m in Sources */ = {isa = PBXBuildFile; fileRef = A559969B202DB59500E1861D /* ColoredVKPassChangeController.m */; };
+		A5630799202E2636001CD95B /* ColoredVKPassChangeController.m in Sources */ = {isa = PBXBuildFile; fileRef = A559969B202DB59500E1861D /* ColoredVKPassChangeController.m */; };
+		A563079A202E263A001CD95B /* ColoredVKPassChangeController.h in Headers */ = {isa = PBXBuildFile; fileRef = A559969A202DB59500E1861D /* ColoredVKPassChangeController.h */; };
 		A566D59F1FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = A566D59D1FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.h */; };
 		A566D5A01FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = A566D59D1FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.h */; };
 		A566D5A11FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = A566D59D1FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.h */; };
@@ -375,26 +375,14 @@
 		A5AE82FD1EC1DE25000B7F63 /* ColoredVKStepperButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AE82F71EC1DE25000B7F63 /* ColoredVKStepperButton.m */; };
 		A5AF3CFA1FDD2BC400638AC2 /* TweakFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AF3CF91FDD2BC300638AC2 /* TweakFunctions.m */; };
 		A5AF3CFB1FDD2CBD00638AC2 /* TweakFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AF3CF91FDD2BC300638AC2 /* TweakFunctions.m */; };
-		A5B124D71EA3873D00FAEE76 /* ColoredVKPasswordViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B124D51EA3873D00FAEE76 /* ColoredVKPasswordViewController.h */; };
-		A5B124D81EA3873D00FAEE76 /* ColoredVKPasswordViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B124D51EA3873D00FAEE76 /* ColoredVKPasswordViewController.h */; };
-		A5B124D91EA3873D00FAEE76 /* ColoredVKPasswordViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B124D51EA3873D00FAEE76 /* ColoredVKPasswordViewController.h */; };
-		A5B124DA1EA3873D00FAEE76 /* ColoredVKPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B124D61EA3873D00FAEE76 /* ColoredVKPasswordViewController.m */; };
-		A5B124DB1EA3873D00FAEE76 /* ColoredVKPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B124D61EA3873D00FAEE76 /* ColoredVKPasswordViewController.m */; };
-		A5B124DC1EA3873D00FAEE76 /* ColoredVKPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B124D61EA3873D00FAEE76 /* ColoredVKPasswordViewController.m */; };
-		A5B124E01EA38B1600FAEE76 /* ColoredVKPasswordCell.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B124DD1EA38B1600FAEE76 /* ColoredVKPasswordCell.h */; };
-		A5B124E11EA38B1600FAEE76 /* ColoredVKPasswordCell.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B124DD1EA38B1600FAEE76 /* ColoredVKPasswordCell.h */; };
-		A5B124E21EA38B1600FAEE76 /* ColoredVKPasswordCell.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B124DD1EA38B1600FAEE76 /* ColoredVKPasswordCell.h */; };
-		A5B124E31EA38B1600FAEE76 /* ColoredVKPasswordCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B124DE1EA38B1600FAEE76 /* ColoredVKPasswordCell.m */; };
-		A5B124E41EA38B1600FAEE76 /* ColoredVKPasswordCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B124DE1EA38B1600FAEE76 /* ColoredVKPasswordCell.m */; };
-		A5B124E51EA38B1600FAEE76 /* ColoredVKPasswordCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B124DE1EA38B1600FAEE76 /* ColoredVKPasswordCell.m */; };
-		A5B124E61EA38B1600FAEE76 /* ColoredVKPasswordCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B124DF1EA38B1600FAEE76 /* ColoredVKPasswordCell.xib */; };
-		A5B124E71EA38B1600FAEE76 /* ColoredVKPasswordCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B124DF1EA38B1600FAEE76 /* ColoredVKPasswordCell.xib */; };
 		A5B1E2991E505698001B8442 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A5B1E2981E505698001B8442 /* libz.tbd */; };
 		A5B1E29B1E5056AB001B8442 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A5B1E2981E505698001B8442 /* libz.tbd */; };
 		A5B1E29E1E509246001B8442 /* ColoredVKSettingsController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B1E29C1E509246001B8442 /* ColoredVKSettingsController.h */; };
 		A5B1E29F1E509246001B8442 /* ColoredVKSettingsController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B1E29C1E509246001B8442 /* ColoredVKSettingsController.h */; };
 		A5B1E2A01E509246001B8442 /* ColoredVKSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B1E29D1E509246001B8442 /* ColoredVKSettingsController.m */; };
 		A5B1E2A11E509246001B8442 /* ColoredVKSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B1E29D1E509246001B8442 /* ColoredVKSettingsController.m */; };
+		A5B5C82A202C9ABF00AA06B7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5B5C829202C9ABF00AA06B7 /* Images.xcassets */; };
+		A5B5C82B202C9ABF00AA06B7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5B5C829202C9ABF00AA06B7 /* Images.xcassets */; };
 		A5B607CA1F0943C4003529AF /* ColoredVKUpdatesController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B607C81F0943C4003529AF /* ColoredVKUpdatesController.h */; };
 		A5B607CB1F0943C4003529AF /* ColoredVKUpdatesController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B607C81F0943C4003529AF /* ColoredVKUpdatesController.h */; };
 		A5B607CC1F0943C4003529AF /* ColoredVKUpdatesController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B607C81F0943C4003529AF /* ColoredVKUpdatesController.h */; };
@@ -467,7 +455,6 @@
 		A5D56ABE1E70427300A8FFB5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A50731D41CD535130088EF9F /* QuartzCore.framework */; };
 		A5D56ABF1E70427300A8FFB5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FB51CC92157005B9693 /* Foundation.framework */; };
 		A5D56AC11E70427300A8FFB5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FCA1CC9261B005B9693 /* UIKit.framework */; };
-		A5D56AC31E70427300A8FFB5 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5D979A41DAEBA1000607F06 /* Images.xcassets */; };
 		A5D56ACD1E7043DC00A8FFB5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5D56ACC1E7043DC00A8FFB5 /* Main.storyboard */; };
 		A5D56ACF1E7043EF00A8FFB5 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5D56ACE1E7043EF00A8FFB5 /* Launch Screen.storyboard */; };
 		A5D56AD31E70440600A8FFB5 /* AppDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D56AD01E70440600A8FFB5 /* AppDelegate.h */; };
@@ -487,7 +474,6 @@
 		A5D979881DAEB8EA00607F06 /* UIImage+ColoredVK.h in Headers */ = {isa = PBXBuildFile; fileRef = A58F341C1D5A3BBA00838814 /* UIImage+ColoredVK.h */; };
 		A5D979891DAEB8EA00607F06 /* UIColor+ColoredVK.h in Headers */ = {isa = PBXBuildFile; fileRef = A58F34111D5A378100838814 /* UIColor+ColoredVK.h */; };
 		A5D9798A1DAEB8EA00607F06 /* NSString+ColoredVK.h in Headers */ = {isa = PBXBuildFile; fileRef = A58F34131D5A378100838814 /* NSString+ColoredVK.h */; };
-		A5D979B71DAEBED400607F06 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5D979A41DAEBA1000607F06 /* Images.xcassets */; };
 		A5D979C21DAEC1CB00607F06 /* LHAcvitityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DA87BF1D944E1000763B5F /* LHAcvitityIndicator.m */; };
 		A5D979C31DAEC1CB00607F06 /* LHBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DA87C11D944E1000763B5F /* LHBackgroundView.m */; };
 		A5D979C51DAEC1CB00607F06 /* LHProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DA87C51D944E1000763B5F /* LHProgressHUD.m */; };
@@ -557,8 +543,6 @@
 		91D21BABD924C177DD3CE4D8 /* Pods-ColoredVK-NonJail.release_deb.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK-NonJail.release_deb.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK-NonJail/Pods-ColoredVK-NonJail.release_deb.xcconfig"; sourceTree = "<group>"; };
 		997CA4DEC959E91EE6998803 /* Pods-ColoredVK-NonJail.release_ipa.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK-NonJail.release_ipa.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK-NonJail/Pods-ColoredVK-NonJail.release_ipa.xcconfig"; sourceTree = "<group>"; };
 		9E8BB3164FD3E144BEEF6B51 /* Pods-ColoredVK.release_ipa.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK.release_ipa.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK/Pods-ColoredVK.release_ipa.xcconfig"; sourceTree = "<group>"; };
-		A50138D2201F1CD10007300C /* ColoredVKNavigationBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKNavigationBar.h; sourceTree = "<group>"; };
-		A50138D3201F1CD10007300C /* ColoredVKNavigationBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKNavigationBar.m; sourceTree = "<group>"; };
 		A50138DA201F2D070007300C /* ColoredVKAccountRestoreController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKAccountRestoreController.h; sourceTree = "<group>"; };
 		A50138DB201F2D070007300C /* ColoredVKAccountRestoreController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKAccountRestoreController.m; sourceTree = "<group>"; };
 		A50177CE201F936000032A8D /* ColoredVKNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKNavigationController.h; sourceTree = "<group>"; };
@@ -572,8 +556,8 @@
 		A5079FB21CC92157005B9693 /* ColoredVK2.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ColoredVK2.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5079FB51CC92157005B9693 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A5079FCA1CC9261B005B9693 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		A50883A41FFA48BC00C05E2A /* ColoredVKUser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKUser.h; sourceTree = "<group>"; };
-		A50883A51FFA48BC00C05E2A /* ColoredVKUser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKUser.m; sourceTree = "<group>"; };
+		A50883A41FFA48BC00C05E2A /* ColoredVKUserModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKUserModel.h; sourceTree = "<group>"; };
+		A50883A51FFA48BC00C05E2A /* ColoredVKUserModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKUserModel.m; sourceTree = "<group>"; };
 		A50883AE1FFA4E5E00C05E2A /* ColoredVKAuthPageController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKAuthPageController.h; sourceTree = "<group>"; };
 		A50883AF1FFA4E5E00C05E2A /* ColoredVKAuthPageController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKAuthPageController.m; sourceTree = "<group>"; };
 		A50883B61FFA504E00C05E2A /* ColoredVKAuth.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ColoredVKAuth.storyboard; sourceTree = "<group>"; };
@@ -633,6 +617,8 @@
 		A54E41F31EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKBlurPrefsController.h; sourceTree = "<group>"; };
 		A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKBlurPrefsController.m; sourceTree = "<group>"; };
 		A55434FA1E636B19003B4256 /* Tweak.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tweak.h; sourceTree = "<group>"; };
+		A559969A202DB59500E1861D /* ColoredVKPassChangeController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKPassChangeController.h; sourceTree = "<group>"; };
+		A559969B202DB59500E1861D /* ColoredVKPassChangeController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKPassChangeController.m; sourceTree = "<group>"; };
 		A56147B51EA0140900B3D8C8 /* ColoredVKAboutController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKAboutController.h; sourceTree = "<group>"; };
 		A56147B61EA0140900B3D8C8 /* ColoredVKAboutController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKAboutController.m; sourceTree = "<group>"; };
 		A56147BD1EA0157400B3D8C8 /* ColoredVKPrefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKPrefs.h; sourceTree = "<group>"; };
@@ -692,14 +678,10 @@
 		A5AE82F61EC1DE25000B7F63 /* ColoredVKStepperButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKStepperButton.h; sourceTree = "<group>"; };
 		A5AE82F71EC1DE25000B7F63 /* ColoredVKStepperButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKStepperButton.m; sourceTree = "<group>"; };
 		A5AF3CF91FDD2BC300638AC2 /* TweakFunctions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TweakFunctions.m; sourceTree = "<group>"; };
-		A5B124D51EA3873D00FAEE76 /* ColoredVKPasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKPasswordViewController.h; sourceTree = "<group>"; };
-		A5B124D61EA3873D00FAEE76 /* ColoredVKPasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKPasswordViewController.m; sourceTree = "<group>"; };
-		A5B124DD1EA38B1600FAEE76 /* ColoredVKPasswordCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKPasswordCell.h; sourceTree = "<group>"; };
-		A5B124DE1EA38B1600FAEE76 /* ColoredVKPasswordCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKPasswordCell.m; sourceTree = "<group>"; };
-		A5B124DF1EA38B1600FAEE76 /* ColoredVKPasswordCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ColoredVKPasswordCell.xib; sourceTree = "<group>"; };
 		A5B1E2981E505698001B8442 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		A5B1E29C1E509246001B8442 /* ColoredVKSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKSettingsController.h; sourceTree = "<group>"; };
 		A5B1E29D1E509246001B8442 /* ColoredVKSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKSettingsController.m; sourceTree = "<group>"; };
+		A5B5C829202C9ABF00AA06B7 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		A5B607C81F0943C4003529AF /* ColoredVKUpdatesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKUpdatesController.h; sourceTree = "<group>"; };
 		A5B607C91F0943C4003529AF /* ColoredVKUpdatesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKUpdatesController.m; sourceTree = "<group>"; };
 		A5B6ED061D3D659800383425 /* ColoredVK2.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ColoredVK2.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -723,7 +705,6 @@
 		A5D979941DAEB96500607F06 /* ColoredVKHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKHeaderView.m; sourceTree = "<group>"; };
 		A5D9799D1DAEB96500607F06 /* ColoredVKMainPrefsController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKMainPrefsController.h; sourceTree = "<group>"; };
 		A5D9799E1DAEB96500607F06 /* ColoredVKMainPrefsController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKMainPrefsController.m; sourceTree = "<group>"; };
-		A5D979A41DAEBA1000607F06 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		A5D9A6821FACDBD900403A49 /* ColoredVKPrefsSelector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKPrefsSelector.h; sourceTree = "<group>"; };
 		A5D9A6831FACDBD900403A49 /* ColoredVKPrefsSelector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKPrefsSelector.m; sourceTree = "<group>"; };
 		A5DA87BE1D944E1000763B5F /* LHAcvitityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHAcvitityIndicator.h; sourceTree = "<group>"; };
@@ -867,6 +848,8 @@
 				A50138DB201F2D070007300C /* ColoredVKAccountRestoreController.m */,
 				A54D2E042021EA44005F95E1 /* ColoredVKPassResetController.h */,
 				A54D2E052021EA44005F95E1 /* ColoredVKPassResetController.m */,
+				A559969A202DB59500E1861D /* ColoredVKPassChangeController.h */,
+				A559969B202DB59500E1861D /* ColoredVKPassChangeController.m */,
 				A5788A9C1EA0A5B600BC2B54 /* ColoredVKAccountController.h */,
 				A5788A9D1EA0A5B600BC2B54 /* ColoredVKAccountController.m */,
 			);
@@ -958,8 +941,8 @@
 			children = (
 				A5F09D911F0FF88200024198 /* ColoredVKNewInstaller.h */,
 				A5F09D921F0FF88200024198 /* ColoredVKNewInstaller.m */,
-				A50883A41FFA48BC00C05E2A /* ColoredVKUser.h */,
-				A50883A51FFA48BC00C05E2A /* ColoredVKUser.m */,
+				A50883A41FFA48BC00C05E2A /* ColoredVKUserModel.h */,
+				A50883A51FFA48BC00C05E2A /* ColoredVKUserModel.m */,
 				A5F09D9B1F0FFA5D00024198 /* ColoredVKCrypto.h */,
 				A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */,
 				A53D12911D467016009567B5 /* PrefixHeader.h */,
@@ -1054,8 +1037,6 @@
 				A5AB32761F34F8E100C7537C /* ColoredVKTweakPrefsController.h */,
 				A5AB32771F34F8E100C7537C /* ColoredVKTweakPrefsController.m */,
 				A50138E2201F379D0007300C /* Account */,
-				A5B124D51EA3873D00FAEE76 /* ColoredVKPasswordViewController.h */,
-				A5B124D61EA3873D00FAEE76 /* ColoredVKPasswordViewController.m */,
 				A5B1E29C1E509246001B8442 /* ColoredVKSettingsController.h */,
 				A5B1E29D1E509246001B8442 /* ColoredVKSettingsController.m */,
 				A5BC53A81F1234C200C4E1E0 /* ColoredVKAlertController.h */,
@@ -1102,8 +1083,8 @@
 				A5E6097B2000EE510094C28B /* Views */,
 				A51D536B1F769DB600F6952A /* ColoredVKImageProcessor.h */,
 				A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */,
-				A5D979A41DAEBA1000607F06 /* Images.xcassets */,
 				A53FDE511E4CC95100AA3031 /* Icon-big.png */,
+				A5B5C829202C9ABF00AA06B7 /* Images.xcassets */,
 				A5DD93FE1D3E0F560006E470 /* Supporting Files */,
 			);
 			path = "ColoredVK-Prefs";
@@ -1178,8 +1159,6 @@
 				A5A8596E1EF8110200C6E1EA /* ColoredVKColorPreview.m */,
 				A5E609732000E5640094C28B /* ColoredVKTextField.h */,
 				A5E609742000E5640094C28B /* ColoredVKTextField.m */,
-				A50138D2201F1CD10007300C /* ColoredVKNavigationBar.h */,
-				A50138D3201F1CD10007300C /* ColoredVKNavigationBar.m */,
 				A5E3A9152026302800AD43AE /* ColoredVKUserInfoView.h */,
 				A5E3A9162026302800AD43AE /* ColoredVKUserInfoView.m */,
 				A5CAC06D2026340E0006DD4A /* ColoredVKUserInfoView.xib */,
@@ -1190,9 +1169,6 @@
 		A5E6097C2000EE8A0094C28B /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				A5B124DD1EA38B1600FAEE76 /* ColoredVKPasswordCell.h */,
-				A5B124DE1EA38B1600FAEE76 /* ColoredVKPasswordCell.m */,
-				A5B124DF1EA38B1600FAEE76 /* ColoredVKPasswordCell.xib */,
 				A5739D631EA015B200367595 /* ColoredVKColorCell.h */,
 				A5739D641EA015B200367595 /* ColoredVKColorCell.m */,
 				A5739D6B1EA015BB00367595 /* ColoredVKImageCell.h */,
@@ -1244,7 +1220,7 @@
 				A542499D1E0522560018D3E3 /* SDWebImageOperation.h in Headers */,
 				A5D9796E1DAEB88F00607F06 /* UIImage+ColoredVK.h in Headers */,
 				A542499F1E0522560018D3E3 /* SDWebImagePrefetcher.h in Headers */,
-				A50883A61FFA48BC00C05E2A /* ColoredVKUser.h in Headers */,
+				A50883A61FFA48BC00C05E2A /* ColoredVKUserModel.h in Headers */,
 				A55434FB1E636B19003B4256 /* Tweak.h in Headers */,
 				A5D9796F1DAEB88F00607F06 /* UIColor+ColoredVK.h in Headers */,
 				A53D41681DD0AC2600584B13 /* ColoredVKWallpaperView.h in Headers */,
@@ -1261,7 +1237,6 @@
 			files = (
 				A5E609762000E5640094C28B /* ColoredVKTextField.h in Headers */,
 				A599A82F1EA140F600D747D7 /* ColoredVKGeneralPrefs.h in Headers */,
-				A50138D5201F1CD10007300C /* ColoredVKNavigationBar.h in Headers */,
 				A526A6C11DD50D4700B47104 /* ColoredVKAudioLyricsView.h in Headers */,
 				A592BF4C1FA1F13700810F89 /* ColoredVKThemePrefsController.h in Headers */,
 				A576D1C01DC6222C0039884F /* NSString+ColoredVK.h in Headers */,
@@ -1283,7 +1258,7 @@
 				A576D1C91DC6222C0039884F /* PSTableCell+ColoredVK.h in Headers */,
 				A54E41F61EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */,
 				A510E7D61EF99CE9001D6798 /* ColoredVKSimpleAlertController.h in Headers */,
-				A50883A81FFA48BC00C05E2A /* ColoredVKUser.h in Headers */,
+				A50883A81FFA48BC00C05E2A /* ColoredVKUserModel.h in Headers */,
 				A51D53741F769E4100F6952A /* ColoredVKImageProcessor.h in Headers */,
 				A5B1E29F1E509246001B8442 /* ColoredVKSettingsController.h in Headers */,
 				A55434FC1E636B19003B4256 /* Tweak.h in Headers */,
@@ -1301,6 +1276,7 @@
 				A542497A1E0522560018D3E3 /* NSData+ImageContentType.h in Headers */,
 				A5B607CC1F0943C4003529AF /* ColoredVKUpdatesController.h in Headers */,
 				A510E7CE1EF98866001D6798 /* ColoredVKColorCollectionViewCell.h in Headers */,
+				A563079A202E263A001CD95B /* ColoredVKPassChangeController.h in Headers */,
 				A5739D561EA0159700367595 /* ColoredVKColorPickerController.h in Headers */,
 				A542499A1E0522560018D3E3 /* SDWebImageManager.h in Headers */,
 				A5739D661EA015B200367595 /* ColoredVKColorCell.h in Headers */,
@@ -1315,10 +1291,8 @@
 				A54D2E072021EA44005F95E1 /* ColoredVKPassResetController.h in Headers */,
 				A576D1DC1DC6222C0039884F /* LHProgressHUD.h in Headers */,
 				A59F458A1E917F44002D01F6 /* _UIBackdropView.h in Headers */,
-				A5B124E11EA38B1600FAEE76 /* ColoredVKPasswordCell.h in Headers */,
 				A5788A9F1EA0A5B600BC2B54 /* ColoredVKAccountController.h in Headers */,
 				A56147B81EA0140900B3D8C8 /* ColoredVKAboutController.h in Headers */,
-				A5B124D81EA3873D00FAEE76 /* ColoredVKPasswordViewController.h in Headers */,
 				A576D1951DC621B90039884F /* PrefixHeader.h in Headers */,
 				A50138DD201F2D070007300C /* ColoredVKAccountRestoreController.h in Headers */,
 				A576D1971DC621B90039884F /* NSDate+DateTools.h in Headers */,
@@ -1353,6 +1327,7 @@
 				A5A8596F1EF8110200C6E1EA /* ColoredVKColorPreview.h in Headers */,
 				A5E609752000E5640094C28B /* ColoredVKTextField.h in Headers */,
 				A5739D551EA0159700367595 /* ColoredVKColorPickerController.h in Headers */,
+				A559969D202DB59500E1861D /* ColoredVKPassChangeController.h in Headers */,
 				A5AE82F81EC1DE25000B7F63 /* ColoredVKStepperButton.h in Headers */,
 				A510E7D51EF99CE9001D6798 /* ColoredVKSimpleAlertController.h in Headers */,
 				A510E7CD1EF98866001D6798 /* ColoredVKColorCollectionViewCell.h in Headers */,
@@ -1368,14 +1343,11 @@
 				A54D2E062021EA44005F95E1 /* ColoredVKPassResetController.h in Headers */,
 				A53104C61EC4D08C003DEB83 /* ColoredVKWindowController.h in Headers */,
 				A5739D751EA015C300367595 /* ColoredVKStepperPrefsCell.h in Headers */,
-				A50883A71FFA48BC00C05E2A /* ColoredVKUser.h in Headers */,
-				A5B124D71EA3873D00FAEE76 /* ColoredVKPasswordViewController.h in Headers */,
+				A50883A71FFA48BC00C05E2A /* ColoredVKUserModel.h in Headers */,
 				A56E89E41F31D31C0013BAE3 /* ColoredVKNetworkController.h in Headers */,
 				A5B607CB1F0943C4003529AF /* ColoredVKUpdatesController.h in Headers */,
 				A5739D651EA015B200367595 /* ColoredVKColorCell.h in Headers */,
-				A50138D4201F1CD10007300C /* ColoredVKNavigationBar.h in Headers */,
 				A5AB32791F34F8E100C7537C /* ColoredVKTweakPrefsController.h in Headers */,
-				A5B124E01EA38B1600FAEE76 /* ColoredVKPasswordCell.h in Headers */,
 				A5A4E2CF1F250A520001102F /* ColoredVKWebViewController.h in Headers */,
 				A592BF4B1FA1F13700810F89 /* ColoredVKThemePrefsController.h in Headers */,
 				A599A82E1EA140F600D747D7 /* ColoredVKGeneralPrefs.h in Headers */,
@@ -1408,9 +1380,8 @@
 				A5243C1E202B844B0023360A /* SDImageCache.h in Headers */,
 				A56CA335202718E9005E04A8 /* UITableViewCell+ColoredVK.h in Headers */,
 				A51D53731F769E4100F6952A /* ColoredVKImageProcessor.h in Headers */,
-				A50138D6201F1CD10007300C /* ColoredVKNavigationBar.h in Headers */,
 				A54E41F71EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */,
-				A50883A91FFA48BC00C05E2A /* ColoredVKUser.h in Headers */,
+				A50883A91FFA48BC00C05E2A /* ColoredVKUserModel.h in Headers */,
 				A5243C2A202B844B0023360A /* SDWebImageManager.h in Headers */,
 				A54D2E082021EA44005F95E1 /* ColoredVKPassResetController.h in Headers */,
 				A5243C2D202B844B0023360A /* SDWebImagePrefetcher.h in Headers */,
@@ -1426,7 +1397,6 @@
 				A5243C2F202B844B0023360A /* UIImage+MultiFormat.h in Headers */,
 				A5A859711EF8110200C6E1EA /* ColoredVKColorPreview.h in Headers */,
 				A5739D671EA015B200367595 /* ColoredVKColorCell.h in Headers */,
-				A5B124E21EA38B1600FAEE76 /* ColoredVKPasswordCell.h in Headers */,
 				A510E7D71EF99CE9001D6798 /* ColoredVKSimpleAlertController.h in Headers */,
 				A510E7CF1EF98866001D6798 /* ColoredVKColorCollectionViewCell.h in Headers */,
 				A5739D571EA0159700367595 /* ColoredVKColorPickerController.h in Headers */,
@@ -1443,6 +1413,7 @@
 				A5B607CD1F0943C4003529AF /* ColoredVKUpdatesController.h in Headers */,
 				A5D9A6861FACDBD900403A49 /* ColoredVKPrefsSelector.h in Headers */,
 				A5E609772000E5640094C28B /* ColoredVKTextField.h in Headers */,
+				A559969E202DB59500E1861D /* ColoredVKPassChangeController.h in Headers */,
 				A5AB327B1F34F8E100C7537C /* ColoredVKTweakPrefsController.h in Headers */,
 				A5243C26202B844B0023360A /* SDWebImageDownloader.h in Headers */,
 				A5B81EEC20238978005BD879 /* ColoredVKScrollViewController.h in Headers */,
@@ -1464,7 +1435,6 @@
 				A5AE82FA1EC1DE25000B7F63 /* ColoredVKStepperButton.h in Headers */,
 				A5D56A851E70427300A8FFB5 /* NSString+ColoredVK.h in Headers */,
 				A5D56A861E70427300A8FFB5 /* NSData+AESCrypt.h in Headers */,
-				A5B124D91EA3873D00FAEE76 /* ColoredVKPasswordViewController.h in Headers */,
 				A56147C11EA0157400B3D8C8 /* ColoredVKPrefs.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1614,8 +1584,7 @@
 				A5D56ACF1E7043EF00A8FFB5 /* Launch Screen.storyboard in Resources */,
 				A50883B81FFA504E00C05E2A /* ColoredVKAuth.storyboard in Resources */,
 				A5CAC06F2026340E0006DD4A /* ColoredVKUserInfoView.xib in Resources */,
-				A5D56AC31E70427300A8FFB5 /* Images.xcassets in Resources */,
-				A5B124E71EA38B1600FAEE76 /* ColoredVKPasswordCell.xib in Resources */,
+				A5B5C82B202C9ABF00AA06B7 /* Images.xcassets in Resources */,
 				A5D56ACD1E7043DC00A8FFB5 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1624,8 +1593,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A5B124E61EA38B1600FAEE76 /* ColoredVKPasswordCell.xib in Resources */,
-				A5D979B71DAEBED400607F06 /* Images.xcassets in Resources */,
+				A5B5C82A202C9ABF00AA06B7 /* Images.xcassets in Resources */,
 				A5CAC06E2026340E0006DD4A /* ColoredVKUserInfoView.xib in Resources */,
 				A50883B71FFA504E00C05E2A /* ColoredVKAuth.storyboard in Resources */,
 			);
@@ -1854,7 +1822,7 @@
 				A56E89E71F31D31C0013BAE3 /* ColoredVKNetworkController.m in Sources */,
 				A526A6C21DD50D4700B47104 /* ColoredVKAudioLyricsView.m in Sources */,
 				A52B8F3D1F991A2600898168 /* ColoredVKNightThemeColorScheme.m in Sources */,
-				A50883AA1FFA48BC00C05E2A /* ColoredVKUser.m in Sources */,
+				A50883AA1FFA48BC00C05E2A /* ColoredVKUserModel.m in Sources */,
 				A585E1811EAF31AA005B30F7 /* ColoredVK2.xcdatamodel in Sources */,
 				A54249C71E0526C60018D3E3 /* UIImage+MultiFormat.m in Sources */,
 				A54249931E0522560018D3E3 /* SDWebImageDownloader.m in Sources */,
@@ -1888,7 +1856,7 @@
 				A50883B41FFA4E5E00C05E2A /* ColoredVKAuthPageController.m in Sources */,
 				A5739D711EA015BB00367595 /* ColoredVKImageCell.m in Sources */,
 				A585E1821EAF31AA005B30F7 /* ColoredVK2.xcdatamodel in Sources */,
-				A50883AC1FFA48BC00C05E2A /* ColoredVKUser.m in Sources */,
+				A50883AC1FFA48BC00C05E2A /* ColoredVKUserModel.m in Sources */,
 				A54249A21E0522560018D3E3 /* SDWebImagePrefetcher.m in Sources */,
 				A576D1A41DC6220C0039884F /* ColoredVKMainPrefsController.m in Sources */,
 				A5739D591EA0159700367595 /* ColoredVKColorPickerController.m in Sources */,
@@ -1914,12 +1882,10 @@
 				A54249C81E0526C60018D3E3 /* UIImage+MultiFormat.m in Sources */,
 				A576D1AB1DC6220C0039884F /* PSTableCell+ColoredVK.m in Sources */,
 				A53D416B1DD0AC2600584B13 /* ColoredVKWallpaperView.m in Sources */,
-				A5B124E41EA38B1600FAEE76 /* ColoredVKPasswordCell.m in Sources */,
 				A5739D791EA015C300367595 /* ColoredVKStepperPrefsCell.m in Sources */,
 				A5D9A6881FACDBD900403A49 /* ColoredVKPrefsSelector.m in Sources */,
 				A54249881E0522560018D3E3 /* SDImageCacheConfig.m in Sources */,
 				A5AF3CFB1FDD2CBD00638AC2 /* TweakFunctions.m in Sources */,
-				A5B124DB1EA3873D00FAEE76 /* ColoredVKPasswordViewController.m in Sources */,
 				A576D1BB1DC6220C0039884F /* LHAcvitityIndicator.m in Sources */,
 				A5F09DA31F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */,
 				A5B607D01F0943C4003529AF /* ColoredVKUpdatesController.m in Sources */,
@@ -1933,6 +1899,7 @@
 				A54D2E0A2021EA44005F95E1 /* ColoredVKPassResetController.m in Sources */,
 				A599A8321EA140F600D747D7 /* ColoredVKGeneralPrefs.m in Sources */,
 				A52B8F3E1F991A2600898168 /* ColoredVKNightThemeColorScheme.m in Sources */,
+				A5630799202E2636001CD95B /* ColoredVKPassChangeController.m in Sources */,
 				A5739D611EA015A900367595 /* ColoredVKTextViewController.m in Sources */,
 				A5AE82FC1EC1DE25000B7F63 /* ColoredVKStepperButton.m in Sources */,
 				A585E1731EAF1E7C005B30F7 /* ColoredVKCoreData.m in Sources */,
@@ -1942,7 +1909,6 @@
 				A576D1811DC621B90039884F /* Tweak.m in Sources */,
 				A510E7D91EF99CE9001D6798 /* ColoredVKSimpleAlertController.m in Sources */,
 				A54249901E0522560018D3E3 /* SDWebImageDecoder.m in Sources */,
-				A50138D8201F1CD10007300C /* ColoredVKNavigationBar.m in Sources */,
 				A5739D691EA015B200367595 /* ColoredVKColorCell.m in Sources */,
 				A566D5A31FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.m in Sources */,
 				A52350A21DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m in Sources */,
@@ -1960,7 +1926,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A50883AB1FFA48BC00C05E2A /* ColoredVKUser.m in Sources */,
+				A50883AB1FFA48BC00C05E2A /* ColoredVKUserModel.m in Sources */,
 				A566D5A21FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.m in Sources */,
 				A51D536E1F769E3900F6952A /* ColoredVKImageProcessor.m in Sources */,
 				A5DB61CB1F10DBF200FFAFF9 /* ColoredVKNewInstaller.m in Sources */,
@@ -1971,7 +1937,6 @@
 				A54D2E092021EA44005F95E1 /* ColoredVKPassResetController.m in Sources */,
 				A5B607CF1F0943C4003529AF /* ColoredVKUpdatesController.m in Sources */,
 				A5739D701EA015BB00367595 /* ColoredVKImageCell.m in Sources */,
-				A5B124E31EA38B1600FAEE76 /* ColoredVKPasswordCell.m in Sources */,
 				A5BC53AF1F1234C200C4E1E0 /* ColoredVKAlertController.m in Sources */,
 				A5D979C21DAEC1CB00607F06 /* LHAcvitityIndicator.m in Sources */,
 				A5D979C31DAEC1CB00607F06 /* LHBackgroundView.m in Sources */,
@@ -1982,11 +1947,9 @@
 				A5A859721EF8110200C6E1EA /* ColoredVKColorPreview.m in Sources */,
 				A5D979C71DAEC1CB00607F06 /* UIImage+ColoredVK.m in Sources */,
 				A5B81EED20238978005BD879 /* ColoredVKScrollViewController.m in Sources */,
-				A5B124DA1EA3873D00FAEE76 /* ColoredVKPasswordViewController.m in Sources */,
 				A5D979C81DAEC1CB00607F06 /* UIColor+ColoredVK.m in Sources */,
 				A5739D601EA015A900367595 /* ColoredVKTextViewController.m in Sources */,
 				A5D979C91DAEC1CB00607F06 /* NSString+ColoredVK.m in Sources */,
-				A50138D7201F1CD10007300C /* ColoredVKNavigationBar.m in Sources */,
 				A5F09DA21F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */,
 				A5AE82FB1EC1DE25000B7F63 /* ColoredVKStepperButton.m in Sources */,
 				A54E41F81EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */,
@@ -1997,6 +1960,7 @@
 				A56147BA1EA0140900B3D8C8 /* ColoredVKAboutController.m in Sources */,
 				A5D979CC1DAEC1CB00607F06 /* ColoredVKMainPrefsController.m in Sources */,
 				A5E3A91A2026302800AD43AE /* ColoredVKUserInfoView.m in Sources */,
+				A5630798202E2635001CD95B /* ColoredVKPassChangeController.m in Sources */,
 				A5739D581EA0159700367595 /* ColoredVKColorPickerController.m in Sources */,
 				A5D979CD1DAEC1CB00607F06 /* ColoredVKHeaderView.m in Sources */,
 				A592BF4E1FA1F13700810F89 /* ColoredVKThemePrefsController.m in Sources */,
@@ -2024,9 +1988,8 @@
 				A56147C41EA0157400B3D8C8 /* ColoredVKPrefs.m in Sources */,
 				A5739D6A1EA015B200367595 /* ColoredVKColorCell.m in Sources */,
 				A5243C27202B844B0023360A /* SDWebImageDownloader.m in Sources */,
-				A50883AD1FFA48BC00C05E2A /* ColoredVKUser.m in Sources */,
+				A50883AD1FFA48BC00C05E2A /* ColoredVKUserModel.m in Sources */,
 				A50138E1201F2D070007300C /* ColoredVKAccountRestoreController.m in Sources */,
-				A5B124E51EA38B1600FAEE76 /* ColoredVKPasswordCell.m in Sources */,
 				A5D56AD51E70440600A8FFB5 /* main.m in Sources */,
 				A53104CB1EC4D08C003DEB83 /* ColoredVKWindowController.m in Sources */,
 				A592BF501FA1F13700810F89 /* ColoredVKThemePrefsController.m in Sources */,
@@ -2045,7 +2008,6 @@
 				A5D56A9D1E70427300A8FFB5 /* UIImage+ColoredVK.m in Sources */,
 				A566D5A41FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.m in Sources */,
 				A51D536F1F769E3A00F6952A /* ColoredVKImageProcessor.m in Sources */,
-				A5B124DC1EA3873D00FAEE76 /* ColoredVKPasswordViewController.m in Sources */,
 				A5A4E2D51F250A520001102F /* ColoredVKWebViewController.m in Sources */,
 				A5E3A91C2026302800AD43AE /* ColoredVKUserInfoView.m in Sources */,
 				A5A859741EF8110200C6E1EA /* ColoredVKColorPreview.m in Sources */,
@@ -2055,6 +2017,7 @@
 				A56CA338202718E9005E04A8 /* UITableViewCell+ColoredVK.m in Sources */,
 				A5243C2B202B844B0023360A /* SDWebImageManager.m in Sources */,
 				A5D56AA01E70427300A8FFB5 /* NSString+ColoredVK.m in Sources */,
+				A55996A1202DB59500E1861D /* ColoredVKPassChangeController.m in Sources */,
 				A510E7D21EF98866001D6798 /* ColoredVKColorCollectionViewCell.m in Sources */,
 				A5243C2E202B844B0023360A /* SDWebImagePrefetcher.m in Sources */,
 				A56147BC1EA0140900B3D8C8 /* ColoredVKAboutController.m in Sources */,
@@ -2079,7 +2042,6 @@
 				A5B607D11F0943C4003529AF /* ColoredVKUpdatesController.m in Sources */,
 				A5D56AB31E70427300A8FFB5 /* NSDate+DateTools.m in Sources */,
 				A5243C29202B844B0023360A /* SDWebImageDownloaderOperation.m in Sources */,
-				A50138D9201F1CD10007300C /* ColoredVKNavigationBar.m in Sources */,
 				A5BC53B11F1234C200C4E1E0 /* ColoredVKAlertController.m in Sources */,
 				A5243C21202B844B0023360A /* SDImageCacheConfig.m in Sources */,
 				A5243C1F202B844B0023360A /* SDImageCache.m in Sources */,
