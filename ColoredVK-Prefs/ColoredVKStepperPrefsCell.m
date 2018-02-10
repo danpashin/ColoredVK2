@@ -26,7 +26,7 @@
         
         NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
         
-        _stepperButton = [[ColoredVKStepperButton alloc] initWithFrame:CGRectMake(0, 0, 100, 32)];
+        _stepperButton = [[ColoredVKStepperButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 120.0f, 320.0f)];
         _stepperButton.minValue = [[specifier propertyForKey:@"minValue"] floatValue];
         _stepperButton.maxValue =  [[specifier propertyForKey:@"maxValue"] floatValue];
         _stepperButton.step = [specifier propertyForKey:@"step"] ? [[specifier propertyForKey:@"step"] floatValue] : 0.1f;

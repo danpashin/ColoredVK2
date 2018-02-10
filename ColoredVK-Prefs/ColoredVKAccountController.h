@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ColoredVKAccountController : UIViewController
+@interface ColoredVKAccountController : UITableViewController
 
 @end

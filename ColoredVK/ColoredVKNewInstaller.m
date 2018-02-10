@@ -61,7 +61,7 @@ NSString *key;
     if (self) {
         _networkController = [ColoredVKNetworkController controller];
         key = AES256EncryptStringForAPI([NSProcessInfo processInfo].globallyUniqueString);
-        _user = [ColoredVKUser new];
+        _user = [ColoredVKUserModel new];
         
         struct utsname systemInfo;
         uname(&systemInfo);

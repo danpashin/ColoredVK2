@@ -50,6 +50,7 @@
     [self.forgotPassFooterButton setTitle:forgotPassString forState:UIControlStateNormal];
 }
 
+
 #pragma mark -
 #pragma mark ColoredVKTextFieldDelegate
 #pragma mark -

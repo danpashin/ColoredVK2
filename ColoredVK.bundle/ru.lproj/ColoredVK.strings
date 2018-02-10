@@ -112,14 +112,6 @@
 
 
 
-"CHANGE_PASSWORD" = "Изменить пароль";
-"ENTER_ACCOUNT" = "Войдите в аккаунт";
-"TO_UNLOCK_FULL_VERSION" = "Чтобы разблокировать полную версию";
-"ACCOUNT_STATUS" = "Статус аккаунта";
-"ACCOUNT_PAID" = "Оплачен";
-"ACCOUNT_ACTIVATED" = "Активирован";
-"NO_ACCOUNT_QUESTION" = "Еще нет аккаунта?";
-"REGISTER" = "Зарегистрироваться";
 
 
 "THEME_STYLE" = "Стиль темы";

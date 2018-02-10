@@ -43,15 +43,14 @@
 {
     self.backgroundColor = [UIColor clearColor];
     self.layer.masksToBounds = YES;
-    self.layer.cornerRadius = 4;
+    self.layer.cornerRadius = 4.0f;
     
-    _height = 32;
-    _value = 0;
-    _minValue = 0;
-    _maxValue = 5;
-    _step = 1;
+    _height = 44.0f;
+    _value = 0.0f;
+    _minValue = 0.0f;
+    _maxValue = 5.0f;
+    _step = 1.0f;
     _shouldShake = YES;
-    
     
     _decreaseButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_decreaseButton setTitle:@"-" forState:UIControlStateNormal];
@@ -62,7 +61,6 @@
     UILongPressGestureRecognizer *decreasePress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(changeValueWithGesture:)];
     decreasePress.accessibilityLabel = @"decrease";
     [_decreaseButton addGestureRecognizer:decreasePress];
-    
     
     _increaseButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_increaseButton setTitle:@"+" forState:UIControlStateNormal];
@@ -148,9 +146,9 @@
     if (self.shouldShake) {
         CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"position.x"];
         CGFloat positionX = self.layer.position.x;
-        animation.values = @[@(positionX-5),@(positionX),@(positionX+5)];
-        animation.repeatCount = 3;
-        animation.duration = 0.07;
+        animation.values = @[@(positionX - 5.0f), @(positionX), @(positionX + 5.0f)];
+        animation.repeatCount = 3.0f;
+        animation.duration = 0.07f;
         animation.autoreverses = YES;
         [self.layer addAnimation:animation forKey:nil];
     }

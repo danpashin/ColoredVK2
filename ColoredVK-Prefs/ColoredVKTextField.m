@@ -165,6 +165,7 @@
         _securedShowButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _securedShowButton.frame = [self rightViewRectForBounds:self.bounds];
         [_securedShowButton addTarget:self action:@selector(updateSecureState:) forControlEvents:UIControlEventTouchUpInside];
+        _securedShowButton.accessibilityLabel = CVKLocalizedString(@"SHOW_HIDE_PASSWORD");
         
         NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         UIImage *viewIcon = [UIImage imageNamed:@"ViewIcon" inBundle:cvkBundle compatibleWithTraitCollection:nil];

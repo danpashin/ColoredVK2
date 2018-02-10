@@ -93,6 +93,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     UINavigationItem *navItem = self.contentViewNavigationBar.items.firstObject;
     UIImage *resetImage = [[UIImage imageNamed:@"ResetIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     navItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:resetImage style:UIBarButtonItemStylePlain target:self action:@selector(actionResetColor)];
+    navItem.leftBarButtonItem.accessibilityLabel = CVKLocalizedStringFromTableInBundle(@"RESET_COLOR", nil, self.cvkBundle);
     
     
     self.stackContainerView = [UIView new];

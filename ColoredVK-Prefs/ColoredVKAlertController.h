@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)addTextFieldWithConfigurationHandler:(void (^ __nullable)(UITextField *textField))configurationHandler;
 - (void)addAction:(UIAlertAction *)action image:(NSString *)imageName;
+- (void)addCancelAction;
 
 - (void)present;
 - (void)presentFromController:(UIViewController *)viewController;

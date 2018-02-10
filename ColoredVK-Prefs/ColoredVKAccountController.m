@@ -17,6 +17,7 @@
 #import <SafariServices/SafariServices.h>
 #import <MXParallaxHeader.h>
 #import "ColoredVKNavigationController.h"
+#import "ColoredVKAlertController.h"
 
 @interface UINavigationBar ()
 @property (nonatomic, readonly, strong) UIView *_backgroundView;
@@ -26,17 +27,21 @@
 - (void)adjustScrollViewTopInset:(CGFloat)top;
 @end
 
-@interface ColoredVKAccountController () <UITableViewDelegate, UITableViewDataSource, ColoredVKUserInfoViewDelegate>
+@interface ColoredVKAccountController () <ColoredVKUserInfoViewDelegate>
 
-@property (assign, nonatomic) BOOL controllerIsShown;
-@property (assign, nonatomic) BOOL userAuthorized;
 @property (strong, nonatomic) NSBundle *cvkBundle;
-@property (strong, nonatomic) IBOutlet UITableView *tableView;
-
-@property (strong, nonatomic) IBOutlet ColoredVKUserInfoView *infoHeaderView;
+@property (assign, nonatomic) BOOL controllerIsShown;
 @property (strong, nonatomic) UINavigationController *superNavController;
 
-@property (assign, nonatomic) ColoredVKUserAccountStatus accountStatus;
+@property (weak, nonatomic) ColoredVKUserModel *user;
+@property (strong, nonatomic) ColoredVKUserInfoView *infoHeaderView;
+
+@property (strong, nonatomic) IBOutlet UITableViewCell *statusCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *moreAboutCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *changePassCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *logoutCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *loginCell;
+@property (strong, nonatomic) IBOutlet UITableViewCell *registerCell;
 
 @end
 
@@ -61,10 +66,6 @@
 {
     [super viewDidLoad];
     
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
-    self.tableView.separatorColor = [UIColor clearColor];
-    
     NSArray *nibViews = [self.cvkBundle loadNibNamed:NSStringFromClass([ColoredVKUserInfoView class]) owner:self options:nil];
     self.infoHeaderView =  nibViews.firstObject;
     CGRect headerFrame = self.infoHeaderView.frame;
@@ -76,6 +77,28 @@
     self.tableView.parallaxHeader.height = 130.0f;
     self.tableView.parallaxHeader.mode = MXParallaxHeaderModeFill;
     self.tableView.parallaxHeader.minimumHeight = 64.0f;
+    self.tableView.separatorColor = [UIColor clearColor];
+    
+    self.loginCell.textLabel.text = CVKLocalizedStringFromTableInBundle(@"LOG_INTO_YOUR_ACCOUNT", nil, self.cvkBundle);
+    self.registerCell.textLabel.text = CVKLocalizedStringFromTableInBundle(@"REGISTER", nil, self.cvkBundle);
+    self.statusCell.textLabel.text = CVKLocalizedStringFromTableInBundle(@"ACCOUNT_STATUS", nil, self.cvkBundle);
+    self.moreAboutCell.textLabel.text = CVKLocalizedStringFromTableInBundle(@"MORE_ABOUT_STATUS", nil, self.cvkBundle);
+    self.changePassCell.textLabel.text = CVKLocalizedStringFromTableInBundle(@"CHANGE_PASSWORD", nil, self.cvkBundle);
+    self.logoutCell.textLabel.text = CVKLocalizedStringFromTableInBundle(@"LOG_OUT_OF_ACCOUNT", nil, self.cvkBundle);
+    
+    self.statusCell.userInteractionEnabled = NO;
+    self.moreAboutCell.userInteractionEnabled = NO;
+    self.moreAboutCell.textLabel.textColor = [UIColor lightGrayColor];
+    
+    CGRect accessoryViewFrame = CGRectMake(0.0f, 0.0f, 44.0f, 30.0f);
+    UIView *contentAccessoryView = [[UIView alloc] initWithFrame:accessoryViewFrame];
+    CGRect imageViewFrame = CGRectMake(14.0f, 0.0f, CGRectGetHeight(accessoryViewFrame), CGRectGetHeight(accessoryViewFrame));
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:imageViewFrame];
+    imageView.image = [UIImage imageNamed:@"CrownIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    imageView.tintColor = [UIColor colorWithRed:255/255.0f green:156/255.0f blue:60/255.0f alpha:1.0f];
+    [contentAccessoryView addSubview:imageView];
+    self.statusCell.accessoryView = contentAccessoryView;
     
     [self updateAccountInfo];
 }
@@ -144,7 +167,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    if (!self.userAuthorized)
+    if (!self.user.authenticated)
         return 2;
     
     return 3;
@@ -152,7 +175,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (self.userAuthorized && section == 0)
+    if (self.user.authenticated && section == 0)
         return 2;
     
     return 1;
@@ -160,73 +183,46 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = nil;
-    if (self.userAuthorized) {
-        if (indexPath.section == 0 && indexPath.row == 0) {
-            cell = [tableView dequeueReusableCellWithIdentifier:@"accountStatusCell" forIndexPath:indexPath];
-            cell.textLabel.text = @"Статус аккаунта";
-            if (self.accountStatus == ColoredVKUserAccountStatusPaid) {
-                cell.detailTextLabel.text = @"Оплачен";
-                if (!cell.accessoryView) {
-                    UIView *contentAccessoryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 44, 30)];
-                    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 0, 30, 30)];
-                    imageView.image = [UIImage imageNamed:@"TickIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
-                    imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                    imageView.tintColor = [UIColor colorWithRed:102/255.0f green:179/255.0f blue:46/255.0f alpha:1.0f];
-                    [contentAccessoryView addSubview:imageView];
-                    cell.accessoryView = contentAccessoryView;
-                } else {
-                    cell.accessoryView.hidden = NO;
-                }
-            } else {
-                cell.detailTextLabel.text = @"Бесплатный";
-                cell.accessoryView.hidden = YES;
+    if (self.user.authenticated) {
+        if (indexPath.section == 0) {
+            if (indexPath.row == 0) {
+                return self.statusCell;
+            } else if (indexPath.row == 1) {
+                return self.moreAboutCell;
             }
-        } else if (indexPath.section == 0 && indexPath.row == 1) {
-            cell = [tableView dequeueReusableCellWithIdentifier:@"aboutStatusCell" forIndexPath:indexPath];
-            cell.textLabel.text = @"Подробнее о статусах";
+            
         } else if (indexPath.section == 1 && indexPath.row == 0) {
-            cell = [tableView dequeueReusableCellWithIdentifier:@"changePasswordCell" forIndexPath:indexPath];
-            cell.textLabel.text = @"Изменить пароль";
+            return self.changePassCell;
         } else if (indexPath.section == 2 && indexPath.row == 0) {
-            cell = [tableView dequeueReusableCellWithIdentifier:@"logoutCell" forIndexPath:indexPath];
-            cell.textLabel.text = @"Выйти из аккаунта";
+            return self.logoutCell;
         }
     } else {
         if (indexPath.section == 0 && indexPath.row == 0) {
-            cell = [tableView dequeueReusableCellWithIdentifier:@"signinCell" forIndexPath:indexPath];
-            cell.textLabel.text = @"Войдите в свой аккаунт";
+            return self.loginCell;
         } else if (indexPath.section == 1 && indexPath.row == 0) {
-            cell = [tableView dequeueReusableCellWithIdentifier:@"signupCell" forIndexPath:indexPath];
-            cell.textLabel.text = @"Зарегистрировать";
+            return self.registerCell;
         }
     }
     
-    if (!cell)
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
-    
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
     cell.layoutMargins = UIEdgeInsetsMake(0, 18, 0, 18);
-    
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (indexPath.section == 0 && indexPath.row == 0) {
-        return 56.0f;
-    }
-    
-    return 56.0f;
+{    
+    return IS_IPAD ? 48.0f : 56.0f;
 }
 
 - (nullable NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     if (section == 0) {
-        return @"Управление аккаунтом";
+        return CVKLocalizedStringFromTableInBundle(@"MANAGE_ACCOUNT", @"Main", self.cvkBundle);
     }
     
     if (section == 1) {
-        return self.userAuthorized ? @"Настройки безопасности" : @"Нет аккаунта?";
+        NSString *key = self.user.authenticated ? @"SECURITY_SETTINGS" : @"NO_ACCOUNT_QUESTION";
+        return CVKLocalizedStringFromTableInBundle(key, nil, self.cvkBundle);
     }
     
     return @"";
@@ -247,18 +243,17 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([cell.reuseIdentifier isEqualToString:@"signinCell"]) {
-            [self actionSignIn];
-        } else if ([cell.reuseIdentifier isEqualToString:@"signupCell"]) {
-            [self actionSignUp];
-        } else if ([cell.reuseIdentifier isEqualToString:@"logoutCell"]) {
-            [self actionLogout];
-        } else if ([cell.reuseIdentifier isEqualToString:@"changePasswordCell"]) {
-            [self actionChangePassword];
-        }
-    });
+    if ([cell isEqual:self.loginCell]) {
+        [self actionSignIn];
+    } else if ([cell isEqual:self.registerCell]) {
+        [self actionSignUp];
+    } else if ([cell isEqual:self.logoutCell]) {
+        [self actionLogout];
+    } else if ([cell isEqual:self.changePassCell]) {
+        [self actionChangePassword];
+    } else if ([cell isEqual:self.moreAboutCell]) {
+        
+    }
 }
 
 
@@ -270,24 +265,20 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-        self.userAuthorized = newInstaller.user.authenticated;
-        self.infoHeaderView.username = newInstaller.user.name;
-        self.infoHeaderView.email = newInstaller.user.email;
-        self.accountStatus = newInstaller.user.accountStatus;
-        [self updateAvatar];
+        self.user = newInstaller.user;
+        if (newInstaller.vkUserID) {
+            [self.infoHeaderView loadVKAvatarForUserID:newInstaller.vkUserID];
+        }
+        self.infoHeaderView.username = self.user.name;
+        self.infoHeaderView.email = self.user.email;
+        
+        BOOL accountPaid = (self.user.accountStatus == ColoredVKUserAccountStatusPaid);
+        self.statusCell.detailTextLabel.text = CVKLocalizedStringFromTableInBundle(accountPaid ? @"PREMIUM" : @"FREE", nil, self.cvkBundle);
+        self.statusCell.accessoryView.frame = accountPaid ? CGRectMake(0.0f, 0.0f, 44.0f, 30.0f) : CGRectZero;
+        self.statusCell.accessoryView.hidden = !accountPaid;
         
         [self.tableView reloadData];
     });
-}
-
-- (void)updateAvatar
-{
-    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-    NSNumber *vkUserID = newInstaller.vkUserID;
-    
-    if (vkUserID) {
-        [self.infoHeaderView loadVKAvatarForUserID:vkUserID];
-    }
 }
 
 - (void)actionSignIn
@@ -313,9 +304,16 @@
 - (void)actionLogout
 {
     __weak typeof(self) weakSelf = self;
-    [[ColoredVKNewInstaller sharedInstaller] logoutWithСompletionBlock:^{
-        [weakSelf updateAccountInfo];
-    }];
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedStringFromTableInBundle(@"LOG_OUT_OF_ACCOUNT_ALERT", nil, self.cvkBundle)
+                                                        style:UIAlertActionStyleDestructive 
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+                                                          [[ColoredVKNewInstaller sharedInstaller] logoutWithСompletionBlock:^{
+                                                              [weakSelf updateAccountInfo];
+                                                          }];
+                                                      }]];
+    [alertController addCancelAction];
+    [alertController presentFromController:self];
 }
 
 - (void)actionChangePassword

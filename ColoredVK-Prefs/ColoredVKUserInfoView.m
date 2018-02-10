@@ -34,11 +34,15 @@
     
     self.defaultAvatar = [UIImage imageNamed:@"UserBigIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH]
                            compatibleWithTraitCollection:nil];
-    self.defaultAvatar = [self.defaultAvatar imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.avatarImageView.image = self.defaultAvatar;
     
     [self setupConstraints];
 }
+
+
+#pragma mark -
+#pragma mark Setters
+#pragma mark -
 
 - (void)setUsername:(NSString *)username
 {
@@ -71,6 +75,11 @@
         self.avatarImageView.image = imageToChange;
     });
 }
+
+
+#pragma mark -
+#pragma mark Actions
+#pragma mark -
 
 - (void)setupConstraints
 {
