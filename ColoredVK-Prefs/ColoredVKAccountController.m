@@ -18,6 +18,7 @@
 #import <MXParallaxHeader.h>
 #import "ColoredVKNavigationController.h"
 #import "ColoredVKAlertController.h"
+#import "ColoredVKCardController.h"
 
 @interface UINavigationBar ()
 @property (nonatomic, readonly, strong) UIView *_backgroundView;
@@ -32,6 +33,7 @@
 @property (strong, nonatomic) NSBundle *cvkBundle;
 @property (assign, nonatomic) BOOL controllerIsShown;
 @property (strong, nonatomic) UINavigationController *superNavController;
+@property (strong, nonatomic) ColoredVKCardController *statusCardsController;
 
 @property (weak, nonatomic) ColoredVKUserModel *user;
 @property (strong, nonatomic) ColoredVKUserInfoView *infoHeaderView;
@@ -79,16 +81,14 @@
     self.tableView.parallaxHeader.minimumHeight = 64.0f;
     self.tableView.separatorColor = [UIColor clearColor];
     
-    self.loginCell.textLabel.text = CVKLocalizedStringFromTableInBundle(@"LOG_INTO_YOUR_ACCOUNT", nil, self.cvkBundle);
-    self.registerCell.textLabel.text = CVKLocalizedStringFromTableInBundle(@"REGISTER", nil, self.cvkBundle);
-    self.statusCell.textLabel.text = CVKLocalizedStringFromTableInBundle(@"ACCOUNT_STATUS", nil, self.cvkBundle);
-    self.moreAboutCell.textLabel.text = CVKLocalizedStringFromTableInBundle(@"MORE_ABOUT_STATUS", nil, self.cvkBundle);
-    self.changePassCell.textLabel.text = CVKLocalizedStringFromTableInBundle(@"CHANGE_PASSWORD", nil, self.cvkBundle);
-    self.logoutCell.textLabel.text = CVKLocalizedStringFromTableInBundle(@"LOG_OUT_OF_ACCOUNT", nil, self.cvkBundle);
+    self.loginCell.textLabel.text = CVKLocalizedStringInBundle(@"LOG_INTO_YOUR_ACCOUNT", self.cvkBundle);
+    self.registerCell.textLabel.text = CVKLocalizedStringInBundle(@"REGISTER", self.cvkBundle);
+    self.statusCell.textLabel.text = CVKLocalizedStringInBundle(@"ACCOUNT_STATUS", self.cvkBundle);
+    self.moreAboutCell.textLabel.text = CVKLocalizedStringInBundle(@"MORE_ABOUT_STATUS", self.cvkBundle);
+    self.changePassCell.textLabel.text = CVKLocalizedStringInBundle(@"CHANGE_PASSWORD", self.cvkBundle);
+    self.logoutCell.textLabel.text = CVKLocalizedStringInBundle(@"LOG_OUT_OF_ACCOUNT", self.cvkBundle);
     
     self.statusCell.userInteractionEnabled = NO;
-    self.moreAboutCell.userInteractionEnabled = NO;
-    self.moreAboutCell.textLabel.textColor = [UIColor lightGrayColor];
     
     CGRect accessoryViewFrame = CGRectMake(0.0f, 0.0f, 44.0f, 30.0f);
     UIView *contentAccessoryView = [[UIView alloc] initWithFrame:accessoryViewFrame];
@@ -222,7 +222,7 @@
     
     if (section == 1) {
         NSString *key = self.user.authenticated ? @"SECURITY_SETTINGS" : @"NO_ACCOUNT_QUESTION";
-        return CVKLocalizedStringFromTableInBundle(key, nil, self.cvkBundle);
+        return CVKLocalizedStringInBundle(key, self.cvkBundle);
     }
     
     return @"";
@@ -252,7 +252,7 @@
     } else if ([cell isEqual:self.changePassCell]) {
         [self actionChangePassword];
     } else if ([cell isEqual:self.moreAboutCell]) {
-        
+        [self actionMoreAboutStatus];
     }
 }
 
@@ -273,7 +273,7 @@
         self.infoHeaderView.email = self.user.email;
         
         BOOL accountPaid = (self.user.accountStatus == ColoredVKUserAccountStatusPaid);
-        self.statusCell.detailTextLabel.text = CVKLocalizedStringFromTableInBundle(accountPaid ? @"PREMIUM" : @"FREE", nil, self.cvkBundle);
+        self.statusCell.detailTextLabel.text = CVKLocalizedStringInBundle(accountPaid ? @"PREMIUM" : @"FREE", self.cvkBundle);
         self.statusCell.accessoryView.frame = accountPaid ? CGRectMake(0.0f, 0.0f, 44.0f, 30.0f) : CGRectZero;
         self.statusCell.accessoryView.hidden = !accountPaid;
         
@@ -305,7 +305,7 @@
 {
     __weak typeof(self) weakSelf = self;
     ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedStringFromTableInBundle(@"LOG_OUT_OF_ACCOUNT_ALERT", nil, self.cvkBundle)
+    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedStringInBundle(@"LOG_OUT_OF_ACCOUNT_ALERT", self.cvkBundle)
                                                         style:UIAlertActionStyleDestructive 
                                                       handler:^(UIAlertAction * _Nonnull action) {
                                                           [[ColoredVKNewInstaller sharedInstaller] logoutWithСompletionBlock:^{
@@ -320,6 +320,62 @@
 {
     ColoredVKPassChangeController *passController = [ColoredVKPassChangeController allocFromStoryboard];
     [passController showFromViewController:self];
+}
+
+- (void)actionPurchase
+{
+    [self.statusCardsController dismiss];
+    [[ColoredVKNewInstaller sharedInstaller] actionPurchase];
+}
+
+- (void)actionMoreAboutStatus
+{
+    ColoredVKCard *freeCard = [ColoredVKCard new];
+    freeCard.title = CVKLocalizedStringInBundle(@"FREE", self.cvkBundle);
+    freeCard.titleColor = [UIColor blackColor];
+    freeCard.backgroundImage = [UIImage imageNamed:@"DayBackground" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    
+    NSString *freeText = CVKLocalizedStringInBundle(@"MORE_ABOUT_FREE_ACCOUNT", self.cvkBundle);
+    freeCard.attributedBody = [self attributedMoreString:freeText headerColor:[UIColor blackColor] 
+                                                bodyColor:[UIColor colorWithWhite:0.1f alpha:1.0f]];
+    
+    ColoredVKCard *premiumCard = [ColoredVKCard new];
+    premiumCard.title = CVKLocalizedStringInBundle(@"PREMIUM", self.cvkBundle);
+    premiumCard.backgroundColor = [UIColor colorWithRed:0.26f green:0.28f blue:0.46f alpha:1.0f];
+    premiumCard.backgroundImage = [UIImage imageNamed:@"NightBackground" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    premiumCard.buttonText = CVKLocalizedStringInBundle(@"BUY_PREMIUM", self.cvkBundle);
+    premiumCard.buttonTarget = self;
+    premiumCard.buttonAction = @selector(actionPurchase);
+    
+    NSString *premiumText = CVKLocalizedStringInBundle(@"MORE_ABOUT_PREMIUM_ACCOUNT", self.cvkBundle);
+    premiumCard.attributedBody = [self attributedMoreString:premiumText headerColor:[UIColor whiteColor] 
+                                                  bodyColor:[UIColor colorWithWhite:1.0f alpha:0.9f]];
+    
+    self.statusCardsController = [ColoredVKCardController new];
+    [self.statusCardsController addCards:@[freeCard, premiumCard]];
+    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:self.statusCardsController animated:YES completion:nil];
+}
+
+- (NSMutableAttributedString *)attributedMoreString:(NSString *)localizedString headerColor:(UIColor *)headerColor bodyColor:(UIColor *)bodyColor
+{
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:localizedString];
+    
+    NSRange divideSign = [localizedString rangeOfString:@":\n\n●"];
+    if (divideSign.location != NSNotFound) {
+        NSRange headerRange = NSMakeRange(0, divideSign.location);
+        UIFont *headerFont = [UIFont systemFontOfSize:[UIFont labelFontSize] weight:UIFontWeightMedium];
+        NSDictionary *headerAttrs = @{NSFontAttributeName: headerFont, NSForegroundColorAttributeName: headerColor};
+        [attributedString addAttributes:headerAttrs range:headerRange];
+        
+        NSRange bodyRange = NSMakeRange(headerRange.length, localizedString.length - headerRange.length);
+        [attributedString addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:[UIFont systemFontSize]] range:bodyRange];
+        [attributedString addAttribute:NSForegroundColorAttributeName value:bodyColor range:bodyRange];
+        NSMutableParagraphStyle *premiumBodystyle = [NSMutableParagraphStyle new];
+        premiumBodystyle.lineSpacing = 2.5f;
+        [attributedString addAttribute:NSParagraphStyleAttributeName value:premiumBodystyle range:bodyRange];
+    }
+    
+    return attributedString;
 }
 
 @end

@@ -30,10 +30,10 @@
     self.passTextField.delegate = self;
     self.confPassTextField.delegate = self;
     
-    self.passTextField.placeholder = CVKLocalizedStringFromTableInBundle(@"ENTER_NEW_PASSWORD", nil, self.cvkBundle);
-    self.confPassTextField.placeholder = CVKLocalizedStringFromTableInBundle(@"CONFIRM_NEW_PASSWORD", nil, self.cvkBundle);
-    self.footerLabel.text = CVKLocalizedStringFromTableInBundle(@"PASSWORD_WARNING", nil, self.cvkBundle);
-    self.changeButton.title = CVKLocalizedStringFromTableInBundle(@"CHANGE", nil, self.cvkBundle);
+    self.passTextField.placeholder = CVKLocalizedStringInBundle(@"ENTER_NEW_PASSWORD", self.cvkBundle);
+    self.confPassTextField.placeholder = CVKLocalizedStringInBundle(@"CONFIRM_NEW_PASSWORD", self.cvkBundle);
+    self.footerLabel.text = CVKLocalizedStringInBundle(@"PASSWORD_WARNING", self.cvkBundle);
+    self.changeButton.title = CVKLocalizedStringInBundle(@"CHANGE", self.cvkBundle);
 }
 
 - (void)viewDidAppear:(BOOL)animated

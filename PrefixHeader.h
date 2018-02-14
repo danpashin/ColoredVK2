@@ -26,7 +26,7 @@
 #elif defined COMPILE_APP
 
 #define CVK_BUNDLE_PATH     [NSBundle mainBundle].bundlePath
-#define CVK_PREFS_PATH      @"/var/mobile/Library/Preferences/com.daniilpashin.coloredvk2.plist"
+#define CVK_PREFS_PATH      [NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.daniilpashin.coloredvk2.plist"]
 #define CVK_FOLDER_PATH     @"/var/mobile/Library/Preferences/ColoredVK2"
 #define CVK_CACHE_PATH      @"/var/mobile/Library/Caches/com.daniilpashin.coloredvk2/"
 #define CVK_BACKUP_PATH     @"/var/mobile/Documents/ColoredVK2_Backups/"
@@ -42,11 +42,17 @@
 
 #endif
 
+#if defined(TARGET_OS_SIMULATOR) && defined(COMPILE_APP)
+#undef CVK_PREFS_PATH
+#define CVK_PREFS_PATH @"/var/mobile/Library/Preferences/com.daniilpashin.coloredvk2.plist"
+#endif
+
 #define IS_IPAD                               (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 #define UIKitLocalizedString(key)             [[NSBundle bundleWithIdentifier:@"com.apple.UIKit"] localizedStringForKey:key value:@"" table:nil]
 #define CVKLocalizedStringFromTableInBundle(key, tbl, bndl) [bndl localizedStringForKey:key value:@"" table:tbl]
 #define CVKLocalizedStringFromTable(key, tbl) CVKLocalizedStringFromTableInBundle(key, tbl, [NSBundle bundleWithPath:CVK_BUNDLE_PATH])
 #define CVKLocalizedString(key)               CVKLocalizedStringFromTable(key, nil)
+#define CVKLocalizedStringInBundle(key, bndl) CVKLocalizedStringFromTableInBundle(key, nil, bndl)
 #define SYSTEM_VERSION                        [UIDevice currentDevice].systemVersion
 #define SYSTEM_VERSION_IS_MORE_THAN(version)  ([SYSTEM_VERSION compare:version options:NSNumericSearch] != NSOrderedAscending)
 #define SYSTEM_VERSION_IS_EQUAL(version)      ([SYSTEM_VERSION compare:version options:NSNumericSearch] == NSOrderedSame)

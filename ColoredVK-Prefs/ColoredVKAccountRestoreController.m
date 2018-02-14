@@ -37,12 +37,12 @@
 {
     [super viewDidLoad];
     
-    self.navigationItem.title = CVKLocalizedStringFromTableInBundle(@"RECOVER_ACCESS", nil, self.cvkBundle);
-    self.footerLabel.text = CVKLocalizedStringFromTableInBundle(@"CONTACT_DEV_IF_YOU_USE_FREE_ACCOUNT", nil, self.cvkBundle);
-    self.restoreNavButton.title = CVKLocalizedStringFromTableInBundle(@"NEXT", nil, self.cvkBundle);
-    self.codeFooterLabel.text = CVKLocalizedStringFromTableInBundle(@"YOU_HAVE_BEEN_SENT_RECOVER_EMAIL", nil, self.cvkBundle);
-    self.loginTextField.placeholder = CVKLocalizedStringFromTableInBundle(@"USERNAME", nil, self.cvkBundle);
-    self.emailTextField.placeholder = CVKLocalizedStringFromTableInBundle(@"EMAIL", nil, self.cvkBundle);
+    self.navigationItem.title = CVKLocalizedStringInBundle(@"RECOVER_ACCESS", self.cvkBundle);
+    self.footerLabel.text = CVKLocalizedStringInBundle(@"CONTACT_DEV_IF_YOU_USE_FREE_ACCOUNT", self.cvkBundle);
+    self.restoreNavButton.title = CVKLocalizedStringInBundle(@"NEXT", self.cvkBundle);
+    self.codeFooterLabel.text = CVKLocalizedStringInBundle(@"YOU_HAVE_BEEN_SENT_RECOVER_EMAIL", self.cvkBundle);
+    self.loginTextField.placeholder = CVKLocalizedStringInBundle(@"USERNAME", self.cvkBundle);
+    self.emailTextField.placeholder = CVKLocalizedStringInBundle(@"EMAIL", self.cvkBundle);
     self.navigationItem.backBarButtonItem.title = @"";
     
     self.loginTextField.text = self.login;
@@ -109,11 +109,11 @@
         [self.codeResendButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
         [self.codeResendButton setTitleColor:[UIColor blueColor] forState:UIControlStateFocused];
         [self.codeResendButton setTitleColor:[UIColor blueColor] forState:UIControlStateSelected];
-        [self.codeResendButton setTitle:CVKLocalizedStringFromTableInBundle(@"CODE_VALIDALITY_IS_OVER", nil, self.cvkBundle)
+        [self.codeResendButton setTitle:CVKLocalizedStringInBundle(@"CODE_VALIDALITY_IS_OVER", self.cvkBundle)
                                forState:UIControlStateNormal];
         return;
     }
-    NSString *resendButtonTitle = [NSString stringWithFormat:CVKLocalizedStringFromTableInBundle(@"CODE_IS_VALID_FOR_%i_SECONDS", nil, self.cvkBundle), (int)self.codeValidDate.timeIntervalSinceNow];
+    NSString *resendButtonTitle = [NSString stringWithFormat:CVKLocalizedStringInBundle(@"CODE_IS_VALID_FOR_%i_SECONDS", self.cvkBundle), (int)self.codeValidDate.timeIntervalSinceNow];
     [self.codeResendButton setTitle:resendButtonTitle forState:UIControlStateNormal];
 }
 

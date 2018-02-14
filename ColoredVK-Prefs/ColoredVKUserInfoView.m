@@ -138,7 +138,8 @@
                             [imageManager loadImageWithURL:[NSURL URLWithString:photoURL] 
                                                    options:SDWebImageHighPriority|SDWebImageCacheMemoryOnly 
                                                   progress:nil 
-                                                 completed:^(UIImage *image, NSData *data, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                                 completed:^(UIImage *image, NSData *data, NSError *error, 
+                                                             SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                                      [imageManager.imageCache storeImage:image forKey:imageCacheKey completion:nil];
                                                      self.avatar = image;
                                                  }];
