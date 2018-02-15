@@ -17,6 +17,14 @@
     return _titleColor;
 }
 
+- (UIColor *)detailTitleColor
+{
+    if (!_detailTitleColor) {
+        _detailTitleColor = [UIColor colorWithRed:248/255.0f green:148/255.0f blue:6/255.0f alpha:1.0f];
+    }
+    return _detailTitleColor;
+}
+
 - (UIColor *)backgroundColor
 {
     if (!_backgroundColor) {

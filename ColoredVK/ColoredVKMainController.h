@@ -22,7 +22,7 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 //    ColoredVKVersionCompareLessOrEqual = ColoredVKVersionCompareEqual|ColoredVKVersionCompareLess
 };
 
-@interface ColoredVKMainController : NSObject <UIViewControllerTransitioningDelegate>
+@interface ColoredVKMainController : NSObject
 
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect;
 + (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect blurBackground:(BOOL)blurBackground;

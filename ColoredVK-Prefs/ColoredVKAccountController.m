@@ -81,6 +81,10 @@
     self.tableView.parallaxHeader.minimumHeight = 64.0f;
     self.tableView.separatorColor = [UIColor clearColor];
     
+    if (@available(iOS 11.0, *)) {
+        self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    }
+    
     self.loginCell.textLabel.text = CVKLocalizedStringInBundle(@"LOG_INTO_YOUR_ACCOUNT", self.cvkBundle);
     self.registerCell.textLabel.text = CVKLocalizedStringInBundle(@"REGISTER", self.cvkBundle);
     self.statusCell.textLabel.text = CVKLocalizedStringInBundle(@"ACCOUNT_STATUS", self.cvkBundle);
@@ -152,7 +156,9 @@
 
 - (void)infoView:(ColoredVKUserInfoView *)infoView didUpdateHeight:(CGFloat)height
 {
-    if (SYSTEM_VERSION_IS_LESS_THAN(@"10.3.3")) {
+    if (@available(iOS 11.0, *)) {
+        height *= 1.5;
+    } else {
         height += 64.0f;
         [self.tableView.parallaxHeader adjustScrollViewTopInset:height];
     }
@@ -205,7 +211,7 @@
     }
     
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
-    cell.layoutMargins = UIEdgeInsetsMake(0, 18, 0, 18);
+    cell.layoutMargins = UIEdgeInsetsMake(0.0f, 18.0f, 0.0f, 18.0f);
     return cell;
 }
 
@@ -334,6 +340,7 @@
     freeCard.title = CVKLocalizedStringInBundle(@"FREE", self.cvkBundle);
     freeCard.titleColor = [UIColor blackColor];
     freeCard.backgroundImage = [UIImage imageNamed:@"DayBackground" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    freeCard.backgroundColor = [UIColor colorWithRed:172/255.0f green:197/255.0f blue:226/255.0f alpha:1.0f];
     
     NSString *freeText = CVKLocalizedStringInBundle(@"MORE_ABOUT_FREE_ACCOUNT", self.cvkBundle);
     freeCard.attributedBody = [self attributedMoreString:freeText headerColor:[UIColor blackColor] 
@@ -341,11 +348,19 @@
     
     ColoredVKCard *premiumCard = [ColoredVKCard new];
     premiumCard.title = CVKLocalizedStringInBundle(@"PREMIUM", self.cvkBundle);
-    premiumCard.backgroundColor = [UIColor colorWithRed:0.26f green:0.28f blue:0.46f alpha:1.0f];
+    premiumCard.backgroundColor = [UIColor colorWithRed:84/255.0f green:91/255.0f blue:135/255.0f alpha:1.0f];
     premiumCard.backgroundImage = [UIImage imageNamed:@"NightBackground" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
-    premiumCard.buttonText = CVKLocalizedStringInBundle(@"BUY_PREMIUM", self.cvkBundle);
-    premiumCard.buttonTarget = self;
-    premiumCard.buttonAction = @selector(actionPurchase);
+    
+    if (self.user.accountStatus == ColoredVKUserAccountStatusFree) {
+        freeCard.detailTitle = @"Ваш статус";
+        freeCard.detailTitleColor = [UIColor redColor];
+        
+        premiumCard.buttonText = CVKLocalizedStringInBundle(@"BUY_PREMIUM", self.cvkBundle);
+        premiumCard.buttonTarget = self;
+        premiumCard.buttonAction = @selector(actionPurchase);
+    } else if (self.user.accountStatus == ColoredVKUserAccountStatusPaid) {
+        premiumCard.detailTitle = @"Ваш статус";
+    }
     
     NSString *premiumText = CVKLocalizedStringInBundle(@"MORE_ABOUT_PREMIUM_ACCOUNT", self.cvkBundle);
     premiumCard.attributedBody = [self attributedMoreString:premiumText headerColor:[UIColor whiteColor] 

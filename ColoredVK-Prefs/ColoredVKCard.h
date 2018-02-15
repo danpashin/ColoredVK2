@@ -21,6 +21,15 @@
 @property (strong, nonatomic, null_resettable) UIColor *titleColor;
 
 /**
+ *  Устанавливает текст детельного заголовка в карточке. Может быть nil
+ */
+@property (copy, nonatomic, nullable) NSString *detailTitle;
+/**
+ *  Устанавливает цвет текста детельного заголовка. По умолчанию RGB 248 148 6
+ */
+@property (strong, nonatomic, null_resettable) UIColor *detailTitleColor;
+
+/**
  *  Устанавливает аттрибутированый текст тела карточки. Может быть nil
  */
 @property (copy, nonatomic, nullable) NSAttributedString *attributedBody;

@@ -21,7 +21,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		2C09F2E2ED3F21C2C0A4AA3D /* libPods-ColoredVK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AACAFDE1D7437A5F773B73B /* libPods-ColoredVK.a */; };
+		7560BCCB5DD90B5C2B79935D /* libPods-ColoredVK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BBD17AF96855B20E5B32B0E /* libPods-ColoredVK.a */; };
+		A40EE5C34D99A34D3387CD0D /* libPods-ColoredVK-Prefs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9163808E66056B3E0F75D9B /* libPods-ColoredVK-Prefs.a */; };
 		A50138DC201F2D070007300C /* ColoredVKAccountRestoreController.h in Headers */ = {isa = PBXBuildFile; fileRef = A50138DA201F2D070007300C /* ColoredVKAccountRestoreController.h */; };
 		A50138DD201F2D070007300C /* ColoredVKAccountRestoreController.h in Headers */ = {isa = PBXBuildFile; fileRef = A50138DA201F2D070007300C /* ColoredVKAccountRestoreController.h */; };
 		A50138DE201F2D070007300C /* ColoredVKAccountRestoreController.h in Headers */ = {isa = PBXBuildFile; fileRef = A50138DA201F2D070007300C /* ColoredVKAccountRestoreController.h */; };
@@ -544,20 +545,20 @@
 		A5F09DA21F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */; };
 		A5F09DA31F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */; };
 		A5F09DA41F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */; };
-		EBD575914558AEF6FCCC6681 /* libPods-ColoredVK-NonJail.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BCDFE814C3CA76BB9D3F7FC6 /* libPods-ColoredVK-NonJail.a */; };
-		F7AB979798AEAAD3FC44A993 /* libPods-ColoredVK-Prefs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A5B3E9EFF70027D4188B786 /* libPods-ColoredVK-Prefs.a */; };
-		FD0217739BE2B73EFAC5F5F5 /* libPods-ColoredVK-Prefs-App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BBE85DF3354DA269BB402E2F /* libPods-ColoredVK-Prefs-App.a */; };
+		C12A7E1FDC46683C897AAC44 /* libPods-ColoredVK-NonJail.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 54F0418CC30FC851AC9E3CD8 /* libPods-ColoredVK-NonJail.a */; };
+		FF4DBAA694835BE5696E9140 /* libPods-ColoredVK-Prefs-App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 098CA7EC3ABB2B6DD2E9924C /* libPods-ColoredVK-Prefs-App.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		098CA7EC3ABB2B6DD2E9924C /* libPods-ColoredVK-Prefs-App.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ColoredVK-Prefs-App.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B58120A8B7E45F6585D53CB /* Pods-ColoredVK.debug_app.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK.debug_app.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK/Pods-ColoredVK.debug_app.xcconfig"; sourceTree = "<group>"; };
 		335309A5ED082534F9E5C28B /* Pods-ColoredVK-Prefs-App.release_deb.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK-Prefs-App.release_deb.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK-Prefs-App/Pods-ColoredVK-Prefs-App.release_deb.xcconfig"; sourceTree = "<group>"; };
 		387AF2E9EB2BA45D2EDEAF7D /* Pods-ColoredVK-Prefs.release_deb.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK-Prefs.release_deb.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK-Prefs/Pods-ColoredVK-Prefs.release_deb.xcconfig"; sourceTree = "<group>"; };
-		3AACAFDE1D7437A5F773B73B /* libPods-ColoredVK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ColoredVK.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4BBD17AF96855B20E5B32B0E /* libPods-ColoredVK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ColoredVK.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		54F0418CC30FC851AC9E3CD8 /* libPods-ColoredVK-NonJail.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ColoredVK-NonJail.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		631857E675D094524CB703CA /* Pods-ColoredVK-Prefs.debug_app.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK-Prefs.debug_app.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK-Prefs/Pods-ColoredVK-Prefs.debug_app.xcconfig"; sourceTree = "<group>"; };
 		8280A3CCA9498A53F2C1EBE2 /* Pods-ColoredVK.release_deb.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK.release_deb.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK/Pods-ColoredVK.release_deb.xcconfig"; sourceTree = "<group>"; };
 		86C2C35891F936D0F9488A29 /* Pods-ColoredVK-Prefs.release_ipa.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK-Prefs.release_ipa.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK-Prefs/Pods-ColoredVK-Prefs.release_ipa.xcconfig"; sourceTree = "<group>"; };
-		8A5B3E9EFF70027D4188B786 /* libPods-ColoredVK-Prefs.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ColoredVK-Prefs.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D57593F544155A1192259BD /* Pods-ColoredVK-Prefs-App.release_ipa.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK-Prefs-App.release_ipa.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK-Prefs-App/Pods-ColoredVK-Prefs-App.release_ipa.xcconfig"; sourceTree = "<group>"; };
 		90A5793F278D5CF8705159B4 /* Pods-ColoredVK-NonJail.debug_app.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK-NonJail.debug_app.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK-NonJail/Pods-ColoredVK-NonJail.debug_app.xcconfig"; sourceTree = "<group>"; };
 		91D21BABD924C177DD3CE4D8 /* Pods-ColoredVK-NonJail.release_deb.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK-NonJail.release_deb.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK-NonJail/Pods-ColoredVK-NonJail.release_deb.xcconfig"; sourceTree = "<group>"; };
@@ -755,9 +756,8 @@
 		A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKCrypto.m; sourceTree = "<group>"; };
 		A5F09DA51F101A5200024198 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		A5FB4C731FCC795A004D46C7 /* VKPhotoPicker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VKPhotoPicker.h; sourceTree = "<group>"; };
-		BBE85DF3354DA269BB402E2F /* libPods-ColoredVK-Prefs-App.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ColoredVK-Prefs-App.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BCDFE814C3CA76BB9D3F7FC6 /* libPods-ColoredVK-NonJail.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ColoredVK-NonJail.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C065C479B2C25F581EB06241 /* Pods-ColoredVK-Prefs-App.debug_app.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK-Prefs-App.debug_app.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK-Prefs-App/Pods-ColoredVK-Prefs-App.debug_app.xcconfig"; sourceTree = "<group>"; };
+		E9163808E66056B3E0F75D9B /* libPods-ColoredVK-Prefs.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ColoredVK-Prefs.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -776,7 +776,7 @@
 				A50731D51CD535130088EF9F /* QuartzCore.framework in Frameworks */,
 				A5079FCB1CC9261B005B9693 /* UIKit.framework in Frameworks */,
 				A5079FB61CC92157005B9693 /* Foundation.framework in Frameworks */,
-				2C09F2E2ED3F21C2C0A4AA3D /* libPods-ColoredVK.a in Frameworks */,
+				7560BCCB5DD90B5C2B79935D /* libPods-ColoredVK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -798,7 +798,7 @@
 				A576D18F1DC621B90039884F /* QuartzCore.framework in Frameworks */,
 				A576D1901DC621B90039884F /* UIKit.framework in Frameworks */,
 				A576D1921DC621B90039884F /* Foundation.framework in Frameworks */,
-				EBD575914558AEF6FCCC6681 /* libPods-ColoredVK-NonJail.a in Frameworks */,
+				C12A7E1FDC46683C897AAC44 /* libPods-ColoredVK-NonJail.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -816,7 +816,7 @@
 				A5B6ED451D3D68F000383425 /* QuartzCore.framework in Frameworks */,
 				A5B6ED071D3D659800383425 /* Foundation.framework in Frameworks */,
 				A5B6ED081D3D659800383425 /* UIKit.framework in Frameworks */,
-				F7AB979798AEAAD3FC44A993 /* libPods-ColoredVK-Prefs.a in Frameworks */,
+				A40EE5C34D99A34D3387CD0D /* libPods-ColoredVK-Prefs.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -835,7 +835,7 @@
 				A5D56ABE1E70427300A8FFB5 /* QuartzCore.framework in Frameworks */,
 				A5D56ABF1E70427300A8FFB5 /* Foundation.framework in Frameworks */,
 				A5D56AC11E70427300A8FFB5 /* UIKit.framework in Frameworks */,
-				FD0217739BE2B73EFAC5F5F5 /* libPods-ColoredVK-Prefs-App.a in Frameworks */,
+				FF4DBAA694835BE5696E9140 /* libPods-ColoredVK-Prefs-App.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -937,10 +937,10 @@
 				A50731D41CD535130088EF9F /* QuartzCore.framework */,
 				A5079FCA1CC9261B005B9693 /* UIKit.framework */,
 				A5079FB51CC92157005B9693 /* Foundation.framework */,
-				3AACAFDE1D7437A5F773B73B /* libPods-ColoredVK.a */,
-				BCDFE814C3CA76BB9D3F7FC6 /* libPods-ColoredVK-NonJail.a */,
-				8A5B3E9EFF70027D4188B786 /* libPods-ColoredVK-Prefs.a */,
-				BBE85DF3354DA269BB402E2F /* libPods-ColoredVK-Prefs-App.a */,
+				54F0418CC30FC851AC9E3CD8 /* libPods-ColoredVK-NonJail.a */,
+				4BBD17AF96855B20E5B32B0E /* libPods-ColoredVK.a */,
+				E9163808E66056B3E0F75D9B /* libPods-ColoredVK-Prefs.a */,
+				098CA7EC3ABB2B6DD2E9924C /* libPods-ColoredVK-Prefs-App.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1708,7 +1708,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ColoredVK-Prefs/Pods-ColoredVK-Prefs-resources.sh",
-				$PODS_CONFIGURATION_BUILD_DIR/OAStackView/OAStackView.bundle,
+				"$PODS_CONFIGURATION_BUILD_DIR/OAStackView/OAStackView.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -1726,7 +1726,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ColoredVK-NonJail/Pods-ColoredVK-NonJail-resources.sh",
-				$PODS_CONFIGURATION_BUILD_DIR/OAStackView/OAStackView.bundle,
+				"$PODS_CONFIGURATION_BUILD_DIR/OAStackView/OAStackView.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -1758,17 +1758,19 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-ColoredVK-Prefs-App/Pods-ColoredVK-Prefs-App-frameworks.sh",
+				"${SRCROOT}/Pods/Target Support Files/Pods-ColoredVK-NonJail-ColoredVK-Prefs-ColoredVK-Prefs-App/Pods-ColoredVK-NonJail-ColoredVK-Prefs-ColoredVK-Prefs-App-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/LEColorPicker/LEColorPicker.framework",
 				"${BUILT_PRODUCTS_DIR}/Color-Picker-for-iOS/Color_Picker_for_iOS.framework",
 				"${BUILT_PRODUCTS_DIR}/DZNEmptyDataSet/DZNEmptyDataSet.framework",
-				"${BUILT_PRODUCTS_DIR}/OAStackView/OAStackView.framework",
+				"${BUILT_PRODUCTS_DIR}/MXParallaxHeader/MXParallaxHeader.framework",
 				"${BUILT_PRODUCTS_DIR}/SSZipArchive/SSZipArchive.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LEColorPicker.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Color_Picker_for_iOS.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DZNEmptyDataSet.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OAStackView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MXParallaxHeader.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SSZipArchive.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1828,7 +1830,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ColoredVK-Prefs-App/Pods-ColoredVK-Prefs-App-resources.sh",
-				$PODS_CONFIGURATION_BUILD_DIR/OAStackView/OAStackView.bundle,
+				"$PODS_CONFIGURATION_BUILD_DIR/OAStackView/OAStackView.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (

@@ -258,6 +258,8 @@ NSString *key;
                                                       if (!json[@"error"]) {
                                                           NSDictionary *response = json[@"response"];
                                                           if ([response isKindOfClass:[NSDictionary class]]) {
+                                                              self.user.accountStatus = ColoredVKUserAccountStatusFree;
+                                                              
                                                               BOOL purchased = [response[@"is_purchased"] boolValue];
                                                               if (purchased)
                                                                   self.user.accountStatus = ColoredVKUserAccountStatusPaid;
@@ -266,9 +268,13 @@ NSString *key;
                                                               if (banned)
                                                                   self.user.accountStatus = ColoredVKUserAccountStatusBanned;
                                                               
+                                                              NSString *email = response[@"email"];
+                                                              self.user.email = email;
+                                                              
                                                               NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
                                                               NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
                                                               dict[@"purchased"] = @(purchased);
+                                                              dict[@"email"] = email;
                                                               NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
                                                               [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
                                                           }

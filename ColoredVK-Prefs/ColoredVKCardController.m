@@ -114,10 +114,21 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    CGSize cardSize = CGSizeMake(320.0f, 455.0f);
     if (self.cards.count == 1) {
-        return CGSizeMake(330.0f, 455.0f);
+        cardSize.width += 10.0f;
     }
-    return CGSizeMake(320.0f, 455.0f);
+    
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;    
+    if (screenSize.width == 320.0f) {
+        cardSize.width = 280.0f;
+    }
+    
+    if (screenSize.height == 480.0f) {
+        cardSize.height = 400.0f;
+    }
+    
+    return cardSize;
 }
 
 
@@ -137,15 +148,14 @@
     ColoredVKCard *card = self.cards[indexPath.row];
     cell.headerLabel.text = card.title;
     cell.headerLabel.textColor = card.titleColor;
+    cell.headerDetailLabel.text = card.detailTitle;
+    cell.headerDetailLabel.tintColor = card.detailTitleColor;
     cell.bodyTextView.attributedText = card.attributedBody;
     
     cell.bottomButton.layer.borderColor = card.buttonTintColor.CGColor;
     [cell.bottomButton setTitle:card.buttonText forState:UIControlStateNormal];
     [cell.bottomButton setTitleColor:card.buttonTintColor forState:UIControlStateNormal];
     [cell.bottomButton addTarget:card.buttonTarget action:card.buttonAction forControlEvents:UIControlEventTouchUpInside];
-    if (card.buttonText.length == 0) {
-        cell.bottomButton.hidden = YES;
-    }
     
     cell.backgroundImageView.image = card.backgroundImage;
     cell.backgroundImageView.alpha = card.backgroundImageAlpha;
