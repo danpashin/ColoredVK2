@@ -86,7 +86,9 @@
 {
     if (!_downloadInfo) {
         NSArray *downloadInfo = [NSArray array];
-        NSDictionary *infoDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle bundleWithPath:CVK_BUNDLE_PATH] pathForResource:@"AdvancedInfo" ofType:@"plist" inDirectory:@"plists"]];
+        NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+        NSString *path = [cvkBundle pathForResource:@"AdvancedInfo" ofType:@"plist" inDirectory:@"plists"];
+        NSDictionary *infoDict = [NSDictionary dictionaryWithContentsOfFile:path];
         if (infoDict) {
             downloadInfo = infoDict[@"ImagesDLInfo"];
         }

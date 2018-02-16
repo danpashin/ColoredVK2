@@ -160,7 +160,7 @@
     
     NSString *url = [NSString stringWithFormat:@"%@/pass/change.php", kPackageAPIURL];
     NSDictionary *params = @{@"login": newInstaller.user.name, @"password":self.currentPassTextField.text, 
-                             @"new_password": self.passNewTextField.text, @"user_id":newInstaller.user.userID, 
+                             @"new_pass": self.passNewTextField.text, @"user_id":newInstaller.user.userID, 
                              @"token":newInstaller.user.accessToken, @"email":newInstaller.user.email};
     
     [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:params

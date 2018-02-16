@@ -61,7 +61,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" editable="NO" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ObZ-qw-nHo">
-                                                    <rect key="frame" x="20" y="82" width="290" height="300"/>
+                                                    <rect key="frame" x="14" y="82" width="302" height="300"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
@@ -80,7 +80,7 @@
                                         <constraints>
                                             <constraint firstItem="eo1-AP-Umi" firstAttribute="leading" secondItem="TJu-Tw-6C6" secondAttribute="leadingMargin" id="7kc-c4-yky"/>
                                             <constraint firstItem="ObZ-qw-nHo" firstAttribute="top" secondItem="Nbu-df-JJL" secondAttribute="bottom" constant="4" id="8by-ro-gNO"/>
-                                            <constraint firstAttribute="trailingMargin" secondItem="ObZ-qw-nHo" secondAttribute="trailing" constant="12" id="9Fg-7a-0U3"/>
+                                            <constraint firstAttribute="trailingMargin" secondItem="ObZ-qw-nHo" secondAttribute="trailing" constant="6" id="9Fg-7a-0U3"/>
                                             <constraint firstAttribute="trailingMargin" secondItem="eo1-AP-Umi" secondAttribute="trailing" id="CMa-mb-tri"/>
                                             <constraint firstItem="A7n-jS-gZH" firstAttribute="centerX" secondItem="TJu-Tw-6C6" secondAttribute="centerX" id="MBL-mV-1TE"/>
                                             <constraint firstItem="Nbu-df-JJL" firstAttribute="top" secondItem="R6i-ae-TUe" secondAttribute="bottom" constant="6" id="PKF-A2-TF4"/>
@@ -89,7 +89,7 @@
                                             <constraint firstAttribute="bottomMargin" secondItem="A7n-jS-gZH" secondAttribute="bottom" constant="12" id="XKm-Bf-thv"/>
                                             <constraint firstItem="R6i-ae-TUe" firstAttribute="top" secondItem="TJu-Tw-6C6" secondAttribute="topMargin" constant="8" id="af2-8r-mrb"/>
                                             <constraint firstItem="A7n-jS-gZH" firstAttribute="topMargin" secondItem="ObZ-qw-nHo" secondAttribute="bottom" constant="16" id="ckZ-v0-5fi"/>
-                                            <constraint firstItem="ObZ-qw-nHo" firstAttribute="leading" secondItem="TJu-Tw-6C6" secondAttribute="leadingMargin" constant="12" id="i5X-XS-Dxq"/>
+                                            <constraint firstItem="ObZ-qw-nHo" firstAttribute="leading" secondItem="TJu-Tw-6C6" secondAttribute="leadingMargin" constant="6" id="i5X-XS-Dxq"/>
                                             <constraint firstItem="Nbu-df-JJL" firstAttribute="centerX" secondItem="TJu-Tw-6C6" secondAttribute="centerX" id="pxw-Mr-2Ma"/>
                                             <constraint firstAttribute="bottomMargin" secondItem="eo1-AP-Umi" secondAttribute="bottom" constant="-8" id="tft-vA-eve"/>
                                         </constraints>

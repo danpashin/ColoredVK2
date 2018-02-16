@@ -124,6 +124,12 @@
 		A526A6C11DD50D4700B47104 /* ColoredVKAudioLyricsView.h in Headers */ = {isa = PBXBuildFile; fileRef = A526A6BE1DD50D4700B47104 /* ColoredVKAudioLyricsView.h */; };
 		A526A6C21DD50D4700B47104 /* ColoredVKAudioLyricsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A526A6BF1DD50D4700B47104 /* ColoredVKAudioLyricsView.m */; };
 		A526A6C31DD50D4700B47104 /* ColoredVKAudioLyricsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A526A6BF1DD50D4700B47104 /* ColoredVKAudioLyricsView.m */; };
+		A5288C432037327800A11223 /* ColoredVKColorMapView.h in Headers */ = {isa = PBXBuildFile; fileRef = A5288C412037327800A11223 /* ColoredVKColorMapView.h */; };
+		A5288C442037327800A11223 /* ColoredVKColorMapView.h in Headers */ = {isa = PBXBuildFile; fileRef = A5288C412037327800A11223 /* ColoredVKColorMapView.h */; };
+		A5288C452037327800A11223 /* ColoredVKColorMapView.h in Headers */ = {isa = PBXBuildFile; fileRef = A5288C412037327800A11223 /* ColoredVKColorMapView.h */; };
+		A5288C462037327800A11223 /* ColoredVKColorMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5288C422037327800A11223 /* ColoredVKColorMapView.m */; };
+		A5288C472037327800A11223 /* ColoredVKColorMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5288C422037327800A11223 /* ColoredVKColorMapView.m */; };
+		A5288C482037327800A11223 /* ColoredVKColorMapView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5288C422037327800A11223 /* ColoredVKColorMapView.m */; };
 		A528D8841DE9FCAF00B299C1 /* ColoredVKMainController.h in Headers */ = {isa = PBXBuildFile; fileRef = A528D8821DE9FCAF00B299C1 /* ColoredVKMainController.h */; };
 		A528D8851DE9FCAF00B299C1 /* ColoredVKMainController.h in Headers */ = {isa = PBXBuildFile; fileRef = A528D8821DE9FCAF00B299C1 /* ColoredVKMainController.h */; };
 		A528D8861DE9FCAF00B299C1 /* ColoredVKMainController.m in Sources */ = {isa = PBXBuildFile; fileRef = A528D8831DE9FCAF00B299C1 /* ColoredVKMainController.m */; };
@@ -597,6 +603,8 @@
 		A526A6BF1DD50D4700B47104 /* ColoredVKAudioLyricsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKAudioLyricsView.m; sourceTree = "<group>"; };
 		A52743661D8ADDE20063B78F /* ColoredVKInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKInstaller.h; sourceTree = "<group>"; };
 		A52743671D8ADDE20063B78F /* ColoredVKInstaller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKInstaller.m; sourceTree = "<group>"; };
+		A5288C412037327800A11223 /* ColoredVKColorMapView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKColorMapView.h; sourceTree = "<group>"; };
+		A5288C422037327800A11223 /* ColoredVKColorMapView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKColorMapView.m; sourceTree = "<group>"; };
 		A528D8821DE9FCAF00B299C1 /* ColoredVKMainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKMainController.h; sourceTree = "<group>"; };
 		A528D8831DE9FCAF00B299C1 /* ColoredVKMainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKMainController.m; sourceTree = "<group>"; };
 		A52B8F391F991A2600898168 /* ColoredVKNightThemeColorScheme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKNightThemeColorScheme.h; sourceTree = "<group>"; };
@@ -1194,6 +1202,8 @@
 				A5E3A9152026302800AD43AE /* ColoredVKUserInfoView.h */,
 				A5E3A9162026302800AD43AE /* ColoredVKUserInfoView.m */,
 				A5CAC06D2026340E0006DD4A /* ColoredVKUserInfoView.xib */,
+				A5288C412037327800A11223 /* ColoredVKColorMapView.h */,
+				A5288C422037327800A11223 /* ColoredVKColorMapView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1308,6 +1318,7 @@
 				A5739D761EA015C300367595 /* ColoredVKStepperPrefsCell.h in Headers */,
 				A54249A01E0522560018D3E3 /* SDWebImagePrefetcher.h in Headers */,
 				A53104C71EC4D08C003DEB83 /* ColoredVKWindowController.h in Headers */,
+				A5288C442037327800A11223 /* ColoredVKColorMapView.h in Headers */,
 				A5363B0E1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.h in Headers */,
 				A542497A1E0522560018D3E3 /* NSData+ImageContentType.h in Headers */,
 				A5B607CC1F0943C4003529AF /* ColoredVKUpdatesController.h in Headers */,
@@ -1380,6 +1391,7 @@
 				A5739D5D1EA015A900367595 /* ColoredVKTextViewController.h in Headers */,
 				A504C07F1DAFE839006C5FBC /* NSDate+DateTools.h in Headers */,
 				A54D2E062021EA44005F95E1 /* ColoredVKPassResetController.h in Headers */,
+				A5288C432037327800A11223 /* ColoredVKColorMapView.h in Headers */,
 				A53104C61EC4D08C003DEB83 /* ColoredVKWindowController.h in Headers */,
 				A5739D751EA015C300367595 /* ColoredVKStepperPrefsCell.h in Headers */,
 				A50883A71FFA48BC00C05E2A /* ColoredVKUserModel.h in Headers */,
@@ -1467,6 +1479,7 @@
 				A5D56A7D1E70427300A8FFB5 /* LHBackgroundView.h in Headers */,
 				A5D56A7F1E70427300A8FFB5 /* LHProgressHUD.h in Headers */,
 				A5D56A801E70427300A8FFB5 /* ColoredVKSettingsController.h in Headers */,
+				A5288C452037327800A11223 /* ColoredVKColorMapView.h in Headers */,
 				A55D20A62033406C00C43454 /* ColoredVKCard.h in Headers */,
 				A51E68BB2033231400B72082 /* ColoredVKCardController.h in Headers */,
 				A5BC53AD1F1234C200C4E1E0 /* ColoredVKAlertController.h in Headers */,
@@ -1708,7 +1721,6 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ColoredVK-Prefs/Pods-ColoredVK-Prefs-resources.sh",
-				"$PODS_CONFIGURATION_BUILD_DIR/OAStackView/OAStackView.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -1726,7 +1738,6 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ColoredVK-NonJail/Pods-ColoredVK-NonJail-resources.sh",
-				"$PODS_CONFIGURATION_BUILD_DIR/OAStackView/OAStackView.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -1790,6 +1801,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "cp -r \"${PROJECT_DIR}/ColoredVK.bundle/\" \"${BUILT_PRODUCTS_DIR}/ColoredVK2.app/\"";
+			showEnvVarsInLog = 0;
 		};
 		A5D979B01DAEBB1900607F06 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1830,7 +1842,6 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ColoredVK-Prefs-App/Pods-ColoredVK-Prefs-App-resources.sh",
-				"$PODS_CONFIGURATION_BUILD_DIR/OAStackView/OAStackView.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -1933,6 +1944,7 @@
 				A5D9A6881FACDBD900403A49 /* ColoredVKPrefsSelector.m in Sources */,
 				A54249881E0522560018D3E3 /* SDImageCacheConfig.m in Sources */,
 				A5AF3CFB1FDD2CBD00638AC2 /* TweakFunctions.m in Sources */,
+				A5288C472037327800A11223 /* ColoredVKColorMapView.m in Sources */,
 				A55D20A82033406C00C43454 /* ColoredVKCard.m in Sources */,
 				A576D1BB1DC6220C0039884F /* LHAcvitityIndicator.m in Sources */,
 				A5F09DA31F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */,
@@ -2001,6 +2013,7 @@
 				A5D979C81DAEC1CB00607F06 /* UIColor+ColoredVK.m in Sources */,
 				A5739D601EA015A900367595 /* ColoredVKTextViewController.m in Sources */,
 				A5D979C91DAEC1CB00607F06 /* NSString+ColoredVK.m in Sources */,
+				A5288C462037327800A11223 /* ColoredVKColorMapView.m in Sources */,
 				A5F09DA21F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */,
 				A5AE82FB1EC1DE25000B7F63 /* ColoredVKStepperButton.m in Sources */,
 				A54E41F81EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */,
@@ -2043,6 +2056,7 @@
 				A5243C27202B844B0023360A /* SDWebImageDownloader.m in Sources */,
 				A50883AD1FFA48BC00C05E2A /* ColoredVKUserModel.m in Sources */,
 				A50138E1201F2D070007300C /* ColoredVKAccountRestoreController.m in Sources */,
+				A5288C482037327800A11223 /* ColoredVKColorMapView.m in Sources */,
 				A5D56AD51E70440600A8FFB5 /* main.m in Sources */,
 				A53104CB1EC4D08C003DEB83 /* ColoredVKWindowController.m in Sources */,
 				A592BF501FA1F13700810F89 /* ColoredVKThemePrefsController.m in Sources */,

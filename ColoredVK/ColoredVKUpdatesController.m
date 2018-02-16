@@ -111,7 +111,7 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
             for (UIAlertAction *action in actions) {
                 [alertController addAction:action];
             }
-            [alertController presentFromController:[UIApplication sharedApplication].keyWindow.rootViewController];
+            [alertController present];
         }
     });
 }

@@ -77,7 +77,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     if ([textField isEqual:self.loginTextField]) {
-        [self.loginTextField endEditing:YES];
+        [self hideKeyboard];
         [self.passTextField becomeFirstResponder];
     }
     
@@ -107,8 +107,7 @@
 
 - (void)actionSignin
 {
-    [self.loginTextField endEditing:YES];
-    [self.passTextField endEditing:YES];
+    [self hideKeyboard];
     
     if (self.loginTextField.error || self.loginTextField.text.length == 0) {
         [self.loginTextField shake];
@@ -143,17 +142,21 @@
 
 - (IBAction)dismiss
 {
-    [self.loginTextField endEditing:YES];
-    [self.passTextField endEditing:YES];
-    
+    [self hideKeyboard];
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)hideKeyboard
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.loginTextField endEditing:YES];
+        [self.passTextField endEditing:YES];
+    });
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    [self.loginTextField endEditing:YES];
-    [self.passTextField endEditing:YES];
-    
+    [self hideKeyboard];
     [super prepareForSegue:segue sender:sender];
     
     UIViewController *destination = segue.destinationViewController;

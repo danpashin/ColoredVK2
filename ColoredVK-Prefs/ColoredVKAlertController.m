@@ -83,7 +83,11 @@
 
 - (void)present
 {
-    [self presentFromController:[UIApplication sharedApplication].keyWindow.rootViewController.presentedViewController];
+    UIViewController *viewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    if (viewController.presentedViewController)
+        viewController = viewController.presentedViewController;
+    
+    [self presentFromController:viewController];
 }
 
 - (void)presentFromController:(UIViewController *)viewController

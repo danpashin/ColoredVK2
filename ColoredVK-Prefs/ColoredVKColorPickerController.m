@@ -9,7 +9,7 @@
 
 #import "ColoredVKColorPickerController.h"
 #import "PrefixHeader.h"
-#import "HRColorMapView.h"
+#import "ColoredVKColorMapView.h"
 #import "HRBrightnessSlider.h"
 #import "ColoredVKColorPreview.h"
 #import "ColoredVKColorCollectionViewCell.h"
@@ -36,7 +36,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 @property (strong, nonatomic) ColoredVKColorPreview *infoView;
 @property (strong, nonatomic) HRBrightnessSlider *sliderView;
-@property (strong, nonatomic) HRColorMapView *colorMapView;
+@property (strong, nonatomic) ColoredVKColorMapView *colorMapView;
 @property (strong, nonatomic) UIButton *saveColorButton;
 @property (strong, nonatomic) UILabel *savedColorsLabel;
 @property (strong, nonatomic) UICollectionView *savedCollectionView;
@@ -115,7 +115,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     
     CGRect colorMapRect = CGRectMake(0, 0, CGRectGetWidth(self.stackView.frame), CGRectGetWidth(self.stackView.frame));
     
-    self.colorMapView = [HRColorMapView colorMapWithFrame:colorMapRect saturationUpperLimit:0.9f];
+    self.colorMapView = [[ColoredVKColorMapView alloc] initWithFrame:colorMapRect saturationUpperLimit:0.9f];
     [self.colorMapView addTarget:self action:@selector(setColor:) forControlEvents:UIControlEventValueChanged];
     self.colorMapView.tileSize = @1;
     self.colorMapView.brightness = 1;

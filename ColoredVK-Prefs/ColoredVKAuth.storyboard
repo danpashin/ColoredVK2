@@ -291,16 +291,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="vrt-yf-lDZ">
-                                <rect key="frame" x="16" y="64" width="375" height="583"/>
+                                <rect key="frame" x="0.0" y="64" width="0.0" height="583"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qLp-1p-XsD" userLabel="Container">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="583"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="583"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="BDj-Ta-9uj">
-                                                <rect key="frame" x="20" y="37" width="375" height="188"/>
+                                                <rect key="frame" x="0.0" y="37" width="0.0" height="188"/>
                                                 <subviews>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="new password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9xx-sa-buy" customClass="ColoredVKTextField">
-                                                        <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="50"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="50" id="6sB-xb-yd0"/>
                                                         </constraints>
@@ -309,7 +309,7 @@
                                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
                                                     </textField>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="confirm password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="npJ-vZ-s6l" customClass="ColoredVKTextField">
-                                                        <rect key="frame" x="0.0" y="58" width="375" height="50"/>
+                                                        <rect key="frame" x="0.0" y="58" width="0.0" height="50"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="50" id="FAU-mP-wVP"/>
                                                         </constraints>
@@ -318,7 +318,7 @@
                                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
                                                     </textField>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="footer" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yZY-hN-eDf">
-                                                        <rect key="frame" x="0.0" y="116" width="375" height="72"/>
+                                                        <rect key="frame" x="0.0" y="116" width="0.0" height="72"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="72" id="S0n-hf-C5d"/>
                                                         </constraints>
@@ -380,7 +380,7 @@
         <scene sceneID="xVA-8x-ZrC">
             <objects>
                 <tableViewController storyboardIdentifier="accountController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="g7A-f2-9Fy" customClass="ColoredVKAccountController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="48" estimatedRowHeight="48" sectionHeaderHeight="18" sectionFooterHeight="18" id="anq-6E-VEx">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" contentInsetAdjustmentBehavior="never" dataMode="static" style="grouped" separatorStyle="default" rowHeight="48" estimatedRowHeight="48" sectionHeaderHeight="18" sectionFooterHeight="18" id="anq-6E-VEx">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -550,16 +550,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="hPo-Ku-oui">
-                                <rect key="frame" x="16" y="64" width="375" height="583"/>
+                                <rect key="frame" x="0.0" y="64" width="0.0" height="583"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="23R-1R-XI3" userLabel="Container">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="583"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="583"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Gwi-3b-h0F">
-                                                <rect key="frame" x="20" y="37" width="375" height="246"/>
+                                                <rect key="frame" x="0.0" y="37" width="0.0" height="246"/>
                                                 <subviews>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="current password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nbo-os-0tL" customClass="ColoredVKTextField">
-                                                        <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="50"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="50" id="ZZh-8e-1Qf"/>
                                                         </constraints>
@@ -568,7 +568,7 @@
                                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
                                                     </textField>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="new password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="L6a-Pp-j7t" customClass="ColoredVKTextField">
-                                                        <rect key="frame" x="0.0" y="58" width="375" height="50"/>
+                                                        <rect key="frame" x="0.0" y="58" width="0.0" height="50"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="50" id="IIl-2Y-7Zm"/>
                                                         </constraints>
@@ -577,7 +577,7 @@
                                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
                                                     </textField>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="confirm password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="kAJ-g6-jW2" customClass="ColoredVKTextField">
-                                                        <rect key="frame" x="0.0" y="116" width="375" height="50"/>
+                                                        <rect key="frame" x="0.0" y="116" width="0.0" height="50"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="50" id="B8Q-ZS-hwc"/>
                                                         </constraints>
@@ -586,7 +586,7 @@
                                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
                                                     </textField>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="footer" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XQQ-Ad-utJ">
-                                                        <rect key="frame" x="0.0" y="174" width="375" height="72"/>
+                                                        <rect key="frame" x="0.0" y="174" width="0.0" height="72"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="72" id="dfg-7q-Ii6"/>
                                                         </constraints>
