@@ -285,22 +285,27 @@
 
 - (void)updateAccountInfo
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-        self.user = newInstaller.user;
-        if (newInstaller.vkUserID) {
-            [self.infoHeaderView loadVKAvatarForUserID:newInstaller.vkUserID];
-        }
-        self.infoHeaderView.username = self.user.name;
-        self.infoHeaderView.email = self.user.email;
-        
-        BOOL accountPaid = (self.user.accountStatus == ColoredVKUserAccountStatusPaid);
-        self.statusCell.detailTextLabel.text = CVKLocalizedStringInBundle(accountPaid ? @"PREMIUM" : @"FREE", self.cvkBundle);
-        self.statusCell.accessoryView.frame = accountPaid ? CGRectMake(0.0f, 0.0f, 44.0f, 30.0f) : CGRectZero;
-        self.statusCell.accessoryView.hidden = !accountPaid;
-        
-        [self.tableView reloadData];
-    });
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
+    void (^updateBlock)(void) = ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.user = newInstaller.user;
+            if (newInstaller.vkUserID) {
+                [self.infoHeaderView loadVKAvatarForUserID:newInstaller.vkUserID];
+            }
+            self.infoHeaderView.username = self.user.name;
+            self.infoHeaderView.email = self.user.email;
+            
+            BOOL accountPaid = (self.user.accountStatus == ColoredVKUserAccountStatusPaid);
+            self.statusCell.detailTextLabel.text = CVKLocalizedStringInBundle(accountPaid ? @"PREMIUM" : @"FREE", self.cvkBundle);
+            self.statusCell.accessoryView.frame = accountPaid ? CGRectMake(0.0f, 0.0f, 44.0f, 30.0f) : CGRectZero;
+            self.statusCell.accessoryView.hidden = !accountPaid;
+            
+            [self.tableView reloadData];
+        });
+    };
+    
+    updateBlock();
+    [newInstaller updateAccountInfo:updateBlock];
 }
 
 - (void)actionSignIn

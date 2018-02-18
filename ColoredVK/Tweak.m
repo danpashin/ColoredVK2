@@ -2713,7 +2713,7 @@ CHDeclareMethod(2, UITableViewCell*, ModernSettingsController, tableView, UITabl
         
         if ([cvkMainController compareAppVersionWithVersion:@"3.0"] >= 0)
             cell.imageView.tintColor = [UIColor colorWithRed:0.667 green:0.682 blue:0.702 alpha:1.0f];
-    }    
+    }
     
     return cell;
 }

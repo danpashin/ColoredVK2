@@ -51,7 +51,7 @@ NSArray <NSString *> *specifiersToEnable;
         NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.bundle, nil), 
                                 self.tweakVersion, self.vkAppVersion];
         PSSpecifier *footer = [PSSpecifier emptyGroupSpecifier];
-        [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2017"] forKey:@"footerText"];
+        [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2018"] forKey:@"footerText"];
         [footer setProperty:@"1" forKey:@"footerAlignment"];
         [specifiersArray addObject:footer];
         
