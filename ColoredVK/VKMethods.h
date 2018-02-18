@@ -723,6 +723,9 @@
 @interface _UIAlertControlleriOSActionSheetCancelBackgroundView : UIView
 @end
 
+@interface _UIAlertControllerActionView : UIView
+@end
+
 @interface VKP2PDetailedView : UIView
 @end
 

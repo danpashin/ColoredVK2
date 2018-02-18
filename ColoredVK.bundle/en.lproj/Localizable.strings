@@ -23,7 +23,6 @@
 "TWEAK_FOOTER_TEXT" = "Tweak version: %@\nVK App version: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Error loading tweak files.\nCheck their availability or contact developer.";
 "UNKNOWN" = "Unknown";
-"CRASH_OCCURED_MESSAGE" = "Looks like there was a crash of the app. The report will be sent to the Developer automatically.";
 
 "OH_YOU_HAVE_NOT_SAVED_COLORS" = "It seems you have no saved colors. Tap 'Save' to move color here.";
 "SAVED_COLORS" = "Saved colors";
@@ -36,67 +35,75 @@
 "YES_I_AM_SURE" = "Yeah, I'm sure";
 
 "NEVER" = "Never";
-"ENTER_LOGIN_PASSWORD" = "Enter Your username and password from the ColoredVK 2 account.";
-"NO_ACCOUNT" = "No account?";
-"AUTHORISE" = "Authorise";
-"CLOSE_APP" = "Close app";
+"NO_ACCOUNT" = "Нет аккаунта?";
 
 "SET_THIS_IMAGE_TO" = "Set this image to";
 "VKAPP_VERSION_IS_TOO_LOW" = "ColoredVK 2 doesn't support this app version (%@).\nPlease, install VK App %@ or later";
 
 "CONTINUE" = "Continue";
-"GETTING_UDID_ERROR" = "ColoredVK 2 cannot automatically obtain UDID of your device.\nTo continue, enter it manually in the box below.\nYou can find UDID in Cydia's main page at the bottom.";
-"OPEN_PREFERENCES" = "Go to Preferences";
-"GETTING_PRIVATE_INFO_ERROR" = "ColoredVK 2 cannot automatically obtain info of your device. If you have Xcon or other similar tweaks installed, I recommend to remove them.\n\nTo continue, go to ColoredVK 2 settings via Preferences app and re-open VK App.";
 
-
-
-"CHANGE_PASSWORD" = "Change password";
-"ACTION_LOG_OUT" = "Log out";
-"USERNAME" = "Username";
+"CHANGE_PASSWORD_TITLE" = "Change password";
+"USERNAME" = "User name";
 
 "YOU_HAVE_FREE_VERSION" = "You are using the free version of the program. Note that the functionality may be limited.";
 "PLEASE_WAIT" = "Please, wait...";
 "ENTER_ACCOUNT_FIRST" = "First, log in to your account.";
-"LICENCE_SUCCESSFULLY_INSTALLED" = "The license for Your device was successfully generated!";
 "AVAILABLE_IN_FULL_VERSION" = "This function is only available in the full version of the tweak. Want to buy?";
 "THINK_LATER" = "I think a little later";
 "OF_COURSE" = "Of course";
-"WAIT_ACTIVATION" = "Waiting for activation";
-"UPDATING..." = "Updating...";
 "PURCHASE" = "Purchase";
-"ENTER_PASS_FOR_ACTION" = "To confirm this action, enter your password.";
 "HIDE" = "Hide";
-"ENTER_CORRECT_LOGIN_PASS" = "Please enter the correct username and password.";
+
+"CLOSE_APP_FOOTER_TEXT" = "Settings are applied automatically, but for full theme application it is recommended to restart the client.";
+"CLOSE_APP_FOOTER_BUTTON_TEXT" = "Close VK App";
+//"CLOSE" = "Close";
+
 
     // Восстановление пароля
 "ACTION_LOG_IN" = "Log in";
 "COLOREDVK_AUTH" = "Log into ColoredVK 2";
 "FORGOT_PASSWORD" = "Forgot password?";
-"RECOVER_ACCESS" = "Recover access";
+"RECOVER_ACCESS" = "Restore access";
 "EMAIL" = "Email";
-"CONTACT_DEV_IF_YOU_USE_FREE_ACCOUNT" = "For technical reasons, the restoration of some free accounts is impossible. If you use this type of account, please contact the developer.";
+"CONTACT_DEV_IF_YOU_USE_FREE_ACCOUNT" = "For technical reasons, some free accounts cannot be restored. If you use such account, please contact the developer.";
 "NEXT" = "Next";
-"YOU_HAVE_BEEN_SENT_RECOVER_EMAIL" = "A message with a recovery code was sent to your email.";
-"CODE_VALIDALITY_IS_OVER" = "The sent code has expired.\n\nTap to send a new code.";
-"CODE_IS_VALID_FOR_%i_SECONDS" = "%i seconds left until code expires.";
-"ENTER_NEW_PASSWORD" = "Enter a new password";
-"CONFIRM_NEW_PASSWORD" = "Confirm the password";
+"YOU_HAVE_BEEN_SENT_RECOVER_EMAIL" = "Message with the recovery code was sent to your email.";
+"CODE_VALIDALITY_IS_OVER" = "Code has expired.\n\nTap to send new code.";
+"CODE_IS_VALID_FOR_%i_SECONDS" = "Code is valid for %i seconds.";
+"ENTER_NEW_PASSWORD" = "Enter new password";
+"CONFIRM_NEW_PASSWORD" = "Confirm password";
 "CHANGE" = "Change";
 
+"ENTER_OLD_PASSWORD" = "Enter old password";
+"CHANGE_ALT" = "Change";
+"CANCEL" = "Cancel";
 
+"PASSWORD_WARNING" = "The password must contain only letters and numbers and must be at least 8 characters.";
+
+    // Экран аккаунта
+"LOG_INTO_YOUR_ACCOUNT" = "Log into your account";
+"REGISTER" = "Register";
+"ACCOUNT_STATUS" = "Account status";
+"MORE_ABOUT_STATUS" = "More about statuses";
+"CHANGE_PASSWORD" = "Change password";
+"LOG_OUT_OF_ACCOUNT" = "Log out";
+"LOG_OUT_OF_ACCOUNT_ALERT" = "Log out";
+//"FREE" = "Free";
+//"PREMIUM" = "Premium";
+"SECURITY_SETTINGS" = "Security settings";
+"NO_ACCOUNT_QUESTION" = "No account?";
 
 "PASSWORD" = "Password";
-"CURRENT" = "Current";
-"NEW" = "New";
-"CONFIRM" = "Confirm";
-"PASSWORD_WARNING" = "The password must contain only letters and numbers and be at least 6 characters.";
 
+    // О статусах аккаунта
+"YOUR_STATUS" = "Your status";
+"FREE" = "Free";
+"MORE_ABOUT_FREE_ACCOUNT" = "Free account has some limited functionality. It has following features:\n\n●  Change colors of navigation bar and toolbar\n●  Change tabbar (only for VK App 3.0 and higher)\n●  Full change of the main menu\n●  Full change of the messages section";
+"PREMIUM" = "Premium";
+"MORE_ABOUT_PREMIUM_ACCOUNT" = "Premium account, unlike free, opens the full functionality of the add-on. It additionally adds:\n\n● Night theme (2 preinstalled on your choise + one custom)\n● Change of other sections (groups, settings, etc.)\n● Change colors of status bar, switches and other small items\n● Backing up and restoring settings";
+"BUY_PREMIUM" = "Purchase Premium";
 
-"HI_%@" = "Hi, %@!";
-"HI" = "Hi!";
-"I_AGREE_WITH_RULES" = "I agree with rules and undertake to comply with them";
-"RIGTHS_AGREEMENT" = "Using ColoredVK 2 you agree:\n  1. Prohibited [1]:\n      1. Resale\n      2. Transfer to third parties any personal data (licenses, passwords, unique device numbers, etc)\n  2. The money refund [3] will be possible only if:\n      1. You bought an app through the BigBoss repository. [2]\n      2. You bought a version for non-jailbroken devices directly through the Author\n      3. Not passed 30 days from the date of purchase\n      4. Your account has never been banned for item 1 violation. 1)\n\nRefinements:\n  [1] — The user who violated the rule(s) from this list will be banned (temporary or permanent will depend on the degree of violation).\n  [2] — Within 24 hours of purchase, You can return the money yourself. To do this, go to Program settings and click the 'Hate it? Get an automatic refund!'. After that, Cydia will automatically cancel your purchase and return the money to Your PayPal/Amazon account. After 24 hours You can contact the Author in private messages in VK or e-mail with the request to return the money.\n  [3] — Refund is done only once, i.e. if You got the money back, and then decided to buy the Program again, the purchase ability will be disabled.";
+    //  Метки доступа
+"RESET_COLOR" = "Reset color?";
+"SHOW_HIDE_PASSWORD" = "Show or hide password";
 
-"CLOSE_APP_FOOTER_TEXT" = "Settings are applied automatically, but for full theme application it is recommended to restart the client.";
-"CLOSE_APP_FOOTER_BUTTON_TEXT" = "Close VK App";

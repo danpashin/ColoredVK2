@@ -129,6 +129,7 @@
 "MAIN_BACKGROUND_COLOR" = "Основной цвет фона";
 "ADDITIONAL_BACKGROUND_COLOR" = "Дополнительный цвет фона";
 "LINK_TEXT_COLOR" = "Цвет ссылок";
+"DETAIL_TEXT_COLOR" = "Цвет дополнительного текста";
 
 "UNREAD_MESSAGE_COLOR" = "Цвет непрочитанных";
 "INCOMING_MESSAGE_COLOR" = "Цвет исходящих";

@@ -120,6 +120,18 @@
 			<key>action</key>
 			<string>showColorPicker:</string>
 			<key>label</key>
+			<string>DETAIL_TEXT_COLOR</string>
+			<key>cellClass</key>
+			<string>ColoredVKColorCell</string>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>id</key>
+			<string>nightThemeDetailTextColor</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>showColorPicker:</string>
+			<key>label</key>
 			<string>LINK_TEXT_COLOR</string>
 			<key>cellClass</key>
 			<string>ColoredVKColorCell</string>

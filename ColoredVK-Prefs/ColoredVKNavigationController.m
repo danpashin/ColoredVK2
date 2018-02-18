@@ -30,7 +30,7 @@
     
     self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
     
-    self.navigationBar.tag = 26;
+//    self.navigationBar.tag = 26;
     self.navigationBar.tintColor = [UIColor whiteColor];
     self.navigationBar.barTintColor = [UIColor colorWithRed:65/255.0f green:125/255.0f blue:214/255.0f alpha:1.0f];
     self.navigationBar.translucent = NO;

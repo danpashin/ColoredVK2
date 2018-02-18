@@ -38,7 +38,7 @@
     UINavigationBar *navBar = self.navigationController.navigationBar;
     navBar.titleTextAttributes = @{};
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:CVKLocalizedString(@"CLOSE")
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:CVKLocalizedString(@"DISMISS")
                                                                               style:UIBarButtonItemStyleDone 
                                                                              target:self action:@selector(dismiss)];
     

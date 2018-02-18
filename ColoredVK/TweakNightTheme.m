@@ -875,15 +875,14 @@ CHDeclareMethod(0, void, _UIAlertControllerTextFieldViewController, viewDidLoad)
     }
 }
 
-@interface _UIAlertControllerActionView : UIView
-@end
-
 CHDeclareClass(_UIAlertControllerActionView);
 CHDeclareMethod(0, void, _UIAlertControllerActionView, layoutSubviews)
 {
     CHSuper(0, _UIAlertControllerActionView, layoutSubviews);
     
-    self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    if (enabled && enableNightTheme) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
 }
 
 

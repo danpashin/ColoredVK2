@@ -56,7 +56,6 @@
 
 "CLOSE_APP_FOOTER_TEXT" = "Настройки применяются автоматически, но для полного применения темы рекомендуется перезапустить клиент.";
 "CLOSE_APP_FOOTER_BUTTON_TEXT" = "Закрыть VK App";
-"CLOSE" = "Закрыть";
 
 
 // Восстановление пароля
@@ -88,8 +87,6 @@
 "CHANGE_PASSWORD" = "Изменить пароль";
 "LOG_OUT_OF_ACCOUNT" = "Выйти из аккаунта";
 "LOG_OUT_OF_ACCOUNT_ALERT" = "Выйти";
-"FREE" = "Бесплатный";
-"PREMIUM" = "Премиум";
 "SECURITY_SETTINGS" = "Настройки безопасности";
 "NO_ACCOUNT_QUESTION" = "Нет аккаунта?";
 

@@ -589,7 +589,7 @@ CHDeclareMethod(0, void, UISwitch, layoutSubviews)
             self.thumbTintColor = nil;
             self.backgroundColor = nil;
         } else {
-            self.tintColor = (self.tag == 228) ? [UIColor clearColor] : nil;
+            self.tintColor = nil;
             self.onTintColor = (self.tag == 228) ? CVKMainColor : nil;
             self.thumbTintColor = nil;
             self.backgroundColor = nil;
@@ -2707,8 +2707,8 @@ CHDeclareMethod(2, UITableViewCell*, ModernSettingsController, tableView, UITabl
     
     if (!cell) {
         cell = cvkMainController.settingsCell;
-        cell.backgroundColor = [UIColor whiteColor];
-        cell.textLabel.textColor = [UIColor blackColor];
+        cell.backgroundColor = (enabled && enableNightTheme) ? cvkMainController.nightThemeScheme.foregroundColor : [UIColor whiteColor];
+        cell.textLabel.textColor = (enabled && enableNightTheme) ? cvkMainController.nightThemeScheme.textColor : [UIColor blackColor];
         cell.imageView.tintColor = kVKMainColor;
         
         if ([cvkMainController compareAppVersionWithVersion:@"3.0"] >= 0)
