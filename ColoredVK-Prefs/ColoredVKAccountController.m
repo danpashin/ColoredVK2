@@ -19,6 +19,7 @@
 #import "ColoredVKNavigationController.h"
 #import "ColoredVKAlertController.h"
 #import "ColoredVKCardController.h"
+#import "ColoredVKNightThemeColorScheme.h"
 
 @interface UINavigationBar ()
 @property (nonatomic, readonly, strong) UIView *_backgroundView;
@@ -100,6 +101,11 @@
     self.statusCell.userInteractionEnabled = NO;
     
     [self updateAccountInfo];
+    
+    ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    if (nightScheme.enabled) {
+        self.infoHeaderView.backgroundColor = nightScheme.backgroundColor;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -184,29 +190,35 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    UITableViewCell *cell = nil;
     if (self.user.authenticated) {
         if (indexPath.section == 0) {
             if (indexPath.row == 0) {
-                return self.statusCell;
+                cell = self.statusCell;
             } else if (indexPath.row == 1) {
-                return self.moreAboutCell;
+                cell = self.moreAboutCell;
             }
             
         } else if (indexPath.section == 1 && indexPath.row == 0) {
-            return self.changePassCell;
+            cell = self.changePassCell;
         } else if (indexPath.section == 2 && indexPath.row == 0) {
-            return self.logoutCell;
+            cell = self.logoutCell;
         }
     } else {
         if (indexPath.section == 0 && indexPath.row == 0) {
-            return self.loginCell;
+            cell = self.loginCell;
         } else if (indexPath.section == 1 && indexPath.row == 0) {
-            return self.registerCell;
+            cell = self.registerCell;
         }
     }
     
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+    if (!cell)
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
+    
     cell.layoutMargins = UIEdgeInsetsMake(0.0f, 18.0f, 0.0f, 18.0f);
+    objc_setAssociatedObject(cell, "should_change_background", @NO, OBJC_ASSOCIATION_ASSIGN);
+    cell.backgroundColor = [UIColor clearColor];
+    
     return cell;
 }
 
@@ -237,6 +249,15 @@
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [cell renderBackgroundForTableView:tableView indexPath:indexPath];
+    
+    ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    if (nightScheme.enabled) {
+        cell.backgroundColor = [UIColor clearColor];
+        cell.contentView.backgroundColor = [UIColor clearColor];
+        cell.renderedBackroundColor = nightScheme.foregroundColor;
+        cell.renderedHighlightedColor = nightScheme.backgroundColor;
+        [cell updateRenderedBackgroundWithBackgroundColor:nightScheme.foregroundColor separatorColor:nightScheme.backgroundColor];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

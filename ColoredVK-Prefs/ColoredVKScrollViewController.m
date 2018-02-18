@@ -18,13 +18,17 @@
     return UIStatusBarStyleLightContent;
 }
 
+- (void)loadView
+{
+    [super loadView];
+    
+    self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    
-    self.scrollView.delegate = self;   
+    self.scrollView.delegate = self;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide) name:UIKeyboardWillHideNotification object:nil];

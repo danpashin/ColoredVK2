@@ -209,7 +209,7 @@
     NSDictionary *params = @{@"login":self.loginTextField.text, @"email":self.emailTextField.text};
     [self sendRequestWithName:@"reset.php" params:params successBlock:^(NSDictionary *response) {
         self.emailSent = YES;
-        self.codeValidDate = [NSDate dateWithTimeIntervalSince1970:[response[@"valid_until"] doubleValue]];
+        self.codeValidDate = [NSDate dateWithTimeIntervalSince1970:[response[@"code_valid_until"] doubleValue]];
         self.login = response[@"message"];
         self.navigationItem.rightBarButtonItem = nil;
         
@@ -252,7 +252,7 @@
     
     NSDictionary *params = @{@"login":self.loginTextField.text, @"email":self.emailTextField.text};
     [self sendRequestWithName:@"reset.php" params:params successBlock:^(NSDictionary *response) {
-        self.codeValidDate = [NSDate dateWithTimeIntervalSince1970:[response[@"valid_until"] doubleValue]];
+        self.codeValidDate = [NSDate dateWithTimeIntervalSince1970:[response[@"code_valid_until"] doubleValue]];
         self.login = response[@"message"];
     }];
 }
@@ -288,7 +288,7 @@
     // ТОЛЬКО ДЛЯ ДЕБАГА
 //    if (successBlock)
 //        dispatch_async(dispatch_get_main_queue(), ^{
-//            successBlock(@{@"token":@"come_ctm_token", @"valid_until":@([NSDate date].timeIntervalSince1970 + 10), @"message":self.loginTextField.text});
+//            successBlock(@{@"token":@"come_ctm_token", @"code_valid_until":@([NSDate date].timeIntervalSince1970 + 10), @"message":self.loginTextField.text});
 //        });
 //    
 //    return;
@@ -313,7 +313,7 @@
             NSDictionary *errorDict = json[@"error"];
             [hud showFailureWithStatus:[NSString stringWithFormat:@"%@\n(%@)", errorDict[@"message"], errorDict[@"code"]]];
         } else {
-            NSLog(@"%@", json);
+            CVKLog(@"%@", json);
             [hud showFailureWithStatus:@"Internal error. See console."];
         }
     };

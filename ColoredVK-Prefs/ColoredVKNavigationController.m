@@ -6,6 +6,7 @@
 //
 
 #import "ColoredVKNavigationController.h"
+#import "ColoredVKNightThemeColorScheme.h"
 
 @interface ColoredVKNavigationController () <UINavigationBarDelegate>
 
@@ -38,6 +39,23 @@
     if (@available(iOS 11.0, *)) {
         self.navigationBar.prefersLargeTitles = YES;
         self.navigationBar.largeTitleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
+    }
+    
+    [self updateNightThemeForController:self];
+    [self updateNightThemeForController:self.topViewController];
+}
+
+- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    [super pushViewController:viewController animated:animated];
+    [self updateNightThemeForController:viewController];
+}
+
+- (void)updateNightThemeForController:(UIViewController *)viewController
+{
+    ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    if (nightScheme.enabled) {
+        viewController.view.backgroundColor = nightScheme.backgroundColor;
     }
 }
 

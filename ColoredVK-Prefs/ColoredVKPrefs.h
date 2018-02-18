@@ -19,8 +19,7 @@
 @property (nonatomic, readonly) NSString *vkAppVersion;
 @property (assign, nonatomic, readonly) BOOL app_is_vk;
 
-@property (strong, nonatomic) ColoredVKNightThemeColorScheme *nightThemeColorScheme;
-@property (assign, nonatomic) BOOL enableNightTheme;
+@property (weak, nonatomic) ColoredVKNightThemeColorScheme *nightThemeColorScheme;
 
 @property (strong, nonatomic, readonly) NSString *prefsPath;
 @property (strong, nonatomic, readonly) NSBundle *cvkBundle;

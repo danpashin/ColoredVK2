@@ -36,7 +36,7 @@
                                                                                       localized:[specifier.properties[@"localized"] boolValue]];
     controller.backgroundStyle = ColoredVKWindowBackgroundStyleCustom;
     controller.app_is_vk = self.app_is_vk;
-    controller.enableNightTheme = self.enableNightTheme;
+    controller.enableNightTheme = self.nightThemeColorScheme.enabled;
     controller.nightThemeColorScheme = self.nightThemeColorScheme;
     [controller show];
 }

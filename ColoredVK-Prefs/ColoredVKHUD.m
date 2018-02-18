@@ -7,6 +7,7 @@
 //
 
 #import "ColoredVKHUD.h"
+#import "ColoredVKNightThemeColorScheme.h"
 
 @interface LHProgressHUD ()
 - (instancetype)initWithAttachedView:(UIView *)view mode:(LHProgressHUDMode)mode subMode:(LHPRogressHUDSubMode)subMode animated:(BOOL)animated;
@@ -34,11 +35,17 @@
     if (self) {
         _dismissByTap = NO;
         self.centerBackgroundView.blurStyle = LHBlurEffectStyleExtraLight;
-        self.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
-        self.centerBackgroundView.layer.cornerRadius = 10;
-        self.infoColor = [UIColor colorWithWhite:0.55 alpha:1];
-        self.spinnerColor = [UIColor colorWithWhite:0.55 alpha:1];
-        self.textLabel.textColor = [UIColor colorWithWhite:0.55 alpha:1];
+        self.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.7f];
+        self.centerBackgroundView.layer.cornerRadius = 10.0f;
+        self.infoColor = [UIColor colorWithWhite:0.55f alpha:1.0f];
+        self.spinnerColor = [UIColor colorWithWhite:0.55f alpha:1.0f];
+        self.textLabel.textColor = [UIColor colorWithWhite:0.55f alpha:1.0f];
+        
+        ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+        if (nightScheme.enabled) {
+            self.centerBackgroundView.blurStyle = LHBlurEffectStyleDark;
+            self.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.7];
+        }
     }
     return self;
 }
@@ -54,7 +61,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{ 
         [super showSuccessWithStatus:@"" animated:YES];
-        [super hideAfterDelay:1.5];
+        [super hideAfterDelay:1.5f];
     });
 }
 
@@ -62,7 +69,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{ 
         [super showSuccessWithStatus:status animated:YES];
-        [super hideAfterDelay:1.5];
+        [super hideAfterDelay:1.5f];
     });
 }
 
@@ -70,7 +77,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{ 
         [super showFailureWithStatus:@"" animated:YES];
-        [super hideAfterDelay:1.5];
+        [super hideAfterDelay:1.5f];
     });
 }
 

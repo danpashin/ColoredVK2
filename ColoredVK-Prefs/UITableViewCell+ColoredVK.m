@@ -161,16 +161,40 @@
 
 - (void)setRenderedBackroundColor:(UIColor *)renderedBackroundColor
 {
+    if ([self respondsToSelector:@selector(specifier)]) {
+        PSSpecifier *specifier = objc_msgSend(self, @selector(specifier));
+        if ([specifier isKindOfClass:NSClassFromString(@"PSSpecifier")]) {
+            [specifier setProperty:renderedBackroundColor forKey:@"cellRenderedBackgroundColor"];
+            return;
+        }
+    }
+    
     objc_setAssociatedObject(self, "renderedBackroundColor", renderedBackroundColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void)setRenderedSeparatorColor:(UIColor *)renderedSeparatorColor
 {
+    if ([self respondsToSelector:@selector(specifier)]) {
+        PSSpecifier *specifier = objc_msgSend(self, @selector(specifier));
+        if ([specifier isKindOfClass:NSClassFromString(@"PSSpecifier")]) {
+            [specifier setProperty:renderedSeparatorColor forKey:@"cellRenderedSeparatorColor"];
+            return;
+        }
+    }
+    
     objc_setAssociatedObject(self, "renderedSeparatorColor", renderedSeparatorColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void)setRenderedHighlightedColor:(UIColor *)renderedHighlightedColor
 {
+    if ([self respondsToSelector:@selector(specifier)]) {
+        PSSpecifier *specifier = objc_msgSend(self, @selector(specifier));
+        if ([specifier isKindOfClass:NSClassFromString(@"PSSpecifier")]) {
+            [specifier setProperty:renderedHighlightedColor forKey:@"cellRenderedHighlightedColor"];
+            return;
+        }
+    }
+    
     objc_setAssociatedObject(self, "renderedHighlightedColor", renderedHighlightedColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
@@ -211,7 +235,9 @@
     if ([self respondsToSelector:@selector(specifier)]) {
         PSSpecifier *specifier = objc_msgSend(self, @selector(specifier));
         if ([specifier isKindOfClass:NSClassFromString(@"PSSpecifier")]) {
-            return [[specifier propertyForKey:@"cellBackgroundRendered"] boolValue];
+            NSNumber *backgroundRendered = [specifier propertyForKey:@"cellBackgroundRendered"];
+            if (backgroundRendered)
+                return backgroundRendered.boolValue;
         }
     }
     
@@ -224,6 +250,15 @@
 
 - (UIColor *)renderedBackroundColor
 {
+    if ([self respondsToSelector:@selector(specifier)]) {
+        PSSpecifier *specifier = objc_msgSend(self, @selector(specifier));
+        if ([specifier isKindOfClass:NSClassFromString(@"PSSpecifier")]) {
+            UIColor *renderedBackroundColor = [specifier propertyForKey:@"cellRenderedBackgroundColor"];
+            if (renderedBackroundColor)
+                return renderedBackroundColor;
+        }
+    }
+    
     UIColor *renderedBackroundColor = objc_getAssociatedObject(self, "renderedBackroundColor");
     if (![renderedBackroundColor isKindOfClass:[UIColor class]])
         renderedBackroundColor = [UIColor whiteColor];
@@ -233,6 +268,15 @@
 
 - (UIColor *)renderedSeparatorColor
 {
+    if ([self respondsToSelector:@selector(specifier)]) {
+        PSSpecifier *specifier = objc_msgSend(self, @selector(specifier));
+        if ([specifier isKindOfClass:NSClassFromString(@"PSSpecifier")]) {
+            UIColor *separatorColor = [specifier propertyForKey:@"cellRenderedSeparatorColor"];
+            if (separatorColor)
+                return separatorColor;
+        }
+    }
+    
     UIColor *renderedSeparatorColor = objc_getAssociatedObject(self, "renderedSeparatorColor");
     if (![renderedSeparatorColor isKindOfClass:[UIColor class]])
         renderedSeparatorColor = [UIColor colorWithRed:232/255.0f green:233/255.0f blue:234/255.0f alpha:1.0f];
@@ -242,6 +286,15 @@
 
 - (UIColor *)renderedHighlightedColor
 {
+    if ([self respondsToSelector:@selector(specifier)]) {
+        PSSpecifier *specifier = objc_msgSend(self, @selector(specifier));
+        if ([specifier isKindOfClass:NSClassFromString(@"PSSpecifier")]) {
+            UIColor *renderedHighlightedColor = [specifier propertyForKey:@"cellRenderedHighlightedColor"];
+            if (renderedHighlightedColor)
+                return renderedHighlightedColor;
+        }
+    }
+    
     UIColor *renderedHighlightedColor = objc_getAssociatedObject(self, "renderedHighlightedColor");
     if (![renderedHighlightedColor isKindOfClass:[UIColor class]])
         renderedHighlightedColor = [UIColor colorWithRed:204/255.0f green:204/255.0f blue:204/255.0f alpha:1.0f];

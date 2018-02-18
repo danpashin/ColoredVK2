@@ -149,8 +149,13 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
 {
     CHSuper(0, UITableViewCell, layoutSubviews);
     
-    if ([self isKindOfClass:[PSTableCell class]]) {
-        if ([((PSTableCell *)self).cellTarget isKindOfClass:[ColoredVKPrefs class]])
+    
+    NSNumber *shouldChangeBackground = objc_getAssociatedObject(self, "should_change_background");
+    if (!shouldChangeBackground)
+        shouldChangeBackground = @YES;
+    
+    if ([self isKindOfClass:NSClassFromString(@"PSTableCell")]) {
+        if ([((PSTableCell *)self).cellTarget isKindOfClass:NSClassFromString(@"ColoredVKPrefs")])
             return;
     }
     if ([self isKindOfClass:NSClassFromString(@"MessageCell")])
@@ -160,7 +165,7 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
         if ((self.textLabel.textAlignment == NSTextAlignmentCenter) && [CLASS_NAME(self) isEqualToString:@"UITableViewCell"])
             self.backgroundColor = [UIColor clearColor];
         else {
-            if (enabled && enableNightTheme)
+            if (enabled && enableNightTheme && shouldChangeBackground.boolValue)
                 self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
         }
         
@@ -227,11 +232,10 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
             return;
         
         if (![self isKindOfClass:NSClassFromString(@"VKMImageButton")] && ![self isKindOfClass:NSClassFromString(@"HighlightableButton")] && ![self isKindOfClass:NSClassFromString(@"LinkButton")] && ![self isKindOfClass:NSClassFromString(@"BorderButton")]) {
-            if ([CLASS_NAME(self) containsString:@"UINavigation"] || [CLASS_NAME(self.superview) containsString:@"UINavigation"])
-                [self setTitleColor:cvkMainController.nightThemeScheme.buttonSelectedColor forState:UIControlStateNormal];
-            else {
-                [self setTitleColor:cvkMainController.nightThemeScheme.detailTextColor forState:UIControlStateNormal];
-            }
+            
+            ColoredVKNightThemeColorScheme *nightScheme = cvkMainController.nightThemeScheme;
+            objc_setAssociatedObject(self.titleLabel, "should_customize", self.currentImage ? @YES : @NO, OBJC_ASSOCIATION_ASSIGN);
+            [self setTitleColor:self.currentImage ? nightScheme.detailTextColor : nightScheme.buttonSelectedColor forState:UIControlStateNormal];
             
             NSNumber *changeImageColor = objc_getAssociatedObject(self, "shouldChangeImageColor");
             if (!changeImageColor)
@@ -239,9 +243,12 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
             
             NSArray <NSString *> *namesToExclude = @[@"attachments/remove", @"search/clear"];
             if (![namesToExclude containsObject:[self imageForState:UIControlStateNormal].imageAsset.assetName] || changeImageColor.boolValue) {
-                if ((CGRectGetWidth(self.imageView.frame) <= 40.0f && CGRectGetHeight(self.imageView.frame) <= 40.0f) || changeImageColor.boolValue) {
+                if ((CGRectGetWidth(self.imageView.frame) <= 44.0f && CGRectGetHeight(self.imageView.frame) <= 44.0f) || changeImageColor.boolValue) {
                     [self setImage:[[self imageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-                    self.imageView.tintColor = cvkMainController.nightThemeScheme.buttonColor;
+                    
+                    NSArray <NSString *> *buttonNavigationClasses = @[@"UINavigationButton", @"_UIModernBarButton"];
+                    BOOL isNavigation = [buttonNavigationClasses containsObject:CLASS_NAME(self)];
+                    self.imageView.tintColor = isNavigation ? cvkMainController.nightThemeScheme.buttonSelectedColor : cvkMainController.nightThemeScheme.buttonColor;
                 }
             }
         }
@@ -292,7 +299,13 @@ CHDeclareClass(UITextView);
 CHDeclareMethod(1, void, UITextView, setAttributedText, NSAttributedString *, text)
 {
     if (enabled && enableNightTheme) {
-        text = attributedStringForNightTheme(text);
+        NSNumber *should_customize = objc_getAssociatedObject(self, "should_customize");
+        if (!should_customize)
+            should_customize = @YES;
+        
+        if (should_customize.boolValue) {
+            text = attributedStringForNightTheme(text);
+        }
     }
     CHSuper(1, UITextView, setAttributedText, text);
 }
@@ -300,7 +313,13 @@ CHDeclareMethod(1, void, UITextView, setAttributedText, NSAttributedString *, te
 CHDeclareMethod(1, void, UITextView, setLinkTextAttributes, NSDictionary *, linkTextAttributes)
 {
     if (enabled && enableNightTheme) {
-        linkTextAttributes = @{NSForegroundColorAttributeName: cvkMainController.nightThemeScheme.linkTextColor};
+        NSNumber *should_customize = objc_getAssociatedObject(self, "should_customize");
+        if (!should_customize)
+            should_customize = @YES;
+        
+        if (should_customize.boolValue) {
+            linkTextAttributes = @{NSForegroundColorAttributeName: cvkMainController.nightThemeScheme.linkTextColor};
+        }
     }
     CHSuper(1, UITextView, setLinkTextAttributes, linkTextAttributes);
 }
@@ -717,6 +736,9 @@ CHDeclareMethod(0, void, DefaultHighlightButton, layoutSubviews)
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"DefaultHighlightButton")]) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            objc_setAssociatedObject(self.titleLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+            objc_setAssociatedObject(self, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+            [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             if ([CLASS_NAME(self.superview) isEqualToString:@"UIView"])
                 self.superview.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
         });
@@ -781,28 +803,15 @@ CHDeclareMethod(0, void, DiscoverLayoutShadow, layoutSubviews)
 }
 
 CHDeclareClass(UIVisualEffectView);
-CHDeclareMethod(0, void, UIVisualEffectView, didMoveToSuperview)
+CHDeclareMethod(1, void, UIVisualEffectView, setEffect, UIVisualEffect *, effect)
 {
-    CHSuper(0, UIVisualEffectView, didMoveToSuperview);
-    
-    if (enabled && enableNightTheme && [self.effect isKindOfClass:[UIBlurEffect class]]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSString *className = CLASS_NAME(self.superview.superview);
-            if ([className containsString:@"_UIAlertController"] || [className containsString:@"_UIPopoverView"]) {
-                self.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-                self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.6f];
-            }
-        });
+    if (enabled && enableNightTheme && [effect isKindOfClass:[UIBlurEffect class]]) {
+        self.hidden = YES;
+    } else {
+        self.hidden = NO;
     }
-}
-
-CHDeclareClass(_UIAlertControlleriOSActionSheetCancelBackgroundView);
-CHDeclareMethod(0, void, _UIAlertControlleriOSActionSheetCancelBackgroundView, layoutSubviews)
-{
-    CHSuper(0, _UIAlertControlleriOSActionSheetCancelBackgroundView, layoutSubviews);
     
-    if (enabled && enableNightTheme && self.subviews.count > 0)
-        self.subviews.firstObject.backgroundColor = [UIColor clearColor];
+    CHSuper(1, UIVisualEffectView, setEffect, effect);
 }
 
 CHDeclareClass(UIAlertController);
@@ -811,7 +820,14 @@ CHDeclareMethod(0, void, UIAlertController, viewDidLoad)
     CHSuper(0, UIAlertController, viewDidLoad);
     
     if (enabled && enableNightTheme) {
-        self.view.tintColor = [UIColor colorWithRed:0.1f green:0.59f blue:0.94f alpha:1.0f];
+        self.view.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+        
+        UIView *firstSubview = self.view.subviews.firstObject;
+        UIView *alertContentView = firstSubview.subviews.firstObject;
+        
+        for (UIView *subSubView in alertContentView.subviews) {
+            subSubView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        }
     }
 }
 
@@ -857,6 +873,17 @@ CHDeclareMethod(0, void, _UIAlertControllerTextFieldViewController, viewDidLoad)
     if (enabled && enableNightTheme) {
         objc_setAssociatedObject(self.collectionView, "shouldDisableBackgroundColor", @1, OBJC_ASSOCIATION_ASSIGN);
     }
+}
+
+@interface _UIAlertControllerActionView : UIView
+@end
+
+CHDeclareClass(_UIAlertControllerActionView);
+CHDeclareMethod(0, void, _UIAlertControllerActionView, layoutSubviews)
+{
+    CHSuper(0, _UIAlertControllerActionView, layoutSubviews);
+    
+    self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
 }
 
 
@@ -1233,4 +1260,28 @@ CHDeclareMethod(1, void, VKProfileInfoItem, setValue, NSAttributedString *, valu
     NSMutableAttributedString *mutableValue = [value mutableCopy];
     [mutableValue addAttribute:@"CVKDetailed" value:@1 range:NSMakeRange(0, mutableValue.length)];
     CHSuper(1, VKProfileInfoItem, setValue, mutableValue);
+}
+
+
+
+
+CHDeclareClass(SFSafariViewController);
+CHDeclareMethod(1, void, SFSafariViewController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, SFSafariViewController, viewWillAppear, animated);
+    
+    UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
+    if (enabled && enableNightTheme && statusBar != nil) {
+        statusBar.foregroundColor = nil;
+    }
+}
+
+CHDeclareMethod(1, void, SFSafariViewController, dismissViewControllerAnimated, BOOL, animated)
+{
+    CHSuper(1, SFSafariViewController, dismissViewControllerAnimated, animated);
+    
+    UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
+    if (enabled && enableNightTheme && statusBar != nil) {
+        statusBar.foregroundColor = [UIColor whiteColor];
+    }
 }

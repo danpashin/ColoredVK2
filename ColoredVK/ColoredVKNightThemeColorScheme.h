@@ -17,7 +17,9 @@ typedef NS_ENUM(NSInteger, CVKNightThemeType) {
 
 @interface ColoredVKNightThemeColorScheme : NSObject
 
-+ (instancetype)colorSchemeForType:(CVKNightThemeType)type;
++ (instancetype)sharedScheme;
+
+@property (assign, nonatomic) BOOL enabled;
 
 @property (assign, nonatomic, readonly) CVKNightThemeType type;
 

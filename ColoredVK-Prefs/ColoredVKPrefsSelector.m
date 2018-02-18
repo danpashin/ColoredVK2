@@ -7,6 +7,7 @@
 
 #import "ColoredVKPrefsSelector.h"
 #import "ColoredVKNewInstaller.h"
+#import "ColoredVKNightThemeColorScheme.h"
 
 @interface ColoredVKPrefsSelector ()
 @property (strong, nonatomic) NSIndexPath *indexPathForSelectedRow;
@@ -61,6 +62,12 @@
     
     self.tickImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
     self.tickImageView.image = [UIImage imageNamed:@"TickIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    
+    ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    if (nightScheme.enabled) {
+        self.tickImageView.image = [self.tickImageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        self.tickImageView.tintColor = nightScheme.buttonSelectedColor;
+    }
 }
 
 - (id)readPreferenceValue:(PSSpecifier *)specifier

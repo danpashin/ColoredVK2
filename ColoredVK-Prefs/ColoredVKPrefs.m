@@ -102,16 +102,12 @@
     self.prefsTableView.emptyDataSetSource = self;
     self.prefsTableView.emptyDataSetDelegate = self;
     
-    
-    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    self.enableNightTheme = prefs[@"nightThemeType"] ? ([prefs[@"nightThemeType"] integerValue] != -1) : NO;
-    self.enableNightTheme = ([prefs[@"enabled"] boolValue] && self.enableNightTheme && (newInstaller.user.accountStatus == ColoredVKUserAccountStatusPaid));
-    self.nightThemeColorScheme = [ColoredVKNightThemeColorScheme colorSchemeForType:[prefs[@"nightThemeType"] integerValue]];
-    
-    if (self.app_is_vk && self.enableNightTheme) {
-        self.prefsTableView.backgroundColor = self.nightThemeColorScheme.backgroundColor;
-        self.navigationController.navigationBar.barTintColor = self.nightThemeColorScheme.navbackgroundColor;
+    if (self.app_is_vk) {
+        self.nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+        if (self.nightThemeColorScheme.enabled) {
+            self.prefsTableView.backgroundColor = self.nightThemeColorScheme.backgroundColor;
+            self.navigationController.navigationBar.barTintColor = self.nightThemeColorScheme.navbackgroundColor;
+        }
     }
 }
 
@@ -289,7 +285,7 @@
     
     objc_setAssociatedObject(cell, "nightThemeColorScheme", self.nightThemeColorScheme, OBJC_ASSOCIATION_ASSIGN);
     objc_setAssociatedObject(cell, "app_is_vk", @(self.app_is_vk), OBJC_ASSOCIATION_ASSIGN);
-    objc_setAssociatedObject(cell, "enableNightTheme", @(self.enableNightTheme), OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(cell, "enableNightTheme", @(self.nightThemeColorScheme.enabled), OBJC_ASSOCIATION_ASSIGN);
     
     NSDictionary *userPrefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
     BOOL changeSwitchColor = ([userPrefs[@"enabled"] boolValue] && [userPrefs[@"changeSwitchColor"] boolValue]);
@@ -303,18 +299,19 @@
     UIColor *backgroundColor = cell.renderedBackroundColor;
     UIColor *separatorColor = cell.renderedSeparatorColor;
     
-    if (self.app_is_vk && self.enableNightTheme) {
+    if (self.app_is_vk && self.nightThemeColorScheme.enabled) {
         cell.textLabel.textColor = self.nightThemeColorScheme.textColor;
         backgroundColor = self.nightThemeColorScheme.foregroundColor;
         separatorColor = self.nightThemeColorScheme.foregroundColor;
+        cell.renderedHighlightedColor = self.nightThemeColorScheme.backgroundColor;
+        cell.renderedBackroundColor = backgroundColor;
         if ([cell.accessoryView isKindOfClass:NSClassFromString(@"ColoredVKStepperButton")]) {
             ((UILabel *)[cell.accessoryView valueForKey:@"valueLabel"]).textColor = self.nightThemeColorScheme.textColor;
         }
     }
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [cell renderBackgroundWithColor:backgroundColor separatorColor:separatorColor forTableView:tableView indexPath:indexPath];
-        [cell updateRenderedBackgroundWithBackgroundColor:backgroundColor separatorColor:separatorColor];
-    });
+    
+    [cell renderBackgroundWithColor:backgroundColor separatorColor:separatorColor forTableView:tableView indexPath:indexPath];
+    [cell updateRenderedBackgroundWithBackgroundColor:backgroundColor separatorColor:separatorColor];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

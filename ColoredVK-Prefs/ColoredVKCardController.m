@@ -53,6 +53,7 @@
     
     self.collectionLayout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
     self.collectionLayout.minimumLineSpacing = 20.0f;
+    objc_setAssociatedObject(self.collectionView, "shouldDisableBackgroundColor", @1, OBJC_ASSOCIATION_ASSIGN);
 }
 
 
@@ -144,6 +145,11 @@
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     ColoredVKCollectionCardCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cardCell" forIndexPath:indexPath];
+    objc_setAssociatedObject(cell, "shouldDisableBackgroundColor", @1, OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(cell.headerLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(cell.headerDetailLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(cell.bodyTextView, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(cell.bottomButton, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
     
     ColoredVKCard *card = self.cards[indexPath.row];
     cell.headerLabel.text = card.title;
@@ -160,6 +166,7 @@
     cell.backgroundImageView.image = card.backgroundImage;
     cell.backgroundImageView.alpha = card.backgroundImageAlpha;
     cell.backgroundColor = card.backgroundColor;
+    
     
     return cell;
 }

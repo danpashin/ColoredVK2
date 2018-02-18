@@ -39,9 +39,11 @@
             }
             
             if ([control isKindOfClass:[UISegmentedControl class]]) {
+                ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+                
                 control.layer.cornerRadius = CGRectGetHeight(control.bounds) / 2;
                 control.layer.borderWidth = 1.0f;
-                control.layer.borderColor = control.tintColor.CGColor;
+                control.layer.borderColor = nightScheme.enabled ? nightScheme.buttonSelectedColor.CGColor : control.tintColor.CGColor;
                 control.layer.masksToBounds = YES;
             }
         }
@@ -57,7 +59,6 @@
             if (!enableNightTheme)
                 enableNightTheme = @NO;
             
-//            dispatch_async(dispatch_get_main_queue(), ^{
                 UISwitch *switchView = (UISwitch *)self.accessoryView;
                 if (!enableNightTheme.boolValue) {
                     switchView.backgroundColor = [UIColor colorWithRed:234/255.0f green:234/255.0f blue:239/255.0f alpha:1.0f];
@@ -69,7 +70,6 @@
                     switchView.onTintColor = CVKMainColor;
                     switchView.tintColor = [UIColor clearColor];
                 }
-//            });
             
         }
     }

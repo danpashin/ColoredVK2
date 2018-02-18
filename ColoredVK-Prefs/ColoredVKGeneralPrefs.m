@@ -74,7 +74,7 @@
     picker.statusBarNeedsHidden = NO;
     picker.backgroundStyle = ColoredVKWindowBackgroundStyleCustom;
     picker.app_is_vk = self.app_is_vk;
-    picker.enableNightTheme = self.enableNightTheme;
+    picker.enableNightTheme = self.nightThemeColorScheme.enabled;
     picker.nightThemeColorScheme = self.nightThemeColorScheme;
     [picker show];
 }

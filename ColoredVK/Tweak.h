@@ -73,6 +73,7 @@ void setupNightTextField(UITextField *textField);
 
 void setupNewSearchBar(VKSearchBar *searchBar, UIColor *tintColor, UIColor *blurTone, UIBlurEffectStyle blurStyle);
 void resetNewSearchBar(VKSearchBar *searchBar);
+void setupPopoverPresentation(UIViewController *viewController);
 
 UIVisualEffectView *blurForView(UIView *view, NSInteger tag);
 NSAttributedString *attributedStringForNightTheme(NSAttributedString * text);

@@ -16,6 +16,8 @@
 #import "ColoredVKUpdatesController.h"
 #import <dlfcn.h>
 #import <Preferences/Preferences.h>
+//#import <CoreText/CoreText.h>
+#import <SafariServices/SafariServices.h>
 
 
 
@@ -191,6 +193,8 @@ UIBlurEffectStyle videosBlurStyle;
 UIBlurEffectStyle settingsBlurStyle;
 UIBlurEffectStyle settingsExtraBlurStyle;
 
+//NSString *customFontName;
+
 ColoredVKMainController *cvkMainController;
 
 
@@ -282,6 +286,7 @@ void reloadPrefs()
         
         enableNightTheme = prefs[@"nightThemeType"] ? ([prefs[@"nightThemeType"] integerValue] != -1) : NO;
         [cvkMainController.nightThemeScheme updateForType:[prefs[@"nightThemeType"] integerValue]];
+        cvkMainController.nightThemeScheme.enabled = enableNightTheme;
         
         if (enableNightTheme && ([cvkMainController compareAppVersionWithVersion:@"3.0"] == ColoredVKVersionCompareLess)) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -388,6 +393,8 @@ void reloadPrefs()
         settingsBlurTone =          [[UIColor savedColorForIdentifier:@"settingsBlurTone"           fromPrefs:prefs] colorWithAlphaComponent:0.3];
         settingsExtraBlurTone =     [[UIColor savedColorForIdentifier:@"settingsExtraBlurTone"      fromPrefs:prefs] colorWithAlphaComponent:0.3];
         
+//        customFontName = prefs[@"customFontName"] ? prefs[@"customFontName"] : @".SFUIText";
+        
     }
     
     if (cvkMainController.navBarImageView)
@@ -404,7 +411,7 @@ CHDeclareMethod(2, BOOL, AppDelegate, application, UIApplication*, application, 
     [cvkBunlde load];
     reloadPrefs();
     
-    CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
+    BOOL orig = CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
@@ -415,7 +422,7 @@ CHDeclareMethod(2, BOOL, AppDelegate, application, UIApplication*, application, 
         [newInstaller checkStatus];
     });
     
-    return YES;
+    return orig;
 }
 
 CHDeclareMethod(1, void, AppDelegate, applicationDidBecomeActive, UIApplication *, application)
@@ -428,7 +435,6 @@ CHDeclareMethod(1, void, AppDelegate, applicationDidBecomeActive, UIApplication 
         [cvkMainController.audioCover updateColorScheme];
     }
     
-//    [cvkMainController sendStats];
     [cvkMainController checkCrashes];
 }
 
@@ -444,11 +450,11 @@ CHDeclareMethod(1, void, UINavigationBar, setBarTintColor, UIColor*, barTintColo
         if (enableNightTheme) {
             barTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
         }
-        else if (enabledBarImage) {
+        else if (enabledBarImage && self.tag != 26) {
             if (cvkMainController.navBarImageView)  barTintColor = [UIColor colorWithPatternImage:cvkMainController.navBarImageView.imageView.image];
             else                                    barTintColor = barBackgroundColor;
         }
-        else if (enabledBarColor) {
+        else if (enabledBarColor && self.tag != 26) {
             barTintColor = barBackgroundColor;
         }
     }
@@ -462,7 +468,7 @@ CHDeclareMethod(1, void, UINavigationBar, setTintColor, UIColor*, tintColor)
         self.barTintColor = self.barTintColor;
         if (enableNightTheme)
             tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
-        else if (enabledBarColor)
+        else if (enabledBarColor && self.tag != 26)
             tintColor = barForegroundColor;
     }
     
@@ -478,7 +484,7 @@ CHDeclareMethod(1, void, UINavigationBar, setTitleTextAttributes, NSDictionary*,
     if (enabled) {
         if (enableNightTheme)
             mutableAttributes[NSForegroundColorAttributeName] = cvkMainController.nightThemeScheme.textColor;
-        else if (enabledBarColor)
+        else if (enabledBarColor && self.tag != 26)
             mutableAttributes[NSForegroundColorAttributeName] = barForegroundColor;
     }
     
@@ -2081,23 +2087,23 @@ CHDeclareMethod(2, void, VKMBrowserController, webView, UIWebView *, webView, di
 
 
 #pragma mark VKGroupProfile
-CHDeclareClass(VKGroupProfile);
-CHDeclareMethod(0, BOOL, VKGroupProfile, verified)
-{
-    if ([self.group.gid isEqual:@55161589])
-        return YES;
-    return CHSuper(0, VKGroupProfile, verified);
-}
+//CHDeclareClass(VKGroupProfile);
+//CHDeclareMethod(0, BOOL, VKGroupProfile, verified)
+//{
+//    if ([self.group.gid isEqual:@55161589])
+//        return YES;
+//    return CHSuper(0, VKGroupProfile, verified);
+//}
 
 #pragma mark VKProfile
-CHDeclareClass(VKProfile);
-CHDeclareMethod(0, BOOL, VKProfile, verified)
-{
-    NSArray *verifiedUsers = @[@89911723, @93264161, @125879328, @73369298, @147469494, @283990174];
-    if ([verifiedUsers containsObject:self.user.uid])
-        return YES;
-    return CHSuper(0, VKProfile, verified);
-}
+//CHDeclareClass(VKProfile);
+//CHDeclareMethod(0, BOOL, VKProfile, verified)
+//{
+//    NSArray *verifiedUsers = @[@89911723, @93264161, @125879328, @73369298, @147469494, @283990174];
+//    if ([verifiedUsers containsObject:self.user.uid])
+//        return YES;
+//    return CHSuper(0, VKProfile, verified);
+//}
 
 #pragma mark UserWallController
 CHDeclareClass(UserWallController);
@@ -2663,24 +2669,22 @@ CHDeclareMethod(1, void, UITableView, setBackgroundColor, UIColor *, backgroundC
 }
 
 
-#pragma mark - UIViewController
-
-CHDeclareClass(UIViewController);
-CHDeclareMethod(3, void, UIViewController, presentViewController, UIViewController *, viewControllerToPresent, animated, BOOL, flag, completion, id, completion)
+#pragma mark - UIAlertController
+CHDeclareClass(UIAlertController);
+CHDeclareMethod(0, void, UIAlertController, viewDidLoad)
 {
-    if (![CLASS_NAME(self) containsString:@"ColoredVK"] && ![CLASS_NAME(viewControllerToPresent) containsString:@"ColoredVK"]) {
-        NSArray <Class> *classes = @[[UIAlertController class], [UIActivityViewController class]];
-        
-        if ([classes containsObject:[viewControllerToPresent class]] && IS_IPAD) {
-            viewControllerToPresent.modalPresentationStyle = UIModalPresentationPopover;
-            viewControllerToPresent.popoverPresentationController.permittedArrowDirections = 0;
-            viewControllerToPresent.popoverPresentationController.sourceView = self.view;
-            viewControllerToPresent.popoverPresentationController.sourceRect = self.view.bounds;
-        }
-    }
-    
-    CHSuper(3, UIViewController, presentViewController, viewControllerToPresent, animated, flag, completion, completion);
+    setupPopoverPresentation(self);
+    CHSuper(0, UIAlertController, viewDidLoad);
 }
+
+#pragma mark - UIActivityViewController
+CHDeclareClass(UIActivityViewController);
+CHDeclareMethod(0, void, UIActivityViewController, viewDidLoad)
+{
+    setupPopoverPresentation(self);
+    CHSuper(0, UIActivityViewController, viewDidLoad);
+}
+
 
 
 
@@ -2965,6 +2969,54 @@ CHDeclareMethod(0, void, VKSearchBar, layoutSubviews)
     dispatch_async(dispatch_get_main_queue(), changeBlock);
 }
 
+CHDeclareClass(VKSession);
+CHDeclareMethod(2, id, VKSession, initWithUserId, NSNumber *, userID, andToken, id, token)
+{
+    [ColoredVKNewInstaller sharedInstaller].vkUserID = userID;
+    
+    return CHSuper(2, VKSession, initWithUserId, userID, andToken, token);
+}
+
+
+//UIFont *customFontForSize(CGFloat fontSize, BOOL bold)
+//{
+//    if (enabled && customFontName && ![customFontName isEqualToString:@".SFUIText"]) {
+//        NSString *fontName = customFontName;
+//        if (bold)
+//            fontName = [fontName stringByAppendingString:@"-Bold"];
+//        
+//        CTFontDescriptorRef fontDescriptor = CTFontDescriptorCreateWithAttributes((__bridge CFDictionaryRef)@{(id)kCTFontFamilyNameAttribute:fontName});
+//        CTFontRef fontRef = CTFontCreateWithFontDescriptor(fontDescriptor, fontSize, nil);
+//        
+//        UIFont *font = [UIFont fontWithName:(__bridge_transfer NSString *)CTFontCopyPostScriptName(fontRef) size:fontSize];
+//        CFRelease(fontRef);
+//        CFRelease(fontDescriptor);
+//        
+//        return font;
+//    }
+//    
+//    return nil;
+//}
+//
+//CHDeclareClass(UIFont);
+//CHDeclareClassMethod(1, UIFont *, UIFont, systemFontOfSize, CGFloat, fontSize)
+//{
+//    UIFont *customFont = customFontForSize(fontSize, NO);
+//    if (customFont)
+//        return customFont;
+//    
+//    return CHSuper(1, UIFont, systemFontOfSize, fontSize);
+//}
+//
+//CHDeclareClassMethod(1, UIFont *, UIFont, boldSystemFontOfSize, CGFloat, fontSize)
+//{
+//    UIFont *customFont = customFontForSize(fontSize, YES);
+//    if (customFont)
+//        return customFont;
+//    
+//    return CHSuper(1, UIFont, boldSystemFontOfSize, fontSize);
+//}
+
 
 
 CHConstructor
@@ -2977,7 +3029,7 @@ CHConstructor
         vksBundle = [NSBundle bundleWithPath:VKS_BUNDLE_PATH];
         cvkFolder = CVK_FOLDER_PATH;
         cvkMainController = [ColoredVKMainController new];
-        cvkMainController.nightThemeScheme = [ColoredVKNightThemeColorScheme colorSchemeForType:CVKNightThemeTypeBlack];
+        cvkMainController.nightThemeScheme = [ColoredVKNightThemeColorScheme sharedScheme];
         
         NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:prefsPath];
         if (![[NSFileManager defaultManager] fileExistsAtPath:prefsPath]) prefs = [NSMutableDictionary new];
