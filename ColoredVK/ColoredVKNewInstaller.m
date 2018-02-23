@@ -17,15 +17,9 @@
 #import "ColoredVKAlertController.h"
 #import "ColoredVKUpdatesController.h"
 
-
-
-#define kDRMLicenceKey          @"1D074B10BBA106699DD7D4AED9E595FA"
 #define kDRMPackage             @"org.thebigboss.coloredvk2"
-#define kDRMPackageName         kPackageName
-#define kDRMPackageVersion      kPackageVersion
 #define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
 #define kDRMRemoteServerURL     [NSString stringWithFormat:@"%@/index-new.php", kPackageAPIURL]
-
 
 
 @interface ColoredVKNewInstaller ()
@@ -85,13 +79,22 @@ NSString *key;
     if (![fileManager fileExistsAtPath:CVK_FOLDER_PATH])  [fileManager createDirectoryAtPath:CVK_FOLDER_PATH withIntermediateDirectories:NO attributes:nil error:nil];
     if (![fileManager fileExistsAtPath:CVK_CACHE_PATH]) [fileManager createDirectoryAtPath:CVK_CACHE_PATH  withIntermediateDirectories:NO attributes:nil error:nil];
     if (![fileManager fileExistsAtPath:CVK_BACKUP_PATH])  [fileManager createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
+    
+    BOOL reencrypted = [[NSUserDefaults standardUserDefaults] boolForKey:@"cvk_licence_reencrypted"];
+    if (!reencrypted) {
+        NSData *newData = reencryptData([NSData dataWithContentsOfFile:kDRMLicencePath]);
+        [newData writeToFile:kDRMLicencePath atomically:YES];
+        
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"cvk_licence_reencrypted"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 }
 
 - (void)updateAppInfo
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         if (NSClassFromString(@"Activation") != nil) {
-            _sellerName = @"iapps";
+           self->_sellerName = @"iapps";
         }
         
         NSError *error = nil;
@@ -112,11 +115,11 @@ NSString *key;
             
             NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:tempPath];
             if (dict) {
-                _appTeamIdentifier = ((NSArray *)dict[@"TeamIdentifier"]).firstObject;
-                _appTeamName = dict[@"TeamName"];
+                self->_appTeamIdentifier = ((NSArray *)dict[@"TeamIdentifier"]).firstObject;
+                self->_appTeamName = dict[@"TeamName"];
                 
-                if (![_sellerName isEqualToString:@"iapps"] && [_appTeamIdentifier isEqualToString:@"FL663S8EYD"])
-                    _sellerName = @"ishmv";
+                if (![self.sellerName isEqualToString:@"iapps"] && [self.appTeamIdentifier isEqualToString:@"FL663S8EYD"])
+                    self->_sellerName = @"ishmv";
             }
             [[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
         }
@@ -133,7 +136,7 @@ NSString *key;
     if (![[NSFileManager defaultManager] fileExistsAtPath:kDRMLicencePath]) {
         [self writeFreeLicence];
     } else {
-        NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
+        NSData *decryptedData = decryptData([NSData dataWithContentsOfFile:kDRMLicencePath], nil);
         NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
         if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0)) {
             if (dict[@"Device"]) {
@@ -202,7 +205,7 @@ NSString *key;
         buttons = @[[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     }
     if (!title)
-        title = kDRMPackageName;
+        title = kPackageName;
     
     ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:title message:text preferredStyle:UIAlertControllerStyleAlert];
     for (UIAlertAction *action in buttons) {
@@ -271,12 +274,12 @@ NSString *key;
                                                               NSString *email = response[@"email"];
                                                               self.user.email = email;
                                                               
-                                                              NSData *decryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
+                                                              NSData *decryptedData = decryptData([NSData dataWithContentsOfFile:kDRMLicencePath], nil);
                                                               NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
                                                               dict[@"purchased"] = @(purchased);
                                                               dict[@"email"] = email;
-                                                              NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
-                                                              [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
+                                                              NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
+                                                              [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
                                                           }
                                                       }
                                                       
@@ -301,8 +304,8 @@ NSString *key;
     [self.user clearUser];
     
     NSDictionary *dict = @{@"purchased":@NO, @"Device":self.deviceModel};
-    NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
-    [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
+    NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
+    [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
 }
 
 
@@ -321,7 +324,7 @@ NSString *key;
     
     NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", self.deviceModel, [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];    
     NSDictionary *parameters = @{@"login": userName, @"password": userPassword, @"action": @"login", 
-                                 @"version": kDRMPackageVersion, @"device": device, @"key": key
+                                 @"version": kPackageVersion, @"device": device, @"key": key
                                  };
     
     void (^showAlertBlock)(NSError *error) = ^(NSError *error) {
@@ -364,8 +367,8 @@ NSString *key;
                                                      [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
                                                      
                                                      NSError *writingError = nil;
-                                                     NSData *encrypterdData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:dict], kDRMLicenceKey);
-                                                     [encrypterdData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
+                                                     NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
+                                                     [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
                                                      
                                                      if (!writingError) {
                                                          showAlertBlock(nil);
@@ -407,7 +410,7 @@ NSString *key;
     
     NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", self.deviceModel, [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];
     NSDictionary *parameters = @{@"login": self.user.name, @"token": self.user.accessToken, @"action": @"logout", 
-                                 @"version": kDRMPackageVersion, @"device": device, @"key": key
+                                 @"version": kPackageVersion, @"device": device, @"key": key
                                  };
     
     [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters 
@@ -443,11 +446,11 @@ NSString *key;
                                                   if (json[@"new_token"]) {
                                                       self.user.accessToken = json[@"new_token"];
                                                       
-                                                      NSData *licenceDecryptedData = AES256Decrypt([NSData dataWithContentsOfFile:kDRMLicencePath], kDRMLicenceKey);
+                                                      NSData *licenceDecryptedData = decryptData([NSData dataWithContentsOfFile:kDRMLicencePath], nil);
                                                       NSMutableDictionary *licenceDict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:licenceDecryptedData] mutableCopy];
                                                       licenceDict[@"token"] = json[@"new_token"];
                                                       
-                                                      NSData *licenceEncryptedData = AES256Encrypt([NSKeyedArchiver archivedDataWithRootObject:licenceDict], kDRMLicenceKey);
+                                                      NSData *licenceEncryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:licenceDict], nil);
                                                       [licenceEncryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
                                                   }
                                               } failure:nil];

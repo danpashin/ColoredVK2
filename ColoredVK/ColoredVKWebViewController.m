@@ -34,9 +34,7 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor whiteColor];
-    
-    UINavigationBar *navBar = self.navigationController.navigationBar;
-    navBar.titleTextAttributes = @{};
+    self.navigationController.navigationBar.titleTextAttributes = @{};
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:CVKLocalizedString(@"DISMISS")
                                                                               style:UIBarButtonItemStyleDone 

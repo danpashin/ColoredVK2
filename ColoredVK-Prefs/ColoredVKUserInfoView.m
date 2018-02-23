@@ -97,7 +97,7 @@
         CGFloat bottomConstantForHeight = (stackBottomConstant > 0.0f) ? stackBottomConstant : 0.0f;
         CGFloat heightForLabels = (self.nameLabel.text.length > 0) ? 40.0f : 0.0f;
         
-        _preferredHeight = bottomConstantForHeight + heightForLabels + 8.0f + CGRectGetHeight(self.avatarImageView.frame);
+        self->_preferredHeight = bottomConstantForHeight + heightForLabels + 8.0f + CGRectGetHeight(self.avatarImageView.frame);
         
         if ([self.delegate respondsToSelector:@selector(infoView:didUpdateHeight:)])
             [self.delegate infoView:self didUpdateHeight:self.preferredHeight];

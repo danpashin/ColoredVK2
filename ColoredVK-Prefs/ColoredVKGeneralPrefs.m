@@ -214,20 +214,20 @@
     }
 }
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
     ColoredVKHUD *hud = [ColoredVKHUD showHUDForView:picker.view];
     hud.didHiddenBlock = ^{
         [picker dismissViewControllerAnimated:YES completion:nil];
     };
     
-    [self processImage:image handler:^(BOOL success, NSError *error) {
+    [self processImage:info[UIImagePickerControllerOriginalImage] handler:^(BOOL success, NSError *error) {
         success ? [hud showSuccess] : [hud showFailureWithStatus:error.localizedDescription];
     }];
 }
 
 - (void)processImage:(UIImage *)image handler:( void(^)(BOOL success, NSError *error) )handler
-{    
+{
     ColoredVKImageProcessor *processor = [ColoredVKImageProcessor new];
     NSString *stringPath = [CVK_FOLDER_PATH stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.lastImageIdentifier]];
     [processor processImage:image identifier:self.lastImageIdentifier andSaveToURL:[NSURL fileURLWithPath:stringPath] 

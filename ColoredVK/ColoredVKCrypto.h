@@ -6,11 +6,11 @@
 //
 //
 
-#import <Foundation/Foundation.h>
+@class NSString, NSData, NSError;
 
-#define kDRMAuthorizeKey        @"ACBEBB5F70D0883E875DAA6E1C5C59ED"
 
-FOUNDATION_EXPORT NSData *AES256Decrypt(NSData *data, NSString *key);
-FOUNDATION_EXPORT NSData *AES256Encrypt(NSData *data, NSString *key);
-FOUNDATION_EXPORT NSData *AES256EncryptString(NSString *string, NSString *key);
-FOUNDATION_EXPORT NSString *AES256EncryptStringForAPI(NSString *string);
+extern NSString *AES256EncryptStringForAPI(NSString *string);
+
+extern NSData *reencryptData(NSData *data);
+extern NSData *encryptData(NSData *data, NSError * __autoreleasing *error);
+extern NSData *decryptData(NSData *data, NSError * __autoreleasing *error);

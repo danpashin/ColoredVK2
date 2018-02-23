@@ -118,7 +118,7 @@
                 [self setNeedsStatusBarAppearanceUpdate];
             } completion:^(BOOL finished) {
                 self.window.hidden = YES;
-                _window = nil;
+                self->_window = nil;
             }];
         }];
     });

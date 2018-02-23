@@ -52,7 +52,8 @@ makeIPA () {
 
 makeDEB () {
     echo "[->] Signing binaries..."
-    codesign -f -v -s "$CERTIFICATE_NAME" "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/$PRODUCT"
+    codesign -f -v -s "iPhone Distribution: Vektum Tsentr, OOO" "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle"
+    codesign -f -v -s "iPhone Distribution: Vektum Tsentr, OOO" "${BUILT_PRODUCTS_DIR}/$PRODUCT.dylib"
     mkdir -p $FOLDER_TO_PACK/Package/{DEBIAN,Library/{MobileSubstrate/DynamicLibraries,PreferenceBundles,PreferenceLoader/Preferences}}
     cp "ColoredVK-Prefs/control" "$FOLDER_TO_PACK/Package/DEBIAN"
     cp -r "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" "$FOLDER_TO_PACK/Package/Library/PreferenceBundles"

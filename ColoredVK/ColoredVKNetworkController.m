@@ -11,6 +11,8 @@
 #import "PrefixHeader.h"
 
 
+extern NSData *AES256Decrypt(NSData *data, NSString *key);
+
 @interface ColoredVKNetworkController  () <NSURLSessionDelegate>
 
 @property (strong, nonatomic) NSURLSession *session;
@@ -64,7 +66,7 @@
                         sucess(request, (NSHTTPURLResponse *)response, jsonDict);
                 } else {
                     
-                    NSData *decrypted = AES256Decrypt(data, kDRMAuthorizeKey);
+                    NSData *decrypted = AES256Decrypt(data, @"ACBEBB5F70D0883E875DAA6E1C5C59ED");
                     NSString *decryptedString = [[NSString alloc] initWithData:decrypted encoding:NSUTF8StringEncoding];
                     decryptedString = [decryptedString stringByReplacingOccurrencesOfString:@"\0" withString:@""];
                     
