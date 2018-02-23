@@ -134,7 +134,7 @@ NSData *decryptData(NSData *data, NSError * __autoreleasing *error)
         
         if (queryStatus != noErr || !item) {
             if (error != NULL)
-                *error = [NSError errorWithDomain:@"" code:1001 userInfo:@{NSLocalizedDescriptionKey: @"Cannot get key from keychain."}];
+                *error = [NSError errorWithDomain:@"" code:1001 userInfo:@{NSLocalizedDescriptionKey: @"Cannot get key from."}];
             
             return nil;
         }
@@ -153,7 +153,7 @@ NSData *decryptData(NSData *data, NSError * __autoreleasing *error)
         if (keyError) {
             CFRelease(privateKey);
             if (error != NULL)
-                *error = [NSError errorWithDomain:@"" code:1002 userInfo:@{NSLocalizedDescriptionKey: @"Cannot generate key from keychain"}];
+                *error = [NSError errorWithDomain:@"" code:1002 userInfo:@{NSLocalizedDescriptionKey: @"Cannot generate key."}];
             return nil;
         }
         
@@ -171,7 +171,6 @@ NSData *decryptData(NSData *data, NSError * __autoreleasing *error)
             return (__bridge_transfer NSData *)decrypted;
         }
     } else {
-        
         return AES256Decrypt(data, kDRMLicenceKey);
     }
 }

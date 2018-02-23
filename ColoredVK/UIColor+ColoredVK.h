@@ -11,38 +11,33 @@
 
 @interface UIColor (ColoredVK)
 /**
- Creates color from string
+ Создает цвет из строки
  */
 + (UIColor *)colorFromString:(NSString *)string;
+
 /**
- Creates color darker than current
+ Затемняет цвет на 0.2
  */
 @property (nonatomic, readonly, copy) UIColor *darkerColor;
+
 /**
- Returns saved color for ColoredVK identifiers
+ Возвращает сохраненный цвет для идентификаторов ColoredVK
  */
 + (UIColor *)savedColorForIdentifier:(NSString *)identifier;
+
 /**
- Returns color from preferences dictionary for ColoredVK identifiers
+ Возвращает сохраненный цвет из настроек для идентификаторов for ColoredVK
  */
 + (UIColor *)savedColorForIdentifier:(NSString *)identifier fromPrefs:(NSDictionary *)prefs;
+
 /**
- Returns standart color for ColoredVK identifiers
+ Возвращает стандартный цвет для идентификаторов ColoredVK
  */
 + (UIColor *)defaultColorForIdentifier:(NSString *)identifier;
 
-
-typedef NS_ENUM (NSUInteger, UIGradientStyle) {
-    UIGradientStyleLeftToRight,
-    UIGradientStyleRadial,
-    UIGradientStyleTopToBottom
-};
-
-+ (UIColor *)colorWithGradientStyle:(UIGradientStyle)gradientStyle withFrame:(CGRect)frame andColors:(NSArray<UIColor *> *)colors;
 
 @property (nonatomic, readonly, copy) NSString *stringValue;
 @property (nonatomic, readonly, copy) NSString *rgbStringValue;
 @property (nonatomic, readonly, copy) NSString *hexStringValue;
 
-- (BOOL)isEqualToColor:(UIColor *)color offset:(CGFloat)offset;
 @end

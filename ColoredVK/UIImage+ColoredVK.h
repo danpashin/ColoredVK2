@@ -9,10 +9,12 @@
 #import <UIKit/UIKit.h>
 
 @interface UIImage (ColoredVK)
+
 /**
  Creates image with color and size 1x1
  */
 + (UIImage *)imageWithColor:(UIColor *)color;
+
 /**
  Creates image with color and specified size  
  */
@@ -20,5 +22,4 @@
 
 - (UIImage *)imageWithTintColor:(UIColor *)tintColor;
 
-- (UIImage *)imageWithOverlayColor:(UIColor *)overlayColor;
 @end

@@ -84,48 +84,4 @@
     return [NSString stringWithFormat:@"#%02X%02X%02X", (int)(red * 255), (int)(green * 255), (int)(blue * 255)].lowercaseString;
 }
 
-+ (UIColor *)colorWithGradientStyle:(UIGradientStyle)gradientStyle withFrame:(CGRect)frame andColors:(NSArray<UIColor *> *)colors
-{
-    if (colors.count == 0) return [UIColor blackColor];
-    
-    CAGradientLayer *backgroundGradientLayer = [CAGradientLayer layer];
-    backgroundGradientLayer.frame = frame;
-    
-        //To simplfy formatting, we'll iterate through our colors array and create a mutable array with their CG counterparts
-    NSMutableArray *cgColors = [[NSMutableArray alloc] init];
-    for (UIColor *color in colors) {
-        [cgColors addObject:(id)color.CGColor];
-    }
-    switch (gradientStyle) {
-        case UIGradientStyleTopToBottom:
-        default: {
-                //Set out gradient's colors
-            backgroundGradientLayer.colors = cgColors;
-            
-                //Convert our CALayer to a UIImage object
-            UIGraphicsBeginImageContextWithOptions(backgroundGradientLayer.bounds.size,NO, [UIScreen mainScreen].scale);
-            [backgroundGradientLayer renderInContext:UIGraphicsGetCurrentContext()];
-            UIImage *backgroundColorImage = UIGraphicsGetImageFromCurrentImageContext();
-            UIGraphicsEndImageContext();
-            
-            return [UIColor colorWithPatternImage:backgroundColorImage];
-        }
-            
-    }
-
-}
-
-- (BOOL)isEqualToColor:(UIColor *)color offset:(CGFloat)offset
-{
-    CGFloat firstHue = 0, firstSaturation = 0, firstBright = 0, secondHue = 0, secondSaturation = 0, secondBright = 0;
-    
-    [self getHue:&firstHue saturation:&firstSaturation brightness:&firstBright alpha:nil];
-    [color getHue:&secondHue saturation:&secondSaturation brightness:&secondBright alpha:nil];
-    
-    BOOL hue_is_equal = ((secondHue - offset >= firstHue) && (secondHue + offset <= firstHue));
-    BOOL saturation_is_equal = ((secondSaturation - offset >= firstSaturation) && (secondSaturation + offset <= firstSaturation));
-    BOOL bright_is_equal = ((secondBright - offset >= firstBright) && (secondBright + offset <= firstBright));
-    
-    return (hue_is_equal && saturation_is_equal && bright_is_equal);
-}
 @end
