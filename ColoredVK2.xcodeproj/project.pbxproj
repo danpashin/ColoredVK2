@@ -493,6 +493,7 @@
 		A5CC386020401985005A3AB0 /* SDWebImageCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CC385A20401985005A3AB0 /* SDWebImageCoder.m */; };
 		A5CC386120401985005A3AB0 /* SDWebImageCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CC385A20401985005A3AB0 /* SDWebImageCoder.m */; };
 		A5CC386220401985005A3AB0 /* SDWebImageCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CC385A20401985005A3AB0 /* SDWebImageCoder.m */; };
+		A5CC386320401D39005A3AB0 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A517D7991D78A25700DD153E /* MobileCoreServices.framework */; };
 		A5D0A2A01DB270EC00720E41 /* libMobileGestalt.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A50311E31D853E800075B177 /* libMobileGestalt.tbd */; };
 		A5D2DFB51DE741CF00DCDC84 /* ColoredVKAudioCover.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D2DFB31DE741CF00DCDC84 /* ColoredVKAudioCover.h */; };
 		A5D2DFB61DE741CF00DCDC84 /* ColoredVKAudioCover.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D2DFB31DE741CF00DCDC84 /* ColoredVKAudioCover.h */; };
@@ -891,6 +892,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5CC386320401D39005A3AB0 /* MobileCoreServices.framework in Frameworks */,
 				A5D3D03A1FE0130D007AAEF7 /* Preferences.framework in Frameworks */,
 				A5144F791FB4CC6C00DB1B89 /* Photos.framework in Frameworks */,
 				A5C988D91F2BBDB20054AC62 /* SafariServices.framework in Frameworks */,

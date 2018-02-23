@@ -98,8 +98,8 @@ NSString *key;
         }
         
         NSError *error = nil;
-        NSURL *provisionURL = [[NSBundle mainBundle] URLForResource:@"embedded" withExtension:@"mobileprovision"];
-        NSString *provisionString = [[NSString alloc] initWithContentsOfURL:provisionURL encoding:NSISOLatin1StringEncoding error:&error];
+        NSString *provisionPath = [[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"];
+        NSString *provisionString = [NSString stringWithContentsOfFile:provisionPath encoding:NSISOLatin1StringEncoding error:&error];
         
         if (!error) {         
             NSString *provisionDictString = @"";
@@ -182,11 +182,10 @@ NSString *key;
 {
     if (self.user.userID) {
         ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
-        webController.url = [NSURL URLWithString:kPackagePurchaseLink];
         
         NSError *requestError = nil;
         NSDictionary *params = @{@"user_id" :self.user.userID, @"profile_team_id": self.appTeamIdentifier, @"from": self.sellerName};
-        NSURLRequest *request = [self.networkController requestWithMethod:@"POST" URLString:webController.url.absoluteString parameters:params error:&requestError];
+        NSURLRequest *request = [self.networkController requestWithMethod:@"POST" URLString:kPackagePurchaseLink parameters:params error:&requestError];
         
         if (!requestError) {
             webController.request = request;

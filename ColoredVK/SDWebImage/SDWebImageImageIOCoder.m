@@ -55,7 +55,7 @@ static const CGFloat kDestSeemOverlap = 2.0f;   // the numbers of pixels to over
     }
 }
 
-+ (instancetype)sharedCoder {
++ (SDWebImageImageIOCoder*)sharedCoder {
     static SDWebImageImageIOCoder *coder;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -205,7 +205,7 @@ static const CGFloat kDestSeemOverlap = 2.0f;   // the numbers of pixels to over
             scaleDownLargeImagesOption = (NSNumber *)optionsDict[SDWebImageCoderScaleDownLargeImagesKey];
         }
         if (scaleDownLargeImagesOption != nil) {
-            shouldScaleDown = [scaleDownLargeImagesOption boolValue];
+            shouldScaleDown = scaleDownLargeImagesOption.boolValue;
         }
     }
     if (!shouldScaleDown) {

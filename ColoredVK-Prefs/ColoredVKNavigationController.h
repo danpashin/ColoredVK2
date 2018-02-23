@@ -13,4 +13,7 @@
 
 @interface ColoredVKNavigationController : UINavigationController
 
+@property (assign, nonatomic) IBInspectable BOOL supportsAllOrientations;
+@property (assign, nonatomic) IBInspectable BOOL prefersLargeTitle;
+
 @end

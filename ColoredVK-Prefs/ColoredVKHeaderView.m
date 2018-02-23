@@ -47,7 +47,8 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             CAGradientLayer *backgroundGradientLayer = [CAGradientLayer layer];
             backgroundGradientLayer.frame = heading.bounds;
-            backgroundGradientLayer.colors = @[@"26D0CE".hexColorValue, @"1A2980".hexColorValue];
+            backgroundGradientLayer.colors = @[(id)[UIColor colorWithRed:38/255.0f green:208/255.0f blue:206/255.0f alpha:1.0f].CGColor, 
+                                               (id)[UIColor colorWithRed:26/255.0f green:41/255.0f blue:128/255.0f alpha:1.0f].CGColor];
             
             UIGraphicsBeginImageContextWithOptions(backgroundGradientLayer.bounds.size, NO, [UIScreen mainScreen].scale);
             [backgroundGradientLayer renderInContext:UIGraphicsGetCurrentContext()];

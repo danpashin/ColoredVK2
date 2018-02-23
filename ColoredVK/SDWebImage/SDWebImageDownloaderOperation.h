@@ -30,11 +30,9 @@ FOUNDATION_EXPORT NSString * _Nonnull const SDWebImageDownloadFinishNotification
 - (nullable id)addHandlersForProgress:(nullable SDWebImageDownloaderProgressBlock)progressBlock
                             completed:(nullable SDWebImageDownloaderCompletedBlock)completedBlock;
 
-- (BOOL)shouldDecompressImages;
-- (void)setShouldDecompressImages:(BOOL)value;
+@property (nonatomic) BOOL shouldDecompressImages;
 
-- (nullable NSURLCredential *)credential;
-- (void)setCredential:(nullable NSURLCredential *)value;
+@property (nonatomic, strong) NSURLCredential * _Nullable credential;
 
 - (BOOL)cancel:(nullable id)token;
 

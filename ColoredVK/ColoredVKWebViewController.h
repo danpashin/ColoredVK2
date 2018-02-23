@@ -6,11 +6,10 @@
 //  Copyright © 2017 Даниил. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <UIKit/UIViewController.h>
 
 @interface ColoredVKWebViewController : UIViewController
 
-@property (strong, nonatomic) NSURL *url;
 @property (strong, nonatomic) NSURLRequest *request;
 
 - (void)present;

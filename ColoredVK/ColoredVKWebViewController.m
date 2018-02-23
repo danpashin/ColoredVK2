@@ -8,34 +8,25 @@
 
 #import "ColoredVKWebViewController.h"
 #import <WebKit/WebKit.h>
+#import <sys/utsname.h>
 #import "PrefixHeader.h"
 #import "ColoredVKNewInstaller.h"
-#import <sys/utsname.h>
+#import "ColoredVKNavigationController.h"
 
 @interface ColoredVKWebViewController () <WKNavigationDelegate>
 
 @property (strong, nonatomic) WKWebView *webView;
+@property (strong, nonatomic) NSString *requestHTML;
 
 @property (strong, nonatomic) UIProgressView *progressView;
 @property (assign, nonatomic) BOOL pageLoaded;
-
 @end
 
 @implementation ColoredVKWebViewController
 
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-    if (!self.navigationController.navigationBar.barTintColor || IS_IPAD) return UIStatusBarStyleLightContent;
-    else return UIStatusBarStyleDefault;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.view.backgroundColor = [UIColor whiteColor];
-    self.navigationController.navigationBar.titleTextAttributes = @{};
-    
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:CVKLocalizedString(@"DISMISS")
                                                                               style:UIBarButtonItemStyleDone 
                                                                              target:self action:@selector(dismiss)];
@@ -47,41 +38,31 @@
     [self.webView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
     [self.view addSubview:self.webView];
     
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.requestHTML) {
+            [self.webView loadHTMLString:self.requestHTML baseURL:self.request.URL];
+            self.requestHTML = nil;
+        }
+    });
+    
     self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
     self.progressView.trackTintColor = [UIColor whiteColor];
+    self.progressView.progressTintColor = [UIColor orangeColor];
     [self.view addSubview:self.progressView];
     
-    [self setupConstraints];
     
-    ColoredVKNetworkController *networkController = [ColoredVKNewInstaller sharedInstaller].networkController;
-    [networkController sendRequest:self.request 
-                           success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData) {
-                               NSString *html = [[NSString alloc] initWithData:rawData encoding:NSUTF8StringEncoding];
-                               dispatch_async(dispatch_get_main_queue(), ^{
-                                   [self.webView loadHTMLString:html baseURL:request.URL];
-                               });
-                           }
-                           failure:nil];
-}
-
-- (void)setupConstraints
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        CGFloat navBarHeight = -self.webView.scrollView.contentOffset.y;
-        
-        self.webView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[webView]|" options:0 
-                                                                          metrics:@{@"navBarHeight":@(navBarHeight)} views:@{@"webView":self.webView}]];
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[webView]|" options:0 
-                                                                          metrics:nil views:@{@"webView":self.webView}]];
-        
-        self.progressView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[progressView]|" options:0
-                                                                          metrics:nil views:@{@"progressView":self.progressView}]];
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-navBarHeight-[progressView(2)]" 
-                                                                          options:0 metrics:@{@"navBarHeight":@(navBarHeight)}
-                                                                            views:@{@"progressView":self.progressView}]];
-    });
+    self.webView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[webView]|" options:0 
+                                                                      metrics:nil views:@{@"webView":self.webView}]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[webView]|" options:0 
+                                                                      metrics:nil views:@{@"webView":self.webView}]];
+    
+    self.progressView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[progressView]|" options:0
+                                                                      metrics:nil views:@{@"progressView":self.progressView}]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-navBarHeight-[progressView(2)]" 
+                                                                      options:0 metrics:@{@"navBarHeight":@(-self.webView.scrollView.contentOffset.y)}
+                                                                        views:@{@"progressView":self.progressView}]];
 }
 
 - (void)dismiss
@@ -105,7 +86,9 @@
 
 - (void)presentFromController:(UIViewController *)controller 
 {    
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:self];
+    ColoredVKNavigationController *navigationController = [[ColoredVKNavigationController alloc] initWithRootViewController:self];
+    navigationController.supportsAllOrientations = YES;
+    navigationController.prefersLargeTitle = NO;
     navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
     [controller presentViewController:navigationController animated:YES completion:nil];
 }
@@ -114,6 +97,11 @@
 {
     [self.webView removeObserver:self forKeyPath:@"estimatedProgress"];
 }
+
+
+#pragma mark -
+#pragma mark Setters
+#pragma mark -
 
 - (void)setPageLoaded:(BOOL)pageLoaded
 {
@@ -127,6 +115,26 @@
                 self.progressView.progress = 0.0f;
         }];
     });
+}
+
+- (void)setRequest:(NSURLRequest *)request
+{
+    _request = request;
+    
+    ColoredVKNetworkController *networkController = [ColoredVKNewInstaller sharedInstaller].networkController;
+    [networkController sendRequest:request 
+                           success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData) {
+                               NSString *html = [[NSString alloc] initWithData:rawData encoding:NSUTF8StringEncoding];
+                               
+                               if (self.webView) {
+                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                       [self.webView loadHTMLString:html baseURL:request.URL];
+                                   });
+                               } else {
+                                   self.requestHTML = html;
+                               }
+                           }
+                           failure:nil];
 }
 
 

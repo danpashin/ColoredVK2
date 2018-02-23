@@ -159,7 +159,7 @@
     if (!field) {
         return nil;
     }
-    return [[self allHTTPHeaderFields] objectForKey:field];
+    return [self allHTTPHeaderFields][field];
 }
 
 - (nonnull SDHTTPHeadersDictionary *)allHTTPHeaderFields {
@@ -252,7 +252,7 @@
         return;
     }
     LOCK(self.operationsLock);
-    SDWebImageDownloaderOperation *operation = [self.URLOperations objectForKey:url];
+    SDWebImageDownloaderOperation *operation = (self.URLOperations)[url];
     if (operation) {
         BOOL canceled = [operation cancel:token.downloadOperationCancelToken];
         if (canceled) {
@@ -275,7 +275,7 @@
     }
     
     LOCK(self.operationsLock);
-    SDWebImageDownloaderOperation *operation = [self.URLOperations objectForKey:url];
+    SDWebImageDownloaderOperation *operation = (self.URLOperations)[url];
     if (!operation) {
         operation = createCallback();
         __weak typeof(self) wself = self;
@@ -288,7 +288,7 @@
             [sself.URLOperations removeObjectForKey:url];
             UNLOCK(sself.operationsLock);
         };
-        [self.URLOperations setObject:operation forKey:url];
+        (self.URLOperations)[url] = operation;
     }
     UNLOCK(self.operationsLock);
 

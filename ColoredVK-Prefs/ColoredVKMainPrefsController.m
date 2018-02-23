@@ -13,7 +13,6 @@
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKAlertController.h"
 #import <SafariServices/SafariServices.h>
-#import "ColoredVKWebViewController.h"
 #import "ColoredVKAccountController.h"
 
 @interface ColoredVKMainPrefsController ()
@@ -151,20 +150,10 @@ NSArray <NSString *> *specifiersToEnable;
 }
 
 - (void)actionOpenFaq
-{
-    NSURL *url = [NSURL URLWithString:kPackageFaqLink];
-    
-    if (@available(iOS 9.0, *)) {
-        SFSafariViewController *sfController = [[SFSafariViewController alloc] initWithURL:url];
-        [self presentViewController:sfController animated:YES completion:nil];
-    } else {
-        ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
-        webController.url = url;
-        webController.request = [NSURLRequest requestWithURL:webController.url];
-        [webController presentFromController:self];
-    }
+{    
+    SFSafariViewController *sfController = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:kPackageFaqLink]];
+    [self presentViewController:sfController animated:YES completion:nil];
 }
-
 
 - (void)dealloc
 {
