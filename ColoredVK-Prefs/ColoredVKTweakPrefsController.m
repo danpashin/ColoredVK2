@@ -7,7 +7,6 @@
 //
 
 #import "ColoredVKTweakPrefsController.h"
-
 #import "ColoredVKUpdatesController.h"
 
 @interface ColoredVKTweakPrefsController ()

@@ -12,7 +12,9 @@
 #import "LEColorPicker.h"
 #import "ColoredVKCoreData.h"
 #import "ColoredVKAudioEntity.h"
-#import "ColoredVKNetworkController.h"
+#import "ColoredVKNewInstaller.h"
+#import "SDWebImageManager.h"
+#import "ColoredVKAudioLyricsView.h"
 
 
 @interface ColoredVKAudioCover ()
@@ -198,7 +200,7 @@ void corePrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef
             if (block) 
                 block(image, YES); 
         } else {
-            ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
+            ColoredVKNetworkController *networkController = [ColoredVKNewInstaller sharedInstaller].networkController;
             NSMutableURLRequest *urlRequest = [networkController requestWithMethod:@"GET" URLString:@"https://itunes.apple.com/search" 
                                                                         parameters:@{@"limit":@1, @"media":@"music", @"term":query} error:nil];
             urlRequest.accessibilityValue = query;

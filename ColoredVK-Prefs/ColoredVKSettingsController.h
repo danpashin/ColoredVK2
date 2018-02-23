@@ -6,7 +6,6 @@
 //
 //
 
-#import <UIKit/UIKit.h>
 #import "ColoredVKPrefs.h"
 
 @interface ColoredVKSettingsController : ColoredVKPrefs

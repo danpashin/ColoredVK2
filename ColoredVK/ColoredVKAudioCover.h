@@ -7,9 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "VKMethods.h"
-#import "SDWebImageManager.h"
-#import "ColoredVKAudioLyricsView.h"
 
 @interface ColoredVKAudioCover : NSObject
 

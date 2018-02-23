@@ -6,7 +6,7 @@
 //
 
 #import "Tweak.h"
-
+#import <Preferences/PSTableCell.h>
 
 CHDeclareClass(VKRenderedText);
 CHDeclareClassMethod(2, id, VKRenderedText, renderedText, NSAttributedString *, text, withSettings, id, withSettings)

@@ -9,9 +9,8 @@
 #import "ColoredVKPrefs.h"
 #import "ColoredVKAlertController.h"
 #import "ColoredVKNewInstaller.h"
-#import "Tweak.h"
-#import "ColoredVKStepperButton.h"
 #import "UITableViewCell+ColoredVK.h"
+#import <objc/runtime.h>
 
 @implementation ColoredVKPrefs
 
@@ -256,19 +255,6 @@
 - (BOOL)app_is_vk
 {
     return [[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"];
-}
-
-- (PSSpecifier *)specifierForIndexPath:(NSIndexPath *)indexPath
-{
-    PSSpecifier *specifier = nil;
-    if ([self respondsToSelector:@selector(specifierAtIndexPath:)]) {
-        specifier = [self specifierAtIndexPath:indexPath];
-    } else {
-        NSInteger index = [self indexForRow:indexPath.row inGroup:indexPath.section];
-        specifier = [self specifierAtIndex:index];
-    }
-    
-    return specifier;
 }
 
 

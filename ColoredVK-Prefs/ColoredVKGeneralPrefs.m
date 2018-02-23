@@ -14,7 +14,6 @@
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKImageProcessor.h"
 #import "VKPhotoPicker.h"
-#import <Photos/Photos.h>
 #import <objc/runtime.h>
 
 @interface ColoredVKGeneralPrefs () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, ColoredVKColorPickerControllerDelegate, ColoredVKColorPickerControllerDataSource>
@@ -53,7 +52,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PSSpecifier *specifier = [self specifierForIndexPath:indexPath];
+    PSSpecifier *specifier = [self specifierAtIndexPath:indexPath];
     
     if (![[specifier propertyForKey:@"enabled"] boolValue]) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];

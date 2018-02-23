@@ -8,9 +8,7 @@
 
 #import "ColoredVKAboutController.h"
 #import "ColoredVKTextViewController.h"
-#import "ColoredVKUpdatesController.h"
 #import "ColoredVKHeaderView.h"
-
 
 @implementation ColoredVKAboutController
 
@@ -42,4 +40,3 @@
 }
 
 @end
-

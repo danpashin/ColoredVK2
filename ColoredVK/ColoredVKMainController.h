@@ -6,12 +6,11 @@
 //
 //
 
-#import "VKMethods.h"
-#import "ColoredVKAudioLyricsView.h"
 #import "ColoredVKAudioCover.h"
 #import "ColoredVKWallpaperView.h"
 #import "ColoredVKNightThemeColorScheme.h"
 
+@class MenuCell, VKMMainController, MenuViewController;
 
 typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 {

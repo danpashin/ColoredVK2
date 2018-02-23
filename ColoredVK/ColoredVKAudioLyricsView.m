@@ -7,7 +7,6 @@
 //
 
 #import "ColoredVKAudioLyricsView.h"
-#import "VKMethods.h"
 
 
 @interface ColoredVKAudioLyricsView ()
@@ -44,21 +43,6 @@
     return self;
 }
 
-- (void)setupConstraints
-{
-    if (!CGRectEqualToRect(self.frame, CGRectZero)) {
-        self.blurView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-spacing-[view]-spacing-|" options:0 
-                                                                     metrics:@{@"spacing":@(CGRectGetHeight(self.frame)/14)} views:@{@"view":self.blurView}]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-spacing-[view]-spacing-|" options:0 
-                                                                     metrics:@{@"spacing":@(CGRectGetWidth(self.frame)/12)} views:@{@"view":self.blurView}]];  
-        
-        self.textView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.blurView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self.textView}]];
-        [self.blurView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view":self.textView}]];
-    }
-}
-
 - (void)setFrame:(CGRect)frame
 {
     super.frame = frame;
@@ -68,7 +52,15 @@
                                          CGRectGetWidth(self.frame)-2*(CGRectGetWidth(self.frame)/12), CGRectGetHeight(self.frame)-2*(CGRectGetHeight(self.frame)/14));
         self.textView.frame = CGRectMake(0, 0, CGRectGetWidth(self.blurView.frame), CGRectGetHeight(self.blurView.frame));
         
-        [self setupConstraints];
+        self.blurView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-spacing-[view]-spacing-|" options:0 
+                                                                     metrics:@{@"spacing":@(CGRectGetHeight(self.frame)/14)} views:@{@"view":self.blurView}]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-spacing-[view]-spacing-|" options:0 
+                                                                     metrics:@{@"spacing":@(CGRectGetWidth(self.frame)/12)} views:@{@"view":self.blurView}]];  
+        
+        self.textView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.blurView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self.textView}]];
+        [self.blurView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view":self.textView}]];
     }
 }
 

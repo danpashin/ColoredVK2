@@ -9,8 +9,6 @@
 #import <objc/message.h>
 #import "UIColor+ColoredVK.h"
 #import "NSString+ColoredVK.h"
-
-
 #import <PSTableCell.h>
 #import <PSSpecifier.h>
 

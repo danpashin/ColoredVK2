@@ -34,6 +34,5 @@
 
 - (id)readPreferenceValue:(PSSpecifier *)specifier;
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier;
-- (PSSpecifier *)specifierForIndexPath:(NSIndexPath *)indexPath;
 
 @end

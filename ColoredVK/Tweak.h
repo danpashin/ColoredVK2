@@ -6,14 +6,11 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 #import "PrefixHeader.h"
 #import "CaptainHook/CaptainHook.h"
 
 #import "ColoredVKMainController.h"
 #import "ColoredVKAlertController.h"
-#import "ColoredVKPrefs.h"
 #import "VKMethods.h"
 #import "UIImage+ColoredVK.h"
 

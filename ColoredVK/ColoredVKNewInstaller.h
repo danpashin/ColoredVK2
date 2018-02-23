@@ -6,7 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
 #import "ColoredVKNetworkController.h"
 #import "ColoredVKUserModel.h"
 

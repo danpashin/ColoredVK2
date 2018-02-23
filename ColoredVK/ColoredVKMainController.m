@@ -8,17 +8,9 @@
 
 #import "ColoredVKMainController.h"
 #import "Tweak.h"
-#import "PrefixHeader.h"
-#import "ColoredVKMainPrefsController.h"
-#import "ColoredVKWallpaperView.h"
 #import <sys/utsname.h>
 #import "UIGestureRecognizer+BlocksKit.h"
 #import "ColoredVKNewInstaller.h"
-#import "ColoredVKAlertController.h"
-
-@interface ColoredVKMainController ()
-
-@end
 
 @implementation ColoredVKMainController
 static NSString const *switchViewKey = @"cvkCellSwitchKey";
@@ -122,7 +114,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
 {
     NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     if (!cvkBundle.loaded) [cvkBundle load];
-    ColoredVKMainPrefsController *cvkPrefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
+    UIViewController *cvkPrefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
     
     if ([self compareAppVersionWithVersion:@"3.0"] >= 0)
         withPush = YES;
@@ -215,7 +207,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer * _Nonnull sender) {
         CGPoint location = [sender locationInView:sender.view];
         UIView *view = [sender.view hitTest:location withEvent:nil];
-        if (![view isKindOfClass:[UITextView class]] && [view isKindOfClass:[ColoredVKAudioLyricsView class]]) {
+        if (![view isKindOfClass:[UITextView class]] && [view isKindOfClass:NSClassFromString(@"ColoredVKAudioLyricsView")]) {
             if (handler) {
                 handler();
             }

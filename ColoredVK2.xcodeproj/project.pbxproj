@@ -657,8 +657,6 @@
 		A523509E1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKBarDownloadButton.m; sourceTree = "<group>"; };
 		A526A6BE1DD50D4700B47104 /* ColoredVKAudioLyricsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKAudioLyricsView.h; sourceTree = "<group>"; };
 		A526A6BF1DD50D4700B47104 /* ColoredVKAudioLyricsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKAudioLyricsView.m; sourceTree = "<group>"; };
-		A52743661D8ADDE20063B78F /* ColoredVKInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKInstaller.h; sourceTree = "<group>"; };
-		A52743671D8ADDE20063B78F /* ColoredVKInstaller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKInstaller.m; sourceTree = "<group>"; };
 		A5288C412037327800A11223 /* ColoredVKColorMapView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKColorMapView.h; sourceTree = "<group>"; };
 		A5288C422037327800A11223 /* ColoredVKColorMapView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKColorMapView.m; sourceTree = "<group>"; };
 		A528D8821DE9FCAF00B299C1 /* ColoredVKMainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKMainController.h; sourceTree = "<group>"; };
@@ -823,7 +821,7 @@
 		A5F09D911F0FF88200024198 /* ColoredVKNewInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKNewInstaller.h; sourceTree = "<group>"; };
 		A5F09D921F0FF88200024198 /* ColoredVKNewInstaller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKNewInstaller.m; sourceTree = "<group>"; };
 		A5F09D9B1F0FFA5D00024198 /* ColoredVKCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKCrypto.h; sourceTree = "<group>"; };
-		A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKCrypto.m; sourceTree = "<group>"; };
+		A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = ColoredVKCrypto.m; sourceTree = "<group>"; };
 		A5F09DA51F101A5200024198 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		A5FB4C731FCC795A004D46C7 /* VKPhotoPicker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VKPhotoPicker.h; sourceTree = "<group>"; };
 		C065C479B2C25F581EB06241 /* Pods-ColoredVK-Prefs-App.debug_app.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK-Prefs-App.debug_app.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK-Prefs-App/Pods-ColoredVK-Prefs-App.debug_app.xcconfig"; sourceTree = "<group>"; };
@@ -1051,8 +1049,6 @@
 				A54249C91E052A930018D3E3 /* ColoredVKAudioCover.m */,
 				A53D41661DD0AC2600584B13 /* ColoredVKWallpaperView.h */,
 				A53D41671DD0AC2600584B13 /* ColoredVKWallpaperView.m */,
-				A52743661D8ADDE20063B78F /* ColoredVKInstaller.h */,
-				A52743671D8ADDE20063B78F /* ColoredVKInstaller.m */,
 				A523509D1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h */,
 				A523509E1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m */,
 				A5B607C81F0943C4003529AF /* ColoredVKUpdatesController.h */,

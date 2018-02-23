@@ -8,7 +8,6 @@
 
 #import "ColoredVKWebViewController.h"
 #import <WebKit/WebKit.h>
-#import <sys/utsname.h>
 #import "PrefixHeader.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKNavigationController.h"

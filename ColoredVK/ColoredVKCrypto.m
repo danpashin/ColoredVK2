@@ -6,8 +6,8 @@
 //
 //
 
-#import "ColoredVKCrypto.h"
 #import <Foundation/Foundation.h>
+#import "ColoredVKCrypto.h"
 
 NSString *const kColoredVKServerKey =    @"ACBEBB5F70D0883E875DAA6E1C5C59ED";
 NSString *const kColoredVKLicenceKey =   @"1D074B10BBA106699DD7D4AED9E595FA";
@@ -76,7 +76,8 @@ NSData *encryptData(NSData *data, NSError * __autoreleasing *error)
         SecItemAdd((__bridge CFDictionaryRef)keyItemAttributes, nil);
         
         NSError *encryptionError = nil;
-        CFDataRef encrypted = SecKeyCreateEncryptedData(publicKey, kSecKeyAlgorithmECIESEncryptionStandardX963SHA1AESGCM, (__bridge CFDataRef)data, (void *)&encryptionError);
+        CFDataRef encrypted = SecKeyCreateEncryptedData(publicKey, kSecKeyAlgorithmECIESEncryptionStandardX963SHA1AESGCM, 
+                                                        (__bridge CFDataRef)data, (void *)&encryptionError);
         CFRelease(publicKey);
         
         if (encryptionError) {
@@ -133,7 +134,8 @@ NSData *decryptData(NSData *data, NSError * __autoreleasing *error)
         }
         
         NSError *decryptionError = nil;
-        CFDataRef decrypted = SecKeyCreateDecryptedData(privateKey, kSecKeyAlgorithmECIESEncryptionStandardX963SHA1AESGCM, (__bridge CFDataRef)data, (void *)&decryptionError);
+        CFDataRef decrypted = SecKeyCreateDecryptedData(privateKey, kSecKeyAlgorithmECIESEncryptionStandardX963SHA1AESGCM, 
+                                                        (__bridge CFDataRef)data, (void *)&decryptionError);
         CFRelease(privateKey);
         
         if (decryptionError) {

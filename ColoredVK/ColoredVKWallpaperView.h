@@ -12,7 +12,8 @@
 @interface ColoredVKWallpaperView : UIView <NSCopying>
 
 + (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout;
-- (instancetype)initWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout enableParallax:(BOOL)enableParallax blurBackground:(BOOL)blurBackground NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout
+               enableParallax:(BOOL)enableParallax blurBackground:(BOOL)blurBackground NS_DESIGNATED_INITIALIZER;
 
 @property (strong, nonatomic, readonly) NSString *name;
 @property (assign, nonatomic) CGFloat blackout;

@@ -6,16 +6,11 @@
 //
 
 #import "AppDelegate.h"
-#import "VKMethods.h"
-
 
 @implementation AppDelegate
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-//    UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
-//    statusBar.foregroundColor = [UIColor whiteColor];
     return YES;
 }
 

@@ -11,14 +11,13 @@
 
 
 #import "Tweak.h"
+#import <dlfcn.h>
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKBarDownloadButton.h"
-#import "ColoredVKUpdatesController.h"
-#import <dlfcn.h>
-#import <Preferences/Preferences.h>
 //#import <CoreText/CoreText.h>
-#import <SafariServices/SafariServices.h>
 
+@interface PSListController : UIViewController
+@end
 
 
 BOOL tweakEnabled = NO;

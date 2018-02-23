@@ -11,7 +11,7 @@
 #import "PrefixHeader.h"
 #import "ColoredVKCrypto.h"
 #import <sys/utsname.h>
-#import <SafariServices/SafariServices.h>
+#import <SafariServices/SFSafariViewController.h>
 #import "ColoredVKHUD.h"
 #import "ColoredVKWebViewController.h"
 #import "ColoredVKAlertController.h"

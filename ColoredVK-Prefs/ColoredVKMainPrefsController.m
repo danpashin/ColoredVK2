@@ -11,14 +11,12 @@
 #import "ColoredVKHeaderView.h"
 #import "ColoredVKUpdatesController.h"
 #import "ColoredVKNewInstaller.h"
-#import "ColoredVKAlertController.h"
-#import <SafariServices/SafariServices.h>
+#import <SafariServices/SFSafariViewController.h>
 #import "ColoredVKAccountController.h"
 
 @interface ColoredVKMainPrefsController ()
 
 @property (strong, nonatomic) UIView *freeVersionFooter;
-@property (assign, nonatomic) NSUInteger freeeVersionSection;
 @property (assign, nonatomic) BOOL showFreeVersionFooter;
 
 @end
@@ -63,7 +61,6 @@ NSArray <NSString *> *specifiersToEnable;
 {
     [super loadView];
     
-    self.freeeVersionSection = 0;
     specifiersToEnable = @[@"enableTweakSwitch", @"navToolBarPrefsLink", @"menuPrefsLink", 
                            @"messagesPrefsLink", @"manageAccount", @"aboutPrefsLink",
                            @"tweakPrefsLink", @"faqLink"];
@@ -169,7 +166,7 @@ NSArray <NSString *> *specifiersToEnable;
 {
     UIView *footer = [super tableView:tableView viewForFooterInSection:section];
     
-    if ((section == self.freeeVersionSection) && self.showFreeVersionFooter) {
+    if ((section == 0) && self.showFreeVersionFooter) {
         footer = self.freeVersionFooter;
     }
     
@@ -180,7 +177,7 @@ NSArray <NSString *> *specifiersToEnable;
 {
     CGFloat height = [super tableView:tableView heightForFooterInSection:section];
     
-    if ((section == self.freeeVersionSection) && self.showFreeVersionFooter) {
+    if ((section == 0) && self.showFreeVersionFooter) {
         height = 80;
     }
     
@@ -189,7 +186,7 @@ NSArray <NSString *> *specifiersToEnable;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PSSpecifier *specifier = [self specifierForIndexPath:indexPath];
+    PSSpecifier *specifier = [self specifierAtIndexPath:indexPath];
     if ([specifier.identifier isEqualToString:@"manageAccount"]) {
         ColoredVKAccountController *accountController = [ColoredVKAccountController new];
         [self.navigationController pushViewController:accountController animated:YES];
