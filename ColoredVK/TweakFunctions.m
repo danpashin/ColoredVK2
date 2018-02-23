@@ -502,7 +502,7 @@ void setupTabbar()
         }
         
         for (UITabBarItem *item in tabbar.items) {
-            if (SYSTEM_VERSION_IS_MORE_THAN(@"10.0")) {
+            if (@available(iOS 10.0, *)) {
                 item.image = [item.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             } else {
                 UIColor *tintColor = (enabled && enabledTabbarColor) ? (enableNightTheme ? cvkMainController.nightThemeScheme.buttonColor : tabbarForegroundColor) : [UIColor defaultColorForIdentifier:@"TabbarForegroundColor"];

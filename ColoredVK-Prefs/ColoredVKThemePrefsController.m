@@ -8,6 +8,7 @@
 #import "ColoredVKThemePrefsController.h"
 #import "ColoredVKNightThemeColorScheme.h"
 #import "ColoredVKNewInstaller.h"
+#import <objc/message.h>
 
 @interface ColoredVKThemePrefsController ()
 

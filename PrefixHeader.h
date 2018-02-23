@@ -8,9 +8,7 @@
 
 #import "NSString+ColoredVK.h"
 #import "UIColor+ColoredVK.h"
-#import "UIImage+ColoredVK.h"
 
-#import "CaptainHook/CaptainHook.h"
 
 #define CVK_CRASH_PATH      [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/Crash.txt"]
 
@@ -53,22 +51,27 @@
 #define CVKLocalizedStringFromTable(key, tbl) CVKLocalizedStringFromTableInBundle(key, tbl, [NSBundle bundleWithPath:CVK_BUNDLE_PATH])
 #define CVKLocalizedString(key)               CVKLocalizedStringFromTable(key, nil)
 #define CVKLocalizedStringInBundle(key, bndl) CVKLocalizedStringFromTableInBundle(key, nil, bndl)
-#define SYSTEM_VERSION                        [UIDevice currentDevice].systemVersion
-#define SYSTEM_VERSION_IS_MORE_THAN(version)  ([SYSTEM_VERSION compare:version options:NSNumericSearch] != NSOrderedAscending)
-#define SYSTEM_VERSION_IS_EQUAL(version)      ([SYSTEM_VERSION compare:version options:NSNumericSearch] == NSOrderedSame)
-#define SYSTEM_VERSION_IS_LESS_THAN(version)  ([SYSTEM_VERSION compare:version options:NSNumericSearch] != NSOrderedDescending)
+#define SYSTEM_VERSION_IS_LESS_THAN(version)  ([[UIDevice currentDevice].systemVersion compare:version options:NSNumericSearch] != NSOrderedDescending)
 #define CLASS_NAME(obj)                       NSStringFromClass([obj class])
 
-#define CVKMainColor                     [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1]
+#define CVKMainColor [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1]
 
 #define CVKLog(args...)			NSLog(@"[COLOREDVK2]: %@", [NSString stringWithFormat:args])
 #define CVKLogSource(args...)	NSLog(@"[COLOREDVK2]: @ " CHStringify(__LINE__) " in %s: %@", __FUNCTION__, [NSString stringWithFormat:args])
 
-#define kPackageIdentifier @"com.daniilpashin.coloredvk2"
-#define kPackageName @"ColoredVK 2"
-#define kPackageVersion @"4.2-theux"
-#define kPackageAPIURL  @"https://api.danpashin.ru/v1.2"
-#define kPackageDevLink @"https://vk.com/danpashin"
-#define kPackageAccountRegisterLink @"https://danpashin.ru/projects/coloredvk/index.html#register"
-#define kPackageFaqLink @"https://danpashin.ru/projects/coloredvk/faq.html"
-#define kPackagePurchaseLink @"https://danpashin.ru/projects/coloredvk/purchase/"
+static NSString * _Nullable const kPackageIdentifier = @"com.daniilpashin.coloredvk2";
+static NSString * _Nullable const kPackageName = @"ColoredVK 2";
+static NSString * _Nullable const kPackageRawVersion = @"4.3.1";
+
+static NSString * _Nullable const kPackageAPIURL = @"https://api.danpashin.ru/v1.2";
+static NSString * _Nullable const kPackageDevLink = @"https://vk.com/danpashin";
+static NSString * _Nullable const kPackageAccountRegisterLink = @"https://danpashin.ru/projects/coloredvk/index.html#register";
+static NSString * _Nullable const kPackageFaqLink = @"https://danpashin.ru/projects/coloredvk/faq.html";
+static NSString * _Nullable const kPackagePurchaseLink = @"https://danpashin.ru/projects/coloredvk/purchase/";
+
+
+#if !defined(COMPILE_FOR_JAIL) && !defined(COMPILE_APP)
+#define kPackageVersion [kPackageRawVersion stringByAppendingString:@"-theux"]
+#else
+#define kPackageVersion kPackageRawVersion
+#endif

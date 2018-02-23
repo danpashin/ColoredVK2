@@ -6,10 +6,12 @@
 //
 //
 
+#import <CommonCrypto/CommonCryptor.h>
 @class NSString, NSData, NSError;
 
-
-extern NSString *AES256EncryptStringForAPI(NSString *string);
+extern NSString *const kColoredVKServerKey;
+extern NSData *performLegacyCrypt(CCOperation operation, NSData *data, NSString *key);
+extern NSString *legacyEncryptServerString(NSString *string);
 
 extern NSData *reencryptData(NSData *data);
 extern NSData *encryptData(NSData *data, NSError * __autoreleasing *error);

@@ -55,7 +55,6 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 - (ColoredVKVersionCompare)compareAppVersionWithVersion:(NSString *)second_version;
 - (ColoredVKVersionCompare)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version;
 
-- (void)sendStats;
 - (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)(void) )handler;
 - (void)actionOpenPreferencesPush:(BOOL)withPush;
 - (void)checkCrashes;

@@ -8,12 +8,11 @@
 
 #import "ColoredVKCrypto.h"
 #import <Foundation/Foundation.h>
-#import <CommonCrypto/CommonCryptor.h>
 
-#define kDRMAuthorizeKey        @"ACBEBB5F70D0883E875DAA6E1C5C59ED"
-#define kDRMLicenceKey          @"1D074B10BBA106699DD7D4AED9E595FA"
+NSString *const kColoredVKServerKey =    @"ACBEBB5F70D0883E875DAA6E1C5C59ED";
+NSString *const kColoredVKLicenceKey =   @"1D074B10BBA106699DD7D4AED9E595FA";
 
-NSData *AES256Decrypt(NSData *data, NSString *key)
+NSData *performLegacyCrypt(CCOperation operation, NSData *data, NSString *key)
 {
     char keyPtr[kCCKeySizeAES256+1];
     bzero(keyPtr, sizeof(keyPtr));
@@ -23,7 +22,7 @@ NSData *AES256Decrypt(NSData *data, NSString *key)
     void *buffer = malloc(bufferSize);
     
     size_t numBytesDecrypted = 0;
-    CCCryptorStatus cryptStatus = CCCrypt(kCCDecrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding,
+    CCCryptorStatus cryptStatus = CCCrypt(operation, kCCAlgorithmAES128, kCCOptionPKCS7Padding,
                                           keyPtr, kCCKeySizeAES256,
                                           NULL, data.bytes, data.length, buffer, bufferSize, &numBytesDecrypted);
     
@@ -35,35 +34,11 @@ NSData *AES256Decrypt(NSData *data, NSString *key)
     return nil;
 }
 
-NSData *AES256Encrypt(NSData *data, NSString *key)
-{
-    char keyPtr[kCCKeySizeAES256 + 1];
-    bzero(keyPtr, sizeof(keyPtr));
-    [key getCString:keyPtr maxLength:sizeof(keyPtr) encoding:NSUTF8StringEncoding];
-    
-    size_t bufferSize = data.length + kCCBlockSizeAES128;
-    void *buffer = malloc(bufferSize);
-    
-    size_t numBytesEncrypted = 0;
-    CCCryptorStatus cryptStatus = CCCrypt(kCCEncrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding,
-                                          keyPtr, kCCKeySizeAES256, NULL,
-                                          data.bytes, data.length, buffer, bufferSize, &numBytesEncrypted);
-    if (cryptStatus == kCCSuccess) {
-        return [NSData dataWithBytesNoCopy:buffer length:numBytesEncrypted];
-    }
-    
-    free(buffer);
-    return nil;
-}
-
-NSString *AES256EncryptStringForAPI(NSString *string)
+NSString *legacyEncryptServerString(NSString *string)
 {
     NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
-    return [AES256Encrypt(data, kDRMAuthorizeKey) base64EncodedStringWithOptions:0];
+    return [performLegacyCrypt(kCCEncrypt, data, kColoredVKServerKey) base64EncodedStringWithOptions:0];
 }
-
-
-
 
 NSData *encryptData(NSData *data, NSError * __autoreleasing *error)
 {
@@ -114,7 +89,7 @@ NSData *encryptData(NSData *data, NSError * __autoreleasing *error)
             return (__bridge_transfer NSData *)encrypted;
         }
     } else {
-        return AES256Encrypt(data, kDRMLicenceKey);
+        return performLegacyCrypt(kCCEncrypt, data, kColoredVKLicenceKey);
     }
     
 }
@@ -171,13 +146,13 @@ NSData *decryptData(NSData *data, NSError * __autoreleasing *error)
             return (__bridge_transfer NSData *)decrypted;
         }
     } else {
-        return AES256Decrypt(data, kDRMLicenceKey);
+        return performLegacyCrypt(kCCDecrypt, data, kColoredVKLicenceKey);
     }
 }
 
 NSData *reencryptData(NSData *data)
 {
-    NSData *rawData = AES256Decrypt(data, kDRMLicenceKey);
+    NSData *rawData = performLegacyCrypt(kCCDecrypt, data, kColoredVKServerKey);
     if (rawData) {
         return encryptData(rawData, nil);
     }

@@ -54,7 +54,7 @@ NSString *key;
     self = [super init];
     if (self) {
         _networkController = [ColoredVKNetworkController controller];
-        key = AES256EncryptStringForAPI([NSProcessInfo processInfo].globallyUniqueString);
+        key = legacyEncryptServerString([NSProcessInfo processInfo].globallyUniqueString);
         _user = [ColoredVKUserModel new];
         
         struct utsname systemInfo;
@@ -319,7 +319,7 @@ NSString *key;
     }
     [self showHudWithText:CVKLocalizedString(@"PLEASE_WAIT")];
     
-    NSString *userPassword = AES256EncryptStringForAPI(password);
+    NSString *userPassword = legacyEncryptServerString(password);
     
     NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", self.deviceModel, [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];    
     NSDictionary *parameters = @{@"login": userName, @"password": userPassword, @"action": @"login", 

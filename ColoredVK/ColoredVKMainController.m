@@ -163,24 +163,6 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     }
 }
 
-- (void)sendStats
-{
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    BOOL sendStatistics = prefs[@"sendStatistics"]?[prefs[@"sendStatistics"] boolValue]:YES;
-    if (sendStatistics) {
-        struct utsname systemInfo;
-        uname(&systemInfo);
-        UIDevice *device = [UIDevice currentDevice];
-        
-        NSString *stringURL = [NSString stringWithFormat:@"%@/stats/?product=%@&version=%@&device=%@&ios_version=%@&device_language=%@&vk_version=%@&identifier=%@", 
-                               kPackageAPIURL, kPackageIdentifier, kPackageVersion, @(systemInfo.machine), 
-                               device.systemVersion, [NSLocale preferredLanguages].firstObject, self.appVersionDetailed, 
-                               device.identifierForVendor.UUIDString];
-        
-        [[ColoredVKNewInstaller sharedInstaller].networkController sendJSONRequestWithMethod:@"GET" stringURL:stringURL parameters:nil success:nil failure:nil];
-    }
-}
-
 - (ColoredVKVersionCompare)compareAppVersionWithVersion:(NSString *)second_version
 {
     return [self compareVersion:self.appVersion withVersion:second_version];

@@ -20,6 +20,8 @@
 #import "ColoredVKAlertController.h"
 #import "ColoredVKCardController.h"
 #import "ColoredVKNightThemeColorScheme.h"
+#import <objc/runtime.h>
+
 
 @interface UINavigationBar ()
 @property (nonatomic, readonly, strong) UIView *_backgroundView;

@@ -8,6 +8,7 @@
 
 #import "ColoredVKSimpleAlertController.h"
 #import "PrefixHeader.h"
+#import "UIImage+ColoredVK.h"
 
 static CGFloat const viewsHeight = 32.0f;
 

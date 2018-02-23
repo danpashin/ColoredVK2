@@ -45,7 +45,9 @@
     
     self.navigationBar.tintColor = [UIColor whiteColor];
     self.navigationBar.barTintColor = [UIColor colorWithRed:65/255.0f green:125/255.0f blue:214/255.0f alpha:1.0f];
+#ifndef COMPILE_APP
     self.navigationBar.translucent = NO;
+#endif
     self.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
     
     if (@available(iOS 11.0, *)) {

@@ -9,11 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "PrefixHeader.h"
+#import "CaptainHook/CaptainHook.h"
 
 #import "ColoredVKMainController.h"
 #import "ColoredVKAlertController.h"
 #import "ColoredVKPrefs.h"
 #import "VKMethods.h"
+#import "UIImage+ColoredVK.h"
 
 
 #define kMenuCellBackgroundColor [UIColor colorWithRed:56.0/255.0f green:69.0/255.0f blue:84.0/255.0f alpha:1]

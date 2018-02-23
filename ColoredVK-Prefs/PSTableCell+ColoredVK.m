@@ -13,6 +13,7 @@
 #import "ColoredVKPrefs.h"
 #import "ColoredVKNightThemeColorScheme.h"
 #import "UIColor+ColoredVK.h"
+#import <objc/runtime.h>
 
 @implementation PSTableCell (ColoredVK)
 
