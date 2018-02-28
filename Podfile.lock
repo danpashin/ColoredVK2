@@ -1,0 +1,24 @@
+PODS:
+  - Color-Picker-for-iOS (2.0.2)
+  - DZNEmptyDataSet (1.8.1)
+  - LEColorPicker (1.0.3)
+  - MXParallaxHeader (0.6.1)
+  - SSZipArchive (2.1.1)
+
+DEPENDENCIES:
+  - Color-Picker-for-iOS
+  - DZNEmptyDataSet
+  - LEColorPicker
+  - MXParallaxHeader
+  - SSZipArchive
+
+SPEC CHECKSUMS:
+  Color-Picker-for-iOS: 4980589b3e3cfe7198f227dd50be9adb02d8bc0b
+  DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
+  LEColorPicker: 34509a9df7a128b1109a5dbe3f25921fc511c03d
+  MXParallaxHeader: 858c403532ed933b381556a81ce333d7065ad182
+  SSZipArchive: 14401ade5f8e82aba1ff03e9f88e9de60937ae60
+
+PODFILE CHECKSUM: c24c1d1259661cda1028afe0c84f5aa758b11c3e
+
+COCOAPODS: 1.4.0

@@ -238,8 +238,8 @@ void corePrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef
     dispatch_async(dispatch_get_main_queue(), ^{
         LEColorPicker *picker = [[LEColorPicker alloc] init];
         [picker pickColorsFromImage:image onComplete:^(LEColorScheme *colorScheme) {
-            _backColor = self.defaultCover?[UIColor clearColor]:[colorScheme.backgroundColor colorWithAlphaComponent:0.4];
-            _color = colorScheme.secondaryTextColor;
+            self->_backColor = self.defaultCover?[UIColor clearColor]:[colorScheme.backgroundColor colorWithAlphaComponent:0.4];
+            self->_color = colorScheme.secondaryTextColor;
             self.audioLyricsView.textColor = self.color;
             [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
                 self.blurEffectView.backgroundColor = self.defaultCover?[UIColor clearColor]:self.backColor;

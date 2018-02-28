@@ -167,10 +167,10 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
 - (void)updateImage
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        UIImage *image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, _name]];
+        UIImage *image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, self.name]];
         dispatch_async(dispatch_get_main_queue(), ^{
             [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                _imageView.image = image;
+                self.imageView.image = image;
             } completion:nil];
         });
     });

@@ -39,7 +39,14 @@
         _url = url;
         _rootViewController = controller;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            _downloadInfo = self.downloadInfo;
+            NSArray *downloadInfo = [NSArray array];
+            NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+            NSString *path = [cvkBundle pathForResource:@"AdvancedInfo" ofType:@"plist" inDirectory:@"plists"];
+            NSDictionary *infoDict = [NSDictionary dictionaryWithContentsOfFile:path];
+            if (infoDict) {
+                downloadInfo = infoDict[@"ImagesDLInfo"];
+            }
+            self.downloadInfo = downloadInfo;
         });
     }
     return self;
@@ -82,20 +89,4 @@
     return [NSString stringWithFormat:@"<%@: %p, url '%@', rootViewController %@>", [self class], self, self.url, self.rootViewController];
 }
 
-- (NSArray *)downloadInfo
-{
-    if (!_downloadInfo) {
-        NSArray *downloadInfo = [NSArray array];
-        NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-        NSString *path = [cvkBundle pathForResource:@"AdvancedInfo" ofType:@"plist" inDirectory:@"plists"];
-        NSDictionary *infoDict = [NSDictionary dictionaryWithContentsOfFile:path];
-        if (infoDict) {
-            downloadInfo = infoDict[@"ImagesDLInfo"];
-        }
-        
-        _downloadInfo = downloadInfo;
-    }
-    
-    return _downloadInfo;
-}
 @end

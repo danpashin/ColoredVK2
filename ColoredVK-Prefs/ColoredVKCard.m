@@ -9,6 +9,15 @@
 
 @implementation ColoredVKCard
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        _backgroundImageAlpha = 0.6f;
+    }
+    return self;
+}
+
 - (UIColor *)titleColor
 {
     if (!_titleColor) {
@@ -31,14 +40,6 @@
         _backgroundColor = [UIColor whiteColor];
     }
     return _backgroundColor;
-}
-
-- (CGFloat)backgroundImageAlpha
-{
-    if (!_backgroundImageAlpha) {
-        _backgroundImageAlpha = 0.6f;
-    }
-    return _backgroundImageAlpha;
 }
 
 - (UIColor *)buttonTintColor

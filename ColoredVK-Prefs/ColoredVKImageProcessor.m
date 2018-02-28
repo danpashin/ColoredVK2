@@ -50,8 +50,8 @@
         
         if (!writingError) {
             CGSize screenSize = [UIScreen mainScreen].bounds.size;
-            screenSize.width += 40.0f;
-            screenSize.height += 40.0f;
+            screenSize.width += 30.0f;
+            screenSize.height += 30.0f;
             if ([identifier isEqualToString:@"barImage"])
                 screenSize.height = 64;
             
@@ -72,6 +72,8 @@
 {
     @autoreleasepool {
         UIImage *resizedImage = [image copy];
+        size.width = ceilf(size.width);
+        size.height = ceilf(size.height);
         
             //  переворачиваем
         UIGraphicsBeginImageContextWithOptions(resizedImage.size, NO, [UIScreen mainScreen].scale);

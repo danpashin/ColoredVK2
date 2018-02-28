@@ -2017,7 +2017,7 @@ CHDeclareMethod(1, void, PhotoBrowserController, viewWillAppear, BOOL, animated)
             __weak typeof(self) weakSelf = self;
             saveButton.urlBlock = ^NSString*() {
                 NSString *imageSource = @"";
-                int indexOfPage = weakSelf.paging.contentOffset.x / weakSelf.paging.frame.size.width;
+                int indexOfPage = (int)(weakSelf.paging.contentOffset.x / weakSelf.paging.frame.size.width);
                 VKPhotoSized *photo = [weakSelf photoForPage:indexOfPage];
                 if (photo.variants != nil) {
                     int maxVariantIndex = 0;
@@ -2050,13 +2050,18 @@ CHDeclareMethod(0, UIStatusBarStyle, VKMBrowserController, preferredStatusBarSty
     else return CHSuper(0, VKMBrowserController, preferredStatusBarStyle);
 }
 
+CHDeclareMethod(0, void, VKMBrowserController, viewDidLoad)
+{
+    CHSuper(0, VKMBrowserController, viewDidLoad);
+    if ([self isKindOfClass:NSClassFromString(@"VKMBrowserController")] && showFastDownloadButton) {
+        self.navigationItem.rightBarButtonItem = [ColoredVKBarDownloadButton buttonWithURL:self.target.url.absoluteString rootController:self];
+    }
+}
+
 CHDeclareMethod(1, void, VKMBrowserController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, VKMBrowserController, viewWillAppear, animated);
     if ([self isKindOfClass:NSClassFromString(@"VKMBrowserController")]) {
-        if (showFastDownloadButton) {
-            self.navigationItem.rightBarButtonItem = [ColoredVKBarDownloadButton buttonWithURL:self.target.url.absoluteString rootController:self];
-        }
         setupTranslucence(self.toolbar, cvkMainController.nightThemeScheme.navbackgroundColor, !(enabled && enableNightTheme));
         
         if (enabled && enableNightTheme) {
@@ -2084,25 +2089,6 @@ CHDeclareMethod(2, void, VKMBrowserController, webView, UIWebView *, webView, di
     hideFastButtonForController(self);
 }
 
-
-#pragma mark VKGroupProfile
-//CHDeclareClass(VKGroupProfile);
-//CHDeclareMethod(0, BOOL, VKGroupProfile, verified)
-//{
-//    if ([self.group.gid isEqual:@55161589])
-//        return YES;
-//    return CHSuper(0, VKGroupProfile, verified);
-//}
-
-#pragma mark VKProfile
-//CHDeclareClass(VKProfile);
-//CHDeclareMethod(0, BOOL, VKProfile, verified)
-//{
-//    NSArray *verifiedUsers = @[@89911723, @93264161, @125879328, @73369298, @147469494, @283990174];
-//    if ([verifiedUsers containsObject:self.user.uid])
-//        return YES;
-//    return CHSuper(0, VKProfile, verified);
-//}
 
 #pragma mark UserWallController
 CHDeclareClass(UserWallController);

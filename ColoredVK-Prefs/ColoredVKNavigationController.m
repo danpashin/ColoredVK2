@@ -31,10 +31,21 @@
 {
     self = [super init];
     if (self) {
-        _supportsAllOrientations = NO;
-        _prefersLargeTitle = YES;
+        [self commonSetup];
     }
     return self;
+}
+
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+    [self commonSetup];
+}
+
+- (void)commonSetup
+{
+    _supportsAllOrientations = NO;
+    _prefersLargeTitle = YES;
 }
 
 - (void)viewDidLoad

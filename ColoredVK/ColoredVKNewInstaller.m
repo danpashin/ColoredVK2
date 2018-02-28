@@ -11,7 +11,6 @@
 #import "PrefixHeader.h"
 #import "ColoredVKCrypto.h"
 #import <sys/utsname.h>
-#import <SafariServices/SFSafariViewController.h>
 #import "ColoredVKHUD.h"
 #import "ColoredVKWebViewController.h"
 #import "ColoredVKAlertController.h"
@@ -178,26 +177,6 @@ NSString *key;
     }
 }
 
-- (void)actionPurchase
-{
-    if (self.user.userID) {
-        ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
-        
-        NSError *requestError = nil;
-        NSDictionary *params = @{@"user_id" :self.user.userID, @"profile_team_id": self.appTeamIdentifier, @"from": self.sellerName};
-        NSURLRequest *request = [self.networkController requestWithMethod:@"POST" URLString:kPackagePurchaseLink parameters:params error:&requestError];
-        
-        if (!requestError) {
-            webController.request = request;
-            [webController present];
-        } else {
-            [self showAlertWithTitle:nil text:[NSString stringWithFormat:@"Error while creating purchase request:\n%@", requestError.localizedDescription] buttons:nil];
-        }
-    } else {
-        [self showAlertWithTitle:CVKLocalizedString(@"WARNING") text:CVKLocalizedString(@"ENTER_ACCOUNT_FIRST") buttons:nil];
-    }
-}
-
 - (void)showAlertWithTitle:(NSString *)title text:(NSString *)text buttons:(NSArray <__kindof UIAlertAction *> *)buttons
 {
     if (buttons.count == 0) {
@@ -246,6 +225,20 @@ NSString *key;
 #pragma mark -
 #pragma mark Backend
 #pragma mark -
+
+- (void)actionPurchase
+{
+    if (self.user.userID) {
+        ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
+        
+        NSDictionary *params = @{@"user_id" :self.user.userID, @"profile_team_id": self.appTeamIdentifier, @"from": self.sellerName};
+        webController.request = [self.networkController requestWithMethod:@"POST" URLString:kPackagePurchaseLink parameters:params error:nil];
+        [webController present];  
+    } else {
+        [self showAlertWithTitle:CVKLocalizedString(@"WARNING") text:CVKLocalizedString(@"ENTER_ACCOUNT_FIRST") buttons:nil];
+    }
+}
+
 - (void)updateAccountInfo:( void(^)(void) )completionBlock
 {
     if (self.user.userID) {

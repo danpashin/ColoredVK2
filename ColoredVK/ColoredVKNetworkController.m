@@ -31,7 +31,7 @@
         _configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
         _configuration.timeoutIntervalForResource = 90.0f;
         _configuration.allowsCellularAccess = YES;
-        _configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalAndRemoteCacheData;
+        _configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
         
         _operationQueue = [[NSOperationQueue alloc] init];
         _operationQueue.name = @"com.daniilpashin.coloredvk2.network";
@@ -231,8 +231,8 @@
     
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]
-                                                           cachePolicy:self.session.configuration.requestCachePolicy
-                                                       timeoutInterval:self.session.configuration.timeoutIntervalForResource];
+                                                           cachePolicy:self.configuration.requestCachePolicy
+                                                       timeoutInterval:self.configuration.timeoutIntervalForResource];
     if ([method.uppercaseString isEqualToString:@"POST"])
         request.HTTPBody = [stringParameters dataUsingEncoding:NSUTF8StringEncoding];
     
