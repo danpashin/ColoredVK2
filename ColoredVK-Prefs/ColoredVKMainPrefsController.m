@@ -30,8 +30,13 @@ NSArray <NSString *> *specifiersToEnable;
     if (!_specifiers) {
         NSMutableArray *specifiersArray = [self specifiersForPlistName:@"Main" localize:NO].mutableCopy;
         
-        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller]; 
-        BOOL shouldDisable = (newInstaller.user.accountStatus != ColoredVKUserAccountStatusPaid);
+        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
+        
+        BOOL shouldDisable = YES;
+        if (newInstaller.user.authenticated)
+            shouldDisable = (newInstaller.user.accountStatus != ColoredVKUserAccountStatusPaid);
+        else if (newInstaller.jailed)
+            shouldDisable = !newInstaller.shouldOpenPrefs;
         
         self.showFreeVersionFooter = shouldDisable;
         
@@ -46,9 +51,9 @@ NSArray <NSString *> *specifiersToEnable;
         }
         
         NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.bundle, nil), 
-                                self.tweakVersion, self.vkAppVersion];
+                                kPackageRawVersion, self.vkAppVersion];
         PSSpecifier *footer = [PSSpecifier emptyGroupSpecifier];
-        [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2018"] forKey:@"footerText"];
+        [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2018\nПри поддержке theux.ru"] forKey:@"footerText"];
         [footer setProperty:@"1" forKey:@"footerAlignment"];
         [specifiersArray addObject:footer];
         

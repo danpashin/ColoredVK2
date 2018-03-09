@@ -28,8 +28,13 @@
     if (!_specifiers) {
         NSArray *specifiersArray = super.specifiers;
         
-        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller]; 
-        BOOL shouldDisable = (newInstaller.user.accountStatus != ColoredVKUserAccountStatusPaid);
+        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
+        
+        BOOL shouldDisable = YES;
+        if (newInstaller.user.authenticated)
+            shouldDisable = (newInstaller.user.accountStatus != ColoredVKUserAccountStatusPaid);
+        else if (newInstaller.jailed)
+            shouldDisable = !newInstaller.shouldOpenPrefs;
         
         for (PSSpecifier *specifier in specifiersArray) {
             @autoreleasepool {
@@ -84,7 +89,7 @@
 
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker willDismissWithColor:(UIColor *)color
 {
-    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     
     if (color) {
         prefs[colorPicker.identifier] = color.stringValue;
@@ -92,7 +97,7 @@
         if (prefs[colorPicker.identifier]) [prefs removeObjectForKey:colorPicker.identifier];
     }
     
-    [prefs writeToFile:self.prefsPath atomically:YES];
+    [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
     
     CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
     CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
@@ -114,26 +119,26 @@
 
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didSaveColor:(NSString *)hexColor
 {
-    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     NSMutableArray <NSString *> *savedColors = prefs[@"savedColors"] ? prefs[@"savedColors"] : [NSMutableArray new];
     
     if (![savedColors containsObject:hexColor])
         [savedColors addObject:hexColor];
     
     prefs[@"savedColors"] = savedColors;
-    [prefs writeToFile:self.prefsPath atomically:YES];
+    [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
 }
 
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didDeleteColor:(NSString *)hexColor
 {
-    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     NSMutableArray <NSString *> *savedColors = prefs[@"savedColors"] ? prefs[@"savedColors"] : [NSMutableArray new];
     
     if ([savedColors containsObject:hexColor])
         [savedColors removeObject:hexColor];
     
     prefs[@"savedColors"] = savedColors;
-    [prefs writeToFile:self.prefsPath atomically:YES];
+    [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
 }
 
 
@@ -143,7 +148,7 @@
 
 - (NSArray <NSString *> *)savedColorsForColorPicker:(ColoredVKColorPickerController *)colorPicker
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     NSArray <NSString *> *savedColors = prefs[@"savedColors"] ? prefs[@"savedColors"] : [NSArray new];
     
     return savedColors;

@@ -15,8 +15,9 @@
 #import "ColoredVKWebViewController.h"
 #import "ColoredVKAlertController.h"
 #import "ColoredVKUpdatesController.h"
+#import <MobileGestalt.h>
 
-#define kDRMPackage             @"org.thebigboss.coloredvk2"
+static NSString * _Nullable const kDRMPackage = @"org.thebigboss.coloredvk2";
 #define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
 #define kDRMRemoteServerURL     [NSString stringWithFormat:@"%@/index-new.php", kPackageAPIURL]
 
@@ -36,8 +37,6 @@
 void(^installerCompletionBlock)(BOOL purchased);
 NSString *key;
 
-
-
 + (instancetype)sharedInstaller
 {
     static id instance = nil;
@@ -55,14 +54,15 @@ NSString *key;
         _networkController = [ColoredVKNetworkController controller];
         key = legacyEncryptServerString([NSProcessInfo processInfo].globallyUniqueString);
         _user = [ColoredVKUserModel new];
+        _application = [ColoredVKApplicationModel new];
         
         struct utsname systemInfo;
         uname(&systemInfo);
         _deviceModel = @(systemInfo.machine);
-        
         _sellerName = @"theux";
-        _appTeamIdentifier = @"";
-        _appTeamName = @"";
+        
+        _jailed = NO;
+        _shouldOpenPrefs = NO;
         
         [self createFolders];
         [self checkStatus];
@@ -78,49 +78,15 @@ NSString *key;
     if (![fileManager fileExistsAtPath:CVK_FOLDER_PATH])  [fileManager createDirectoryAtPath:CVK_FOLDER_PATH withIntermediateDirectories:NO attributes:nil error:nil];
     if (![fileManager fileExistsAtPath:CVK_CACHE_PATH]) [fileManager createDirectoryAtPath:CVK_CACHE_PATH  withIntermediateDirectories:NO attributes:nil error:nil];
     if (![fileManager fileExistsAtPath:CVK_BACKUP_PATH])  [fileManager createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
-    
-    BOOL reencrypted = [[NSUserDefaults standardUserDefaults] boolForKey:@"cvk_licence_reencrypted"];
-    if (!reencrypted) {
-        NSData *newData = reencryptData([NSData dataWithContentsOfFile:kDRMLicencePath]);
-        [newData writeToFile:kDRMLicencePath atomically:YES];
-        
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"cvk_licence_reencrypted"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
 }
 
 - (void)updateAppInfo
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         if (NSClassFromString(@"Activation") != nil) {
-           self->_sellerName = @"iapps";
-        }
-        
-        NSError *error = nil;
-        NSString *provisionPath = [[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"];
-        NSString *provisionString = [NSString stringWithContentsOfFile:provisionPath encoding:NSISOLatin1StringEncoding error:&error];
-        
-        if (!error) {         
-            NSString *provisionDictString = @"";
-            
-            NSScanner *scanner = [NSScanner scannerWithString:provisionString];
-            [scanner scanUpToString:@"<plist" intoString:nil];
-            [scanner scanUpToString:@"</plist>" intoString:&provisionDictString];
-            provisionDictString = [@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n" stringByAppendingString:provisionDictString];
-            provisionDictString = [provisionDictString stringByAppendingString:@"</plist>"];
-            
-            NSString *tempPath = [NSTemporaryDirectory() stringByAppendingString:@"/embedded_mobileprovision.plist"];
-            [[provisionDictString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:tempPath atomically:YES];
-            
-            NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:tempPath];
-            if (dict) {
-                self->_appTeamIdentifier = ((NSArray *)dict[@"TeamIdentifier"]).firstObject;
-                self->_appTeamName = dict[@"TeamName"];
-                
-                if (![self.sellerName isEqualToString:@"iapps"] && [self.appTeamIdentifier isEqualToString:@"FL663S8EYD"])
-                    self->_sellerName = @"ishmv";
-            }
-            [[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
+            _sellerName = @"iapps";
+        } else if ([self.application.teamIdentifier isEqualToString:@"FL663S8EYD"]) {
+            _sellerName = @"ishmv";
         }
         
         ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
@@ -144,25 +110,39 @@ NSString *key;
                     [self writeFreeLicence];
                 } else {
 #endif
-                    self.user.name = dict[@"Login"];
-                    self.user.userID = dict[@"user_id"];
-                    self.user.accessToken = dict[@"token"];
-                    self.user.email = dict[@"email"];
-                    if (self.user.name.length > 0) {
-                        self.user.authenticated = YES;
-                        
-                        NSString *tokenString = [NSString stringWithFormat:@"%@", self.user.accessToken];
-                        tokenString = [tokenString stringByReplacingOccurrencesOfString:@" " withString:@""];
-                        if (tokenString.length < 20) {
-                            [self forceUpdateToken];
+                    if ([dict[@"jailed"] boolValue]) {
+                        _jailed = YES;
+                        if ([dict[@"udid"] isEqualToString:CFBridgingRelease(MGCopyAnswer(kMGUniqueDeviceID))]) {
+                            if ([dict[@"purchased"] boolValue]) {
+                                NSLog(@"PASS!!!");
+                                _shouldOpenPrefs = YES;
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
+                                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), 
+                                                                     CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+                                if (installerCompletionBlock)
+                                    installerCompletionBlock(YES);
+                            } else {
+                                NSLog(@"Jailed but not purchased");
+                            }
+                        } else {
+                            NSLog(@"udids not valid");
+                            [self writeFreeLicence];
                         }
-                    }
-                    BOOL purchased = [dict[@"purchased"] boolValue];
-                    if (purchased) {
-                        self.user.accountStatus = ColoredVKUserAccountStatusPaid;
-                        
-                        if (installerCompletionBlock) {
-                            installerCompletionBlock(YES);
+                    } else {
+                        NSLog(@"passing jail check");
+                        self.user.name = dict[@"Login"];
+                        self.user.userID = dict[@"user_id"];
+                        self.user.accessToken = dict[@"token"];
+                        self.user.email = dict[@"email"];
+                        if (self.user.name.length > 0) {
+                            self.user.authenticated = YES;
+                        }
+                        BOOL purchased = [dict[@"purchased"] boolValue];
+                        if (purchased) {
+                            self.user.accountStatus = ColoredVKUserAccountStatusPaid;
+                            
+                            if (installerCompletionBlock)
+                                installerCompletionBlock(YES);
                         }
                     }
 #ifndef COMPILE_APP
@@ -231,7 +211,7 @@ NSString *key;
     if (self.user.userID) {
         ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
         
-        NSDictionary *params = @{@"user_id" :self.user.userID, @"profile_team_id": self.appTeamIdentifier, @"from": self.sellerName};
+        NSDictionary *params = @{@"user_id" :self.user.userID, @"profile_team_id": self.application.teamIdentifier, @"from": self.sellerName};
         webController.request = [self.networkController requestWithMethod:@"POST" URLString:kPackagePurchaseLink parameters:params error:nil];
         [webController present];  
     } else {
@@ -239,211 +219,50 @@ NSString *key;
     }
 }
 
-- (void)updateAccountInfo:( void(^)(void) )completionBlock
-{
-    if (self.user.userID) {
-        if ((self.user.accountStatus == ColoredVKUserAccountStatusPaid) && completionBlock) {
-            completionBlock();
-        } 
-        NSString *url = [NSString stringWithFormat:@"%@/payment/get_info.php", kPackageAPIURL];
-        NSDictionary *parameters = @{@"user_id":self.user.userID, @"token":self.user.accessToken};
-        
-        [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:parameters
-                                                  success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
-                                                      if (!json[@"error"]) {
-                                                          NSDictionary *response = json[@"response"];
-                                                          if ([response isKindOfClass:[NSDictionary class]]) {
-                                                              self.user.accountStatus = ColoredVKUserAccountStatusFree;
-                                                              
-                                                              BOOL purchased = [response[@"is_purchased"] boolValue];
-                                                              if (purchased)
-                                                                  self.user.accountStatus = ColoredVKUserAccountStatusPaid;
-                                                              
-                                                              BOOL banned = [response[@"is_banned"] boolValue];
-                                                              if (banned)
-                                                                  self.user.accountStatus = ColoredVKUserAccountStatusBanned;
-                                                              
-                                                              NSString *email = response[@"email"];
-                                                              self.user.email = email;
-                                                              
-                                                              NSData *decryptedData = decryptData([NSData dataWithContentsOfFile:kDRMLicencePath], nil);
-                                                              NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
-                                                              dict[@"purchased"] = @(purchased);
-                                                              dict[@"email"] = email;
-                                                              NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
-                                                              [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
-                                                          }
-                                                      }
-                                                      
-                                                      if (completionBlock) {
-                                                          completionBlock();
-                                                          
-                                                          [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
-                                                      }
-                                                  } 
-                                                  failure:nil];
-    } else {
-        [self.user clearUser];
-        if (completionBlock)
-            completionBlock();
-    }
-    
-}
-
-
 - (void)writeFreeLicence
 {
     [self.user clearUser];
     
-    NSDictionary *dict = @{@"purchased":@NO, @"Device":self.deviceModel};
+    NSString *udid = CFBridgingRelease(MGCopyAnswer(kMGUniqueDeviceID));
+    
+    NSDictionary *dict = @{@"purchased":@NO, @"Device":self.deviceModel, @"jailed":(udid.length > 20) ? @YES : @NO, @"udid":udid};
     NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
     [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
-}
-
-
-- (void)authWithUsername:(NSString *)userName password:(NSString *)password completionBlock:( void(^)(void) )completionBlock
-{
-    if (userName.length == 0 || password.length == 0) {
-        [self showHudWithText:nil];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.hud showFailureWithStatus:CVKLocalizedString(@"ENTER_CORRECT_LOGIN_PASS")];
-        });
-        return;
+    
+    if (udid.length > 20) {
+        _jailed = YES;
+        [self downloadJBLicence];
     }
-    [self showHudWithText:CVKLocalizedString(@"PLEASE_WAIT")];
-    
-    NSString *userPassword = legacyEncryptServerString(password);
-    
-    NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", self.deviceModel, [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];    
-    NSDictionary *parameters = @{@"login": userName, @"password": userPassword, @"action": @"login", 
-                                 @"version": kPackageVersion, @"device": device, @"key": key
-                                 };
-    
-    void (^showAlertBlock)(NSError *error) = ^(NSError *error) {
-        
-        ColoredVKNewInstaller *installer = [ColoredVKNewInstaller sharedInstaller];
-        [installer hideHud];
-        
-        if (error) {
-            [self writeFreeLicence];
-            [installer showAlertWithTitle:CVKLocalizedString(@"ERROR") text:[NSString stringWithFormat:@"%@\n(Client code %@)", error.localizedDescription, @(error.code)] buttons:nil];
-        }
-        
-        if (completionBlock)
-            completionBlock();
-    };
-    
-    [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters
-                                         success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
-                                             if (!json[@"error"]) {
-                                                 if ([json[@"key"] isEqualToString:key]) {
-                                                     NSMutableDictionary *dict = @{@"Device":self.deviceModel}.mutableCopy;
-                                                     
-                                                     self.user.name = userName;
-                                                     self.user.userID = json[@"user_id"];
-                                                     self.user.email = json[@"user_email"];
-                                                     self.user.accessToken = json[@"user_token"];
-                                                     self.user.authenticated = YES;
-                                                     
-                                                     NSNumber *purchased = json[@"purchased"];
-                                                     if (purchased.boolValue)
-                                                         self.user.accountStatus = ColoredVKUserAccountStatusPaid;
-                                                     
-                                                     dict[@"Login"] = userName;
-                                                     dict[@"user_id"] = self.user.userID;
-                                                     dict[@"email"] = self.user.email;
-                                                     dict[@"token"] = self.user.accessToken;
-                                                     dict[@"purchased"] = purchased;
-                                                     
-                                                     
-                                                     [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
-                                                     
-                                                     NSError *writingError = nil;
-                                                     NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
-                                                     [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
-                                                     
-                                                     if (!writingError) {
-                                                         showAlertBlock(nil);
-                                                         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-                                                         
-                                                         if (purchased && installerCompletionBlock) 
-                                                             installerCompletionBlock(YES);
-                                                     }
-                                                     else showAlertBlock(writingError);
-                                                 } else showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain code:103 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}]);
-                                             } else {
-                                                 NSString *errorMessages = json ? json[@"error"] : @"Unknown error";
-                                                 showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain code:101 userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);
-                                             }
-                                         } 
-                                         failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                             showAlertBlock(error);
-                                         }];
 }
 
-
-- (void)logoutWithСompletionBlock:( void(^)(void) )completionBlock;
+- (void)downloadJBLicence
 {
-    if (!self.user.authenticated)
-        return;
-    
-    [self showHudWithText:CVKLocalizedString(@"PLEASE_WAIT")];
-    
-    __weak typeof(self) weakSelf = self;
-    void (^newCompletionBlock)(NSError *error) = ^(NSError *error){
-        [weakSelf hideHud];
-        
-        if (error)
-            [weakSelf showAlertWithTitle:CVKLocalizedString(@"ERROR") text:[NSString stringWithFormat:@"%@\n(Client code %@)", error.localizedDescription, @(error.code)] buttons:nil];
-        
-        if (completionBlock)
-            completionBlock();
-    };
-    
-    NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", self.deviceModel, [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];
-    NSDictionary *parameters = @{@"login": self.user.name, @"token": self.user.accessToken, @"action": @"logout", 
-                                 @"version": kPackageVersion, @"device": device, @"key": key
-                                 };
-    
-    [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters 
+    NSString *udid = CFBridgingRelease(MGCopyAnswer(kMGUniqueDeviceID));
+    NSDictionary *params = @{@"udid": legacyEncryptServerString(udid), @"package":legacyEncryptServerString(kDRMPackage), 
+                             @"version":kPackageRawVersion, @"key": key};
+    [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:params 
                                               success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
-                                                  if (!json[@"error"]) {
-                                                      if ([json[@"key"] isEqualToString:key]) {
-                                                          [self writeFreeLicence];
-                                                          newCompletionBlock(nil);
-                                                          self.user.authenticated = NO;
-                                                        if (installerCompletionBlock)
-                                                            installerCompletionBlock(NO);
+                                                  NSLog(@"%@", json);
+                                                  if (json[@"response"]) {
+                                                      NSDictionary *response = json[@"response"];
+                                                      
+                                                      if (![response[@"key"] isEqualToString:key] || ![response[@"udid"] isEqualToString:udid])
+                                                          return;
+                                                      
+                                                      NSDictionary *dict = @{@"Device":self.deviceModel, @"udid":udid, @"jailed":@YES, @"purchased":@YES};
+                                                      NSError *writingError = nil;
+                                                      NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
+                                                      [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
+                                                      
+                                                      if (!writingError) {
+                                                          _shouldOpenPrefs = YES;
                                                           [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
-                                                      } else 
-                                                          newCompletionBlock([NSError errorWithDomain:NSCocoaErrorDomain code:104 userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}]);
-                                                  } else {
-                                                      NSString *errorMessages = json ? json[@"error"] : @"Unknown error";
-                                                      newCompletionBlock([NSError errorWithDomain:NSCocoaErrorDomain code:102 userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);
-                                                  }
-                                              } 
-                                              failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                                  newCompletionBlock(error);
-                                              }];
-}
-
-- (void)forceUpdateToken
-{
-    if (!self.user.name)
-        return;
-    
-    NSString *url = [NSString stringWithFormat:@"%@/updateToken.php", kPackageAPIURL];
-    [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters: @{@"user_login": self.user.name} 
-                                              success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
-                                                  if (json[@"new_token"]) {
-                                                      self.user.accessToken = json[@"new_token"];
+                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), 
+                                                                                               CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+                                                          if (installerCompletionBlock) 
+                                                              installerCompletionBlock(YES);
+                                                      }
                                                       
-                                                      NSData *licenceDecryptedData = decryptData([NSData dataWithContentsOfFile:kDRMLicencePath], nil);
-                                                      NSMutableDictionary *licenceDict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:licenceDecryptedData] mutableCopy];
-                                                      licenceDict[@"token"] = json[@"new_token"];
-                                                      
-                                                      NSData *licenceEncryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:licenceDict], nil);
-                                                      [licenceEncryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
                                                   }
                                               } failure:nil];
 }

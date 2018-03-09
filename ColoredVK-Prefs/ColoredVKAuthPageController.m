@@ -119,15 +119,15 @@
         return;
     }
     
-    [[ColoredVKNewInstaller sharedInstaller] authWithUsername:self.loginTextField.text password:self.passTextField.text 
-                                              completionBlock:^{
-                                                  if (self.completionBlock)
-                                                      self.completionBlock();
-                                                  
-                                                  if ([ColoredVKNewInstaller sharedInstaller].user.authenticated) {
-                                                      [self dismiss];
-                                                  }
-                                              }];
+    [[ColoredVKNewInstaller sharedInstaller].user authWithUsername:self.loginTextField.text password:self.passTextField.text 
+                                                   completionBlock:^{
+                                                       if (self.completionBlock)
+                                                           self.completionBlock();
+                                                       
+                                                       if ([ColoredVKNewInstaller sharedInstaller].user.authenticated) {
+                                                           [self dismiss];
+                                                       }
+                                                   }];
 }
 
 - (void)showFromController:(UIViewController *)viewController

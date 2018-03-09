@@ -71,8 +71,6 @@
                     specifier.titleDictionary = [tempDict copy];
                 }
                 
-                if ([specifier.identifier isEqualToString:@"checkUpdates"] && [kPackageVersion containsString:@"beta"])
-                    [specifier setProperty:@NO forKey:@"enabled"];
                 if ([specifier.identifier isEqualToString:@"manageSettingsFooter"] && specifier.properties[@"footerText"])
                     [specifier setProperty:[NSString stringWithFormat:localizedStringForKey(specifier.properties[@"footerText"]), CVK_BACKUP_PATH] forKey:@"footerText"];
             }
@@ -103,7 +101,12 @@
     
     if (self.app_is_vk) {
         self.nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+        
+        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+        NSInteger themeType = [prefs[@"nightThemeType"] integerValue];
+        self.nightThemeColorScheme.enabled = ((themeType != -1) && [prefs[@"enabled"] boolValue]);
         if (self.nightThemeColorScheme.enabled) {
+            [self.nightThemeColorScheme updateForType:themeType];
             self.prefsTableView.backgroundColor = self.nightThemeColorScheme.backgroundColor;
             self.navigationController.navigationBar.barTintColor = self.nightThemeColorScheme.navbackgroundColor;
         }
@@ -119,10 +122,10 @@
 
 - (id)readPreferenceValue:(PSSpecifier *)specifier
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     if (!prefs) {
         prefs = [NSDictionary new];
-        [prefs writeToFile:self.prefsPath atomically:YES];
+        [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
     }
     
     if (!prefs[specifier.properties[@"key"]])
@@ -134,13 +137,13 @@
 
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
 {
-    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     if (value)
         [prefs setValue:value forKey:specifier.properties[@"key"]];
     else
         [prefs removeObjectForKey:specifier.properties[@"key"]];
     
-    [prefs writeToFile:self.prefsPath atomically:YES];
+    [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
     
     NSArray *identificsToReloadMenu = @[@"enableTweakSwitch", @"menuSelectionStyle", @"hideMenuSeparators", 
                                         @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor", 
@@ -187,30 +190,20 @@
     });
 }
 
-- (NSString *)tweakVersion
-{
-    return [kPackageVersion stringByReplacingOccurrencesOfString:@"-" withString:@" "];
-}
-
 - (NSString *)vkAppVersion
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
-    return prefs[@"vkVersion"] ? prefs[@"vkVersion"] : CVKLocalizedString(@"UNKNOWN");
+    static NSString *version = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+        version = prefs[@"vkVersion"] ? prefs[@"vkVersion"] : CVKLocalizedString(@"UNKNOWN");
+    });
+    return version;
 }
 
 - (NSBundle *)cvkBundle
 {
     return [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-}
-
-- (NSString *)cvkFolder
-{
-    return CVK_FOLDER_PATH;
-}
-
-- (NSString *)prefsPath
-{
-    return CVK_PREFS_PATH;
 }
 
 - (BOOL)openURL:(NSURL *)url
@@ -273,7 +266,7 @@
     objc_setAssociatedObject(cell, "app_is_vk", @(self.app_is_vk), OBJC_ASSOCIATION_ASSIGN);
     objc_setAssociatedObject(cell, "enableNightTheme", @(self.nightThemeColorScheme.enabled), OBJC_ASSOCIATION_ASSIGN);
     
-    NSDictionary *userPrefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    NSDictionary *userPrefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     BOOL changeSwitchColor = ([userPrefs[@"enabled"] boolValue] && [userPrefs[@"changeSwitchColor"] boolValue]);
     objc_setAssociatedObject(cell, "change_switch_color", @(changeSwitchColor), OBJC_ASSOCIATION_ASSIGN);
     

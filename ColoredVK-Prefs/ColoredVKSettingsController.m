@@ -142,13 +142,13 @@
     ColoredVKHUD *hud = [ColoredVKHUD showHUD];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        NSMutableArray *files = @[self.prefsPath].mutableCopy;
+        NSMutableArray *files = @[CVK_PREFS_PATH].mutableCopy;
         
         NSFileManager *filemaneger = [NSFileManager defaultManager];
         if (![filemaneger fileExistsAtPath:CVK_BACKUP_PATH]) [filemaneger createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
         
-        for (NSString *fileName in [filemaneger contentsOfDirectoryAtPath:self.cvkFolder error:nil]) {
-            if (![fileName containsString:@"Cache"]) [files addObject:[NSString stringWithFormat:@"%@/%@", self.cvkFolder, fileName]];
+        for (NSString *fileName in [filemaneger contentsOfDirectoryAtPath:CVK_FOLDER_PATH error:nil]) {
+            if (![fileName containsString:@"Cache"]) [files addObject:[NSString stringWithFormat:@"%@/%@", CVK_FOLDER_PATH, fileName]];
         }
         
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
@@ -174,17 +174,17 @@
                         if (succeeded && !error) {
                             NSFileManager *filemanager = [NSFileManager defaultManager];
                             
-                            [filemanager removeItemAtPath:self.prefsPath error:nil];
-                            [filemanager removeItemAtPath:self.cvkFolder error:nil];
-                            [filemanager createDirectoryAtPath:self.cvkFolder withIntermediateDirectories:NO attributes:nil error:nil];
+                            [filemanager removeItemAtPath:CVK_PREFS_PATH error:nil];
+                            [filemanager removeItemAtPath:CVK_FOLDER_PATH error:nil];
+                            [filemanager createDirectoryAtPath:CVK_FOLDER_PATH withIntermediateDirectories:NO attributes:nil error:nil];
                             
                             NSError *movingError = nil;
                             for (NSString *filename in [filemanager contentsOfDirectoryAtPath:tmpPath error:nil]) {
                                 NSString *filePath = [NSString stringWithFormat:@"%@/%@", tmpPath, filename];
                                 if ([filename containsString:@"Image"]) {
-                                    [filemanager copyItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", self.cvkFolder, filename] error:&error];
+                                    [filemanager copyItemAtPath:filePath toPath:[NSString stringWithFormat:@"%@/%@", CVK_FOLDER_PATH, filename] error:&error];
                                 } else if ([filename containsString:@"plist"]) {
-                                    [filemanager copyItemAtPath:filePath toPath:self.prefsPath error:&error];
+                                    [filemanager copyItemAtPath:filePath toPath:CVK_PREFS_PATH error:&error];
                                 }                                
                                 if (movingError) break;
                             }
@@ -209,8 +209,8 @@
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
             NSError *error = nil;
             NSFileManager *fileManager = [NSFileManager defaultManager];
-            [fileManager removeItemAtPath:self.prefsPath error:&error];
-            [fileManager removeItemAtPath:self.cvkFolder error:&error];
+            [fileManager removeItemAtPath:CVK_PREFS_PATH error:&error];
+            [fileManager removeItemAtPath:CVK_FOLDER_PATH error:&error];
             
             error ? [hud showFailure] : [hud showSuccess];
             

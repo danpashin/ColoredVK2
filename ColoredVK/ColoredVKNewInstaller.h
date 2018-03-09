@@ -8,6 +8,7 @@
 
 #import "ColoredVKNetworkController.h"
 #import "ColoredVKUserModel.h"
+#import "ColoredVKApplicationModel.h"
 
 @interface ColoredVKNewInstaller : NSObject
 
@@ -17,17 +18,14 @@ FOUNDATION_EXPORT void(^installerCompletionBlock)(BOOL purchased);
 
 @property (strong, nonatomic, readonly) ColoredVKNetworkController *networkController;
 @property (strong, nonatomic, readonly) ColoredVKUserModel *user;
-@property (strong, nonatomic) NSNumber *vkUserID;
+@property (strong, nonatomic, readonly) ColoredVKApplicationModel *application;
 
-@property (copy, nonatomic, readonly) NSString *appTeamIdentifier;
-@property (copy, nonatomic, readonly) NSString *appTeamName;
+@property (strong, nonatomic) NSNumber *vkUserID;
 @property (copy, nonatomic, readonly) NSString *sellerName;
+@property (assign, nonatomic, readonly) BOOL jailed;
+@property (assign, nonatomic, readonly) BOOL shouldOpenPrefs;
 
 - (void)checkStatus;
 - (void)actionPurchase;
-- (void)updateAccountInfo:( void(^)(void) )completionBlock;
-
-- (void)logoutWithСompletionBlock:( void(^)(void) )completionBlock;
-- (void)authWithUsername:(NSString *)login password:(NSString *)password completionBlock:( void(^)(void) )completionBlock;
 
 @end

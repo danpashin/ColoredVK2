@@ -55,7 +55,13 @@
         self.specifiersAlreadyInserted = YES;
         
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller]; 
-        BOOL shouldDisable = (newInstaller.user.accountStatus != ColoredVKUserAccountStatusPaid);
+        
+        BOOL shouldDisable = YES;
+        if (newInstaller.user.authenticated)
+            shouldDisable = (newInstaller.user.accountStatus != ColoredVKUserAccountStatusPaid);
+        else if (newInstaller.jailed)
+            shouldDisable = !newInstaller.shouldOpenPrefs;
+        
         for (PSSpecifier *specifier in specifiers) {
             @autoreleasepool {
                 if (shouldDisable || ![[self.specifier propertyForKey:@"enabled"] boolValue]) {

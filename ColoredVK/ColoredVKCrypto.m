@@ -8,9 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import "ColoredVKCrypto.h"
+#import <CommonCrypto/CommonHMAC.h>
+#include <sys/sysctl.h>
 
-NSString *const kColoredVKServerKey =    @"ACBEBB5F70D0883E875DAA6E1C5C59ED";
-NSString *const kColoredVKLicenceKey =   @"1D074B10BBA106699DD7D4AED9E595FA";
+NSString *const kColoredVKServerKey = @"ACBEBB5F70D0883E875DAA6E1C5C59ED";
 
 NSData *performLegacyCrypt(CCOperation operation, NSData *data, NSString *key)
 {
@@ -40,123 +41,39 @@ NSString *legacyEncryptServerString(NSString *string)
     return [performLegacyCrypt(kCCEncrypt, data, kColoredVKServerKey) base64EncodedStringWithOptions:0];
 }
 
+
+static NSString *encryptionKey()
+{
+    static NSString *encryptionKey = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        uint64_t ramSize;
+        size_t len = sizeof(ramSize);
+        sysctlbyname("hw.memsize", &ramSize, &len, NULL, 0);
+        
+        char machine[256];
+        len = sizeof(machine);
+        sysctlbyname("hw.machine", &machine, &len, NULL, 0);
+        
+        NSString *string = [NSString stringWithFormat:@"device=%s&ramSize=%llu", machine, ramSize];
+        NSData *keyData = [kColoredVKServerKey dataUsingEncoding:NSUTF8StringEncoding];
+        NSData *encData = [string dataUsingEncoding:NSUTF8StringEncoding];
+        NSMutableData *signatureData = [NSMutableData dataWithLength:CC_SHA512_DIGEST_LENGTH];
+        CCHmac(kCCHmacAlgSHA512, keyData.bytes, keyData.length, encData.bytes, encData.length, signatureData.mutableBytes);
+        encryptionKey = [signatureData.description stringByReplacingOccurrencesOfString:@" " withString:@""];
+        encryptionKey = [encryptionKey stringByReplacingOccurrencesOfString:@"<" withString:@""];
+        encryptionKey = [encryptionKey stringByReplacingOccurrencesOfString:@">" withString:@""];
+    });
+    
+    return encryptionKey;
+}
+
 NSData *encryptData(NSData *data, NSError * __autoreleasing *error)
 {
-    if (@available(iOS 10.0, *)) {
-        NSString *domain = @"ru.danpashin.coloredvk2.licence.key";
-        
-        NSDictionary *attributes = @{ (id)kSecAttrKeyType: (id)kSecAttrKeyTypeECSECPrimeRandom,
-                                      (id)kSecAttrKeySizeInBits: @521,
-                                      (id)kSecPrivateKeyAttrs: @{
-                                              (id)kSecAttrIsPermanent: @YES,
-                                              (id)kSecAttrApplicationTag: [domain dataUsingEncoding:NSUTF8StringEncoding],
-                                              },
-                                      };
-        
-        NSError *keyError = nil;
-        SecKeyRef privateKey = SecKeyCreateRandomKey((__bridge CFDictionaryRef)attributes, (void *)&keyError);
-        SecKeyRef publicKey = SecKeyCopyPublicKey(privateKey);
-        
-        if (keyError) {
-            if (error != NULL)
-                *error = keyError;
-            
-            CFRelease(privateKey);
-            CFRelease(publicKey);
-            return nil;
-        }
-        
-        NSMutableDictionary *keyItemAttributes = [@{ (id)kSecClass : (id)kSecClassKey,
-                                                     (id)kSecAttrKeyType : (id)kSecAttrKeyTypeRSA,
-                                                     (id)kSecAttrApplicationTag : domain,
-                                                     } mutableCopy];
-        
-        SecItemDelete((__bridge CFDictionaryRef)keyItemAttributes);
-        keyItemAttributes[(id)kSecValueRef] = (__bridge_transfer id)privateKey;
-        SecItemAdd((__bridge CFDictionaryRef)keyItemAttributes, nil);
-        
-        NSError *encryptionError = nil;
-        CFDataRef encrypted = SecKeyCreateEncryptedData(publicKey, kSecKeyAlgorithmECIESEncryptionStandardX963SHA1AESGCM, 
-                                                        (__bridge CFDataRef)data, (void *)&encryptionError);
-        CFRelease(publicKey);
-        
-        if (encryptionError) {
-            if (encrypted)
-                CFRelease(encrypted);
-            if (error != NULL)
-                *error = encryptionError;
-            return nil;
-        } else {
-            return (__bridge_transfer NSData *)encrypted;
-        }
-    } else {
-        return performLegacyCrypt(kCCEncrypt, data, kColoredVKLicenceKey);
-    }
-    
+    return performLegacyCrypt(kCCEncrypt, data, encryptionKey());    
 }
 
 NSData *decryptData(NSData *data, NSError * __autoreleasing *error)
 {
-    if (@available(iOS 10.0, *)) {
-        NSString *domain = @"ru.danpashin.coloredvk2.licence.key";
-        
-        NSDictionary *queryItemAttributes = @{ (id)kSecClass : (id)kSecClassKey,
-                                               (id)kSecAttrKeyType : (id)kSecAttrKeyTypeRSA,
-                                               (id)kSecAttrApplicationTag : domain,
-                                               (id)kSecReturnData : @YES
-                                               };
-        CFTypeRef item = nil;
-        OSStatus queryStatus = SecItemCopyMatching((__bridge CFDictionaryRef)queryItemAttributes, &item);
-        
-        if (queryStatus != noErr || !item) {
-            if (error != NULL)
-                *error = [NSError errorWithDomain:@"" code:1001 userInfo:@{NSLocalizedDescriptionKey: @"Cannot get key from."}];
-            
-            return nil;
-        }
-        
-        NSDictionary *keyAttributes = @{ (id)kSecAttrKeyType: (id)kSecAttrKeyTypeECSECPrimeRandom,
-                                         (id)kSecAttrKeyClass : (id)kSecAttrKeyClassPrivate,
-                                         (id)kSecAttrKeySizeInBits: @521,
-                                         (id)kSecPrivateKeyAttrs: @{
-                                                 (id)kSecAttrIsPermanent: @YES,
-                                                 (id)kSecAttrApplicationTag: [domain dataUsingEncoding:NSUTF8StringEncoding]
-                                                 }
-                                         };
-        NSError *keyError = nil;
-        SecKeyRef privateKey = SecKeyCreateWithData(item, (__bridge CFDictionaryRef)keyAttributes, (void *)&keyError);
-        
-        if (keyError) {
-            CFRelease(privateKey);
-            if (error != NULL)
-                *error = [NSError errorWithDomain:@"" code:1002 userInfo:@{NSLocalizedDescriptionKey: @"Cannot generate key."}];
-            return nil;
-        }
-        
-        NSError *decryptionError = nil;
-        CFDataRef decrypted = SecKeyCreateDecryptedData(privateKey, kSecKeyAlgorithmECIESEncryptionStandardX963SHA1AESGCM, 
-                                                        (__bridge CFDataRef)data, (void *)&decryptionError);
-        CFRelease(privateKey);
-        
-        if (decryptionError) {
-            if (error != NULL)
-                *error = decryptionError;
-            if (decrypted)
-                CFRelease(decrypted);
-            return nil;
-        } else {
-            return (__bridge_transfer NSData *)decrypted;
-        }
-    } else {
-        return performLegacyCrypt(kCCDecrypt, data, kColoredVKLicenceKey);
-    }
-}
-
-NSData *reencryptData(NSData *data)
-{
-    NSData *rawData = performLegacyCrypt(kCCDecrypt, data, kColoredVKServerKey);
-    if (rawData) {
-        return encryptData(rawData, nil);
-    }
-    return data;
+    return performLegacyCrypt(kCCDecrypt, data, encryptionKey());
 }

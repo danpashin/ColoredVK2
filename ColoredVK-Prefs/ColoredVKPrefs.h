@@ -15,15 +15,11 @@
 
 @interface ColoredVKPrefs : PSListController <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 
-@property (nonatomic, readonly) NSString *tweakVersion;
-@property (nonatomic, readonly) NSString *vkAppVersion;
-@property (assign, nonatomic, readonly) BOOL app_is_vk;
-
 @property (weak, nonatomic) ColoredVKNightThemeColorScheme *nightThemeColorScheme;
 
-@property (strong, nonatomic, readonly) NSString *prefsPath;
+@property (nonatomic, readonly) NSString *vkAppVersion;
+@property (assign, nonatomic, readonly) BOOL app_is_vk;
 @property (strong, nonatomic, readonly) NSBundle *cvkBundle;
-@property (strong, nonatomic, readonly) NSString *cvkFolder;
 
 @property (weak, nonatomic) UITableView *prefsTableView;
 

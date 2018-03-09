@@ -84,6 +84,26 @@
     self.tableView.parallaxHeader.minimumHeight = 64.0f;
     self.tableView.separatorColor = [UIColor clearColor];
     
+    if ([ColoredVKNewInstaller sharedInstaller].jailed) {
+        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.view.frame), 64.0f)];
+        
+        UIView *contentView = [[UIView alloc] initWithFrame:headerView.bounds];
+        if ([ColoredVKNewInstaller sharedInstaller].shouldOpenPrefs)
+            contentView.backgroundColor = [UIColor colorWithRed:38/255.0f green:166/255.0f blue:91/255.0f alpha:1.0f];
+        else
+            contentView.backgroundColor = [UIColor colorWithRed:248/255.0f green:148/255.0f blue:6/255.0f alpha:1.0f];
+        [headerView addSubview:contentView];
+        
+        contentView.translatesAutoresizingMaskIntoConstraints = NO;
+        [contentView.heightAnchor constraintEqualToConstant:64.0f].active = YES;
+        [contentView.topAnchor constraintEqualToAnchor:headerView.topAnchor constant:8.0f].active = YES;
+        [contentView.leadingAnchor constraintEqualToAnchor:headerView.leadingAnchor constant:8.0f].active = YES;
+        [contentView.trailingAnchor constraintEqualToAnchor:headerView.trailingAnchor constant:-8.0f].active = YES;
+        
+        
+        self.tableView.tableHeaderView = headerView;
+    }
+    
     self.loginCell.textLabel.text = CVKLocalizedStringInBundle(@"LOG_INTO_YOUR_ACCOUNT", self.cvkBundle);
     self.registerCell.textLabel.text = CVKLocalizedStringInBundle(@"REGISTER", self.cvkBundle);
     self.statusCell.textLabel.text = CVKLocalizedStringInBundle(@"ACCOUNT_STATUS", self.cvkBundle);
@@ -307,7 +327,7 @@
     };
     
     updateBlock();
-    [newInstaller updateAccountInfo:updateBlock];
+    [newInstaller.user updateAccountInfo:updateBlock];
 }
 
 - (void)actionSignIn
@@ -337,7 +357,7 @@
     [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedStringInBundle(@"LOG_OUT_OF_ACCOUNT_ALERT", self.cvkBundle)
                                                         style:UIAlertActionStyleDestructive 
                                                       handler:^(UIAlertAction * _Nonnull action) {
-                                                          [[ColoredVKNewInstaller sharedInstaller] logoutWithСompletionBlock:^{
+                                                          [[ColoredVKNewInstaller sharedInstaller].user logoutWithСompletionBlock:^{
                                                               [weakSelf updateAccountInfo];
                                                           }];
                                                       }]];
