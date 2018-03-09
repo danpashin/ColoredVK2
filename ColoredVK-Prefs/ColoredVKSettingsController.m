@@ -241,4 +241,5 @@
         navBar.titleTextAttributes = navBar.titleTextAttributes;
     });
 }
+
 @end

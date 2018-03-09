@@ -8,7 +8,9 @@
 #import <UIKit/UIKit.h>
 
 @interface UIViewController ()
+
 @property (assign, nonatomic, readonly) BOOL controllerShouldPop;
+
 @end
 
 @interface ColoredVKNavigationController : UINavigationController

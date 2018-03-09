@@ -9,4 +9,5 @@
 #import "ColoredVKPrefs.h"
 
 @interface ColoredVKMainPrefsController : ColoredVKPrefs
+
 @end

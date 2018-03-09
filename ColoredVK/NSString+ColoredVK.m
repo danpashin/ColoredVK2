@@ -37,11 +37,12 @@
     return  [UIColor colorWithRed:red/255.0 green:green/255.0 blue:blue/255.0 alpha:1.0];
 }
 
-- (BOOL)isHexColor
+- (BOOL)hexColor
 {
     NSString *expression = @"(?:#)?(?:[0-9A-Fa-f]{2}){3}";
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", expression];
     
     return [predicate evaluateWithObject:self];
 }
+
 @end

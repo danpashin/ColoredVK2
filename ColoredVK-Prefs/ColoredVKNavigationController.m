@@ -27,19 +27,22 @@
     return UIStatusBarStyleLightContent;
 }
 
-- (instancetype)init
+- (instancetype)initWithNibName:(nullable NSString *)nibNameOrNil bundle:(nullable NSBundle *)nibBundleOrNil
 {
-    self = [super init];
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         [self commonSetup];
     }
     return self;
 }
 
-- (void)awakeFromNib
+- (nullable instancetype)initWithCoder:(NSCoder *)aDecoder
 {
-    [super awakeFromNib];
-    [self commonSetup];
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self commonSetup];
+    }
+    return self;
 }
 
 - (void)commonSetup

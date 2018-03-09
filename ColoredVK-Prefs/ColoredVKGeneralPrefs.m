@@ -277,4 +277,5 @@
 {
     [[ColoredVKSettingsController new] actionBackup];
 }
+
 @end

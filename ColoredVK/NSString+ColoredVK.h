@@ -10,8 +10,10 @@
 #import <Foundation/Foundation.h>
 
 @interface NSString (ColoredVK)
-@property (nonatomic, readonly, copy) UIColor *colorValue;
-@property (nonatomic, readonly, copy) UIColor *rgbColorValue;
-@property (nonatomic, readonly, copy) UIColor *hexColorValue;
-@property (nonatomic, getter=isHexColor, readonly) BOOL hexColor;
+
+@property (copy, nonatomic, readonly) UIColor *colorValue;
+@property (copy, nonatomic, readonly) UIColor *rgbColorValue;
+@property (copy, nonatomic, readonly) UIColor *hexColorValue;
+@property (assign, nonatomic, readonly) BOOL hexColor;
+
 @end

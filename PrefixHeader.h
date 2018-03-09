@@ -70,8 +70,9 @@ static NSString * _Nullable const kPackageFaqLink = @"https://danpashin.ru/proje
 static NSString * _Nullable const kPackagePurchaseLink = @"https://danpashin.ru/projects/coloredvk/purchase/";
 
 
-#if !defined(COMPILE_FOR_JAIL) && !defined(COMPILE_APP)
+//#if !defined(COMPILE_FOR_JAIL) && !defined(COMPILE_APP)
 #define kPackageVersion [kPackageRawVersion stringByAppendingString:@"-theux"]
-#else
-#define kPackageVersion kPackageRawVersion
-#endif
+//#else
+//#define kPackageVersion kPackageRawVersion
+//#endif
+
