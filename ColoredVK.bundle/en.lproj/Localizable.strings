@@ -20,7 +20,7 @@
 "UPADTE_BUTTON_TITLE" = "Update now";
 "NO_UPDATES_FOUND_BUTTON_TITLE" = "You have the latest version.";
 
-"TWEAK_FOOTER_TEXT" = "Tweak version: %@\nVK App version: %@";
+"TWEAK_FOOTER_TEXT" = "iOS version: %@\nTweak version: %@\nVK App version: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Error loading tweak files.\nCheck their availability or contact developer.";
 "UNKNOWN" = "Unknown";
 
@@ -80,7 +80,7 @@
 
 "PASSWORD_WARNING" = "The password must contain only letters and numbers and must be at least 8 characters.";
 
-    // Экран аккаунта
+// Экран аккаунта
 "LOG_INTO_YOUR_ACCOUNT" = "Log into your account";
 "REGISTER" = "Register";
 "ACCOUNT_STATUS" = "Account status";
@@ -88,14 +88,12 @@
 "CHANGE_PASSWORD" = "Change password";
 "LOG_OUT_OF_ACCOUNT" = "Log out";
 "LOG_OUT_OF_ACCOUNT_ALERT" = "Log out";
-//"FREE" = "Free";
-//"PREMIUM" = "Premium";
 "SECURITY_SETTINGS" = "Security settings";
 "NO_ACCOUNT_QUESTION" = "No account?";
 
 "PASSWORD" = "Password";
 
-    // О статусах аккаунта
+// О статусах аккаунта
 "YOUR_STATUS" = "Your status";
 "FREE" = "Free";
 "MORE_ABOUT_FREE_ACCOUNT" = "Free account has some limited functionality. It has following features:\n\n●  Change colors of navigation bar and toolbar\n●  Change tabbar (only for VK App 3.0 and higher)\n●  Full change of the main menu\n●  Full change of the messages section";
@@ -103,7 +101,12 @@
 "MORE_ABOUT_PREMIUM_ACCOUNT" = "Premium account, unlike free, opens the full functionality of the add-on. It additionally adds:\n\n● Night theme (2 preinstalled on your choise + one custom)\n● Change of other sections (groups, settings, etc.)\n● Change colors of status bar, switches and other small items\n● Backing up and restoring settings";
 "BUY_PREMIUM" = "Purchase Premium";
 
-    //  Метки доступа
+"ACTIVATED_VIA_BIGBOSS" = "Your copy of ColoredVK 2 is activated via BigBoss digital licence! Authorization or other actions are not required.";
+"CANNOT_GET_JAIL_PURCHASE_INFO" = "Cannot get purchase information. Tap to view the details.";
+"CANNOT_GET_JAIL_PURCHASE_INFO_DETAIL" = "Unfortunately, this copy of the tweak cannot be activated automatically. This is most likely due to the fact that the tweak was installed from a third-party repository. In this case, reinstall it from the official BigBoss repository.\n\nIf you have a jailbreak that is different from doubleH3lix, maybe going to this section from the 'Settings' app will solve the problem.\n\nIf you purchased an account, just log in, and this warning will disappear.";
+
+
+//  Метки доступа
 "RESET_COLOR" = "Reset color?";
 "SHOW_HIDE_PASSWORD" = "Show or hide password";
 

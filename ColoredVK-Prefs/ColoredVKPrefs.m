@@ -134,7 +134,6 @@
     return prefs[specifier.properties[@"key"]];
 }
 
-
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
 {
     NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
@@ -250,6 +249,10 @@
     return [[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"];
 }
 
+- (BOOL)edgeToEdgeCells
+{
+    return YES;
+}
 
 #pragma mark -
 #pragma mark UITableViewDelegate

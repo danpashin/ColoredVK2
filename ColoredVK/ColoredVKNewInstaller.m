@@ -98,63 +98,63 @@ NSString *key;
 
 - (void)checkStatus
 {
+#define writeFreeLicenceAndReturn \
+[self writeFreeLicence];\
+return;
+    
     if (![[NSFileManager defaultManager] fileExistsAtPath:kDRMLicencePath]) {
-        [self writeFreeLicence];
+        writeFreeLicenceAndReturn
+    }
+ 
+    NSData *decryptedData = decryptData([NSData dataWithContentsOfFile:kDRMLicencePath], nil);
+    NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
+    
+    if (![dict isKindOfClass:[NSDictionary class]] || (dict.allKeys.count == 0)) {
+        writeFreeLicenceAndReturn
+    }
+    
+#ifndef COMPILE_APP
+    if (![dict[@"Device"] isEqualToString:self.deviceModel]) {
+        writeFreeLicenceAndReturn
+    }
+#endif
+        
+    if ([dict[@"jailed"] boolValue]) {
+        _jailed = YES;
+        NSString *licenceUdid = dict[@"udid"];
+        NSString *deviceUdid = CFBridgingRelease(MGCopyAnswer(kMGUniqueDeviceID));
+        deviceUdid = @"";
+        
+        if ((licenceUdid.length < 40) || ((deviceUdid.length >= 40) && ![licenceUdid isEqualToString:deviceUdid])) {
+            writeFreeLicenceAndReturn
+        }
+        
+        if ([dict[@"purchased"] boolValue]) {
+            _shouldOpenPrefs = YES;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
+            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), 
+                                                 CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+            if (installerCompletionBlock)
+                installerCompletionBlock(YES);
+        }
+        
     } else {
-        NSData *decryptedData = decryptData([NSData dataWithContentsOfFile:kDRMLicencePath], nil);
-        NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
-        if ([dict isKindOfClass:[NSDictionary class]] && (dict.allKeys.count>0)) {
-            if (dict[@"Device"]) {
-#ifndef COMPILE_APP
-                if (![dict[@"Device"] isEqualToString:self.deviceModel]) {
-                    [self writeFreeLicence];
-                } else {
-#endif
-                    if ([dict[@"jailed"] boolValue]) {
-                        _jailed = YES;
-                        if ([dict[@"udid"] isEqualToString:CFBridgingRelease(MGCopyAnswer(kMGUniqueDeviceID))]) {
-                            if ([dict[@"purchased"] boolValue]) {
-                                NSLog(@"PASS!!!");
-                                _shouldOpenPrefs = YES;
-                                [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
-                                CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), 
-                                                                     CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-                                if (installerCompletionBlock)
-                                    installerCompletionBlock(YES);
-                            } else {
-                                NSLog(@"Jailed but not purchased");
-                            }
-                        } else {
-                            NSLog(@"udids not valid");
-                            [self writeFreeLicence];
-                        }
-                    } else {
-                        NSLog(@"passing jail check");
-                        self.user.name = dict[@"Login"];
-                        self.user.userID = dict[@"user_id"];
-                        self.user.accessToken = dict[@"token"];
-                        self.user.email = dict[@"email"];
-                        if (self.user.name.length > 0) {
-                            self.user.authenticated = YES;
-                        }
-                        BOOL purchased = [dict[@"purchased"] boolValue];
-                        if (purchased) {
-                            self.user.accountStatus = ColoredVKUserAccountStatusPaid;
-                            
-                            if (installerCompletionBlock)
-                                installerCompletionBlock(YES);
-                        }
-                    }
-#ifndef COMPILE_APP
-                }
-#endif
-            } else {
-                [self writeFreeLicence];
-            }
-        } else {
-            [self writeFreeLicence];
+        self.user.name = dict[@"Login"];
+        self.user.userID = dict[@"user_id"];
+        self.user.accessToken = dict[@"token"];
+        self.user.email = dict[@"email"];
+        if (self.user.name.length > 0) {
+            self.user.authenticated = YES;
+        }
+        BOOL purchased = [dict[@"purchased"] boolValue];
+        if (purchased) {
+            self.user.accountStatus = ColoredVKUserAccountStatusPaid;
+            
+            if (installerCompletionBlock)
+                installerCompletionBlock(YES);
         }
     }
+#undef writeFreeLicenceAndReturn
 }
 
 - (void)showAlertWithTitle:(NSString *)title text:(NSString *)text buttons:(NSArray <__kindof UIAlertAction *> *)buttons
@@ -222,14 +222,14 @@ NSString *key;
 - (void)writeFreeLicence
 {
     [self.user clearUser];
-    
     NSString *udid = CFBridgingRelease(MGCopyAnswer(kMGUniqueDeviceID));
     
-    NSDictionary *dict = @{@"purchased":@NO, @"Device":self.deviceModel, @"jailed":(udid.length > 20) ? @YES : @NO, @"udid":udid};
+    NSDictionary *dict = @{@"purchased" : @NO, @"Device" : self.deviceModel, 
+                           @"jailed" : (udid.length >= 40) ? @YES : @NO, @"udid" : (udid.length >= 40) ? udid : @"" };
     NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
     [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
     
-    if (udid.length > 20) {
+    if (udid.length >= 40) {
         _jailed = YES;
         [self downloadJBLicence];
     }
@@ -238,6 +238,9 @@ NSString *key;
 - (void)downloadJBLicence
 {
     NSString *udid = CFBridgingRelease(MGCopyAnswer(kMGUniqueDeviceID));
+    if (udid.length < 40)
+        return;
+    
     NSDictionary *params = @{@"udid": legacyEncryptServerString(udid), @"package":legacyEncryptServerString(kDRMPackage), 
                              @"version":kPackageRawVersion, @"key": key};
     [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:params 
@@ -262,7 +265,6 @@ NSString *key;
                                                           if (installerCompletionBlock) 
                                                               installerCompletionBlock(YES);
                                                       }
-                                                      
                                                   }
                                               } failure:nil];
 }

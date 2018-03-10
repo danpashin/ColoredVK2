@@ -18,8 +18,6 @@ typedef NS_ENUM(NSUInteger, ColoredVKUserAccountStatus)
 
 @interface ColoredVKUserModel : NSObject
 
-@property (weak, nonatomic) ColoredVKNewInstaller *weakNewInstaller;
-
 @property (assign, nonatomic) ColoredVKUserAccountStatus accountStatus;
 @property (assign, nonatomic) BOOL authenticated;
 

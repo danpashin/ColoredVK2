@@ -61,7 +61,7 @@
 
 static NSString * _Nullable const kPackageIdentifier = @"com.daniilpashin.coloredvk2";
 static NSString * _Nullable const kPackageName = @"ColoredVK 2";
-static NSString * _Nullable const kPackageRawVersion = @"4.3.2";
+static NSString * _Nullable const kPackageRawVersion = @"4.3.3";
 
 static NSString * _Nullable const kPackageAPIURL = @"https://api.danpashin.ru/v1.2";
 static NSString * _Nullable const kPackageDevLink = @"https://vk.com/danpashin";

@@ -9,18 +9,24 @@
 #import "ColoredVKAccountController.h"
 
 #import "PrefixHeader.h"
+#import "ColoredVKNewInstaller.h"
+#import "ColoredVKNightThemeColorScheme.h"
+
+#import <SafariServices/SafariServices.h>
+#import <objc/runtime.h>
+#import <MXParallaxHeader.h>
+
+#import "ColoredVKAnimatedButton.h"
 #import "ColoredVKUserInfoView.h"
 #import "UITableViewCell+ColoredVK.h"
-#import "ColoredVKPassChangeController.h"
-#import "ColoredVKNewInstaller.h"
-#import "ColoredVKAuthPageController.h"
-#import <SafariServices/SafariServices.h>
-#import <MXParallaxHeader.h>
+
+
 #import "ColoredVKNavigationController.h"
+#import "ColoredVKPassChangeController.h"
+#import "ColoredVKAuthPageController.h"
+
 #import "ColoredVKAlertController.h"
 #import "ColoredVKCardController.h"
-#import "ColoredVKNightThemeColorScheme.h"
-#import <objc/runtime.h>
 
 
 @interface UINavigationBar ()
@@ -84,25 +90,7 @@
     self.tableView.parallaxHeader.minimumHeight = 64.0f;
     self.tableView.separatorColor = [UIColor clearColor];
     
-    if ([ColoredVKNewInstaller sharedInstaller].jailed) {
-        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.view.frame), 64.0f)];
-        
-        UIView *contentView = [[UIView alloc] initWithFrame:headerView.bounds];
-        if ([ColoredVKNewInstaller sharedInstaller].shouldOpenPrefs)
-            contentView.backgroundColor = [UIColor colorWithRed:38/255.0f green:166/255.0f blue:91/255.0f alpha:1.0f];
-        else
-            contentView.backgroundColor = [UIColor colorWithRed:248/255.0f green:148/255.0f blue:6/255.0f alpha:1.0f];
-        [headerView addSubview:contentView];
-        
-        contentView.translatesAutoresizingMaskIntoConstraints = NO;
-        [contentView.heightAnchor constraintEqualToConstant:64.0f].active = YES;
-        [contentView.topAnchor constraintEqualToAnchor:headerView.topAnchor constant:8.0f].active = YES;
-        [contentView.leadingAnchor constraintEqualToAnchor:headerView.leadingAnchor constant:8.0f].active = YES;
-        [contentView.trailingAnchor constraintEqualToAnchor:headerView.trailingAnchor constant:-8.0f].active = YES;
-        
-        
-        self.tableView.tableHeaderView = headerView;
-    }
+    [self updateJailHeaderView];
     
     self.loginCell.textLabel.text = CVKLocalizedStringInBundle(@"LOG_INTO_YOUR_ACCOUNT", self.cvkBundle);
     self.registerCell.textLabel.text = CVKLocalizedStringInBundle(@"REGISTER", self.cvkBundle);
@@ -310,6 +298,7 @@
     ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     void (^updateBlock)(void) = ^{
         dispatch_async(dispatch_get_main_queue(), ^{
+            [self updateJailHeaderView];
             self.user = newInstaller.user;
             if (newInstaller.vkUserID) {
                 [self.infoHeaderView loadVKAvatarForUserID:newInstaller.vkUserID];
@@ -328,6 +317,52 @@
     
     updateBlock();
     [newInstaller.user updateAccountInfo:updateBlock];
+}
+
+- (void)updateJailHeaderView
+{
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
+    if (newInstaller.jailed && !newInstaller.user.authenticated) {
+        if (self.tableView.tableHeaderView.tag == 1244)
+            return;
+        
+        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.view.frame), 80.0f)];
+        headerView.tag = 1244;
+        
+        CGRect buttonFrame = CGRectMake(10, 10, CGRectGetWidth(headerView.bounds)-20, CGRectGetHeight(headerView.bounds));
+        ColoredVKAnimatedButton *button = [[ColoredVKAnimatedButton alloc] initWithFrame:buttonFrame];
+        button.layer.cornerRadius = 10.0f;
+        [headerView addSubview:button];
+        
+        if (newInstaller.shouldOpenPrefs) {
+            button.tintColor = self.infoHeaderView.backgroundColor;
+            button.text = CVKLocalizedStringInBundle(@"ACTIVATED_VIA_BIGBOSS", self.cvkBundle);
+        } else {
+            button.tintColor = [UIColor colorWithRed:235/255.0f green:149/255.0f blue:50/255.0f alpha:1.0f];
+            button.text = CVKLocalizedStringInBundle(@"CANNOT_GET_JAIL_PURCHASE_INFO", self.cvkBundle);;
+            
+            __weak typeof(UIViewController *) weakRootController = [UIApplication sharedApplication].keyWindow.rootViewController;
+            __weak typeof(self) weakSelf = self;
+            button.selectHandler = ^{
+                NSString *errorText = CVKLocalizedStringInBundle(@"CANNOT_GET_JAIL_PURCHASE_INFO_DETAIL", weakSelf.cvkBundle);
+                ColoredVKAlertController *alert = [ColoredVKAlertController alertControllerWithTitle:@"" message:errorText 
+                                                                                      preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel 
+                                                        handler:^(UIAlertAction *action) {}]];
+                [alert presentFromController:weakRootController];
+            };
+        }
+        
+        button.translatesAutoresizingMaskIntoConstraints = NO;
+        [button.topAnchor constraintEqualToAnchor:headerView.topAnchor constant:28.0f].active = YES;
+        [button.bottomAnchor constraintEqualToAnchor:headerView.bottomAnchor constant:8.0f].active = YES;
+        [button.leadingAnchor constraintEqualToAnchor:headerView.leadingAnchor constant:8.0f].active = YES;
+        [button.trailingAnchor constraintEqualToAnchor:headerView.trailingAnchor constant:-8.0f].active = YES;
+        
+        self.tableView.tableHeaderView = headerView;
+    } else {
+        self.tableView.tableHeaderView = nil;
+    }
 }
 
 - (void)actionSignIn
