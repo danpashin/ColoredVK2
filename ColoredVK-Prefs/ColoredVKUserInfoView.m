@@ -126,7 +126,7 @@
                                                                           parameters:params error:&requestError];
     if (!requestError) {
         [request setValue:@"VK" forHTTPHeaderField:@"User-Agent"];
-        [newInstaller.networkController sendRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData) {
+        [newInstaller.networkController sendRequest:request success:^(NSURLRequest *blockRequest, NSHTTPURLResponse *response, NSData *rawData) {
             NSDictionary *json = [NSJSONSerialization JSONObjectWithData:rawData options:0 error:nil];
             if ([json isKindOfClass:[NSDictionary class]]) {
                 NSArray *array = json[@"response"];

@@ -30,7 +30,7 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
         
         UIView *borderView = [UIView new];
         borderView.backgroundColor = [UIColor whiteColor];
-        borderView.alpha = 0.15;
+        borderView.alpha = 0.15f;
         [blurEffectView.contentView addSubview:borderView];
         
         NSString *verticalFormat = @"";
@@ -44,7 +44,7 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
                 navbar.shadowImage = [UIImage new];
                 
                 blurEffectView.frame = backgroundView.bounds;
-                borderView.frame = CGRectMake(0, blurEffectView.frame.size.height - 0.5, blurEffectView.frame.size.width, 0.5);
+                borderView.frame = CGRectMake(0.0f, blurEffectView.frame.size.height - 0.5f, blurEffectView.frame.size.width, 0.5f);
                 
                 [backgroundView addSubview:blurEffectView];
                 [backgroundView sendSubviewToBack:blurEffectView];
@@ -185,7 +185,8 @@ void setToolBar(UIToolbar *toolbar)
                             [btn setTitleColor:toolBarForegroundColor forState:UIControlStateNormal];
                             BOOL btnToExclude = NO;
                             NSMutableArray <NSString *> *btnsWithActionsToExclude = [NSMutableArray arrayWithObject:@"actionToggleEmoji:"];
-                            if ([cvkMainController compareAppVersionWithVersion:@"3.0"] >= 0) {
+                            ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
+                            if (compareResult >= 0) {
                                 [btnsWithActionsToExclude addObject:@"send:"];
                                 [btnsWithActionsToExclude addObject:@"actionSendInline:"];
                             }
@@ -250,14 +251,19 @@ void setupCellForSearchController(UITableViewCell *cell, UISearchDisplayControll
         } else if ([cell isKindOfClass:NSClassFromString(@"NewDialogCell")]) {
             NewDialogCell *dialogCell = (NewDialogCell *)cell;
             dialogCell.backgroundView = nil;
-            if (!dialogCell.dialog.head.read_state && dialogCell.unread.hidden) dialogCell.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
-            else dialogCell.contentView.backgroundColor = UITableViewCellBackgroundColor;
+            if (!dialogCell.dialog.head.read_state && dialogCell.unread.hidden)
+                dialogCell.contentView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.2f];
+            else
+                dialogCell.contentView.backgroundColor = UITableViewCellBackgroundColor;
             
             dialogCell.name.textColor = UITableViewCellTextColor;
             dialogCell.time.textColor = UITableViewCellTextColor;
-            if ([dialogCell respondsToSelector:@selector(dialogText)]) dialogCell.dialogText.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
-            if ([dialogCell respondsToSelector:@selector(text)]) dialogCell.text.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
-            dialogCell.attach.textColor = [UIColor colorWithWhite:0.95 alpha:0.9];
+            dialogCell.attach.textColor = [UIColor colorWithWhite:0.95f alpha:0.9f];
+            if ([dialogCell respondsToSelector:@selector(dialogText)])
+                dialogCell.dialogText.textColor = [UIColor colorWithWhite:0.95f alpha:0.9f];
+            if ([dialogCell respondsToSelector:@selector(text)])
+                dialogCell.text.textColor = [UIColor colorWithWhite:0.95f alpha:0.9f];
+            
         } else if ([cell isKindOfClass:NSClassFromString(@"GroupCell")]) {
             GroupCell *groupCell = (GroupCell *)cell;
             groupCell.name.textColor = UITableViewCellTextColor;
@@ -280,7 +286,7 @@ void setupCellForSearchController(UITableViewCell *cell, UISearchDisplayControll
         }
         
         UIView *backView = [UIView new];
-        backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
+        backView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.3f];
         cell.selectedBackgroundView = backView;
     }
 }
@@ -322,9 +328,9 @@ void setupSearchController(UISearchDisplayController *controller, BOOL reset)
             void (^removeAllBlur)(void) = ^void() {
                 [[controller.searchBar._backgroundView viewWithTag:10] removeFromSuperview];
                 [[controller.searchBar._scopeBarBackgroundView.superview viewWithTag:10] removeFromSuperview];
-                controller.searchBar.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+                controller.searchBar.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.1f];
             };
-            [UIView animateWithDuration:0.1 delay:0 options:0 animations:^{ removeAllBlur(); } completion:^(BOOL finished) { removeAllBlur(); }];
+            [UIView animateWithDuration:0.1f delay:0.0f options:0.0f animations:^{ removeAllBlur(); } completion:^(BOOL finished) { removeAllBlur(); }];
         } else {
             controller.searchResultsTableView.tag = 21;
             UIViewController *parentController = controller.searchContentsController.parentViewController;
@@ -406,7 +412,7 @@ void performInitialCellSetup(UITableViewCell *cell)
     cell.contentView.backgroundColor = [UIColor clearColor];
     
     UIView *backView = [UIView new];
-    backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
+    backView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.2f];
     cell.selectedBackgroundView = backView;
 }
 
@@ -463,7 +469,7 @@ void setupUISearchBar(UISearchBar *searchBar)
             if (![barBackground.subviews containsObject: [barBackground viewWithTag:102] ]) [barBackground addSubview:blurForView(barBackground, 102)];
         } else if (menuSelectionStyle == CVKCellSelectionStyleTransparent) {
             if ([barBackground.subviews containsObject: [barBackground viewWithTag:102]]) [[barBackground viewWithTag:102] removeFromSuperview];
-            searchBar.backgroundColor = [UIColor colorWithWhite:1 alpha:0.2];
+            searchBar.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.2f];
         } else {
             if ([barBackground.subviews containsObject: [barBackground viewWithTag:102]]) [[barBackground viewWithTag:102] removeFromSuperview];
             searchBar.backgroundColor = [UIColor clearColor];
@@ -473,7 +479,7 @@ void setupUISearchBar(UISearchBar *searchBar)
         UITextField *barTextField = subviews.subviews[1];
         if ([barTextField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
             barTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:barTextField.placeholder  
-                                                                                 attributes:@{NSForegroundColorAttributeName:changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1 alpha:0.5]}];
+                                                                                 attributes:@{NSForegroundColorAttributeName:changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1 alpha:0.5f]}];
         }
     });
 }
@@ -553,7 +559,7 @@ void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *table
         setColors();
         
         if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
-            view.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+            view.contentView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.1f];
         }
     } else if (tableView.tag == 24) {
         setColors();
@@ -853,7 +859,7 @@ void setupNewSearchBar(VKSearchBar *searchBar, UIColor *tintColor, UIColor *blur
     searchBar.placeholderLabel.textColor = tintColor;
     searchBar.textField.textColor = tintColor;
     searchBar.textField.tintColor = tintColor;
-    searchBar.textFieldBackground.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+    searchBar.textFieldBackground.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.1f];
     searchBar.separator.hidden = YES;
     searchBar.segmentedControl.layer.borderColor = tintColor.CGColor;
 }

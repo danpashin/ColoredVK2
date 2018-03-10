@@ -28,15 +28,15 @@
         
         NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         
-        CGFloat size = 32;
+        CGFloat size = 32.0f;
         UIImage *deleteImage = [UIImage imageNamed:@"DeleteIcon" inBundle:cvkBundle compatibleWithTraitCollection:nil];
         
         _deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _deleteButton.frame = CGRectMake(0, 0, size, size);
         [_deleteButton setImage:deleteImage forState:UIControlStateNormal];
         [_deleteButton addTarget:self action:@selector(actionDeleteColor) forControlEvents:UIControlEventTouchUpInside];
-        _deleteButton.alpha = 0.5;
-        _deleteButton.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(5, 8, size/1.5, size/1.5) cornerRadius:size/2].CGPath;
+        _deleteButton.alpha = 0.5f;
+        _deleteButton.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(5.0f, 8.0f, size/1.5f, size/1.5f) cornerRadius:size/2].CGPath;
         _deleteButton.layer.shadowOpacity = 0.2f;
         _deleteButton.layer.shadowRadius = 2.0f;
         [self.contentView addSubview:_deleteButton];

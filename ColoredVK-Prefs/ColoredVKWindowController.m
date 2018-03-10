@@ -111,12 +111,12 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [UIView animateWithDuration:self.animationDuration delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
             self.window.alpha = 0;
-        } completion:^(BOOL finished) {
+        } completion:^(BOOL firstFinished) {
             self.isPresented = NO;
             
             [UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
                 [self setNeedsStatusBarAppearanceUpdate];
-            } completion:^(BOOL finished) {
+            } completion:^(BOOL secondFinished) {
                 self.window.hidden = YES;
                 self->_window = nil;
             }];
@@ -141,7 +141,7 @@
         ((UIVisualEffectView *)_backgroundView).effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
     } else if (self.backgroundStyle == ColoredVKWindowBackgroundStyleDarkened) {
         _backgroundView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        _backgroundView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
+        _backgroundView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.4f];
     } else if (self.backgroundStyle == ColoredVKWindowBackgroundStyleCustom) {
         _backgroundView = backgroundView;
     }

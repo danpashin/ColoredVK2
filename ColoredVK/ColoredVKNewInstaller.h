@@ -20,8 +20,11 @@ FOUNDATION_EXPORT void(^installerCompletionBlock)(BOOL purchased);
 @property (strong, nonatomic, readonly) ColoredVKUserModel *user;
 @property (strong, nonatomic, readonly) ColoredVKApplicationModel *application;
 
+@property (copy, nonatomic, readonly) NSString *deviceModel;
+
 @property (strong, nonatomic) NSNumber *vkUserID;
 @property (copy, nonatomic, readonly) NSString *sellerName;
+
 @property (assign, nonatomic, readonly) BOOL jailed;
 @property (assign, nonatomic, readonly) BOOL shouldOpenPrefs;
 

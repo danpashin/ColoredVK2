@@ -8,7 +8,6 @@
 
 #import "ColoredVKMainController.h"
 #import "Tweak.h"
-#import <sys/utsname.h>
 #import "UIGestureRecognizer+BlocksKit.h"
 #import "ColoredVKNewInstaller.h"
 
@@ -71,7 +70,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         cell.selectedBackgroundView = backgroundView;
         
         UISwitch *switchView = [UISwitch new];
-        switchView.frame = CGRectMake([UIScreen mainScreen].bounds.size.width/1.2 - switchView.frame.size.width, (cell.contentView.frame.size.height - switchView.frame.size.height)/2, 0, 0);
+        switchView.frame = CGRectMake([UIScreen mainScreen].bounds.size.width/1.2f - switchView.frame.size.width, (cell.contentView.frame.size.height - switchView.frame.size.height)/2.0f, 0.0f, 0.0f);
         switchView.tag = 228;
         switchView.on = enabled;
         switchView.onTintColor = [UIColor defaultColorForIdentifier:@"switchesOnTintColor"];
@@ -116,7 +115,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     if (!cvkBundle.loaded) [cvkBundle load];
     UIViewController *cvkPrefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
     
-    if ([self compareAppVersionWithVersion:@"3.0"] >= 0)
+    if ([[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"] >= 0)
         withPush = YES;
     
     VKMNavContext *mainContext = [[NSClassFromString(@"VKMNavContext") applicationNavRoot] rootNavContext];
@@ -155,52 +154,15 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     }
 }
 
-- (ColoredVKVersionCompare)compareAppVersionWithVersion:(NSString *)second_version
-{
-    return [self compareVersion:self.appVersion withVersion:second_version];
-}
-
-- (ColoredVKVersionCompare)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version
-{
-    if ([first_version isEqualToString:second_version])
-        return ColoredVKVersionCompareEqual;
-    
-    NSArray *first_version_components = [first_version componentsSeparatedByString:@"."];
-    NSArray *second_version_components = [second_version componentsSeparatedByString:@"."];
-    NSInteger length = MIN(first_version_components.count, second_version_components.count);
-    
-    
-    for (int i = 0; i < length; i++) {
-        NSInteger first_component = [first_version_components[i] integerValue];
-        NSInteger second_component = [second_version_components[i] integerValue];
-        
-        if (first_component > second_component)
-            return ColoredVKVersionCompareMore;
-        
-        if (first_component < second_component)
-            return ColoredVKVersionCompareLess;
-    }
-    
-    
-    if (first_version_components.count > second_version_components.count)
-        return ColoredVKVersionCompareMore;
-    
-    if (first_version_components.count < second_version_components.count)
-        return ColoredVKVersionCompareLess;
-    
-    
-    return ColoredVKVersionCompareEqual;
-}
-
-- (NSString *)appVersion
-{
-    return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-}
-
-- (NSString *)appVersionDetailed
-{
-    return [NSString stringWithFormat:@"%@ (%@)", self.appVersion, [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
-}
+//- (NSString *)appVersion
+//{
+//    return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+//}
+//
+//- (NSString *)appVersionDetailed
+//{
+//    return [NSString stringWithFormat:@"%@ (%@)", self.appVersion, [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
+//}
 
 - (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)(void) )handler
 {
@@ -227,23 +189,21 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     
     if (!crash)
         return;
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     
-    struct utsname systemInfo;
-    uname(&systemInfo);
-    
-    NSDictionary *allInfo = @{@"vk_version":self.appVersionDetailed, @"cvk_version":kPackageVersion, @"ios_version": [UIDevice currentDevice].systemVersion, 
-                              @"device": @(systemInfo.machine), @"crash_info":crash};
+    NSDictionary *allInfo = @{@"vk_version":newInstaller.application.detailedVersion, @"cvk_version":kPackageVersion, 
+                              @"ios_version": [UIDevice currentDevice].systemVersion, 
+                              @"device": newInstaller.deviceModel, @"crash_info":crash};
     
     NSError *error = nil;
     NSData *data = [NSJSONSerialization dataWithJSONObject:allInfo options:0 error:&error];
     if (error)
         return;
     
-    ColoredVKNetworkController *networkController = [ColoredVKNewInstaller sharedInstaller].networkController;
-    [networkController uploadData:data toRemoteURL:[NSString stringWithFormat:@"%@/crash/", kPackageAPIURL]
-                          success:^(NSHTTPURLResponse *response, NSData *rawData) {
-                              [[NSFileManager defaultManager] removeItemAtPath:CVK_CRASH_PATH error:nil];
-                          } failure:nil];
+    [newInstaller.networkController uploadData:data toRemoteURL:[NSString stringWithFormat:@"%@/crash/", kPackageAPIURL]
+                                       success:^(NSHTTPURLResponse *response, NSData *rawData) {
+                                           [[NSFileManager defaultManager] removeItemAtPath:CVK_CRASH_PATH error:nil];
+                                       } failure:nil];
 }
 
 @end

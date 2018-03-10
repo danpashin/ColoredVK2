@@ -34,22 +34,22 @@
         _prefsPath = CVK_PREFS_PATH;
         _cvkFolder = CVK_FOLDER_PATH;
         
-        NSString *identifier = specifier.identifier;
-        if ([identifier isEqualToString:@"barImage"]) _key = @"enabledBarImage"; 
-        if ([identifier isEqualToString:@"menuBackgroundImage"]) _key = @"enabledMenuImage"; 
-        if ([identifier isEqualToString:@"messagesBackgroundImage"]) _key = @"enabledMessagesImage"; 
-        if ([identifier isEqualToString:@"messagesListBackgroundImage"]) _key = @"enabledMessagesListImage";
-        if ([identifier isEqualToString:@"groupsListBackgroundImage"]) _key = @"enabledGroupsListImage";
-        if ([identifier isEqualToString:@"audioBackgroundImage"]) _key = @"enabledAudioImage";
-        if ([identifier isEqualToString:@"audioCoverImage"]) _key = @"enabledAudioCustomCover";
-        if ([identifier isEqualToString:@"friendsBackgroundImage"]) _key = @"enabledFriendsImage";
-        if ([identifier isEqualToString:@"videosBackgroundImage"]) _key = @"enabledVideosImage";
-        if ([identifier isEqualToString:@"settingsBackgroundImage"]) _key = @"enabledSettingsImage";
-        if ([identifier isEqualToString:@"settingsExtraBackgroundImage"]) _key = @"enabledSettingsExtraImage";
+        NSString *specifierIdentifier = specifier.identifier;
+        if ([specifierIdentifier isEqualToString:@"barImage"]) _key = @"enabledBarImage"; 
+        if ([specifierIdentifier isEqualToString:@"menuBackgroundImage"]) _key = @"enabledMenuImage"; 
+        if ([specifierIdentifier isEqualToString:@"messagesBackgroundImage"]) _key = @"enabledMessagesImage"; 
+        if ([specifierIdentifier isEqualToString:@"messagesListBackgroundImage"]) _key = @"enabledMessagesListImage";
+        if ([specifierIdentifier isEqualToString:@"groupsListBackgroundImage"]) _key = @"enabledGroupsListImage";
+        if ([specifierIdentifier isEqualToString:@"audioBackgroundImage"]) _key = @"enabledAudioImage";
+        if ([specifierIdentifier isEqualToString:@"audioCoverImage"]) _key = @"enabledAudioCustomCover";
+        if ([specifierIdentifier isEqualToString:@"friendsBackgroundImage"]) _key = @"enabledFriendsImage";
+        if ([specifierIdentifier isEqualToString:@"videosBackgroundImage"]) _key = @"enabledVideosImage";
+        if ([specifierIdentifier isEqualToString:@"settingsBackgroundImage"]) _key = @"enabledSettingsImage";
+        if ([specifierIdentifier isEqualToString:@"settingsExtraBackgroundImage"]) _key = @"enabledSettingsExtraImage";
         
-        int imageViewSize = 30;
+        CGFloat imageViewSize = 30.0f;
         _previewImageView = [UIImageView new];
-        _previewImageView.frame = CGRectMake(UIScreen.mainScreen.bounds.size.width/1.3 - imageViewSize, (self.contentView.frame.size.height - imageViewSize)/2, imageViewSize, imageViewSize);
+        _previewImageView.frame = CGRectMake(UIScreen.mainScreen.bounds.size.width/1.3f - imageViewSize, (self.contentView.frame.size.height - imageViewSize)/2.0f, imageViewSize, imageViewSize);
         _previewImageView.backgroundColor = [UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f];
         _previewImageView.contentMode = UIViewContentModeScaleAspectFill;
         _previewImageView.userInteractionEnabled = YES;
@@ -76,12 +76,12 @@
         
         UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showActionsController:)];
         longPress.minimumPressDuration = 1.0;
-        longPress.accessibilityElements = @[identifier];
+        longPress.accessibilityElements = @[specifierIdentifier];
         [self addGestureRecognizer:longPress];
         
         
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateImage:) name:@"com.daniilpashin.coloredvk2.image.update" object:nil];
-        [self updateImageForIdentifier:identifier];
+        [self updateImageForIdentifier:specifierIdentifier];
     }
     return self;
 }
@@ -156,8 +156,10 @@
             ColoredVKAlertController *warningAlert = [ColoredVKAlertController alertControllerWithTitle:CVKLocalizedString(@"WARNING")  
                                                                                                 message:CVKLocalizedString(@"REMOVE_IMAGE_WARNING")
                                                                                          preferredStyle:UIAlertControllerStyleAlert];
-            [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-            [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") style:UIAlertActionStyleDestructive  handler:^(UIAlertAction *action) { 
+            [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") 
+                                                             style:UIAlertActionStyleCancel handler:^(UIAlertAction *warningAction) {}]];
+            [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") 
+                                                             style:UIAlertActionStyleDestructive  handler:^(UIAlertAction *warningAction) { 
                 NSString *previewPath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identifier]];
                 
                 NSError *error = nil;

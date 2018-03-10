@@ -44,7 +44,7 @@
         ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
         if (nightScheme.enabled) {
             self.centerBackgroundView.blurStyle = LHBlurEffectStyleDark;
-            self.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.7];
+            self.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.7f];
         }
     }
     return self;

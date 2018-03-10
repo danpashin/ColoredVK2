@@ -95,10 +95,10 @@ static const CGFloat kButtonHeightRatio = 1.5f;
         [UIView animateWithDuration:0.4f delay:0.1f options:options animations:^{
             super.frame = newFrame;
             self.center = origCenter;
-        } completion:^(BOOL finished)  {
+        } completion:^(BOOL firstFinished)  {
             [UIView animateWithDuration:0.3f delay:0.0f options:options animations:^{
                 self.titleLabel.alpha = 1.0f;
-            } completion:^(BOOL finished)  {
+            } completion:^(BOOL secondFinished)  {
                 self.backgroundColor = self.tintColor;
                 self.rightLayer.hidden = YES;
                 self.leftLayer.hidden = YES;

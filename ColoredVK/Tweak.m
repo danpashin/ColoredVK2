@@ -28,8 +28,6 @@ BOOL enableNightTheme;
 BOOL showFastDownloadButton;
 BOOL showMenuCell;
 
-NSString *prefsPath;
-NSString *cvkFolder;
 NSBundle *cvkBunlde;
 NSBundle *vksBundle;
 
@@ -200,7 +198,7 @@ ColoredVKMainController *cvkMainController;
 #pragma mark Static methods
 void reloadPrefs()
 {
-    NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:prefsPath];
+    NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
     
     enabled = [prefs[@"enabled"] boolValue];
     hideMenuSearch = [prefs[@"hideMenuSearch"] boolValue];
@@ -256,7 +254,7 @@ void reloadPrefs()
     menuBlurStyle = prefs[@"menuBlurStyle"]?[prefs[@"menuBlurStyle"] integerValue]:UIBlurEffectStyleLight;
     
     menuSeparatorColor =         [UIColor savedColorForIdentifier:@"MenuSeparatorColor"         fromPrefs:prefs];
-    menuSelectionColor =        [[UIColor savedColorForIdentifier:@"menuSelectionColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
+    menuSelectionColor =        [[UIColor savedColorForIdentifier:@"menuSelectionColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3f];
     barBackgroundColor =         [UIColor savedColorForIdentifier:@"BarBackgroundColor"         fromPrefs:prefs];
     toolBarBackgroundColor =     [UIColor savedColorForIdentifier:@"ToolBarBackgroundColor"     fromPrefs:prefs];
     toolBarForegroundColor =     [UIColor savedColorForIdentifier:@"ToolBarForegroundColor"     fromPrefs:prefs];
@@ -264,18 +262,19 @@ void reloadPrefs()
     messageBubbleSentTintColor = [UIColor savedColorForIdentifier:@"messageBubbleSentTintColor" fromPrefs:prefs];
     menuTextColor =              [UIColor savedColorForIdentifier:@"menuTextColor"              fromPrefs:prefs];
     messagesTextColor =          [UIColor savedColorForIdentifier:@"messagesTextColor"          fromPrefs:prefs];
-    messagesBlurTone =          [[UIColor savedColorForIdentifier:@"messagesBlurTone"           fromPrefs:prefs] colorWithAlphaComponent:0.3];
-    menuBlurTone =              [[UIColor savedColorForIdentifier:@"menuBlurTone"               fromPrefs:prefs] colorWithAlphaComponent:0.3];
+    messagesBlurTone =          [[UIColor savedColorForIdentifier:@"messagesBlurTone"           fromPrefs:prefs] colorWithAlphaComponent:0.3f];
+    menuBlurTone =              [[UIColor savedColorForIdentifier:@"menuBlurTone"               fromPrefs:prefs] colorWithAlphaComponent:0.3f];
     tabbarBackgroundColor =     [UIColor savedColorForIdentifier:@"TabbarBackgroundColor"       fromPrefs:prefs];
     tabbarForegroundColor =     [UIColor savedColorForIdentifier:@"TabbarForegroundColor"       fromPrefs:prefs];
     tabbarSelForegroundColor =  [UIColor savedColorForIdentifier:@"TabbarSelForegroundColor"    fromPrefs:prefs];
     messagesInputTextColor =    [UIColor savedColorForIdentifier:@"messagesInputTextColor"      fromPrefs:prefs];
     messagesInputBackColor =    [UIColor savedColorForIdentifier:@"messagesInputBackColor"      fromPrefs:prefs];
-    dialogsUnreadColor =        [[UIColor savedColorForIdentifier:@"dialogsUnreadColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
-    messageUnreadColor =        [[UIColor savedColorForIdentifier:@"messageReadColor"           fromPrefs:prefs] colorWithAlphaComponent:0.2];
+    dialogsUnreadColor =        [[UIColor savedColorForIdentifier:@"dialogsUnreadColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3f];
+    messageUnreadColor =        [[UIColor savedColorForIdentifier:@"messageReadColor"           fromPrefs:prefs] colorWithAlphaComponent:0.2f];
     
-    if (!hideMenuSeparators && !prefs[@"MenuSeparatorColor"] && [cvkMainController compareAppVersionWithVersion:@"3.0"] == ColoredVKVersionCompareMore) {
-        menuSeparatorColor  = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0 alpha:1.0f];
+    ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
+    if (!hideMenuSeparators && !prefs[@"MenuSeparatorColor"] && (compareResult == ColoredVKVersionCompareMore)) {
+        menuSeparatorColor  = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
     }
     
     showFastDownloadButton = prefs[@"showFastDownloadButton"] ? [prefs[@"showFastDownloadButton"] boolValue] : YES;
@@ -287,7 +286,7 @@ void reloadPrefs()
         [cvkMainController.nightThemeScheme updateForType:[prefs[@"nightThemeType"] integerValue]];
         cvkMainController.nightThemeScheme.enabled = enableNightTheme;
         
-        if (enableNightTheme && ([cvkMainController compareAppVersionWithVersion:@"3.0"] == ColoredVKVersionCompareLess)) {
+        if (enableNightTheme && (compareResult == ColoredVKVersionCompareLess)) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 cvkMainController.menuBackgroundView.alpha = 0.0f;
                 resetUISearchBar((UISearchBar*)cvkMainController.vkMainController.tableView.tableHeaderView);
@@ -384,13 +383,13 @@ void reloadPrefs()
         settingsTextColor =          [UIColor savedColorForIdentifier:@"settingsTextColor"          fromPrefs:prefs];
         settingsExtraTextColor =     [UIColor savedColorForIdentifier:@"settingsExtraTextColor"     fromPrefs:prefs];
         
-        messagesListBlurTone =      [[UIColor savedColorForIdentifier:@"messagesListBlurTone"       fromPrefs:prefs] colorWithAlphaComponent:0.3];
-        groupsListBlurTone =        [[UIColor savedColorForIdentifier:@"groupsListBlurTone"         fromPrefs:prefs] colorWithAlphaComponent:0.3];
-        audiosBlurTone =            [[UIColor savedColorForIdentifier:@"audiosBlurTone"             fromPrefs:prefs] colorWithAlphaComponent:0.3];
-        friendsBlurTone =           [[UIColor savedColorForIdentifier:@"friendsBlurTone"            fromPrefs:prefs] colorWithAlphaComponent:0.3];
-        videosBlurTone =            [[UIColor savedColorForIdentifier:@"videosBlurTone"             fromPrefs:prefs] colorWithAlphaComponent:0.3];
-        settingsBlurTone =          [[UIColor savedColorForIdentifier:@"settingsBlurTone"           fromPrefs:prefs] colorWithAlphaComponent:0.3];
-        settingsExtraBlurTone =     [[UIColor savedColorForIdentifier:@"settingsExtraBlurTone"      fromPrefs:prefs] colorWithAlphaComponent:0.3];
+        messagesListBlurTone =      [[UIColor savedColorForIdentifier:@"messagesListBlurTone"       fromPrefs:prefs] colorWithAlphaComponent:0.3f];
+        groupsListBlurTone =        [[UIColor savedColorForIdentifier:@"groupsListBlurTone"         fromPrefs:prefs] colorWithAlphaComponent:0.3f];
+        audiosBlurTone =            [[UIColor savedColorForIdentifier:@"audiosBlurTone"             fromPrefs:prefs] colorWithAlphaComponent:0.3f];
+        friendsBlurTone =           [[UIColor savedColorForIdentifier:@"friendsBlurTone"            fromPrefs:prefs] colorWithAlphaComponent:0.3f];
+        videosBlurTone =            [[UIColor savedColorForIdentifier:@"videosBlurTone"             fromPrefs:prefs] colorWithAlphaComponent:0.3f];
+        settingsBlurTone =          [[UIColor savedColorForIdentifier:@"settingsBlurTone"           fromPrefs:prefs] colorWithAlphaComponent:0.3f];
+        settingsExtraBlurTone =     [[UIColor savedColorForIdentifier:@"settingsExtraBlurTone"      fromPrefs:prefs] colorWithAlphaComponent:0.3f];
         
 //        customFontName = prefs[@"customFontName"] ? prefs[@"customFontName"] : @".SFUIText";
         
@@ -619,8 +618,8 @@ CHDeclareMethod(1, void, VKMLiveController, viewWillAppear, BOOL, animated)
             if ([search isKindOfClass:[UISearchBar class]] && [search respondsToSelector:@selector(setBackgroundImage:)]) {
                 search.backgroundImage = [UIImage new];
                 search.tag = 4;
-                search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
-                NSDictionary *attributes = @{NSForegroundColorAttributeName:changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
+                search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.1f];
+                NSDictionary *attributes = @{NSForegroundColorAttributeName:changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.7f]};
                 NSString *placeholder = (search.searchBarTextField.placeholder.length > 0) ? search.searchBarTextField.placeholder : @"";
                 search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeholder attributes:attributes];
                 search._scopeBarBackgroundView.superview.hidden = YES;
@@ -628,7 +627,7 @@ CHDeclareMethod(1, void, VKMLiveController, viewWillAppear, BOOL, animated)
         }
         
         if (enabledGroupsListImage && [self.model.description containsString:@"GroupsSearchModel"]) {
-            self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2];
+            self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2f];
             [ColoredVKMainController setImageToTableView:self.tableView withName:@"groupsListBackgroundImage" blackout:groupsListImageBlackout 
                                           parallaxEffect:useGroupsListParallax blurBackground:groupsListUseBackgroundBlur];
         }
@@ -644,8 +643,8 @@ CHDeclareMethod(0, void, VKMLiveController, viewWillLayoutSubviews)
         if (enabledAudioImage && [audioModelNames containsObject:CLASS_NAME(self.model)]) {
             [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
                                           parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
-            self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2];
-            self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+            self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2f];
+            self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
             setBlur(self.navigationController.navigationBar, audiosUseBlur, audiosBlurTone, audiosBlurStyle);
         }
     }
@@ -827,11 +826,11 @@ CHDeclareMethod(0, void, GroupsController, viewDidLoad)
         if (enabled && !enableNightTheme && enabledGroupsListImage) {
             [ColoredVKMainController setImageToTableView:self.tableView withName:@"groupsListBackgroundImage" blackout:groupsListImageBlackout
                                           parallaxEffect:useGroupsListParallax blurBackground:groupsListUseBackgroundBlur];
-            self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
-            self.tableView.separatorColor = hideGroupsListSeparators ? [UIColor clearColor] : [self.tableView.separatorColor colorWithAlphaComponent:0.2];
-            self.segment.alpha = 0.9;
+            self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
+            self.tableView.separatorColor = hideGroupsListSeparators ? [UIColor clearColor] : [self.tableView.separatorColor colorWithAlphaComponent:0.2f];
+            self.segment.alpha = 0.9f;
             
-            UIColor *textColor = changeGroupsListTextColor ? groupsListTextColor : [UIColor colorWithWhite:1 alpha:0.7];
+            UIColor *textColor = changeGroupsListTextColor ? groupsListTextColor : [UIColor colorWithWhite:1.0f alpha:0.7f];
             UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
             if ([search isKindOfClass:NSClassFromString(@"VKSearchBar")]) {
                 setupNewSearchBar((VKSearchBar *)search, textColor, groupsListBlurTone, groupsListBlurStyle);
@@ -839,7 +838,7 @@ CHDeclareMethod(0, void, GroupsController, viewDidLoad)
                 search.backgroundImage = [UIImage new];
                 search.scopeBarBackgroundImage = [UIImage new];
                 search.tag = 2;
-                search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+                search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.1f];
                 search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder 
                                                                                                   attributes:@{NSForegroundColorAttributeName:textColor}];
             }            
@@ -854,9 +853,9 @@ CHDeclareMethod(2, UITableViewCell*, GroupsController, tableView, UITableView*, 
         if ([cell isKindOfClass:NSClassFromString(@"GroupCell")]) {
             GroupCell *groupCell = (GroupCell *)cell;
             performInitialCellSetup(groupCell);
-            groupCell.name.textColor = changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1 alpha:0.9];
+            groupCell.name.textColor = changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
             groupCell.name.backgroundColor = UITableViewCellBackgroundColor;
-            groupCell.status.textColor = changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:0.8 alpha:0.9];
+            groupCell.status.textColor = changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:0.8f alpha:0.9f];
             groupCell.status.backgroundColor = UITableViewCellBackgroundColor;
         } else  if ([cell isKindOfClass:NSClassFromString(@"VKMRendererCell")]) {
             performInitialCellSetup(cell);
@@ -864,7 +863,7 @@ CHDeclareMethod(2, UITableViewCell*, GroupsController, tableView, UITableView*, 
             for (UIView *view in cell.contentView.subviews) {
                 if ([view isKindOfClass:[UILabel class]]) {
                     UILabel *label = (UILabel *)view;
-                    label.textColor = [UIColor colorWithWhite:1 alpha:0.9];
+                    label.textColor = [UIColor colorWithWhite:1.0f alpha:0.9f];
                     label.backgroundColor = [UIColor clearColor];
                 }
             }
@@ -883,7 +882,8 @@ CHDeclareClass(DialogsController);
 CHDeclareMethod(0, void, DialogsController, viewDidLoad)
 {
     CHSuper(0, DialogsController, viewDidLoad);
-    if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && ([cvkMainController compareAppVersionWithVersion:@"3.0"] < 0)) {
+    ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
+    if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && (compareResult < 0)) {
         if (enabled && !enableNightTheme && enabledMessagesListImage) {
             [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
                                           parallaxEffect:useMessagesListParallax blurBackground:messagesListUseBackgroundBlur];
@@ -900,22 +900,23 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
             search.tag = 1;
         }
         
-        UIColor *placeholderColor = ([cvkMainController compareAppVersionWithVersion:@"3.0"] >= 0) ? UITableViewCellTextColor : [UIColor colorWithRed:0.556863 green:0.556863 blue:0.576471 alpha:1.0f];
+        ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
+        UIColor *placeholderColor = (compareResult >= 0) ? UITableViewCellTextColor : [UIColor colorWithRed:0.556863f green:0.556863f blue:0.576471f alpha:1.0f];
         placeholderColor = (enabled && changeMessagesListTextColor) ? messagesListTextColor : placeholderColor;
         
         if (enabled && enabledMessagesListImage) {
-            self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
-            self.tableView.separatorColor =  hideMessagesListSeparators ? [UIColor clearColor] : [self.tableView.separatorColor colorWithAlphaComponent:0.2];
+            self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
+            self.tableView.separatorColor =  hideMessagesListSeparators ? [UIColor clearColor] : [self.tableView.separatorColor colorWithAlphaComponent:0.2f];
             
             if ([search isKindOfClass:NSClassFromString(@"VKSearchBar")]) {
                 setupNewSearchBar((VKSearchBar *)search, placeholderColor, messagesListBlurTone, messagesListBlurStyle);
             } else if ([search isKindOfClass:[UISearchBar class]]) {
-                search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+                search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.1f];
                 search.backgroundImage = [UIImage new];
                 search._scopeBarBackgroundView.superview.hidden = YES;
             }
             
-        } else if ([cvkMainController compareAppVersionWithVersion:@"3.0"] >= 0) {
+        } else if (compareResult >= 0) {
             self.rptr.tintColor = nil;
             self.tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
             if ([search isKindOfClass:NSClassFromString(@"VKSearchBar")]) {
@@ -935,7 +936,7 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
             search.searchBarTextField.attributedPlaceholder = placeholder;
         }
         
-        if ([cvkMainController compareAppVersionWithVersion:@"3.0"] >= 0) {
+        if (compareResult >= 0) {
             if (enabled && !enableNightTheme && enabledMessagesListImage) {
                 [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
                                               parallaxEffect:useMessagesListParallax blurBackground:messagesListUseBackgroundBlur];
@@ -957,9 +958,9 @@ CHDeclareMethod(2, UITableViewCell*, DialogsController, tableView, UITableView*,
             if (!cell.dialog.head.read_state && cell.unread.hidden) cell.contentView.backgroundColor = useCustomDialogsUnreadColor?dialogsUnreadColor:[UIColor defaultColorForIdentifier:@"dialogsUnreadColor"];
             else cell.contentView.backgroundColor = [UIColor clearColor];
             
-            cell.name.textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1 alpha:0.9];
+            cell.name.textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
             cell.time.textColor = cell.name.textColor;
-            cell.attach.textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:0.95 alpha:0.9];
+            cell.attach.textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:0.95f alpha:0.9f];
             if ([cell respondsToSelector:@selector(dialogText)]) cell.dialogText.textColor = cell.attach.textColor;
             if ([cell respondsToSelector:@selector(text)]) cell.text.textColor = cell.attach.textColor;
         } else {
@@ -1046,7 +1047,7 @@ CHDeclareMethod(0, void, ChatController, viewDidLoad)
                 self.navigationItem.titleView.hidden = YES;
             }
             if (enabledMessagesImage) {
-                self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+                self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
                 [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesBackgroundImage" blackout:chatImageBlackout 
                                                         flip:YES parallaxEffect:useMessagesParallax blurBackground:messagesUseBackgroundBlur];
             }
@@ -1062,7 +1063,7 @@ CHDeclareMethod(2, UITableViewCell*, ChatController, tableView, UITableView*, ta
         if (!enableNightTheme) {
             for (id view in cell.contentView.subviews) {
                 if ([view respondsToSelector:@selector(setTextColor:)])
-                    [view setTextColor:changeMessagesTextColor?messagesTextColor:[UIColor colorWithWhite:1 alpha:0.7]];
+                    [view setTextColor:changeMessagesTextColor?messagesTextColor:[UIColor colorWithWhite:1.0f alpha:0.7f]];
             }
         }
         if ([CLASS_NAME(cell) isEqualToString:@"UITableViewCell"]) cell.backgroundColor = [UIColor clearColor];
@@ -1224,9 +1225,9 @@ CHDeclareMethod(2, UITableViewCell*, VKMMainController, tableView, UITableView*,
         cell.contentView.backgroundColor = [UIColor clearColor];
     }
     else if (enabled && enabledMenuImage) {
-        cell.textLabel.textColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1 alpha:0.9];
+        cell.textLabel.textColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
         cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        cell.imageView.tintColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1 alpha:0.8];
+        cell.imageView.tintColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1.0f alpha:0.8f];
         cell.backgroundColor = [UIColor clearColor];
         cell.contentView.backgroundColor = [UIColor clearColor];
         
@@ -1241,7 +1242,7 @@ CHDeclareMethod(2, UITableViewCell*, VKMMainController, tableView, UITableView*,
         
         if (VKSettingsEnabled) {
             if ([cell.textLabel.text isEqualToString:NSLocalizedStringFromTableInBundle(@"GroupsAndPeople", nil, vksBundle, nil)] && (menuSelectionStyle != CVKCellSelectionStyleNone)) 
-                cell.contentView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
+                cell.contentView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.3f];
         }
         
         if ([cell respondsToSelector:@selector(badge)]) {
@@ -1253,7 +1254,7 @@ CHDeclareMethod(2, UITableViewCell*, VKMMainController, tableView, UITableView*,
             [[cell valueForKeyPath:@"badge"] setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         }
         
-        cell.imageView.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        cell.imageView.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
         cell.backgroundColor = kMenuCellBackgroundColor;
         cell.contentView.backgroundColor = kMenuCellBackgroundColor;
         cell.textLabel.textColor = kMenuCellTextColor;
@@ -1307,7 +1308,7 @@ CHDeclareMethod(2, UITableViewCell*, MenuViewController, tableView, UITableView*
     
     if (enabled && hideMenuSeparators) tableView.separatorColor = [UIColor clearColor]; 
     else if (enabled && !hideMenuSeparators) tableView.separatorColor = menuSeparatorColor; 
-    else tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0 alpha:1.0f];
+    else tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
     
     if (enabled && enableNightTheme) {
         cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -1352,7 +1353,7 @@ CHDeclareMethod(3, void, MenuViewController, tableView, UITableView *, tableView
 {
     CHSuper(3, MenuViewController, tableView, tableView, willDisplayHeaderView, view, forSection, section);
     if ((enabled && !enableNightTheme && enabledMenuImage) && [view isKindOfClass:NSClassFromString(@"TablePrimaryHeaderView")]) {
-        ((TablePrimaryHeaderView*)view).separator.alpha = 0.3;
+        ((TablePrimaryHeaderView*)view).separator.alpha = 0.3f;
     }
 }
 
@@ -1534,8 +1535,8 @@ CHDeclareMethod(0, void, AudioAlbumController, viewDidLoad)
         if ([search isKindOfClass:[UISearchBar class]] && [search respondsToSelector:@selector(setBackgroundImage:)]) {
             search.backgroundImage = [UIImage new];
             search.tag = 3;
-            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
-            NSDictionary *attributes = @{NSForegroundColorAttributeName: changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
+            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.1f];
+            NSDictionary *attributes = @{NSForegroundColorAttributeName: changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1.0f alpha:0.7f]};
             search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder attributes:attributes];
             search._scopeBarBackgroundView.superview.hidden = YES;
         }
@@ -1548,8 +1549,8 @@ CHDeclareMethod(0, void, AudioAlbumController, viewWillLayoutSubviews)
     if (enabled && !enableNightTheme && enabledAudioImage && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
                                       parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
-        self.tableView.separatorColor =  hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
-        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        self.tableView.separatorColor =  hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
+        self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
     }
 }
 
@@ -1560,8 +1561,8 @@ CHDeclareMethod(2, UITableViewCell*, AudioAlbumController, tableView, UITableVie
     if (enabled && !enableNightTheme && enabledAudioImage && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
         performInitialCellSetup(cell);
             
-        cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.9];
-        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:0.8 alpha:0.9];
+        cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
+        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:0.8f alpha:0.9f];
     }
     
     return cell;
@@ -1583,7 +1584,7 @@ CHDeclareMethod(1, void, AudioPlaylistController, viewWillAppear, BOOL, animated
     if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioPlaylistController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
                                       parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
-        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
+        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
     }
 }
 
@@ -1594,8 +1595,8 @@ CHDeclareMethod(2, UITableViewCell*, AudioPlaylistController, tableView, UITable
     if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioPlaylistController")]) {
         performInitialCellSetup(cell);
         
-        cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.9];
-        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:0.8 alpha:0.9];
+        cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
+        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:0.8f alpha:0.9f];
     }
     
     return cell;
@@ -1627,8 +1628,8 @@ CHDeclareMethod(0, void, AudioDashboardController, viewWillLayoutSubviews)
     if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioDashboardController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
                                       parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
-        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
-        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
+        self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
     }
 }
 
@@ -1655,8 +1656,8 @@ CHDeclareMethod(0, void, AudioCatalogController, viewWillLayoutSubviews)
     if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioCatalogController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
                                       parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
-        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
-        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
+        self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
     }
 }
 
@@ -1703,8 +1704,8 @@ CHDeclareMethod(0, void, AudioCatalogOwnersListController, viewWillLayoutSubview
     if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioCatalogOwnersListController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
                                       parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
-        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
-        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
+        self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
     }
 }
 
@@ -1744,8 +1745,8 @@ CHDeclareMethod(0, void, AudioCatalogAudiosListController, viewWillLayoutSubview
     if (enabled  && !enableNightTheme&& enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioCatalogAudiosListController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
                                       parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
-        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
-        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
+        self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
     }
 }
 
@@ -1774,8 +1775,8 @@ CHDeclareMethod(0, void, AudioPlaylistDetailController, viewWillLayoutSubviews)
     if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioPlaylistDetailController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
                                       parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
-        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
-        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
+        self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
     }
 }
 
@@ -1802,15 +1803,15 @@ CHDeclareMethod(0, void, AudioPlaylistsController, viewWillLayoutSubviews)
     if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioPlaylistsController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
                                       parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
-        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
-        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
+        self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
         
         UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
         if ([search isKindOfClass:[UISearchBar class]] && !enableNightTheme) {
             search.backgroundImage = [UIImage new];
             search.tag = 3;
-            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
-            NSDictionary *attributes = @{NSForegroundColorAttributeName: changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1 alpha:0.7]};
+            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.1f];
+            NSDictionary *attributes = @{NSForegroundColorAttributeName: changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1.0f alpha:0.7f]};
             search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder attributes:attributes];
             search._scopeBarBackgroundView.superview.hidden = YES;
         }
@@ -1853,7 +1854,7 @@ CHDeclareMethod(0, void, VKAudioPlayerListTableViewController, viewWillLayoutSub
     if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"VKAudioPlayerListTableViewController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
                                       parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
-        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
+        self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
     }
 }
 
@@ -2150,7 +2151,7 @@ CHDeclareMethod(1, void, DialogsSearchController, searchDisplayControllerWillBeg
     CHSuper(1, DialogsSearchController, searchDisplayControllerWillBeginSearch, controller);
     setupSearchController(controller, NO);
     if (enabled && !enableNightTheme && enabledMessagesImage)
-        controller.searchResultsTableView.separatorColor = [controller.searchResultsTableView.separatorColor colorWithAlphaComponent:0.2];
+        controller.searchResultsTableView.separatorColor = [controller.searchResultsTableView.separatorColor colorWithAlphaComponent:0.2f];
 }
 
 CHDeclareMethod(1, void, DialogsSearchController, searchDisplayControllerWillEndSearch, UISearchDisplayController*, controller)
@@ -2399,19 +2400,19 @@ CHDeclareMethod(0, void, ProfileFriendsController, viewWillLayoutSubviews)
     if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:NSClassFromString(@"ProfileFriendsController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"friendsBackgroundImage" blackout:friendsImageBlackout 
                                       parallaxEffect:useFriendsParallax blurBackground:friendsUseBackgroundBlur];
-        self.tableView.separatorColor = hideFriendsSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
+        self.tableView.separatorColor = hideFriendsSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
         self.tableView.sectionIndexColor = UITableViewCellTextColor;
         self.tableView.tag = 22;
-        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
         
-        UIColor *textColor = changeFriendsTextColor?friendsTextColor:[UIColor colorWithWhite:1 alpha:0.7];
+        UIColor *textColor = changeFriendsTextColor?friendsTextColor:[UIColor colorWithWhite:1.0f alpha:0.7f];
         UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
         if ([search isKindOfClass:NSClassFromString(@"VKSearchBar")]) {
             setupNewSearchBar((VKSearchBar *)search, textColor, friendsBlurTone, friendsBlurStyle);
         } else if ([search isKindOfClass:[UISearchBar class]] && [search respondsToSelector:@selector(setBackgroundImage:)]) {
             search.backgroundImage = [UIImage new];
             search.tag = 6;
-            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.1f];
             search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder
                                                                                               attributes:@{NSForegroundColorAttributeName:textColor}];
             search._scopeBarBackgroundView.superview.hidden = YES;
@@ -2450,9 +2451,9 @@ CHDeclareMethod(0, void, FriendsBDaysController, viewWillLayoutSubviews)
     if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:NSClassFromString(@"FriendsBDaysController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"friendsBackgroundImage" blackout:friendsImageBlackout 
                                       parallaxEffect:useFriendsParallax blurBackground:friendsUseBackgroundBlur];
-        self.tableView.separatorColor = hideFriendsSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
+        self.tableView.separatorColor = hideFriendsSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
         self.tableView.tag = 22;
-        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
     }
 }
 
@@ -2483,8 +2484,8 @@ CHDeclareMethod(1, void, FriendsAllRequestsController, viewWillAppear, BOOL, ani
     if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:NSClassFromString(@"FriendsAllRequestsController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"friendsBackgroundImage" blackout:friendsImageBlackout 
                                       parallaxEffect:useFriendsParallax blurBackground:friendsUseBackgroundBlur];
-        self.tableView.separatorColor = hideFriendsSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
-        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        self.tableView.separatorColor = hideFriendsSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
+        self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
         if ([self respondsToSelector:@selector(toolbar)])
             setBlur(self.toolbar, friendsUseBlur, friendsBlurTone, friendsBlurStyle);
     }
@@ -2518,19 +2519,19 @@ CHDeclareMethod(0, void, VideoAlbumController, viewWillLayoutSubviews)
     if (enabled && !enableNightTheme && enabledVideosImage && [self isKindOfClass:NSClassFromString(@"VideoAlbumController")]) {
         [ColoredVKMainController setImageToTableView:self.tableView withName:@"videosBackgroundImage" blackout:videosImageBlackout 
                                       parallaxEffect:useVideosParallax blurBackground:videosUseBackgroundBlur];
-        self.tableView.separatorColor = hideVideosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2];
-        self.rptr.tintColor = [UIColor colorWithWhite:1 alpha:0.8];
+        self.tableView.separatorColor = hideVideosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
+        self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
         setBlur(self.toolbar, YES, videosBlurTone, videosBlurStyle);
         
         UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
-        UIColor *textColor =  changeVideosTextColor ? videosTextColor : [UIColor colorWithWhite:1 alpha:0.7];
+        UIColor *textColor =  changeVideosTextColor ? videosTextColor : [UIColor colorWithWhite:1.0f alpha:0.7f];
         
         if ([search isKindOfClass:NSClassFromString(@"VKSearchBar")]) {
             setupNewSearchBar((VKSearchBar *)search, textColor, videosBlurTone, videosBlurStyle);
         } else if ([search isKindOfClass:[UISearchBar class]] && [search respondsToSelector:@selector(setBackgroundImage:)]) {
             search.backgroundImage = [UIImage new];
             search.tag = 6;
-            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+            search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.1f];
             search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder 
                                                                                               attributes:@{NSForegroundColorAttributeName:textColor}];
             search._scopeBarBackgroundView.superview.hidden = YES;
@@ -2696,8 +2697,9 @@ CHDeclareMethod(2, UITableViewCell*, ModernSettingsController, tableView, UITabl
         cell.textLabel.textColor = (enabled && enableNightTheme) ? cvkMainController.nightThemeScheme.textColor : [UIColor blackColor];
         cell.imageView.tintColor = kVKMainColor;
         
-        if ([cvkMainController compareAppVersionWithVersion:@"3.0"] >= 0)
-            cell.imageView.tintColor = [UIColor colorWithRed:0.667 green:0.682 blue:0.702 alpha:1.0f];
+        ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
+        if (compareResult >= 0)
+            cell.imageView.tintColor = [UIColor colorWithRed:0.667f green:0.682f blue:0.702f alpha:1.0f];
     }
     
     return cell;
@@ -3009,18 +3011,17 @@ CHConstructor
     @autoreleasepool {
 //        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
         
-        prefsPath = CVK_PREFS_PATH;
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         vksBundle = [NSBundle bundleWithPath:VKS_BUNDLE_PATH];
-        cvkFolder = CVK_FOLDER_PATH;
         cvkMainController = [ColoredVKMainController new];
         cvkMainController.nightThemeScheme = [ColoredVKNightThemeColorScheme sharedScheme];
         
-        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:prefsPath];
-        if (![[NSFileManager defaultManager] fileExistsAtPath:prefsPath]) prefs = [NSMutableDictionary new];
-        prefs[@"vkVersion"] = cvkMainController.appVersionDetailed;
-        [prefs writeToFile:prefsPath atomically:YES];
-        VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil)?YES:NO;
+        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+        if (![[NSFileManager defaultManager] fileExistsAtPath:CVK_PREFS_PATH]) 
+            prefs = [NSMutableDictionary new];
+        prefs[@"vkVersion"] = [ColoredVKNewInstaller sharedInstaller].application.detailedVersion;
+        [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
+        VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil);
         
         CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
         CFNotificationCenterAddObserver(center, nil, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), nil, CFNotificationSuspensionBehaviorDeliverImmediately);

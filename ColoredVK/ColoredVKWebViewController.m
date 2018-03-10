@@ -122,12 +122,12 @@
     
     ColoredVKNetworkController *networkController = [ColoredVKNewInstaller sharedInstaller].networkController;
     [networkController sendRequest:request 
-                           success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData) {
+                           success:^(NSURLRequest *blockRequest, NSHTTPURLResponse *response, NSData *rawData) {
                                NSString *html = [[NSString alloc] initWithData:rawData encoding:NSUTF8StringEncoding];
                                
                                if (self.webView) {
                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                       [self.webView loadHTMLString:html baseURL:request.URL];
+                                       [self.webView loadHTMLString:html baseURL:blockRequest.URL];
                                    });
                                } else {
                                    self.requestHTML = html;

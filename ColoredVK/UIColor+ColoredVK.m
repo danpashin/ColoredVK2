@@ -21,7 +21,7 @@
 {
     CGFloat r, g, b, a;
     [self getRed:&r green:&g blue:&b alpha:&a];
-    return [UIColor colorWithRed:MAX(r - 0.2, 0.0) green:MAX(g - 0.2, 0.0) blue:MAX(b - 0.2, 0.0) alpha:a];
+    return [UIColor colorWithRed:MAX(r - 0.2f, 0.0f) green:MAX(g - 0.2f, 0.0f) blue:MAX(b - 0.2f, 0.0f) alpha:a];
 }
 
 
@@ -41,18 +41,18 @@
 {
     if      ([identifier isEqualToString:@"BarBackgroundColor"])         return [UIColor colorWithRed:0.27f green:0.46f blue:0.68f alpha:1];
     else if ([identifier isEqualToString:@"BarForegroundColor"])         return [UIColor whiteColor];
-    else if ([identifier isEqualToString:@"ToolBarBackgroundColor"])     return [UIColor colorWithRed:245.0/255.0f green:245.0/255.0f blue:248.0/255.0f alpha:1];
-    else if ([identifier isEqualToString:@"ToolBarForegroundColor"])     return [UIColor colorWithRed:127.0/255.0f green:131.0/255.0f blue:137.0/255.0f alpha:1];
-    else if ([identifier isEqualToString:@"MenuSeparatorColor"])         return [UIColor colorWithRed:72.00/255.0f green:86.00/255.0f blue:97.00/255.0f alpha:1];
+    else if ([identifier isEqualToString:@"ToolBarBackgroundColor"])     return [UIColor colorWithRed:245/255.0f green:245/255.0f blue:248/255.0f alpha:1.0f];
+    else if ([identifier isEqualToString:@"ToolBarForegroundColor"])     return [UIColor colorWithRed:127/255.0f green:131/255.0f blue:137/255.0f alpha:1.0f];
+    else if ([identifier isEqualToString:@"MenuSeparatorColor"])         return [UIColor colorWithRed:72/255.0f green:86/255.0f blue:97/255.0f alpha:1.0f];
     else if ([identifier isEqualToString:@"SBBackgroundColor"])          return [UIColor clearColor];
     else if ([identifier isEqualToString:@"SBForegroundColor"])          return [UIColor whiteColor];
     else if ([identifier isEqualToString:@"switchesTintColor"])          return nil;
-    else if ([identifier isEqualToString:@"switchesOnTintColor"])        return [UIColor colorWithRed:90/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1.0];
+    else if ([identifier isEqualToString:@"switchesOnTintColor"])        return [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1.0];
     else if ([identifier isEqualToString:@"messageBubbleTintColor"])     return [UIColor whiteColor];
-    else if ([identifier isEqualToString:@"messageBubbleSentTintColor"]) return [UIColor colorWithRed:205/255.0f green:226/255.0f blue:250/255.0f alpha:1];
-    else if ([identifier isEqualToString:@"messageReadColor"])           return [UIColor colorWithWhite:1 alpha:0.15];
-    else if ([identifier isEqualToString:@"dialogsUnreadColor"])         return [UIColor colorWithWhite:1 alpha:0.15];
-    else if ([identifier containsString:@"TextColor"])                   return [UIColor colorWithWhite:1 alpha:0.9];
+    else if ([identifier isEqualToString:@"messageBubbleSentTintColor"]) return [UIColor colorWithRed:205/255.0f green:226/255.0f blue:250/255.0f alpha:1.0f];
+    else if ([identifier isEqualToString:@"messageReadColor"])           return [UIColor colorWithWhite:1.0f alpha:0.15f];
+    else if ([identifier isEqualToString:@"dialogsUnreadColor"])         return [UIColor colorWithWhite:1.0f alpha:0.15f];
+    else if ([identifier containsString:@"TextColor"])                   return [UIColor colorWithWhite:1.0f alpha:0.9f];
     else if ([identifier containsString:@"BlurTone"])                    return [UIColor clearColor];
     else if ([identifier isEqualToString:@"menuSelectionColor"])         return [UIColor whiteColor];
     else if ([identifier isEqualToString:@"TabbarForegroundColor"])      return [UIColor colorWithRed:0.6f green:0.63f blue:0.67f alpha:1.0f];

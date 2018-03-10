@@ -15,13 +15,15 @@
     if (self) {
         _teamIdentifier = @"";
         _teamName = @"";
+        _version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+        _detailedVersion = [NSString stringWithFormat:@"%@ (%@)", self.version, [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];;
         
-        [self updateInfo];
+        [self updateTeamInformation];
     }
     return self;
 }
 
-- (void)updateInfo
+- (void)updateTeamInformation
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         NSError *error = nil;
@@ -48,6 +50,43 @@
             [[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
         }
     });
+}
+
+- (ColoredVKVersionCompare)compareAppVersionWithVersion:(NSString *)second_version
+{
+    return [self compareVersion:self.version withVersion:second_version];
+}
+
+- (ColoredVKVersionCompare)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version
+{
+    if ([first_version isEqualToString:second_version])
+        return ColoredVKVersionCompareEqual;
+    
+    NSArray *first_version_components = [first_version componentsSeparatedByString:@"."];
+    NSArray *second_version_components = [second_version componentsSeparatedByString:@"."];
+    NSInteger length = MIN(first_version_components.count, second_version_components.count);
+    
+    
+    for (int i = 0; i < length; i++) {
+        NSInteger first_component = [first_version_components[i] integerValue];
+        NSInteger second_component = [second_version_components[i] integerValue];
+        
+        if (first_component > second_component)
+            return ColoredVKVersionCompareMore;
+        
+        if (first_component < second_component)
+            return ColoredVKVersionCompareLess;
+    }
+    
+    
+    if (first_version_components.count > second_version_components.count)
+        return ColoredVKVersionCompareMore;
+    
+    if (first_version_components.count < second_version_components.count)
+        return ColoredVKVersionCompareLess;
+    
+    
+    return ColoredVKVersionCompareEqual;
 }
 
 @end

@@ -26,7 +26,7 @@
         heading.font = [UIFont systemFontOfSize:42.0];
         heading.text = @"ColoredVK 2";
         heading.backgroundColor = [UIColor clearColor];
-        heading.textColor = [UIColor colorWithRed:90.0/255.0f green:130.0/255.0f blue:180.0/255.0f alpha:1];
+        heading.textColor = [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1];
         heading.textAlignment = NSTextAlignmentCenter;
         [self addSubview:heading];
         

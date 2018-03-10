@@ -105,7 +105,7 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
     dispatch_async(dispatch_get_main_queue(), ^{
         CGFloat flipDegree = flip ? 180.0f : 0.0f;
         void (^flipBlock)(void) = ^{
-            self.imageView.transform = CGAffineTransformMakeRotation(flipDegree * M_PI/180);
+            self.imageView.transform = CGAffineTransformMakeRotation((CGFloat)(flipDegree * M_PI/180.0f));
         };
         
         if (animated) [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:flipBlock completion:nil];

@@ -24,7 +24,6 @@ static NSString * _Nullable const kDRMPackage = @"org.thebigboss.coloredvk2";
 
 @interface ColoredVKNewInstaller ()
 
-@property (copy, nonatomic) NSString *deviceModel;
 
 @property (strong, nonatomic) UIWindow *hudWindow;
 @property (weak, nonatomic) ColoredVKHUD *hud;
@@ -84,9 +83,9 @@ NSString *key;
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         if (NSClassFromString(@"Activation") != nil) {
-            _sellerName = @"iapps";
+            self->_sellerName = @"iapps";
         } else if ([self.application.teamIdentifier isEqualToString:@"FL663S8EYD"]) {
-            _sellerName = @"ishmv";
+            self->_sellerName = @"ishmv";
         }
         
         ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
@@ -176,7 +175,7 @@ return;
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         self.hudWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        self.hudWindow.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
+        self.hudWindow.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.2f];
         self.hudWindow.userInteractionEnabled = NO;
         [self.hudWindow makeKeyAndVisible];
         
@@ -244,7 +243,7 @@ return;
     NSDictionary *params = @{@"udid": legacyEncryptServerString(udid), @"package":legacyEncryptServerString(kDRMPackage), 
                              @"version":kPackageRawVersion, @"key": key};
     [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:params 
-                                              success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+                                              success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
                                                   NSLog(@"%@", json);
                                                   if (json[@"response"]) {
                                                       NSDictionary *response = json[@"response"];
@@ -258,7 +257,7 @@ return;
                                                       [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
                                                       
                                                       if (!writingError) {
-                                                          _shouldOpenPrefs = YES;
+                                                          self->_shouldOpenPrefs = YES;
                                                           [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
                                                           CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), 
                                                                                                CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);

@@ -29,7 +29,7 @@ static CGFloat const viewsHeight = 32.0f;
     [super viewDidLoad];
     
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
-    self.scrollView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
+    self.scrollView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.4f];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
     tap.delegate = self;
     [self.scrollView addGestureRecognizer:tap];
@@ -37,23 +37,23 @@ static CGFloat const viewsHeight = 32.0f;
     
     
     self.contentView = [UIView new];
-    self.contentView.frame = CGRectMake(0, 0, self.view.frame.size.width - 60, 120);
+    self.contentView.frame = CGRectMake(0.0f, 0.0f, self.view.frame.size.width - 60.0f, 120.0f);
     self.contentView.layer.masksToBounds = YES;
-    self.contentView.layer.cornerRadius = 6;
+    self.contentView.layer.cornerRadius = 6.0f;
     [self.scrollView addSubview:self.contentView];
     
     
-    CGFloat width = self.view.frame.size.width - 10;
+    CGFloat width = self.view.frame.size.width - 10.0f;
     
-    self.titleLabel.frame = CGRectMake(0, 0, width, viewsHeight * 1.5);
+    self.titleLabel.frame = CGRectMake(0.0f, 0.0f, width, viewsHeight * 1.5f);
     [self.contentView addSubview:self.titleLabel];
     
     
-    self.textField.frame = CGRectMake(0, CGRectGetMaxY(self.titleLabel.frame), width, viewsHeight);
+    self.textField.frame = CGRectMake(0.0f, CGRectGetMaxY(self.titleLabel.frame), width, viewsHeight);
     [self.contentView addSubview:self.textField];
     
     
-    self.button.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, viewsHeight);
+    self.button.frame = CGRectMake(0.0f, CGRectGetMaxY(self.textField.frame), width, viewsHeight);
     [self.contentView addSubview:self.button];
     
     [self setupConstraints];
@@ -91,7 +91,7 @@ static CGFloat const viewsHeight = 32.0f;
     self.button.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[button]-|" options:0 metrics:nil views:@{@"button":self.button}]];
     
-    NSDictionary *verticalMetrics = @{@"titleHeight":@(viewsHeight * 1.5), @"textFieldHeight":@(viewsHeight), @"buttonHeight":@(viewsHeight)};
+    NSDictionary *verticalMetrics = @{@"titleHeight":@(viewsHeight * 1.5f), @"textFieldHeight":@(viewsHeight), @"buttonHeight":@(viewsHeight)};
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[titleLabel(titleHeight)]-[textField(textFieldHeight)]-[button(buttonHeight)]-|" options:0
                                                                              metrics:verticalMetrics
                                                                                views:@{@"titleLabel":self.titleLabel, @"textField":self.textField, @"button":self.button}]];
@@ -100,9 +100,9 @@ static CGFloat const viewsHeight = 32.0f;
     for (NSNumber *number in verticalMetrics.allValues) {
         height += number.floatValue;
     }
-    height += (self.contentView.subviews.count + 1) * 8;
+    height += (self.contentView.subviews.count + 1.0f) * 8.0f;
     
-    CGFloat width = (self.prefferedWidth > 0) ? self.prefferedWidth : CGRectGetWidth(self.contentView.frame);
+    CGFloat width = (self.prefferedWidth > 0.0f) ? self.prefferedWidth : CGRectGetWidth(self.contentView.frame);
     
     self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeCenterX relatedBy:0 toItem:self.scrollView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
@@ -135,10 +135,10 @@ static CGFloat const viewsHeight = 32.0f;
     [super show];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.contentView.alpha = 0.0;
-        self.contentView.transform = CGAffineTransformMakeScale(0.1, 0.1);
+        self.contentView.alpha = 0.0f;
+        self.contentView.transform = CGAffineTransformMakeScale(0.1f, 0.1f);
         
-        [UIView animateWithDuration:0.6 delay:0.0 usingSpringWithDamping:0.8 initialSpringVelocity:15.0 options:0
+        [UIView animateWithDuration:0.6f delay:0.0 usingSpringWithDamping:0.8f initialSpringVelocity:15.0f options:0.0f
                          animations:^{
                              self.contentView.alpha = 1.0;
                              self.contentView.transform = CGAffineTransformIdentity;
@@ -149,19 +149,19 @@ static CGFloat const viewsHeight = 32.0f;
 - (void)hide
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSTimeInterval bounce1Duration = 0.13;
-        NSTimeInterval bounce2Duration = (bounce1Duration * 2.0);
+        NSTimeInterval bounce1Duration = 0.13f;
+        NSTimeInterval bounce2Duration = (bounce1Duration * 2.0f);
         
-        [UIView animateWithDuration:bounce1Duration delay:0 options:UIViewAnimationOptionCurveEaseOut
+        [UIView animateWithDuration:bounce1Duration delay:0.0f options:UIViewAnimationOptionCurveEaseOut
                          animations:^(void){
-                             self.contentView.transform = CGAffineTransformMakeScale(1.1, 1.1);
-                         } completion:^(BOOL finished) {
+                             self.contentView.transform = CGAffineTransformMakeScale(1.1f, 1.1f);
+                         } completion:^(BOOL firstFinished) {
                              
-                             [UIView animateWithDuration:bounce2Duration delay:0  options:UIViewAnimationOptionCurveEaseIn
+                             [UIView animateWithDuration:bounce2Duration delay:0.0f options:UIViewAnimationOptionCurveEaseIn
                                               animations:^(void){
-                                                  self.contentView.alpha = 0.0;
-                                                  self.contentView.transform = CGAffineTransformMakeScale(0.1, 0.1);
-                                              } completion:^(BOOL finished){
+                                                  self.contentView.alpha = 0.0f;
+                                                  self.contentView.transform = CGAffineTransformMakeScale(0.1f, 0.1f);
+                                              } completion:^(BOOL secondFinished){
                                                   [super hide];
                                               }];
                          }];
@@ -215,7 +215,7 @@ static CGFloat const viewsHeight = 32.0f;
     if (!_button) {
         UIButton *button = [[UIButton alloc] initWithFrame:CGRectZero];
         button.layer.masksToBounds = YES;
-        button.layer.cornerRadius = 5;
+        button.layer.cornerRadius = 5.0f;
         button.titleLabel.adjustsFontSizeToFitWidth = YES;
         button.titleLabel.textAlignment = NSTextAlignmentCenter;
         [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];

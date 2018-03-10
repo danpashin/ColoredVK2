@@ -295,7 +295,7 @@
     
     ColoredVKHUD *hud = [ColoredVKHUD showHUDForView:self.view];
     
-    void (^intSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) = ^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+    void (^intSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) = ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
         if (json[@"response"]) {
             NSDictionary *response = json[@"response"];
             NSInteger status = [response[@"status"] integerValue];

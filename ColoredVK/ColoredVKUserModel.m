@@ -16,7 +16,6 @@
 @interface ColoredVKNewInstaller ()
 extern NSString *key;
 
-@property (copy, nonatomic) NSString *deviceModel;
 @property (weak, nonatomic) ColoredVKHUD *hud;
 
 - (void)showHudWithText:(NSString *)text;
@@ -64,7 +63,7 @@ extern NSString *key;
     
     ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:parameters
-                                                      success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+                                                      success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
                                                           if (!json[@"error"]) {
                                                               NSDictionary *response = json[@"response"];
                                                               if ([response isKindOfClass:[NSDictionary class]]) {
@@ -133,7 +132,7 @@ extern NSString *key;
     };
     
     [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters
-                                              success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+                                              success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
                                                   if (!json[@"error"]) {
                                                       NSDictionary *response = json[@"response"];
                                                       if ([response[@"key"] isEqualToString:key]) {

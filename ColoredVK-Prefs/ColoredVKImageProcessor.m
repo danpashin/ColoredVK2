@@ -72,19 +72,19 @@
 {
     @autoreleasepool {
         UIImage *resizedImage = [image copy];
-        size.width = ceilf(size.width);
-        size.height = ceilf(size.height);
+        size.width = ceilf((float)size.width);
+        size.height = ceilf((float)size.height);
         
             //  переворачиваем
         UIGraphicsBeginImageContextWithOptions(resizedImage.size, NO, [UIScreen mainScreen].scale);
         CGContextRef context = UIGraphicsGetCurrentContext();
         
         if (resizedImage.imageOrientation == UIImageOrientationRight) {
-            CGContextRotateCTM (context, 90 * M_PI/180);
+            CGContextRotateCTM (context, (CGFloat)(90 * M_PI/180.0f));
         } else if (resizedImage.imageOrientation == UIImageOrientationLeft) {
-            CGContextRotateCTM (context, -90 * M_PI/180);
+            CGContextRotateCTM (context, (CGFloat)(-90 * M_PI/180.0f));
         } else if (resizedImage.imageOrientation == UIImageOrientationUp) {
-            CGContextRotateCTM (context, 180 * M_PI/180);
+            CGContextRotateCTM (context, (CGFloat)(180 * M_PI/180.0f));
         }
         [resizedImage drawAtPoint:CGPointMake(0, 0)];
         
@@ -101,7 +101,7 @@
         CGFloat scale_ratio = width_ratio > height_ratio ? width_ratio : height_ratio;
         
             //  вписываем в заданный размер
-        CGRect bounds =  CGRectMake(0, 0, round(original_width * scale_ratio), round(original_height * scale_ratio));
+        CGRect bounds =  CGRectMake(0.0f, 0.0f, (CGFloat)round(original_width * scale_ratio), (CGFloat)round(original_height * scale_ratio));
         UIGraphicsBeginImageContextWithOptions(bounds.size, NO, [UIScreen mainScreen].scale);
         [resizedImage drawInRect:bounds];
         resizedImage = UIGraphicsGetImageFromCurrentImageContext();

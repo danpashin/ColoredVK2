@@ -12,14 +12,6 @@
 
 @class MenuCell, VKMMainController, MenuViewController;
 
-typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
-{
-    ColoredVKVersionCompareLess = -1,
-    ColoredVKVersionCompareEqual = 0,
-    ColoredVKVersionCompareMore = 1
-//    ColoredVKVersionCompareMoreOrEqual = ColoredVKVersionCompareEqual|ColoredVKVersionCompareMore,
-//    ColoredVKVersionCompareLessOrEqual = ColoredVKVersionCompareEqual|ColoredVKVersionCompareLess
-};
 
 @interface ColoredVKMainController : NSObject
 
@@ -32,12 +24,12 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 /**
  * Возвращает версию приложения из Info.plist
  */
-@property (readonly, copy, nonatomic) NSString *appVersion;
+//@property (readonly, copy, nonatomic) NSString *appVersion;
 
 /**
  * Возвращает версию приложения с номером билда из Info.plist
  */
-@property (readonly, copy, nonatomic) NSString *appVersionDetailed;
+//@property (readonly, copy, nonatomic) NSString *appVersionDetailed;
 
 @property (strong, nonatomic) MenuCell *menuCell;
 @property (strong, nonatomic) UITableViewCell *settingsCell;
@@ -51,8 +43,8 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 
 - (void)reloadSwitch:(BOOL)on;
 
-- (ColoredVKVersionCompare)compareAppVersionWithVersion:(NSString *)second_version;
-- (ColoredVKVersionCompare)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version;
+//- (ColoredVKVersionCompare)compareAppVersionWithVersion:(NSString *)second_version;
+//- (ColoredVKVersionCompare)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version;
 
 - (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)(void) )handler;
 - (void)actionOpenPreferencesPush:(BOOL)withPush;

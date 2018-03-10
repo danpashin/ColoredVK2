@@ -24,7 +24,7 @@
             NSArray <NSString *> *allKeys = [self.specifier propertyForKey:@"validTitles"];
             NSArray *allValues = [self.specifier propertyForKey:@"validValues"];
             if (allKeys.count > 0 && allValues.count > 0) {
-                for (int i=0; i<allKeys.count; i++) {
+                for (NSUInteger i=0; i<allKeys.count; i++) {
                     @autoreleasepool {
                         PSSpecifier *specifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedStringFromTableInBundle(allKeys[i], @"ColoredVK", self.cvkBundle, nil)
                                                                                 target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:)

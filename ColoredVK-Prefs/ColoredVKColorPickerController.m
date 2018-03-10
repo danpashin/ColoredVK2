@@ -546,7 +546,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if (!textField.text.hexColor) {
-            textField.layer.borderColor = [UIColor colorWithRed:0.8 green:0 blue:0 alpha:1.0].CGColor;
+            textField.layer.borderColor = [UIColor colorWithRed:0.8f green:0.0f blue:0.0f alpha:1.0f].CGColor;
         } else {
             textField.layer.borderColor = [UIColor clearColor].CGColor;
             

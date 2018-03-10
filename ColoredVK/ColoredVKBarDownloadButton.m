@@ -61,7 +61,7 @@
     
     for (NSDictionary *dict in self.downloadInfo) {
         NSString *identifier = dict[@"identifier"];
-        UIAlertAction *action = [UIAlertAction actionWithTitle:CVKLocalizedStringFromTable(dict[@"title"], @"ColoredVK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIAlertAction *downloadAction = [UIAlertAction actionWithTitle:CVKLocalizedStringFromTable(dict[@"title"], @"ColoredVK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             ColoredVKHUD *hud = [ColoredVKHUD showHUD];
             
             ColoredVKImageProcessor *processor = [ColoredVKImageProcessor new];
@@ -78,7 +78,7 @@
                                }
                            }];
         }];
-        [actionController addAction:action image:dict[@"icon"]];
+        [actionController addAction:downloadAction image:dict[@"icon"]];
     }
     
     [actionController presentFromController:self.rootViewController];

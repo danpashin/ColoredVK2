@@ -18,36 +18,36 @@
  *  Отсылает простой запрос на удаленный сервер. Ответ не меняет.
  */
 - (void)sendRequestWithMethod:(NSString *)method url:(NSString *)url parameters:(id)parameters 
-                      success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData))sucess 
-                      failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+                      success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData))sucess 
+                      failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error))failure;
 
 /*
  *  Отсылает запрос с предполагаемым ответом в формате JSON и расшифровывает его при необходимости.
  */
 - (void)sendJSONRequestWithMethod:(NSString *)method stringURL:(NSString *)stringURL parameters:(id)parameters 
-                          success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json))sucess 
-                          failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+                          success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json))sucess 
+                          failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error))failure;
 /*
  *  Отсылает любой запрос на удаленный сервер, указанный в этом запросе.
  */
 - (void)sendRequest:(NSURLRequest *)request 
-            success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData))sucess 
-            failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure;
+            success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData))sucess 
+            failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error))failure;
 
 /*
  *  Загружает данные на удаленный сервер методом POST.
  */
 - (void)uploadData:(NSData *)dataToUpload toRemoteURL:(NSString *)remoteURL 
-           success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))sucess 
-           failure:(void(^)(NSHTTPURLResponse *response, NSError *error))failure;
+           success:(void(^)(NSHTTPURLResponse *httpResponse, NSData *rawData))sucess 
+           failure:(void(^)(NSHTTPURLResponse *httpResponse, NSError *error))failure;
 
 
 /*
  *  Скачивает данные большого объема во временную папку.
  */
 - (void)downloadDataFromURL:(NSString *)stringURL
-                    success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))sucess 
-                    failure:(void(^)(NSHTTPURLResponse *response, NSError *error))failure;
+                    success:(void(^)(NSHTTPURLResponse *httpResponse, NSData *rawData))sucess 
+                    failure:(void(^)(NSHTTPURLResponse *httpResponse, NSError *error))failure;
 
 /*
  *  Формирует запрос из предоставленного URL, параметров и метода.

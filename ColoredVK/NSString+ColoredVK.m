@@ -34,7 +34,7 @@
     int green = 0;
     int blue = 0;
     sscanf(hexString.UTF8String, "#%02X%02X%02X", &red, &green, &blue);
-    return  [UIColor colorWithRed:red/255.0 green:green/255.0 blue:blue/255.0 alpha:1.0];
+    return  [UIColor colorWithRed:red/255.0f green:green/255.0f blue:blue/255.0f alpha:1.0f];
 }
 
 - (BOOL)hexColor
