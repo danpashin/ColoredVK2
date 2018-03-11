@@ -103,18 +103,18 @@
     self.prefsTableView.emptyDataSetSource = self;
     self.prefsTableView.emptyDataSetDelegate = self;
     
-//    if (self.app_is_vk) {
-//        self.nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
-//        
-//        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-//        NSInteger themeType = [prefs[@"nightThemeType"] integerValue];
-//        self.nightThemeColorScheme.enabled = ((themeType != -1) && [prefs[@"enabled"] boolValue]);
-//        if (self.nightThemeColorScheme.enabled) {
-//            [self.nightThemeColorScheme updateForType:themeType];
-//            self.prefsTableView.backgroundColor = self.nightThemeColorScheme.backgroundColor;
-//            self.navigationController.navigationBar.barTintColor = self.nightThemeColorScheme.navbackgroundColor;
-//        }
-//    }
+    if (self.app_is_vk) {
+        self.nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+        
+        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+        NSInteger themeType = [prefs[@"nightThemeType"] integerValue];
+        self.nightThemeColorScheme.enabled = ((themeType != -1) && [prefs[@"enabled"] boolValue]);
+        if (self.nightThemeColorScheme.enabled) {
+            [self.nightThemeColorScheme updateForType:themeType];
+            self.prefsTableView.backgroundColor = self.nightThemeColorScheme.backgroundColor;
+            self.navigationController.navigationBar.barTintColor = self.nightThemeColorScheme.navbackgroundColor;
+        }
+    }
 }
 
 - (void)viewDidLoad
@@ -142,50 +142,50 @@
 
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
 {
-//    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-//    if (value)
-//        [prefs setValue:value forKey:specifier.properties[@"key"]];
-//    else
-//        [prefs removeObjectForKey:specifier.properties[@"key"]];
-//    
-//    [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
-//    
-//    NSArray *identificsToReloadMenu = @[@"enableTweakSwitch", @"menuSelectionStyle", @"hideMenuSeparators", 
-//                                        @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor", 
-//                                        @"showMenuCell", @"menuUseBackgroundBlur"];
-//    
-//    CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-//    
-//    if ([specifier.identifier isEqualToString:@"nightThemeType"]) {
-//        [self updateNightTheme];
-//        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), nil, nil, YES);
-//        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.night.theme"), nil, nil, YES);
-//    }
-//    
-//    CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), nil, nil, YES);
-//    
-//    if ([identificsToReloadMenu containsObject:specifier.identifier] && ![specifier.identifier isEqualToString:@"nightThemeType"])
-//        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), nil, nil, YES);
-//    
-//    if ([specifier.identifier isEqualToString:@"enableTweakSwitch"]) {
-//        [self updateNightTheme];
-//        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.night.theme"), nil, nil, YES);
-//        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.update.corners"), nil, nil, YES);
-//    }
+    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+    if (value)
+        [prefs setValue:value forKey:specifier.properties[@"key"]];
+    else
+        [prefs removeObjectForKey:specifier.properties[@"key"]];
+    
+    [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
+    
+    NSArray *identificsToReloadMenu = @[@"enableTweakSwitch", @"menuSelectionStyle", @"hideMenuSeparators", 
+                                        @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor", 
+                                        @"showMenuCell", @"menuUseBackgroundBlur"];
+    
+    CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
+    
+    if ([specifier.identifier isEqualToString:@"nightThemeType"]) {
+        [self updateNightTheme];
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), nil, nil, YES);
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.night.theme"), nil, nil, YES);
+    }
+    
+    CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), nil, nil, YES);
+    
+    if ([identificsToReloadMenu containsObject:specifier.identifier] && ![specifier.identifier isEqualToString:@"nightThemeType"])
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), nil, nil, YES);
+    
+    if ([specifier.identifier isEqualToString:@"enableTweakSwitch"]) {
+        [self updateNightTheme];
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.night.theme"), nil, nil, YES);
+        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.update.corners"), nil, nil, YES);
+    }
 }
 
 - (void)updateNightTheme
 {
-//    if (!self.app_is_vk)
-//        return;
-//    
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-//            self.prefsTableView.separatorColor = [UIColor clearColor];
-//            self.prefsTableView.backgroundColor = [UIColor colorWithRed:0.937255f green:0.937255f blue:0.956863f alpha:1.0f];
-//            self.navigationController.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
-//        } completion:nil];
-//    });
+    if (!self.app_is_vk)
+        return;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            self.prefsTableView.separatorColor = [UIColor clearColor];
+            self.prefsTableView.backgroundColor = [UIColor colorWithRed:0.937255f green:0.937255f blue:0.956863f alpha:1.0f];
+            self.navigationController.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
+        } completion:nil];
+    });
 }
 
 - (void)reloadSpecifiers
@@ -197,13 +197,8 @@
 
 - (NSString *)vkAppVersion
 {
-    static NSString *version = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-        version = prefs[@"vkVersion"] ? prefs[@"vkVersion"] : CVKLocalizedString(@"UNKNOWN");
-    });
-    return version;
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+    return prefs[@"vkVersion"] ? prefs[@"vkVersion"] : CVKLocalizedString(@"UNKNOWN");
 }
 
 - (NSBundle *)cvkBundle
@@ -284,22 +279,19 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UIColor *backgroundColor = cell.renderedBackroundColor;
-    UIColor *separatorColor = cell.renderedSeparatorColor;
+    [cell renderBackgroundWithColor:nil separatorColor:nil forTableView:tableView indexPath:indexPath];
     
     if (self.app_is_vk && self.nightThemeColorScheme.enabled) {
+        ColoredVKCellBackgroundView *backgroundView = cell.customBackgroundView;
         cell.textLabel.textColor = self.nightThemeColorScheme.textColor;
-        backgroundColor = self.nightThemeColorScheme.foregroundColor;
-        separatorColor = self.nightThemeColorScheme.foregroundColor;
-        cell.renderedHighlightedColor = self.nightThemeColorScheme.backgroundColor;
-        cell.renderedBackroundColor = backgroundColor;
+        backgroundView.backgroundColor = self.nightThemeColorScheme.foregroundColor;
+        backgroundView.separatorColor = self.nightThemeColorScheme.foregroundColor;
+        backgroundView.selectedBackgroundColor = self.nightThemeColorScheme.backgroundColor;
+        
         if ([cell.accessoryView isKindOfClass:NSClassFromString(@"ColoredVKStepperButton")]) {
             ((UILabel *)[cell.accessoryView valueForKey:@"valueLabel"]).textColor = self.nightThemeColorScheme.textColor;
         }
     }
-    
-    [cell renderBackgroundWithColor:backgroundColor separatorColor:separatorColor forTableView:tableView indexPath:indexPath];
-    [cell updateRenderedBackgroundWithBackgroundColor:backgroundColor separatorColor:separatorColor];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

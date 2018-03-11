@@ -258,15 +258,15 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [cell renderBackgroundForTableView:tableView indexPath:indexPath];
+    [cell renderBackgroundWithColor:nil separatorColor:nil forTableView:tableView indexPath:indexPath];
     
     ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
     if (nightScheme.enabled) {
+        ColoredVKCellBackgroundView *backView = cell.customBackgroundView;
+        backView.backgroundColor = nightScheme.foregroundColor;
+        backView.selectedBackgroundColor = nightScheme.backgroundColor;
         cell.backgroundColor = [UIColor clearColor];
         cell.contentView.backgroundColor = [UIColor clearColor];
-        cell.renderedBackroundColor = nightScheme.foregroundColor;
-        cell.renderedHighlightedColor = nightScheme.backgroundColor;
-        [cell updateRenderedBackgroundWithBackgroundColor:nightScheme.foregroundColor separatorColor:nightScheme.backgroundColor];
     }
 }
 
