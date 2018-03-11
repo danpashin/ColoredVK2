@@ -16,7 +16,7 @@
 			<key>label</key>
 			<string>ENABLED</string>
 			<key>icon</key>
-			<string>PowerIcon</string>
+			<string>prefs/PowerIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -34,7 +34,7 @@
 			<key>label</key>
 			<string>NAVIGATION_TOOL_BAR</string>
 			<key>icon</key>
-			<string>BarsIcon</string>
+			<string>prefs/BarsIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -48,7 +48,7 @@
 			<key>label</key>
 			<string>MENU</string>
 			<key>icon</key>
-			<string>MenuIcon</string>
+			<string>prefs/MenuIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -62,7 +62,7 @@
 			<key>label</key>
 			<string>MESSAGES</string>
 			<key>icon</key>
-			<string>DialogsIcon</string>
+			<string>prefs/DialogsIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -74,7 +74,7 @@
 			<key>label</key>
 			<string>DIALOGS</string>
 			<key>icon</key>
-			<string>MessagesIcon</string>
+			<string>prefs/MessagesIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -86,7 +86,7 @@
 			<key>label</key>
 			<string>FRIENDS</string>
 			<key>icon</key>
-			<string>FriendsIcon</string>
+			<string>prefs/FriendsIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -98,7 +98,7 @@
 			<key>label</key>
 			<string>GROUPS</string>
 			<key>icon</key>
-			<string>GroupsIcon.png</string>
+			<string>prefs/GroupsIconAlt</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -110,7 +110,7 @@
 			<key>label</key>
 			<string>VIDEOS</string>
 			<key>icon</key>
-			<string>VideosIcon</string>
+			<string>prefs/VideosIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -122,7 +122,7 @@
 			<key>label</key>
 			<string>AUDIO</string>
 			<key>icon</key>
-			<string>AudioIcon.png</string>
+			<string>prefs/AudioIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -134,7 +134,7 @@
 			<key>label</key>
 			<string>SETTINGS</string>
 			<key>icon</key>
-			<string>SettingsIconAlt</string>
+			<string>prefs/SettingsIconAlt</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -146,7 +146,7 @@
 			<key>label</key>
 			<string>MISCELLANEOUS</string>
 			<key>icon</key>
-			<string>MoreIcon</string>
+			<string>prefs/MoreIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -158,7 +158,7 @@
 			<key>label</key>
 			<string>NIGHT_THEME</string>
 			<key>icon</key>
-			<string>MoonIcon</string>
+			<string>prefs/MoonIcon</string>
 			<key>default</key>
 			<integer>-1</integer>
 			<key>key</key>
@@ -194,7 +194,7 @@
 			<key>label</key>
 			<string>TWEAK_PREFERENCES</string>
 			<key>icon</key>
-			<string>SettingsIcon</string>
+			<string>prefs/SettingsIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -206,7 +206,7 @@
 			<key>label</key>
 			<string>MANAGE_SETTINGS</string>
 			<key>icon</key>
-			<string>RestoreIcon</string>
+			<string>prefs/RestoreIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -220,7 +220,7 @@
 			<key>label</key>
 			<string>MANAGE_ACCOUNT</string>
 			<key>icon</key>
-			<string>UserIcon</string>
+			<string>prefs/infoCardIcon</string>
 			<key>id</key>
 			<string>manageAccount</string>
 		</dict>
@@ -238,7 +238,7 @@
 			<key>label</key>
 			<string>FAQ</string>
 			<key>icon</key>
-			<string>FaqIcon</string>
+			<string>prefs/FaqIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -252,7 +252,7 @@
 			<key>label</key>
 			<string>ABOUT</string>
 			<key>icon</key>
-			<string>AboutIcon</string>
+			<string>prefs/AboutIcon</string>
 		</dict>
 	</array>
 </dict>

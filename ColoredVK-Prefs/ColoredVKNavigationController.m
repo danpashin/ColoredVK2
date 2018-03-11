@@ -63,11 +63,7 @@
     self.navigationBar.translucent = NO;
 #endif
     self.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
-    
-    if (@available(iOS 11.0, *)) {
-        self.navigationBar.prefersLargeTitles = self.prefersLargeTitle;
-        self.navigationBar.largeTitleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
-    }
+    self.prefersLargeTitle = self.prefersLargeTitle;
     
     [self updateNightThemeForController:self];
     [self updateNightThemeForController:self.topViewController];
@@ -84,6 +80,16 @@
     ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
     if (nightScheme.enabled) {
         viewController.view.backgroundColor = nightScheme.backgroundColor;
+    }
+}
+
+- (void)setPrefersLargeTitle:(BOOL)prefersLargeTitle
+{
+    _prefersLargeTitle = prefersLargeTitle;
+    
+    if (@available(iOS 11.0, *)) {
+        self.navigationBar.prefersLargeTitles = prefersLargeTitle;
+        self.navigationBar.largeTitleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
     }
 }
 

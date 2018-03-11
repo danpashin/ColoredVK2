@@ -103,7 +103,7 @@
     UIView *contentAccessoryView = [[UIView alloc] initWithFrame:accessoryViewFrame];
     CGRect imageViewFrame = CGRectMake(14.0f, 0.0f, CGRectGetHeight(accessoryViewFrame), CGRectGetHeight(accessoryViewFrame));
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:imageViewFrame];
-    imageView.image = [UIImage imageNamed:@"CrownIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    imageView.image = [UIImage imageNamed:@"user/CrownIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
     imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     imageView.tintColor = [UIColor colorWithRed:255/255.0f green:156/255.0f blue:60/255.0f alpha:1.0f];
     [contentAccessoryView addSubview:imageView];
@@ -341,7 +341,6 @@
             button.tintColor = [UIColor colorWithRed:235/255.0f green:149/255.0f blue:50/255.0f alpha:1.0f];
             button.text = CVKLocalizedStringInBundle(@"CANNOT_GET_JAIL_PURCHASE_INFO", self.cvkBundle);;
             
-            __weak typeof(UIViewController *) weakRootController = [UIApplication sharedApplication].keyWindow.rootViewController;
             __weak typeof(self) weakSelf = self;
             button.selectHandler = ^{
                 NSString *errorText = CVKLocalizedStringInBundle(@"CANNOT_GET_JAIL_PURCHASE_INFO_DETAIL", weakSelf.cvkBundle);
@@ -349,7 +348,7 @@
                                                                                       preferredStyle:UIAlertControllerStyleAlert];
                 [alert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel 
                                                         handler:^(UIAlertAction *action) {}]];
-                [alert presentFromController:weakRootController];
+                [alert presentFromController:weakSelf];
             };
         }
         

@@ -12,7 +12,7 @@
 			<key>plistToLoad</key>
 			<string>UpdatesSettings</string>
 			<key>icon</key>
-			<string>UpdatesIcon.png</string>
+			<string>prefs/UpdatesIcon</string>
 			<key>label</key>
 			<string>UPDATES_SETTINGS</string>
 		</dict>

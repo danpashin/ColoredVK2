@@ -4,6 +4,6 @@
     "author" : "xcode"
   },
   "properties" : {
-    "compression-type" : "automatic"
+    "provides-namespace" : true
   }
 }

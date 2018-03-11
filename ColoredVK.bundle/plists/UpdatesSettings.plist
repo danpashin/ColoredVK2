@@ -42,7 +42,7 @@
 				<string>EVERY_MONTH</string>
 			</array>
 			<key>icon</key>
-			<string>IntervalIcon.png</string>
+			<string>prefs/IntervalIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -58,7 +58,7 @@
 			<key>action</key>
 			<string>checkForUpdates</string>
 			<key>icon</key>
-			<string>UpdateIcon.png</string>
+			<string>prefs/UpdateIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>

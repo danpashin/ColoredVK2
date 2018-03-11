@@ -446,7 +446,7 @@
                                                     <color key="textColor" red="0.35294117650000001" green="0.50980392159999999" blue="0.70588235290000001" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="LockIcon" id="4E0-dS-Zhv">
+                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="user/LockIcon" id="4E0-dS-Zhv">
                                                     <rect key="frame" x="16" y="11" width="25" height="25"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
@@ -513,7 +513,7 @@
                                                     <color key="textColor" red="0.35294117650000001" green="0.50980392159999999" blue="0.70588235290000001" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="RegisterIcon" id="YdF-QB-rgT">
+                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="user/RegisterIcon" id="YdF-QB-rgT">
                                                     <rect key="frame" x="16" y="11" width="25" height="25"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
@@ -653,7 +653,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LockIcon" width="25" height="25"/>
-        <image name="RegisterIcon" width="25" height="25"/>
+        <image name="user/LockIcon" width="25" height="25"/>
+        <image name="user/RegisterIcon" width="25" height="25"/>
     </resources>
 </document>

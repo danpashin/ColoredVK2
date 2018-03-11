@@ -50,10 +50,10 @@ NSString *key;
 {
     self = [super init];
     if (self) {
-        _networkController = [ColoredVKNetworkController controller];
-        key = legacyEncryptServerString([NSProcessInfo processInfo].globallyUniqueString);
-        _user = [ColoredVKUserModel new];
-        _application = [ColoredVKApplicationModel new];
+//        _networkController = [ColoredVKNetworkController controller];
+//        key = legacyEncryptServerString([NSProcessInfo processInfo].globallyUniqueString);
+//        _user = [ColoredVKUserModel new];
+//        _application = [ColoredVKApplicationModel new];
         
         struct utsname systemInfo;
         uname(&systemInfo);
@@ -81,18 +81,18 @@ NSString *key;
 
 - (void)updateAppInfo
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        if (NSClassFromString(@"Activation") != nil) {
-            self->_sellerName = @"iapps";
-        } else if ([self.application.teamIdentifier isEqualToString:@"FL663S8EYD"]) {
-            self->_sellerName = @"ishmv";
-        }
-        
-        ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
-        updatesController.checkedAutomatically = YES;
-        if (updatesController.shouldCheckUpdates)
-            [updatesController checkUpdates];
-    });
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+//        if (NSClassFromString(@"Activation") != nil) {
+//            self->_sellerName = @"iapps";
+//        } else if ([self.application.teamIdentifier isEqualToString:@"FL663S8EYD"]) {
+//            self->_sellerName = @"ishmv";
+//        }
+//        
+//        ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
+//        updatesController.checkedAutomatically = YES;
+//        if (updatesController.shouldCheckUpdates)
+//            [updatesController checkUpdates];
+//    });
 }
 
 - (void)checkStatus
@@ -122,7 +122,6 @@ return;
         _jailed = YES;
         NSString *licenceUdid = dict[@"udid"];
         NSString *deviceUdid = CFBridgingRelease(MGCopyAnswer(kMGUniqueDeviceID));
-        deviceUdid = @"";
         
         if ((licenceUdid.length < 40) || ((deviceUdid.length >= 40) && ![licenceUdid isEqualToString:deviceUdid])) {
             writeFreeLicenceAndReturn

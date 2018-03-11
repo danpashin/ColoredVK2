@@ -179,8 +179,8 @@
         _securedShowButton.accessibilityLabel = CVKLocalizedString(@"SHOW_HIDE_PASSWORD");
         
         NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-        UIImage *viewIcon = [UIImage imageNamed:@"ViewIcon" inBundle:cvkBundle compatibleWithTraitCollection:nil];
-        UIImage *viewIconSelected = [UIImage imageNamed:@"ViewIcon-selected" inBundle:cvkBundle compatibleWithTraitCollection:nil];
+        UIImage *viewIcon = [UIImage imageNamed:@"user/ViewIcon" inBundle:cvkBundle compatibleWithTraitCollection:nil];
+        UIImage *viewIconSelected = [UIImage imageNamed:@"user/ViewIcon-selected" inBundle:cvkBundle compatibleWithTraitCollection:nil];
         [_securedShowButton setImage:viewIcon forState:UIControlStateNormal];
         [_securedShowButton setImage:viewIconSelected forState:UIControlStateSelected];
     }

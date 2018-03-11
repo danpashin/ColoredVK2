@@ -8,8 +8,6 @@
 
 
 #import "ColoredVKHeaderView.h"
-#import "UIColor+ColoredVK.h"
-#import "NSString+ColoredVK.h"
 
 @implementation ColoredVKHeaderView
 
@@ -34,7 +32,7 @@
         subtitle.font = [UIFont systemFontOfSize:14.0];
         subtitle.text = @"Change your VK App sense!";
         subtitle.backgroundColor = [UIColor clearColor];
-        subtitle.textColor = @"348AC7".hexColorValue;
+        subtitle.textColor = [UIColor colorWithRed:52/255.0f green:138/255.0f blue:199/255.0f alpha:1.0f];
         subtitle.textAlignment = heading.textAlignment;
         [self addSubview:subtitle];
         

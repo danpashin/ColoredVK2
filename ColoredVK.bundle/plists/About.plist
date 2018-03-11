@@ -10,7 +10,7 @@
 			<key>cell</key>
 			<string>PSButtonCell</string>
 			<key>icon</key>
-			<string>AuthorIcon</string>
+			<string>prefs/AuthorIcon</string>
 			<key>action</key>
 			<string>openDeveloperProfile</string>
 		</dict>
@@ -26,7 +26,7 @@
 			<key>action</key>
 			<string>showTextController:</string>
 			<key>icon</key>
-			<string>CopyrightIcon.png</string>
+			<string>prefs/CopyrightIcon.png</string>
 			<key>fileName</key>
 			<string>Libraries</string>
 		</dict>
@@ -40,7 +40,7 @@
 			<key>fileName</key>
 			<string>Confidence</string>
 			<key>icon</key>
-			<string>PrivacyIcon</string>
+			<string>prefs/PrivacyIcon</string>
 			<key>localized</key>
 			<true/>
 		</dict>

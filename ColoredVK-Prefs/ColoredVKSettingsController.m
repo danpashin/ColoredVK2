@@ -11,6 +11,7 @@
 #import "ColoredVKHUD.h"
 #import "SSZipArchive.h"
 #import "ColoredVKAlertController.h"
+#import "ColoredVKNewInstaller.h"
 
 @implementation ColoredVKSettingsController
 
@@ -211,6 +212,7 @@
             NSFileManager *fileManager = [NSFileManager defaultManager];
             [fileManager removeItemAtPath:CVK_PREFS_PATH error:&error];
             [fileManager removeItemAtPath:CVK_FOLDER_PATH error:&error];
+            [[ColoredVKNewInstaller sharedInstaller] createFolders];
             
             error ? [hud showFailure] : [hud showSuccess];
             

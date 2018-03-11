@@ -21,16 +21,6 @@
              parallaxEffect:(BOOL)parallaxEffect blurBackground:(BOOL)blurBackground;
 + (void)forceUpdateTableView:(UITableView *)tableView withBlackout:(CGFloat)blackout blurBackground:(BOOL)blurBackground;
 
-/**
- * Возвращает версию приложения из Info.plist
- */
-//@property (readonly, copy, nonatomic) NSString *appVersion;
-
-/**
- * Возвращает версию приложения с номером билда из Info.plist
- */
-//@property (readonly, copy, nonatomic) NSString *appVersionDetailed;
-
 @property (strong, nonatomic) MenuCell *menuCell;
 @property (strong, nonatomic) UITableViewCell *settingsCell;
 @property (strong, nonatomic) ColoredVKAudioCover *audioCover;
@@ -42,9 +32,6 @@
 
 
 - (void)reloadSwitch:(BOOL)on;
-
-//- (ColoredVKVersionCompare)compareAppVersionWithVersion:(NSString *)second_version;
-//- (ColoredVKVersionCompare)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version;
 
 - (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)(void) )handler;
 - (void)actionOpenPreferencesPush:(BOOL)withPush;

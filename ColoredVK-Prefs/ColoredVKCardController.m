@@ -162,7 +162,9 @@
     cell.bottomButton.layer.borderColor = card.buttonTintColor.CGColor;
     [cell.bottomButton setTitle:card.buttonText forState:UIControlStateNormal];
     [cell.bottomButton setTitleColor:card.buttonTintColor forState:UIControlStateNormal];
-    [cell.bottomButton addTarget:card.buttonTarget action:card.buttonAction forControlEvents:UIControlEventTouchUpInside];
+    
+    if (card.buttonTarget && card.buttonAction)
+        [cell.bottomButton addTarget:card.buttonTarget action:card.buttonAction forControlEvents:UIControlEventTouchUpInside];
     
     cell.backgroundImageView.image = card.backgroundImage;
     cell.backgroundImageView.alpha = card.backgroundImageAlpha;

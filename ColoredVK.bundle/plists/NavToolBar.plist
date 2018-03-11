@@ -20,7 +20,7 @@
 			<key>label</key>
 			<string>CHANGE_COLORS</string>
 			<key>icon</key>
-			<string>TopBarSelectedIcon.png</string>
+			<string>prefs/TopBarSelectedIcon</string>
 		</dict>
 		<dict>
 			<key>action</key>
@@ -62,7 +62,7 @@
 			<key>id</key>
 			<string>barImage</string>
 			<key>icon</key>
-			<string>PhotosIcon</string>
+			<string>prefs/PhotosIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -112,7 +112,7 @@
 			<key>label</key>
 			<string>CHANGE_COLORS</string>
 			<key>icon</key>
-			<string>BottomBarSelectedIcon.png</string>
+			<string>prefs/BottomBarSelectedIcon</string>
 		</dict>
 		<dict>
 			<key>action</key>

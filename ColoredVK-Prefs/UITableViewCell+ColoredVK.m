@@ -93,6 +93,7 @@
             [layer addSublayer:lineLayer];
         }
         
+        
         UIGraphicsBeginImageContextWithOptions(layer.frame.size, NO, [UIScreen mainScreen].scale);
         [layer renderInContext:UIGraphicsGetCurrentContext()];
         UIImage *backgroundImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -100,6 +101,7 @@
         
         
         UIImageView *backgroundView = [[UIImageView alloc] initWithFrame:bounds];
+//        [backgroundView.layer addSublayer:layer];
         backgroundView.image = [backgroundImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         backgroundView.tintColor = backgroundColor;
         backgroundView.contentMode = UIViewContentModeScaleToFill;

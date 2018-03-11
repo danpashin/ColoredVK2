@@ -23,12 +23,12 @@
 
 @implementation ColoredVKMainPrefsController
 
-NSArray <NSString *> *specifiersToEnable;
+NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
 
 - (NSArray *)specifiers
 {
     if (!_specifiers) {
-        NSMutableArray *specifiersArray = [self specifiersForPlistName:@"Main" localize:NO].mutableCopy;
+        NSMutableArray *specifiersArray = [self specifiersForPlistName:@"Main" localize:YES].mutableCopy;
         
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
         
@@ -42,7 +42,7 @@ NSArray <NSString *> *specifiersToEnable;
         
         for (PSSpecifier *specifier in specifiersArray) {
             @autoreleasepool {
-                if (![specifiersToEnable containsObject:specifier.identifier] && shouldDisable) {
+                if (specifier.identifier && ![cvkPrefsEnabledSpecifiers containsObject:specifier.identifier] && shouldDisable) {
                     [specifier setProperty:@NO forKey:@"enabled"];
                 } else {
                     [specifier setProperty:@YES forKey:@"enabled"];
@@ -66,18 +66,11 @@ NSArray <NSString *> *specifiersToEnable;
 {
     [super loadView];
     
-    specifiersToEnable = @[@"enableTweakSwitch", @"navToolBarPrefsLink", @"menuPrefsLink", 
-                           @"messagesPrefsLink", @"manageAccount", @"aboutPrefsLink",
-                           @"tweakPrefsLink", @"faqLink"];
+    cvkPrefsEnabledSpecifiers = @[@"enableTweakSwitch", @"navToolBarPrefsLink", @"menuPrefsLink", 
+                                  @"messagesPrefsLink", @"manageAccount", @"aboutPrefsLink",
+                                  @"tweakPrefsLink", @"faqLink"];
     
-    self.prefsTableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.prefsTableView];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadSpecifiers) name:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
-    
-    
-    ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
-    if (updatesController.shouldCheckUpdates)
-        [updatesController checkUpdates];
+    self.prefsTableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.prefsTableView];   
 }
 
 - (void)viewDidLoad
@@ -85,6 +78,16 @@ NSArray <NSString *> *specifiersToEnable;
     [super viewDidLoad];
     
     self.navigationItem.title = @"";
+    
+    __weak typeof(self) weakSelf = self;
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil 
+                                                       queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+                                                           [weakSelf reloadSpecifiers];
+                                                       }];
+    
+    ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
+    if (updatesController.shouldCheckUpdates)
+        [updatesController checkUpdates];
 }
 
 - (UIView *)freeVersionFooter

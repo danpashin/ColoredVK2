@@ -28,6 +28,7 @@ FOUNDATION_EXPORT void(^installerCompletionBlock)(BOOL purchased);
 @property (assign, nonatomic, readonly) BOOL jailed;
 @property (assign, nonatomic, readonly) BOOL shouldOpenPrefs;
 
+- (void)createFolders;
 - (void)checkStatus;
 - (void)actionPurchase;
 

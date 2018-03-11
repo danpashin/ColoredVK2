@@ -33,7 +33,7 @@
 
 - (instancetype)initWithURL:(NSString *)url rootController:(UIViewController *)controller
 {
-    UIImage *downloadIcon = [UIImage imageNamed:@"downloadCloudIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
+    UIImage *downloadIcon = [UIImage imageNamed:@"vkapp/downloadCloudIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
     self = [super initWithImage:downloadIcon style:UIBarButtonItemStylePlain target:self action:@selector(actionDownloadImage)];
     if (self)  {
         _url = url;
@@ -54,29 +54,31 @@
 
 - (void)actionDownloadImage
 {
-    if (self.urlBlock && !self.url) self.url = self.urlBlock(); 
+    if (self.urlBlock && !self.url)
+        self.url = self.urlBlock(); 
     
     ColoredVKAlertController *actionController = [ColoredVKAlertController alertControllerWithTitle:@"" message:CVKLocalizedString(@"SET_THIS_IMAGE_TO") preferredStyle:UIAlertControllerStyleActionSheet];
     [actionController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
     
     for (NSDictionary *dict in self.downloadInfo) {
         NSString *identifier = dict[@"identifier"];
-        UIAlertAction *downloadAction = [UIAlertAction actionWithTitle:CVKLocalizedStringFromTable(dict[@"title"], @"ColoredVK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        NSString *title = CVKLocalizedStringFromTable(dict[@"title"], @"ColoredVK");
+        UIAlertAction *downloadAction = [UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             ColoredVKHUD *hud = [ColoredVKHUD showHUD];
-            
             ColoredVKImageProcessor *processor = [ColoredVKImageProcessor new];
-            [processor processImageFromURL:[NSURL URLWithString:self.url] identifier:identifier 
-                              andSaveToURL:[NSURL fileURLWithPath:[CVK_FOLDER_PATH stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]]] 
-                           completionBlock:^(BOOL success, NSError *error) {
-                               success ? [hud showSuccess] : [hud showFailureWithStatus:error.localizedDescription];
-                               
-                               [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil 
-                                                                                 userInfo:@{@"identifier" : identifier}];
-                               
-                               if ([identifier isEqualToString:@"menuBackgroundImage"]) {
-                                   CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-                               }
-                           }];
+            
+            NSURL *url = [NSURL URLWithString:self.url];
+            NSURL *urlToSave = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, identifier]];
+            [processor processImageFromURL:url identifier:identifier andSaveToURL:urlToSave completionBlock:^(BOOL success, NSError *error) {
+                success ? [hud showSuccess] : [hud showFailureWithStatus:error.localizedDescription];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil 
+                                                                  userInfo:@{@"identifier" : identifier}];
+                
+                if ([identifier isEqualToString:@"menuBackgroundImage"]) {
+                    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+                }
+            }];
         }];
         [actionController addAction:downloadAction image:dict[@"icon"]];
     }

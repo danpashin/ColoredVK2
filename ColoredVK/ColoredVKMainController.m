@@ -63,7 +63,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         cell.textLabel.textColor = kMenuCellTextColor;
         cell.textLabel.backgroundColor = [UIColor clearColor];
         cell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
-        cell.imageView.image = [UIImage imageNamed:@"VKMenuIconAlt" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
+        cell.imageView.image = [UIImage imageNamed:@"vkapp/VKMenuIconAlt" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
         
         UIView *backgroundView = [UIView new];
         backgroundView.backgroundColor = kMenuCellSelectedColor;
@@ -100,7 +100,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         settingsCell.textLabel.text = @"ColoredVK 2";
         settingsCell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
         
-        UIImage *icon = [UIImage imageNamed:@"VKMenuIconAlt" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
+        UIImage *icon = [UIImage imageNamed:@"vkapp/VKMenuIconAlt" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
         settingsCell.imageView.image = [icon imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         settingsCell.imageView.tintColor = kVKMainColor;
         
@@ -153,16 +153,6 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         });
     }
 }
-
-//- (NSString *)appVersion
-//{
-//    return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-//}
-//
-//- (NSString *)appVersionDetailed
-//{
-//    return [NSString stringWithFormat:@"%@ (%@)", self.appVersion, [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
-//}
 
 - (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)(void) )handler
 {

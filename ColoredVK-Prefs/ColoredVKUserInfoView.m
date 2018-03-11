@@ -32,7 +32,7 @@
     self.avatarImageView.layer.cornerRadius = CGRectGetHeight(self.avatarImageView.frame) / 2.0f;
     self.avatarImageView.layer.masksToBounds = YES;
     
-    self.defaultAvatar = [UIImage imageNamed:@"UserBigIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH]
+    self.defaultAvatar = [UIImage imageNamed:@"user/UserBigIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH]
                            compatibleWithTraitCollection:nil];
     self.avatarImageView.image = self.defaultAvatar;
     

@@ -91,7 +91,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     [self.contentView addSubview:self.contentViewNavigationBar];
     
     UINavigationItem *navItem = self.contentViewNavigationBar.items.firstObject;
-    UIImage *resetImage = [[UIImage imageNamed:@"ResetIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    UIImage *resetImage = [[UIImage imageNamed:@"color_picker/ResetIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     navItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:resetImage style:UIBarButtonItemStylePlain target:self action:@selector(actionResetColor)];
     navItem.leftBarButtonItem.accessibilityLabel = CVKLocalizedStringFromTableInBundle(@"RESET_COLOR", nil, self.cvkBundle);
     
@@ -142,7 +142,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     
     self.saveColorButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.saveColorButton.frame = CGRectMake(CGRectGetMaxX(self.infoView.frame) + 20, CGRectGetMinY(self.infoView.frame), CGRectGetWidth(self.colorPreviewContainer.frame)-(CGRectGetMaxX(self.infoView.frame) + 30), 32);
-    UIImage *plusImage = [UIImage imageNamed:@"SaveIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    UIImage *plusImage = [UIImage imageNamed:@"color_picker/SaveIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
     [self.saveColorButton setImage:plusImage forState:UIControlStateNormal];
     [self.saveColorButton setImage:plusImage forState:UIControlStateSelected];
     [self.saveColorButton setTitle:UIKitLocalizedString(@"Save") forState:UIControlStateNormal];
@@ -470,7 +470,9 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 - (void)actionCopySavedHex
 {
-    [UIPasteboard generalPasteboard].string = [UIColor savedColorForIdentifier:self.identifier].hexStringValue;
+    UIColor *savedColor = [UIColor savedColorForIdentifier:self.identifier];
+    if (savedColor)
+        [UIPasteboard generalPasteboard].string = savedColor.hexStringValue;
 }
 
 - (void)actionSaveColor
@@ -569,7 +571,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 - (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView
 {
-    return [UIImage imageNamed:@"WindowsIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    return [UIImage imageNamed:@"color_picker/WindowsIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
 }
 
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView

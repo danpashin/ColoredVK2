@@ -184,9 +184,9 @@
         }];
         
         ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        [alertController addAction:saveAction image:@"SaveIconAlt"];
-        [alertController addAction:shareAction image:@"ShareIcon"];
-        [alertController addAction:removeAction image:@"RemoveIcon"];
+        [alertController addAction:saveAction image:@"prefs/SaveIconAlt"];
+        [alertController addAction:shareAction image:@"prefs/ShareIcon"];
+        [alertController addAction:removeAction image:@"prefs/RemoveIcon"];
         [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
         [alertController present];
     }
