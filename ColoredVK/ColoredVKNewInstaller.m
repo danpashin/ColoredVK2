@@ -50,10 +50,10 @@ NSString *key;
 {
     self = [super init];
     if (self) {
-//        _networkController = [ColoredVKNetworkController controller];
-//        key = legacyEncryptServerString([NSProcessInfo processInfo].globallyUniqueString);
-//        _user = [ColoredVKUserModel new];
-//        _application = [ColoredVKApplicationModel new];
+        _networkController = [ColoredVKNetworkController controller];
+        key = legacyEncryptServerString([NSProcessInfo processInfo].globallyUniqueString);
+        _user = [ColoredVKUserModel new];
+        _application = [ColoredVKApplicationModel new];
         
         struct utsname systemInfo;
         uname(&systemInfo);
@@ -81,18 +81,18 @@ NSString *key;
 
 - (void)updateAppInfo
 {
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-//        if (NSClassFromString(@"Activation") != nil) {
-//            self->_sellerName = @"iapps";
-//        } else if ([self.application.teamIdentifier isEqualToString:@"FL663S8EYD"]) {
-//            self->_sellerName = @"ishmv";
-//        }
-//        
-//        ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
-//        updatesController.checkedAutomatically = YES;
-//        if (updatesController.shouldCheckUpdates)
-//            [updatesController checkUpdates];
-//    });
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        if (NSClassFromString(@"Activation") != nil) {
+            self->_sellerName = @"iapps";
+        } else if ([self.application.teamIdentifier isEqualToString:@"FL663S8EYD"]) {
+            self->_sellerName = @"ishmv";
+        }
+        
+        ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
+        updatesController.checkedAutomatically = YES;
+        if (updatesController.shouldCheckUpdates)
+            [updatesController checkUpdates];
+    });
 }
 
 - (void)checkStatus
@@ -181,21 +181,17 @@ return;
         self.hud = [ColoredVKHUD showHUDForView:self.hudWindow];
         [self.hud resetWithStatus:text];
         self.hud.dismissByTap = NO;
-        
-        __weak typeof(self) weakSelf = self;
-        self.hud.didHiddenBlock = ^{
-            [weakSelf hideHud];
-        };
     });
 }
 
 - (void)hideHud
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.hud)
-            [self.hud removeFromSuperview];
-        self.hud = nil;
-        self.hudWindow = nil;
+        __weak typeof(self) weakSelf = self;
+        self.hud.didHiddenBlock = ^{
+            weakSelf.hudWindow = nil;
+        };
+        [self.hud hide];
     });
 }
 

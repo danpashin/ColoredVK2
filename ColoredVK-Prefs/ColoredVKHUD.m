@@ -8,6 +8,7 @@
 
 #import "ColoredVKHUD.h"
 #import "ColoredVKNightThemeColorScheme.h"
+#import "LHAcvitityIndicator.h"
 
 @interface LHProgressHUD ()
 - (instancetype)initWithAttachedView:(UIView *)view mode:(LHProgressHUDMode)mode subMode:(LHPRogressHUDSubMode)subMode animated:(BOOL)animated;
@@ -92,6 +93,8 @@
 - (void)hide
 {
     dispatch_async(dispatch_get_main_queue(), ^{
+        if ([self.lhSpinner isKindOfClass:[LHAcvitityIndicator class]])
+            [(LHAcvitityIndicator *)self.lhSpinner updateToInfo:NO];
         [super hide];
     });
 }
@@ -116,4 +119,5 @@
         [super hide];
     }
 }
+
 @end

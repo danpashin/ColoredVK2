@@ -94,7 +94,7 @@ extern NSString *key;
                                                           if (completionBlock) {
                                                               completionBlock();
                                                               
-                                                              [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
+//                                                              [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
                                                           }
                                                       } failure:nil];
 }
@@ -102,18 +102,14 @@ extern NSString *key;
 
 - (void)authWithUsername:(NSString *)userName password:(NSString *)password completionBlock:( void(^)(void) )completionBlock
 {
-    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     if (userName.length == 0 || password.length == 0) {
-        [newInstaller showHudWithText:nil];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [newInstaller.hud showFailureWithStatus:CVKLocalizedString(@"ENTER_CORRECT_LOGIN_PASS")];
-        });
         return;
     }
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     [newInstaller showHudWithText:CVKLocalizedString(@"PLEASE_WAIT")];
     
     NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", newInstaller.deviceModel, 
-                        [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];    
+                        [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];
     NSDictionary *parameters = @{@"login": userName, @"password": password, @"action": @"login", 
                                  @"version": kPackageVersion, @"device": device, @"key": key
                                  };
@@ -121,73 +117,62 @@ extern NSString *key;
     void (^showAlertBlock)(NSError *error) = ^(NSError *error) {
         [newInstaller hideHud];
         
-        if (error) {
-            [newInstaller writeFreeLicence];
-            [newInstaller showAlertWithTitle:CVKLocalizedString(@"ERROR") 
-                                        text:[NSString stringWithFormat:@"%@\n(Client code %@)", error.localizedDescription, @(error.code)] buttons:nil];
-        }
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            if (error) {
+                NSString *text = [NSString stringWithFormat:@"%@\n(Client code %@)", error.localizedDescription, @(error.code)];
+                [newInstaller showAlertWithTitle:CVKLocalizedString(@"ERROR") text:text buttons:nil];
+            }
+            
+            if (completionBlock)
+                completionBlock();
+        });
         
-        if (completionBlock)
-            completionBlock();
     };
     
-    [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters
-                                              success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
-                                                  if (!json[@"error"]) {
-                                                      NSDictionary *response = json[@"response"];
-                                                      if ([response[@"key"] isEqualToString:key]) {
-                                                          [self clearUser];
-                                                          NSMutableDictionary *dict = @{@"Device":newInstaller.deviceModel}.mutableCopy;
-                                                          
-                                                          if (!response[@"login"] || !response[@"user_id"] || !response[@"token"]) {
-                                                              showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain code:101 
-                                                                                             userInfo:@{NSLocalizedDescriptionKey:
-                                                                                                            @"Cannot authenticate. Invalid response."}]);
-                                                              return;
-                                                          }
-                                                          self.name = response[@"login"];
-                                                          self.userID = response[@"user_id"];
-                                                          self.accessToken = response[@"token"];
-                                                          self.authenticated = YES;
-                                                          
-                                                          if (response[@"email"])
-                                                              self.email = response[@"email"];
-                                                          
-                                                          NSNumber *purchased = response[@"purchased"];
-                                                          if (purchased.boolValue)
-                                                              self.accountStatus = ColoredVKUserAccountStatusPaid;
-                                                          
-                                                          dict[@"Login"] = self.name;
-                                                          dict[@"user_id"] = self.userID;
-                                                          dict[@"token"] = self.accessToken;
-                                                          dict[@"purchased"] = purchased;
-                                                          dict[@"email"] = self.email;
-                                                          
-                                                          [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
-                                                          
-                                                          NSError *writingError = nil;
-                                                          NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
-                                                          [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
-                                                          
-                                                          if (!writingError) {
-                                                              showAlertBlock(nil);
-                                                              CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-                                                              
-                                                              if (purchased && installerCompletionBlock) 
-                                                                  installerCompletionBlock(YES);
-                                                          }
-                                                          else showAlertBlock(writingError);
-                                                      } else showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain code:103 
-                                                                                            userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}]);
-                                                  } else {
-                                                      NSString *errorMessages = json ? json[@"error"] : @"Unknown error";
-                                                      showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain code:101 
-                                                                                     userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);
-                                                  }
-                                              } 
-                                              failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                                  showAlertBlock(error);
-                                              }];
+    __weak typeof(self) weakSelf = self;
+    [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
+        if (json[@"error"]) {
+            NSString *errorMessages = json ? json[@"error"] : @"Unknown error";
+            showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain code:101 
+                                           userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);
+            return;
+        }
+        
+        NSDictionary *response = json[@"response"];        
+        if (!response[@"login"] || !response[@"user_id"] || !response[@"token"] || ![response[@"key"] isEqualToString:key]) {
+            showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain 
+                                               code:101 
+                                           userInfo:@{NSLocalizedDescriptionKey:@"Cannot authenticate. Invalid response."}]);
+            return;
+        }
+        
+        NSNumber *purchased = response[@"purchased"];
+        weakSelf.authenticated = YES;
+        weakSelf.name = response[@"login"];
+        weakSelf.userID = response[@"user_id"];
+        weakSelf.accessToken = response[@"token"];
+        weakSelf.email = response[@"email"] ? response[@"email"] : @"";
+        weakSelf.accountStatus = purchased.boolValue ? ColoredVKUserAccountStatusPaid : ColoredVKUserAccountStatusFree;
+        
+        NSDictionary *dict = @{@"Device":newInstaller.deviceModel, @"Login":self.name, @"user_id":self.userID,
+                               @"token":self.accessToken, @"purchased":purchased, @"email":self.email};
+        NSError *writingError = nil;
+        NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
+        [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
+        
+        if (!writingError) {
+            showAlertBlock(nil);
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
+            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+            
+            if (purchased.boolValue && installerCompletionBlock) 
+                installerCompletionBlock(YES);
+        } else 
+            showAlertBlock(writingError);
+        
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+        showAlertBlock(error);
+    }];
 }
 
 

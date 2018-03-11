@@ -119,13 +119,14 @@
         return;
     }
     
+    __weak typeof(self) weakSelf = self;
     [[ColoredVKNewInstaller sharedInstaller].user authWithUsername:self.loginTextField.text password:self.passTextField.text 
                                                    completionBlock:^{
-                                                       if (self.completionBlock)
-                                                           self.completionBlock();
+                                                       if (weakSelf.completionBlock)
+                                                           weakSelf.completionBlock();
                                                        
                                                        if ([ColoredVKNewInstaller sharedInstaller].user.authenticated) {
-                                                           [self dismiss];
+                                                           [weakSelf dismiss];
                                                        }
                                                    }];
 }
