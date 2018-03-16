@@ -47,58 +47,48 @@ extern NSString *key;
 
 - (void)updateAccountInfo:( void(^)(void) )completionBlock
 {
-    if (!self.userID) {
-        [self clearUser];
-        if (completionBlock)
-            completionBlock();
-        return;
-    }
-    
-    if ((self.accountStatus == ColoredVKUserAccountStatusPaid) && completionBlock) {
-        completionBlock();
-    }
-    
-    NSString *url = [NSString stringWithFormat:@"%@/payment/get_info.php", kPackageAPIURL];
-    NSDictionary *parameters = @{@"user_id":self.userID, @"token":self.accessToken};
-    
-    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-    [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:parameters
-                                                      success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
-                                                          if (!json[@"error"]) {
-                                                              NSDictionary *response = json[@"response"];
-                                                              if ([response isKindOfClass:[NSDictionary class]]) {
-                                                                  self.accountStatus = ColoredVKUserAccountStatusFree;
-                                                                  
-                                                                  BOOL purchased = [response[@"is_purchased"] boolValue];
-                                                                  if (purchased)
-                                                                      self.accountStatus = ColoredVKUserAccountStatusPaid;
-                                                                  
-                                                                  BOOL banned = [response[@"is_banned"] boolValue];
-                                                                  if (banned)
-                                                                      self.accountStatus = ColoredVKUserAccountStatusBanned;
-                                                                  
-                                                                  if (response[@"email"])
-                                                                      self.email = response[@"email"];
-                                                                  else
-                                                                      self.email = @"";
-                                                                  
-                                                                  NSData *decryptedData = decryptData([NSData dataWithContentsOfFile:kDRMLicencePath], nil);
-                                                                  NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
-                                                                  dict[@"purchased"] = @(purchased);
-                                                                  dict[@"email"] = self.email;
-                                                                  NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
-                                                                  [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
-                                                              }
-                                                          }
-                                                          
-                                                          if (completionBlock) {
-                                                              completionBlock();
-                                                              
-//                                                              [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
-                                                          }
-                                                      } failure:nil];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        if (!self.userID) {
+            [self clearUser];
+            if (completionBlock)
+                completionBlock();
+            return;
+        }
+        
+        NSString *url = [NSString stringWithFormat:@"%@/payment/get_info.php", kPackageAPIURL];
+        NSDictionary *params = @{@"user_id":self.userID, @"token":self.accessToken};
+        
+        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
+        [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
+            if (json[@"error"])
+                return;
+            
+            NSDictionary *response = json[@"response"];
+            self.accountStatus = ColoredVKUserAccountStatusFree;
+            self.email = response[@"email"] ? response[@"email"] : @"";
+            
+            BOOL purchased = [response[@"is_purchased"] boolValue];
+            if (purchased)
+                self.accountStatus = ColoredVKUserAccountStatusPaid;
+            
+            BOOL banned = [response[@"is_banned"] boolValue];
+            if (banned)
+                self.accountStatus = ColoredVKUserAccountStatusBanned;
+            
+            
+            NSData *decryptedData = decryptData([NSData dataWithContentsOfFile:kDRMLicencePath], nil);
+            NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
+            dict[@"purchased"] = @(purchased);
+            dict[@"email"] = self.email;
+            NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
+            [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
+            if (completionBlock)
+                completionBlock();
+        } failure:nil];
+    });
 }
-
 
 - (void)authWithUsername:(NSString *)userName password:(NSString *)password completionBlock:( void(^)(void) )completionBlock
 {
@@ -129,7 +119,6 @@ extern NSString *key;
         
     };
     
-    __weak typeof(self) weakSelf = self;
     [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
         if (json[@"error"]) {
             NSString *errorMessages = json ? json[@"error"] : @"Unknown error";
@@ -140,19 +129,18 @@ extern NSString *key;
         
         NSDictionary *response = json[@"response"];        
         if (!response[@"login"] || !response[@"user_id"] || !response[@"token"] || ![response[@"key"] isEqualToString:key]) {
-            showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain 
-                                               code:101 
+            showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain code:101 
                                            userInfo:@{NSLocalizedDescriptionKey:@"Cannot authenticate. Invalid response."}]);
             return;
         }
         
         NSNumber *purchased = response[@"purchased"];
-        weakSelf.authenticated = YES;
-        weakSelf.name = response[@"login"];
-        weakSelf.userID = response[@"user_id"];
-        weakSelf.accessToken = response[@"token"];
-        weakSelf.email = response[@"email"] ? response[@"email"] : @"";
-        weakSelf.accountStatus = purchased.boolValue ? ColoredVKUserAccountStatusPaid : ColoredVKUserAccountStatusFree;
+        self.authenticated = YES;
+        self.name = response[@"login"];
+        self.userID = response[@"user_id"];
+        self.accessToken = response[@"token"];
+        self.email = response[@"email"] ? response[@"email"] : @"";
+        self.accountStatus = purchased.boolValue ? ColoredVKUserAccountStatusPaid : ColoredVKUserAccountStatusFree;
         
         NSDictionary *dict = @{@"Device":newInstaller.deviceModel, @"Login":self.name, @"user_id":self.userID,
                                @"token":self.accessToken, @"purchased":purchased, @"email":self.email};
@@ -201,23 +189,21 @@ extern NSString *key;
                                  @"version": kPackageVersion, @"device": device, @"key": key
                                  };
     
-    [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters 
-                                                      success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
-                                                          if (!json[@"error"]) {
-                                                              [newInstaller writeFreeLicence];
-                                                              newCompletionBlock(nil);
-                                                              self.authenticated = NO;
-                                                              if (installerCompletionBlock)
-                                                                  installerCompletionBlock(NO);
-                                                              [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
-                                                          } else {
-                                                              NSString *errorMessages = json ? json[@"error"] : @"Unknown error";
-                                                              newCompletionBlock([NSError errorWithDomain:NSCocoaErrorDomain code:102 userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);
-                                                          }
-                                                      } 
-                                                      failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                                          newCompletionBlock(error);
-                                                      }];
+    [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+        if (!json[@"error"]) {
+            [newInstaller writeFreeLicence];
+            newCompletionBlock(nil);
+            self.authenticated = NO;
+            if (installerCompletionBlock)
+                installerCompletionBlock(NO);
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
+        } else {
+            NSString *errorMessages = json ? json[@"error"] : @"Unknown error";
+            newCompletionBlock([NSError errorWithDomain:NSCocoaErrorDomain code:102 userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);
+        }
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+        newCompletionBlock(error);
+    }];
 }
 
 @end

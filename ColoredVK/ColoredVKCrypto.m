@@ -49,13 +49,15 @@ static NSString *encryptionKey()
     dispatch_once(&onceToken, ^{
         uint64_t ramSize;
         size_t len = sizeof(ramSize);
-        sysctlbyname("hw.memsize", &ramSize, &len, NULL, 0);
+        int memSizeName[] = {CTL_HW, HW_MEMSIZE};
+        sysctl(memSizeName, 2, &ramSize, &len, NULL, 0);
         
         char machine[256];
         len = sizeof(machine);
-        sysctlbyname("hw.machine", &machine, &len, NULL, 0);
+        int machineName[] = {CTL_HW, HW_MACHINE};
+        sysctl(machineName, 2, &machine, &len, NULL, 0);
         
-        NSString *string = [NSString stringWithFormat:@"device=%s&ramSize=%llu", machine, ramSize];
+        NSString *string = [NSString stringWithFormat:@"d=%s&r=%llu", machine, ramSize];
         NSData *keyData = [kColoredVKServerKey dataUsingEncoding:NSUTF8StringEncoding];
         NSData *encData = [string dataUsingEncoding:NSUTF8StringEncoding];
         NSMutableData *signatureData = [NSMutableData dataWithLength:CC_SHA512_DIGEST_LENGTH];

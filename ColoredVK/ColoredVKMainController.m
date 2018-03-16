@@ -114,6 +114,8 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     if (!cvkBundle.loaded) [cvkBundle load];
     UIViewController *cvkPrefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
+    if (!cvkPrefs)
+        return;
     
     if ([[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"] >= 0)
         withPush = YES;

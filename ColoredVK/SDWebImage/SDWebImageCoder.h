@@ -20,7 +20,13 @@ FOUNDATION_EXPORT NSString * _Nonnull const SDWebImageCoderScaleDownLargeImagesK
 
  @return The device-dependent RGB color space
  */
+
+CF_IMPLICIT_BRIDGING_ENABLED
+
 CG_EXTERN CGColorSpaceRef _Nonnull SDCGColorSpaceGetDeviceRGB(void);
+
+CF_IMPLICIT_BRIDGING_DISABLED
+
 
 /**
  Check whether CGImageRef contains alpha channel.

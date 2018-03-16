@@ -61,7 +61,7 @@
 
 static NSString * _Nullable const kPackageIdentifier = @"com.daniilpashin.coloredvk2";
 static NSString * _Nullable const kPackageName = @"ColoredVK 2";
-static NSString * _Nullable const kPackageRawVersion = @"4.3.3";
+static NSString * _Nullable const kPackageVersion = @"4.3.5";
 
 static NSString * _Nullable const kPackageAPIURL = @"https://api.danpashin.ru/v1.2";
 static NSString * _Nullable const kPackageDevLink = @"https://vk.com/danpashin";
@@ -69,10 +69,4 @@ static NSString * _Nullable const kPackageAccountRegisterLink = @"https://danpas
 static NSString * _Nullable const kPackageFaqLink = @"https://danpashin.ru/projects/coloredvk/faq.html";
 static NSString * _Nullable const kPackagePurchaseLink = @"https://danpashin.ru/projects/coloredvk/purchase/";
 
-
-#if !defined(COMPILE_FOR_JAIL) && !defined(COMPILE_APP)
-#define kPackageVersion [kPackageRawVersion stringByAppendingString:@"-theux"]
-#else
-#define kPackageVersion kPackageRawVersion
-#endif
 

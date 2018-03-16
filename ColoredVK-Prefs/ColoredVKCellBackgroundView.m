@@ -13,6 +13,8 @@
 @property (strong, nonatomic) CAShapeLayer *backgroundLayer;
 @property (strong, nonatomic) CALayer *separatorLayer;
 
+@property (assign, nonatomic) CGRect backgroundFrame;
+
 @end
 
 @implementation ColoredVKCellBackgroundView
@@ -48,26 +50,35 @@
         return;
     
     self.rendered = YES;
-    CGFloat cornerRadius = 10.f;
-    CGRect bounds = CGRectInset(self.bounds, 8.0f, 0.0f);
     
     self.backgroundLayer = [CAShapeLayer layer];
     self.backgroundLayer.frame = self.bounds;
-    self.backgroundLayer.fillColor = self.backgroundColor.CGColor;
     [self.layer addSublayer:self.backgroundLayer];
-        
+    
+    self.separatorLayer = [CALayer layer];
+    self.separatorLayer.backgroundColor = self.separatorColor.CGColor;
+    [self.backgroundLayer addSublayer:self.separatorLayer];
+    
+    [self drawBackground];
+}
+
+- (void)drawBackground
+{
+    CGFloat cornerRadius = 10.f;
+    CGRect bounds = self.backgroundFrame;
+    BOOL drawSeparator = YES;
     CGMutablePathRef pathRef = CGPathCreateMutable();
     
-    BOOL addSeparatorLine = YES;
     if (self.indexPath.row == 0 && self.indexPath.row == [self.tableView numberOfRowsInSection:self.indexPath.section]-1) {
         CGPathAddRoundedRect(pathRef, nil, bounds, cornerRadius, cornerRadius);
-        addSeparatorLine = NO;
+        drawSeparator = NO;
     } else if (self.indexPath.row == 0) {
         CGPathMoveToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMaxY(bounds));
         CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMinY(bounds), CGRectGetMidX(bounds), CGRectGetMinY(bounds), cornerRadius);
         CGPathAddArcToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMinY(bounds), CGRectGetMaxX(bounds), CGRectGetMidY(bounds), cornerRadius);
         CGPathAddLineToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMaxY(bounds));
     } else if (self.indexPath.row == [self.tableView numberOfRowsInSection:self.indexPath.section]-1) {
+        drawSeparator = NO;
         CGPathMoveToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMinY(bounds));
         CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMaxY(bounds), CGRectGetMidX(bounds), CGRectGetMaxY(bounds), cornerRadius);
         CGPathAddArcToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMaxY(bounds), CGRectGetMaxX(bounds), CGRectGetMidY(bounds), cornerRadius);
@@ -75,14 +86,16 @@
     } else {
         CGPathAddRect(pathRef, nil, bounds);
     }
+    self.backgroundLayer.fillColor = self.backgroundColor.CGColor;
+    self.backgroundLayer.frame = self.bounds;
     self.backgroundLayer.path = pathRef;
     CFRelease(pathRef);
     
-    if (addSeparatorLine) {
-        self.separatorLayer = [CALayer layer];
-        self.separatorLayer.frame = CGRectMake(CGRectGetMinX(bounds) + 8.0f, 0.0f, CGRectGetWidth(bounds) - 16.0f, 1.0f / [UIScreen mainScreen].scale);
+    if (drawSeparator) {
+        CGFloat separatorHeight = 0.5f; // 1.0f / [UIScreen mainScreen].scale;
+        self.separatorLayer.frame = CGRectMake(CGRectGetMinX(self.backgroundFrame), CGRectGetMaxY(self.backgroundFrame) - separatorHeight / 2, 
+                                               CGRectGetWidth(self.backgroundFrame), separatorHeight);
         self.separatorLayer.backgroundColor = self.separatorColor.CGColor;
-        [self.backgroundLayer addSublayer:self.separatorLayer];
     }
 }
 
@@ -94,13 +107,11 @@
 - (void)setFrame:(CGRect)frame
 {
     super.frame = frame;
-    self.backgroundLayer.frame = CGRectMake(0.0f, 0.0f, CGRectGetWidth(frame), CGRectGetHeight(frame));
     
-    CGRect bounds = CGRectInset(self.backgroundLayer.frame, 8.0f, 0.0f);
-    CGRect separatorLayerFrame = self.separatorLayer.frame;
-    separatorLayerFrame.origin.x = CGRectGetMinX(bounds) + 8.0f;
-    separatorLayerFrame.size.width = CGRectGetWidth(bounds) - 16.0f;
-    self.separatorLayer.frame = separatorLayerFrame;
+    CGRect bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(frame), CGRectGetHeight(frame));
+    self.backgroundFrame = CGRectInset(bounds, 8.0f, 0.0f);
+    
+    [self drawBackground];
 }
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor
@@ -109,7 +120,7 @@
     if (!self.backgroundLayer)
         return;
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
         self.backgroundLayer.fillColor = self.backgroundColor.CGColor;
     });
 }
@@ -120,9 +131,7 @@
     if (!self.separatorLayer)
         return;
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        self.separatorLayer.backgroundColor = self.separatorColor.CGColor;
-    });
+    self.separatorLayer.backgroundColor = self.separatorColor.CGColor;
 }
 
 

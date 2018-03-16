@@ -20,7 +20,7 @@
 @end
 
 
-BOOL tweakEnabled = NO;
+BOOL premiumEnabled = NO;
 BOOL VKSettingsEnabled;
 
 BOOL enableNightTheme;
@@ -280,7 +280,7 @@ void reloadPrefs()
     showFastDownloadButton = prefs[@"showFastDownloadButton"] ? [prefs[@"showFastDownloadButton"] boolValue] : YES;
     showMenuCell = prefs[@"showMenuCell"] ? [prefs[@"showMenuCell"] boolValue] : YES;
     
-    if (prefs && tweakEnabled) {
+    if (prefs && premiumEnabled) {
         
         enableNightTheme = prefs[@"nightThemeType"] ? ([prefs[@"nightThemeType"] integerValue] != -1) : NO;
         [cvkMainController.nightThemeScheme updateForType:[prefs[@"nightThemeType"] integerValue]];
@@ -414,7 +414,7 @@ CHDeclareMethod(2, BOOL, AppDelegate, application, UIApplication*, application, 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
         installerCompletionBlock = ^(BOOL purchased) {
-            tweakEnabled = purchased;
+            premiumEnabled = purchased;
             reloadPrefs();
         };
         [newInstaller checkStatus];
@@ -3008,7 +3008,10 @@ CHDeclareMethod(2, id, VKSession, initWithUserId, NSNumber *, userID, andToken, 
 
 CHConstructor
 {
+    
     @autoreleasepool {
+        
+        
 //        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
         
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];

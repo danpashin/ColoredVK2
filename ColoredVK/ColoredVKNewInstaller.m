@@ -16,6 +16,7 @@
 #import "ColoredVKAlertController.h"
 #import "ColoredVKUpdatesController.h"
 #import <MobileGestalt.h>
+#include <mach-o/dyld.h>
 
 static NSString * _Nullable const kDRMPackage = @"org.thebigboss.coloredvk2";
 #define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
@@ -101,7 +102,22 @@ NSString *key;
 [self writeFreeLicence];\
 return;
     
-    if (![[NSFileManager defaultManager] fileExistsAtPath:kDRMLicencePath]) {
+#ifndef COMPILE_APP
+    NSString *bundleID = [NSBundle mainBundle].bundleIdentifier.lowercaseString;
+    NSUInteger maxCVKLibsCount = [bundleID containsString:@"vkclient"] ? 2 : 1;
+    NSUInteger cvkLibsCount = 0;
+    for (uint32_t i=0; i<_dyld_image_count(); i++) {
+        if (strstr(_dyld_get_image_name(i), "ColoredVK") != nil) {
+            cvkLibsCount++;
+            
+        }
+    }
+    
+    if (cvkLibsCount != maxCVKLibsCount)
+        return;
+#endif
+    
+    if (access(kDRMLicencePath.UTF8String, F_OK) == -1) {
         writeFreeLicenceAndReturn
     }
  
@@ -113,7 +129,7 @@ return;
     }
     
 #ifndef COMPILE_APP
-    if (![dict[@"Device"] isEqualToString:self.deviceModel]) {
+    if (![dict[@"Device"] isEqualToString:_deviceModel]) {
         writeFreeLicenceAndReturn
     }
 #endif
@@ -187,9 +203,8 @@ return;
 - (void)hideHud
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        __weak typeof(self) weakSelf = self;
         self.hud.didHiddenBlock = ^{
-            weakSelf.hudWindow = nil;
+            self.hudWindow = nil;
         };
         [self.hud hide];
     });
@@ -202,15 +217,16 @@ return;
 
 - (void)actionPurchase
 {
-    if (self.user.userID) {
-        ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
-        
-        NSDictionary *params = @{@"user_id" :self.user.userID, @"profile_team_id": self.application.teamIdentifier, @"from": self.sellerName};
-        webController.request = [self.networkController requestWithMethod:@"POST" URLString:kPackagePurchaseLink parameters:params error:nil];
-        [webController present];  
-    } else {
+    if (!self.user.userID) {
         [self showAlertWithTitle:CVKLocalizedString(@"WARNING") text:CVKLocalizedString(@"ENTER_ACCOUNT_FIRST") buttons:nil];
+        return;
     }
+    
+    ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
+    
+    NSDictionary *params = @{@"user_id" :self.user.userID, @"profile_team_id": self.application.teamIdentifier, @"from": self.sellerName};
+    webController.request = [self.networkController requestWithMethod:@"POST" URLString:kPackagePurchaseLink parameters:params error:nil];
+    [webController present];  
 }
 
 - (void)writeFreeLicence
@@ -236,31 +252,31 @@ return;
         return;
     
     NSDictionary *params = @{@"udid": legacyEncryptServerString(udid), @"package":legacyEncryptServerString(kDRMPackage), 
-                             @"version":kPackageRawVersion, @"key": key};
-    [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:params 
-                                              success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
-                                                  NSLog(@"%@", json);
-                                                  if (json[@"response"]) {
-                                                      NSDictionary *response = json[@"response"];
-                                                      
-                                                      if (![response[@"key"] isEqualToString:key] || ![response[@"udid"] isEqualToString:udid])
-                                                          return;
-                                                      
-                                                      NSDictionary *dict = @{@"Device":self.deviceModel, @"udid":udid, @"jailed":@YES, @"purchased":@YES};
-                                                      NSError *writingError = nil;
-                                                      NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
-                                                      [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
-                                                      
-                                                      if (!writingError) {
-                                                          self->_shouldOpenPrefs = YES;
-                                                          [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
-                                                          CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), 
-                                                                                               CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-                                                          if (installerCompletionBlock) 
-                                                              installerCompletionBlock(YES);
-                                                      }
-                                                  }
-                                              } failure:nil];
+                             @"version":kPackageVersion, @"key": key};
+    [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
+        if (!json[@"response"])
+            return;
+        
+        NSDictionary *response = json[@"response"];
+        
+        if (![response[@"key"] isEqualToString:key] || ![response[@"udid"] isEqualToString:udid])
+            return;
+        
+        NSDictionary *dict = @{@"Device":self.deviceModel, @"udid":udid, @"jailed":@YES, @"purchased":@YES};
+        NSError *writingError = nil;
+        NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
+        [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
+        
+        if (writingError)
+            return;
+        
+        self->_shouldOpenPrefs = YES;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), 
+                                             CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+        if (installerCompletionBlock) 
+            installerCompletionBlock(YES);
+    } failure:nil];
 }
 
 @end
