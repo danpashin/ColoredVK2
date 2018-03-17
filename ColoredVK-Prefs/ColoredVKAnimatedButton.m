@@ -8,6 +8,7 @@
 
 #import "ColoredVKAnimatedButton.h"
 #import "PrefixHeader.h"
+#import <objc/runtime.h>
 
 typedef NS_ENUM(NSUInteger, ColoredVKLayerXPosition) {
     ColoredVKLayerXPositionLeft,
@@ -47,6 +48,9 @@ static const CGFloat kButtonHeightRatio = 1.5f;
 
 - (void)commonInit
 {
+    objc_setAssociatedObject(self, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(self.titleLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+    
     self.layer.masksToBounds = YES;
     
     CGRect leftLayerFrame = CGRectMake(0, 0, CGRectGetWidth(self.frame) + 10.0f, CGRectGetHeight(self.frame) * kButtonHeightRatio);
@@ -95,14 +99,13 @@ static const CGFloat kButtonHeightRatio = 1.5f;
         [UIView animateWithDuration:0.4f delay:0.1f options:options animations:^{
             super.frame = newFrame;
             self.center = origCenter;
-        } completion:^(BOOL firstFinished)  {
+        } completion:^(BOOL finished)  {
+            self.backgroundColor = self.tintColor;
+            self.rightLayer.hidden = YES;
+            self.leftLayer.hidden = YES;
             [UIView animateWithDuration:0.3f delay:0.0f options:options animations:^{
                 self.titleLabel.alpha = 1.0f;
-            } completion:^(BOOL secondFinished)  {
-                self.backgroundColor = self.tintColor;
-                self.rightLayer.hidden = YES;
-                self.leftLayer.hidden = YES;
-            }];
+            } completion:nil];
         }];
     });
 }
@@ -136,8 +139,8 @@ static const CGFloat kButtonHeightRatio = 1.5f;
 - (void)setFrame:(CGRect)frame
 {
     super.frame = frame;
-    self.leftLayer.frame = CGRectMake(0, 0, CGRectGetWidth(frame) + 10.0f, CGRectGetHeight(frame) * kButtonHeightRatio);
-    self.rightLayer.frame = CGRectMake(0, 0, CGRectGetWidth(frame) + 10.0f, CGRectGetHeight(frame) * kButtonHeightRatio);
+    self.leftLayer.frame = CGRectMake(0.0f, 0.0f, CGRectGetWidth(frame) + 10.0f, CGRectGetHeight(frame) * kButtonHeightRatio);
+    self.rightLayer.frame = CGRectMake(0.0f, 0.0f, CGRectGetWidth(frame) + 10.0f, CGRectGetHeight(frame) * kButtonHeightRatio);
 }
 
 - (void)setText:(NSString *)text
@@ -173,8 +176,8 @@ static const CGFloat kButtonHeightRatio = 1.5f;
     CAGradientLayer *layer = [CAGradientLayer layer];
     layer.frame = frame;
     layer.locations = locations;
-    layer.startPoint = CGPointMake(0.0, 0.5);
-    layer.endPoint = CGPointMake(1.0, 0.5);
+    layer.startPoint = CGPointMake(0.0f, 0.5f);
+    layer.endPoint = CGPointMake(1.0f, 0.5f);
     [self updateLayerColors:layer xPosition:xPosition];
     
     return layer;
@@ -194,7 +197,7 @@ static const CGFloat kButtonHeightRatio = 1.5f;
 - (CGRect)titleRectForContentRect:(CGRect)contentRect
 {
     CGRect origRect = [super titleRectForContentRect:contentRect];
-    return CGRectInset(origRect, IS_IPAD ? 6 : 0, 6);
+    return CGRectInset(origRect, IS_IPAD ? 8.0f : 0.0f, 6.0f);
 }
 
 @end

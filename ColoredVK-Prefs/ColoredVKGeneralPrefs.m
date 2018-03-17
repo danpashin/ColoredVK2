@@ -76,7 +76,7 @@
     picker.dataSource = self;
     picker.statusBarNeedsHidden = NO;
     picker.backgroundStyle = ColoredVKWindowBackgroundStyleCustom;
-    picker.app_is_vk = self.app_is_vk;
+    picker.app_is_vk = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
     picker.enableNightTheme = self.nightThemeColorScheme.enabled;
     picker.nightThemeColorScheme = self.nightThemeColorScheme;
     [picker show];
@@ -107,7 +107,7 @@
     if ([identificsToReloadMenu containsObject:colorPicker.identifier])
         CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
     
-    if (self.app_is_vk) {
+    if ([ColoredVKNewInstaller sharedInstaller].application.isVKApp) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.barTintColor = navBar.barTintColor;

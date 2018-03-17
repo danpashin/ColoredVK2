@@ -284,7 +284,7 @@ void reloadPrefs()
         
         enableNightTheme = prefs[@"nightThemeType"] ? ([prefs[@"nightThemeType"] integerValue] != -1) : NO;
         [cvkMainController.nightThemeScheme updateForType:[prefs[@"nightThemeType"] integerValue]];
-        cvkMainController.nightThemeScheme.enabled = enableNightTheme;
+        cvkMainController.nightThemeScheme.enabled = (enabled && enableNightTheme);
         
         if (enableNightTheme && (compareResult == ColoredVKVersionCompareLess)) {
             dispatch_async(dispatch_get_main_queue(), ^{

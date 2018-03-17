@@ -201,7 +201,8 @@
     NSArray *methodsAvailable = @[@"GET", @"POST"];
     if (![methodsAvailable containsObject:method.uppercaseString]) {
         if (error != NULL)
-            *error = [NSError errorWithDomain:NSCocoaErrorDomain code:100 userInfo:@{NSLocalizedDescriptionKey:@"Method is invalid. Must be 'POST' or 'GET'."}];
+            *error = [NSError errorWithDomain:NSCocoaErrorDomain code:100 
+                                     userInfo:@{NSLocalizedDescriptionKey:@"Method is invalid. Must be 'POST' or 'GET'."}];
         return nil;
     }
     
@@ -216,7 +217,8 @@
         [stringParameters appendString:(NSString *)parameters];
     } else if (parameters) {
         if (error != NULL)
-            *error = [NSError errorWithDomain:NSCocoaErrorDomain code:101 userInfo:@{NSLocalizedDescriptionKey:@"Parameters class is invalid. Use NSDictionary or NSString."}];
+            *error = [NSError errorWithDomain:NSCocoaErrorDomain code:101 
+                                     userInfo:@{NSLocalizedDescriptionKey:@"Parameters class is invalid. Use NSDictionary or NSString."}];
         return nil;
     }
     

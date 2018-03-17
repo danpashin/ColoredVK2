@@ -16,7 +16,8 @@
         _teamIdentifier = @"";
         _teamName = @"";
         _version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-        _detailedVersion = [NSString stringWithFormat:@"%@ (%@)", self.version, [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];;
+        _detailedVersion = [NSString stringWithFormat:@"%@ (%@)", self.version, [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
+        _isVKApp = [[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"];
         
         [self updateTeamInformation];
     }
@@ -39,8 +40,10 @@
             NSScanner *scanner = [NSScanner scannerWithString:provisionString];
             [scanner scanUpToString:@"<plist" intoString:nil];
             [scanner scanUpToString:@"</plist>" intoString:&provisionDictString];
-            provisionDictString = [@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n" stringByAppendingString:provisionDictString];
-            provisionDictString = [provisionDictString stringByAppendingString:@"</plist>"];
+            NSMutableString *headerString = [NSMutableString string];
+            [headerString appendString:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"];
+            [headerString appendString:@"<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"];
+            provisionString = [NSString stringWithFormat:@"%@\n%@</plist>", headerString, provisionDictString];
             
             NSString *tempPath = [NSTemporaryDirectory() stringByAppendingString:@"/embedded_mobileprovision.plist"];
             [[provisionDictString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:tempPath atomically:YES];

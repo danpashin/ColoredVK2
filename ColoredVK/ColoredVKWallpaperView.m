@@ -80,11 +80,13 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
     _parallaxEnabled = parallaxEnabled;
     
     if (parallaxEnabled && (self.imageView.motionEffects.count == 0)) {
-        UIInterpolatingMotionEffect *verticalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y" type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
+        UIInterpolatingMotionEffect *verticalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y"
+                                                                                                            type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
         verticalMotionEffect.minimumRelativeValue = @(-PARALLAX_EFFECT_VALUE);
         verticalMotionEffect.maximumRelativeValue = @(PARALLAX_EFFECT_VALUE);
         [self.imageView addMotionEffect:verticalMotionEffect];
-        UIInterpolatingMotionEffect *horizontalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x" type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
+        UIInterpolatingMotionEffect *horizontalMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x" 
+                                                                                                              type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
         horizontalMotionEffect.minimumRelativeValue = @(-PARALLAX_EFFECT_VALUE);
         horizontalMotionEffect.maximumRelativeValue = @(PARALLAX_EFFECT_VALUE);
         [self.imageView addMotionEffect:horizontalMotionEffect];
@@ -108,7 +110,8 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
             self.imageView.transform = CGAffineTransformMakeRotation((CGFloat)(flipDegree * M_PI/180.0f));
         };
         
-        if (animated) [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:flipBlock completion:nil];
+        if (animated) [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction 
+                                       animations:flipBlock completion:nil];
         else          flipBlock();
     });
 }
@@ -127,7 +130,8 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
             self.frontView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:blackout];
         };
         
-        if (animated) [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:blackoutBlock completion:nil];
+        if (animated) [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction 
+                                       animations:blackoutBlock completion:nil];
         else          blackoutBlock();
     });
 }
@@ -153,7 +157,8 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
             [self.blurView transitionToStyle:self.blurStyle];
         };
         
-        if (animated) [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:blurBlock completion:nil];
+        if (animated) [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction 
+                                       animations:blurBlock completion:nil];
         else          blurBlock();
     });
 }
@@ -189,9 +194,11 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
                 [self setupConstraints];
                 self.alpha = 1;
             };
-            if (animated) [UIView transitionWithView:view duration:ANIMATION_DURANTION options:UIViewAnimationOptionAllowUserInteraction animations:block completion:nil];
-            else          block();
-            
+            if (animated)
+                [UIView transitionWithView:view duration:ANIMATION_DURANTION options:UIViewAnimationOptionAllowUserInteraction 
+                                animations:block completion:nil];
+            else
+                block();
             
             if ([view isKindOfClass:NSClassFromString(@"_UIBarBackground")]) {
                 for (UIView *subview in view.subviews) {
@@ -214,8 +221,11 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
                 [self setupConstraints];
                 self.alpha = 1;
             };
-            if (animated) [UIView transitionWithView:view duration:ANIMATION_DURANTION options:UIViewAnimationOptionAllowUserInteraction animations:block completion:nil];
-            else          block();
+            if (animated)
+                [UIView transitionWithView:view duration:ANIMATION_DURANTION options:UIViewAnimationOptionAllowUserInteraction 
+                                animations:block completion:nil];
+            else
+                block();
         }
     });
 }
@@ -231,8 +241,11 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
                 [self setupConstraints];
                 self.alpha = 1;
             };
-            if (animated) [UIView transitionWithView:view duration:ANIMATION_DURANTION options:UIViewAnimationOptionAllowUserInteraction animations:block completion:nil];
-            else          block();
+            if (animated)
+                [UIView transitionWithView:view duration:ANIMATION_DURANTION options:UIViewAnimationOptionAllowUserInteraction
+                                          animations:block completion:nil];
+            else
+                block();
         }
     });
 }
@@ -271,16 +284,14 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@: %p, imageName '%@', blackout %.2f, parallax '%@'>", [self class], self, self.name, self.blackout, self.parallaxEnabled ? @"Enabled": @"Disabled"];
+    return [NSString stringWithFormat:@"<%@: %p, imageName '%@', blackout %.2f, parallax '%@'>", [self class], self, 
+            self.name, self.blackout, self.parallaxEnabled ? @"Enabled": @"Disabled"];
 }
 
 - (id)copyWithZone:(nullable NSZone *)zone
 {
-    ColoredVKWallpaperView *copy = [[[self class] alloc] initWithFrame:self.frame 
-                                                                       imageName:[self.name copy] 
-                                                                        blackout:self.blackout
-                                                                  enableParallax:self.parallaxEnabled 
-                                                                  blurBackground:self.blurBackground];
+    ColoredVKWallpaperView *copy = [[[self class] alloc] initWithFrame:self.frame imageName:[self.name copy] blackout:self.blackout
+                                                        enableParallax:self.parallaxEnabled blurBackground:self.blurBackground];
     return copy;
 }
 

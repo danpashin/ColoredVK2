@@ -18,7 +18,6 @@
 @property (weak, nonatomic) ColoredVKNightThemeColorScheme *nightThemeColorScheme;
 
 @property (nonatomic, readonly) NSString *vkAppVersion;
-@property (assign, nonatomic, readonly) BOOL app_is_vk;
 @property (strong, nonatomic, readonly) NSBundle *cvkBundle;
 
 @property (weak, nonatomic) UITableView *prefsTableView;

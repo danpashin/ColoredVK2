@@ -93,11 +93,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     PSTableCell *cell = (PSTableCell *)[super tableView:tableView cellForRowAtIndexPath:indexPath];
-    
     cell.userInteractionEnabled = YES;
-    cell.cellEnabled = YES;
     
     if ([cell isKindOfClass:[PSTableCell class]]) {
+        cell.cellEnabled = YES;
         if ([[cell.specifier propertyForKey:@"selectorValue"] isEqual:self.selectorCurrentValue]) {
             cell.accessoryView = self.tickImageView;
             self.indexPathForSelectedRow = indexPath;
@@ -109,7 +108,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    });
     
     PSTableCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if ([cell isKindOfClass:[PSTableCell class]]) {

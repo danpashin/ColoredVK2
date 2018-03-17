@@ -178,9 +178,9 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         return;
     
     NSDictionary *crash = [NSDictionary dictionaryWithContentsOfFile:CVK_CRASH_PATH];
-    
     if (!crash)
         return;
+    
     ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     
     NSDictionary *allInfo = @{@"vk_version":newInstaller.application.detailedVersion, @"cvk_version":kPackageVersion, 

@@ -75,9 +75,12 @@ NSString *key;
 {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
-    if (![fileManager fileExistsAtPath:CVK_FOLDER_PATH])  [fileManager createDirectoryAtPath:CVK_FOLDER_PATH withIntermediateDirectories:NO attributes:nil error:nil];
-    if (![fileManager fileExistsAtPath:CVK_CACHE_PATH]) [fileManager createDirectoryAtPath:CVK_CACHE_PATH  withIntermediateDirectories:NO attributes:nil error:nil];
-    if (![fileManager fileExistsAtPath:CVK_BACKUP_PATH])  [fileManager createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
+    if (![fileManager fileExistsAtPath:CVK_FOLDER_PATH])
+        [fileManager createDirectoryAtPath:CVK_FOLDER_PATH withIntermediateDirectories:NO attributes:nil error:nil];
+    if (![fileManager fileExistsAtPath:CVK_CACHE_PATH])
+        [fileManager createDirectoryAtPath:CVK_CACHE_PATH  withIntermediateDirectories:NO attributes:nil error:nil];
+    if (![fileManager fileExistsAtPath:CVK_BACKUP_PATH])
+        [fileManager createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
 }
 
 - (void)updateAppInfo
@@ -107,10 +110,8 @@ return;
     NSUInteger maxCVKLibsCount = [bundleID containsString:@"vkclient"] ? 2 : 1;
     NSUInteger cvkLibsCount = 0;
     for (uint32_t i=0; i<_dyld_image_count(); i++) {
-        if (strstr(_dyld_get_image_name(i), "ColoredVK") != nil) {
+        if (strstr(_dyld_get_image_name(i), "ColoredVK") != nil)
             cvkLibsCount++;
-            
-        }
     }
     
     if (cvkLibsCount != maxCVKLibsCount)
@@ -139,7 +140,7 @@ return;
         NSString *licenceUdid = dict[@"udid"];
         NSString *deviceUdid = CFBridgingRelease(MGCopyAnswer(kMGUniqueDeviceID));
         
-        if ((licenceUdid.length < 40) || ((deviceUdid.length >= 40) && ![licenceUdid isEqualToString:deviceUdid])) {
+        if ((licenceUdid.length != 40) || ![licenceUdid isEqualToString:deviceUdid]) {
             writeFreeLicenceAndReturn
         }
         
@@ -174,12 +175,15 @@ return;
 - (void)showAlertWithTitle:(NSString *)title text:(NSString *)text buttons:(NSArray <__kindof UIAlertAction *> *)buttons
 {
     if (buttons.count == 0) {
-        buttons = @[[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+        buttons = @[[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel 
+                                           handler:^(UIAlertAction *action) {}]];
     }
     if (!title)
         title = kPackageName;
     
-    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:title message:text preferredStyle:UIAlertControllerStyleAlert];
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:title 
+                                                                                           message:text 
+                                                                                    preferredStyle:UIAlertControllerStyleAlert];
     for (UIAlertAction *action in buttons) {
         [alertController addAction:action];
     }
@@ -235,11 +239,11 @@ return;
     NSString *udid = CFBridgingRelease(MGCopyAnswer(kMGUniqueDeviceID));
     
     NSDictionary *dict = @{@"purchased" : @NO, @"Device" : self.deviceModel, 
-                           @"jailed" : (udid.length >= 40) ? @YES : @NO, @"udid" : (udid.length >= 40) ? udid : @"" };
+                           @"jailed" : (udid.length == 40) ? @YES : @NO, @"udid" : (udid.length == 40) ? udid : @"" };
     NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
     [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
     
-    if (udid.length >= 40) {
+    if (udid.length == 40) {
         _jailed = YES;
         [self downloadJBLicence];
     }
@@ -248,7 +252,7 @@ return;
 - (void)downloadJBLicence
 {
     NSString *udid = CFBridgingRelease(MGCopyAnswer(kMGUniqueDeviceID));
-    if (udid.length < 40)
+    if (udid.length != 40)
         return;
     
     NSDictionary *params = @{@"udid": legacyEncryptServerString(udid), @"package":legacyEncryptServerString(kDRMPackage), 

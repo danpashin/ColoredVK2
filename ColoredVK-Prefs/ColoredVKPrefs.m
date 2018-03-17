@@ -14,9 +14,160 @@
 
 @implementation ColoredVKPrefs
 
+- (instancetype)initWithNibName:(nullable NSString *)nibNameOrNil bundle:(nullable NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        [self commonInit];
+    }
+    return self;
+}
+
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+    [self commonInit];
+}
+
+- (void)commonInit
+{
+    _cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+    _vkAppVersion = prefs[@"vkVersion"] ? prefs[@"vkVersion"] : CVKLocalizedString(@"UNKNOWN");
+    
+    NSInteger themeType = [prefs[@"nightThemeType"] integerValue];
+    self.nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    [self.nightThemeColorScheme updateForType:themeType];
+    self.nightThemeColorScheme.enabled = ((themeType != -1) && [prefs[@"enabled"] boolValue]);
+}
+
+- (void)loadView
+{
+    [super loadView];
+    
+    for (UIView *view in self.view.subviews) {
+        if ([view isKindOfClass:[UITableView class]]) {
+            self.prefsTableView = (UITableView *)view;
+            self.prefsTableView.separatorColor = [UIColor clearColor];
+            break;
+        }
+    }
+    
+    self.prefsTableView.emptyDataSetSource = self;
+    self.prefsTableView.emptyDataSetDelegate = self;
+    
+    if ([ColoredVKNewInstaller sharedInstaller].application.isVKApp && self.nightThemeColorScheme.enabled) {
+        self.prefsTableView.backgroundColor = self.nightThemeColorScheme.backgroundColor;
+        self.navigationController.navigationBar.barTintColor = self.nightThemeColorScheme.navbackgroundColor;
+    }
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    self.navigationItem.title = self.specifier ? self.specifier.name : @"";
+}
+
+#pragma mark -
+#pragma mark Actions
+#pragma mark -
+
+- (void)reloadSpecifiers
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [super reloadSpecifiers];
+    });
+}
+
+- (void)updateNightTheme
+{
+    if (![ColoredVKNewInstaller sharedInstaller].application.isVKApp)
+        return;
+    
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+    NSInteger themeType = [prefs[@"nightThemeType"] integerValue];
+    [self.nightThemeColorScheme updateForType:themeType];
+    self.nightThemeColorScheme.enabled = ((themeType != -1) && [prefs[@"enabled"] boolValue]);
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            self.prefsTableView.separatorColor = [UIColor clearColor];
+            self.prefsTableView.backgroundColor = [UIColor colorWithRed:0.937255f green:0.937255f blue:0.956863f alpha:1.0f];
+            self.navigationController.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
+        } completion:nil];
+        
+        
+        for (PSSpecifier *specifier in self.specifiers) {
+            PSTableCell *cell = [self cachedCellForSpecifier:specifier];
+            [self updateNightThemeForCell:cell animated:YES];
+        }
+    });
+}
+
+- (void)updateNightThemeForCell:(UITableViewCell *)cell animated:(BOOL)animated
+{
+    if (![ColoredVKNewInstaller sharedInstaller].application.isVKApp)
+        return;
+    
+    BOOL nightThemeEnabled = self.nightThemeColorScheme.enabled;
+    ColoredVKCellBackgroundView *backgroundView = cell.customBackgroundView;
+    
+    void (^changeBlock)(void) = ^{
+        backgroundView.backgroundColor = nightThemeEnabled ? self.nightThemeColorScheme.foregroundColor : nil;
+        backgroundView.separatorColor = nightThemeEnabled ? self.nightThemeColorScheme.backgroundColor : nil;
+        backgroundView.selectedBackgroundColor = nightThemeEnabled ? self.nightThemeColorScheme.backgroundColor : nil;
+        cell.textLabel.textColor = nightThemeEnabled ? self.nightThemeColorScheme.textColor : [UIColor blackColor];  
+        
+        if (self.nightThemeColorScheme.enabled) {     
+            if ([cell.accessoryView isKindOfClass:NSClassFromString(@"ColoredVKStepperButton")]) {
+                ((UILabel *)[cell.accessoryView valueForKey:@"valueLabel"]).textColor = self.nightThemeColorScheme.textColor;
+            }
+        }
+    };
+    
+    if (animated)
+        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:changeBlock completion:nil];
+    else
+        changeBlock();
+}
+
+- (void)presentPopover:(UIViewController *)controller
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (IS_IPAD) {
+            controller.modalPresentationStyle = UIModalPresentationPopover;
+            controller.popoverPresentationController.permittedArrowDirections = 0;
+            controller.popoverPresentationController.sourceView = self.view;
+            controller.popoverPresentationController.sourceRect = self.view.bounds;
+        }
+        [self presentViewController:controller animated:YES completion:nil];
+    });
+}
+
+- (void)showPurchaseAlert
+{
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"AVAILABLE_IN_FULL_VERSION")
+                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"THINK_LATER") style:UIAlertActionStyleCancel 
+                                                      handler:^(UIAlertAction *action) {}]];
+    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OF_COURSE") style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction *action) {
+                                                          [[ColoredVKNewInstaller sharedInstaller] actionPurchase];
+                                                      }]];
+    [alertController presentFromController:self];
+}
+
+
+#pragma mark -
+#pragma mark Getters
+#pragma mark -
+
 - (UIStatusBarStyle)preferredStatusBarStyle
 {    
-    return self.app_is_vk ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
+    BOOL vkApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
+    return vkApp ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
 }
 
 - (NSArray *)specifiers
@@ -88,42 +239,6 @@
     return [specifiersArray copy];
 }
 
-- (void)loadView
-{
-    [super loadView];
-    
-    for (UIView *view in self.view.subviews) {
-        if ([view isKindOfClass:[UITableView class]]) {
-            self.prefsTableView = (UITableView *)view;
-            self.prefsTableView.separatorColor = [UIColor clearColor];
-            break;
-        }
-    }
-    
-    self.prefsTableView.emptyDataSetSource = self;
-    self.prefsTableView.emptyDataSetDelegate = self;
-    
-    if (self.app_is_vk) {
-        self.nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
-        
-        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-        NSInteger themeType = [prefs[@"nightThemeType"] integerValue];
-        self.nightThemeColorScheme.enabled = ((themeType != -1) && [prefs[@"enabled"] boolValue]);
-        if (self.nightThemeColorScheme.enabled) {
-            [self.nightThemeColorScheme updateForType:themeType];
-            self.prefsTableView.backgroundColor = self.nightThemeColorScheme.backgroundColor;
-            self.navigationController.navigationBar.barTintColor = self.nightThemeColorScheme.navbackgroundColor;
-        }
-    }
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    self.navigationItem.title = self.specifier ? self.specifier.name : @"";
-}
-
 - (id)readPreferenceValue:(PSSpecifier *)specifier
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
@@ -139,6 +254,29 @@
     
     return prefs[specifier.properties[@"key"]];
 }
+
+- (BOOL)openURL:(NSURL *)url
+{
+    UIApplication *application = [UIApplication sharedApplication];
+    
+    if ([application canOpenURL:url]) {
+        BOOL urlIsOpen = [application openURL:url];
+        
+        return urlIsOpen;
+    }
+    
+    return NO;
+}
+
+- (BOOL)edgeToEdgeCells
+{
+    return YES;
+}
+
+
+#pragma mark -
+#pragma mark Setters
+#pragma mark -
 
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
 {
@@ -174,86 +312,6 @@
     }
 }
 
-- (void)updateNightTheme
-{
-    if (!self.app_is_vk)
-        return;
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-            self.prefsTableView.separatorColor = [UIColor clearColor];
-            self.prefsTableView.backgroundColor = [UIColor colorWithRed:0.937255f green:0.937255f blue:0.956863f alpha:1.0f];
-            self.navigationController.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
-        } completion:nil];
-    });
-}
-
-- (void)reloadSpecifiers
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [super reloadSpecifiers];
-    });
-}
-
-- (NSString *)vkAppVersion
-{
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    return prefs[@"vkVersion"] ? prefs[@"vkVersion"] : CVKLocalizedString(@"UNKNOWN");
-}
-
-- (NSBundle *)cvkBundle
-{
-    return [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-}
-
-- (BOOL)openURL:(NSURL *)url
-{
-    UIApplication *application = [UIApplication sharedApplication];
-    
-    if ([application canOpenURL:url]) {
-        BOOL urlIsOpen = [application openURL:url];
-        
-        return urlIsOpen;
-    }
-    
-    return NO;
-}
-
-- (void)presentPopover:(UIViewController *)controller
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (IS_IPAD) {
-            controller.modalPresentationStyle = UIModalPresentationPopover;
-            controller.popoverPresentationController.permittedArrowDirections = 0;
-            controller.popoverPresentationController.sourceView = self.view;
-            controller.popoverPresentationController.sourceRect = self.view.bounds;
-        }
-        [self presentViewController:controller animated:YES completion:nil];
-    });
-}
-
-- (void)showPurchaseAlert
-{
-    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"AVAILABLE_IN_FULL_VERSION")
-                                                                                    preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"THINK_LATER") style:UIAlertActionStyleCancel 
-                                                      handler:^(UIAlertAction *action) {}]];
-    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OF_COURSE") style:UIAlertActionStyleDefault
-                                                      handler:^(UIAlertAction *action) {
-                                                          [[ColoredVKNewInstaller sharedInstaller] actionPurchase];
-                                                      }]];
-    [alertController presentFromController:self];
-}
-
-- (BOOL)app_is_vk
-{
-    return [[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"];
-}
-
-- (BOOL)edgeToEdgeCells
-{
-    return YES;
-}
 
 #pragma mark -
 #pragma mark UITableViewDelegate
@@ -266,8 +324,9 @@
     cell.userInteractionEnabled = YES;
     cell.layoutMargins = UIEdgeInsetsMake(0, 18, 0, 18);
     
+    BOOL vkApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
+    objc_setAssociatedObject(cell, "app_is_vk", @(vkApp), OBJC_ASSOCIATION_ASSIGN);
     objc_setAssociatedObject(cell, "nightThemeColorScheme", self.nightThemeColorScheme, OBJC_ASSOCIATION_ASSIGN);
-    objc_setAssociatedObject(cell, "app_is_vk", @(self.app_is_vk), OBJC_ASSOCIATION_ASSIGN);
     objc_setAssociatedObject(cell, "enableNightTheme", @(self.nightThemeColorScheme.enabled), OBJC_ASSOCIATION_ASSIGN);
     
     NSDictionary *userPrefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
@@ -280,18 +339,7 @@
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [cell renderBackgroundWithColor:nil separatorColor:nil forTableView:tableView indexPath:indexPath];
-    
-    if (self.app_is_vk && self.nightThemeColorScheme.enabled) {
-        ColoredVKCellBackgroundView *backgroundView = cell.customBackgroundView;
-        cell.textLabel.textColor = self.nightThemeColorScheme.textColor;
-        backgroundView.backgroundColor = self.nightThemeColorScheme.foregroundColor;
-        backgroundView.separatorColor = self.nightThemeColorScheme.foregroundColor;
-        backgroundView.selectedBackgroundColor = self.nightThemeColorScheme.backgroundColor;
-        
-        if ([cell.accessoryView isKindOfClass:NSClassFromString(@"ColoredVKStepperButton")]) {
-            ((UILabel *)[cell.accessoryView valueForKey:@"valueLabel"]).textColor = self.nightThemeColorScheme.textColor;
-        }
-    }
+    [self updateNightThemeForCell:cell animated:NO];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

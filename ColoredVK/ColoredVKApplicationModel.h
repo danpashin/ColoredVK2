@@ -17,6 +17,7 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 
 @interface ColoredVKApplicationModel : NSObject
 
+@property (assign, nonatomic, readonly) BOOL isVKApp;
 @property (copy, nonatomic, readonly) NSString *version;
 @property (copy, nonatomic, readonly) NSString *detailedVersion;
 

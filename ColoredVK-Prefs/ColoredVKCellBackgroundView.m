@@ -93,7 +93,7 @@
     
     if (drawSeparator) {
         CGFloat separatorHeight = 0.5f; // 1.0f / [UIScreen mainScreen].scale;
-        self.separatorLayer.frame = CGRectMake(CGRectGetMinX(self.backgroundFrame), CGRectGetMaxY(self.backgroundFrame) - separatorHeight / 2, 
+        self.separatorLayer.frame = CGRectMake(CGRectGetMinX(self.backgroundFrame), CGRectGetMaxY(self.backgroundFrame) - separatorHeight / 2.0f, 
                                                CGRectGetWidth(self.backgroundFrame), separatorHeight);
         self.separatorLayer.backgroundColor = self.separatorColor.CGColor;
     }
@@ -117,8 +117,6 @@
 - (void)setBackgroundColor:(UIColor *)backgroundColor
 {
     _backgroundColor = backgroundColor;
-    if (!self.backgroundLayer)
-        return;
     
     dispatch_async(dispatch_get_main_queue(), ^{
         self.backgroundLayer.fillColor = self.backgroundColor.CGColor;
@@ -128,10 +126,10 @@
 - (void)setSeparatorColor:(UIColor *)separatorColor
 {
     _separatorColor = separatorColor;
-    if (!self.separatorLayer)
-        return;
     
-    self.separatorLayer.backgroundColor = self.separatorColor.CGColor;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.separatorLayer.backgroundColor = self.separatorColor.CGColor;
+    });
 }
 
 
@@ -171,7 +169,7 @@
         if (nightScheme.enabled)
             _backgroundColor = nightScheme.backgroundColor;
         else
-            _selectedBackgroundColor = [UIColor colorWithRed:204/255.0f green:204/255.0f blue:204/255.0f alpha:1.0f];
+            _selectedBackgroundColor = [UIColor colorWithRed:191/255.0f green:191/255.0f blue:191/255.0f alpha:1.0f];
     }
     
     return _selectedBackgroundColor;

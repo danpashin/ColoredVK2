@@ -9,6 +9,7 @@
 #import "ColoredVKAboutController.h"
 #import "ColoredVKTextViewController.h"
 #import "ColoredVKHeaderView.h"
+#import "ColoredVKNewInstaller.h"
 
 @implementation ColoredVKAboutController
 
@@ -33,7 +34,7 @@
     ColoredVKTextViewController *controller = [[ColoredVKTextViewController alloc] initWithFile:specifier.properties[@"fileName"] 
                                                                                       localized:[specifier.properties[@"localized"] boolValue]];
     controller.backgroundStyle = ColoredVKWindowBackgroundStyleCustom;
-    controller.app_is_vk = self.app_is_vk;
+    controller.app_is_vk = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
     controller.enableNightTheme = self.nightThemeColorScheme.enabled;
     controller.nightThemeColorScheme = self.nightThemeColorScheme;
     [controller show];
