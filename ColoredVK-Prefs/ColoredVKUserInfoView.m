@@ -119,38 +119,38 @@
         self.avatar = cachedAvatar;
         return;
     }
+    
     NSString *jsonURL = @"https://api.vk.com/method/users.get";
     NSDictionary *params = @{@"user_ids":userID, @"fields":@"photo_100", @"v":@"5.71"};
     NSError *requestError = nil;
     NSMutableURLRequest *request = [newInstaller.networkController requestWithMethod:@"GET" URLString:jsonURL 
                                                                           parameters:params error:&requestError];
-    if (!requestError) {
-        [request setValue:@"VK" forHTTPHeaderField:@"User-Agent"];
-        [newInstaller.networkController sendRequest:request success:^(NSURLRequest *blockRequest, NSHTTPURLResponse *response, NSData *rawData) {
-            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:rawData options:0 error:nil];
-            if ([json isKindOfClass:[NSDictionary class]]) {
-                NSArray *array = json[@"response"];
-                if ([array isKindOfClass:[NSArray class]]) {
-                    NSDictionary *responseDict = array.firstObject;
-                    if ([responseDict isKindOfClass:[NSDictionary class]]) {
-                        NSString *photoURL = responseDict[@"photo_100"];
-                        if (photoURL) {
-                            [imageManager loadImageWithURL:[NSURL URLWithString:photoURL] 
-                                                   options:SDWebImageHighPriority|SDWebImageCacheMemoryOnly 
-                                                  progress:nil 
-                                                 completed:^(UIImage *image, NSData *data, NSError *error, 
-                                                             SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                                     [imageManager.imageCache storeImage:image forKey:imageCacheKey completion:nil];
-                                                     self.avatar = image;
-                                                 }];
-                        }
-                    }
-                }
-                
-                
-            }
-        } failure:nil];
-    }
+    if (requestError)
+        return;
+    
+    [request setValue:@"VK" forHTTPHeaderField:@"User-Agent"];
+    [newInstaller.networkController sendRequest:request success:^(NSURLRequest *blockRequest, NSHTTPURLResponse *response, NSData *rawData) {
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:rawData options:0 error:nil];
+        if (![json isKindOfClass:[NSDictionary class]])
+            return;
+        
+        NSArray *array = json[@"response"];
+        if (![array isKindOfClass:[NSArray class]])
+            return;
+        
+        NSDictionary *responseDict = array.firstObject;
+        if (![responseDict isKindOfClass:[NSDictionary class]])
+            return;
+        
+        NSString *photoURL = responseDict[@"photo_100"];
+        if (!photoURL)
+            return;
+        
+        [imageManager loadImageWithURL:[NSURL URLWithString:photoURL] options:SDWebImageHighPriority|SDWebImageCacheMemoryOnly progress:nil completed:^(UIImage *image, NSData *data, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+            [imageManager.imageCache storeImage:image forKey:imageCacheKey completion:nil];
+            self.avatar = image;
+        }];
+    } failure:nil];
 }
 
 @end

@@ -197,7 +197,7 @@ static const CGFloat kButtonHeightRatio = 1.5f;
 - (CGRect)titleRectForContentRect:(CGRect)contentRect
 {
     CGRect origRect = [super titleRectForContentRect:contentRect];
-    return CGRectInset(origRect, IS_IPAD ? 8.0f : 0.0f, 6.0f);
+    return CGRectInset(origRect, IS_IPAD ? 6.0f : 0.0f, 6.0f);
 }
 
 @end

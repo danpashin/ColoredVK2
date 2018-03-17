@@ -1,6 +1,6 @@
 Package: com.daniilpashin.coloredvk2
 Name: ColoredVK 2
-Version: 4.3.5
+Version: 4.4
 Description: Change your VK App sense!
 Section: Tweaks
 Depends: firmware (>= 9.0), mobilesubstrate (>= 0.9.5000), preferenceloader
@@ -9,5 +9,5 @@ Author: Daniil Pashin <daniilpashin@icloud.com>
 Maintainer: Daniil Pashin <daniilpashin@icloud.com>
 Replaces: com.daniilpashin.coloredvk
 Icon: file:///Library/PreferenceBundles/ColoredVK2.bundle/Icon-big.png
-Depiction: http://danpashin.ru/repo/depictions?pack=com.daniilpashin.coloredvk2
+Depiction: http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=coloredvk2Dp
 Homepage: http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=coloredvk2Dp

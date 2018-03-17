@@ -27,34 +27,34 @@
 - (void)updateTeamInformation
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        NSError *error = nil;
         NSString *provisionPath = [[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"];
         if (!provisionPath)
             return;
         
+        NSError *error = nil;
         NSString *provisionString = [NSString stringWithContentsOfFile:provisionPath encoding:NSISOLatin1StringEncoding error:&error];
+        if (error)
+            return;
+               
+        NSString *provisionDictString = @"";
         
-        if (!error) {         
-            NSString *provisionDictString = @"";
-            
-            NSScanner *scanner = [NSScanner scannerWithString:provisionString];
-            [scanner scanUpToString:@"<plist" intoString:nil];
-            [scanner scanUpToString:@"</plist>" intoString:&provisionDictString];
-            NSMutableString *headerString = [NSMutableString string];
-            [headerString appendString:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"];
-            [headerString appendString:@"<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"];
-            provisionString = [NSString stringWithFormat:@"%@\n%@</plist>", headerString, provisionDictString];
-            
-            NSString *tempPath = [NSTemporaryDirectory() stringByAppendingString:@"/embedded_mobileprovision.plist"];
-            [[provisionDictString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:tempPath atomically:YES];
-            
-            NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:tempPath];
-            if (dict) {
-                self->_teamIdentifier = ((NSArray *)dict[@"TeamIdentifier"]).firstObject;
-                self->_teamName = dict[@"TeamName"];
-            }
-            [[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
+        NSScanner *scanner = [NSScanner scannerWithString:provisionString];
+        [scanner scanUpToString:@"<plist" intoString:nil];
+        [scanner scanUpToString:@"</plist>" intoString:&provisionDictString];
+        NSMutableString *headerString = [NSMutableString string];
+        [headerString appendString:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"];
+        [headerString appendString:@"<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"];
+        provisionString = [NSString stringWithFormat:@"%@\n%@</plist>", headerString, provisionDictString];
+        
+        NSString *tempPath = [NSTemporaryDirectory() stringByAppendingString:@"/embedded_mobileprovision.plist"];
+        [[provisionDictString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:tempPath atomically:YES];
+        
+        NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:tempPath];
+        if (dict) {
+            self->_teamIdentifier = ((NSArray *)dict[@"TeamIdentifier"]).firstObject;
+            self->_teamName = dict[@"TeamName"];
         }
+        [[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
     });
 }
 
