@@ -86,7 +86,7 @@
         } else if (resizedImage.imageOrientation == UIImageOrientationUp) {
             CGContextRotateCTM (context, (CGFloat)(180 * M_PI/180.0f));
         }
-        [resizedImage drawAtPoint:CGPointMake(0, 0)];
+        [resizedImage drawAtPoint:CGPointZero];
         
         CGImageRef imgRef = CGBitmapContextCreateImage(context);
         UIGraphicsEndImageContext();

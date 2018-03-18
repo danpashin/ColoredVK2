@@ -36,10 +36,11 @@
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     _vkAppVersion = prefs[@"vkVersion"] ? prefs[@"vkVersion"] : CVKLocalizedString(@"UNKNOWN");
     
+    BOOL vkApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
     NSInteger themeType = [prefs[@"nightThemeType"] integerValue];
     self.nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
     [self.nightThemeColorScheme updateForType:themeType];
-    self.nightThemeColorScheme.enabled = ((themeType != -1) && [prefs[@"enabled"] boolValue]);
+    self.nightThemeColorScheme.enabled = ((themeType != -1) && [prefs[@"enabled"] boolValue] && vkApp);
 }
 
 - (void)loadView

@@ -114,11 +114,11 @@ return;
             cvkLibsCount++;
     }
     
-    if (cvkLibsCount != maxCVKLibsCount)
+    if (cvkLibsCount > maxCVKLibsCount)
         return;
 #endif
     
-    if (access(kDRMLicencePath.UTF8String, F_OK) == -1) {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:kDRMLicencePath]) {
         writeFreeLicenceAndReturn
     }
  
