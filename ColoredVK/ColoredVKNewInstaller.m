@@ -24,8 +24,7 @@ static NSString * _Nullable const kDRMPackage = @"org.thebigboss.coloredvk2";
 #define kDRMRemoteServerURL     [NSString stringWithFormat:@"%@/index-new.php", kPackageAPIURL]
 
 
-@interface ColoredVKNewInstaller ()
-
+@interface ColoredVKNewInstaller () <ColoredVKApplicationModelDelegate>
 
 @property (strong, nonatomic) UIWindow *hudWindow;
 @property (weak, nonatomic) ColoredVKHUD *hud;
@@ -36,7 +35,8 @@ static NSString * _Nullable const kDRMPackage = @"org.thebigboss.coloredvk2";
 @implementation ColoredVKNewInstaller
 
 void(^installerCompletionBlock)(BOOL purchased);
-NSString *key;
+NSString *__key;
+NSString *__udid;
 
 + (instancetype)sharedInstaller
 {
@@ -53,9 +53,11 @@ NSString *key;
     self = [super init];
     if (self) {
         _networkController = [ColoredVKNetworkController controller];
-        key = legacyEncryptServerString([NSProcessInfo processInfo].globallyUniqueString);
+        __key = legacyEncryptServerString([NSProcessInfo processInfo].globallyUniqueString);
+        __udid = CFBridgingRelease(MGCopyAnswer(CFSTR("re6Zb+zwFKJNlkQTUeT+/w")));
         _user = [ColoredVKUserModel new];
         _application = [ColoredVKApplicationModel new];
+        _application.delegate = self;
         
         struct utsname systemInfo;
         uname(&systemInfo);
@@ -66,8 +68,13 @@ NSString *key;
         _shouldOpenPrefs = NO;
         
         [self createFolders];
-        [self checkStatus];
-        [self updateAppInfo];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+            ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
+            updatesController.checkedAutomatically = YES;
+            if (updatesController.shouldCheckUpdates)
+                [updatesController checkUpdates];
+        });
     }
     return self;
 }
@@ -82,22 +89,6 @@ NSString *key;
         [fileManager createDirectoryAtPath:CVK_CACHE_PATH  withIntermediateDirectories:NO attributes:nil error:nil];
     if (![fileManager fileExistsAtPath:CVK_BACKUP_PATH])
         [fileManager createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
-}
-
-- (void)updateAppInfo
-{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        if (NSClassFromString(@"Activation") != nil) {
-            self->_sellerName = @"iapps";
-        } else if ([self.application.teamIdentifier isEqualToString:@"FL663S8EYD"]) {
-            self->_sellerName = @"ishmv";
-        }
-        
-        ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
-        updatesController.checkedAutomatically = YES;
-        if (updatesController.shouldCheckUpdates)
-            [updatesController checkUpdates];
-    });
 }
 
 - (void)checkStatus
@@ -154,9 +145,8 @@ return;
     if ([dict[@"jailed"] boolValue]) {
         _jailed = YES;
         NSString *licenceUdid = dict[@"udid"];
-        NSString *deviceUdid = CFBridgingRelease(MGCopyAnswer(CFSTR("re6Zb+zwFKJNlkQTUeT+/w")));
         
-        if ((licenceUdid.length != 40) || ![licenceUdid isEqualToString:deviceUdid]) {
+        if ((licenceUdid.length != 40) || ![licenceUdid isEqualToString:__udid]) {
             writeFreeLicenceAndReturn
         }
         
@@ -232,6 +222,20 @@ return;
 
 
 #pragma mark -
+#pragma mark ColoredVKApplicationModelDelegate
+#pragma mark -
+
+- (void)applicationModelDidEndUpdatingInfo:(ColoredVKApplicationModel *)applicationModel
+{
+    if (NSClassFromString(@"Activation") != nil) {
+        _sellerName = @"iapps";
+    } else if ([applicationModel.teamIdentifier isEqualToString:@"FL663S8EYD"]) {
+        _sellerName = @"ishmv";
+    }
+}
+
+
+#pragma mark -
 #pragma mark Backend
 #pragma mark -
 
@@ -252,14 +256,13 @@ return;
 - (void)writeFreeLicence
 {
     [self.user clearUser];
-    NSString *udid = CFBridgingRelease(MGCopyAnswer(kMGUniqueDeviceID));
     
     NSDictionary *dict = @{@"purchased" : @NO, @"Device" : self.deviceModel, 
-                           @"jailed" : (udid.length == 40) ? @YES : @NO, @"udid" : (udid.length == 40) ? udid : @"" };
+                           @"jailed" : (__udid.length == 40) ? @YES : @NO, @"udid" : (__udid.length == 40) ? __udid : @"" };
     NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
     [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
     
-    if (udid.length == 40) {
+    if (__udid.length == 40) {
         _jailed = YES;
         [self downloadJBLicence];
     }
@@ -267,22 +270,21 @@ return;
 
 - (void)downloadJBLicence
 {
-    NSString *udid = CFBridgingRelease(MGCopyAnswer(CFSTR("re6Zb+zwFKJNlkQTUeT+/w")));
-    if (udid.length != 40)
+    if (__udid.length != 40)
         return;
     
-    NSDictionary *params = @{@"udid": legacyEncryptServerString(udid), @"package":legacyEncryptServerString(kDRMPackage), 
-                             @"version":kPackageVersion, @"key": key};
+    NSDictionary *params = @{@"udid": legacyEncryptServerString(__udid), @"package":legacyEncryptServerString(kDRMPackage), 
+                             @"version":kPackageVersion, @"key": __key};
     [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
         if (!json[@"response"])
             return;
         
         NSDictionary *response = json[@"response"];
         
-        if (![response[@"key"] isEqualToString:key] || ![response[@"udid"] isEqualToString:udid])
+        if (![response[@"key"] isEqualToString:__key] || ![response[@"udid"] isEqualToString:__udid])
             return;
         
-        NSDictionary *dict = @{@"Device":self.deviceModel, @"udid":udid, @"jailed":@YES, @"purchased":@YES};
+        NSDictionary *dict = @{@"Device":self.deviceModel, @"udid":__udid, @"jailed":@YES, @"purchased":@YES};
         NSError *writingError = nil;
         NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
         [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];

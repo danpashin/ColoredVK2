@@ -66,6 +66,10 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
 {
     [super loadView];
     
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        [[ColoredVKNewInstaller sharedInstaller] checkStatus];
+    });
+    
     cvkPrefsEnabledSpecifiers = @[@"enableTweakSwitch", @"navToolBarPrefsLink", @"menuPrefsLink", 
                                   @"messagesPrefsLink", @"manageAccount", @"aboutPrefsLink",
                                   @"tweakPrefsLink", @"faqLink"];
@@ -76,7 +80,6 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     self.navigationItem.title = @"";
     
     __weak typeof(self) weakSelf = self;
@@ -84,10 +87,6 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
                                                        queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
                                                            [weakSelf reloadSpecifiers];
                                                        }];
-    
-    ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
-    if (updatesController.shouldCheckUpdates)
-        [updatesController checkUpdates];
 }
 
 - (UIView *)freeVersionFooter
@@ -158,11 +157,6 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
 {    
     SFSafariViewController *sfController = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:kPackageFaqLink]];
     [self presentViewController:sfController animated:YES completion:nil];
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 

@@ -14,7 +14,7 @@
 #define kDRMRemoteServerURL     [NSString stringWithFormat:@"%@/index-new.php", kPackageAPIURL]
 
 @interface ColoredVKNewInstaller ()
-extern NSString *key;
+extern NSString *__key;
 
 @property (weak, nonatomic) ColoredVKHUD *hud;
 
@@ -101,7 +101,7 @@ extern NSString *key;
     NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", newInstaller.deviceModel, 
                         [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];
     NSDictionary *parameters = @{@"login": userName, @"password": password, @"action": @"login", 
-                                 @"version": kPackageVersion, @"device": device, @"key": key
+                                 @"version": kPackageVersion, @"device": device, @"key": __key
                                  };
     
     void (^showAlertBlock)(NSError *error) = ^(NSError *error) {
@@ -128,7 +128,7 @@ extern NSString *key;
         }
         
         NSDictionary *response = json[@"response"];        
-        if (!response[@"login"] || !response[@"user_id"] || !response[@"token"] || ![response[@"key"] isEqualToString:key]) {
+        if (!response[@"login"] || !response[@"user_id"] || !response[@"token"] || ![response[@"key"] isEqualToString:__key]) {
             showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain code:101 
                                            userInfo:@{NSLocalizedDescriptionKey:@"Cannot authenticate. Invalid response."}]);
             return;
@@ -186,7 +186,7 @@ extern NSString *key;
     NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", newInstaller.deviceModel, [UIDevice currentDevice].name, 
                         [UIDevice currentDevice].systemVersion];
     NSDictionary *parameters = @{@"login": self.name, @"token": self.accessToken, @"action": @"logout", 
-                                 @"version": kPackageVersion, @"device": device, @"key": key
+                                 @"version": kPackageVersion, @"device": device, @"key": __key
                                  };
     
     [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {

@@ -26,6 +26,12 @@
 
 - (void)updateTeamInformation
 {
+    if (!self.isVKApp) {
+        if ([self.delegate respondsToSelector:@selector(applicationModelDidEndUpdatingInfo:)])
+            [self.delegate applicationModelDidEndUpdatingInfo:self];
+        
+        return;
+    }
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         NSString *provisionPath = [[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"];
         if (!provisionPath)
@@ -55,6 +61,9 @@
             self->_teamName = dict[@"TeamName"];
         }
         [[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
+        
+        if ([self.delegate respondsToSelector:@selector(applicationModelDidEndUpdatingInfo:)])
+            [self.delegate applicationModelDidEndUpdatingInfo:self];
     });
 }
 

@@ -14,6 +14,13 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
     ColoredVKVersionCompareMore = 1
 };
 
+@class ColoredVKApplicationModel;
+@protocol ColoredVKApplicationModelDelegate <NSObject>
+
+- (void)applicationModelDidEndUpdatingInfo:(ColoredVKApplicationModel *)applicationModel;
+
+@end
+
 
 @interface ColoredVKApplicationModel : NSObject
 
@@ -23,6 +30,8 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 
 @property (copy, nonatomic, readonly) NSString *teamIdentifier;
 @property (copy, nonatomic, readonly) NSString *teamName;
+
+@property (weak, nonatomic) id <ColoredVKApplicationModelDelegate> delegate;
 
 - (ColoredVKVersionCompare)compareAppVersionWithVersion:(NSString *)second_version;
 - (ColoredVKVersionCompare)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version;
