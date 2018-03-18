@@ -16,7 +16,8 @@
 #import "ColoredVKAlertController.h"
 #import "ColoredVKUpdatesController.h"
 #import <MobileGestalt.h>
-#include <mach-o/dyld.h>
+#import <mach-o/dyld.h>
+#import <libgen.h>
 
 static NSString * _Nullable const kDRMPackage = @"org.thebigboss.coloredvk2";
 #define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
@@ -106,15 +107,30 @@ NSString *key;
 return;
     
 #ifndef COMPILE_APP
-    NSString *bundleID = [NSBundle mainBundle].bundleIdentifier.lowercaseString;
-    NSUInteger maxCVKLibsCount = [bundleID containsString:@"vkclient"] ? 2 : 1;
-    NSUInteger cvkLibsCount = 0;
-    for (uint32_t i=0; i<_dyld_image_count(); i++) {
-        if (strstr(_dyld_get_image_name(i), "ColoredVK") != nil)
-            cvkLibsCount++;
+    char pathbuf[PATH_MAX + 1];
+    uint32_t bufsize = sizeof(pathbuf);
+    _NSGetExecutablePath(pathbuf, &bufsize);
+    
+    char *executable_name = basename(pathbuf);
+    for(int i = 0; executable_name[i]; i++){
+        executable_name[i] = tolower(executable_name[i]);
     }
     
-    if (cvkLibsCount > maxCVKLibsCount)
+    int maxLibsCount = (strstr(executable_name, "vkclient") != NULL) ? 2 : 1;
+    int libsCount = 0;
+    for (uint32_t i=0; i<_dyld_image_count(); i++) {
+        const char *imageName = _dyld_get_image_name(i);
+        if (strstr(imageName, "ColoredVK2") != NULL)
+            libsCount++;
+        
+        if (strstr(imageName, "Crack") != NULL)
+            libsCount++;
+        
+        if (strstr(imageName, "crack") != NULL)
+            libsCount++;
+    }
+    
+    if (libsCount > maxLibsCount)
         return;
 #endif
     
@@ -138,7 +154,7 @@ return;
     if ([dict[@"jailed"] boolValue]) {
         _jailed = YES;
         NSString *licenceUdid = dict[@"udid"];
-        NSString *deviceUdid = CFBridgingRelease(MGCopyAnswer(kMGUniqueDeviceID));
+        NSString *deviceUdid = CFBridgingRelease(MGCopyAnswer(CFSTR("re6Zb+zwFKJNlkQTUeT+/w")));
         
         if ((licenceUdid.length != 40) || ![licenceUdid isEqualToString:deviceUdid]) {
             writeFreeLicenceAndReturn
@@ -251,7 +267,7 @@ return;
 
 - (void)downloadJBLicence
 {
-    NSString *udid = CFBridgingRelease(MGCopyAnswer(kMGUniqueDeviceID));
+    NSString *udid = CFBridgingRelease(MGCopyAnswer(CFSTR("re6Zb+zwFKJNlkQTUeT+/w")));
     if (udid.length != 40)
         return;
     
