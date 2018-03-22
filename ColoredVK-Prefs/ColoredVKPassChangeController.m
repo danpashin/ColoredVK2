@@ -163,30 +163,28 @@
                              @"new_pass": self.passNewTextField.text, @"user_id":newInstaller.user.userID, 
                              @"token":newInstaller.user.accessToken, @"email":newInstaller.user.email};
     
-    [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:params
-                                                      success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
-                                                          if (!json[@"error"]) {
-                                                              NSDictionary *responseDict = json[@"response"];
-                                                              if ([responseDict[@"code"] integerValue] == 1) {
-                                                                  [hud showSuccessWithStatus:json[@"message"]];
-                                                                  
-                                                                  hud.didHiddenBlock = ^{
-                                                                      [self actionCancel];
-                                                                  };
-                                                                  
-                                                              } else {
-                                                                  NSString *message = [NSString stringWithFormat:@"Unknown error\n(%@)", responseDict[@"code"]];
-                                                                  [hud showFailureWithStatus:message];
-                                                              }
-                                                          } else {
-                                                              NSDictionary *errorDict = json[@"error"];
-                                                              NSString *message = [NSString stringWithFormat:@"%@\n(%@)", errorDict[@"message"], errorDict[@"code"]];
-                                                              [hud showFailureWithStatus:message];
-                                                          }
-                                                      } 
-                                                      failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                                          [hud showFailureWithStatus:error.localizedDescription];
-                                                      }];
+    [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+        if (!json[@"error"]) {
+            NSDictionary *responseDict = json[@"response"];
+            if ([responseDict[@"code"] integerValue] == 1) {
+                [hud showSuccessWithStatus:json[@"message"]];
+                
+                hud.didHiddenBlock = ^{
+                    [self actionCancel];
+                };
+                
+            } else {
+                NSString *message = [NSString stringWithFormat:@"Unknown error\n(%@)", responseDict[@"code"]];
+                [hud showFailureWithStatus:message];
+            }
+        } else {
+            NSDictionary *errorDict = json[@"error"];
+            NSString *message = [NSString stringWithFormat:@"%@\n(%@)", errorDict[@"message"], errorDict[@"code"]];
+            [hud showFailureWithStatus:message];
+        }
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+        [hud showFailureWithStatus:error.localizedDescription];
+    }];
 }
 
 @end

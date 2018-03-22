@@ -295,7 +295,8 @@
     
     ColoredVKHUD *hud = [ColoredVKHUD showHUDForView:self.view];
     
-    void (^intSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) = ^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
+    NSString *url = [NSString stringWithFormat:@"%@/pass/%@", kPackageAPIURL, scriptName];
+    [[ColoredVKNewInstaller sharedInstaller].networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
         if (json[@"response"]) {
             NSDictionary *response = json[@"response"];
             NSInteger status = [response[@"status"] integerValue];
@@ -316,13 +317,9 @@
             CVKLog(@"%@", json);
             [hud showFailureWithStatus:@"Internal error. See console."];
         }
-    };
-    
-    NSString *url = [NSString stringWithFormat:@"%@/pass/%@", kPackageAPIURL, scriptName];
-    [[ColoredVKNewInstaller sharedInstaller].networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:params success:intSuccessBlock
-                                                                                 failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                                                                     [hud showFailureWithStatus:error.localizedDescription];
-                                                                                 }];
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+        [hud showFailureWithStatus:error.localizedDescription];
+    }];
 }
 
 @end

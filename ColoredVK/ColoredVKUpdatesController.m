@@ -47,7 +47,7 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
     NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php", kPackageAPIURL];
     NSMutableDictionary *parameters = [@{@"userVers": kPackageVersion, @"ios_version":[UIDevice currentDevice].systemVersion, 
                                          @"vk_version":[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"],
-                                         @"appTeamIdentifier": newInstaller.application.teamIdentifier, @"sellerName": newInstaller.sellerName, 
+                                         @"appTeamIdentifier": newInstaller.application.teamIdentifier, @"sellerName": newInstaller.application.sellerName, 
                                          @"checkedAutomatically":@(self.checkedAutomatically)} mutableCopy];
     
 #ifndef COMPILE_FOR_JAIL

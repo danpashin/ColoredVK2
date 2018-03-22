@@ -155,7 +155,7 @@
                                                       handler:^(UIAlertAction *action) {}]];
     [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OF_COURSE") style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-                                                          [[ColoredVKNewInstaller sharedInstaller] actionPurchase];
+                                                          [[ColoredVKNewInstaller sharedInstaller].user actionPurchase];
                                                       }]];
     [alertController presentFromController:self];
 }

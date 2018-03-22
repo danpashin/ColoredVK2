@@ -324,7 +324,7 @@
 - (void)updateJailHeaderView
 {
     ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-    if (newInstaller.jailed && !newInstaller.user.authenticated) {
+    if (deviceIsJailed && !newInstaller.user.authenticated) {
         if (self.tableView.tableHeaderView.tag == 1244)
             return;
         
@@ -336,7 +336,7 @@
         button.layer.cornerRadius = 10.0f;
         [headerView addSubview:button];
         
-        if (newInstaller.shouldOpenPrefs) {
+        if (installerShouldOpenPrefs) {
             button.tintColor = self.infoHeaderView.backgroundColor;
             button.text = CVKLocalizedStringInBundle(@"ACTIVATED_VIA_BIGBOSS", self.cvkBundle);
         } else {
@@ -410,7 +410,7 @@
 - (void)actionPurchase
 {
     [self.statusCardsController dismiss];
-    [[ColoredVKNewInstaller sharedInstaller] actionPurchase];
+    [[ColoredVKNewInstaller sharedInstaller].user actionPurchase];
 }
 
 - (void)actionMoreAboutStatus

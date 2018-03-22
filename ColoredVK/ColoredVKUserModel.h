@@ -27,6 +27,8 @@ typedef NS_ENUM(NSUInteger, ColoredVKUserAccountStatus)
 @property (strong, nonatomic) NSString *accessToken;
 
 - (void)clearUser;
+- (void)actionPurchase;
+
 - (void)updateAccountInfo:( void(^)(void) )completionBlock;
 - (void)logoutWithСompletionBlock:( void(^)(void) )completionBlock;
 - (void)authWithUsername:(NSString *)login password:(NSString *)password completionBlock:( void(^)(void) )completionBlock;

@@ -137,11 +137,10 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.night.theme"), nil, nil, YES);
-        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), nil, nil, YES);
-        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), nil, nil, YES);
-        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.update.corners"), nil, nil, YES);
+        POST_CORE_NOTIFICATION(kPackageUpdateNightThemeNotification);
+        POST_CORE_NOTIFICATION(kPackageReloadPrefsNotification);
+        POST_CORE_NOTIFICATION(kPackageReloadMenuNotification);
+        POST_CORE_NOTIFICATION(kPackageUpdateAppCornersNotification);
     });
 }
 
@@ -185,7 +184,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     
     NSDictionary *allInfo = @{@"vk_version":newInstaller.application.detailedVersion, @"cvk_version":kPackageVersion, 
                               @"ios_version": [UIDevice currentDevice].systemVersion, 
-                              @"device": newInstaller.deviceModel, @"crash_info":crash};
+                              @"device": __deviceModel, @"crash_info":crash};
     
     NSError *error = nil;
     NSData *data = [NSJSONSerialization dataWithJSONObject:allInfo options:0 error:&error];

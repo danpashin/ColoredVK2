@@ -10,21 +10,21 @@
 
 #import "PrefixHeader.h"
 #import "ColoredVKCrypto.h"
-#import <sys/utsname.h>
+
 #import "ColoredVKHUD.h"
-#import "ColoredVKWebViewController.h"
 #import "ColoredVKAlertController.h"
 #import "ColoredVKUpdatesController.h"
+
+#import <sys/utsname.h>
 #import <MobileGestalt.h>
 #import <mach-o/dyld.h>
 #import <libgen.h>
 
-static NSString * _Nullable const kDRMPackage = @"org.thebigboss.coloredvk2";
 #define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
 #define kDRMRemoteServerURL     [NSString stringWithFormat:@"%@/index-new.php", kPackageAPIURL]
 
 
-@interface ColoredVKNewInstaller () <ColoredVKApplicationModelDelegate>
+@interface ColoredVKNewInstaller ()
 
 @property (strong, nonatomic) UIWindow *hudWindow;
 @property (weak, nonatomic) ColoredVKHUD *hud;
@@ -36,7 +36,13 @@ static NSString * _Nullable const kDRMPackage = @"org.thebigboss.coloredvk2";
 
 void(^installerCompletionBlock)(BOOL purchased);
 NSString *__key;
+NSString *__deviceModel;
 NSString *__udid;
+
+BOOL deviceIsJailed;
+
+BOOL installerShouldOpenPrefs;
+
 
 + (instancetype)sharedInstaller
 {
@@ -57,15 +63,13 @@ NSString *__udid;
         __udid = CFBridgingRelease(MGCopyAnswer(CFSTR("re6Zb+zwFKJNlkQTUeT+/w")));
         _user = [ColoredVKUserModel new];
         _application = [ColoredVKApplicationModel new];
-        _application.delegate = self;
         
         struct utsname systemInfo;
         uname(&systemInfo);
-        _deviceModel = @(systemInfo.machine);
-        _sellerName = @"theux";
+        __deviceModel = @(systemInfo.machine);
         
-        _jailed = NO;
-        _shouldOpenPrefs = NO;
+        deviceIsJailed = NO;
+        installerShouldOpenPrefs = NO;
         
         [self createFolders];
         
@@ -104,21 +108,24 @@ return;
     
     char *executable_name = basename(pathbuf);
     for(int i = 0; executable_name[i]; i++){
-        executable_name[i] = tolower(executable_name[i]);
+        executable_name[i] = (char)tolower(executable_name[i]);
     }
     
     int maxLibsCount = (strstr(executable_name, "vkclient") != NULL) ? 2 : 1;
     int libsCount = 0;
     for (uint32_t i=0; i<_dyld_image_count(); i++) {
         const char *imageName = _dyld_get_image_name(i);
-        if (strstr(imageName, "ColoredVK2") != NULL)
+        if (strstr(imageName, "ColoredVK2") != NULL) {
             libsCount++;
+        }
         
-        if (strstr(imageName, "Crack") != NULL)
+        if (strstr(imageName, "Crack") != NULL) {
             libsCount++;
+        }
         
-        if (strstr(imageName, "crack") != NULL)
+        if (strstr(imageName, "crack") != NULL) {
             libsCount++;
+        }
     }
     
     if (libsCount > maxLibsCount)
@@ -137,27 +144,30 @@ return;
     }
     
 #ifndef COMPILE_APP
-    if (![dict[@"Device"] isEqualToString:_deviceModel]) {
+    if (![dict[@"Device"] isEqualToString:__deviceModel]) {
         writeFreeLicenceAndReturn
     }
 #endif
         
     if ([dict[@"jailed"] boolValue]) {
-        _jailed = YES;
+        deviceIsJailed = YES;
         NSString *licenceUdid = dict[@"udid"];
         
-        if ((licenceUdid.length != 40) || ![licenceUdid isEqualToString:__udid]) {
-            writeFreeLicenceAndReturn
+        if (__udid.length != 0) {
+            if ((licenceUdid.length != 40) || (__udid.length != 40) || ![licenceUdid isEqualToString:__udid]) {
+                writeFreeLicenceAndReturn
+            }
         }
         
-        if ([dict[@"purchased"] boolValue]) {
-            _shouldOpenPrefs = YES;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
-            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), 
-                                                 CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-            if (installerCompletionBlock)
-                installerCompletionBlock(YES);
-        }
+        if (![dict[@"purchased"] boolValue])
+            return;
+        
+        installerShouldOpenPrefs = YES;
+        POST_NOTIFICATION(kPackageReloadPrefsMenuNotification);
+        POST_CORE_NOTIFICATION(kPackageReloadMenuNotification);
+        
+        if (installerCompletionBlock)
+            installerCompletionBlock(YES);
         
     } else {
         self.user.name = dict[@"Login"];
@@ -187,8 +197,7 @@ return;
     if (!title)
         title = kPackageName;
     
-    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:title 
-                                                                                           message:text 
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:title message:text 
                                                                                     preferredStyle:UIAlertControllerStyleAlert];
     for (UIAlertAction *action in buttons) {
         [alertController addAction:action];
@@ -222,50 +231,21 @@ return;
 
 
 #pragma mark -
-#pragma mark ColoredVKApplicationModelDelegate
+#pragma mark Actions
 #pragma mark -
-
-- (void)applicationModelDidEndUpdatingInfo:(ColoredVKApplicationModel *)applicationModel
-{
-    if (NSClassFromString(@"Activation") != nil) {
-        _sellerName = @"iapps";
-    } else if ([applicationModel.teamIdentifier isEqualToString:@"FL663S8EYD"]) {
-        _sellerName = @"ishmv";
-    }
-}
-
-
-#pragma mark -
-#pragma mark Backend
-#pragma mark -
-
-- (void)actionPurchase
-{
-    if (!self.user.userID) {
-        [self showAlertWithTitle:CVKLocalizedString(@"WARNING") text:CVKLocalizedString(@"ENTER_ACCOUNT_FIRST") buttons:nil];
-        return;
-    }
-    
-    ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
-    
-    NSDictionary *params = @{@"user_id" :self.user.userID, @"profile_team_id": self.application.teamIdentifier, @"from": self.sellerName};
-    webController.request = [self.networkController requestWithMethod:@"POST" URLString:kPackagePurchaseLink parameters:params error:nil];
-    [webController present];  
-}
 
 - (void)writeFreeLicence
 {
     [self.user clearUser];
+    deviceIsJailed = (__udid.length == 40);
     
-    NSDictionary *dict = @{@"purchased" : @NO, @"Device" : self.deviceModel, 
-                           @"jailed" : (__udid.length == 40) ? @YES : @NO, @"udid" : (__udid.length == 40) ? __udid : @"" };
+    NSDictionary *dict = @{@"purchased" : @NO, @"Device" : __deviceModel, 
+                           @"jailed" : deviceIsJailed ? @YES : @NO, @"udid" : deviceIsJailed ? __udid : @"" };
     NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
     [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
     
-    if (__udid.length == 40) {
-        _jailed = YES;
+    if (deviceIsJailed)
         [self downloadJBLicence];
-    }
 }
 
 - (void)downloadJBLicence
@@ -273,8 +253,10 @@ return;
     if (__udid.length != 40)
         return;
     
-    NSDictionary *params = @{@"udid": legacyEncryptServerString(__udid), @"package":legacyEncryptServerString(kDRMPackage), 
+    NSDictionary *params = @{@"udid": legacyEncryptServerString(__udid), 
+                             @"package":legacyEncryptServerString(@"org.thebigboss.coloredvk2"), 
                              @"version":kPackageVersion, @"key": __key};
+    
     [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
         if (!json[@"response"])
             return;
@@ -284,7 +266,7 @@ return;
         if (![response[@"key"] isEqualToString:__key] || ![response[@"udid"] isEqualToString:__udid])
             return;
         
-        NSDictionary *dict = @{@"Device":self.deviceModel, @"udid":__udid, @"jailed":@YES, @"purchased":@YES};
+        NSDictionary *dict = @{@"Device":__deviceModel, @"udid":__udid, @"jailed":@YES, @"purchased":@YES};
         NSError *writingError = nil;
         NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
         [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
@@ -292,10 +274,10 @@ return;
         if (writingError)
             return;
         
-        self->_shouldOpenPrefs = YES;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), 
-                                             CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+        installerShouldOpenPrefs = YES;
+        POST_NOTIFICATION(kPackageReloadPrefsMenuNotification);
+        POST_CORE_NOTIFICATION(kPackageReloadMenuNotification);
+        
         if (installerCompletionBlock) 
             installerCompletionBlock(YES);
     } failure:nil];

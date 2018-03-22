@@ -13,6 +13,9 @@
 @interface ColoredVKNewInstaller : NSObject
 
 FOUNDATION_EXPORT void(^installerCompletionBlock)(BOOL purchased);
+FOUNDATION_EXPORT BOOL deviceIsJailed;
+FOUNDATION_EXPORT BOOL installerShouldOpenPrefs;
+FOUNDATION_EXPORT NSString *__deviceModel;
 
 + (instancetype)sharedInstaller;
 
@@ -20,16 +23,9 @@ FOUNDATION_EXPORT void(^installerCompletionBlock)(BOOL purchased);
 @property (strong, nonatomic, readonly) ColoredVKUserModel *user;
 @property (strong, nonatomic, readonly) ColoredVKApplicationModel *application;
 
-@property (copy, nonatomic, readonly) NSString *deviceModel;
-
 @property (strong, nonatomic) NSNumber *vkUserID;
-@property (copy, nonatomic, readonly) NSString *sellerName;
-
-@property (assign, nonatomic, readonly) BOOL jailed;
-@property (assign, nonatomic, readonly) BOOL shouldOpenPrefs;
 
 - (void)createFolders;
 - (void)checkStatus;
-- (void)actionPurchase;
 
 @end

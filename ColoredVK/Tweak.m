@@ -392,7 +392,6 @@ void reloadPrefs()
         settingsExtraBlurTone =     [[UIColor savedColorForIdentifier:@"settingsExtraBlurTone"      fromPrefs:prefs] colorWithAlphaComponent:0.3f];
         
 //        customFontName = prefs[@"customFontName"] ? prefs[@"customFontName"] : @".SFUIText";
-        
     }
     
     if (cvkMainController.navBarImageView)

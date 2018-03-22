@@ -13,10 +13,12 @@
 {
     self = [super init];
     if (self) {
+        _sellerName = @"theux";
         _teamIdentifier = @"";
         _teamName = @"";
         _version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-        _detailedVersion = [NSString stringWithFormat:@"%@ (%@)", self.version, [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
+        _detailedVersion = [NSString stringWithFormat:@"%@ (%@)", self.version, 
+                            [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
         _isVKApp = [[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"];
         
         [self updateTeamInformation];
@@ -26,19 +28,17 @@
 
 - (void)updateTeamInformation
 {
-    if (!self.isVKApp) {
-        if ([self.delegate respondsToSelector:@selector(applicationModelDidEndUpdatingInfo:)])
-            [self.delegate applicationModelDidEndUpdatingInfo:self];
-        
+    if (!self.isVKApp)        
         return;
-    }
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         NSString *provisionPath = [[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"];
         if (!provisionPath)
             return;
         
         NSError *error = nil;
-        NSString *provisionString = [NSString stringWithContentsOfFile:provisionPath encoding:NSISOLatin1StringEncoding error:&error];
+        NSString *provisionString = [NSString stringWithContentsOfFile:provisionPath encoding:NSISOLatin1StringEncoding 
+                                                                 error:&error];
         if (error)
             return;
                
@@ -62,8 +62,11 @@
         }
         [[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
         
-        if ([self.delegate respondsToSelector:@selector(applicationModelDidEndUpdatingInfo:)])
-            [self.delegate applicationModelDidEndUpdatingInfo:self];
+        if (NSClassFromString(@"Activation") != nil) {
+            self->_sellerName = @"iapps";
+        } else if ([self.teamIdentifier isEqualToString:@"FL663S8EYD"]) {
+            self->_sellerName = @"ishmv";
+        }
     });
 }
 

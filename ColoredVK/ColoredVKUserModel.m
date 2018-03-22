@@ -9,6 +9,7 @@
 #import "PrefixHeader.h"
 #import "ColoredVKCrypto.h"
 #import "ColoredVKHUD.h"
+#import "ColoredVKWebViewController.h"
 
 #define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
 #define kDRMRemoteServerURL     [NSString stringWithFormat:@"%@/index-new.php", kPackageAPIURL]
@@ -43,6 +44,22 @@ extern NSString *__key;
     self.email = nil;
     self.userID = nil;
     self.accountStatus = ColoredVKUserAccountStatusFree;
+}
+
+- (void)actionPurchase
+{
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
+    if (!self.userID) {
+        [newInstaller showAlertWithTitle:CVKLocalizedString(@"WARNING") text:CVKLocalizedString(@"ENTER_ACCOUNT_FIRST") buttons:nil];
+        return;
+    }
+    
+    NSDictionary *params = @{@"user_id" :self.userID, @"profile_team_id": newInstaller.application.teamIdentifier, 
+                             @"from": newInstaller.application.sellerName};
+    ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
+    webController.request = [newInstaller.networkController requestWithMethod:@"POST" URLString:kPackagePurchaseLink 
+                                                                   parameters:params error:nil];
+    [webController present];
 }
 
 - (void)updateAccountInfo:( void(^)(void) )completionBlock
@@ -83,7 +100,12 @@ extern NSString *__key;
             NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
             [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
+            POST_NOTIFICATION(kPackageReloadPrefsMenuNotification);
+            POST_CORE_NOTIFICATION(kPackageReloadMenuNotification);
+            
+            if (installerCompletionBlock) 
+                installerCompletionBlock(purchased);
+            
             if (completionBlock)
                 completionBlock();
         } failure:nil];
@@ -98,7 +120,7 @@ extern NSString *__key;
     ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     [newInstaller showHudWithText:CVKLocalizedString(@"PLEASE_WAIT")];
     
-    NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", newInstaller.deviceModel, 
+    NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", __deviceModel, 
                         [UIDevice currentDevice].name, [UIDevice currentDevice].systemVersion];
     NSDictionary *parameters = @{@"login": userName, @"password": password, @"action": @"login", 
                                  @"version": kPackageVersion, @"device": device, @"key": __key
@@ -142,7 +164,7 @@ extern NSString *__key;
         self.email = response[@"email"] ? response[@"email"] : @"";
         self.accountStatus = purchased.boolValue ? ColoredVKUserAccountStatusPaid : ColoredVKUserAccountStatusFree;
         
-        NSDictionary *dict = @{@"Device":newInstaller.deviceModel, @"Login":self.name, @"user_id":self.userID,
+        NSDictionary *dict = @{@"Device":__deviceModel, @"Login":self.name, @"user_id":self.userID,
                                @"token":self.accessToken, @"purchased":purchased, @"email":self.email};
         NSError *writingError = nil;
         NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
@@ -150,11 +172,11 @@ extern NSString *__key;
         
         if (!writingError) {
             showAlertBlock(nil);
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
-            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+            POST_NOTIFICATION(kPackageReloadPrefsMenuNotification);
+            POST_CORE_NOTIFICATION(kPackageReloadMenuNotification);
             
-            if (purchased.boolValue && installerCompletionBlock) 
-                installerCompletionBlock(YES);
+            if (installerCompletionBlock) 
+                installerCompletionBlock(purchased.boolValue);
         } else 
             showAlertBlock(writingError);
         
@@ -183,7 +205,7 @@ extern NSString *__key;
             completionBlock();
     };
     
-    NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", newInstaller.deviceModel, [UIDevice currentDevice].name, 
+    NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", __deviceModel, [UIDevice currentDevice].name, 
                         [UIDevice currentDevice].systemVersion];
     NSDictionary *parameters = @{@"login": self.name, @"token": self.accessToken, @"action": @"logout", 
                                  @"version": kPackageVersion, @"device": device, @"key": __key
@@ -191,12 +213,16 @@ extern NSString *__key;
     
     [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
         if (!json[@"error"]) {
-            [newInstaller writeFreeLicence];
-            newCompletionBlock(nil);
             self.authenticated = NO;
+            [newInstaller writeFreeLicence];
+            
+            newCompletionBlock(nil);
+            
+            POST_NOTIFICATION(kPackageReloadPrefsMenuNotification);
+            POST_CORE_NOTIFICATION(kPackageReloadMenuNotification);
+            
             if (installerCompletionBlock)
                 installerCompletionBlock(NO);
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil];
         } else {
             NSString *errorMessages = json ? json[@"error"] : @"Unknown error";
             newCompletionBlock([NSError errorWithDomain:NSCocoaErrorDomain code:102 userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);

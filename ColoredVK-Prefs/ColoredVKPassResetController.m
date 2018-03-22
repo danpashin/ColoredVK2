@@ -131,30 +131,28 @@
     
     NSString *stringURL = [NSString stringWithFormat:@"%@/pass/change.php", kPackageAPIURL];
     NSDictionary *params = @{@"login":self.login, @"email":self.email, @"new_pass":self.passTextField.text, @"token":self.token};
-    [[ColoredVKNewInstaller sharedInstaller].networkController sendJSONRequestWithMethod:@"POST" stringURL:stringURL parameters:params
-                                                                                 success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
-                                                                                     if (json[@"response"]) {
-                                                                                         NSDictionary *responseDict = json[@"response"];
-                                                                                         
-                                                                                         NSInteger code = [responseDict[@"code"] integerValue];
-                                                                                         if (code != 1) {
-                                                                                             NSString *message = [NSString stringWithFormat:@"Unknow error\n(%ld)", (long)code];
-                                                                                             [hud showFailureWithStatus:message];
-                                                                                         } else {
-                                                                                             hud.didHiddenBlock = ^{
-                                                                                                 [self actionPop];
-                                                                                             };
-                                                                                             [hud showSuccess];
-                                                                                         }
-                                                                                         
-                                                                                     } else {
-                                                                                         NSString *message = [NSString stringWithFormat:@"%@\n(%@)", json[@"error"][@"message"], json[@"error"][@"code"]];
-                                                                                         [hud showFailureWithStatus:message];
-                                                                                     }
-                                                                                 } 
-                                                                                 failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                                                                     [hud showFailureWithStatus:error.localizedDescription];
-                                                                                 }];
+    [[ColoredVKNewInstaller sharedInstaller].networkController sendJSONRequestWithMethod:@"POST" stringURL:stringURL parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+        if (json[@"response"]) {
+            NSDictionary *responseDict = json[@"response"];
+            
+            NSInteger code = [responseDict[@"code"] integerValue];
+            if (code != 1) {
+                NSString *message = [NSString stringWithFormat:@"Unknow error\n(%ld)", (long)code];
+                [hud showFailureWithStatus:message];
+            } else {
+                hud.didHiddenBlock = ^{
+                    [self actionPop];
+                };
+                [hud showSuccess];
+            }
+            
+        } else {
+            NSString *message = [NSString stringWithFormat:@"%@\n(%@)", json[@"error"][@"message"], json[@"error"][@"code"]];
+            [hud showFailureWithStatus:message];
+        }
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+        [hud showFailureWithStatus:error.localizedDescription];
+    }];
 }
 
 @end

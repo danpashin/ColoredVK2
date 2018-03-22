@@ -11,30 +11,21 @@
 
 @interface ColoredVKTweakPrefsController ()
 
-@property (strong, nonatomic) ColoredVKUpdatesController *updatesController;
 @property (nonatomic, getter=getLastCheckForUpdates, copy) NSString *lastCheckForUpdates;
 
 @end
 
 @implementation ColoredVKTweakPrefsController
 
-- (void)loadView
-{
-    [super loadView];
-    
-    self.updatesController = [ColoredVKUpdatesController new];
-    self.lastCheckForUpdates = self.updatesController.localizedLastCheckForUpdates;
-}
-
 - (void)checkForUpdates
 {
-    __weak typeof(self) weakSelf = self;
-    self.updatesController.checkCompletionHandler = ^(ColoredVKUpdatesController *controller) {
-        weakSelf.lastCheckForUpdates = controller.localizedLastCheckForUpdates;
-        [weakSelf reloadSpecifiers];
+    ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
+    updatesController.showErrorAlert = YES;
+    updatesController.checkCompletionHandler = ^(ColoredVKUpdatesController *controller) {
+        self.lastCheckForUpdates = controller.localizedLastCheckForUpdates;
+        [self reloadSpecifiers];
     };
-    self.updatesController.showErrorAlert = YES;
-    [self.updatesController checkUpdates];
+    [updatesController checkUpdates];
 }
 
 @end

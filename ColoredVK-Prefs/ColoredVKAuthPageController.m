@@ -120,15 +120,14 @@
     }
     
     __weak typeof(self) weakSelf = self;
-    [[ColoredVKNewInstaller sharedInstaller].user authWithUsername:self.loginTextField.text password:self.passTextField.text 
-                                                   completionBlock:^{
-                                                       if (weakSelf.completionBlock)
-                                                           weakSelf.completionBlock();
-                                                       
-                                                       if ([ColoredVKNewInstaller sharedInstaller].user.authenticated) {
-                                                           [weakSelf dismiss];
-                                                       }
-                                                   }];
+    [[ColoredVKNewInstaller sharedInstaller].user authWithUsername:self.loginTextField.text password:self.passTextField.text completionBlock:^{
+        if (weakSelf.completionBlock)
+            weakSelf.completionBlock();
+        
+        if ([ColoredVKNewInstaller sharedInstaller].user.authenticated) {
+            [weakSelf dismiss];
+        }
+    }];
 }
 
 - (void)showFromController:(UIViewController *)viewController
