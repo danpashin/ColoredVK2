@@ -75,12 +75,10 @@
 		A510E7DA1EF99CE9001D6798 /* ColoredVKSimpleAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = A510E7D41EF99CE9001D6798 /* ColoredVKSimpleAlertController.m */; };
 		A513AB351F43666E0045F530 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F09DA51F101A5200024198 /* SafariServices.framework */; };
 		A5144F791FB4CC6C00DB1B89 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5EE64AC1FAE4C9E0050C156 /* Photos.framework */; };
-		A51D536D1F769E3900F6952A /* ColoredVKImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */; };
 		A51D536E1F769E3900F6952A /* ColoredVKImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */; };
 		A51D536F1F769E3A00F6952A /* ColoredVKImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */; };
 		A51D53701F769E3B00F6952A /* ColoredVKImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */; };
 		A51D53711F769E4000F6952A /* ColoredVKImageProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = A51D536B1F769DB600F6952A /* ColoredVKImageProcessor.h */; };
-		A51D53721F769E4000F6952A /* ColoredVKImageProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = A51D536B1F769DB600F6952A /* ColoredVKImageProcessor.h */; };
 		A51D53731F769E4100F6952A /* ColoredVKImageProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = A51D536B1F769DB600F6952A /* ColoredVKImageProcessor.h */; };
 		A51D53741F769E4100F6952A /* ColoredVKImageProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = A51D536B1F769DB600F6952A /* ColoredVKImageProcessor.h */; };
 		A51E68B92033231400B72082 /* ColoredVKCardController.h in Headers */ = {isa = PBXBuildFile; fileRef = A51E68B72033231400B72082 /* ColoredVKCardController.h */; };
@@ -598,6 +596,14 @@
 		A5DA87E21D944ED400763B5F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5DA87E01D944ECE00763B5F /* CoreGraphics.framework */; };
 		A5DB61CB1F10DBF200FFAFF9 /* ColoredVKNewInstaller.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D921F0FF88200024198 /* ColoredVKNewInstaller.m */; };
 		A5DB61CC1F10DBFF00FFAFF9 /* ColoredVKNewInstaller.h in Headers */ = {isa = PBXBuildFile; fileRef = A5F09D911F0FF88200024198 /* ColoredVKNewInstaller.h */; };
+		A5E1E08120656BA300709696 /* AudioSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E1E08020656BA300709696 /* AudioSwizzle.m */; };
+		A5E1E08420656C3700709696 /* SettingsSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E1E08320656C3700709696 /* SettingsSwizzle.m */; };
+		A5E1E08620656CE200709696 /* SystemSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E1E08520656CE200709696 /* SystemSwizzle.m */; };
+		A5E1E0872065713100709696 /* SettingsSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E1E08320656C3700709696 /* SettingsSwizzle.m */; };
+		A5E1E0882065713400709696 /* AudioSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E1E08020656BA300709696 /* AudioSwizzle.m */; };
+		A5E1E0892065713600709696 /* SystemSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E1E08520656CE200709696 /* SystemSwizzle.m */; };
+		A5E1E08B206573AB00709696 /* ChatSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E1E08A206573AB00709696 /* ChatSwizzle.m */; };
+		A5E1E08C206573AB00709696 /* ChatSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E1E08A206573AB00709696 /* ChatSwizzle.m */; };
 		A5E3A9172026302800AD43AE /* ColoredVKUserInfoView.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E3A9152026302800AD43AE /* ColoredVKUserInfoView.h */; };
 		A5E3A9182026302800AD43AE /* ColoredVKUserInfoView.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E3A9152026302800AD43AE /* ColoredVKUserInfoView.h */; };
 		A5E3A9192026302800AD43AE /* ColoredVKUserInfoView.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E3A9152026302800AD43AE /* ColoredVKUserInfoView.h */; };
@@ -843,6 +849,10 @@
 		A5DA87C51D944E1000763B5F /* LHProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LHProgressHUD.m; sourceTree = "<group>"; };
 		A5DA87DD1D944EAC00763B5F /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		A5DA87E01D944ECE00763B5F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		A5E1E08020656BA300709696 /* AudioSwizzle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioSwizzle.m; sourceTree = "<group>"; };
+		A5E1E08320656C3700709696 /* SettingsSwizzle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingsSwizzle.m; sourceTree = "<group>"; };
+		A5E1E08520656CE200709696 /* SystemSwizzle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SystemSwizzle.m; sourceTree = "<group>"; };
+		A5E1E08A206573AB00709696 /* ChatSwizzle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatSwizzle.m; sourceTree = "<group>"; };
 		A5E3A9152026302800AD43AE /* ColoredVKUserInfoView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKUserInfoView.h; sourceTree = "<group>"; };
 		A5E3A9162026302800AD43AE /* ColoredVKUserInfoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKUserInfoView.m; sourceTree = "<group>"; };
 		A5E609732000E5640094C28B /* ColoredVKTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKTextField.h; sourceTree = "<group>"; };
@@ -1064,34 +1074,23 @@
 		A53D91941CCA82B400E45A49 /* ColoredVK */ = {
 			isa = PBXGroup;
 			children = (
-				A558E50C2052C34200F10FBB /* Models */,
 				A5F09D911F0FF88200024198 /* ColoredVKNewInstaller.h */,
 				A5F09D921F0FF88200024198 /* ColoredVKNewInstaller.m */,
 				A5F09D9B1F0FFA5D00024198 /* ColoredVKCrypto.h */,
 				A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */,
 				A53D12911D467016009567B5 /* PrefixHeader.h */,
-				A55434FA1E636B19003B4256 /* Tweak.h */,
-				A53D91961CCA82B400E45A49 /* Tweak.m */,
-				A5AF3CF91FDD2BC300638AC2 /* TweakFunctions.m */,
-				A5D3D06E1FE063D0007AAEF7 /* TweakNightTheme.m */,
+				A5E1E08220656C1800709696 /* Tweak */,
 				A528D8821DE9FCAF00B299C1 /* ColoredVKMainController.h */,
 				A528D8831DE9FCAF00B299C1 /* ColoredVKMainController.m */,
-				A526A6BE1DD50D4700B47104 /* ColoredVKAudioLyricsView.h */,
-				A526A6BF1DD50D4700B47104 /* ColoredVKAudioLyricsView.m */,
-				A5D2DFB31DE741CF00DCDC84 /* ColoredVKAudioCover.h */,
-				A54249C91E052A930018D3E3 /* ColoredVKAudioCover.m */,
-				A53D41661DD0AC2600584B13 /* ColoredVKWallpaperView.h */,
-				A53D41671DD0AC2600584B13 /* ColoredVKWallpaperView.m */,
-				A523509D1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h */,
-				A523509E1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m */,
 				A5B607C81F0943C4003529AF /* ColoredVKUpdatesController.h */,
 				A5B607C91F0943C4003529AF /* ColoredVKUpdatesController.m */,
 				A56E89E11F31D31C0013BAE3 /* ColoredVKNetworkController.h */,
 				A56E89E21F31D31C0013BAE3 /* ColoredVKNetworkController.m */,
 				A5A4E2CC1F250A520001102F /* ColoredVKWebViewController.h */,
 				A5A4E2CD1F250A520001102F /* ColoredVKWebViewController.m */,
-				A52B8F391F991A2600898168 /* ColoredVKNightThemeColorScheme.h */,
-				A52B8F3A1F991A2600898168 /* ColoredVKNightThemeColorScheme.m */,
+				A5E1E08D20657C1200709696 /* Views */,
+				A558E50C2052C34200F10FBB /* Models */,
+				A5D3D0731FE06521007AAEF7 /* Categories */,
 				A53D919D1CCA82C000E45A49 /* Supporting Files */,
 				A53D91991CCA82B400E45A49 /* VKMethods.h */,
 			);
@@ -1109,7 +1108,6 @@
 				A59F45881E917F44002D01F6 /* _UIBackdropView.h */,
 				A54249461E0522560018D3E3 /* SDWebImage */,
 				A5363B0A1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit */,
-				A5D3D0731FE06521007AAEF7 /* Categories */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1153,8 +1151,12 @@
 		A54B9ED52064FACD0097B0C6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				A51D536B1F769DB600F6952A /* ColoredVKImageProcessor.h */,
+				A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */,
 				A54B9ECD2064FAC50097B0C6 /* ColoredVKBackupsModel.h */,
 				A54B9ECE2064FAC50097B0C6 /* ColoredVKBackupsModel.m */,
+				A55D20A22033406C00C43454 /* ColoredVKCard.h */,
+				A55D20A32033406C00C43454 /* ColoredVKCard.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -1162,6 +1164,8 @@
 		A558E50C2052C34200F10FBB /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				A52B8F391F991A2600898168 /* ColoredVKNightThemeColorScheme.h */,
+				A52B8F3A1F991A2600898168 /* ColoredVKNightThemeColorScheme.m */,
 				A558E5022052C33200F10FBB /* ColoredVKApplicationModel.h */,
 				A558E5032052C33200F10FBB /* ColoredVKApplicationModel.m */,
 				A50883A41FFA48BC00C05E2A /* ColoredVKUserModel.h */,
@@ -1173,6 +1177,9 @@
 		A56147B41EA00F1B00B3D8C8 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				A50138E2201F379D0007300C /* Account */,
+				A566D5931FF4E238005EC07A /* Prefs selectors */,
+				A566D5941FF4E271005EC07A /* Window Controllers */,
 				A56147BD1EA0157400B3D8C8 /* ColoredVKPrefs.h */,
 				A56147BE1EA0157400B3D8C8 /* ColoredVKPrefs.m */,
 				A599A82C1EA140F600D747D7 /* ColoredVKGeneralPrefs.h */,
@@ -1185,7 +1192,6 @@
 				A56147B61EA0140900B3D8C8 /* ColoredVKAboutController.m */,
 				A5AB32761F34F8E100C7537C /* ColoredVKTweakPrefsController.h */,
 				A5AB32771F34F8E100C7537C /* ColoredVKTweakPrefsController.m */,
-				A50138E2201F379D0007300C /* Account */,
 				A5B1E29C1E509246001B8442 /* ColoredVKSettingsController.h */,
 				A5B1E29D1E509246001B8442 /* ColoredVKSettingsController.m */,
 				A5BC53A81F1234C200C4E1E0 /* ColoredVKAlertController.h */,
@@ -1193,8 +1199,6 @@
 				A51E68B72033231400B72082 /* ColoredVKCardController.h */,
 				A51E68B82033231400B72082 /* ColoredVKCardController.m */,
 				A55D209720332E5500C43454 /* ColoredVKMain.storyboard */,
-				A566D5931FF4E238005EC07A /* Prefs selectors */,
-				A566D5941FF4E271005EC07A /* Window Controllers */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -1233,13 +1237,9 @@
 				A56147B41EA00F1B00B3D8C8 /* Controllers */,
 				A5E6097C2000EE8A0094C28B /* Cells */,
 				A5E6097B2000EE510094C28B /* Views */,
-				A51D536B1F769DB600F6952A /* ColoredVKImageProcessor.h */,
-				A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */,
-				A55D20A22033406C00C43454 /* ColoredVKCard.h */,
-				A55D20A32033406C00C43454 /* ColoredVKCard.m */,
+				A54B9ED52064FACD0097B0C6 /* Models */,
 				A53FDE511E4CC95100AA3031 /* Icon-big.png */,
 				A5B5C829202C9ABF00AA06B7 /* Images.xcassets */,
-				A54B9ED52064FACD0097B0C6 /* Models */,
 				A5DD93FE1D3E0F560006E470 /* Supporting Files */,
 			);
 			path = "ColoredVK-Prefs";
@@ -1297,6 +1297,36 @@
 				A56C4D851E56165800BEB2B1 /* ColoredVK2-dylib.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A5E1E08220656C1800709696 /* Tweak */ = {
+			isa = PBXGroup;
+			children = (
+				A55434FA1E636B19003B4256 /* Tweak.h */,
+				A53D91961CCA82B400E45A49 /* Tweak.m */,
+				A5E1E08A206573AB00709696 /* ChatSwizzle.m */,
+				A5E1E08520656CE200709696 /* SystemSwizzle.m */,
+				A5E1E08020656BA300709696 /* AudioSwizzle.m */,
+				A5E1E08320656C3700709696 /* SettingsSwizzle.m */,
+				A5AF3CF91FDD2BC300638AC2 /* TweakFunctions.m */,
+				A5D3D06E1FE063D0007AAEF7 /* TweakNightTheme.m */,
+			);
+			name = Tweak;
+			sourceTree = "<group>";
+		};
+		A5E1E08D20657C1200709696 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A526A6BE1DD50D4700B47104 /* ColoredVKAudioLyricsView.h */,
+				A526A6BF1DD50D4700B47104 /* ColoredVKAudioLyricsView.m */,
+				A5D2DFB31DE741CF00DCDC84 /* ColoredVKAudioCover.h */,
+				A54249C91E052A930018D3E3 /* ColoredVKAudioCover.m */,
+				A53D41661DD0AC2600584B13 /* ColoredVKWallpaperView.h */,
+				A53D41671DD0AC2600584B13 /* ColoredVKWallpaperView.m */,
+				A523509D1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h */,
+				A523509E1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 		A5E6097B2000EE510094C28B /* Views */ = {
@@ -1372,7 +1402,6 @@
 				A528D8841DE9FCAF00B299C1 /* ColoredVKMainController.h in Headers */,
 				A5CC384A204018C8005A3AB0 /* SDWebImageCoderHelper.h in Headers */,
 				A54249951E0522560018D3E3 /* SDWebImageDownloaderOperation.h in Headers */,
-				A51D53721F769E4000F6952A /* ColoredVKImageProcessor.h in Headers */,
 				A585E1701EAF1E7C005B30F7 /* ColoredVKCoreData.h in Headers */,
 				A54249911E0522560018D3E3 /* SDWebImageDownloader.h in Headers */,
 				A5903F90201DDD5300951C53 /* LHAcvitityIndicator.h in Headers */,
@@ -2023,6 +2052,7 @@
 				A5210C951DE785C1004F7E11 /* LHAcvitityIndicator.m in Sources */,
 				A5F09D971F0FF88200024198 /* ColoredVKNewInstaller.m in Sources */,
 				A542499B1E0522560018D3E3 /* SDWebImageManager.m in Sources */,
+				A5E1E08420656C3700709696 /* SettingsSwizzle.m in Sources */,
 				A5CC3846204018C8005A3AB0 /* SDWebImageCoderHelper.m in Sources */,
 				A54249A11E0522560018D3E3 /* SDWebImagePrefetcher.m in Sources */,
 				A5F09DA11F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */,
@@ -2037,6 +2067,7 @@
 				A5210C981DE785C1004F7E11 /* LHProgressHUD.m in Sources */,
 				A5CC3854204018D8005A3AB0 /* SDWebImageFrame.m in Sources */,
 				A54249831E0522560018D3E3 /* SDImageCache.m in Sources */,
+				A5E1E08620656CE200709696 /* SystemSwizzle.m in Sources */,
 				A53D416A1DD0AC2600584B13 /* ColoredVKWallpaperView.m in Sources */,
 				A5BC53AE1F1234C200C4E1E0 /* ColoredVKAlertController.m in Sources */,
 				A54249CA1E052A930018D3E3 /* ColoredVKAudioCover.m in Sources */,
@@ -2053,7 +2084,7 @@
 				A585E1721EAF1E7C005B30F7 /* ColoredVKCoreData.m in Sources */,
 				A52350A11DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m in Sources */,
 				A542498B1E0522560018D3E3 /* SDWebImageCompat.m in Sources */,
-				A51D536D1F769E3900F6952A /* ColoredVKImageProcessor.m in Sources */,
+				A5E1E08B206573AB00709696 /* ChatSwizzle.m in Sources */,
 				A5D979671DAEB87900607F06 /* UIImage+ColoredVK.m in Sources */,
 				A5363B0F1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.m in Sources */,
 				A5903F8E201DDD4000951C53 /* ColoredVKHUD.m in Sources */,
@@ -2062,6 +2093,7 @@
 				A542497B1E0522560018D3E3 /* NSData+ImageContentType.m in Sources */,
 				A5D979681DAEB87900607F06 /* UIColor+ColoredVK.m in Sources */,
 				A5B607CE1F0943C4003529AF /* ColoredVKUpdatesController.m in Sources */,
+				A5E1E08120656BA300709696 /* AudioSwizzle.m in Sources */,
 				A585E16C1EAF1DEC005B30F7 /* ColoredVKAudioEntity.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2091,6 +2123,7 @@
 				A5E609792000E5640094C28B /* ColoredVKTextField.m in Sources */,
 				A54249CB1E052A930018D3E3 /* ColoredVKAudioCover.m in Sources */,
 				A5E3A91B2026302800AD43AE /* ColoredVKUserInfoView.m in Sources */,
+				A5E1E0882065713400709696 /* AudioSwizzle.m in Sources */,
 				A54249981E0522560018D3E3 /* SDWebImageDownloaderOperation.m in Sources */,
 				A50138E0201F2D070007300C /* ColoredVKAccountRestoreController.m in Sources */,
 				A542497C1E0522560018D3E3 /* NSData+ImageContentType.m in Sources */,
@@ -2130,8 +2163,10 @@
 				A5630799202E2636001CD95B /* ColoredVKPassChangeController.m in Sources */,
 				A5739D611EA015A900367595 /* ColoredVKTextViewController.m in Sources */,
 				A5AE82FC1EC1DE25000B7F63 /* ColoredVKStepperButton.m in Sources */,
+				A5E1E08C206573AB00709696 /* ChatSwizzle.m in Sources */,
 				A585E1731EAF1E7C005B30F7 /* ColoredVKCoreData.m in Sources */,
 				A56147C31EA0157400B3D8C8 /* ColoredVKPrefs.m in Sources */,
+				A5E1E0872065713100709696 /* SettingsSwizzle.m in Sources */,
 				A5AB327E1F34F8E100C7537C /* ColoredVKTweakPrefsController.m in Sources */,
 				A510E7D11EF98866001D6798 /* ColoredVKColorCollectionViewCell.m in Sources */,
 				A576D1811DC621B90039884F /* Tweak.m in Sources */,
@@ -2152,6 +2187,7 @@
 				A5BC53B01F1234C200C4E1E0 /* ColoredVKAlertController.m in Sources */,
 				A576D1881DC621B90039884F /* UIColor+ColoredVK.m in Sources */,
 				A54249841E0522560018D3E3 /* SDImageCache.m in Sources */,
+				A5E1E0892065713600709696 /* SystemSwizzle.m in Sources */,
 				A5CC3848204018C8005A3AB0 /* SDWebImageCoderHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

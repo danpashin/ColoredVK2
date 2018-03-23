@@ -190,17 +190,17 @@ return;
 
 - (void)showAlertWithTitle:(NSString *)title text:(NSString *)text buttons:(NSArray <__kindof UIAlertAction *> *)buttons
 {
-    if (buttons.count == 0) {
-        buttons = @[[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel 
-                                           handler:^(UIAlertAction *action) {}]];
-    }
     if (!title)
         title = kPackageName;
     
     ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:title message:text 
                                                                                     preferredStyle:UIAlertControllerStyleAlert];
-    for (UIAlertAction *action in buttons) {
-        [alertController addAction:action];
+    if (buttons.count == 0) {
+        [alertController addCancelActionWithTitle:UIKitLocalizedString(@"OK")];
+    } else {
+        for (UIAlertAction *action in buttons) {
+            [alertController addAction:action];
+        }
     }
     [alertController present];
 }
@@ -215,7 +215,6 @@ return;
         
         self.hud = [ColoredVKHUD showHUDForView:self.hudWindow];
         [self.hud resetWithStatus:text];
-//        self.hud.dismissByTap = NO;
     });
 }
 
