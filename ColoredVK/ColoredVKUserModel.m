@@ -100,8 +100,8 @@ extern NSString *__key;
             NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
             [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
             
-            POST_NOTIFICATION(kPackageReloadPrefsMenuNotification);
-            POST_CORE_NOTIFICATION(kPackageReloadMenuNotification);
+            POST_NOTIFICATION(kPackageNotificationReloadPrefsMenu);
+            POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
             
             if (installerCompletionBlock) 
                 installerCompletionBlock(purchased);
@@ -172,8 +172,8 @@ extern NSString *__key;
         
         if (!writingError) {
             showAlertBlock(nil);
-            POST_NOTIFICATION(kPackageReloadPrefsMenuNotification);
-            POST_CORE_NOTIFICATION(kPackageReloadMenuNotification);
+            POST_NOTIFICATION(kPackageNotificationReloadPrefsMenu);
+            POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
             
             if (installerCompletionBlock) 
                 installerCompletionBlock(purchased.boolValue);
@@ -218,8 +218,8 @@ extern NSString *__key;
             
             newCompletionBlock(nil);
             
-            POST_NOTIFICATION(kPackageReloadPrefsMenuNotification);
-            POST_CORE_NOTIFICATION(kPackageReloadMenuNotification);
+            POST_NOTIFICATION(kPackageNotificationReloadPrefsMenu);
+            POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
             
             if (installerCompletionBlock)
                 installerCompletionBlock(NO);

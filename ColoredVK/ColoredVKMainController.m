@@ -136,11 +136,12 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     prefs[@"enabled"] = @(switchView.on);
     [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        POST_CORE_NOTIFICATION(kPackageUpdateNightThemeNotification);
-        POST_CORE_NOTIFICATION(kPackageReloadPrefsNotification);
-        POST_CORE_NOTIFICATION(kPackageReloadMenuNotification);
-        POST_CORE_NOTIFICATION(kPackageUpdateAppCornersNotification);
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), queue, ^{
+        POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
+        POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
+        POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
+        POST_CORE_NOTIFICATION(kPackageNotificationUpdateAppCorners);
     });
 }
 

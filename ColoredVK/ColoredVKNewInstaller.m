@@ -163,8 +163,8 @@ return;
             return;
         
         installerShouldOpenPrefs = YES;
-        POST_NOTIFICATION(kPackageReloadPrefsMenuNotification);
-        POST_CORE_NOTIFICATION(kPackageReloadMenuNotification);
+        POST_NOTIFICATION(kPackageNotificationReloadPrefsMenu);
+        POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
         
         if (installerCompletionBlock)
             installerCompletionBlock(YES);
@@ -215,7 +215,7 @@ return;
         
         self.hud = [ColoredVKHUD showHUDForView:self.hudWindow];
         [self.hud resetWithStatus:text];
-        self.hud.dismissByTap = NO;
+//        self.hud.dismissByTap = NO;
     });
 }
 
@@ -275,8 +275,8 @@ return;
             return;
         
         installerShouldOpenPrefs = YES;
-        POST_NOTIFICATION(kPackageReloadPrefsMenuNotification);
-        POST_CORE_NOTIFICATION(kPackageReloadMenuNotification);
+        POST_NOTIFICATION(kPackageNotificationReloadPrefsMenu);
+        POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
         
         if (installerCompletionBlock) 
             installerCompletionBlock(YES);

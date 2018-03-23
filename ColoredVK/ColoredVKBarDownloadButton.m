@@ -39,14 +39,10 @@
         _url = url;
         _rootViewController = controller;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSArray *downloadInfo = [NSArray array];
             NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
             NSString *path = [cvkBundle pathForResource:@"AdvancedInfo" ofType:@"plist" inDirectory:@"plists"];
             NSDictionary *infoDict = [NSDictionary dictionaryWithContentsOfFile:path];
-            if (infoDict) {
-                downloadInfo = infoDict[@"ImagesDLInfo"];
-            }
-            self.downloadInfo = downloadInfo;
+            self.downloadInfo = infoDict ? infoDict[@"ImagesDLInfo"] : @[];
         });
     }
     return self;
@@ -72,12 +68,11 @@
             [processor processImageFromURL:url identifier:identifier andSaveToURL:urlToSave completionBlock:^(BOOL success, NSError *error) {
                 success ? [hud showSuccess] : [hud showFailureWithStatus:error.localizedDescription];
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil 
-                                                                  userInfo:@{@"identifier" : identifier}];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" 
+                                                                    object:nil userInfo:@{@"identifier" : identifier}];
                 
-                if ([identifier isEqualToString:@"menuBackgroundImage"]) {
-                    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-                }
+                if ([identifier isEqualToString:@"menuBackgroundImage"])
+                    POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
             }];
         }];
         [actionController addAction:downloadAction image:dict[@"icon"]];

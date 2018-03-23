@@ -43,7 +43,7 @@
 
 void corePrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.audio.prefs.update" object:nil userInfo:nil];
+    POST_NOTIFICATION(@"com.daniilpashin.coloredvk2.audio.prefs.update");
 }
 
 - (instancetype)init
@@ -93,7 +93,7 @@ void corePrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef
         
         
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updatePrefs:) name:@"com.daniilpashin.coloredvk2.audio.prefs.update" object:nil];
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, corePrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        REGISTER_CORE_OBSERVER(corePrefsNotify, kPackageNotificationReloadPrefs);
     }
     return self;
 }

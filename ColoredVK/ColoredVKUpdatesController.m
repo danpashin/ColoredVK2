@@ -106,15 +106,16 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
 - (void)showAlertWithMessage:(NSString *)message actions:(NSArray <UIAlertAction *> *)actions
 {    
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (actions.count > 0) {
-            ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName 
-                                                                                                   message:message 
-                                                                                            preferredStyle:UIAlertControllerStyleAlert];
-            for (UIAlertAction *action in actions) {
-                [alertController addAction:action];
-            }
-            [alertController present];
+        if (actions.count == 0)
+            return;
+        
+        ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName 
+                                                                                               message:message 
+                                                                                        preferredStyle:UIAlertControllerStyleAlert];
+        for (UIAlertAction *action in actions) {
+            [alertController addAction:action];
         }
+        [alertController present];
     });
 }
 
