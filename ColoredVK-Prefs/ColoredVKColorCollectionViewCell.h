@@ -6,7 +6,6 @@
 //
 //
 
-#import <UIKit/UIKit.h>
 #import "ColoredVKColorPreview.h"
 
 @class ColoredVKColorCollectionViewCell;
@@ -16,7 +15,6 @@
 - (void)colorCell:(ColoredVKColorCollectionViewCell *)cell deleteColor:(NSString *)hexColor;
 
 @end
-
 
 
 @interface ColoredVKColorCollectionViewCell : UICollectionViewCell

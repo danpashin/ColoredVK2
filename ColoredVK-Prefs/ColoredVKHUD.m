@@ -34,19 +34,7 @@
     
     self = [super initWithAttachedView:view mode:LHProgressHUDModeNormal subMode:LHProgressHUDSubModeAnimating animated:YES];
     if (self) {
-        _dismissByTap = NO;
-        self.centerBackgroundView.blurStyle = LHBlurEffectStyleExtraLight;
-        self.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.7f];
-        self.centerBackgroundView.layer.cornerRadius = 10.0f;
-        self.infoColor = [UIColor colorWithWhite:0.55f alpha:1.0f];
-        self.spinnerColor = [UIColor colorWithWhite:0.55f alpha:1.0f];
-        self.textLabel.textColor = [UIColor colorWithWhite:0.55f alpha:1.0f];
         
-        ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
-        if (nightScheme.enabled) {
-            self.centerBackgroundView.blurStyle = LHBlurEffectStyleDark;
-            self.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.7f];
-        }
     }
     return self;
 }
@@ -55,7 +43,13 @@
 {
     [super commonInit];
     
-    [self.lhSpinner addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapRecognized:)]];
+    ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    self.centerBackgroundView.blurStyle = nightScheme.enabled ? LHBlurEffectStyleDark : LHBlurEffectStyleExtraLight;
+    self.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:nightScheme.enabled ? 0.0f : 1.0f alpha:0.7f];
+    self.centerBackgroundView.layer.cornerRadius = 10.0f;
+    self.infoColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
+    self.spinnerColor = [UIColor colorWithWhite:0.55f alpha:1.0f];
+    self.textLabel.textColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
 }
 
 - (void)showSuccess
@@ -94,7 +88,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([self.lhSpinner isKindOfClass:[LHAcvitityIndicator class]])
-            [(LHAcvitityIndicator *)self.lhSpinner updateToInfo:NO];
+            [(LHAcvitityIndicator *)self.lhSpinner updateToSuccess:NO];
         [super hide];
     });
 }
@@ -104,20 +98,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [super hideAfterDelay:delay];
     });
-}
-
-- (void)hideAfterDelay:(CGFloat)delay hiddenBlock:(void (^)(void))hiddenBlock
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [super hideAfterDelay:delay hiddenBlock:hiddenBlock];
-    });
-}
-
-- (void)tapRecognized:(UITapGestureRecognizer *)recognizer
-{
-    if (self.dismissByTap && (recognizer.state == UIGestureRecognizerStateRecognized)) {
-        [super hide];
-    }
 }
 
 @end

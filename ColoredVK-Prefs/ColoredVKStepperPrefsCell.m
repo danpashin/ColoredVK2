@@ -26,13 +26,13 @@
         
         NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
         
-        _stepperButton = [[ColoredVKStepperButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 120.0f, 320.0f)];
-        _stepperButton.minValue = [[specifier propertyForKey:@"minValue"] floatValue];
-        _stepperButton.maxValue =  [[specifier propertyForKey:@"maxValue"] floatValue];
-        _stepperButton.step = [specifier propertyForKey:@"step"] ? [[specifier propertyForKey:@"step"] floatValue] : 0.1f;
-        _stepperButton.value = [prefs[specifier.identifier] floatValue];
-        _stepperButton.delegate = self;
-        self.accessoryView = _stepperButton;
+        self.stepperButton = [[ColoredVKStepperButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 120.0f, 320.0f)];
+        self.stepperButton.minValue = [[specifier propertyForKey:@"minValue"] floatValue];
+        self.stepperButton.maxValue =  [[specifier propertyForKey:@"maxValue"] floatValue];
+        self.stepperButton.step = [specifier propertyForKey:@"step"] ? [[specifier propertyForKey:@"step"] floatValue] : 0.1f;
+        self.stepperButton.value = [prefs[specifier.identifier] floatValue];
+        self.stepperButton.delegate = self;
+        self.accessoryView = self.stepperButton;
 	}
     return self;
 }
@@ -49,13 +49,11 @@
     tweakSettings[self.specifier.identifier] = [NSString stringWithFormat:@"%.2f", value];
     [tweakSettings writeToFile:CVK_PREFS_PATH atomically:YES];
     
-    CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-    CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
-    
+    POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
     if ([self.specifier.identifier isEqualToString:@"menuImageBlackout"]) {
-        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+        POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
     } else if ([self.specifier.identifier isEqualToString:@"appCornerRadius"]) {
-        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.update.corners"), NULL, NULL, YES);
+        POST_CORE_NOTIFICATION(kPackageNotificationUpdateAppCorners);
     }
 }
 

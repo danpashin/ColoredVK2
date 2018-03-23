@@ -10,8 +10,7 @@
 
 @interface ColoredVKHUD : LHProgressHUD
 
-@property (assign, nonatomic) BOOL dismissByTap;
-@property (nonatomic, copy) void (^executionBlock)(ColoredVKHUD *parentHud);
+//@property (assign, nonatomic) BOOL dismissByTap;
 
 + (instancetype)showHUD;
 + (instancetype)showHUDForView:(UIView *)view;
@@ -23,6 +22,5 @@
 
 - (void)hide;
 - (void)hideAfterDelay:(CGFloat)delay;
-- (void)hideAfterDelay:(CGFloat)delay hiddenBlock:(void (^)(void))hiddenBlock;
 
 @end

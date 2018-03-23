@@ -3007,10 +3007,7 @@ CHDeclareMethod(2, id, VKSession, initWithUserId, NSNumber *, userID, andToken, 
 
 CHConstructor
 {
-    
     @autoreleasepool {
-        
-        
 //        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
         
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
@@ -3025,10 +3022,9 @@ CHConstructor
         [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
         VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil);
         
-        CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-        CFNotificationCenterAddObserver(center, nil, reloadPrefsNotify,  CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), nil, CFNotificationSuspensionBehaviorDeliverImmediately);
-        CFNotificationCenterAddObserver(center, nil, reloadMenuNotify,   CFSTR("com.daniilpashin.coloredvk2.reload.menu"),   nil, CFNotificationSuspensionBehaviorDeliverImmediately);
-        CFNotificationCenterAddObserver(center, nil, updateCornerRadius, CFSTR("com.daniilpashin.coloredvk2.update.corners"),nil, CFNotificationSuspensionBehaviorDeliverImmediately);
-        CFNotificationCenterAddObserver(center, nil, updateNightTheme,   CFSTR("com.daniilpashin.coloredvk2.night.theme"),   nil, CFNotificationSuspensionBehaviorDeliverImmediately);
+        REGISTER_CORE_OBSERVER(reloadPrefsNotify, kPackageNotificationReloadPrefs);
+        REGISTER_CORE_OBSERVER(reloadMenuNotify, kPackageNotificationReloadMenu);
+        REGISTER_CORE_OBSERVER(updateCornerRadius, kPackageNotificationUpdateAppCorners);
+        REGISTER_CORE_OBSERVER(updateNightTheme, kPackageNotificationUpdateNightTheme);
     }
 }

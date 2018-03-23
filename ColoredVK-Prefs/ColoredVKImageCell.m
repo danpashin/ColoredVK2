@@ -9,19 +9,14 @@
 
 #import "ColoredVKImageCell.h"
 #import "PrefixHeader.h"
-#import <Preferences/PSSpecifier.h>
 #import "ColoredVKHUD.h"
 #import "ColoredVKAlertController.h"
 
 @interface ColoredVKImageCell ()
 
-@property (strong, nonatomic, readonly) NSString *prefsPath;
-@property (strong, nonatomic, readonly) NSString *cvkFolder;
 @property (strong, nonatomic, readonly) NSString *key;
-
 @property (strong, nonatomic) UIImageView *previewImageView;
 @property (strong, nonatomic) UISwitch *switchView;
-@property (weak, nonatomic) ColoredVKHUD *hud;
 
 @end
 
@@ -29,58 +24,50 @@
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)identifier specifier:(PSSpecifier *)specifier
 {
-    self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier specifier:specifier];
-    if (self) {        
-        _prefsPath = CVK_PREFS_PATH;
-        _cvkFolder = CVK_FOLDER_PATH;
+    self = [super initWithStyle:style reuseIdentifier:identifier specifier:specifier];
+    if (self) {
         
         NSString *specifierIdentifier = specifier.identifier;
         if ([specifierIdentifier isEqualToString:@"barImage"]) _key = @"enabledBarImage"; 
-        if ([specifierIdentifier isEqualToString:@"menuBackgroundImage"]) _key = @"enabledMenuImage"; 
-        if ([specifierIdentifier isEqualToString:@"messagesBackgroundImage"]) _key = @"enabledMessagesImage"; 
-        if ([specifierIdentifier isEqualToString:@"messagesListBackgroundImage"]) _key = @"enabledMessagesListImage";
-        if ([specifierIdentifier isEqualToString:@"groupsListBackgroundImage"]) _key = @"enabledGroupsListImage";
-        if ([specifierIdentifier isEqualToString:@"audioBackgroundImage"]) _key = @"enabledAudioImage";
-        if ([specifierIdentifier isEqualToString:@"audioCoverImage"]) _key = @"enabledAudioCustomCover";
-        if ([specifierIdentifier isEqualToString:@"friendsBackgroundImage"]) _key = @"enabledFriendsImage";
-        if ([specifierIdentifier isEqualToString:@"videosBackgroundImage"]) _key = @"enabledVideosImage";
-        if ([specifierIdentifier isEqualToString:@"settingsBackgroundImage"]) _key = @"enabledSettingsImage";
-        if ([specifierIdentifier isEqualToString:@"settingsExtraBackgroundImage"]) _key = @"enabledSettingsExtraImage";
+        else if ([specifierIdentifier isEqualToString:@"menuBackgroundImage"]) _key = @"enabledMenuImage"; 
+        else if ([specifierIdentifier isEqualToString:@"messagesBackgroundImage"]) _key = @"enabledMessagesImage"; 
+        else if ([specifierIdentifier isEqualToString:@"messagesListBackgroundImage"]) _key = @"enabledMessagesListImage";
+        else if ([specifierIdentifier isEqualToString:@"groupsListBackgroundImage"]) _key = @"enabledGroupsListImage";
+        else if ([specifierIdentifier isEqualToString:@"audioBackgroundImage"]) _key = @"enabledAudioImage";
+        else if ([specifierIdentifier isEqualToString:@"audioCoverImage"]) _key = @"enabledAudioCustomCover";
+        else if ([specifierIdentifier isEqualToString:@"friendsBackgroundImage"]) _key = @"enabledFriendsImage";
+        else if ([specifierIdentifier isEqualToString:@"videosBackgroundImage"]) _key = @"enabledVideosImage";
+        else if ([specifierIdentifier isEqualToString:@"settingsBackgroundImage"]) _key = @"enabledSettingsImage";
+        else if ([specifierIdentifier isEqualToString:@"settingsExtraBackgroundImage"]) _key = @"enabledSettingsExtraImage";
         
-        CGFloat imageViewSize = 30.0f;
-        _previewImageView = [UIImageView new];
-        _previewImageView.frame = CGRectMake(UIScreen.mainScreen.bounds.size.width/1.3f - imageViewSize, (self.contentView.frame.size.height - imageViewSize)/2.0f, imageViewSize, imageViewSize);
-        _previewImageView.backgroundColor = [UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f];
-        _previewImageView.contentMode = UIViewContentModeScaleAspectFill;
-        _previewImageView.userInteractionEnabled = YES;
-        _previewImageView.layer.masksToBounds = YES;
-        _previewImageView.layer.cornerRadius = CGRectGetHeight(_previewImageView.frame) / 4;
-        [self.contentView addSubview:_previewImageView];
+        CGFloat imageViewSize = 32.0f;
+        self.previewImageView = [UIImageView new];
+        self.previewImageView.backgroundColor = [UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f];
+        self.previewImageView.contentMode = UIViewContentModeScaleAspectFill;
+        self.previewImageView.userInteractionEnabled = YES;
+        self.previewImageView.layer.masksToBounds = YES;
+        self.previewImageView.layer.cornerRadius = imageViewSize / 4.0f;
+        [self.contentView addSubview:self.previewImageView];
         
-        _previewImageView.translatesAutoresizingMaskIntoConstraints = NO;
-        NSDictionary *metrics = @{@"width":@(imageViewSize)};
-        NSDictionary *views = @{@"view":_previewImageView};
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[view(width)]-|"   options:0 metrics:metrics views:views]];
-        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:_previewImageView attribute:NSLayoutAttributeCenterY 
-                                                                     relatedBy:0 toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1.0f constant:0.0f]];
-        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:_previewImageView attribute:NSLayoutAttributeHeight 
-                                                                     relatedBy:0 toItem:nil attribute:0 multiplier:1.0f constant:imageViewSize]];
+        self.previewImageView.translatesAutoresizingMaskIntoConstraints = NO;       
+        [self.previewImageView.widthAnchor constraintEqualToConstant:imageViewSize].active = YES;
+        [self.previewImageView.heightAnchor constraintEqualToConstant:imageViewSize].active = YES;
+        [self.previewImageView.centerYAnchor constraintEqualToAnchor:self.contentView.centerYAnchor].active = YES;
+        [self.previewImageView.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-8.0f].active = YES;
         
-        
-        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:_prefsPath];
-        _switchView = [UISwitch new];
-        [_switchView addTarget:self action:@selector(switchTriggerred:) forControlEvents:UIControlEventValueChanged];
-        _switchView.on = prefs?[prefs[_key] boolValue]:NO;
-        _switchView.enabled = NO;
-        self.accessoryView = _switchView;
+        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+        self.switchView = [UISwitch new];
+        [self.switchView addTarget:self action:@selector(switchTriggerred:) forControlEvents:UIControlEventValueChanged];
+        self.switchView.on = prefs ? [prefs[self.key] boolValue] : NO;
+        self.switchView.enabled = NO;
+        self.accessoryView = self.switchView;
         
         UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showActionsController:)];
         longPress.minimumPressDuration = 1.0;
-        longPress.accessibilityElements = @[specifierIdentifier];
         [self addGestureRecognizer:longPress];
         
-        
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateImage:) name:@"com.daniilpashin.coloredvk2.image.update" object:nil];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateImage:) 
+                                                   name:@"com.daniilpashin.coloredvk2.image.update" object:nil];
         [self updateImageForIdentifier:specifierIdentifier];
     }
     return self;
@@ -89,7 +76,8 @@
 - (void)updateImageForIdentifier:(NSString *)identifier
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        UIImage *image = [UIImage imageWithContentsOfFile:[self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identifier]]];
+        NSString *previewPath = [NSString stringWithFormat:@"%@/%@_preview.png", CVK_FOLDER_PATH, self.specifier.identifier];
+        UIImage *image = [UIImage imageWithContentsOfFile:previewPath];
         if (image) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.switchView.enabled = YES;
@@ -104,11 +92,11 @@
     if (self.key.length == 0)
         return;
     
-    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
-    if (!prefs) prefs = [NSMutableDictionary new];
+    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+    if (!prefs) prefs = [NSMutableDictionary dictionary];
     
     prefs[self.key] = @(switchView.on);
-    [prefs writeToFile:self.prefsPath atomically:YES];
+    [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
     
     [self sendNotifications];
 }
@@ -120,84 +108,104 @@
         [self updateImageForIdentifier:identifier];
 }
 
+
+#pragma mark -
+#pragma mark Actions
+#pragma mark -
+
 - (void)showActionsController:(UILongPressGestureRecognizer *)recognizer
-{
-    NSString *identifier = recognizer.accessibilityElements.lastObject;
-    
-    if ([self.specifier propertyForKey:@"enabled"] && ![[self.specifier propertyForKey:@"enabled"] boolValue]) {
+{    
+    if ([self.specifier propertyForKey:@"enabled"] && ![[self.specifier propertyForKey:@"enabled"] boolValue])
         return;
-    }
     
-    if (recognizer.state == UIGestureRecognizerStateBegan) {
-        NSString *imagePath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]];
-        if (![[NSFileManager defaultManager] fileExistsAtPath:imagePath]) {
-            return;
-        }
-        
-        UIAlertAction *saveAction = [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Save to Camera Roll") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            self.hud = [ColoredVKHUD showHUD];
-            UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
-            UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
-        }];
-        
-        UIAlertAction *shareAction = [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Share...") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-            UIImage *image = [UIImage imageWithContentsOfFile:[self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@.png", identifier]]];
-            UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[image] applicationActivities:nil];
-            if (IS_IPAD) {
-                activityVC.popoverPresentationController.permittedArrowDirections = 0;
-                activityVC.popoverPresentationController.sourceView = rootViewController.view;
-                activityVC.popoverPresentationController.sourceRect = rootViewController.view.bounds;
-            }
-            [rootViewController presentViewController:activityVC animated:YES completion:nil];
-        }];
-        
-        UIAlertAction *removeAction = [UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-            ColoredVKAlertController *warningAlert = [ColoredVKAlertController alertControllerWithTitle:CVKLocalizedString(@"WARNING")  
-                                                                                                message:CVKLocalizedString(@"REMOVE_IMAGE_WARNING")
-                                                                                         preferredStyle:UIAlertControllerStyleAlert];
-            [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") 
-                                                             style:UIAlertActionStyleCancel handler:^(UIAlertAction *warningAction) {}]];
-            [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") 
-                                                             style:UIAlertActionStyleDestructive  handler:^(UIAlertAction *warningAction) { 
-                NSString *previewPath = [self.cvkFolder stringByAppendingString:[NSString stringWithFormat:@"/%@_preview.png", identifier]];
-                
-                NSError *error = nil;
-                NSFileManager *fileManager = [NSFileManager defaultManager];
-                
-                if ([fileManager fileExistsAtPath:previewPath]) [fileManager removeItemAtPath:previewPath error:&error];
-                if ([fileManager fileExistsAtPath:imagePath]) [fileManager removeItemAtPath:imagePath error:&error];
-                
-                if (!error) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        self.previewImageView.image = nil;
-                        [self.switchView setOn:NO animated:YES];
-                        self.switchView.enabled = NO;
-                    });
-                    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:self.prefsPath];
-                    prefs[self.key] = @NO;
-                    [prefs writeToFile:self.prefsPath atomically:YES];
-                    [self sendNotifications];
-                }
-            }]];
-            [warningAlert present];
-        }];
-        
-        ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        [alertController addAction:saveAction image:@"prefs/SaveIconAlt"];
-        [alertController addAction:shareAction image:@"prefs/ShareIcon"];
-        [alertController addAction:removeAction image:@"prefs/RemoveIcon"];
-        [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
-        [alertController present];
+    if (recognizer.state != UIGestureRecognizerStateBegan)
+        return;
+    
+    NSString *imagePath = [NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, self.specifier.identifier];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:imagePath])
+        return;
+    
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:nil message:nil 
+                                                                                    preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    [alertController addCancelAction];
+    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Save to Camera Roll") 
+                                                        style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                            [self actionSaveImage:imagePath];
+                                                        }] image:@"prefs/SaveIconAlt"];
+    
+    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Share...")
+                                                        style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                            [self actionShareImage:imagePath];
+                                                        }] image:@"prefs/ShareIcon"];
+    
+    [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") 
+                                                        style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+                                                            [self actionRemoveImage];
+                                                        }] image:@"prefs/RemoveIcon"];
+    [alertController present];
+}
+
+- (void)actionSaveImage:(NSString *)imagePath
+{
+    ColoredVKHUD *hud = [ColoredVKHUD showHUD];
+    UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
+    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), (void *)CFBridgingRetain(hud));
+}
+
+- (void)actionShareImage:(NSString *)imagePath
+{
+    UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[image] 
+                                                                             applicationActivities:nil];
+    
+    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    if (IS_IPAD) {
+        activityVC.popoverPresentationController.permittedArrowDirections = 0;
+        activityVC.popoverPresentationController.sourceView = rootViewController.view;
+        activityVC.popoverPresentationController.sourceRect = rootViewController.view.bounds;
     }
+    [rootViewController presentViewController:activityVC animated:YES completion:nil];
+}
+
+- (void)actionRemoveImage
+{
+    ColoredVKAlertController *warningAlert = [ColoredVKAlertController alertControllerWithTitle:CVKLocalizedString(@"WARNING")  
+                                                                                        message:CVKLocalizedString(@"REMOVE_IMAGE_WARNING")
+                                                                                 preferredStyle:UIAlertControllerStyleAlert];
+    [warningAlert addCancelAction];
+    [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") style:UIAlertActionStyleDestructive  handler:^(UIAlertAction *warningAction) {
+        NSString *imagePath = [NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, self.specifier.identifier];
+        NSString *previewPath = [NSString stringWithFormat:@"%@/%@_preview.png", CVK_FOLDER_PATH, self.specifier.identifier];
+        
+        NSError *error = nil;
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        
+        if ([fileManager fileExistsAtPath:previewPath])
+            [fileManager removeItemAtPath:previewPath error:&error];
+        
+        if ([fileManager fileExistsAtPath:imagePath])
+            [fileManager removeItemAtPath:imagePath error:&error];
+        
+        if (!error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.previewImageView.image = nil;
+                [self.switchView setOn:NO animated:YES];
+                self.switchView.enabled = NO;
+            });
+            NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+            prefs[self.key] = @NO;
+            [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
+            [self sendNotifications];
+        }
+    }]];
+    [warningAlert present];
 }
 
 - (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
 {
-    if (!error)
-        [self.hud showSuccess];
-    else
-        [self.hud showFailureWithStatus:error.localizedFailureReason];
+    ColoredVKHUD *hud = CFBridgingRelease(contextInfo);
+    error ? [hud showFailureWithStatus:error.localizedFailureReason] : [hud showSuccess];
 }
 
 - (void)dealloc
@@ -205,15 +213,13 @@
     [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
-
 - (void)sendNotifications
 {
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
+    POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
     
     if ([self.key isEqualToString:@"enabledMenuImage"]) {
-        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+        POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
     }
-
 }
 
 @end

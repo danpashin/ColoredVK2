@@ -50,7 +50,7 @@
         NSMutableString *headerString = [NSMutableString string];
         [headerString appendString:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"];
         [headerString appendString:@"<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"];
-        provisionString = [NSString stringWithFormat:@"%@\n%@</plist>", headerString, provisionDictString];
+        provisionDictString = [NSString stringWithFormat:@"%@\n%@</plist>", headerString, provisionDictString];
         
         NSString *tempPath = [NSTemporaryDirectory() stringByAppendingString:@"/embedded_mobileprovision.plist"];
         [[provisionDictString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:tempPath atomically:YES];

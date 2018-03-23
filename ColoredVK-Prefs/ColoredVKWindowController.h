@@ -43,10 +43,6 @@ typedef NS_ENUM(NSUInteger, ColoredVKWindowBackgroundStyle) {
  */
 @property (assign, nonatomic) NSTimeInterval animationDuration;
 
-@property (weak, nonatomic) ColoredVKNightThemeColorScheme *nightThemeColorScheme;
-@property (assign, nonatomic) BOOL enableNightTheme;
-@property (assign, nonatomic) BOOL app_is_vk;
-
 - (void)hide;
 - (void)show;
 

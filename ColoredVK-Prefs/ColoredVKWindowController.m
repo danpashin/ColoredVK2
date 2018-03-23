@@ -8,6 +8,7 @@
 
 #import "ColoredVKWindowController.h"
 #import "PrefixHeader.h"
+#import "ColoredVKNewInstaller.h"
 
 @interface ColoredVKWindowController ()
 
@@ -190,8 +191,11 @@
 {
     self.contentView = [UIView new];
     self.contentViewWantsShadow = YES;
-    if (self.app_is_vk && self.enableNightTheme)
-        self.contentView.backgroundColor = self.nightThemeColorScheme.foregroundColor;
+    
+    ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    BOOL isVKApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
+    if (isVKApp && nightThemeColorScheme.enabled)
+        self.contentView.backgroundColor = nightThemeColorScheme.foregroundColor;
     else
         self.contentView.backgroundColor = [UIColor whiteColor];
     

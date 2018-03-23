@@ -117,7 +117,12 @@
 
 - (void)addCancelAction
 {
-    [self addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel 
+    [self addCancelActionWithTitle:UIKitLocalizedString(@"Cancel")];
+}
+
+- (void)addCancelActionWithTitle:(NSString *)title
+{
+    [self addAction:[UIAlertAction actionWithTitle:title style:UIAlertActionStyleCancel 
                                            handler:^(UIAlertAction *action) {}]];
 }
 

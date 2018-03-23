@@ -10,7 +10,7 @@
 #import "UIColor+ColoredVK.h"
 
 
-#define CVK_CRASH_PATH      [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/Crash.txt"]
+#define CVK_CRASH_PATH      [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/Crash"]
 
 #ifdef  COMPILE_FOR_JAIL
 
@@ -70,13 +70,14 @@ static NSString * _Nullable const kPackageFaqLink = @"https://danpashin.ru/proje
 static NSString * _Nullable const kPackagePurchaseLink = @"https://danpashin.ru/projects/coloredvk/purchase/";
 
 
-static NSString * _Nullable const kPackageReloadPrefsNotification = @"com.daniilpashin.coloredvk2.prefs.changed";
-static NSString * _Nullable const kPackageReloadPrefsMenuNotification = @"com.daniilpashin.coloredvk2.reload.prefs.menu";
-static NSString * _Nullable const kPackageReloadMenuNotification = @"com.daniilpashin.coloredvk2.reload.menu";
-static NSString * _Nullable const kPackageUpdateAppCornersNotification = @"com.daniilpashin.coloredvk2.update.corners";
-static NSString * _Nullable const kPackageUpdateNightThemeNotification = @"com.daniilpashin.coloredvk2.night.theme";
+
+static NSString * _Nullable const kPackageNotificationReloadPrefs = @"com.daniilpashin.coloredvk2.prefs.changed";
+static NSString * _Nullable const kPackageNotificationReloadPrefsMenu = @"com.daniilpashin.coloredvk2.reload.prefs.menu";
+static NSString * _Nullable const kPackageNotificationReloadMenu = @"com.daniilpashin.coloredvk2.reload.menu";
+static NSString * _Nullable const kPackageNotificationUpdateAppCorners = @"com.daniilpashin.coloredvk2.update.corners";
+static NSString * _Nullable const kPackageNotificationUpdateNightTheme = @"com.daniilpashin.coloredvk2.night.theme";
 
 #define POST_NOTIFICATION(name) [[NSNotificationCenter defaultCenter] postNotificationName:name object:nil];
 #define POST_CORE_NOTIFICATION(name) CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), (CFStringRef)name, NULL, NULL, YES)
 
-
+#define REGISTER_CORE_OBSERVER(observer, notifyName) CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), nil, observer, (CFStringRef)notifyName,   nil, CFNotificationSuspensionBehaviorDeliverImmediately)

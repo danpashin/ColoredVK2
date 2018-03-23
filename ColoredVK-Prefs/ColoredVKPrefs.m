@@ -32,20 +32,27 @@
 - (void)commonInit
 {
     _cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    _vkAppVersion = prefs[@"vkVersion"] ? prefs[@"vkVersion"] : CVKLocalizedString(@"UNKNOWN");
-    
-    BOOL vkApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
-    NSInteger themeType = [prefs[@"nightThemeType"] integerValue];
-    self.nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
-    [self.nightThemeColorScheme updateForType:themeType];
-    self.nightThemeColorScheme.enabled = ((themeType != -1) && [prefs[@"enabled"] boolValue] && vkApp);
 }
 
 - (void)loadView
 {
     [super loadView];
+    
+    static BOOL changeSwitchColor = NO;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+        
+        changeSwitchColor = ([prefs[@"enabled"] boolValue] && [prefs[@"changeSwitchColor"] boolValue]);
+        
+        ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+        BOOL vkApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
+        NSInteger themeType = [prefs[@"nightThemeType"] integerValue];
+        [nightThemeColorScheme updateForType:themeType];
+        nightThemeColorScheme.enabled = ((themeType != -1) && [prefs[@"enabled"] boolValue] && vkApp);
+    });
+    self.shouldChangeSwitchColor = changeSwitchColor;
+    
     
     for (UIView *view in self.view.subviews) {
         if ([view isKindOfClass:[UITableView class]]) {
@@ -58,9 +65,10 @@
     self.prefsTableView.emptyDataSetSource = self;
     self.prefsTableView.emptyDataSetDelegate = self;
     
-    if ([ColoredVKNewInstaller sharedInstaller].application.isVKApp && self.nightThemeColorScheme.enabled) {
-        self.prefsTableView.backgroundColor = self.nightThemeColorScheme.backgroundColor;
-        self.navigationController.navigationBar.barTintColor = self.nightThemeColorScheme.navbackgroundColor;
+    ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    if ([ColoredVKNewInstaller sharedInstaller].application.isVKApp && nightThemeColorScheme.enabled) {
+        self.prefsTableView.backgroundColor = nightThemeColorScheme.backgroundColor;
+        self.navigationController.navigationBar.barTintColor = nightThemeColorScheme.navbackgroundColor;
     }
 }
 
@@ -89,8 +97,9 @@
     
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     NSInteger themeType = [prefs[@"nightThemeType"] integerValue];
-    [self.nightThemeColorScheme updateForType:themeType];
-    self.nightThemeColorScheme.enabled = ((themeType != -1) && [prefs[@"enabled"] boolValue]);
+    ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    [nightThemeColorScheme updateForType:themeType];
+    nightThemeColorScheme.enabled = ((themeType != -1) && [prefs[@"enabled"] boolValue]);
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
@@ -112,18 +121,18 @@
     if (![ColoredVKNewInstaller sharedInstaller].application.isVKApp)
         return;
     
-    BOOL nightThemeEnabled = self.nightThemeColorScheme.enabled;
+    ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
     ColoredVKCellBackgroundView *backgroundView = cell.customBackgroundView;
     
     void (^changeBlock)(void) = ^{
-        backgroundView.backgroundColor = nightThemeEnabled ? self.nightThemeColorScheme.foregroundColor : nil;
-        backgroundView.separatorColor = nightThemeEnabled ? self.nightThemeColorScheme.backgroundColor : nil;
-        backgroundView.selectedBackgroundColor = nightThemeEnabled ? self.nightThemeColorScheme.backgroundColor : nil;
-        cell.textLabel.textColor = nightThemeEnabled ? self.nightThemeColorScheme.textColor : [UIColor blackColor];  
+        backgroundView.backgroundColor         = nightThemeColorScheme.enabled ? nightThemeColorScheme.foregroundColor : nil;
+        backgroundView.separatorColor          = nightThemeColorScheme.enabled ? nightThemeColorScheme.backgroundColor : nil;
+        backgroundView.selectedBackgroundColor = nightThemeColorScheme.enabled ? nightThemeColorScheme.backgroundColor : nil;
+        cell.textLabel.textColor               = nightThemeColorScheme.enabled ? nightThemeColorScheme.textColor : [UIColor blackColor];  
         
-        if (self.nightThemeColorScheme.enabled) {     
+        if (nightThemeColorScheme.enabled) {     
             if ([cell.accessoryView isKindOfClass:NSClassFromString(@"ColoredVKStepperButton")]) {
-                ((UILabel *)[cell.accessoryView valueForKey:@"valueLabel"]).textColor = self.nightThemeColorScheme.textColor;
+                ((UILabel *)[cell.accessoryView valueForKey:@"valueLabel"]).textColor = nightThemeColorScheme.textColor;
             }
         }
     };
@@ -293,23 +302,21 @@
                                         @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor", 
                                         @"showMenuCell", @"menuUseBackgroundBlur"];
     
-    CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-    
     if ([specifier.identifier isEqualToString:@"nightThemeType"]) {
         [self updateNightTheme];
-        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), nil, nil, YES);
-        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.night.theme"), nil, nil, YES);
+        POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
+        POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
     }
     
-    CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), nil, nil, YES);
+    POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
     
     if ([identificsToReloadMenu containsObject:specifier.identifier] && ![specifier.identifier isEqualToString:@"nightThemeType"])
-        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), nil, nil, YES);
+        POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
     
     if ([specifier.identifier isEqualToString:@"enableTweakSwitch"]) {
         [self updateNightTheme];
-        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.night.theme"), nil, nil, YES);
-        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.update.corners"), nil, nil, YES);
+        POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
+        POST_CORE_NOTIFICATION(kPackageNotificationUpdateAppCorners);
     }
 }
 
@@ -323,22 +330,14 @@
     UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.userInteractionEnabled = YES;
-    cell.layoutMargins = UIEdgeInsetsMake(0, 18, 0, 18);
-    
-    BOOL vkApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
-    objc_setAssociatedObject(cell, "app_is_vk", @(vkApp), OBJC_ASSOCIATION_ASSIGN);
-    objc_setAssociatedObject(cell, "nightThemeColorScheme", self.nightThemeColorScheme, OBJC_ASSOCIATION_ASSIGN);
-    objc_setAssociatedObject(cell, "enableNightTheme", @(self.nightThemeColorScheme.enabled), OBJC_ASSOCIATION_ASSIGN);
-    
-    NSDictionary *userPrefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    BOOL changeSwitchColor = ([userPrefs[@"enabled"] boolValue] && [userPrefs[@"changeSwitchColor"] boolValue]);
-    objc_setAssociatedObject(cell, "change_switch_color", @(changeSwitchColor), OBJC_ASSOCIATION_ASSIGN);
+    cell.layoutMargins = UIEdgeInsetsMake(0.0f, 18.0f, 0.0f, 18.0f);
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    objc_setAssociatedObject(cell, "change_switch_color", @(self.shouldChangeSwitchColor), OBJC_ASSOCIATION_ASSIGN);
     [cell renderBackgroundWithColor:nil separatorColor:nil forTableView:tableView indexPath:indexPath];
     [self updateNightThemeForCell:cell animated:NO];
 }

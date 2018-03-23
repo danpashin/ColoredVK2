@@ -76,9 +76,6 @@
     picker.dataSource = self;
     picker.statusBarNeedsHidden = NO;
     picker.backgroundStyle = ColoredVKWindowBackgroundStyleCustom;
-    picker.app_is_vk = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
-    picker.enableNightTheme = self.nightThemeColorScheme.enabled;
-    picker.nightThemeColorScheme = self.nightThemeColorScheme;
     [picker show];
 }
 
@@ -91,21 +88,20 @@
 {
     NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     
-    if (color) {
+    if (color)
         prefs[colorPicker.identifier] = color.stringValue;
-    } else {
-        if (prefs[colorPicker.identifier]) [prefs removeObjectForKey:colorPicker.identifier];
-    }
+    else if (prefs[colorPicker.identifier])
+        [prefs removeObjectForKey:colorPicker.identifier];
     
     [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
     
-    CFNotificationCenterRef center = CFNotificationCenterGetDarwinNotifyCenter();
-    CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.prefs.changed"), NULL, NULL, YES);
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.prefs.colorUpdate" object:nil userInfo:@{@"identifier":colorPicker.identifier}];
+    POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.prefs.colorUpdate" 
+                                                        object:nil userInfo:@{@"identifier":colorPicker.identifier}];
     
     NSArray *identificsToReloadMenu = @[@"MenuSeparatorColor", @"switchesTintColor", @"switchesOnTintColor", @"menuTextColor"];
     if ([identificsToReloadMenu containsObject:colorPicker.identifier])
-        CFNotificationCenterPostNotification(center, CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
+        POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
     
     if ([ColoredVKNewInstaller sharedInstaller].application.isVKApp) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -120,7 +116,7 @@
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didSaveColor:(NSString *)hexColor
 {
     NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    NSMutableArray <NSString *> *savedColors = prefs[@"savedColors"] ? prefs[@"savedColors"] : [NSMutableArray new];
+    NSMutableArray <NSString *> *savedColors = prefs[@"savedColors"] ? prefs[@"savedColors"] : [NSMutableArray array];
     
     if (![savedColors containsObject:hexColor])
         [savedColors addObject:hexColor];
@@ -132,7 +128,7 @@
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didDeleteColor:(NSString *)hexColor
 {
     NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    NSMutableArray <NSString *> *savedColors = prefs[@"savedColors"] ? prefs[@"savedColors"] : [NSMutableArray new];
+    NSMutableArray <NSString *> *savedColors = prefs[@"savedColors"] ? prefs[@"savedColors"] : [NSMutableArray array];
     
     if ([savedColors containsObject:hexColor])
         [savedColors removeObject:hexColor];
@@ -149,7 +145,7 @@
 - (NSArray <NSString *> *)savedColorsForColorPicker:(ColoredVKColorPickerController *)colorPicker
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    NSArray <NSString *> *savedColors = prefs[@"savedColors"] ? prefs[@"savedColors"] : [NSArray new];
+    NSArray <NSString *> *savedColors = prefs[@"savedColors"] ? prefs[@"savedColors"] : @[];
     
     return savedColors;
 }
@@ -242,9 +238,8 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{@"identifier" : self.lastImageIdentifier}];
         
-        if ([self.lastImageIdentifier isEqualToString:@"menuBackgroundImage"]) {
-            CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.daniilpashin.coloredvk2.reload.menu"), NULL, NULL, YES);
-        }
+        if ([self.lastImageIdentifier isEqualToString:@"menuBackgroundImage"])
+            POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
     }];
 }
 

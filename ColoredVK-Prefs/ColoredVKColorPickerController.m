@@ -462,9 +462,6 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     if (IS_IPAD)
         hexWindow.prefferedWidth = CGRectGetWidth(self.contentView.frame) - 60;
     
-    hexWindow.nightThemeColorScheme = self.nightThemeColorScheme;
-    hexWindow.enableNightTheme = self.enableNightTheme;
-    hexWindow.app_is_vk = self.app_is_vk;
     [hexWindow show];
 }
 

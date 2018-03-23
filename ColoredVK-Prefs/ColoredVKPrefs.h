@@ -15,12 +15,13 @@
 
 @interface ColoredVKPrefs : PSListController <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 
-@property (weak, nonatomic) ColoredVKNightThemeColorScheme *nightThemeColorScheme;
-
 @property (nonatomic, readonly) NSString *vkAppVersion;
 @property (strong, nonatomic, readonly) NSBundle *cvkBundle;
 
+@property (assign, nonatomic) BOOL shouldChangeSwitchColor;
 @property (weak, nonatomic) UITableView *prefsTableView;
+
+- (void)commonInit NS_REQUIRES_SUPER;
 
 - (BOOL)openURL:(NSURL *)url;
 - (void)presentPopover:(UIViewController *)controller;

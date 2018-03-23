@@ -23,6 +23,8 @@
 
 @implementation ColoredVKMainPrefsController
 
+@synthesize vkAppVersion = _vkAppVersion;
+
 NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
 
 - (NSArray *)specifiers
@@ -60,6 +62,14 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
         _specifiers = specifiersArray.copy;
     }
     return _specifiers;
+}
+
+- (void)commonInit
+{
+    [super commonInit];
+    
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+    _vkAppVersion = prefs[@"vkVersion"] ? prefs[@"vkVersion"] : CVKLocalizedString(@"UNKNOWN");
 }
 
 - (void)loadView

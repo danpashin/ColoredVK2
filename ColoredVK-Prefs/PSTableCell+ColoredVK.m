@@ -8,12 +8,12 @@
 
 #import "PSTableCell+ColoredVK.h"
 
-#import "UIColor+ColoredVK.h"
 #import "PrefixHeader.h"
-#import "ColoredVKPrefs.h"
 #import "ColoredVKNightThemeColorScheme.h"
-#import "UIColor+ColoredVK.h"
 #import <objc/runtime.h>
+
+@interface ColoredVKPrefs : UIViewController
+@end
 
 @implementation PSTableCell (ColoredVK)
 
@@ -22,6 +22,7 @@
     [super layoutSubviews];
     
     if ([self.cellTarget isKindOfClass:[ColoredVKPrefs class]]) {
+        ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
         if ([self.specifier.properties[@"shouldCenter"] boolValue]) self.titleLabel.center = self.contentView.center;
         if ([self.specifier.properties[@"addDisclosureIndicator"] boolValue]) self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
@@ -40,8 +41,6 @@
             }
             
             if ([control isKindOfClass:[UISegmentedControl class]]) {
-                ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
-                
                 control.layer.cornerRadius = CGRectGetHeight(control.bounds) / 2;
                 control.layer.borderWidth = 1.0f;
                 control.layer.borderColor = nightScheme.enabled ? nightScheme.buttonSelectedColor.CGColor : control.tintColor.CGColor;
@@ -56,12 +55,8 @@
             if (!userChangedColor)
                 userChangedColor = @NO;
             
-            NSNumber *enableNightTheme = objc_getAssociatedObject(self, "enableNightTheme");
-            if (!enableNightTheme)
-                enableNightTheme = @NO;
-            
                 UISwitch *switchView = (UISwitch *)self.accessoryView;
-                if (!enableNightTheme.boolValue) {
+                if (!nightScheme.enabled) {
                     switchView.backgroundColor = [UIColor colorWithRed:234/255.0f green:234/255.0f blue:239/255.0f alpha:1.0f];
                     switchView.thumbTintColor = [UIColor whiteColor];
                 }

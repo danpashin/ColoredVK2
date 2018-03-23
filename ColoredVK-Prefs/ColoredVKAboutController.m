@@ -24,19 +24,11 @@
     [self openURL:[NSURL URLWithString:@"https://vk.com/danpashin"]];
 }
 
-- (void)openTesterProfile:(PSSpecifier *)specifier
-{
-    [self openURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://vk.com/%@", specifier.properties[@"url"]]]];
-}
-
 - (void)showTextController:(PSSpecifier *)specifier
 {
     ColoredVKTextViewController *controller = [[ColoredVKTextViewController alloc] initWithFile:specifier.properties[@"fileName"] 
                                                                                       localized:[specifier.properties[@"localized"] boolValue]];
     controller.backgroundStyle = ColoredVKWindowBackgroundStyleCustom;
-    controller.app_is_vk = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
-    controller.enableNightTheme = self.nightThemeColorScheme.enabled;
-    controller.nightThemeColorScheme = self.nightThemeColorScheme;
     [controller show];
 }
 
