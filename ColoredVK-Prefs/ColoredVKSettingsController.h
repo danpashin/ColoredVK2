@@ -10,7 +10,4 @@
 
 @interface ColoredVKSettingsController : ColoredVKPrefs
 
-- (void)actionBackup;
-- (void)actionReset;
-
 @end

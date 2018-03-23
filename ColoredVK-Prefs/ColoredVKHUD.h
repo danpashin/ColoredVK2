@@ -10,8 +10,6 @@
 
 @interface ColoredVKHUD : LHProgressHUD
 
-//@property (assign, nonatomic) BOOL dismissByTap;
-
 + (instancetype)showHUD;
 + (instancetype)showHUDForView:(UIView *)view;
 

@@ -191,7 +191,7 @@
 
 - (NSArray <PSSpecifier*> *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize 
 {
-    NSMutableArray *specifiersArray = [NSMutableArray new];
+    NSMutableArray *specifiersArray = [NSMutableArray array];
     if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
         self.bundle = self.cvkBundle;
         specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
@@ -242,11 +242,10 @@
         }
     }
     
-    if (specifiersArray.count == 0) {
-        specifiersArray = [NSMutableArray new];
-    }
+    if (specifiersArray.count == 0)
+        specifiersArray = [NSMutableArray array];
     
-    return [specifiersArray copy];
+    return specifiersArray;
 }
 
 - (id)readPreferenceValue:(PSSpecifier *)specifier

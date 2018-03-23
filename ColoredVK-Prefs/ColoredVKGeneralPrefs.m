@@ -10,7 +10,7 @@
 
 #import "ColoredVKColorPickerController.h"
 #import "ColoredVKHUD.h"
-#import "ColoredVKSettingsController.h"
+#import "ColoredVKBackupsModel.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKImageProcessor.h"
 #import "VKPhotoPicker.h"
@@ -263,7 +263,8 @@
         NSFileManager *fileManager = [NSFileManager defaultManager];
         float size = 0;
         for (NSString *fileName in [fileManager subpathsOfDirectoryAtPath:CVK_CACHE_PATH error:nil]) {
-            size += [[fileManager attributesOfItemAtPath:[CVK_CACHE_PATH stringByAppendingPathComponent:fileName] error:nil][NSFileSize] floatValue];
+            NSString *path = [CVK_CACHE_PATH stringByAppendingPathComponent:fileName];
+            size += [[fileManager attributesOfItemAtPath:path error:nil][NSFileSize] floatValue];
         }
         size = size / 1024.0f / 1024.0f;
         return [NSString stringWithFormat:@"%.1f MB", size];
@@ -272,12 +273,12 @@
 
 - (void)resetSettings
 {
-    [[ColoredVKSettingsController new] actionReset];
+    [[ColoredVKBackupsModel new] resetSettings];
 }
 
 - (void)backupSettings
 {
-    [[ColoredVKSettingsController new] actionBackup];
+    [[ColoredVKBackupsModel new] createBackup];
 }
 
 @end
