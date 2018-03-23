@@ -20,7 +20,7 @@
 			<key>label</key>
 			<string>BACKUPS</string>
 			<key>icon</key>
-			<string>BackupIcon</string>
+			<string>prefs/BackupIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>
