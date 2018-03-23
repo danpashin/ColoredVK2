@@ -23,6 +23,7 @@
 {
     self = [super init];
     if (self) {
+        _availableBackups = @[];
         self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         [self updateBackups];
     }
@@ -73,7 +74,7 @@
         }
         
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"yyyy-MM-dd_HH:mm";
+        dateFormatter.dateFormat = @"yyyy-MM-dd_HH-mm";
         NSString *backupPath = [NSString stringWithFormat:@"%@/com.daniilpashin.coloredvk2_%@.cvkb", 
                                 CVK_BACKUP_PATH, [dateFormatter stringFromDate:[NSDate date]]];
         
@@ -140,7 +141,13 @@
                 [availableBackups addObject:filename];
             }
         }
-        _availableBackups = availableBackups;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _availableBackups = availableBackups;
+            
+            if ([self.delegate respondsToSelector:@selector(backupsModel:didEndUpdatingBackups:)])
+                [self.delegate backupsModel:self didEndUpdatingBackups:self.availableBackups];
+        });
     });
 }
 

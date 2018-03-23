@@ -17,6 +17,14 @@
 
 @implementation ColoredVKTweakPrefsController
 
+- (void)loadView
+{
+    [super loadView];
+    
+    ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
+    self.lastCheckForUpdates = updatesController.localizedLastCheckForUpdates;
+}
+
 - (void)checkForUpdates
 {
     ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];

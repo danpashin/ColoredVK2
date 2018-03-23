@@ -1188,7 +1188,6 @@
 				A50138E2201F379D0007300C /* Account */,
 				A5B1E29C1E509246001B8442 /* ColoredVKSettingsController.h */,
 				A5B1E29D1E509246001B8442 /* ColoredVKSettingsController.m */,
-				A54B9ED52064FACD0097B0C6 /* Models */,
 				A5BC53A81F1234C200C4E1E0 /* ColoredVKAlertController.h */,
 				A5BC53A91F1234C200C4E1E0 /* ColoredVKAlertController.m */,
 				A51E68B72033231400B72082 /* ColoredVKCardController.h */,
@@ -1240,6 +1239,7 @@
 				A55D20A32033406C00C43454 /* ColoredVKCard.m */,
 				A53FDE511E4CC95100AA3031 /* Icon-big.png */,
 				A5B5C829202C9ABF00AA06B7 /* Images.xcassets */,
+				A54B9ED52064FACD0097B0C6 /* Models */,
 				A5DD93FE1D3E0F560006E470 /* Supporting Files */,
 			);
 			path = "ColoredVK-Prefs";

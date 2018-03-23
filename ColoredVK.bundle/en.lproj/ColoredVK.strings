@@ -162,8 +162,5 @@
 "CHANGE_PASSWORD_FOOTER" = "If you are logged in with your account, in this menu you can change the password.";
 "BLUR_PREFS_FOOTER" = "Blur will be applied to the navigation bar and toolbar (if any)";
 "SHOW_FAST_DOWNLOAD_BUTTON_FOOTER" = "If this feature is enabled, when viewing any image quick download button will be added in navigation bar. It will allow you to quickly set an image without having to save it to camera Roll.";
-"SHOW_SECTION_IN_MENU_FOOTER" = "ColoredVK 2 tab shows in VKApp main menu by default. Turning this off, you will be able to go into the settings of the tweak only using settings of VKApp. In VKApp 2.2 is enabled forcibly.";
-
-"ACCOUNT_STATUS_FOOTER" = "Account activation occurs automatically within 24 hours after payment. If You made a purchase recently, please wait. If the account was not activated within the specified time, email the developer, specifying your login.";
-
+"SHOW_SECTION_IN_MENU_FOOTER" = "ColoredVK 2 tab shows in VKApp main menu by default. Turning this off, you will be able to go into the settings of the tweak only using settings of VKApp.";
 

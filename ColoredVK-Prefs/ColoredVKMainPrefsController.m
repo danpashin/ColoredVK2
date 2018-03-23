@@ -13,6 +13,7 @@
 #import "ColoredVKNewInstaller.h"
 #import <SafariServices/SFSafariViewController.h>
 #import "ColoredVKAccountController.h"
+#import "NSString+ColoredVK.h"
 
 @interface ColoredVKMainPrefsController ()
 

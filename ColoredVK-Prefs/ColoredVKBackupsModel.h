@@ -10,7 +10,9 @@
 @class ColoredVKBackupsModel;
 @protocol ColoredVKBackupsModelDelegate <NSObject>
 
+@optional
 - (void)backupsModel:(ColoredVKBackupsModel *)backupsModel didEndRestoringBackup:(NSString *)backupName;
+- (void)backupsModel:(ColoredVKBackupsModel *)backupsModel didEndUpdatingBackups:(NSArray *)backups;
 
 @end
 

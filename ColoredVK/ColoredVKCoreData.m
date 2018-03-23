@@ -8,6 +8,7 @@
 
 #import "ColoredVKCoreData.h"
 #import "PrefixHeader.h"
+#import <ColoredVKAlertController.h>
 
 @interface ColoredVKCoreData ()
 
@@ -54,12 +55,11 @@
 
 - (void)showWarningAlert:(NSDictionary *)dict
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:kPackageName
-                                                                                 message:[NSString stringWithFormat:@"Unresolved error:\n\n%@", dict] preferredStyle:UIAlertControllerStyleAlert];
-        [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) { /*abort();*/ }]];
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
-    });
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName
+                                                                                           message:[NSString stringWithFormat:@"Unresolved error:\n\n%@", dict] 
+                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addCancelActionWithTitle:UIKitLocalizedString(@"OK")];
+    [alertController present];
 }
 
 @end

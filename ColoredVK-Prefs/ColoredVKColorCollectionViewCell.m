@@ -8,6 +8,7 @@
 
 #import "ColoredVKColorCollectionViewCell.h"
 #import "PrefixHeader.h"
+#import "NSString+ColoredVK.h"
 
 @interface ColoredVKColorCollectionViewCell ()
 

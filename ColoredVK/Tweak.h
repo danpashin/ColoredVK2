@@ -14,6 +14,7 @@
 #import "VKMethods.h"
 #import "UIImage+ColoredVK.h"
 #import "ColoredVKNewInstaller.h"
+#import "UIColor+ColoredVK.h"
 
 
 #define kMenuCellBackgroundColor [UIColor colorWithRed:56/255.0f green:69/255.0f blue:84/255.0f alpha:1.0f]

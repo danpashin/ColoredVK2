@@ -10,6 +10,7 @@
 #import "Tweak.h"
 #import "UIGestureRecognizer+BlocksKit.h"
 #import "ColoredVKNewInstaller.h"
+#import "UIColor+ColoredVK.h"
 
 @implementation ColoredVKMainController
 static NSString const *switchViewKey = @"cvkCellSwitchKey";
@@ -112,7 +113,9 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
 - (void)actionOpenPreferencesPush:(BOOL)withPush
 {
     NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    if (!cvkBundle.loaded) [cvkBundle load];
+    if (!cvkBundle.loaded)
+        [cvkBundle load];
+    
     UIViewController *cvkPrefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
     if (!cvkPrefs)
         return;

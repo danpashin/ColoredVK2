@@ -5,8 +5,8 @@
 //  Created by Даниил on 19.10.17.
 //
 
-#import <Foundation/NSObject.h>
-@class UIColor;
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 typedef NS_ENUM(NSInteger, CVKNightThemeType) {
     CVKNightThemeTypeDisabled = -1,

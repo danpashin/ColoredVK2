@@ -9,6 +9,7 @@
 #import "ColoredVKColorPreview.h"
 #import "PrefixHeader.h"
 #import <objc/runtime.h>
+#import "UIColor+ColoredVK.h"
 
 static CGFloat const kHexLabelHeight = 25.0f;
 static CGFloat const kColorPreviewCornerRadius = 6.0f;

@@ -6,9 +6,7 @@
 //
 //
 
-#import "NSString+ColoredVK.h"
-#import "UIColor+ColoredVK.h"
-
+#import <Foundation/NSString.h>
 
 #define CVK_CRASH_PATH      [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/Crash"]
 

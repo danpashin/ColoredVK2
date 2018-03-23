@@ -36,7 +36,8 @@
     [super viewDidLoad];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:CVKLocalizedString(@"ACTION_LOG_IN")
-                                                                             style:UIBarButtonItemStylePlain target:self action:@selector(actionSignin)];
+                                                                             style:UIBarButtonItemStylePlain
+                                                                             target:self action:@selector(actionSignin)];
     
     self.loginTextField.delegate = self;
     self.passTextField.delegate = self;

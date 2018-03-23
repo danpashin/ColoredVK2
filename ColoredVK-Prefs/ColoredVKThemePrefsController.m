@@ -9,6 +9,7 @@
 #import "ColoredVKNightThemeColorScheme.h"
 #import "ColoredVKNewInstaller.h"
 #import <objc/message.h>
+#import "UIColor+ColoredVK.h"
 
 @interface ColoredVKThemePrefsController ()
 

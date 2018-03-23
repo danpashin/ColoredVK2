@@ -9,6 +9,7 @@
 #import "ColoredVKNetworkController.h"
 #import "ColoredVKCrypto.h"
 #import "PrefixHeader.h"
+#import <UIKit/UIKit.h>
 
 @interface ColoredVKNetworkController  () <NSURLSessionDelegate>
 

@@ -15,6 +15,7 @@
 #import "ColoredVKImageProcessor.h"
 #import "VKPhotoPicker.h"
 #import <objc/runtime.h>
+#import "UIColor+ColoredVK.h"
 
 @interface ColoredVKGeneralPrefs () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, ColoredVKColorPickerControllerDelegate, ColoredVKColorPickerControllerDataSource>
 @property (strong, nonatomic) NSString *lastImageIdentifier;

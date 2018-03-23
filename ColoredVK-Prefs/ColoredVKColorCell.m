@@ -8,7 +8,7 @@
 
 
 #import "ColoredVKColorCell.h"
-#import "PrefixHeader.h"
+#import "UIColor+ColoredVK.h"
 
 @implementation ColoredVKColorCell
 
@@ -16,36 +16,35 @@
 {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier specifier:specifier];
     if (self) {
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateColorView:) name:@"com.daniilpashin.coloredvk2.prefs.colorUpdate" object:nil];
-        [self updateColorViewForIdentifier:specifier.identifier];
+        self.accessoryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 26.0f, 26.0f)];
+        self.accessoryView.layer.cornerRadius = self.accessoryView.frame.size.height / 2.0f;
+        self.accessoryView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.accessoryView.frame cornerRadius:self.accessoryView.layer.cornerRadius].CGPath;
+        self.accessoryView.layer.shadowRadius = 2.5f;
+        self.accessoryView.layer.shadowOffset = CGSizeZero;
+        self.accessoryView.layer.shadowColor = [UIColor blackColor].CGColor;
+        self.accessoryView.layer.shadowOpacity = 0.15f;
+        
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateColorNotification:) name:@"com.daniilpashin.coloredvk2.prefs.colorUpdate" object:nil];
+        [self updateColorForIdentifier:specifier.identifier];
     }
     return self;
 }
 
-- (void)updateColorView:(NSNotification *)notification
+- (void)updateColorNotification:(NSNotification *)notification
 {
     NSString *identifier = notification.userInfo[@"identifier"];
-	if (identifier == self.specifier.identifier) [self updateColorViewForIdentifier:identifier];
+	if ([identifier isEqualToString:self.specifier.identifier])
+        [self updateColorForIdentifier:identifier];
 }
 
-- (void)updateColorViewForIdentifier:(NSString *)identifier
+- (void)updateColorForIdentifier:(NSString *)identifier
 {
-    UIView *colorPreview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 26.0f, 26.0f)];
-    colorPreview.backgroundColor = [UIColor savedColorForIdentifier:identifier];
+    self.accessoryView.backgroundColor = [UIColor savedColorForIdentifier:identifier];
     
     CGFloat red = 0, green = 0, blue = 0, colorAlpha = 1.0f;
-    [colorPreview.backgroundColor getRed:&red green:&green blue:&blue alpha:&colorAlpha];
+    [self.accessoryView.backgroundColor getRed:&red green:&green blue:&blue alpha:&colorAlpha];
     if (colorAlpha == 0.0f)
-        colorPreview.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.9f];
-    
-    colorPreview.layer.cornerRadius = colorPreview.frame.size.height / 2.0f;
-    colorPreview.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:colorPreview.frame cornerRadius:colorPreview.layer.cornerRadius].CGPath;
-    colorPreview.layer.shadowRadius = 2.5f;
-    colorPreview.layer.shadowOffset = CGSizeZero;
-    colorPreview.layer.shadowColor = [UIColor blackColor].CGColor;
-    colorPreview.layer.shadowOpacity = 0.15f;
-    
-    self.accessoryView = colorPreview;
+        self.accessoryView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.9f];
 }
 
 - (void)dealloc

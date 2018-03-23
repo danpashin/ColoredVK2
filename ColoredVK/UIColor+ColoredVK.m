@@ -7,8 +7,8 @@
 //
 
 #import "UIColor+ColoredVK.h"
-#import "NSString+ColoredVK.h"
 #import "PrefixHeader.h"
+#import "NSString+ColoredVK.h"
 
 @implementation UIColor (ColoredVK)
 
