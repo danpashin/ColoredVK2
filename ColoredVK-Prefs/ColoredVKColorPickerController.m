@@ -87,6 +87,9 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 {
     [super viewDidLoad];
     
+    self.backgroundStyle = ColoredVKWindowBackgroundStyleCustom;
+    self.backgroundView = [UIView new];
+    
     _cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     _prefsPath = CVK_PREFS_PATH;
     

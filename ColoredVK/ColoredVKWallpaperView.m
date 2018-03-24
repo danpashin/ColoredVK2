@@ -26,7 +26,8 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
     return [[self alloc] initWithFrame:frame imageName:name blackout:blackout enableParallax:NO blurBackground:NO];
 }
 
-- (instancetype)initWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout enableParallax:(BOOL)enableParallax blurBackground:(BOOL)blurBackground
+- (instancetype)initWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout 
+               enableParallax:(BOOL)enableParallax blurBackground:(BOOL)blurBackground
 {
     CGRect bounds = (![name isEqualToString:@"barImage"]) ? [UIScreen mainScreen].bounds : frame;
     
@@ -47,13 +48,13 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
         _imageView.layer.masksToBounds = YES;
         [self addSubview:_imageView];
         
-        _frontView = [[UIView alloc] initWithFrame:bounds];
-        [self addSubview:_frontView];
-        
         _blurStyle = _UIBackdropViewStyleBlur;
         _blurView = [[_UIBackdropView alloc] initWithStyle:_blurStyle];
         _blurView.frame = bounds;
         [self addSubview:_blurView];
+        
+        _frontView = [[UIView alloc] initWithFrame:bounds];
+        [self addSubview:_frontView];
         
         self.blackout = blackout;
         self.parallaxEnabled = enableParallax;
@@ -160,6 +161,15 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
         if (animated) [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction 
                                        animations:blurBlock completion:nil];
         else          blurBlock();
+    });
+}
+
+- (void)setBlurStyle:(_UIBackdropViewStyle)blurStyle
+{
+    _blurStyle = blurStyle;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.blurView transitionToStyle:blurStyle];
     });
 }
 

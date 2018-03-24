@@ -26,6 +26,8 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        _window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+        
         _hideByTouch = YES;
         _statusBarNeedsHidden = YES;
         _animationDuration = 0.3;
@@ -34,22 +36,15 @@
     return self;
 }
 
-- (BOOL)prefersStatusBarHidden
+- (void)viewDidLoad
 {
-    if (self.isPresented)
-        return self.statusBarNeedsHidden;
+    [super viewDidLoad];
     
-    return NO;
-}
-
-- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation
-{
-    return UIStatusBarAnimationFade;
-}
-
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-    return UIStatusBarStyleLightContent;
+    [self.view addSubview:self.backgroundView];
+    
+    self.backgroundView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self.backgroundView}]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view":self.backgroundView}]];
 }
 
 - (void)viewDidLayoutSubviews
@@ -57,134 +52,77 @@
     [super viewDidLayoutSubviews];
     
     if (self.contentViewWantsShadow) {
-        self.contentView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.contentView.bounds cornerRadius:self.contentView.layer.cornerRadius].CGPath;
+        self.contentView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.contentView.bounds 
+                                                                       cornerRadius:self.contentView.layer.cornerRadius].CGPath;
         self.contentView.layer.shadowOpacity = 0.1f;
     }
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    _window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-    _window.rootViewController = self;
-    
-    self.backgroundView = [UIView new];
-    self.backgroundView.frame = self.view.bounds;
-    [self.view addSubview:self.backgroundView];
-    
-    self.backgroundView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self.backgroundView}]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view":self.backgroundView}]];
-    
-    if (self.contentViewWantsShadow) {
-        self.contentView.layer.shadowRadius = 4.0f;
-        self.contentView.layer.shadowOffset = CGSizeMake(0, 3);
-        self.contentView.layer.shadowColor = [UIColor blackColor].CGColor;
-        self.contentView.layer.rasterizationScale = [UIScreen mainScreen].scale;
-        self.contentView.layer.shouldRasterize = YES;
-    }
-}
 
-- (void)show
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-        self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-        self.view.backgroundColor = [UIColor clearColor];
-        
-        self.window.alpha = 0;
-        [self.window makeKeyAndVisible];
-        [UIView animateWithDuration:self.animationDuration delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-            self.window.alpha = 1;
-        } completion:^(BOOL finished) {
-            self.isPresented = YES;
-            
-            [UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                [self setNeedsStatusBarAppearanceUpdate];
-            } completion:nil];
-        }];
-    });
-}
+#pragma mark -
+#pragma mark Setters
+#pragma mark -
 
-- (void)hide
+- (void)setContentViewWantsShadow:(BOOL)contentViewWantsShadow
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:self.animationDuration delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-            self.window.alpha = 0;
-        } completion:^(BOOL firstFinished) {
-            self.isPresented = NO;
-            
-            [UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                [self setNeedsStatusBarAppearanceUpdate];
-            } completion:^(BOOL secondFinished) {
-                self.window.hidden = YES;
-                self->_window = nil;
-            }];
-        }];
-    });
+    _contentViewWantsShadow = contentViewWantsShadow;
+    
+    self.contentView.layer.shadowRadius = 4.0f;
+    self.contentView.layer.shadowOffset = CGSizeMake(0, 3);
+    self.contentView.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.contentView.layer.rasterizationScale = [UIScreen mainScreen].scale;
+    self.contentView.layer.shouldRasterize = YES;
 }
-
 
 - (void)setBackgroundStyle:(ColoredVKWindowBackgroundStyle)backgroundStyle
-{
+{    
     if ( UIAccessibilityIsReduceTransparencyEnabled() && (backgroundStyle == ColoredVKWindowBackgroundStyleBlurred))
         _backgroundStyle = ColoredVKWindowBackgroundStyleDarkened;
     else
         _backgroundStyle = backgroundStyle;
 }
 
-
 - (void)setBackgroundView:(UIView *)backgroundView
-{
-    if (self.backgroundStyle == ColoredVKWindowBackgroundStyleBlurred) {
-        _backgroundView = [[UIVisualEffectView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        ((UIVisualEffectView *)_backgroundView).effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    } else if (self.backgroundStyle == ColoredVKWindowBackgroundStyleDarkened) {
-        _backgroundView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        _backgroundView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.4f];
-    } else if (self.backgroundStyle == ColoredVKWindowBackgroundStyleCustom) {
+{    
+    if (self.isViewLoaded) {
+        if (_backgroundView && [self.view.subviews containsObject:_backgroundView])
+            [_backgroundView removeFromSuperview];
+    }
+    
+    if (_backgroundStyle == ColoredVKWindowBackgroundStyleBlurred) {
+        UIBlurEffect *effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+        _backgroundView = [[UIVisualEffectView alloc] initWithEffect:effect];
+    } 
+    else if ((_backgroundStyle == ColoredVKWindowBackgroundStyleDarkened) || !backgroundView) {
+        _backgroundView = self.defaultBackgroundView;
+    } 
+    else if (_backgroundStyle == ColoredVKWindowBackgroundStyleCustom) {
         _backgroundView = backgroundView;
     }
     
-    [self.backgroundView addGestureRecognizer:self.closeTapRecognizer];
-}
-
-- (UIView *)backgroundView
-{
-    if (!_backgroundView) {
-        _backgroundView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        [self.backgroundView addGestureRecognizer:self.closeTapRecognizer];
-    }
+    [_backgroundView addGestureRecognizer:_closeTapRecognizer];
+    _backgroundView.userInteractionEnabled = YES;
     
-    return _backgroundView;
-}
-
-- (UITapGestureRecognizer *)closeTapRecognizer
-{
-    if (!_closeTapRecognizer) {
-        _closeTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
-        _closeTapRecognizer.delegate = self;
+    if (self.isViewLoaded) {
+        _backgroundView.frame = self.view.bounds;
+        [self.view insertSubview:_backgroundView atIndex:0];
+    } else {
+        _backgroundView.frame = [UIScreen mainScreen].bounds;
     }
-    return _closeTapRecognizer;
 }
 
 - (void)setContentView:(UIView *)contentView
 {
+    if (self.isViewLoaded) {
+        if (self.view.subviews.count > 2 && [self.view.subviews[1] isEqual:self.contentView])
+            [self.contentView removeFromSuperview];
+    }
+    
     _contentView = contentView;
     
-    if (self.view.subviews.count > 1 && [self.view.subviews[1] isEqual:self.contentView])
-        [self.view.subviews[1] removeFromSuperview];
-    
-    [self.view insertSubview:self.contentView atIndex:1];
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-{    
-    if ([touch.view isDescendantOfView:self.backgroundView] && self.hideByTouch)
-        return YES;
-    
-    return NO;
+    if (self.isViewLoaded && contentView) {
+        [self.view insertSubview:self.contentView atIndex:1];
+    }
 }
 
 - (void)setupDefaultContentView
@@ -199,7 +137,7 @@
     else
         self.contentView.backgroundColor = [UIColor whiteColor];
     
-    CGFloat widthFromEdge = IS_IPAD?20:6;
+    CGFloat widthFromEdge = IS_IPAD ? 20.0f : 6.0f;
     self.contentView.frame = (CGRect){{widthFromEdge, 0}, {self.view.frame.size.width - widthFromEdge*2, self.view.frame.size.height - widthFromEdge*10}};
     self.contentView.center = self.view.center;
     self.contentView.layer.cornerRadius = 20.0f;
@@ -220,7 +158,7 @@
     }
     
     if (IS_IPAD) {
-        topConstant = widthFromEdge * 3;
+        topConstant = widthFromEdge * 3.0f;
         bottomConstant = -topConstant;
         leftConstant = topConstant;
         rightConstant = -topConstant;
@@ -230,6 +168,64 @@
     [self.contentView.bottomAnchor constraintEqualToAnchor:guide.bottomAnchor constant:bottomConstant].active = YES;
     [self.contentView.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor constant:leftConstant].active = YES;
     [self.contentView.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor constant:rightConstant].active = YES;
+}
+
+
+#pragma mark -
+#pragma mark Getters
+#pragma mark -
+
+- (BOOL)prefersStatusBarHidden
+{
+    if (self.isPresented)
+        return self.statusBarNeedsHidden;
+    
+    return NO;
+}
+
+- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation
+{
+    return UIStatusBarAnimationFade;
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
+
+- (UIView *)backgroundView
+{    
+    if (!_backgroundView) {
+        _backgroundView = self.defaultBackgroundView;
+    }
+    
+    return _backgroundView;
+}
+
+- (UIView *)defaultBackgroundView
+{
+    UIView *backView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    backView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.4f];
+    [backView addGestureRecognizer:self.closeTapRecognizer];
+    
+    return backView;
+}
+
+- (UITapGestureRecognizer *)closeTapRecognizer
+{
+    if (!_closeTapRecognizer) {
+        _closeTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
+        _closeTapRecognizer.delegate = self;
+    }
+    return _closeTapRecognizer;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    if ([touch.view isDescendantOfView:self.backgroundView] && self.hideByTouch)
+        return YES;
+    
+    return NO;
 }
 
 - (UINavigationBar *)contentViewNavigationBar
@@ -251,6 +247,51 @@
     }
     
     return _contentViewNavigationBar;
+}
+
+
+#pragma mark -
+#pragma mark Actions
+#pragma mark -
+
+- (void)show
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+        self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+        self.view.backgroundColor = [UIColor clearColor];
+        
+        self.window.rootViewController = self;
+        self.window.alpha = 0;
+        [self.window makeKeyAndVisible];
+        [UIView animateWithDuration:self.animationDuration delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            self.window.alpha = 1;
+        } completion:^(BOOL finished) {
+            self.isPresented = YES;
+            
+            [UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                [self setNeedsStatusBarAppearanceUpdate];
+            } completion:nil];
+        }];
+    });
+}
+
+- (void)hide
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIView animateWithDuration:self.animationDuration delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            self.window.alpha = 0.0f;
+        } completion:^(BOOL firstFinished) {
+            self.isPresented = NO;
+            
+            [UIView animateWithDuration:0.15f delay:0.8f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                [self setNeedsStatusBarAppearanceUpdate];
+            } completion:^(BOOL secondFinished) {
+                self.window.hidden = YES;
+                self->_window = nil;
+            }];
+        }];
+    });
 }
 
 @end

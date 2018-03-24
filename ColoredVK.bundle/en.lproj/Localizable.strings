@@ -93,6 +93,11 @@
 
 "PASSWORD" = "Password";
 
+
+"ACCESS_TO_ACCOUNT_SETTINGS" = "Access to account settings";
+"DELETE" = "Delete";
+
+
 // О статусах аккаунта
 "YOUR_STATUS" = "Your status";
 "FREE" = "Free";

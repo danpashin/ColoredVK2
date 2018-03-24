@@ -4,12 +4,15 @@ typedef NS_ENUM(NSUInteger, _UIBackdropViewStyle) {
     _UIBackdropViewStyleNone = -2,
     _UIBackdropViewStyleLight = 0,
     _UIBackdropViewStyleDark,
-    _UIBackdropViewStyleBlur = 2
+    _UIBackdropViewStyleBlur = 2,
+    _UIBackdropViewSettingsAdaptiveLight = 2060,
 };
 
 
 @class _UIBackdropViewSettings;
 @interface _UIBackdropView : UIView
+
+@property (strong, nonatomic, readonly) UIView *contentView;
 
 - (instancetype)init;
 - (instancetype)initWithFrame:(CGRect)arg1;

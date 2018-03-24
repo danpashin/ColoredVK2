@@ -14,6 +14,7 @@
 #import <SafariServices/SFSafariViewController.h>
 #import "ColoredVKAccountController.h"
 #import "NSString+ColoredVK.h"
+#import "ColoredVKBiometry.h"
 
 @interface ColoredVKMainPrefsController ()
 
@@ -201,8 +202,20 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
 {
     PSSpecifier *specifier = [self specifierAtIndexPath:indexPath];
     if ([specifier.identifier isEqualToString:@"manageAccount"]) {
-        ColoredVKAccountController *accountController = [ColoredVKAccountController new];
-        [self.navigationController pushViewController:accountController animated:YES];
+        
+        void (^presentAccountBlock)(void) = ^{
+            ColoredVKAccountController *accountController = [ColoredVKAccountController new];
+            [self.navigationController pushViewController:accountController animated:YES];
+        };
+        
+        if ([ColoredVKNewInstaller sharedInstaller].user.authenticated) {
+            [ColoredVKBiometry authenticateWithSuccess:presentAccountBlock failure:^{
+                [tableView deselectRowAtIndexPath:indexPath animated:YES];
+            }];
+        } else {
+            presentAccountBlock();
+        }
+        
     } else {
         [super tableView:tableView didSelectRowAtIndexPath:indexPath];
     }

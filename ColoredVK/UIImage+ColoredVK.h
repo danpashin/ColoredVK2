@@ -22,4 +22,6 @@
 
 - (UIImage *)imageWithTintColor:(UIColor *)tintColor;
 
+- (UIImage *)imageWithAlpha:(CGFloat)alpha;
+
 @end

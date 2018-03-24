@@ -39,8 +39,8 @@
         [tintColor setFill];
         CGContextTranslateCTM(context, 0, self.size.height);
         CGContextScaleCTM(context, 1.0, -1.0);
-        CGContextClipToMask(context, CGRectMake(0, 0, self.size.width, self.size.height), self.CGImage);
-        CGContextFillRect(context, CGRectMake(0, 0, self.size.width, self.size.height));
+        CGContextClipToMask(context, (CGRect){{0,0}, self.size}, self.CGImage);
+        CGContextFillRect(context, (CGRect){{0,0}, self.size});
         UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         return newImage;
@@ -48,6 +48,16 @@
     UIGraphicsEndImageContext();
     
     return [UIImage new];
+}
+
+- (UIImage *)imageWithAlpha:(CGFloat)alpha
+{    
+    UIGraphicsBeginImageContextWithOptions(self.size, NO, self.scale);
+    [self drawInRect:(CGRect){{0,0}, self.size} blendMode:kCGBlendModeScreen alpha:alpha];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return newImage;
 }
 
 @end

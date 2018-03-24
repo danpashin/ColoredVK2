@@ -49,4 +49,6 @@
  */
 - (void)removeFromSuperview;
 
+- (void)setupConstraints;
+
 @end
