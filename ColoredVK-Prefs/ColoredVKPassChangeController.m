@@ -11,6 +11,7 @@
 #import "ColoredVKTextField.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKHUD.h"
+#import "ColoredVKNetwork.h"
 
 @interface ColoredVKPassChangeController () <ColoredVKTextFieldDelegate>
 
@@ -163,7 +164,8 @@
                              @"new_pass": self.passNewTextField.text, @"user_id":newInstaller.user.userID, 
                              @"token":newInstaller.user.accessToken, @"email":newInstaller.user.email};
     
-    [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+    ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
+    [network sendJSONRequestWithMethod:@"POST" stringURL:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
         if (!json[@"error"]) {
             NSDictionary *responseDict = json[@"response"];
             if ([responseDict[@"code"] integerValue] == 1) {

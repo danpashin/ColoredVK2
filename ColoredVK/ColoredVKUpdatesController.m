@@ -12,12 +12,7 @@
 #import "NSDate+DateTools.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKAlertController.h"
-
-@interface ColoredVKUpdatesController ()
-
-@property (copy, nonatomic, readonly) NSString *prefsPath;
-
-@end
+#import "ColoredVKNetwork.h"
 
 @implementation ColoredVKUpdatesController
 
@@ -36,7 +31,6 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
     if (self) {
         _showErrorAlert = NO;
         _checkedAutomatically = NO;
-        _prefsPath = CVK_PREFS_PATH;
     }
     return self;
 }
@@ -54,10 +48,10 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
     parameters[@"getIPA"] = @1;
 #endif
     
-    ColoredVKNetworkController *networkController = newInstaller.networkController;
-    [networkController sendJSONRequestWithMethod:@"GET" stringURL:stringURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
-                                          
-        NSMutableDictionary *tweakPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
+    ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
+    [network sendJSONRequestWithMethod:@"GET" stringURL:stringURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+        
+        NSMutableDictionary *tweakPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
         if (!json[apiErrorKey]) {
             NSString *newVersion = json[apiNewVersionKey];
             NSString *skippedVersion = tweakPrefs[@"skippedVersion"];
@@ -71,7 +65,7 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
                 [alertActions addObject:[UIAlertAction actionWithTitle:CVKLocalizedString(@"SKIP_THIS_VERSION_BUTTON_TITLE") style:UIAlertActionStyleDefault 
                                                                handler:^(UIAlertAction *action) {
                                                                    [tweakPrefs setValue:newVersion forKey:@"skippedVersion"];
-                                                                   [tweakPrefs writeToFile:self.prefsPath atomically:YES];
+                                                                   [tweakPrefs writeToFile:CVK_PREFS_PATH atomically:YES];
                                                                }]];
                 [alertActions addObject:[UIAlertAction actionWithTitle:CVKLocalizedString(@"UPADTE_BUTTON_TITLE") style:UIAlertActionStyleCancel 
                                                                handler:^(UIAlertAction *action) {
@@ -91,7 +85,7 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
         dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
         [tweakPrefs setValue:[dateFormatter stringFromDate:[NSDate date]] forKey:prefsLastCheckKey];
-        [tweakPrefs writeToFile:self.prefsPath atomically:YES];
+        [tweakPrefs writeToFile:CVK_PREFS_PATH atomically:YES];
         
         if (self.checkCompletionHandler)
             self.checkCompletionHandler(self);
@@ -124,7 +118,7 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
 #ifdef COMPILE_APP
     return NO;
 #else
-    NSMutableDictionary *tweakPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:self.prefsPath];
+    NSMutableDictionary *tweakPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
     BOOL shouldCheckUpdates = tweakPrefs[prefsCheckUpdatesKey] ? [tweakPrefs[prefsCheckUpdatesKey] boolValue] : YES;
     NSTimeInterval updatesInterval = tweakPrefs[prefsUpdatesCheckIntervalKey] ? [tweakPrefs[prefsUpdatesCheckIntervalKey] doubleValue] : 1.0;
     NSString *lastCheckForUpdates = tweakPrefs[prefsLastCheckKey];
@@ -146,7 +140,7 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
 
 - (NSString *)localizedLastCheckForUpdates
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:self.prefsPath];
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";

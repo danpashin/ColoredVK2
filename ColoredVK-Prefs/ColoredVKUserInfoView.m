@@ -9,6 +9,7 @@
 #import "PrefixHeader.h"
 #import "SDWebImageManager.h"
 #import "ColoredVKNewInstaller.h"
+#import "ColoredVKNetwork.h"
 
 @interface ColoredVKUserInfoView ()
 
@@ -120,16 +121,17 @@
         return;
     }
     
+    ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
     NSString *jsonURL = @"https://api.vk.com/method/users.get";
     NSDictionary *params = @{@"user_ids":userID, @"fields":@"photo_100", @"v":@"5.71"};
     NSError *requestError = nil;
-    NSMutableURLRequest *request = [newInstaller.networkController requestWithMethod:@"GET" URLString:jsonURL 
+    NSMutableURLRequest *request = [network requestWithMethod:@"GET" URLString:jsonURL 
                                                                           parameters:params error:&requestError];
     if (requestError)
         return;
     
     [request setValue:@"VK" forHTTPHeaderField:@"User-Agent"];
-    [newInstaller.networkController sendRequest:request success:^(NSURLRequest *blockRequest, NSHTTPURLResponse *response, NSData *rawData) {
+    [network sendRequest:request success:^(NSURLRequest *blockRequest, NSHTTPURLResponse *response, NSData *rawData) {
         NSDictionary *json = [NSJSONSerialization JSONObjectWithData:rawData options:0 error:nil];
         if (![json isKindOfClass:[NSDictionary class]])
             return;

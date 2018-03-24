@@ -14,6 +14,7 @@
 #import "ColoredVKHUD.h"
 #import "ColoredVKAlertController.h"
 #import "ColoredVKUpdatesController.h"
+#import "ColoredVKNetwork.h"
 
 #import <sys/utsname.h>
 #import <MobileGestalt.h>
@@ -58,7 +59,6 @@ BOOL installerShouldOpenPrefs;
 {
     self = [super init];
     if (self) {
-        _networkController = [ColoredVKNetworkController controller];
         __key = legacyEncryptServerString([NSProcessInfo processInfo].globallyUniqueString);
         __udid = CFBridgingRelease(MGCopyAnswer(CFSTR("re6Zb+zwFKJNlkQTUeT+/w")));
         _user = [ColoredVKUserModel new];
@@ -256,7 +256,8 @@ return;
                              @"package":legacyEncryptServerString(@"org.thebigboss.coloredvk2"), 
                              @"version":kPackageVersion, @"key": __key};
     
-    [self.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
+    ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
+    [network sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
         if (!json[@"response"])
             return;
         

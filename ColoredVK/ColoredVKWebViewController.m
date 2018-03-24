@@ -9,8 +9,8 @@
 #import "ColoredVKWebViewController.h"
 #import <WebKit/WebKit.h>
 #import "PrefixHeader.h"
-#import "ColoredVKNewInstaller.h"
 #import "ColoredVKNavigationController.h"
+#import "ColoredVKNetwork.h"
 
 @interface ColoredVKWebViewController () <WKNavigationDelegate>
 
@@ -120,20 +120,18 @@
 {
     _request = request;
     
-    ColoredVKNetworkController *networkController = [ColoredVKNewInstaller sharedInstaller].networkController;
-    [networkController sendRequest:request 
-                           success:^(NSURLRequest *blockRequest, NSHTTPURLResponse *response, NSData *rawData) {
-                               NSString *html = [[NSString alloc] initWithData:rawData encoding:NSUTF8StringEncoding];
-                               
-                               if (self.webView) {
-                                   dispatch_async(dispatch_get_main_queue(), ^{
-                                       [self.webView loadHTMLString:html baseURL:blockRequest.URL];
-                                   });
-                               } else {
-                                   self.requestHTML = html;
-                               }
-                           }
-                           failure:nil];
+    ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
+    [network sendRequest:request success:^(NSURLRequest *blockRequest, NSHTTPURLResponse *response, NSData *rawData) {
+        NSString *html = [[NSString alloc] initWithData:rawData encoding:NSUTF8StringEncoding];
+        
+        if (self.webView) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.webView loadHTMLString:html baseURL:blockRequest.URL];
+            });
+        } else {
+            self.requestHTML = html;
+        }
+    } failure:nil];
 }
 
 

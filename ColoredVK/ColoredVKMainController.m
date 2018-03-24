@@ -11,6 +11,7 @@
 #import "UIGestureRecognizer+BlocksKit.h"
 #import "ColoredVKNewInstaller.h"
 #import "UIColor+ColoredVK.h"
+#import "ColoredVKNetwork.h"
 
 @implementation ColoredVKMainController
 static NSString const *switchViewKey = @"cvkCellSwitchKey";
@@ -190,10 +191,11 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     if (error)
         return;
     
-    [newInstaller.networkController uploadData:data toRemoteURL:[NSString stringWithFormat:@"%@/crash/", kPackageAPIURL]
-                                       success:^(NSHTTPURLResponse *response, NSData *rawData) {
-                                           [[NSFileManager defaultManager] removeItemAtPath:CVK_CRASH_PATH error:nil];
-                                       } failure:nil];
+    ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
+    [network uploadData:data toRemoteURL:[NSString stringWithFormat:@"%@/crash/", kPackageAPIURL]
+                success:^(NSHTTPURLResponse *response, NSData *rawData) {
+                    [[NSFileManager defaultManager] removeItemAtPath:CVK_CRASH_PATH error:nil];
+                } failure:nil];
 }
 
 @end

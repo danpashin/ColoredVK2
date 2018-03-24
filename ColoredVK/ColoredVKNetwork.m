@@ -1,28 +1,33 @@
 //
-//  ColoredVKNetworkController.m
+//  ColoredVKNetwork.m
 //  ColoredVK2
 //
 //  Created by Даниил on 02.08.17.
 //
 //
 
-#import "ColoredVKNetworkController.h"
+#import "ColoredVKNetwork.h"
 #import "ColoredVKCrypto.h"
 #import "PrefixHeader.h"
 #import <UIKit/UIKit.h>
 
-@interface ColoredVKNetworkController  () <NSURLSessionDelegate>
+@interface ColoredVKNetwork  () <NSURLSessionDelegate>
 
 @property (strong, nonatomic) NSURLSession *session;
 @property (strong, nonatomic) NSOperationQueue *operationQueue;
 
 @end
 
-@implementation ColoredVKNetworkController
+@implementation ColoredVKNetwork
 
-+ (instancetype)controller
++ (instancetype)sharedNetwork
 {
-    return [[self alloc] init];
+    static id instance = nil;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        instance = [[self alloc] init];
+    });
+    return instance;
 }
 
 - (instancetype)init

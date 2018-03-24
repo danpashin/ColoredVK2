@@ -1,5 +1,5 @@
 //
-//  ColoredVKNetworkController.h
+//  ColoredVKNetwork.h
 //  ColoredVK2
 //
 //  Created by Даниил on 02.08.17.
@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ColoredVKNetworkController : NSObject
+@interface ColoredVKNetwork : NSObject
 
-+ (instancetype)controller;
++ (instancetype)sharedNetwork;
 
 @property (strong, nonatomic, readonly) NSURLSessionConfiguration *configuration;
 

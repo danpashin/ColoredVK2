@@ -10,6 +10,7 @@
 #import "ColoredVKCrypto.h"
 #import "ColoredVKHUD.h"
 #import "ColoredVKWebViewController.h"
+#import "ColoredVKNetwork.h"
 
 #define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
 #define kDRMRemoteServerURL     [NSString stringWithFormat:@"%@/index-new.php", kPackageAPIURL]
@@ -56,9 +57,10 @@ extern NSString *__key;
     
     NSDictionary *params = @{@"user_id" :self.userID, @"profile_team_id": newInstaller.application.teamIdentifier, 
                              @"from": newInstaller.application.sellerName};
+    
     ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
-    webController.request = [newInstaller.networkController requestWithMethod:@"POST" URLString:kPackagePurchaseLink 
-                                                                   parameters:params error:nil];
+    webController.request = [[ColoredVKNetwork sharedNetwork] requestWithMethod:@"POST" URLString:kPackagePurchaseLink 
+                                                                     parameters:params error:nil];
     [webController present];
 }
 
@@ -75,8 +77,8 @@ extern NSString *__key;
         NSString *url = [NSString stringWithFormat:@"%@/payment/get_info.php", kPackageAPIURL];
         NSDictionary *params = @{@"user_id":self.userID, @"token":self.accessToken};
         
-        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-        [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
+        ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
+        [network sendJSONRequestWithMethod:@"POST" stringURL:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
             if (json[@"error"])
                 return;
             
@@ -141,7 +143,8 @@ extern NSString *__key;
         
     };
     
-    [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
+    ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
+    [network sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
         if (json[@"error"]) {
             NSString *errorMessages = json ? json[@"error"] : @"Unknown error";
             showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain code:101 
@@ -211,7 +214,8 @@ extern NSString *__key;
                                  @"version": kPackageVersion, @"device": device, @"key": __key
                                  };
     
-    [newInstaller.networkController sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+    ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
+    [network sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
         if (!json[@"error"]) {
             self.authenticated = NO;
             [newInstaller writeFreeLicence];

@@ -6,7 +6,6 @@
 //
 //
 
-#import "ColoredVKNetworkController.h"
 #import "ColoredVKUserModel.h"
 #import "ColoredVKApplicationModel.h"
 
@@ -19,7 +18,6 @@ FOUNDATION_EXPORT NSString *__deviceModel;
 
 + (instancetype)sharedInstaller;
 
-@property (strong, nonatomic, readonly) ColoredVKNetworkController *networkController;
 @property (strong, nonatomic, readonly) ColoredVKUserModel *user;
 @property (strong, nonatomic, readonly) ColoredVKApplicationModel *application;
 

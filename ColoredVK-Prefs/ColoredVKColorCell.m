@@ -24,7 +24,7 @@
         self.accessoryView.layer.shadowColor = [UIColor blackColor].CGColor;
         self.accessoryView.layer.shadowOpacity = 0.15f;
         
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateColorNotification:) name:@"com.daniilpashin.coloredvk2.prefs.colorUpdate" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColorNotification:) name:@"com.daniilpashin.coloredvk2.prefs.colorUpdate" object:nil];
         [self updateColorForIdentifier:specifier.identifier];
     }
     return self;
@@ -32,9 +32,14 @@
 
 - (void)updateColorNotification:(NSNotification *)notification
 {
-    NSString *identifier = notification.userInfo[@"identifier"];
-	if ([identifier isEqualToString:self.specifier.identifier])
-        [self updateColorForIdentifier:identifier];
+    NSString *notificationID = notification.userInfo[@"identifier"];
+    NSString *selfID = self.specifier.identifier;
+    
+    if ((notificationID.length == 0) || (selfID.length == 0))
+        return;
+    
+	if ([notificationID isEqualToString:selfID])
+        [self updateColorForIdentifier:selfID];
 }
 
 - (void)updateColorForIdentifier:(NSString *)identifier
@@ -49,7 +54,7 @@
 
 - (void)dealloc
 {
-    [NSNotificationCenter.defaultCenter removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

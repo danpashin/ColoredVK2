@@ -9,7 +9,7 @@
 #import "ColoredVKTextField.h"
 #import "PrefixHeader.h"
 #import "ColoredVKHUD.h"
-#import "ColoredVKNewInstaller.h"
+#import "ColoredVKNetwork.h"
 
 @interface ColoredVKPassResetController () <ColoredVKTextFieldDelegate>
 
@@ -131,7 +131,9 @@
     
     NSString *stringURL = [NSString stringWithFormat:@"%@/pass/change.php", kPackageAPIURL];
     NSDictionary *params = @{@"login":self.login, @"email":self.email, @"new_pass":self.passTextField.text, @"token":self.token};
-    [[ColoredVKNewInstaller sharedInstaller].networkController sendJSONRequestWithMethod:@"POST" stringURL:stringURL parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+    
+    ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
+    [network sendJSONRequestWithMethod:@"POST" stringURL:stringURL parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
         if (json[@"response"]) {
             NSDictionary *responseDict = json[@"response"];
             

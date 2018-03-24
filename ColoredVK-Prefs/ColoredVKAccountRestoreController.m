@@ -11,6 +11,7 @@
 #import "ColoredVKHUD.h"
 #import "PrefixHeader.h"
 #import "ColoredVKPassResetController.h"
+#import "ColoredVKNetwork.h"
 
 @interface ColoredVKAccountRestoreController () <ColoredVKTextFieldDelegate, UITextViewDelegate>
 
@@ -296,7 +297,8 @@
     ColoredVKHUD *hud = [ColoredVKHUD showHUDForView:self.view];
     
     NSString *url = [NSString stringWithFormat:@"%@/pass/%@", kPackageAPIURL, scriptName];
-    [[ColoredVKNewInstaller sharedInstaller].networkController sendJSONRequestWithMethod:@"POST" stringURL:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
+    ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
+    [network sendJSONRequestWithMethod:@"POST" stringURL:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
         if (json[@"response"]) {
             NSDictionary *response = json[@"response"];
             NSInteger status = [response[@"status"] integerValue];

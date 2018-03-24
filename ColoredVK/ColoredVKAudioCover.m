@@ -12,7 +12,7 @@
 #import "LEColorPicker.h"
 #import "ColoredVKCoreData.h"
 #import "ColoredVKAudioEntity.h"
-#import "ColoredVKNewInstaller.h"
+#import "ColoredVKNetwork.h"
 #import "SDWebImageManager.h"
 #import "ColoredVKAudioLyricsView.h"
 
@@ -206,12 +206,12 @@ void corePrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef
             block(cachedImage, YES);
         return;
     }
-    ColoredVKNetworkController *networkController = [ColoredVKNewInstaller sharedInstaller].networkController;
-    NSMutableURLRequest *urlRequest = [networkController requestWithMethod:@"GET" URLString:@"https://itunes.apple.com/search" 
+    ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
+    NSMutableURLRequest *urlRequest = [network requestWithMethod:@"GET" URLString:@"https://itunes.apple.com/search" 
                                                                 parameters:@{@"limit":@1, @"media":@"music", @"term":query} error:nil];
     urlRequest.accessibilityValue = query;
     
-    [networkController sendRequest:urlRequest success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData) {
+    [network sendRequest:urlRequest success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData) {
         NSError *jsonError = nil;
         NSDictionary *json = [NSJSONSerialization JSONObjectWithData:rawData options:0 error:&jsonError];
         if (jsonError) {
@@ -306,9 +306,9 @@ void corePrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef
     
     NSString *url = [NSString stringWithFormat:@"%@/lyrics.php",  kPackageAPIURL];
     
-    ColoredVKNetworkController *networkController = [ColoredVKNetworkController controller];
+    ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
     NSDictionary *params = @{@"artist":artist, @"title":title};
-    [networkController sendJSONRequestWithMethod:@"GET" stringURL:url parameters:params success:^(NSURLRequest *blockRequest, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
+    [network sendJSONRequestWithMethod:@"GET" stringURL:url parameters:params success:^(NSURLRequest *blockRequest, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
         if (!json[@"response"]) {
             [self.audioLyricsView resetState];
             return;

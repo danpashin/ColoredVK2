@@ -6,7 +6,7 @@
 //
 
 #import "ColoredVKImageProcessor.h"
-#import "ColoredVKNewInstaller.h"
+#import "ColoredVKNetwork.h"
 
 @implementation ColoredVKImageProcessor
 
@@ -14,15 +14,13 @@
             completionBlock:( void (^)(BOOL success, NSError *error) )completionBlock
 {
     if (!url.isFileURL) {
-        ColoredVKNetworkController *networkController = [ColoredVKNewInstaller sharedInstaller].networkController;
-        [networkController downloadDataFromURL:url.absoluteString
-                                            success:^(NSHTTPURLResponse *response, NSData *rawData) {
-                                                UIImage *image = [UIImage imageWithData:rawData];
-                                                [self processImage:image identifier:identifier andSaveToURL:urlToSave completionBlock:completionBlock];
-                                            }
-                                            failure:^(NSHTTPURLResponse *response, NSError *error) {
-                                                completionBlock(NO, error);
-                                            }];
+        ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
+        [network downloadDataFromURL:url.absoluteString success:^(NSHTTPURLResponse *response, NSData *rawData) {
+            UIImage *image = [UIImage imageWithData:rawData];
+            [self processImage:image identifier:identifier andSaveToURL:urlToSave completionBlock:completionBlock];
+        } failure:^(NSHTTPURLResponse *response, NSError *error) {
+            completionBlock(NO, error);
+        }];
         
     } else {
         NSError *catchingError = nil;
