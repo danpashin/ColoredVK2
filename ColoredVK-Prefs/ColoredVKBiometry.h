@@ -9,6 +9,9 @@
 
 @interface ColoredVKBiometry : ColoredVKWindowController
 
-+ (void)authenticateWithSuccess:( void(^)(void) )successBlock failure:( void(^)(void) )failureBlock;
++ (void)authenticateWithPasscode:(NSString *)password success:( void(^)(void) )successBlock failure:( void(^)(void) )failureBlock;
+
+@property (assign, nonatomic, readonly) BOOL supportsTouchID;
+@property (assign, nonatomic, readonly) BOOL supportsFaceID;
 
 @end

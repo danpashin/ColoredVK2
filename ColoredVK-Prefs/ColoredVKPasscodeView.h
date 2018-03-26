@@ -20,16 +20,14 @@
 
 @interface ColoredVKPasscodeView : UIView
 
-@property (assign, nonatomic) NSUInteger maxDigits;
-
+@property (assign, nonatomic) IBInspectable NSUInteger maxDigits;
 @property (assign, nonatomic) BOOL supportsTouchID;
 @property (assign, nonatomic) BOOL supportsFaceID;
 
-@property (strong, nonatomic) IBOutlet UILabel *label;
+@property (strong, nonatomic) IBInspectable IBOutlet UILabel *titleLabel;
 @property (strong, nonatomic) NSMutableString *passcode;
+@property (assign, nonatomic) BOOL invalidPasscode;
 
 @property (weak, nonatomic) id <ColoredVKPasscodeViewDelegate> delegate;
-
-- (void)addErrorAnimation;
 
 @end

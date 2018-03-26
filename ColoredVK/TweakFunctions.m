@@ -892,13 +892,3 @@ void setupNightTextField(UITextField *textField)
         }
     }
 }
-
-void setupPopoverPresentation(UIViewController *viewController)
-{
-    if (![CLASS_NAME(viewController) containsString:@"ColoredVK"] && IS_IPAD) {
-        viewController.modalPresentationStyle = UIModalPresentationPopover;
-        viewController.popoverPresentationController.permittedArrowDirections = 0;
-        viewController.popoverPresentationController.sourceView = viewController.view;
-        viewController.popoverPresentationController.sourceRect = viewController.view.bounds;
-    }
-}

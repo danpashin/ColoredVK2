@@ -108,25 +108,28 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
 
 - (void)actionOpenPreferencesPush:(BOOL)withPush
 {
-    NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    if (!cvkBundle.loaded)
-        [cvkBundle load];
-    
-    UIViewController *cvkPrefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
-    if (!cvkPrefs)
-        return;
-    
-    if ([[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"] >= 0)
-        withPush = YES;
-    
-    VKMNavContext *mainContext = [[NSClassFromString(@"VKMNavContext") applicationNavRoot] rootNavContext];
-    if (withPush) {
-        if ([mainContext respondsToSelector:@selector(push:animated:)])
-            [mainContext push:cvkPrefs animated:YES];
-    } else {
-        if ([mainContext respondsToSelector:@selector(reset:)])
-            [mainContext reset:cvkPrefs];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        BOOL innerWithPush = withPush;
+        NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+        if (!cvkBundle.loaded)
+            [cvkBundle load];
+        
+        UIViewController *cvkPrefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
+        if (!cvkPrefs)
+            return;
+        
+        if ([[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"] >= 0)
+            innerWithPush = YES;
+        
+        VKMNavContext *mainContext = [[NSClassFromString(@"VKMNavContext") applicationNavRoot] rootNavContext];
+        if (innerWithPush) {
+            if ([mainContext respondsToSelector:@selector(push:animated:)])
+                [mainContext push:cvkPrefs animated:YES];
+        } else {
+            if ([mainContext respondsToSelector:@selector(reset:)])
+                [mainContext reset:cvkPrefs];
+        }
+    });
 }
 
 - (void)switchTriggered:(UISwitch *)switchView

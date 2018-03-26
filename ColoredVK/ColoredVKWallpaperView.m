@@ -21,6 +21,8 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
 
 @implementation ColoredVKWallpaperView
 
+@synthesize blurStyle = _blurStyle;
+
 + (instancetype)viewWithFrame:(CGRect)frame imageName:(NSString *)name blackout:(CGFloat)blackout
 {
     return [[self alloc] initWithFrame:frame imageName:name blackout:blackout enableParallax:NO blurBackground:NO];
@@ -48,8 +50,7 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
         _imageView.layer.masksToBounds = YES;
         [self addSubview:_imageView];
         
-        _blurStyle = _UIBackdropViewStyleBlur;
-        _blurView = [[_UIBackdropView alloc] initWithStyle:_blurStyle];
+        _blurView = [[_UIBackdropView alloc] initWithStyle:self.blurStyle];
         _blurView.frame = bounds;
         [self addSubview:_blurView];
         
@@ -171,6 +172,14 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.blurView transitionToStyle:blurStyle];
     });
+}
+
+- (_UIBackdropViewStyle)blurStyle
+{
+    if (!_blurStyle) {
+        _blurStyle = _UIBackdropViewStyleBlur;
+    }
+    return _blurStyle;
 }
 
 - (void)updateViewWithBlackout:(CGFloat)blackout

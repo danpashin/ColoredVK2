@@ -39,12 +39,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    [self.view addSubview:self.backgroundView];
-    
-    self.backgroundView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view":self.backgroundView}]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view":self.backgroundView}]];
+    self.backgroundView = self.backgroundView;
 }
 
 - (void)viewDidLayoutSubviews
@@ -106,6 +101,12 @@
     if (self.isViewLoaded) {
         _backgroundView.frame = self.view.bounds;
         [self.view insertSubview:_backgroundView atIndex:0];
+        
+        _backgroundView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 
+                                                                          metrics:nil views:@{@"view":_backgroundView}]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0
+                                                                          metrics:nil views:@{@"view":_backgroundView}]];
     } else {
         _backgroundView.frame = [UIScreen mainScreen].bounds;
     }
@@ -262,14 +263,14 @@
         self.view.backgroundColor = [UIColor clearColor];
         
         self.window.rootViewController = self;
-        self.window.alpha = 0;
+        self.window.alpha = 0.0f;
         [self.window makeKeyAndVisible];
-        [UIView animateWithDuration:self.animationDuration delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-            self.window.alpha = 1;
+        [UIView animateWithDuration:self.animationDuration delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            self.window.alpha = 1.0f;
         } completion:^(BOOL finished) {
             self.isPresented = YES;
             
-            [UIView animateWithDuration:0.15 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            [UIView animateWithDuration:0.15f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
                 [self setNeedsStatusBarAppearanceUpdate];
             } completion:nil];
         }];
@@ -279,12 +280,12 @@
 - (void)hide
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:self.animationDuration delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+        [UIView animateWithDuration:self.animationDuration delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
             self.window.alpha = 0.0f;
         } completion:^(BOOL firstFinished) {
             self.isPresented = NO;
             
-            [UIView animateWithDuration:0.15f delay:0.8f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            [UIView animateWithDuration:0.15f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
                 [self setNeedsStatusBarAppearanceUpdate];
             } completion:^(BOOL secondFinished) {
                 self.window.hidden = YES;

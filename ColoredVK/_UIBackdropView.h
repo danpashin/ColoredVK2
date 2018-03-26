@@ -3,9 +3,11 @@
 typedef NS_ENUM(NSUInteger, _UIBackdropViewStyle) {
     _UIBackdropViewStyleNone = -2,
     _UIBackdropViewStyleLight = 0,
-    _UIBackdropViewStyleDark,
     _UIBackdropViewStyleBlur = 2,
+    _UIBackdropViewStyleDark = 1001,
+    _UIBackdropViewSettingsUltraLight = 2010,
     _UIBackdropViewSettingsAdaptiveLight = 2060,
+    _UIBackdropViewSettingsFlatSemiLight = 2071,
 };
 
 

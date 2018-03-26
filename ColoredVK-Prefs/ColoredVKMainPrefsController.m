@@ -209,7 +209,7 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
         };
         
         if ([ColoredVKNewInstaller sharedInstaller].user.authenticated) {
-            [ColoredVKBiometry authenticateWithSuccess:presentAccountBlock failure:^{
+            [ColoredVKBiometry authenticateWithPasscode:@"0000" success:presentAccountBlock failure:^{
                 [tableView deselectRowAtIndexPath:indexPath animated:YES];
             }];
         } else {

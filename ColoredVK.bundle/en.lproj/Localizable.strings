@@ -96,6 +96,7 @@
 
 "ACCESS_TO_ACCOUNT_SETTINGS" = "Access to account settings";
 "DELETE" = "Delete";
+"ENTER_PASSCODE" = "Введите код-пароль";
 
 
 // О статусах аккаунта

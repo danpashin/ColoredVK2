@@ -11,6 +11,10 @@
 @end
 @interface vksprefsListController : PSListController
 @end
+@interface ColoredVKPrefs : PSListController
+@end
+@interface SelectAccountTableViewController : UITableViewController
+@end
 
 
 void reloadPrefs(void)
@@ -473,20 +477,35 @@ CHDeclareMethod(1, void, UITableView, setBackgroundColor, UIColor *, backgroundC
 }
 
 
-#pragma mark - UIAlertController
-CHDeclareClass(UIAlertController);
-CHDeclareMethod(0, void, UIAlertController, viewDidLoad)
+#pragma mark - UIViewController
+CHDeclareClass(UIViewController);
+CHDeclareMethod(3, void, UIViewController, presentViewController, UIViewController *, viewControllerToPresent, animated, BOOL, flag, completion, id, completion)
 {
-    setupPopoverPresentation(self);
-    CHSuper(0, UIAlertController, viewDidLoad);
+    if (![NSStringFromClass([self class]) containsString:@"ColoredVK"]) {
+        NSArray <Class> *classes = @[[UIAlertController class], [UIActivityViewController class]];
+        
+        if (([classes containsObject:[viewControllerToPresent class]]) && IS_IPAD) {
+            viewControllerToPresent.modalPresentationStyle = UIModalPresentationPopover;
+            viewControllerToPresent.popoverPresentationController.permittedArrowDirections = 0;
+            viewControllerToPresent.popoverPresentationController.sourceView = self.view;
+            viewControllerToPresent.popoverPresentationController.sourceRect = self.view.bounds;
+        }
+    }
+    
+    CHSuper(3, UIViewController, presentViewController, viewControllerToPresent, animated, flag, completion, completion);
+    
 }
 
-#pragma mark - UIActivityViewController
-CHDeclareClass(UIActivityViewController);
-CHDeclareMethod(0, void, UIActivityViewController, viewDidLoad)
+CHDeclareMethod(1, void, UIViewController, viewWillAppear, BOOL, animated)
 {
-    setupPopoverPresentation(self);
-    CHSuper(0, UIActivityViewController, viewDidLoad);
+    CHSuper(1, UIViewController, viewWillAppear, animated);
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if ([self isKindOfClass:NSClassFromString(@"PSListController")]) {
+            resetNavigationBar(self.navigationController.navigationBar);
+            resetTabBar();
+        }
+    });
 }
 
 
@@ -496,13 +515,14 @@ CHDeclareMethod(0, void, UIActivityViewController, viewDidLoad)
 
 #pragma mark PSListController
 CHDeclareClass(PSListController);
-
-CHDeclareMethod(1, void, PSListController, viewWillAppear, BOOL, animated)
-{
-    CHSuper(1, PSListController, viewWillAppear, animated);
-    resetNavigationBar(self.navigationController.navigationBar);
-    resetTabBar();
-}
+//CHDeclareMethod(1, void, PSListController, viewWillAppear, BOOL, animated)
+//{
+//    CHSuper(1, PSListController, viewWillAppear, animated);
+//    
+//    CVKLogSource(@"");
+//    resetNavigationBar(self.navigationController.navigationBar);
+//    resetTabBar();
+//}
 
 CHDeclareMethod(0, UIStatusBarStyle, PSListController, preferredStatusBarStyle)
 {
@@ -510,7 +530,6 @@ CHDeclareMethod(0, UIStatusBarStyle, PSListController, preferredStatusBarStyle)
 }
 
 #pragma mark SelectAccountTableViewController
-@interface SelectAccountTableViewController : UITableViewController @end
 CHDeclareClass(SelectAccountTableViewController);
 CHDeclareMethod(1, void, SelectAccountTableViewController, viewWillAppear, BOOL, animated)
 {

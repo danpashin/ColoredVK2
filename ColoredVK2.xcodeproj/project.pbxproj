@@ -174,9 +174,7 @@
 		A53818132066B83C00B4EF4B /* ColoredVKPasscodeCircle.m in Sources */ = {isa = PBXBuildFile; fileRef = A53818102066B83C00B4EF4B /* ColoredVKPasscodeCircle.m */; };
 		A53818142066B83C00B4EF4B /* ColoredVKPasscodeCircle.m in Sources */ = {isa = PBXBuildFile; fileRef = A53818102066B83C00B4EF4B /* ColoredVKPasscodeCircle.m */; };
 		A53818172066CBF100B4EF4B /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A53818162066CBF100B4EF4B /* LocalAuthentication.framework */; };
-		A53818182066CF8A00B4EF4B /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A53818162066CBF100B4EF4B /* LocalAuthentication.framework */; };
 		A53818192066CF8F00B4EF4B /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A53818162066CBF100B4EF4B /* LocalAuthentication.framework */; };
-		A538181A2066CF9500B4EF4B /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A53818162066CBF100B4EF4B /* LocalAuthentication.framework */; };
 		A53D41681DD0AC2600584B13 /* ColoredVKWallpaperView.h in Headers */ = {isa = PBXBuildFile; fileRef = A53D41661DD0AC2600584B13 /* ColoredVKWallpaperView.h */; };
 		A53D41691DD0AC2600584B13 /* ColoredVKWallpaperView.h in Headers */ = {isa = PBXBuildFile; fileRef = A53D41661DD0AC2600584B13 /* ColoredVKWallpaperView.h */; };
 		A53D416A1DD0AC2600584B13 /* ColoredVKWallpaperView.m in Sources */ = {isa = PBXBuildFile; fileRef = A53D41671DD0AC2600584B13 /* ColoredVKWallpaperView.m */; };
@@ -281,6 +279,10 @@
 		A5630798202E2635001CD95B /* ColoredVKPassChangeController.m in Sources */ = {isa = PBXBuildFile; fileRef = A559969B202DB59500E1861D /* ColoredVKPassChangeController.m */; };
 		A5630799202E2636001CD95B /* ColoredVKPassChangeController.m in Sources */ = {isa = PBXBuildFile; fileRef = A559969B202DB59500E1861D /* ColoredVKPassChangeController.m */; };
 		A563079A202E263A001CD95B /* ColoredVKPassChangeController.h in Headers */ = {isa = PBXBuildFile; fileRef = A559969A202DB59500E1861D /* ColoredVKPassChangeController.h */; };
+		A56405972068DA120033AF40 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A56405962068DA120033AF40 /* AudioToolbox.framework */; };
+		A56405982068DA1C0033AF40 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A56405962068DA120033AF40 /* AudioToolbox.framework */; };
+		A56405992068DA350033AF40 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A53818162066CBF100B4EF4B /* LocalAuthentication.framework */; };
+		A564059A2068DA3C0033AF40 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A56405962068DA120033AF40 /* AudioToolbox.framework */; };
 		A566D59F1FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = A566D59D1FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.h */; };
 		A566D5A01FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = A566D59D1FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.h */; };
 		A566D5A11FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = A566D59D1FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.h */; };
@@ -786,6 +788,7 @@
 		A56147B61EA0140900B3D8C8 /* ColoredVKAboutController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKAboutController.m; sourceTree = "<group>"; };
 		A56147BD1EA0157400B3D8C8 /* ColoredVKPrefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKPrefs.h; sourceTree = "<group>"; };
 		A56147BE1EA0157400B3D8C8 /* ColoredVKPrefs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKPrefs.m; sourceTree = "<group>"; };
+		A56405962068DA120033AF40 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		A566D59D1FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKFontPrefsSelector.h; sourceTree = "<group>"; };
 		A566D59E1FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKFontPrefsSelector.m; sourceTree = "<group>"; };
 		A56C4D851E56165800BEB2B1 /* ColoredVK2-dylib.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ColoredVK2-dylib.plist"; sourceTree = "<group>"; };
@@ -916,7 +919,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A538181A2066CF9500B4EF4B /* LocalAuthentication.framework in Frameworks */,
 				A5CC38662040368F005A3AB0 /* MobileCoreServices.framework in Frameworks */,
 				A5C988DA1F2BBE2F0054AC62 /* SafariServices.framework in Frameworks */,
 				A525A3921F2A382200F86EFF /* WebKit.framework in Frameworks */,
@@ -937,7 +939,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A53818182066CF8A00B4EF4B /* LocalAuthentication.framework in Frameworks */,
+				A564059A2068DA3C0033AF40 /* AudioToolbox.framework in Frameworks */,
+				A56405992068DA350033AF40 /* LocalAuthentication.framework in Frameworks */,
 				A5CC385820401949005A3AB0 /* MobileCoreServices.framework in Frameworks */,
 				A5D3D0391FE012FD007AAEF7 /* Preferences.framework in Frameworks */,
 				A5EE64AD1FAE4C9E0050C156 /* Photos.framework in Frameworks */,
@@ -961,6 +964,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A56405982068DA1C0033AF40 /* AudioToolbox.framework in Frameworks */,
 				A53818192066CF8F00B4EF4B /* LocalAuthentication.framework in Frameworks */,
 				A5CC3867204036A5005A3AB0 /* MobileCoreServices.framework in Frameworks */,
 				A58EBC122039C998007184C1 /* Photos.framework in Frameworks */,
@@ -982,6 +986,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A56405972068DA120033AF40 /* AudioToolbox.framework in Frameworks */,
 				A53818172066CBF100B4EF4B /* LocalAuthentication.framework in Frameworks */,
 				A5CC386320401D39005A3AB0 /* MobileCoreServices.framework in Frameworks */,
 				A5D3D03A1FE0130D007AAEF7 /* Preferences.framework in Frameworks */,
@@ -1078,6 +1083,7 @@
 		A5079FB41CC92157005B9693 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A56405962068DA120033AF40 /* AudioToolbox.framework */,
 				A53818162066CBF100B4EF4B /* LocalAuthentication.framework */,
 				A5D3D0381FE012FC007AAEF7 /* Preferences.framework */,
 				A5EE64AC1FAE4C9E0050C156 /* Photos.framework */,
@@ -2467,7 +2473,7 @@
 				DEVELOPMENT_TEAM = "";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.app12huo12.comapp2.coloredvk2;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2485,7 +2491,7 @@
 				DEVELOPMENT_TEAM = "";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.app12huo12.comapp2.coloredvk2;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
@@ -2603,12 +2609,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = 62DQNF58FV;
+				DEVELOPMENT_TEAM = FN2RK9X9Z4;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
-				PROVISIONING_PROFILE = "3a219e9d-0182-42d6-8a63-b5718750d7ed";
-				PROVISIONING_PROFILE_SPECIFIER = 1ab6dc745ad2232661f27c341c996da8d894de3c;
+				PRODUCT_BUNDLE_IDENTIFIER = com.app12huo12.comapp2.coloredvk2;
+				PROVISIONING_PROFILE = "86d06264-68ce-4729-b8ff-5da33996ae46";
+				PROVISIONING_PROFILE_SPECIFIER = ff6b068523b664aa3f530000c32cf4d7815f29f1;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;

@@ -155,7 +155,7 @@
     if (!_separatorColor)  {
         ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
         if (nightScheme.enabled)
-            _backgroundColor = nightScheme.backgroundColor;
+            _separatorColor = nightScheme.backgroundColor;
         else
             _separatorColor = [UIColor colorWithRed:232/255.0f green:233/255.0f blue:234/255.0f alpha:1.0f];
     }
@@ -167,7 +167,7 @@
     if (!_selectedBackgroundColor) {
         ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
         if (nightScheme.enabled)
-            _backgroundColor = nightScheme.backgroundColor;
+            _selectedBackgroundColor = nightScheme.backgroundColor;
         else
             _selectedBackgroundColor = [UIColor colorWithRed:191/255.0f green:191/255.0f blue:191/255.0f alpha:1.0f];
     }

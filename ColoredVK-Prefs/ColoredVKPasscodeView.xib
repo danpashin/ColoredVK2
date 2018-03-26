@@ -16,31 +16,31 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="some text" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L7H-vV-qj8">
-                    <rect key="frame" x="57" y="75" width="260" height="32"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L7H-vV-qj8">
+                    <rect key="frame" x="57.5" y="95.5" width="260" height="32"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="32" id="PNl-Gx-krt"/>
                         <constraint firstAttribute="width" constant="260" id="YBf-OK-lfo"/>
                     </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="21"/>
                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="0nw-jY-UYU" userLabel="Circles Stack">
-                    <rect key="frame" x="127.5" y="123" width="120" height="12"/>
+                    <rect key="frame" x="127.5" y="143.5" width="120" height="12"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="12" id="C6g-gp-bX9"/>
                         <constraint firstAttribute="width" constant="120" id="jy0-hv-fhu"/>
                     </constraints>
                 </stackView>
-                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="-42" translatesAutoresizingMaskIntoConstraints="NO" id="DpA-Tt-Ghz" userLabel="Numbers Stack">
-                    <rect key="frame" x="58" y="135" width="260" height="461"/>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="DpA-Tt-Ghz" userLabel="Numbers Stack">
+                    <rect key="frame" x="57.5" y="171.5" width="260" height="388"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="26" translatesAutoresizingMaskIntoConstraints="NO" id="h5O-vN-E7y" userLabel="First stack">
-                            <rect key="frame" x="0.0" y="0.0" width="260" height="147"/>
+                            <rect key="frame" x="0.0" y="0.0" width="260" height="97"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AGV-hw-yex" customClass="ColoredVKPasscodeButton">
-                                    <rect key="frame" x="0.0" y="38.5" width="69.5" height="69.5"/>
+                                    <rect key="frame" x="0.0" y="14" width="69.5" height="69"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="AGV-hw-yex" secondAttribute="height" multiplier="1:1" id="b0P-DG-tf4"/>
                                     </constraints>
@@ -50,7 +50,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nXy-6g-C5C" customClass="ColoredVKPasscodeButton">
-                                    <rect key="frame" x="95.5" y="38.5" width="69" height="70"/>
+                                    <rect key="frame" x="95.5" y="14" width="69" height="69"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="nXy-6g-C5C" secondAttribute="height" multiplier="1:1" id="wvz-U2-Rfs"/>
                                     </constraints>
@@ -60,7 +60,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cI8-SP-hjL" customClass="ColoredVKPasscodeButton">
-                                    <rect key="frame" x="190.5" y="38.5" width="69.5" height="69.5"/>
+                                    <rect key="frame" x="190.5" y="14" width="69.5" height="69"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="cI8-SP-hjL" secondAttribute="height" multiplier="1:1" id="1F7-ZS-Uzl"/>
                                     </constraints>
@@ -72,10 +72,10 @@
                             </subviews>
                         </stackView>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="26" translatesAutoresizingMaskIntoConstraints="NO" id="2Sk-Mq-Sml" userLabel="Second stack">
-                            <rect key="frame" x="0.0" y="105" width="260" height="146.5"/>
+                            <rect key="frame" x="0.0" y="97" width="260" height="97"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3hH-RA-9Cg" customClass="ColoredVKPasscodeButton">
-                                    <rect key="frame" x="0.0" y="38.5" width="69.5" height="69.5"/>
+                                    <rect key="frame" x="0.0" y="14" width="69.5" height="69"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="3hH-RA-9Cg" secondAttribute="height" multiplier="1:1" id="FOB-ne-lHf"/>
                                     </constraints>
@@ -85,7 +85,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dCt-Ze-Bj3" customClass="ColoredVKPasscodeButton">
-                                    <rect key="frame" x="95.5" y="38" width="69" height="70"/>
+                                    <rect key="frame" x="95.5" y="14" width="69" height="69"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="dCt-Ze-Bj3" secondAttribute="height" multiplier="1:1" id="dOX-87-SZs"/>
                                     </constraints>
@@ -95,7 +95,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3ng-BW-763" customClass="ColoredVKPasscodeButton">
-                                    <rect key="frame" x="190.5" y="38.5" width="69.5" height="69.5"/>
+                                    <rect key="frame" x="190.5" y="14" width="69.5" height="69"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="3ng-BW-763" secondAttribute="height" multiplier="1:1" id="r1E-Jg-tSR"/>
                                     </constraints>
@@ -107,10 +107,10 @@
                             </subviews>
                         </stackView>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="26" translatesAutoresizingMaskIntoConstraints="NO" id="GXu-1m-7bJ" userLabel="Third stack">
-                            <rect key="frame" x="0.0" y="209.5" width="260" height="147"/>
+                            <rect key="frame" x="0.0" y="194" width="260" height="97"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cub-bA-opf" customClass="ColoredVKPasscodeButton">
-                                    <rect key="frame" x="0.0" y="38.5" width="69.5" height="69.5"/>
+                                    <rect key="frame" x="0.0" y="14" width="69.5" height="69"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="cub-bA-opf" secondAttribute="height" multiplier="1:1" id="1kO-GK-d6E"/>
                                     </constraints>
@@ -120,7 +120,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ohk-QV-nKm" customClass="ColoredVKPasscodeButton">
-                                    <rect key="frame" x="95.5" y="38.5" width="69" height="70"/>
+                                    <rect key="frame" x="95.5" y="14" width="69" height="69"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="ohk-QV-nKm" secondAttribute="height" multiplier="1:1" id="X2q-ZA-inc"/>
                                     </constraints>
@@ -130,7 +130,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VDs-9j-Ib5" customClass="ColoredVKPasscodeButton">
-                                    <rect key="frame" x="190.5" y="38.5" width="69.5" height="69.5"/>
+                                    <rect key="frame" x="190.5" y="14" width="69.5" height="69"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="VDs-9j-Ib5" secondAttribute="height" multiplier="1:1" id="9DC-kV-Rlz"/>
                                     </constraints>
@@ -142,10 +142,10 @@
                             </subviews>
                         </stackView>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="26" translatesAutoresizingMaskIntoConstraints="NO" id="pbX-U4-xm0" userLabel="Fourth stack">
-                            <rect key="frame" x="0.0" y="314.5" width="260" height="146.5"/>
+                            <rect key="frame" x="0.0" y="291" width="260" height="97"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ipa-fj-fmp">
-                                    <rect key="frame" x="0.0" y="38.5" width="69.5" height="69.5"/>
+                                    <rect key="frame" x="0.0" y="14" width="69.5" height="69"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="ipa-fj-fmp" secondAttribute="height" multiplier="1:1" id="DbK-AF-YN2"/>
                                     </constraints>
@@ -154,7 +154,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JYG-c7-eHZ" customClass="ColoredVKPasscodeButton">
-                                    <rect key="frame" x="95.5" y="38" width="69" height="70"/>
+                                    <rect key="frame" x="95.5" y="14" width="69" height="69"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="JYG-c7-eHZ" secondAttribute="height" multiplier="1:1" id="eEC-K0-WxM"/>
                                     </constraints>
@@ -164,7 +164,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CQw-Ef-ojq">
-                                    <rect key="frame" x="190.5" y="38.5" width="69.5" height="69.5"/>
+                                    <rect key="frame" x="190.5" y="14" width="69.5" height="69"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="CQw-Ef-ojq" secondAttribute="height" multiplier="1:1" id="zWJ-js-rJs"/>
                                     </constraints>
@@ -179,20 +179,54 @@
                         <constraint firstAttribute="trailing" secondItem="2Sk-Mq-Sml" secondAttribute="trailing" id="0Bm-Xn-jHg"/>
                         <constraint firstItem="pbX-U4-xm0" firstAttribute="leading" secondItem="DpA-Tt-Ghz" secondAttribute="leading" id="2bL-Ah-MES"/>
                         <constraint firstAttribute="trailing" secondItem="h5O-vN-E7y" secondAttribute="trailing" id="CPf-nm-LW1"/>
+                        <constraint firstAttribute="width" secondItem="DpA-Tt-Ghz" secondAttribute="height" multiplier="9:16" constant="42" id="KzG-VT-9sc"/>
                         <constraint firstItem="h5O-vN-E7y" firstAttribute="leading" secondItem="DpA-Tt-Ghz" secondAttribute="leading" id="a3V-BU-nr5"/>
-                        <constraint firstAttribute="width" constant="260" id="arP-EH-IAx"/>
+                        <constraint firstAttribute="width" constant="260" id="arP-EH-IAx">
+                            <variation key="heightClass=regular-widthClass=regular" constant="300"/>
+                        </constraint>
+                        <constraint firstAttribute="width" secondItem="DpA-Tt-Ghz" secondAttribute="height" multiplier="2:3" id="jKv-Zq-awW"/>
                         <constraint firstItem="2Sk-Mq-Sml" firstAttribute="leading" secondItem="DpA-Tt-Ghz" secondAttribute="leading" id="lRg-sE-XUR"/>
                         <constraint firstAttribute="trailing" secondItem="GXu-1m-7bJ" secondAttribute="trailing" id="lwV-Gh-wGb"/>
+                        <constraint firstAttribute="width" secondItem="DpA-Tt-Ghz" secondAttribute="height" multiplier="1:1" id="pLz-41-2Ey"/>
                         <constraint firstItem="GXu-1m-7bJ" firstAttribute="leading" secondItem="DpA-Tt-Ghz" secondAttribute="leading" id="s0B-7l-3pC"/>
                         <constraint firstAttribute="trailing" secondItem="pbX-U4-xm0" secondAttribute="trailing" id="stZ-RQ-r1y"/>
-                        <constraint firstAttribute="width" secondItem="DpA-Tt-Ghz" secondAttribute="height" multiplier="9:16" id="wpt-UZ-tOe"/>
                     </constraints>
+                    <variation key="default">
+                        <mask key="constraints">
+                            <exclude reference="KzG-VT-9sc"/>
+                            <exclude reference="jKv-Zq-awW"/>
+                            <exclude reference="pLz-41-2Ey"/>
+                        </mask>
+                    </variation>
+                    <variation key="heightClass=compact-widthClass=compact" spacing="-42">
+                        <mask key="constraints">
+                            <include reference="pLz-41-2Ey"/>
+                        </mask>
+                    </variation>
+                    <variation key="heightClass=compact-widthClass=regular">
+                        <mask key="constraints">
+                            <include reference="pLz-41-2Ey"/>
+                        </mask>
+                    </variation>
+                    <variation key="heightClass=regular-widthClass=compact">
+                        <mask key="constraints">
+                            <include reference="KzG-VT-9sc"/>
+                        </mask>
+                    </variation>
+                    <variation key="heightClass=regular-widthClass=regular">
+                        <mask key="constraints">
+                            <include reference="jKv-Zq-awW"/>
+                        </mask>
+                    </variation>
                 </stackView>
             </subviews>
-            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <color key="backgroundColor" red="0.25364756579999997" green="0.49019491669999998" blue="0.83840852980000002" alpha="1" colorSpace="deviceRGB"/>
             <constraints>
                 <constraint firstItem="L7H-vV-qj8" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="0g7-6f-Q3Q"/>
-                <constraint firstItem="DpA-Tt-Ghz" firstAttribute="top" secondItem="0nw-jY-UYU" secondAttribute="bottom" id="Nm2-9r-AY5"/>
+                <constraint firstItem="DpA-Tt-Ghz" firstAttribute="top" secondItem="0nw-jY-UYU" secondAttribute="bottom" id="Nm2-9r-AY5">
+                    <variation key="heightClass=regular-widthClass=compact" constant="16"/>
+                    <variation key="heightClass=regular-widthClass=regular" constant="32"/>
+                </constraint>
                 <constraint firstItem="DpA-Tt-Ghz" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Qi5-VF-arh"/>
                 <constraint firstItem="0nw-jY-UYU" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="fwX-Qs-beT"/>
                 <constraint firstItem="0nw-jY-UYU" firstAttribute="top" secondItem="L7H-vV-qj8" secondAttribute="bottom" constant="16" id="x7p-4n-olj"/>
@@ -203,7 +237,8 @@
                 <outlet property="circlesStackView" destination="0nw-jY-UYU" id="NlP-Nb-Fia"/>
                 <outlet property="circlesStackWidthConstraint" destination="jy0-hv-fhu" id="X2t-Ah-Pjx"/>
                 <outlet property="fingerButton" destination="ipa-fj-fmp" id="Xta-Bc-0zP"/>
-                <outlet property="label" destination="L7H-vV-qj8" id="xEN-1D-kgP"/>
+                <outlet property="numbersStackView" destination="DpA-Tt-Ghz" id="j0Y-Xm-Qxi"/>
+                <outlet property="titleLabel" destination="L7H-vV-qj8" id="9C4-es-msn"/>
             </connections>
             <point key="canvasLocation" x="27.5" y="44.5"/>
         </view>
