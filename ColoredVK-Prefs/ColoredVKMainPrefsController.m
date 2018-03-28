@@ -208,13 +208,13 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
             [self.navigationController pushViewController:accountController animated:YES];
         };
         
-        if ([ColoredVKNewInstaller sharedInstaller].user.authenticated) {
-            [ColoredVKBiometry authenticateWithPasscode:@"0000" success:presentAccountBlock failure:^{
-                [tableView deselectRowAtIndexPath:indexPath animated:YES];
-            }];
-        } else {
+//        if ([ColoredVKNewInstaller sharedInstaller].user.authenticated) {
+//            [ColoredVKBiometry authenticateWithPasscode:@"0000" success:presentAccountBlock failure:^{
+//                [tableView deselectRowAtIndexPath:indexPath animated:YES];
+//            }];
+//        } else {
             presentAccountBlock();
-        }
+//        }
         
     } else {
         [super tableView:tableView didSelectRowAtIndexPath:indexPath];

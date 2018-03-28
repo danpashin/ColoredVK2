@@ -20,6 +20,7 @@
         _detailedVersion = [NSString stringWithFormat:@"%@ (%@)", self.version, 
                             [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
         _isVKApp = [[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"];
+        _isVKApp = YES;
         
         [self updateTeamInformation];
     }
