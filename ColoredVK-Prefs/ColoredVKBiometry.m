@@ -6,33 +6,22 @@
 //
 
 #import "ColoredVKBiometry.h"
-
-#import "_UIBackdropView.h"
 #import "PrefixHeader.h"
-#import "ColoredVKPasscodeView.h"
-#import "ColoredVKNightThemeColorScheme.h"
 
-#import <dlfcn.h>
 #import <LocalAuthentication/LocalAuthentication.h>
 #import <AudioToolbox/AudioServices.h>
 
-@interface ColoredVKBiometry () <ColoredVKPasscodeViewDelegate>
+@interface ColoredVKBiometry ()
 
-@property (strong, nonatomic) NSBundle *cvkBundle;
 @property (strong, nonatomic) LAContext *authContext;
 
 @property (strong, nonatomic) NSString *passcode;
 @property (nonatomic, copy) void (^successBlock)(void);
 @property (nonatomic, copy) void (^failureBlock)(void);
 
-@property (strong, nonatomic) ColoredVKPasscodeView *contentView;
-
 @end
 
-
 @implementation ColoredVKBiometry
-
-@dynamic contentView;
 
 + (void)authenticateWithPasscode:(NSString *)passcode success:( void(^)(void) )successBlock failure:( void(^)(void) )failureBlock
 {
@@ -43,31 +32,11 @@
     [biometry show];
 }
 
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations
-{
-    if (IS_IPAD)
-        return UIInterfaceOrientationMaskAll;
-    
-    return UIInterfaceOrientationMaskPortrait;
-}
-
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-    if ([ColoredVKNightThemeColorScheme sharedScheme].enabled)
-        return UIStatusBarStyleLightContent;
-    
-    return UIStatusBarStyleDefault;
-}
-
 - (instancetype)init
 {
     self = [super init];
     if (self) {
-        self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         self.authContext = [LAContext new];
-        self.backgroundStyle = ColoredVKWindowBackgroundStyleCustom;
-        self.statusBarNeedsHidden = NO;
-        self.hideByTouch = NO;
         
         _supportsTouchID = [self.authContext canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:nil];
         if (@available(iOS 11.0, *)) {
@@ -82,29 +51,15 @@
 {
     [super viewDidLoad];
     
-    BOOL nightSchemeEnabled = [ColoredVKNightThemeColorScheme sharedScheme].enabled;
-    
-    _UIBackdropViewStyle backgroundStyle = nightSchemeEnabled ? _UIBackdropViewStyleDark : _UIBackdropViewSettingsUltraLight;
-    _UIBackdropView *backgroundView = [[_UIBackdropView alloc] initWithStyle:backgroundStyle];
-    self.backgroundView = backgroundView;
-    
-    NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    NSArray *nibViews = [cvkBundle loadNibNamed:NSStringFromClass([ColoredVKPasscodeView class]) owner:self options:nil];
-    self.contentView = nibViews.firstObject;
-    self.contentView.delegate = self;
-    self.contentView.supportsTouchID = self.supportsTouchID;
-    self.contentView.supportsFaceID = self.supportsFaceID;
-    self.contentView.backgroundColor = [UIColor clearColor];
-    
-    if (nightSchemeEnabled) {
-        self.contentView.tintColor = [UIColor colorWithWhite:1.0f alpha:0.9f];
-    } else {
-        backgroundView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.5f];
-        self.contentView.tintColor = [UIColor colorWithRed:84/255.0f green:85/255.0f blue:85/255.0f alpha:1.0f];
+    if (self.supportsTouchID || self.supportsFaceID) {
+        self.contentView.bottomLeftButton.alpha = 0.8f;
+        
+        NSString *imageName = self.supportsTouchID ? @"prefs/FingerprintIcon" : @"prefs/FaceIcon";
+        UIImage *image = [UIImage imageNamed:imageName inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+        image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        [self.contentView.bottomLeftButton setImage:image forState:UIControlStateNormal];
     }
     
-    
-    [self setupConstrains];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -116,19 +71,10 @@
     });
 }
 
-- (void)setupConstrains
-{
-    UILayoutGuide *guide = self.view.layoutMarginsGuide;
-    if (@available(iOS 11.0, *)) {
-        guide = self.view.safeAreaLayoutGuide;
-    }
-    
-    self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView.topAnchor constraintEqualToAnchor:guide.topAnchor].active = YES;
-    [self.contentView.bottomAnchor constraintEqualToAnchor:guide.bottomAnchor].active = YES;
-    [self.contentView.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor].active = YES;
-    [self.contentView.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor].active = YES; 
-}
+
+#pragma mark -
+#pragma mark Actions
+#pragma mark -
 
 - (void)tapticFeedbackWithType:(UINotificationFeedbackType)type
 {
@@ -149,10 +95,6 @@
             self.successBlock();
     });
 }
-
-#pragma mark -
-#pragma mark Actions
-#pragma mark -
 
 - (void)actionAuthenticate
 {
@@ -188,19 +130,18 @@
     }
 }
 
-- (void)passcodeViewRequestedDismiss:(ColoredVKPasscodeView *)passcodeView
+- (void)passcodeView:(ColoredVKPasscodeView *)passcodeView didTapBottomButton:(UIButton *)button
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.failureBlock)
-            self.failureBlock();
-    });
-    
-    [self hide];
-}
-
-- (void)passcodeViewRequestedBiometric:(ColoredVKPasscodeView *)passcodeView
-{
-    [self actionAuthenticate];
+    if ([button isEqual:passcodeView.bottomRightButton]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.failureBlock)
+                self.failureBlock();
+        });
+        
+        [self hide];
+    } else if ([button isEqual:passcodeView.bottomLeftButton]) {
+        [self actionAuthenticate];
+    }
 }
 
 @end

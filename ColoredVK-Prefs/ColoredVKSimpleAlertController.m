@@ -10,6 +10,7 @@
 #import "PrefixHeader.h"
 #import "UIImage+ColoredVK.h"
 #import "ColoredVKNewInstaller.h"
+#import "ColoredVKNightThemeColorScheme.h"
 
 static CGFloat const viewsHeight = 32.0f;
 

@@ -8,26 +8,25 @@
 #import "ColoredVKPasscodeView.h"
 #import "PrefixHeader.h"
 
-#import "UIImage+ColoredVK.h"
-#import "NSString+ColoredVK.h"
-
 #import "ColoredVKPasscodeCircle.h"
 #import "ColoredVKPasscodeButton.h"
 
 @interface ColoredVKPasscodeView () <CAAnimationDelegate>
-@property (strong, nonatomic) NSBundle *cvkBundle;
-
-@property (strong, nonatomic) IBOutlet UIButton *cancelButton;
-@property (strong, nonatomic) IBOutlet UIButton *fingerButton;
-
-@property (strong, nonatomic) IBOutlet UIStackView *circlesStackView;
-@property (strong, nonatomic) IBOutlet NSLayoutConstraint *circlesStackWidthConstraint;
 
 @property (strong, nonatomic) IBOutlet UIStackView *numbersStackView;
+@property (strong, nonatomic) IBOutlet UIStackView *circlesStackView;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *circlesStackWidthConstraint;
 
 @end
 
 @implementation ColoredVKPasscodeView
+
++ (instancetype)viewForOwner:(id)owner
+{
+    NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    NSArray *nibViews = [cvkBundle loadNibNamed:NSStringFromClass([self class]) owner:owner options:nil];
+    return nibViews.firstObject;
+}
 
 - (void)awakeFromNib
 {
@@ -35,22 +34,6 @@
     
     self.maxDigits = 4;
     _passcode = [NSMutableString string];
-    self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    
-    self.titleLabel.text = CVKLocalizedStringInBundle(@"ENTER_PASSCODE", self.cvkBundle);
-    
-    self.fingerButton.alpha = 0.8f;
-    self.fingerButton.tintColor = [UIColor whiteColor];
-    
-    self.cancelButton.titleLabel.adjustsFontSizeToFitWidth = YES;
-    [self.cancelButton setTitle:UIKitLocalizedString(@"Cancel") forState:UIControlStateNormal];
-    [self.cancelButton setTitle:@"" forState:UIControlStateSelected];
-    [self.cancelButton setTitleColor:CVKAltColor forState:UIControlStateNormal];
-    
-    UIImage *backspace = [UIImage imageNamed:@"BackspaceIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
-    backspace = [backspace imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    self.cancelButton.imageView.tintColor = CVKAltColor;
-    [self.cancelButton setImage:backspace forState:UIControlStateSelected];
 }
 
 
@@ -60,25 +43,23 @@
 
 - (IBAction)buttonPressed:(UIButton *)button
 {
-    if ([button isEqual:self.cancelButton]) {
+    if ([button isEqual:self.bottomRightButton]) {
         if (self.passcode.length == 0) {
-            if ([self.delegate respondsToSelector:@selector(passcodeViewRequestedDismiss:)])
-                [self.delegate passcodeViewRequestedDismiss:self];
-            
+            if ([self.delegate respondsToSelector:@selector(passcodeView:didTapBottomButton:)])
+                [self.delegate passcodeView:self didTapBottomButton:self.bottomRightButton];
             return;
         }
         
         [self.passcode deleteCharactersInRange:NSMakeRange(self.passcode.length-1, 1)];
         [self updateCirclesByAddingChar:NO];
-        
-    } else if ([button isEqual:self.fingerButton]) {
-        BOOL supportsBiometric = (self.supportsTouchID || self.supportsFaceID);
-        if (supportsBiometric && [self.delegate respondsToSelector:@selector(passcodeViewRequestedBiometric:)])
-            [self.delegate passcodeViewRequestedBiometric:self];
+    }
+    else if ([button isEqual:self.bottomLeftButton]) {
+        if ([self.delegate respondsToSelector:@selector(passcodeView:didTapBottomButton:)])
+            [self.delegate passcodeView:self didTapBottomButton:self.bottomLeftButton];
         
         return;
-        
-    } else if (self.passcode.length + 1 <= self.maxDigits) {
+    }
+    else if (self.passcode.length + 1 <= self.maxDigits) {
         [self.passcode appendString:button.titleLabel.text];
         [self updateCirclesByAddingChar:YES];
         
@@ -105,8 +86,8 @@
 - (void)updateCancelButton
 {
     BOOL selected = (self.passcode.length != 0);
-    self.cancelButton.titleLabel.layer.transform = selected ? CATransform3DMakeScale(0, 0, 0) : CATransform3DIdentity;
-    self.cancelButton.selected = selected;
+    self.bottomRightButton.titleLabel.layer.transform = selected ? CATransform3DMakeScale(0, 0, 0) : CATransform3DIdentity;
+    self.bottomRightButton.selected = selected;
 }
 
 - (void)tintColorDidChange
@@ -114,30 +95,11 @@
     [super tintColorDidChange];
     
     self.titleLabel.textColor = self.tintColor;
-    self.fingerButton.imageView.tintColor = self.tintColor;
     
     for (UIStackView *stackView in self.numbersStackView.arrangedSubviews) {
         for (UIButton *button in stackView.arrangedSubviews) {
             button.tintColor = self.tintColor;
         }
-    }
-}
-
-
-#pragma mark -
-#pragma mark CAAnimationDelegate
-#pragma mark -
-
-- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
-{
-    if (self.invalidPasscode) {
-        _invalidPasscode = NO;
-        for (NSUInteger i=0; i<self.maxDigits; i++) {
-            ColoredVKPasscodeCircle *circle = self.circlesStackView.subviews[i];
-            [circle setFilled:NO animated:YES];
-        }
-        [self.passcode setString:@""];
-        [self updateCancelButton];
     }
 }
 
@@ -199,25 +161,20 @@
     }
 }
 
-- (void)setSupportsTouchID:(BOOL)supportsTouchID
-{
-    _supportsTouchID = supportsTouchID;
-    
-    if (supportsTouchID) {
-        UIImage *fingerprint = [UIImage imageNamed:@"prefs/FingerprintIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
-        fingerprint = [fingerprint imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        [self.fingerButton setImage:fingerprint forState:UIControlStateNormal];
-    }
-}
+#pragma mark -
+#pragma mark CAAnimationDelegate
+#pragma mark -
 
-- (void)setSupportsFaceID:(BOOL)supportsFaceID
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
 {
-    _supportsFaceID = supportsFaceID;
-    
-    if (supportsFaceID) {
-        UIImage *face = [UIImage imageNamed:@"prefs/FaceIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
-        face = [face imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        [self.fingerButton setImage:face forState:UIControlStateNormal];
+    if (self.invalidPasscode) {
+        _invalidPasscode = NO;
+        for (NSUInteger i=0; i<self.maxDigits; i++) {
+            ColoredVKPasscodeCircle *circle = self.circlesStackView.subviews[i];
+            [circle setFilled:NO animated:YES];
+        }
+        [self.passcode setString:@""];
+        [self updateCancelButton];
     }
 }
 

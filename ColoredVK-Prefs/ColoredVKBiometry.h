@@ -5,11 +5,11 @@
 //  Created by Даниил on 24.03.18.
 //
 
-#import "ColoredVKWindowController.h"
+#import "ColoredVKPasscodeController.h"
 
-@interface ColoredVKBiometry : ColoredVKWindowController
+@interface ColoredVKBiometry : ColoredVKPasscodeController
 
-+ (void)authenticateWithPasscode:(NSString *)password success:( void(^)(void) )successBlock failure:( void(^)(void) )failureBlock;
++ (void)authenticateWithPasscode:(NSString *)passscode success:( void(^)(void) )successBlock failure:( void(^)(void) )failureBlock;
 
 @property (assign, nonatomic, readonly) BOOL supportsTouchID;
 @property (assign, nonatomic, readonly) BOOL supportsFaceID;

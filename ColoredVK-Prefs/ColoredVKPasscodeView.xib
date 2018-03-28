@@ -149,8 +149,9 @@
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="ipa-fj-fmp" secondAttribute="height" multiplier="1:1" id="DbK-AF-YN2"/>
                                     </constraints>
+                                    <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <connections>
-                                        <action selector="buttonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="3Mu-b1-DLN"/>
+                                        <action selector="buttonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="eEm-bL-KxG"/>
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JYG-c7-eHZ" customClass="ColoredVKPasscodeButton">
@@ -233,10 +234,10 @@
                 <constraint firstItem="DpA-Tt-Ghz" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="32" id="yjA-cb-hCH"/>
             </constraints>
             <connections>
-                <outlet property="cancelButton" destination="CQw-Ef-ojq" id="YEH-W3-73m"/>
+                <outlet property="bottomLeftButton" destination="ipa-fj-fmp" id="Mfg-Nv-nAp"/>
+                <outlet property="bottomRightButton" destination="CQw-Ef-ojq" id="VqC-Vp-y6Z"/>
                 <outlet property="circlesStackView" destination="0nw-jY-UYU" id="NlP-Nb-Fia"/>
                 <outlet property="circlesStackWidthConstraint" destination="jy0-hv-fhu" id="X2t-Ah-Pjx"/>
-                <outlet property="fingerButton" destination="ipa-fj-fmp" id="Xta-Bc-0zP"/>
                 <outlet property="numbersStackView" destination="DpA-Tt-Ghz" id="j0Y-Xm-Qxi"/>
                 <outlet property="titleLabel" destination="L7H-vV-qj8" id="9C4-es-msn"/>
             </connections>

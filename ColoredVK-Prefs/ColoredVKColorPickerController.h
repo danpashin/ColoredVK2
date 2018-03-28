@@ -7,9 +7,7 @@
 //
 
 
-#import <UIKit/UIKit.h>
 #import "ColoredVKWindowController.h"
-
 
 @class ColoredVKColorPickerController;
 @protocol ColoredVKColorPickerControllerDelegate <NSObject>

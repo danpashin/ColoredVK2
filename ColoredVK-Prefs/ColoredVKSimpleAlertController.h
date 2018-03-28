@@ -6,7 +6,6 @@
 //
 //
 
-#import <UIKit/UIKit.h>
 #import "ColoredVKWindowController.h"
 
 @interface ColoredVKSimpleAlertController : ColoredVKWindowController
