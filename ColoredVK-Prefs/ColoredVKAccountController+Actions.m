@@ -201,8 +201,8 @@
 
 - (void)actionSetupSecurity
 {
-    ColoredVKSecurityController *security = [ColoredVKSecurityController new];
-    [self.navigationController pushViewController:security animated:YES];
+//    ColoredVKSecurityController *security = [ColoredVKSecurityController new];
+//    [self.navigationController pushViewController:security animated:YES];
 }
 
 @end

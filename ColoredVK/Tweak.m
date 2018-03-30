@@ -11,8 +11,6 @@
 
 
 #import "Tweak.h"
-#import <dlfcn.h>
-#import "ColoredVKNewInstaller.h"
 #import "ColoredVKBarDownloadButton.h"
 //#import <CoreText/CoreText.h>
 
@@ -307,73 +305,101 @@ CHDeclareMethod(2, UITableViewCell*, VKMLiveController, tableView, UITableView*,
 }
 
 
-#pragma mark VKMTableController
+#pragma mark VKMController
     // Настройка бара навигации
-CHDeclareClass(VKMTableController);
-CHDeclareMethod(1, void, VKMTableController, viewWillAppear, BOOL, animated)
+CHDeclareClass(VKMController);
+CHDeclareMethod(0, void, VKMController, loadView)
 {
-    CHSuper(1, VKMTableController, viewWillAppear, animated);
-    BOOL shouldAddBlur = NO;
-    UIColor *blurColor = [UIColor clearColor];
-    UIBlurEffectStyle blurStyle = 0;
-    if (enabled) {
-        NSString *selfName = CLASS_NAME(self);
-        NSString *modelName = CLASS_NAME(self.model);
-        NSArray *audioControllers = @[@"AudioAlbumController", @"AudioAlbumsController", @"AudioPlaylistController", @"AudioDashboardController", 
-                                      @"AudioCatalogController", @"AudioCatalogOwnersListController", @"AudioCatalogAudiosListController", 
-                                      @"AudioPlaylistDetailController", @"AudioPlaylistsController"];
-        NSArray *friendsControllers = @[@"ProfileFriendsController", @"FriendsBDaysController", @"FriendsAllRequestsController"];
-        NSArray *settingsExtraControllers = @[@"ProfileBannedController", @"ModernGeneralSettings", @"ModernAccountSettings",
-                                              @"SettingsPrivacyController", @"PaymentsBalanceController", @"SubscriptionSettingsViewController", 
-                                              @"AboutViewController", @"ModernPushSettingsController", @"VKP2PViewController", 
-                                              @"SubscriptionsSettingsViewController"];
-        
-        if (messagesUseBlur && ([selfName isEqualToString:@"MultiChatController"] || [selfName isEqualToString:@"SingleUserChatController"])) {
-            shouldAddBlur = YES;
-            blurColor = messagesBlurTone;
-            blurStyle = messagesBlurStyle;
-        } else if (groupsListUseBlur && ([selfName isEqualToString:@"GroupsController"] || [modelName isEqualToString:@"GroupsSearchModel"])) {
-            shouldAddBlur = YES;
-            blurColor = groupsListBlurTone;
-            blurStyle = groupsListBlurStyle;
-        } else if (messagesListUseBlur && [selfName isEqualToString:@"DialogsController"]) {
-            shouldAddBlur = YES;
-            blurColor = messagesListBlurTone;
-            blurStyle = messagesListBlurStyle;
-        } else if (audiosUseBlur && [audioControllers containsObject:selfName]) {
-            shouldAddBlur = YES;
-            blurColor = audiosBlurTone;
-            blurStyle = audiosBlurStyle;
-        } 
-        else if (friendsUseBlur && ([friendsControllers containsObject:selfName] || [modelName isEqualToString:@"ProfileFriendsModel"])) {
-            shouldAddBlur = YES;
-            blurColor = friendsBlurTone;
-            blurStyle = friendsBlurStyle;
-        } else if (videosUseBlur && ([selfName isEqualToString:@"VideoAlbumController"] || [modelName isEqualToString:@"VideoAlbumModel"])) {
-            shouldAddBlur = YES;
-            blurColor = videosBlurTone;
-            blurStyle = videosBlurStyle;
-        } else if (settingsUseBlur && [selfName isEqualToString:@"ModernSettingsController"]) {
-            shouldAddBlur = YES;
-            blurColor = settingsBlurTone;
-            blurStyle = settingsBlurStyle;
-        } else if (settingsExtraUseBlur && [settingsExtraControllers containsObject:selfName]) {
-            shouldAddBlur = YES;
-            blurColor = settingsExtraBlurTone;
-            blurStyle = settingsExtraBlurStyle;
-        } else if (menuUseBlur && [selfName isEqualToString:@"MenuViewController"]) {
-            shouldAddBlur = YES;
-            blurColor = menuBlurTone;
-            blurStyle = menuBlurStyle;
+    CHSuper(0, VKMController, loadView);
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        BOOL shouldAddBlur = NO;
+        UIColor *blurColor = [UIColor clearColor];
+        UIBlurEffectStyle blurStyle = 0;
+        if (enabled) {
+            NSString *selfName = CLASS_NAME(self);
+            NSString *modelName = CLASS_NAME(self.model);
+            NSArray *audioControllers = @[@"AudioAlbumController", @"AudioAlbumsController", @"AudioPlaylistController", @"AudioDashboardController", 
+                                          @"AudioCatalogController", @"AudioCatalogOwnersListController", @"AudioCatalogAudiosListController", 
+                                          @"AudioPlaylistDetailController", @"AudioPlaylistsController"];
+            NSArray *friendsControllers = @[@"ProfileFriendsController", @"FriendsBDaysController", @"FriendsAllRequestsController"];
+            NSArray *settingsExtraControllers = @[@"ProfileBannedController", @"ModernGeneralSettings", @"ModernAccountSettings",
+                                                  @"SettingsPrivacyController", @"PaymentsBalanceController", @"SubscriptionSettingsViewController", 
+                                                  @"AboutViewController", @"ModernPushSettingsController", @"VKP2PViewController", 
+                                                  @"SubscriptionsSettingsViewController"];
+            
+            if (messagesUseBlur && ([selfName isEqualToString:@"MultiChatController"] || [selfName isEqualToString:@"SingleUserChatController"])) {
+                shouldAddBlur = YES;
+                blurColor = messagesBlurTone;
+                blurStyle = messagesBlurStyle;
+            } else if (groupsListUseBlur && ([selfName isEqualToString:@"GroupsController"] || [modelName isEqualToString:@"GroupsSearchModel"])) {
+                shouldAddBlur = YES;
+                blurColor = groupsListBlurTone;
+                blurStyle = groupsListBlurStyle;
+            } else if (messagesListUseBlur && [selfName isEqualToString:@"DialogsController"]) {
+                shouldAddBlur = YES;
+                blurColor = messagesListBlurTone;
+                blurStyle = messagesListBlurStyle;
+            } else if (audiosUseBlur && [audioControllers containsObject:selfName]) {
+                shouldAddBlur = YES;
+                blurColor = audiosBlurTone;
+                blurStyle = audiosBlurStyle;
+            } 
+            else if (friendsUseBlur && ([friendsControllers containsObject:selfName] || [modelName isEqualToString:@"ProfileFriendsModel"])) {
+                shouldAddBlur = YES;
+                blurColor = friendsBlurTone;
+                blurStyle = friendsBlurStyle;
+            } else if (videosUseBlur && ([selfName isEqualToString:@"VideoAlbumController"] || [modelName isEqualToString:@"VideoAlbumModel"])) {
+                shouldAddBlur = YES;
+                blurColor = videosBlurTone;
+                blurStyle = videosBlurStyle;
+            } else if (settingsUseBlur && [selfName isEqualToString:@"ModernSettingsController"]) {
+                shouldAddBlur = YES;
+                blurColor = settingsBlurTone;
+                blurStyle = settingsBlurStyle;
+            } else if (settingsExtraUseBlur && [settingsExtraControllers containsObject:selfName]) {
+                shouldAddBlur = YES;
+                blurColor = settingsExtraBlurTone;
+                blurStyle = settingsExtraBlurStyle;
+            } else if (menuUseBlur && [selfName isEqualToString:@"MenuViewController"]) {
+                shouldAddBlur = YES;
+                blurColor = menuBlurTone;
+                blurStyle = menuBlurStyle;
+            } else shouldAddBlur = NO;
         } else shouldAddBlur = NO;
-    } else shouldAddBlur = NO;
+        
+        objc_setAssociatedObject(self, "cvkShouldAddBlur", @(shouldAddBlur), OBJC_ASSOCIATION_ASSIGN);
+        objc_setAssociatedObject(self, "cvkBlurColor", blurColor, OBJC_ASSOCIATION_ASSIGN);
+        objc_setAssociatedObject(self, "cvkBlurStyle", @(blurStyle), OBJC_ASSOCIATION_ASSIGN);
+    });
+}
+
+CHDeclareMethod(1, void, VKMController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, VKMController, viewWillAppear, animated);
+    
+    if (![self isKindOfClass:NSClassFromString(@"VKMTableController")] && ![self isKindOfClass:NSClassFromString(@"DialogsController")])
+        return;
+    
+    UIColor *blurColor = objc_getAssociatedObject(self, "cvkBlurColor");
+    if (!blurColor)
+        blurColor = [UIColor clearColor];
+    
+    __block NSNumber *shouldAddBlur = objc_getAssociatedObject(self, "cvkShouldAddBlur");
+    if (!shouldAddBlur)
+        shouldAddBlur = @NO;
+    
+    NSNumber *blurStyle = objc_getAssociatedObject(self, "cvkBlurStyle");
+    if (!blurStyle)
+        blurStyle = @0;
     
     if (enabled && enableNightTheme) {
-        shouldAddBlur = NO;
+        shouldAddBlur = @NO;
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if ([self.tableView.tableHeaderView isKindOfClass:[UISearchBar class]]) {
-                UISearchBar *searchBar = (UISearchBar *)self.tableView.tableHeaderView;
+        if ([self respondsToSelector:@selector(tableView)]) {
+            UITableView *tableView = objc_msgSend(self, @selector(tableView));
+            if ([tableView.tableHeaderView isKindOfClass:[UISearchBar class]]) {
+                UISearchBar *searchBar = (UISearchBar *)tableView.tableHeaderView;
                 
                 searchBar.barTintColor = cvkMainController.nightThemeScheme.foregroundColor;
                 searchBar.translucent = NO;
@@ -382,16 +408,17 @@ CHDeclareMethod(1, void, VKMTableController, viewWillAppear, BOOL, animated)
                 searchBar.searchBarTextField.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
                 searchBar.scopeBarBackgroundImage = [UIImage imageWithColor:cvkMainController.nightThemeScheme.foregroundColor];
             }
-        });
+        }
     }
     
     resetNavigationBar(self.navigationController.navigationBar);
-    setBlur(self.navigationController.navigationBar, shouldAddBlur, blurColor, blurStyle);
+    setBlur(self.navigationController.navigationBar, shouldAddBlur.boolValue, blurColor, blurStyle.integerValue);
     
     resetTabBar();
     if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]])
-        setBlur(((UITabBarController *)cvkMainController.vkMainController).tabBar, shouldAddBlur, blurColor, blurStyle);
+        setBlur(((UITabBarController *)cvkMainController.vkMainController).tabBar, shouldAddBlur.boolValue, blurColor, blurStyle.integerValue);
 }
+
 
 #pragma mark VKMToolbarController
     // Настройка тулбара
@@ -1369,12 +1396,9 @@ CHDeclareMethod(2, id, VKSession, initWithUserId, NSNumber *, userID, andToken, 
 //}
 
 
-
 CHConstructor
 {
-    @autoreleasepool {
-//        dlopen([[NSBundle mainBundle] pathForResource:@"FLEXDylib" ofType:@"dylib"].UTF8String, RTLD_NOW);
-        
+    @autoreleasepool {        
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         vksBundle = [NSBundle bundleWithPath:VKS_BUNDLE_PATH];
         cvkMainController = [ColoredVKMainController new];

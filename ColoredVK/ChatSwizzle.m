@@ -74,7 +74,8 @@ CHDeclareMethod(0, void, DialogsController, viewDidLoad)
 {
     CHSuper(0, DialogsController, viewDidLoad);
     ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
-    if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && (compareResult < 0)) {
+    
+    if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && (compareResult == ColoredVKVersionCompareLess)) {
         if (enabled && !enableNightTheme && enabledMessagesListImage) {
             [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
                                           parallaxEffect:useMessagesListParallax blurBackground:messagesListUseBackgroundBlur];
@@ -85,19 +86,36 @@ CHDeclareMethod(0, void, DialogsController, viewDidLoad)
 CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, DialogsController, viewWillAppear, animated);
+    
     if (!enableNightTheme && [self isKindOfClass:NSClassFromString(@"DialogsController")]) {
-        UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
+        
+        UITableView *tableView = nil;
+        if ([self respondsToSelector:@selector(listController)]) {
+            tableView = self.listController.tableView;
+        } else if ([self respondsToSelector:@selector(tableView)]) {
+            tableView = self.tableView;
+        }
+        
+        if (!tableView) {
+            CVKLog(@"%s tableView is nil, stopping...", __FUNCTION__);
+            return;
+        }
+        
+        UISearchBar *search = (UISearchBar*)tableView.tableHeaderView;
         if ([search isKindOfClass:[UISearchBar class]]) {
             search.tag = 1;
         }
         
-        ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
+        ColoredVKApplicationModel *app = [ColoredVKNewInstaller sharedInstaller].application;
+        ColoredVKVersionCompare compareResult = [app compareAppVersionWithVersion:@"3.0"];
         UIColor *placeholderColor = (compareResult >= 0) ? UITableViewCellTextColor : [UIColor colorWithRed:0.556863f green:0.556863f blue:0.576471f alpha:1.0f];
         placeholderColor = (enabled && changeMessagesListTextColor) ? messagesListTextColor : placeholderColor;
         
         if (enabled && enabledMessagesListImage) {
-            self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
-            self.tableView.separatorColor =  hideMessagesListSeparators ? [UIColor clearColor] : [self.tableView.separatorColor colorWithAlphaComponent:0.2f];
+            if ([self respondsToSelector:@selector(rptr)])
+                self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
+            
+            tableView.separatorColor =  hideMessagesListSeparators ? [UIColor clearColor] : [tableView.separatorColor colorWithAlphaComponent:0.2f];
             
             if ([search isKindOfClass:NSClassFromString(@"VKSearchBar")]) {
                 setupNewSearchBar((VKSearchBar *)search, placeholderColor, messagesListBlurTone, messagesListBlurStyle);
@@ -108,8 +126,10 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
             }
             
         } else if (compareResult >= 0) {
-            self.rptr.tintColor = nil;
-            self.tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
+            if ([self respondsToSelector:@selector(rptr)])
+                self.rptr.tintColor = nil;
+            
+            tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
             if ([search isKindOfClass:NSClassFromString(@"VKSearchBar")]) {
                 resetNewSearchBar((VKSearchBar *)search);
             } if ([search isKindOfClass:[UISearchBar class]]) {
@@ -129,11 +149,11 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
         
         if (compareResult >= 0) {
             if (enabled && !enableNightTheme && enabledMessagesListImage) {
-                [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
+                [ColoredVKMainController setImageToTableView:tableView withName:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
                                               parallaxEffect:useMessagesListParallax blurBackground:messagesListUseBackgroundBlur];
-                [ColoredVKMainController forceUpdateTableView:self.tableView withBlackout:chatListImageBlackout blurBackground:messagesListUseBackgroundBlur];
+                [ColoredVKMainController forceUpdateTableView:tableView withBlackout:chatListImageBlackout blurBackground:messagesListUseBackgroundBlur];
             } else
-                self.tableView.backgroundView = nil;
+                tableView.backgroundView = nil;
         }
     }
 }
@@ -146,8 +166,10 @@ CHDeclareMethod(2, UITableViewCell*, DialogsController, tableView, UITableView*,
             performInitialCellSetup(cell);
             cell.backgroundView.hidden = YES;
             
-            if (!cell.dialog.head.read_state && cell.unread.hidden) cell.contentView.backgroundColor = useCustomDialogsUnreadColor?dialogsUnreadColor:[UIColor defaultColorForIdentifier:@"dialogsUnreadColor"];
-            else cell.contentView.backgroundColor = [UIColor clearColor];
+            if (!cell.dialog.head.read_state && cell.unread.hidden)
+                cell.contentView.backgroundColor = useCustomDialogsUnreadColor?dialogsUnreadColor:[UIColor defaultColorForIdentifier:@"dialogsUnreadColor"];
+            else
+                cell.contentView.backgroundColor = [UIColor clearColor];
             
             cell.name.textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
             cell.time.textColor = cell.name.textColor;
@@ -159,6 +181,30 @@ CHDeclareMethod(2, UITableViewCell*, DialogsController, tableView, UITableView*,
                 cell.contentView.backgroundColor = [UIColor colorWithRed:0.92f green:0.94f blue:0.96f alpha:1.0f];
             else
                 cell.contentView.backgroundColor = [UIColor whiteColor];
+        }
+    }
+    return cell;
+}
+
+#pragma mark DLVController
+CHDeclareClass(DLVController);
+CHDeclareMethod(2, UITableViewCell*, DLVController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    vkmPeerListCell *cell = (vkmPeerListCell *)CHSuper(2, DLVController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    if ([self isKindOfClass:NSClassFromString(@"DLVController")] && [cell isKindOfClass:NSClassFromString(@"vkm.PeerListCell")]) {
+        if (enabled && !enableNightTheme && enabledMessagesListImage ) {
+            performInitialCellSetup(cell);            
+            cell.titleView.textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
+            cell.timeView.textColor = cell.titleView.textColor;
+            cell.bodyView.textColor = cell.titleView.textColor;
+        } else if (enabled && enableNightTheme) {
+            cell.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+            cell.titleView.textColor = cvkMainController.nightThemeScheme.textColor;
+            cell.bodyView.textColor = cvkMainController.nightThemeScheme.detailTextColor;
+            objc_setAssociatedObject(cell.bodyView, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+            objc_setAssociatedObject(cell.titleView, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+        } else {
+            cell.contentView.backgroundColor = [UIColor whiteColor];
         }
     }
     return cell;
@@ -195,35 +241,54 @@ CHDeclareMethod(1, void, ChatController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, ChatController, viewWillAppear, animated);
     
-    if ([self isKindOfClass:NSClassFromString(@"ChatController")]) {
-        if ([self respondsToSelector:@selector(root)])
-            if ([self.root respondsToSelector:@selector(inputPanelView)])
-                if ([self.root.inputPanelView respondsToSelector:@selector(gapToolbar)])
-                    [self.root.inputPanelView.gapToolbar setBackgroundImage:[UIImage new] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
-        
-        setToolBar(self.inputPanel);
-        if (enabled && !enableNightTheme && messagesUseBlur)
-            setBlur(self.inputPanel, YES, messagesBlurTone, messagesBlurStyle);
-        
-        if (enabled) {
-            if (enableNightTheme) {
-                if ([self.inputPanel respondsToSelector:@selector(pushToTalkCoverView)])
-                    self.inputPanel.pushToTalkCoverView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+    if (![self isKindOfClass:NSClassFromString(@"ChatController")])
+        return;
+    
+    if ([self respondsToSelector:@selector(root)])
+        if ([self.root respondsToSelector:@selector(inputPanelView)])
+            if ([self.root.inputPanelView respondsToSelector:@selector(gapToolbar)]) {
+                [self.root.inputPanelView.gapToolbar setBackgroundImage:[UIImage new] forToolbarPosition:UIBarPositionAny 
+                                                             barMetrics:UIBarMetricsDefault];
             }
-            else if (changeMessagesInput) {
-                UIButton *inputViewButton = self.inputPanel.inputViewButton;
-                [inputViewButton setImage:[[inputViewButton imageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-                inputViewButton.imageView.tintColor = messagesInputTextColor;
-                
-                self.inputPanel.overlay.backgroundColor = messagesInputBackColor;
-                self.inputPanel.overlay.layer.borderColor = messagesInputBackColor.CGColor;
-                self.inputPanel.textPanel.textColor = messagesInputTextColor;
-                self.inputPanel.textPanel.tintColor = messagesInputTextColor;
-                self.inputPanel.textPanel.placeholderLabel.textColor = messagesInputTextColor;
-            }
-        }
-        
+    
+    setToolBar(self.inputPanel);
+    if (enabled && !enableNightTheme && messagesUseBlur)
+        setBlur(self.inputPanel, YES, messagesBlurTone, messagesBlurStyle);
+    
+    if (!enabled)
+        return;
+    
+    if (enableNightTheme) {
+        if ([self.inputPanel respondsToSelector:@selector(pushToTalkCoverView)])
+            self.inputPanel.pushToTalkCoverView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            
+            self.inputPanel.layer.borderColor = cvkMainController.nightThemeScheme.backgroundColor.CGColor;
+        });
     }
+    else if (changeMessagesInput) {
+        UIButton *inputViewButton = self.inputPanel.inputViewButton;
+        UIImage *normalImage = [inputViewButton imageForState:UIControlStateNormal];
+        normalImage = [normalImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        [inputViewButton setImage:normalImage forState:UIControlStateNormal];
+        inputViewButton.imageView.tintColor = messagesInputTextColor;
+        
+        self.inputPanel.overlay.backgroundColor = messagesInputBackColor;
+        self.inputPanel.overlay.layer.borderColor = messagesInputBackColor.CGColor;
+        self.inputPanel.textPanel.textColor = messagesInputTextColor;
+        self.inputPanel.textPanel.tintColor = messagesInputTextColor;
+        self.inputPanel.textPanel.placeholderLabel.textColor = messagesInputTextColor;
+    }
+    
+    if (self.childViewControllers.count == 0)
+        return;
+    UICollectionViewController *collectionViewController = self.childViewControllers.firstObject;
+    if (![self.childViewControllers.firstObject isKindOfClass:NSClassFromString(@"vkm.HistoryCollectionViewController")])
+        return;
+    
+    UIColor *backColor = enableNightTheme ? cvkMainController.nightThemeScheme.foregroundColor : [UIColor clearColor];
+    collectionViewController.view.backgroundColor = backColor;
+    collectionViewController.collectionView.backgroundColor = backColor;
 }
 
 
@@ -231,18 +296,29 @@ CHDeclareMethod(0, void, ChatController, viewDidLoad)
 {
     CHSuper(0, ChatController, viewDidLoad);
     
-    if ([self isKindOfClass:NSClassFromString(@"ChatController")]) {
-        if (enabled) {
-            if (hideMessagesNavBarItems) {
-                self.headerImage.hidden = YES;
-                self.navigationItem.titleView.hidden = YES;
-            }
-            if (enabledMessagesImage) {
-                self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
-                [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesBackgroundImage" blackout:chatImageBlackout 
-                                                        flip:YES parallaxEffect:useMessagesParallax blurBackground:messagesUseBackgroundBlur];
-            }
-        }
+    if (![self isKindOfClass:NSClassFromString(@"ChatController")] || !enabled || (enabled && enableNightTheme))
+        return;
+    
+    if (hideMessagesNavBarItems) {
+        self.headerImage.hidden = YES;
+        self.navigationItem.titleView.hidden = YES;
+    }
+    
+    UIView *view = self.view;
+    if ([self respondsToSelector:@selector(tableView)])
+        view = self.tableView;
+    
+    ColoredVKWallpaperView *wallView = [[ColoredVKWallpaperView alloc] initWithFrame:view.frame imageName:@"messagesBackgroundImage" 
+                                                                            blackout:chatImageBlackout enableParallax:useMessagesParallax 
+                                                                      blurBackground:messagesUseBackgroundBlur];
+    wallView.flip = YES;
+    
+    if ([self respondsToSelector:@selector(tableView)]) {
+        self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
+        if (self.tableView.backgroundView.tag != 23)
+            self.tableView.backgroundView = wallView;
+    } else {
+        [wallView addToBack:self.view animated:NO];
     }
 }
 

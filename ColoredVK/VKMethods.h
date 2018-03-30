@@ -158,6 +158,12 @@
 @property (readonly, strong, nonatomic) UILabel *text;
 @end
 
+@interface vkmPeerListCell : UITableViewCell
+@property (strong, nonatomic) UILabel *titleView;
+@property (strong, nonatomic) UILabel *bodyView;
+@property (strong, nonatomic) UILabel *timeView;
+@end
+
 
 @interface VKMImageButton : UIButton
 @end
@@ -166,7 +172,11 @@
 @end
 
 
+@interface DLVController : UITableViewController
+@end
+
 @interface DialogsController : VKMTableController
+@property(retain, nonatomic) DLVController *listController;
 @end
 
 @interface ExtrasInputView : UIView

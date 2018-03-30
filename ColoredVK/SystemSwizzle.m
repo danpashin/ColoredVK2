@@ -515,15 +515,6 @@ CHDeclareMethod(1, void, UIViewController, viewWillAppear, BOOL, animated)
 
 #pragma mark PSListController
 CHDeclareClass(PSListController);
-//CHDeclareMethod(1, void, PSListController, viewWillAppear, BOOL, animated)
-//{
-//    CHSuper(1, PSListController, viewWillAppear, animated);
-//    
-//    CVKLogSource(@"");
-//    resetNavigationBar(self.navigationController.navigationBar);
-//    resetTabBar();
-//}
-
 CHDeclareMethod(0, UIStatusBarStyle, PSListController, preferredStatusBarStyle)
 {
     return UIStatusBarStyleLightContent;

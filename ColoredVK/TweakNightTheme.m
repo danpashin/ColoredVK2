@@ -15,7 +15,6 @@ CHDeclareClassMethod(2, id, VKRenderedText, renderedText, NSAttributedString *, 
     return CHSuper(2, VKRenderedText, renderedText, newText, withSettings, withSettings);
 }
 
-
 CHDeclareClass(MOCTRender);
 CHDeclareClassMethod(2, id, MOCTRender, render, NSAttributedString *, text, width, double, width)
 {
@@ -233,9 +232,11 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
         
         if (![self isKindOfClass:NSClassFromString(@"VKMImageButton")] && ![self isKindOfClass:NSClassFromString(@"HighlightableButton")] && ![self isKindOfClass:NSClassFromString(@"LinkButton")] && ![self isKindOfClass:NSClassFromString(@"BorderButton")]) {
             
-            ColoredVKNightThemeColorScheme *nightScheme = cvkMainController.nightThemeScheme;
-            objc_setAssociatedObject(self.titleLabel, "should_customize", self.currentImage ? @YES : @NO, OBJC_ASSOCIATION_ASSIGN);
-            [self setTitleColor:self.currentImage ? nightScheme.detailTextColor : nightScheme.buttonSelectedColor forState:UIControlStateNormal];
+            if (self.titleLabel) {
+                ColoredVKNightThemeColorScheme *nightScheme = cvkMainController.nightThemeScheme;
+                objc_setAssociatedObject(self.titleLabel, "should_customize", self.currentImage ? @YES : @NO, OBJC_ASSOCIATION_ASSIGN);
+                [self setTitleColor:self.currentImage ? nightScheme.detailTextColor : nightScheme.buttonSelectedColor forState:UIControlStateNormal];
+            }
             
             NSNumber *changeImageColor = objc_getAssociatedObject(self, "shouldChangeImageColor");
             if (!changeImageColor)
@@ -406,6 +407,9 @@ CHDeclareClass(UICollectionViewCell);
 CHDeclareMethod(0, void, UICollectionViewCell, layoutSubviews)
 {
     CHSuper(0, UICollectionViewCell, layoutSubviews);
+    
+    if ([self isKindOfClass:NSClassFromString(@"vkm.MessageCell")])
+        return;
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionViewCell")] && ![self isKindOfClass:NSClassFromString(@"_UIAlertControllerTextFieldViewCollectionCell")]) {
         
