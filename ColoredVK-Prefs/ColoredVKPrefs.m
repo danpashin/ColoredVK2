@@ -11,6 +11,10 @@
 #import "ColoredVKNewInstaller.h"
 #import "UITableViewCell+ColoredVK.h"
 #import <objc/runtime.h>
+#import "UIScrollView+EmptyDataSet.h"
+
+@interface ColoredVKPrefs ()  <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
+@end
 
 @implementation ColoredVKPrefs
 

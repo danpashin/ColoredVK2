@@ -98,19 +98,16 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
 }
 
 - (void)showAlertWithMessage:(NSString *)message actions:(NSArray <UIAlertAction *> *)actions
-{    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (actions.count == 0)
-            return;
-        
-        ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName 
-                                                                                               message:message 
-                                                                                        preferredStyle:UIAlertControllerStyleAlert];
-        for (UIAlertAction *action in actions) {
-            [alertController addAction:action];
-        }
-        [alertController present];
-    });
+{
+    if (actions.count == 0)
+        return;
+    
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName  message:message 
+                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+    for (UIAlertAction *action in actions) {
+        [alertController addAction:action];
+    }
+    [alertController present];
 }
 
 - (BOOL)shouldCheckUpdates
@@ -118,23 +115,25 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
 #ifdef COMPILE_APP
     return NO;
 #else
-    NSMutableDictionary *tweakPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
-    BOOL shouldCheckUpdates = tweakPrefs[prefsCheckUpdatesKey] ? [tweakPrefs[prefsCheckUpdatesKey] boolValue] : YES;
-    NSTimeInterval updatesInterval = tweakPrefs[prefsUpdatesCheckIntervalKey] ? [tweakPrefs[prefsUpdatesCheckIntervalKey] doubleValue] : 1.0;
-    NSString *lastCheckForUpdates = tweakPrefs[prefsLastCheckKey];
-    BOOL beta = [kPackageVersion containsString:@"beta"];
-    
-    if (shouldCheckUpdates || beta) {
-        NSDateFormatter *dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-        NSInteger daysAgo = [dateFormatter dateFromString:lastCheckForUpdates].daysAgo;
+    @autoreleasepool {
+        NSMutableDictionary *tweakPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
+        BOOL shouldCheckUpdates = tweakPrefs[prefsCheckUpdatesKey] ? [tweakPrefs[prefsCheckUpdatesKey] boolValue] : YES;
+        NSTimeInterval updatesInterval = tweakPrefs[prefsUpdatesCheckIntervalKey] ? [tweakPrefs[prefsUpdatesCheckIntervalKey] doubleValue] : 1.0;
+        NSString *lastCheckForUpdates = tweakPrefs[prefsLastCheckKey];
+        BOOL beta = [kPackageVersion containsString:@"beta"];
         
-        BOOL allDaysPast = beta ? (daysAgo >= 7) : (daysAgo >= updatesInterval);
-        if (!lastCheckForUpdates || allDaysPast)
-            return YES;
+        if (shouldCheckUpdates || beta) {
+            NSDateFormatter *dateFormatter = [NSDateFormatter new];
+            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+            NSInteger daysAgo = [dateFormatter dateFromString:lastCheckForUpdates].daysAgo;
+            
+            BOOL allDaysPast = beta ? (daysAgo >= 7) : (daysAgo >= updatesInterval);
+            if (!lastCheckForUpdates || allDaysPast)
+                return YES;
+        }
+        
+        return NO;
     }
-    
-    return NO;
 #endif
 }
 

@@ -37,7 +37,7 @@
     self = [super init];
     if (self) {
         _type = CVKNightThemeTypeDarkBlue;
-        [self updateForType:_type];
+        [self updateForType:self.type];
     }
     return self;
 }
@@ -46,6 +46,7 @@
 - (void)updateForType:(CVKNightThemeType)type
 {
     _type = type;
+    _enabled = (type != CVKNightThemeTypeDisabled);
     
     if (type == CVKNightThemeTypeDarkBlue) {
         _backgroundColor = [UIColor colorWithRed:0.078f green:0.114f blue:0.149f alpha:1.0f];
@@ -85,24 +86,26 @@
         _switchOnTintColor = [UIColor colorWithRed:0.66f green:0.66f blue:0.66f alpha:1.0f];
     } 
     else if (type == CVKNightThemeTypeCustom) {
-        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-        
-        _backgroundColor = [UIColor savedColorForIdentifier:@"nightThemeBackgroundColor" fromPrefs:prefs];
-        _navbackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeNavBackgroundColor" fromPrefs:prefs];
-        _foregroundColor = [UIColor savedColorForIdentifier:@"nightThemeForegroundColor" fromPrefs:prefs];
-        
-        _textColor = [UIColor savedColorForIdentifier:@"nightThemeTextColor" fromPrefs:prefs];
-        _textColor = [UIColor savedColorForIdentifier:@"nightThemeDetailTextColor" fromPrefs:prefs];
-        _linkTextColor = [UIColor savedColorForIdentifier:@"nightThemeLinkColor" fromPrefs:prefs];
-        
-        _unreadBackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeUnreadBackgroundColor" fromPrefs:prefs];
-        _incomingBackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeIncomingBackgroundColor" fromPrefs:prefs];
-        _outgoingBackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeOutgoingBackgroundColor" fromPrefs:prefs];
-        
-        _buttonColor = [UIColor savedColorForIdentifier:@"nightThemeButtonColor" fromPrefs:prefs];
-        _buttonSelectedColor = [UIColor savedColorForIdentifier:@"nightThemeButtonSelectedColor" fromPrefs:prefs];
-        _switchThumbTintColor = [UIColor savedColorForIdentifier:@"nightThemeSwitchThumbColor" fromPrefs:prefs];
-        _switchOnTintColor = [UIColor savedColorForIdentifier:@"nightThemeSwitchOnTintColor" fromPrefs:prefs];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+            
+            _backgroundColor = [UIColor savedColorForIdentifier:@"nightThemeBackgroundColor" fromPrefs:prefs];
+            _navbackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeNavBackgroundColor" fromPrefs:prefs];
+            _foregroundColor = [UIColor savedColorForIdentifier:@"nightThemeForegroundColor" fromPrefs:prefs];
+            
+            _textColor = [UIColor savedColorForIdentifier:@"nightThemeTextColor" fromPrefs:prefs];
+            _textColor = [UIColor savedColorForIdentifier:@"nightThemeDetailTextColor" fromPrefs:prefs];
+            _linkTextColor = [UIColor savedColorForIdentifier:@"nightThemeLinkColor" fromPrefs:prefs];
+            
+            _unreadBackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeUnreadBackgroundColor" fromPrefs:prefs];
+            _incomingBackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeIncomingBackgroundColor" fromPrefs:prefs];
+            _outgoingBackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeOutgoingBackgroundColor" fromPrefs:prefs];
+            
+            _buttonColor = [UIColor savedColorForIdentifier:@"nightThemeButtonColor" fromPrefs:prefs];
+            _buttonSelectedColor = [UIColor savedColorForIdentifier:@"nightThemeButtonSelectedColor" fromPrefs:prefs];
+            _switchThumbTintColor = [UIColor savedColorForIdentifier:@"nightThemeSwitchThumbColor" fromPrefs:prefs];
+            _switchOnTintColor = [UIColor savedColorForIdentifier:@"nightThemeSwitchOnTintColor" fromPrefs:prefs];
+        });
     }
 }
 

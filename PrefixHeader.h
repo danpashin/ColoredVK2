@@ -19,10 +19,10 @@
 #define CVK_CACHE_PATH      [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/ColoredVK2"]
 #define CVK_BACKUP_PATH     @"/var/mobile/Documents/ColoredVK2_Backups/"
 
-#elif defined COMPILE_APP
+#elif defined(COMPILE_APP) && defined(__x86_64__) 
 
 #define CVK_BUNDLE_PATH     [NSBundle mainBundle].bundlePath
-#define CVK_PREFS_PATH      [NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Preferences/com.daniilpashin.coloredvk2.plist"]
+#define CVK_PREFS_PATH      @"/var/mobile/Library/Preferences/com.daniilpashin.coloredvk2.plist"
 #define CVK_FOLDER_PATH     @"/var/mobile/Library/Preferences/ColoredVK2"
 #define CVK_CACHE_PATH      @"/var/mobile/Library/Caches/com.daniilpashin.coloredvk2/"
 #define CVK_BACKUP_PATH     @"/var/mobile/Documents/ColoredVK2_Backups/"
@@ -38,9 +38,9 @@
 
 #endif
 
-#if defined(TARGET_OS_SIMULATOR) && defined(COMPILE_APP)
-#undef CVK_PREFS_PATH
-#define CVK_PREFS_PATH @"/var/mobile/Library/Preferences/com.daniilpashin.coloredvk2.plist"
+#if defined(COMPILE_APP) && (defined(__arm__) || defined(__arm64__))
+#undef  CVK_BUNDLE_PATH
+#define CVK_BUNDLE_PATH [NSBundle mainBundle].bundlePath
 #endif
 
 #define IS_IPAD                               (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)

@@ -7,8 +7,8 @@
 //
 
 
-#import "ColoredVKColorCell.h"
 #import "UIColor+ColoredVK.h"
+#import "ColoredVKColorCell.h"
 
 @implementation ColoredVKColorCell
 

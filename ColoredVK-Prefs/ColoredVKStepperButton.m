@@ -7,7 +7,7 @@
 //
 
 #import "ColoredVKStepperButton.h"
-
+#import <UIKit/UIKit.h>
 
 @interface ColoredVKStepperButton ()
 

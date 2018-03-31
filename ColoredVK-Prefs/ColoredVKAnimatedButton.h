@@ -6,7 +6,7 @@
 //  Copyright © 2018 Даниил. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <UIKit/UIButton.h>
 
 @interface ColoredVKAnimatedButton : UIButton
 

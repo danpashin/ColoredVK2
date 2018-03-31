@@ -5,8 +5,8 @@
 //  Created by Даниил on 23.09.17.
 //
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+#import <Foundation/NSObject.h>
+#import <UIKit/UIImage.h>
 
 @interface ColoredVKImageProcessor : NSObject
 

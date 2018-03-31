@@ -9,6 +9,7 @@
 #import "ColoredVKAnimatedButton.h"
 #import "PrefixHeader.h"
 #import <objc/runtime.h>
+#import <UIKit/UIKit.h>
 
 typedef NS_ENUM(NSUInteger, ColoredVKLayerXPosition) {
     ColoredVKLayerXPositionLeft,

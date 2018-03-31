@@ -7,35 +7,56 @@
 
 #import "ColoredVKImageProcessor.h"
 #import "ColoredVKNetwork.h"
+#import <UIKit/UIKit.h>
+
+@interface ColoredVKImageProcessor ()
+
+@property (strong, nonatomic) dispatch_queue_t backgroundQueue;
+
+@end
 
 @implementation ColoredVKImageProcessor
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.backgroundQueue = dispatch_queue_create("com.daniilpashin.coloredvk2.image.processor.background", DISPATCH_QUEUE_CONCURRENT_WITH_AUTORELEASE_POOL);
+    }
+    return self;
+}
 
 - (void)processImageFromURL:(NSURL *)url identifier:(NSString *)identifier andSaveToURL:(NSURL *)urlToSave 
             completionBlock:( void (^)(BOOL success, NSError *error) )completionBlock
 {
-    if (!url.isFileURL) {
-        ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-        [network downloadDataFromURL:url.absoluteString success:^(NSHTTPURLResponse *response, NSData *rawData) {
-            UIImage *image = [UIImage imageWithData:rawData];
-            [self processImage:image identifier:identifier andSaveToURL:urlToSave completionBlock:completionBlock];
-        } failure:^(NSHTTPURLResponse *response, NSError *error) {
-            completionBlock(NO, error);
-        }];
-        
-    } else {
-        NSError *catchingError = nil;
-        NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&catchingError];
-        if (!catchingError)
-            [self processImage:[UIImage imageWithData:data] identifier:identifier andSaveToURL:urlToSave completionBlock:completionBlock];
-        else
-            completionBlock(NO, catchingError);
-    }
+    dispatch_async(self.backgroundQueue, ^{
+        if (!url.isFileURL) {
+            [[ColoredVKNetwork sharedNetwork] downloadDataFromURL:url.absoluteString success:^(NSHTTPURLResponse *response, NSData *rawData) {
+                UIImage *image = [UIImage imageWithData:rawData];
+                [self processImage:image identifier:identifier andSaveToURL:urlToSave completionBlock:completionBlock];
+            } failure:^(NSHTTPURLResponse *response, NSError *error) {
+                completionBlock(NO, error);
+            }];
+        } else {
+            NSError *catchingError = nil;
+            NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&catchingError];
+            if (!catchingError)
+                [self processImage:[UIImage imageWithData:data] identifier:identifier andSaveToURL:urlToSave completionBlock:completionBlock];
+            else
+                completionBlock(NO, catchingError);
+        }
+    });
 }
 
 - (void)processImage:(UIImage *)image identifier:(NSString *)identifier andSaveToURL:(NSURL *)urlToSave 
      completionBlock:( void (^)(BOOL success, NSError *error) )completionBlock
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+    __block CGSize screenSize = CGSizeZero;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        screenSize = [UIScreen mainScreen].bounds.size;
+    });
+    
+    dispatch_async(self.backgroundQueue, ^{
         
         NSURL *previewURL = urlToSave.URLByDeletingLastPathComponent;
         previewURL = [previewURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%@_preview", 
@@ -47,7 +68,6 @@
         [UIImageJPEGRepresentation(preview, 1.0f) writeToURL:previewURL options:NSDataWritingAtomic error:&writingError];
         
         if (!writingError) {
-            CGSize screenSize = [UIScreen mainScreen].bounds.size;
             screenSize.width += 30.0f;
             screenSize.height += 30.0f;
             if ([identifier isEqualToString:@"barImage"])

@@ -85,107 +85,112 @@ BOOL installerShouldOpenPrefs;
 
 - (void)createFolders
 {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    
-    if (![fileManager fileExistsAtPath:CVK_FOLDER_PATH])
-        [fileManager createDirectoryAtPath:CVK_FOLDER_PATH withIntermediateDirectories:NO attributes:nil error:nil];
-    if (![fileManager fileExistsAtPath:CVK_CACHE_PATH])
-        [fileManager createDirectoryAtPath:CVK_CACHE_PATH  withIntermediateDirectories:NO attributes:nil error:nil];
-    if (![fileManager fileExistsAtPath:CVK_BACKUP_PATH])
-        [fileManager createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        
+        if (![fileManager fileExistsAtPath:CVK_FOLDER_PATH])
+            [fileManager createDirectoryAtPath:CVK_FOLDER_PATH withIntermediateDirectories:NO attributes:nil error:nil];
+        if (![fileManager fileExistsAtPath:CVK_CACHE_PATH])
+            [fileManager createDirectoryAtPath:CVK_CACHE_PATH  withIntermediateDirectories:NO attributes:nil error:nil];
+        
+        if ([fileManager fileExistsAtPath:CVK_BACKUP_PATH])
+            [fileManager removeItemAtPath:CVK_BACKUP_PATH error:nil];
+    });
 }
 
 - (void)checkStatus
 {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
 #define writeFreeLicenceAndReturn \
 [self writeFreeLicence];\
 return;
-    
+        
 #ifndef COMPILE_APP
-    char pathbuf[PATH_MAX + 1];
-    uint32_t bufsize = sizeof(pathbuf);
-    _NSGetExecutablePath(pathbuf, &bufsize);
-    
-    char *executable_name = basename(pathbuf);
-    for(int i = 0; executable_name[i]; i++){
-        executable_name[i] = (char)tolower(executable_name[i]);
-    }
-    
-    int maxLibsCount = (strstr(executable_name, "vkclient") != NULL) ? 2 : 1;
-    int libsCount = 0;
-    for (uint32_t i=0; i<_dyld_image_count(); i++) {
-        const char *imageName = _dyld_get_image_name(i);
-        if (strstr(imageName, "ColoredVK2") != NULL) {
-            libsCount++;
+        char pathbuf[PATH_MAX + 1];
+        uint32_t bufsize = sizeof(pathbuf);
+        _NSGetExecutablePath(pathbuf, &bufsize);
+        
+        char *executable_name = basename(pathbuf);
+        for(int i = 0; executable_name[i]; i++){
+            executable_name[i] = (char)tolower(executable_name[i]);
         }
         
-        if (strstr(imageName, "Crack") != NULL) {
-            libsCount++;
-        }
-        
-        if (strstr(imageName, "crack") != NULL) {
-            libsCount++;
-        }
-    }
-    
-    if (libsCount > maxLibsCount)
-        return;
-#endif
-    
-    if (![[NSFileManager defaultManager] fileExistsAtPath:kDRMLicencePath]) {
-        writeFreeLicenceAndReturn
-    }
- 
-    NSData *decryptedData = decryptData([NSData dataWithContentsOfFile:kDRMLicencePath], nil);
-    NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
-    
-    if (![dict isKindOfClass:[NSDictionary class]] || (dict.allKeys.count == 0)) {
-        writeFreeLicenceAndReturn
-    }
-    
-#ifndef COMPILE_APP
-    if (![dict[@"Device"] isEqualToString:__deviceModel]) {
-        writeFreeLicenceAndReturn
-    }
-#endif
-        
-    if ([dict[@"jailed"] boolValue]) {
-        deviceIsJailed = YES;
-        NSString *licenceUdid = dict[@"udid"];
-        
-        if (__udid.length != 0) {
-            if ((licenceUdid.length != 40) || (__udid.length != 40) || ![licenceUdid isEqualToString:__udid]) {
-                writeFreeLicenceAndReturn
+        int maxLibsCount = (strstr(executable_name, "vkclient") != NULL) ? 2 : 1;
+        int libsCount = 0;
+        for (uint32_t i=0; i<_dyld_image_count(); i++) {
+            const char *imageName = _dyld_get_image_name(i);
+            if (strstr(imageName, "ColoredVK2") != NULL) {
+                libsCount++;
+            }
+            
+            if (strstr(imageName, "Crack") != NULL) {
+                libsCount++;
+            }
+            
+            if (strstr(imageName, "crack") != NULL) {
+                libsCount++;
             }
         }
         
-        if (![dict[@"purchased"] boolValue])
+        if (libsCount > maxLibsCount)
             return;
+#endif
         
-        installerShouldOpenPrefs = YES;
-        POST_NOTIFICATION(kPackageNotificationReloadPrefsMenu);
-        POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
-        
-        if (installerCompletionBlock)
-            installerCompletionBlock(YES);
-        
-    } else {
-        self.user.name = dict[@"Login"];
-        self.user.userID = dict[@"user_id"];
-        self.user.accessToken = dict[@"token"];
-        self.user.email = dict[@"email"];
-        if (self.user.name.length > 0) {
-            self.user.authenticated = YES;
+        if (![[NSFileManager defaultManager] fileExistsAtPath:kDRMLicencePath]) {
+            writeFreeLicenceAndReturn
         }
-        BOOL purchased = [dict[@"purchased"] boolValue];
-        if (purchased) {
-            self.user.accountStatus = ColoredVKUserAccountStatusPaid;
+        
+        NSData *decryptedData = decryptData([NSData dataWithContentsOfFile:kDRMLicencePath], nil);
+        NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
+        
+        if (![dict isKindOfClass:[NSDictionary class]] || (dict.allKeys.count == 0)) {
+            writeFreeLicenceAndReturn
+        }
+        
+#ifndef COMPILE_APP
+        if (![dict[@"Device"] isEqualToString:__deviceModel]) {
+            writeFreeLicenceAndReturn
+        }
+#endif
+        
+        if ([dict[@"jailed"] boolValue]) {
+            deviceIsJailed = YES;
+            NSString *licenceUdid = dict[@"udid"];
+            
+            if (__udid.length != 0) {
+                if ((licenceUdid.length != 40) || (__udid.length != 40) || ![licenceUdid isEqualToString:__udid]) {
+                    writeFreeLicenceAndReturn
+                }
+            }
+            
+            if (![dict[@"purchased"] boolValue])
+                return;
+            
+            installerShouldOpenPrefs = YES;
+            POST_NOTIFICATION(kPackageNotificationReloadPrefsMenu);
+            POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
             
             if (installerCompletionBlock)
                 installerCompletionBlock(YES);
+            
+        } else {
+            self.user.name = dict[@"Login"];
+            self.user.userID = dict[@"user_id"];
+            self.user.accessToken = dict[@"token"];
+            self.user.email = dict[@"email"];
+            if (self.user.name.length > 0) {
+                self.user.authenticated = YES;
+            }
+            BOOL purchased = [dict[@"purchased"] boolValue];
+            if (purchased) {
+                self.user.accountStatus = ColoredVKUserAccountStatusPaid;
+                
+                if (installerCompletionBlock)
+                    installerCompletionBlock(YES);
+            }
         }
-    }
 #undef writeFreeLicenceAndReturn
+    });
 }
 
 - (void)showAlertWithTitle:(NSString *)title text:(NSString *)text buttons:(NSArray <__kindof UIAlertAction *> *)buttons

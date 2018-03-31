@@ -8,6 +8,7 @@
 
 
 #import "ColoredVKHeaderView.h"
+#import <UIKit/UIKit.h>
 
 @implementation ColoredVKHeaderView
 

@@ -8,10 +8,12 @@ def prefs_pods
   pod 'DZNEmptyDataSet'
   pod 'Color-Picker-for-iOS'
   pod 'MXParallaxHeader'
+  pod 'SDWebImage', '~> 4.0'
 end
 
 def tweak_pods
   pod 'LEColorPicker'
+  pod 'SDWebImage', '~> 4.0'
 end
 
 

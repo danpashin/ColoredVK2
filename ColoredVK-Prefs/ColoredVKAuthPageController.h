@@ -5,7 +5,6 @@
 //  Created by Даниил on 01.01.18.
 //
 
-#import <UIKit/UIKit.h>
 #import "ColoredVKScrollViewController.h"
 
 @interface ColoredVKAuthPageController : ColoredVKScrollViewController

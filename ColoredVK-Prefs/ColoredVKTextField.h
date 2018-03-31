@@ -25,7 +25,6 @@
 @property (assign, nonatomic) BOOL error;
 @property (weak, nonatomic) id <ColoredVKTextFieldDelegate> delegate;
 
-
 - (void)shake;
 - (void)clear;
 

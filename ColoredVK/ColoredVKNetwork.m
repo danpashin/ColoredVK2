@@ -15,6 +15,7 @@
 
 @property (strong, nonatomic) NSURLSession *session;
 @property (strong, nonatomic) NSOperationQueue *operationQueue;
+@property (strong, nonatomic) dispatch_queue_t backgroundQueue;
 
 @end
 
@@ -35,14 +36,15 @@
     self = [super init];
     if (self) {
         _configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-        _configuration.timeoutIntervalForResource = 90.0f;
-        _configuration.allowsCellularAccess = YES;
-        _configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+        self.configuration.timeoutIntervalForResource = 90.0f;
+        self.configuration.allowsCellularAccess = YES;
+        self.configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
         
-        _operationQueue = [[NSOperationQueue alloc] init];
-        _operationQueue.name = @"com.daniilpashin.coloredvk2.network";
+        self.operationQueue = [[NSOperationQueue alloc] init];
+        self.operationQueue.name = @"com.daniilpashin.coloredvk2.network";
+        self.backgroundQueue = dispatch_queue_create("com.daniilpashin.coloredvk2.network.background", DISPATCH_QUEUE_CONCURRENT_WITH_AUTORELEASE_POOL);
         
-        _session = [NSURLSession sessionWithConfiguration:_configuration delegate:self delegateQueue:_operationQueue];
+        _session = [NSURLSession sessionWithConfiguration:self.configuration delegate:self delegateQueue:self.operationQueue];
     }
     return self;
 }
@@ -51,105 +53,114 @@
                           success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json))sucess 
                           failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    NSError *requestError = nil;
-    NSURLRequest *request = [self requestWithMethod:method URLString:stringURL parameters:parameters error:&requestError];
-    if (requestError) {
-        failure(request, nil, requestError);
-        return;
-    }
-    
-    NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        [self setStatusBarIndicatorActive:NO];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            if (!error && data) {
-                NSError *jsonError = nil;
-                NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-                if (jsonDict && !jsonError) {
-                    if (sucess)
-                        sucess(request, (NSHTTPURLResponse *)response, jsonDict);
-                } else {
-                    NSData *decrypted = performLegacyCrypt(kCCDecrypt, data, kColoredVKServerKey);
-                    NSString *decryptedString = [[NSString alloc] initWithData:decrypted encoding:NSUTF8StringEncoding];
-                    decryptedString = [decryptedString stringByReplacingOccurrencesOfString:@"\0" withString:@""];
-                    
-                    
-                    NSData *jsonData = [decryptedString dataUsingEncoding:NSUTF8StringEncoding];
-                    if (!jsonData)
-                        jsonData = [NSData data];
-                    
-                    jsonDict = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&jsonError];
-                    
-                    if (jsonDict) {
+    dispatch_async(self.backgroundQueue, ^{
+        NSError *requestError = nil;
+        NSURLRequest *request = [self requestWithMethod:method URLString:stringURL parameters:parameters error:&requestError];
+        if (requestError) {
+            failure(request, nil, requestError);
+            return;
+        }
+        
+        NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            [self setStatusBarIndicatorActive:NO];
+            dispatch_async(self.backgroundQueue, ^{
+                if (!error && data) {
+                    NSError *jsonError = nil;
+                    NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+                    if (jsonDict && !jsonError) {
                         if (sucess)
                             sucess(request, (NSHTTPURLResponse *)response, jsonDict);
                     } else {
-                        if (failure)
-                            failure(request, (NSHTTPURLResponse *)response, jsonError);
+                        NSData *decrypted = performLegacyCrypt(kCCDecrypt, data, kColoredVKServerKey);
+                        NSString *decryptedString = [[NSString alloc] initWithData:decrypted encoding:NSUTF8StringEncoding];
+                        decryptedString = [decryptedString stringByReplacingOccurrencesOfString:@"\0" withString:@""];
+                        
+                        
+                        NSData *jsonData = [decryptedString dataUsingEncoding:NSUTF8StringEncoding];
+                        if (!jsonData)
+                            jsonData = [NSData data];
+                        
+                        jsonDict = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&jsonError];
+                        
+                        if (jsonDict) {
+                            if (sucess)
+                                sucess(request, (NSHTTPURLResponse *)response, jsonDict);
+                        } else {
+                            if (failure)
+                                failure(request, (NSHTTPURLResponse *)response, jsonError);
+                        }
                     }
+                } else {
+                    if (failure)
+                        failure(request, (NSHTTPURLResponse *)response, error);
                 }
-            } else {
-                if (failure)
-                    failure(request, (NSHTTPURLResponse *)response, error);
-            }
-        });
-    }];
-    
-    [self setStatusBarIndicatorActive:YES];
-    [task resume];
+            });
+        }];
+        
+        [self setStatusBarIndicatorActive:YES];
+        [task resume];
+    });
 }
 
 - (void)sendRequest:(NSURLRequest *)request 
             success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData))sucess 
             failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        [self setStatusBarIndicatorActive:NO];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            if (!error && data) {
-                if (sucess)
-                    sucess(request, (NSHTTPURLResponse *)response, data);
-            } else {
-                if (failure)
-                    failure(request, (NSHTTPURLResponse *)response, error);
-            }
-        });
-    }];
-    [self setStatusBarIndicatorActive:YES];
-    [task resume];
+    dispatch_async(self.backgroundQueue, ^{
+        NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            [self setStatusBarIndicatorActive:NO];
+            dispatch_async(self.backgroundQueue, ^{
+                if (!error && data) {
+                    if (sucess)
+                        sucess(request, (NSHTTPURLResponse *)response, data);
+                } else {
+                    if (failure)
+                        failure(request, (NSHTTPURLResponse *)response, error);
+                }
+            });
+        }];
+        [self setStatusBarIndicatorActive:YES];
+        [task resume];
+    });
 }
 
 - (void)sendRequestWithMethod:(NSString *)method url:(NSString *)url parameters:(id)parameters 
                       success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData))sucess 
                       failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {    
-    NSError *requestError = nil;
-    NSURLRequest *request = [self requestWithMethod:method URLString:url parameters:parameters error:&requestError];
-    if (requestError) {
-        failure(request, nil, requestError);
-        return;
-    }
-    
-    NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        [self setStatusBarIndicatorActive:NO];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            if (!error && data) {
-                if (sucess)
-                    sucess(request, (NSHTTPURLResponse *)response, data);
-            } else {
-                if (failure)
-                    failure(request, (NSHTTPURLResponse *)response, error);
-            }
-        });
-    }];
-    [self setStatusBarIndicatorActive:YES];
-    [task resume];
+    dispatch_async(self.backgroundQueue, ^{
+        NSError *requestError = nil;
+        NSURLRequest *request = [self requestWithMethod:method URLString:url parameters:parameters error:&requestError];
+        if (requestError) {
+            failure(request, nil, requestError);
+            return;
+        }
+        
+        NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            [self setStatusBarIndicatorActive:NO];
+            dispatch_async(self.backgroundQueue, ^{
+                if (!error && data) {
+                    if (sucess)
+                        sucess(request, (NSHTTPURLResponse *)response, data);
+                } else {
+                    if (failure)
+                        failure(request, (NSHTTPURLResponse *)response, error);
+                }
+            });
+        }];
+        [self setStatusBarIndicatorActive:YES];
+        [task resume];
+    });
 }
 
 - (void)uploadData:(NSData *)dataToUpload toRemoteURL:(NSString *)remoteURL 
            success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))sucess 
            failure:(void(^)(NSHTTPURLResponse *response, NSError *error))failure
 {
-    if (dataToUpload) {
+    if (!dataToUpload)
+        return;
+    
+    dispatch_async(self.backgroundQueue, ^{
         NSError *requestError = nil;        
         NSMutableURLRequest *request = [self requestWithMethod:@"POST" URLString:remoteURL parameters:nil error:&requestError];
         if (requestError) {
@@ -157,48 +168,52 @@
                 failure(nil, requestError);
         }
         
-        NSURLSessionDataTask *task = [self.session uploadTaskWithRequest:request fromData:dataToUpload 
-                                                       completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                                           [self setStatusBarIndicatorActive:NO];
-                                                           if (!error) {
-                                                               if (sucess)
-                                                                   sucess((NSHTTPURLResponse *)response, data);
-                                                           } else {
-                                                               if (failure)
-                                                                   failure((NSHTTPURLResponse *)response, error);
-                                                           }
-                                                       }];
+        NSURLSessionDataTask *task = [self.session uploadTaskWithRequest:request fromData:dataToUpload completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            [self setStatusBarIndicatorActive:NO];
+            dispatch_async(self.backgroundQueue, ^{
+                if (!error) {
+                    if (sucess)
+                        sucess((NSHTTPURLResponse *)response, data);
+                } else {
+                    if (failure)
+                        failure((NSHTTPURLResponse *)response, error);
+                }
+            });
+        }];
         [self setStatusBarIndicatorActive:YES];
         [task resume];
-    }
+    });
 }
 
 - (void)downloadDataFromURL:(NSString *)stringURL
                     success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))sucess 
                     failure:(void(^)(NSHTTPURLResponse *response, NSError *error))failure
 {
-    NSError *requestError = nil;        
-    NSMutableURLRequest *request = [self requestWithMethod:@"GET" URLString:stringURL parameters:nil error:&requestError];
-    if (requestError) {
-        if (failure)
-            failure(nil, requestError);
-    }
-    
-    NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:request
-                                                         completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
-                                                             [self setStatusBarIndicatorActive:NO];
-                                                             if (!error) {
-                                                                 NSData *data = [NSData dataWithContentsOfURL:location];
-                                                                 if (sucess)
-                                                                     sucess((NSHTTPURLResponse *)response, data);
-                                                                 [[NSFileManager defaultManager] removeItemAtURL:location error:nil];
-                                                             } else {
-                                                                 if (failure)
-                                                                     failure((NSHTTPURLResponse *)response, error);
-                                                             }
-                                                         }];
-    [self setStatusBarIndicatorActive:YES];
-    [task resume];
+    dispatch_async(self.backgroundQueue, ^{
+        NSError *requestError = nil;        
+        NSMutableURLRequest *request = [self requestWithMethod:@"GET" URLString:stringURL parameters:nil error:&requestError];
+        if (requestError) {
+            if (failure)
+                failure(nil, requestError);
+        }
+        
+        NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:request completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
+            [self setStatusBarIndicatorActive:NO];
+            dispatch_async(self.backgroundQueue, ^{
+                if (!error) {
+                    NSData *data = [NSData dataWithContentsOfURL:location];
+                    if (sucess)
+                        sucess((NSHTTPURLResponse *)response, data);
+                    [[NSFileManager defaultManager] removeItemAtURL:location error:nil];
+                } else {
+                    if (failure)
+                        failure((NSHTTPURLResponse *)response, error);
+                }
+            });
+        }];
+        [self setStatusBarIndicatorActive:YES];
+        [task resume];
+    });
 }
 
 

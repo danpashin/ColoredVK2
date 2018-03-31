@@ -6,10 +6,13 @@
 //  Copyright © 2017 Даниил. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <UIKit/UIView.h>
 
+@class ColoredVKStepperButton;
+@protocol ColoredVKStepperButtonDelegate <NSObject>
+- (void)stepperButton:(ColoredVKStepperButton *)stepperButton didUpdateValue:(CGFloat)value;
+@end
 
-@protocol ColoredVKStepperButtonDelegate;
 @interface ColoredVKStepperButton : UIView
 
 @property (assign, nonatomic) CGFloat minValue;
@@ -19,12 +22,5 @@
 @property (assign, nonatomic) CGFloat height;
 @property (assign, nonatomic) BOOL shouldShake;
 @property (weak, nonatomic) id <ColoredVKStepperButtonDelegate> delegate;
-
-@end
-
-
-@protocol ColoredVKStepperButtonDelegate <NSObject>
-
-- (void)stepperButton:(ColoredVKStepperButton *)stepperButton didUpdateValue:(CGFloat)value;
 
 @end

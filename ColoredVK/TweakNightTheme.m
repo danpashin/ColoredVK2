@@ -28,35 +28,6 @@ CVKHookCFunction(CTFramesetterRef, CTFramesetterCreateWithAttributedString, CFAt
     return result;
 }
 
-//CHDeclareClass(VKRenderedText);
-//CHDeclareClassMethod(2, id, VKRenderedText, renderedText, NSAttributedString *, text, withSettings, id, withSettings)
-//{
-//    NSAttributedString *newText = attributedStringForNightTheme(text);
-//    return CHSuper(2, VKRenderedText, renderedText, newText, withSettings, withSettings);
-//}
-
-//CHDeclareClass(MOCTRender);
-//CHDeclareClassMethod(2, id, MOCTRender, render, NSAttributedString *, text, width, double, width)
-//{
-//    NSAttributedString *newText = attributedStringForNightTheme(text);
-//    return CHSuper(2, MOCTRender, render, newText, width, width);
-//}
-
-CHDeclareClass(VKMLabelRender);
-CHDeclareClassMethod(4, id, VKMLabelRender, renderForText, NSString *, text, attributes, NSDictionary*, attributes, width, double, width, height, double, height)
-{
-    NSMutableDictionary *mutableAttributes = [attributes mutableCopy];
-    
-    if (mutableAttributes[@"CTForegroundColor"]) {
-        if (!mutableAttributes[NSLinkAttributeName])
-            mutableAttributes[@"CTForegroundColor"] = cvkMainController.nightThemeScheme.textColor;
-        else
-            mutableAttributes[@"CTForegroundColor"] = cvkMainController.nightThemeScheme.linkTextColor;
-    }
-    
-    return CHSuper(4, VKMLabelRender, renderForText, text, attributes, mutableAttributes, width, width, height, height);
-}
-
 CHDeclareClass(ProfileView);
 CHDeclareMethod(0, void, ProfileView, layoutSubviews)
 {
@@ -442,7 +413,8 @@ CHDeclareMethod(0, void, UICollectionViewCell, layoutSubviews)
             UIColor *fillColor = [UIColor colorWithCGColor:shapeLayer.fillColor];
             if (enabled && enableNightTheme) {
                 ColoredVKNightThemeColorScheme *nightThemeScheme = cvkMainController.nightThemeScheme;
-                fillColor = /*incoming ? nightThemeScheme.incomingBackgroundColor :*/ nightThemeScheme.outgoingBackgroundColor;
+//                fillColor = incoming ? nightThemeScheme.incomingBackgroundColor : nightThemeScheme.outgoingBackgroundColor;
+                fillColor = nightThemeScheme.incomingBackgroundColor;
             } 
 //            else if (enabled && enabledMessagesImage && useMessageBubbleTintColor) {
 //                fillColor = incoming ? messageBubbleTintColor : messageBubbleSentTintColor;

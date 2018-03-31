@@ -9,13 +9,16 @@
 #import "ColoredVKGeneralPrefs.h"
 
 #import "ColoredVKColorPickerController.h"
+#import "VKPhotoPicker.h"
+
 #import "ColoredVKHUD.h"
+#import "UIColor+ColoredVK.h"
+
 #import "ColoredVKBackupsModel.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKImageProcessor.h"
-#import "VKPhotoPicker.h"
 #import <objc/runtime.h>
-#import "UIColor+ColoredVK.h"
+#import <SDImageCache.h>
 
 @interface ColoredVKGeneralPrefs () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, ColoredVKColorPickerControllerDelegate, ColoredVKColorPickerControllerDataSource>
 @property (strong, nonatomic) NSString *lastImageIdentifier;
@@ -249,27 +252,17 @@
 - (void)clearCoversCache
 {
     ColoredVKHUD *hud = [ColoredVKHUD showHUD];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        if ([[NSFileManager defaultManager] fileExistsAtPath:CVK_CACHE_PATH])
-            [[NSFileManager defaultManager] removeItemAtPath:CVK_CACHE_PATH error:nil];
+    [[SDImageCache sharedImageCache] clearDiskOnCompletion:^{
         [hud showSuccess];
         [self reloadSpecifiers];
         [[ColoredVKNewInstaller sharedInstaller] createFolders];
-    });
+    }];
 }
 
 - (NSString *)cacheSize
 {
-    @autoreleasepool {
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        float size = 0;
-        for (NSString *fileName in [fileManager subpathsOfDirectoryAtPath:CVK_CACHE_PATH error:nil]) {
-            NSString *path = [CVK_CACHE_PATH stringByAppendingPathComponent:fileName];
-            size += [[fileManager attributesOfItemAtPath:path error:nil][NSFileSize] floatValue];
-        }
-        size = size / 1024.0f / 1024.0f;
-        return [NSString stringWithFormat:@"%.1f MB", size];
-    }
+    float size = (float)[SDImageCache sharedImageCache].getSize / 1024.0f / 1024.0f;
+    return [NSString stringWithFormat:@"%.1f MB", size];
 }
 
 - (void)resetSettings

@@ -6,8 +6,7 @@
 //  Copyright (c) 2016 Daniil Pashin. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import <Preferences/PSSpecifier.h>
+#import <PSSpecifier.h>
 
 @interface ColoredVKStepperPrefsCell : PSTableCell
 @end

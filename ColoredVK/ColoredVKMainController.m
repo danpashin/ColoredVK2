@@ -114,7 +114,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
 
 - (void)actionOpenPreferencesPush:(BOOL)withPush
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         BOOL innerWithPush = withPush;
         NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         if (!cvkBundle.loaded)
@@ -128,13 +128,15 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
             innerWithPush = YES;
         
         VKMNavContext *mainContext = [[NSClassFromString(@"VKMNavContext") applicationNavRoot] rootNavContext];
-        if (innerWithPush) {
-            if ([mainContext respondsToSelector:@selector(push:animated:)])
-                [mainContext push:cvkPrefs animated:YES];
-        } else {
-            if ([mainContext respondsToSelector:@selector(reset:)])
-                [mainContext reset:cvkPrefs];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (innerWithPush) {
+                if ([mainContext respondsToSelector:@selector(push:animated:)])
+                    [mainContext push:cvkPrefs animated:YES];
+            } else {
+                if ([mainContext respondsToSelector:@selector(reset:)])
+                    [mainContext reset:cvkPrefs];
+            }
+        });
     });
 }
 

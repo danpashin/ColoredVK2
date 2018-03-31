@@ -6,7 +6,8 @@
 //
 //
 
-#import <UIKit/UIKit.h>
+#import <UIKit/UIView.h>
+#import <UIKit/UIColor.h>
 
 @interface ColoredVKColorPreview : UIView
 

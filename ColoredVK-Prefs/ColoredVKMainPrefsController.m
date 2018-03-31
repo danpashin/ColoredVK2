@@ -18,14 +18,13 @@
 
 @interface ColoredVKMainPrefsController ()
 
+@property (strong, nonatomic) NSString *vkAppVersion;
 @property (strong, nonatomic) UIView *freeVersionFooter;
 @property (assign, nonatomic) BOOL showFreeVersionFooter;
 
 @end
 
 @implementation ColoredVKMainPrefsController
-
-@synthesize vkAppVersion = _vkAppVersion;
 
 NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
 
@@ -71,7 +70,7 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
     [super commonInit];
     
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    _vkAppVersion = prefs[@"vkVersion"] ? prefs[@"vkVersion"] : CVKLocalizedString(@"UNKNOWN");
+    self.vkAppVersion = prefs[@"vkVersion"] ? prefs[@"vkVersion"] : CVKLocalizedString(@"UNKNOWN");
 }
 
 - (void)loadView

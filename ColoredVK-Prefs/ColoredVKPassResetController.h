@@ -5,7 +5,6 @@
 //  Created by Даниил on 31/01/2018.
 //
 
-#import <UIKit/UIKit.h>
 #import "ColoredVKScrollViewController.h"
 
 @interface ColoredVKPassResetController : ColoredVKScrollViewController

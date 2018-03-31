@@ -5,7 +5,7 @@
 //  Created by Даниил on 01.01.18.
 //
 
-#import <Foundation/Foundation.h>
+#import <Foundation/NSObject.h>
 
 typedef NS_ENUM(NSUInteger, ColoredVKUserAccountStatus)
 {

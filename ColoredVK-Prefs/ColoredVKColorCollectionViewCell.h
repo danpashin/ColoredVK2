@@ -6,7 +6,8 @@
 //
 //
 
-#import "ColoredVKColorPreview.h"
+#import <UIKit/UICollectionViewCell.h>
+
 
 @class ColoredVKColorCollectionViewCell;
 @protocol ColoredVKColorCollectionViewCellDelegate <NSObject>

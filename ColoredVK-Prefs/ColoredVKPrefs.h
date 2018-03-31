@@ -8,14 +8,14 @@
 
 
 #import <UIKit/UIKit.h>
-#import <Preferences/Preferences.h>
+#import <PSSpecifier.h>
+#import <PSListController.h>
+
 #import "PrefixHeader.h"
-#import "UIScrollView+EmptyDataSet.h"
 #import "ColoredVKNightThemeColorScheme.h"
 
-@interface ColoredVKPrefs : PSListController <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
+@interface ColoredVKPrefs : PSListController
 
-@property (nonatomic, readonly) NSString *vkAppVersion;
 @property (strong, nonatomic, readonly) NSBundle *cvkBundle;
 
 @property (assign, nonatomic) BOOL shouldChangeSwitchColor;
@@ -30,5 +30,7 @@
 
 - (id)readPreferenceValue:(PSSpecifier *)specifier;
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier;
+
+- (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView;
 
 @end
