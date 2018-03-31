@@ -12,7 +12,6 @@
 
 #import "Tweak.h"
 #import "ColoredVKBarDownloadButton.h"
-//#import <CoreText/CoreText.h>
 
 
 
@@ -368,9 +367,9 @@ CHDeclareMethod(0, void, VKMController, loadView)
             } else shouldAddBlur = NO;
         } else shouldAddBlur = NO;
         
-        objc_setAssociatedObject(self, "cvkShouldAddBlur", @(shouldAddBlur), OBJC_ASSOCIATION_ASSIGN);
-        objc_setAssociatedObject(self, "cvkBlurColor", blurColor, OBJC_ASSOCIATION_ASSIGN);
-        objc_setAssociatedObject(self, "cvkBlurStyle", @(blurStyle), OBJC_ASSOCIATION_ASSIGN);
+        objc_setAssociatedObject(self, "cvkShouldAddBlur", @(shouldAddBlur), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(self, "cvkBlurColor", blurColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(self, "cvkBlurStyle", @(blurStyle), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     });
 }
 

@@ -7,20 +7,40 @@
 
 #import "Tweak.h"
 #import <Preferences/PSTableCell.h>
+#import <CoreText/CoreText.h>
 
-CHDeclareClass(VKRenderedText);
-CHDeclareClassMethod(2, id, VKRenderedText, renderedText, NSAttributedString *, text, withSettings, id, withSettings)
+
+CVKHookCFunction(CTFramesetterRef, CTFramesetterCreateWithAttributedString, CFAttributedStringRef string)
 {
-    NSAttributedString *newText = attributedStringForNightTheme(text);
-    return CHSuper(2, VKRenderedText, renderedText, newText, withSettings, withSettings);
+    CFAttributedStringRef newString = CFAttributedStringCreateCopy(NULL, string);
+    
+    if (enabled && enableNightTheme && newString != NULL && CFAttributedStringGetLength(newString) > 0) {
+        NSAttributedString *attributed = CFBridgingRelease(newString);
+        attributed = attributedStringForNightTheme(attributed);
+        newString = (CFMutableAttributedStringRef)CFBridgingRetain(attributed);
+    }
+    
+    CTFramesetterRef result = CVKHookCFunctionCallOrig(CTFramesetterCreateWithAttributedString, newString);
+    if (newString != NULL) {
+        CFRelease(newString);
+    }
+    
+    return result;
 }
 
-CHDeclareClass(MOCTRender);
-CHDeclareClassMethod(2, id, MOCTRender, render, NSAttributedString *, text, width, double, width)
-{
-    NSAttributedString *newText = attributedStringForNightTheme(text);
-    return CHSuper(2, MOCTRender, render, newText, width, width);
-}
+//CHDeclareClass(VKRenderedText);
+//CHDeclareClassMethod(2, id, VKRenderedText, renderedText, NSAttributedString *, text, withSettings, id, withSettings)
+//{
+//    NSAttributedString *newText = attributedStringForNightTheme(text);
+//    return CHSuper(2, VKRenderedText, renderedText, newText, withSettings, withSettings);
+//}
+
+//CHDeclareClass(MOCTRender);
+//CHDeclareClassMethod(2, id, MOCTRender, render, NSAttributedString *, text, width, double, width)
+//{
+//    NSAttributedString *newText = attributedStringForNightTheme(text);
+//    return CHSuper(2, MOCTRender, render, newText, width, width);
+//}
 
 CHDeclareClass(VKMLabelRender);
 CHDeclareClassMethod(4, id, VKMLabelRender, renderForText, NSString *, text, attributes, NSDictionary*, attributes, width, double, width, height, double, height)
@@ -408,8 +428,30 @@ CHDeclareMethod(0, void, UICollectionViewCell, layoutSubviews)
 {
     CHSuper(0, UICollectionViewCell, layoutSubviews);
     
-    if ([self isKindOfClass:NSClassFromString(@"vkm.MessageCell")])
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"vkm.MessageCell")]) {
+        
+        CALayer *layer = self.backgroundView.layer;
+        if ([layer isKindOfClass:[CAShapeLayer class]]) {                
+            CAShapeLayer *shapeLayer = (CAShapeLayer *)layer;
+            
+//            CGRect screenBounds = [UIScreen mainScreen].bounds;
+//            CGPoint newStartPoint = [self.superview convertPoint:self.frame.origin toView:nil];
+//            
+//            BOOL incoming = (newStartPoint.x < CGRectGetMidX(screenBounds));
+            
+            UIColor *fillColor = [UIColor colorWithCGColor:shapeLayer.fillColor];
+            if (enabled && enableNightTheme) {
+                ColoredVKNightThemeColorScheme *nightThemeScheme = cvkMainController.nightThemeScheme;
+                fillColor = /*incoming ? nightThemeScheme.incomingBackgroundColor :*/ nightThemeScheme.outgoingBackgroundColor;
+            } 
+//            else if (enabled && enabledMessagesImage && useMessageBubbleTintColor) {
+//                fillColor = incoming ? messageBubbleTintColor : messageBubbleSentTintColor;
+//            }
+            shapeLayer.fillColor = fillColor.CGColor;
+        }
+        
         return;
+    }
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionViewCell")] && ![self isKindOfClass:NSClassFromString(@"_UIAlertControllerTextFieldViewCollectionCell")]) {
         

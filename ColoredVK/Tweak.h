@@ -15,6 +15,19 @@
 #import "UIImage+ColoredVK.h"
 #import "ColoredVKNewInstaller.h"
 #import "UIColor+ColoredVK.h"
+#import "hookzz.h"
+
+
+#define CVKHookCFunction(return_type, name, args...)\
+static return_type (*name ## _orig)(args);\
+return_type name ## _hook(args);\
+static void __attribute__((constructor)) name ## _constructor() {\
+ZzHook((void*)name, (void *)name ## _hook, (void *)&name ## _orig, nil, nil, NO);\
+}\
+return_type name ## _hook(args)
+
+#define CVKHookCFunctionCallOrig(name, args...)\
+name ## _orig(args)
 
 
 #define kMenuCellBackgroundColor [UIColor colorWithRed:56/255.0f green:69/255.0f blue:84/255.0f alpha:1.0f]

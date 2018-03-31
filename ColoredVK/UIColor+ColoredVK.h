@@ -16,11 +16,6 @@
 + (UIColor *)colorFromString:(NSString *)string;
 
 /**
- Затемняет цвет на 0.2
- */
-@property (nonatomic, readonly, copy) UIColor *darkerColor;
-
-/**
  Возвращает сохраненный цвет для идентификаторов ColoredVK
  */
 + (UIColor *)savedColorForIdentifier:(NSString *)identifier;
@@ -35,6 +30,10 @@
  */
 + (UIColor *)defaultColorForIdentifier:(NSString *)identifier;
 
+/**
+ Затемняет цвет на 0.2
+ */
+@property (nonatomic, readonly, copy) UIColor *darkerColor;
 
 @property (nonatomic, readonly, copy) NSString *stringValue;
 @property (nonatomic, readonly, copy) NSString *rgbStringValue;

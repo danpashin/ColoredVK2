@@ -153,10 +153,10 @@
 "MANAGE_SETTINGS_FOOTER" = "Backups are stored in %@. When you restore the device in iTunes they will be removed.";
 "CUSTOM_COVER_FOOTER" = "If you don't like ColoredVK 2 standard cover, you can change it to your.";
 "CACHE_COVERS_FOOTER" = "Caching of covers will help to reduce the load time, but will require more space on the device.";
-"NEW_PLAYER_DESIGN_FOOTER" = "This option will make the player more minimalist - cover will vary depending on the song, and the colors will be more readable. Also, a window with the song lyrics will be added. Just click the cover!\n\nDoes not work in VK App 3.0.2!";
+"NEW_PLAYER_DESIGN_FOOTER" = "This option will make the player more minimalist - cover will vary depending on the song, and the colors will be more readable. Also, a window with the song lyrics will be added. Just click the cover!\n\nDoes not work in VK App 3.0.2 and higher.";
 "PLAYER_GESTURES_FOOTER" = "Swipe down to close the player, swipe up - show playlist, swipe left/right - change the track.";
 "ALWAYS_SHOW_NAVIGATION_BAR_FOOTER" = "By default VK App hides the navigation bar in the news when scrolling. This function disables this concealment.";
-"MESSAGE_BUBBLE_COLOR_FOOTER" = "This function changes the color of the message bubble. Will only work in VK App 2.9 and later.";
+"MESSAGE_BUBBLE_COLOR_FOOTER" = "This function changes the color of the message bubble. In VK App 3.5 was broken by VKontakte and may no longer work :(";
 "HIDE_MESSAGE_NAV_BAR_ITEMS_FOOTER" = "Will hide the person's name and avatar from the navigation bar. It would be very useful if you don't want others to see who you write.";
 "DISABLE_GROUP_COVERS_FOOTER" = "Disabling of covers gives an increase in speed and time of opening of groups.";
 "CHANGE_PASSWORD_FOOTER" = "If you are logged in with your account, in this menu you can change the password.";

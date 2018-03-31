@@ -21,7 +21,7 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         
-        if (set && UIAccessibilityIsReduceTransparencyEnabled()) {
+        if (set && !UIAccessibilityIsReduceTransparencyEnabled()) {
             UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:style]];
             blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             blurEffectView.tag = 10;
