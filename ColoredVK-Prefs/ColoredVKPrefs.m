@@ -38,7 +38,7 @@
     _cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     
     [self readPrefsWithCompetion:^{
-        if (_specifiers && _specifiers.count > 0)
+        if (self->_specifiers && self->_specifiers.count > 0)
             [self reloadSpecifiers];
         
         self.shouldChangeSwitchColor = ([self.cachedPrefs[@"enabled"] boolValue] && [self.cachedPrefs[@"changeSwitchColor"] boolValue]);
@@ -149,7 +149,7 @@
         backgroundView.selectedBackgroundColor = nightThemeColorScheme.enabled ? nightThemeColorScheme.backgroundColor : nil;
         cell.textLabel.textColor               = nightThemeColorScheme.enabled ? nightThemeColorScheme.textColor : [UIColor blackColor];  
         
-        if (nightThemeColorScheme.enabled) {     
+        if (nightThemeColorScheme.enabled) {
             if ([cell.accessoryView isKindOfClass:NSClassFromString(@"ColoredVKStepperButton")]) {
                 ((UILabel *)[cell.accessoryView valueForKey:@"valueLabel"]).textColor = nightThemeColorScheme.textColor;
             }
@@ -194,7 +194,7 @@
 #pragma mark -
 
 - (UIStatusBarStyle)preferredStatusBarStyle
-{    
+{
     BOOL vkApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
     return vkApp ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
 }
@@ -308,12 +308,13 @@
             [self updateNightTheme];
             POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
             POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
+            return;
         }
         
-        POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
-        
-        if ([identificsToReloadMenu containsObject:specifier.identifier] && ![specifier.identifier isEqualToString:@"nightThemeType"])
+        if ([identificsToReloadMenu containsObject:specifier.identifier])
             POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
+        else 
+            POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
         
         if ([specifier.identifier isEqualToString:@"enableTweakSwitch"]) {
             [self updateNightTheme];

@@ -64,7 +64,7 @@
 
 - (void)backupsModel:(ColoredVKBackupsModel *)backupsModel didEndUpdatingBackups:(NSArray *)backups
 {
-        [self reloadSpecifiers];
+    [self reloadSpecifiers];
 }
 
 - (void)backupsModel:(ColoredVKBackupsModel *)backupsModel didEndRestoringBackup:(NSString *)backupName

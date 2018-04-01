@@ -32,7 +32,7 @@
 }
 
 + (UIColor *)savedColorForIdentifier:(NSString *)identifier fromPrefs:(NSDictionary *)prefs
-{    
+{
     if (prefs[identifier] == nil) return [UIColor defaultColorForIdentifier:identifier];
     return [UIColor colorFromString:prefs[identifier]];
 }

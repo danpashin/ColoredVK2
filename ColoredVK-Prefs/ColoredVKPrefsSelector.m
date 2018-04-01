@@ -20,7 +20,7 @@
     if (!_specifiers) {
         NSMutableArray <PSSpecifier *> *specifiers = [NSMutableArray array];        
         
-        if (self.selectorKey) {            
+        if (self.selectorKey) {
             NSArray <NSString *> *allKeys = [self.specifier propertyForKey:@"validTitles"];
             NSArray *allValues = [self.specifier propertyForKey:@"validValues"];
             if (allKeys.count > 0 && allValues.count > 0) {

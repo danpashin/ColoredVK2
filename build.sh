@@ -67,5 +67,7 @@ makeDEB () {
 
 case ${CONFIGURATION} in
     "Release_DEB") makeDEB;;
+    "Debug_DEB") makeDEB;;
     "Release_IPA") makeIPA;;
+    "Debug_IPA") makeIPA;;
 esac

@@ -119,7 +119,7 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
 }
 
 - (void)setBlackout:(CGFloat)blackout
-{    
+{
     [self setBlackout:blackout animated:NO];
 }
 

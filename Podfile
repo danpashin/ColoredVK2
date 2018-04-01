@@ -31,7 +31,7 @@ target 'ColoredVK-Prefs' do
   prefs_pods
 end
 
-target 'ColoredVK-Prefs-App' do
+target 'Prefs Application' do
   prefs_pods
 end
 

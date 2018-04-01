@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ColoredVKAlertController : UIAlertController
 
++ (instancetype)alertControllerWithTitle:(nullable NSString *)title message:(nullable NSString *)message;
+
 @property (assign, nonatomic) BOOL shouldReconfigureTextFields;
 @property (assign, nonatomic) BOOL shouldUseCustomTintColor;
 @property (assign, nonatomic) BOOL presentInCenter;

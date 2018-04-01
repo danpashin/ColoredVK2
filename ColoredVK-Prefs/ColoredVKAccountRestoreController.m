@@ -234,16 +234,15 @@
         self.resetStackView.hidden = NO;
         self.resetStackView.frame = resetStackViewFrame;
         
-        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction 
-                         animations:^{                             
-                             codeStackViewFrame.origin.x = 20.0f;
-                             self.codeStackView.frame = codeStackViewFrame;
-                             
-                             resetStackViewFrame.origin.x = -resetStackViewFrame.size.width - 8.0f;
-                             self.resetStackView.frame = resetStackViewFrame;
-                         } completion:^(BOOL finished) {
-                             self.resetStackView.hidden = YES;
-                         }];
+        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            codeStackViewFrame.origin.x = 20.0f;
+            self.codeStackView.frame = codeStackViewFrame;
+            
+            resetStackViewFrame.origin.x = -resetStackViewFrame.size.width - 8.0f;
+            self.resetStackView.frame = resetStackViewFrame;
+        } completion:^(BOOL finished) {
+            self.resetStackView.hidden = YES;
+        }];
     }];
 }
 
@@ -262,7 +261,7 @@
 {
     NSString *code = [self.codeTextView.text stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSDictionary *params = @{@"code":code, @"login":self.login};
-    [self sendRequestWithName:@"check.php" params:params successBlock:^(NSDictionary *response) {        
+    [self sendRequestWithName:@"check.php" params:params successBlock:^(NSDictionary *response) {
         ColoredVKPassResetController *passController = [self.storyboard instantiateViewControllerWithIdentifier:@"passResetController"];
         passController.token = response[@"token"];
         passController.email = self.emailTextField.text;
@@ -302,7 +301,7 @@
         if (json[@"response"]) {
             NSDictionary *response = json[@"response"];
             NSInteger status = [response[@"status"] integerValue];
-            if (status == 1) {   
+            if (status == 1) {
                 [hud hide];
                 if (successBlock)
                     dispatch_async(dispatch_get_main_queue(), ^{

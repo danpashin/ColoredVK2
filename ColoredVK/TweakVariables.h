@@ -5,7 +5,12 @@
 //  Created by Даниил on 31.03.18.
 //
 
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 @class ColoredVKMainController;
+
+
+void reloadPrefs(void(^completion)(void));
 
 typedef NS_ENUM(NSInteger, CVKCellSelectionStyle) {
     CVKCellSelectionStyleNone = 0,
@@ -16,6 +21,8 @@ typedef NS_ENUM(NSInteger, CVKCellSelectionStyle) {
 extern BOOL premiumEnabled;
 extern ColoredVKMainController *cvkMainController;
 extern NSBundle *cvkBunlde;
+extern NSBundle *vksBundle;
+extern BOOL VKSettingsEnabled;
 
 extern CVKCellSelectionStyle menuSelectionStyle;
 

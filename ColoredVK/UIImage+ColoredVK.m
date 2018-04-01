@@ -51,7 +51,7 @@
 }
 
 - (UIImage *)imageWithAlpha:(CGFloat)alpha
-{    
+{
     UIGraphicsBeginImageContextWithOptions(self.size, NO, self.scale);
     [self drawInRect:(CGRect){{0,0}, self.size} blendMode:kCGBlendModeScreen alpha:alpha];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();

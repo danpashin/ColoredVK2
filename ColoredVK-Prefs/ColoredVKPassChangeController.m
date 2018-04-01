@@ -37,7 +37,7 @@
 }
 
 - (void)showFromViewController:(UIViewController *)viewController
-{    
+{
     ColoredVKNavigationController *nav = [[ColoredVKNavigationController alloc] initWithRootViewController:self];
     nav.modalPresentationStyle = UIModalPresentationFormSheet;
     [viewController presentViewController:nav animated:YES completion:nil];

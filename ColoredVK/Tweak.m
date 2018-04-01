@@ -13,183 +13,6 @@
 #import "Tweak.h"
 #import "ColoredVKBarDownloadButton.h"
 
-
-
-BOOL premiumEnabled = NO;
-BOOL VKSettingsEnabled;
-
-BOOL enableNightTheme;
-
-BOOL showFastDownloadButton;
-BOOL showMenuCell;
-
-NSBundle *cvkBunlde;
-NSBundle *vksBundle;
-
-BOOL enabled;
-BOOL enabledBarColor;
-BOOL showBar;
-BOOL enabledToolBarColor;
-BOOL enabledBarImage;
-BOOL enabledTabbarColor;
-
-
-BOOL enabledMenuImage;
-BOOL hideMenuSeparators;
-BOOL hideMessagesListSeparators;
-BOOL hideGroupsListSeparators;
-BOOL hideAudiosSeparators;
-BOOL hideFriendsSeparators;
-BOOL hideVideosSeparators;
-BOOL hideSettingsSeparators;
-BOOL hideSettingsExtraSeparators;
-
-BOOL enabledMessagesImage;
-BOOL enabledMessagesListImage;
-BOOL enabledGroupsListImage;
-BOOL enabledAudioImage;
-BOOL changeAudioPlayerAppearance;
-BOOL enablePlayerGestures;
-BOOL enabledFriendsImage;
-BOOL enabledVideosImage;
-BOOL enabledSettingsImage;
-BOOL enabledSettingsExtraImage;
-
-CGFloat menuImageBlackout;
-CGFloat chatImageBlackout;
-CGFloat chatListImageBlackout;
-CGFloat groupsListImageBlackout;
-CGFloat audioImageBlackout;
-CGFloat navbarImageBlackout;
-CGFloat friendsImageBlackout;
-CGFloat videosImageBlackout;
-CGFloat settingsImageBlackout;
-CGFloat settingsExtraImageBlackout;
-
-
-CGFloat appCornerRadius;
-
-
-BOOL useMenuParallax;
-BOOL useMessagesListParallax;
-BOOL useMessagesParallax;
-BOOL useGroupsListParallax;
-BOOL useAudioParallax;
-BOOL useFriendsParallax;
-BOOL useVideosParallax;
-BOOL useSettingsParallax;
-BOOL useSettingsExtraParallax;
-
-BOOL hideMessagesNavBarItems;
-
-BOOL hideMenuSearch;
-BOOL changeSwitchColor;
-BOOL changeSBColors;
-BOOL shouldCheckUpdates;
-
-BOOL useMessageBubbleTintColor;
-BOOL useCustomMessageReadColor;
-
-BOOL showCommentSeparators;
-BOOL disableGroupCovers;
-
-BOOL changeMenuTextColor;
-BOOL changeMessagesListTextColor;
-BOOL changeMessagesTextColor;
-BOOL changeGroupsListTextColor;
-BOOL changeAudiosTextColor;
-BOOL changeFriendsTextColor;
-BOOL changeVideosTextColor;
-BOOL changeSettingsTextColor;
-BOOL changeSettingsExtraTextColor;
-BOOL changeMessagesInput;
-
-BOOL useCustomDialogsUnreadColor;
-UIColor *dialogsUnreadColor;
-
-UIColor *menuSeparatorColor;
-UIColor *barBackgroundColor;
-UIColor *barForegroundColor;
-UIColor *toolBarBackgroundColor;
-UIColor *toolBarForegroundColor;
-UIColor *tabbarForegroundColor;
-UIColor *tabbarBackgroundColor;
-UIColor *tabbarSelForegroundColor;
-UIColor *SBBackgroundColor;
-UIColor *SBForegroundColor;
-UIColor *switchesTintColor;
-UIColor *switchesOnTintColor;
-
-UIColor *messageBubbleTintColor;
-UIColor *messageBubbleSentTintColor;
-UIColor *messageUnreadColor;
-
-UIColor *menuTextColor;
-UIColor *messagesListTextColor;
-UIColor *messagesTextColor;
-UIColor *groupsListTextColor;
-UIColor *audiosTextColor;
-UIColor *friendsTextColor;
-UIColor *videosTextColor;
-UIColor *settingsTextColor;
-UIColor *settingsExtraTextColor;
-
-UIColor *messagesInputTextColor;
-UIColor *messagesInputBackColor;
-
-UIColor *audioPlayerTintColor;
-UIColor *menuSelectionColor;
-
-
-UIColor *messagesBlurTone;
-UIColor *messagesListBlurTone;
-UIColor *groupsListBlurTone;
-UIColor *audiosBlurTone;
-UIColor *friendsBlurTone;
-UIColor *videosBlurTone;
-UIColor *settingsBlurTone;
-UIColor *settingsExtraBlurTone;
-UIColor *menuBlurTone;
-
-BOOL messagesUseBlur;
-BOOL messagesListUseBlur;
-BOOL groupsListUseBlur;
-BOOL audiosUseBlur;
-BOOL friendsUseBlur;
-BOOL videosUseBlur;
-BOOL settingsUseBlur;
-BOOL settingsExtraUseBlur;
-BOOL menuUseBlur;
-
-BOOL messagesUseBackgroundBlur;
-BOOL messagesListUseBackgroundBlur;
-BOOL groupsListUseBackgroundBlur;
-BOOL audiosUseBackgroundBlur;
-BOOL friendsUseBackgroundBlur;
-BOOL videosUseBackgroundBlur;
-BOOL settingsUseBackgroundBlur;
-BOOL settingsExtraUseBackgroundBlur;
-BOOL menuUseBackgroundBlur;
-
-
-CVKCellSelectionStyle menuSelectionStyle;
-UIKeyboardAppearance keyboardStyle;
-
-UIBlurEffectStyle menuBlurStyle;
-UIBlurEffectStyle messagesBlurStyle;
-UIBlurEffectStyle messagesListBlurStyle;
-UIBlurEffectStyle groupsListBlurStyle;
-UIBlurEffectStyle audiosBlurStyle;
-UIBlurEffectStyle friendsBlurStyle;
-UIBlurEffectStyle videosBlurStyle;
-UIBlurEffectStyle settingsBlurStyle;
-UIBlurEffectStyle settingsExtraBlurStyle;
-
-//NSString *customFontName;
-
-ColoredVKMainController *cvkMainController;
-
-
 #pragma mark VKMController
 CHDeclareClass(VKMController);
 CHDeclareMethod(0, void, VKMController, VKMNavigationBarUpdate)
@@ -303,74 +126,13 @@ CHDeclareMethod(2, UITableViewCell*, VKMLiveController, tableView, UITableView*,
     return cell;
 }
 
-
 #pragma mark VKMController
-    // Настройка бара навигации
+// Настройка бара навигации
 CHDeclareClass(VKMController);
 CHDeclareMethod(0, void, VKMController, loadView)
 {
     CHSuper(0, VKMController, loadView);
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        BOOL shouldAddBlur = NO;
-        UIColor *blurColor = [UIColor clearColor];
-        UIBlurEffectStyle blurStyle = 0;
-        if (enabled) {
-            NSString *selfName = CLASS_NAME(self);
-            NSString *modelName = CLASS_NAME(self.model);
-            NSArray *audioControllers = @[@"AudioAlbumController", @"AudioAlbumsController", @"AudioPlaylistController", @"AudioDashboardController", 
-                                          @"AudioCatalogController", @"AudioCatalogOwnersListController", @"AudioCatalogAudiosListController", 
-                                          @"AudioPlaylistDetailController", @"AudioPlaylistsController"];
-            NSArray *friendsControllers = @[@"ProfileFriendsController", @"FriendsBDaysController", @"FriendsAllRequestsController"];
-            NSArray *settingsExtraControllers = @[@"ProfileBannedController", @"ModernGeneralSettings", @"ModernAccountSettings",
-                                                  @"SettingsPrivacyController", @"PaymentsBalanceController", @"SubscriptionSettingsViewController", 
-                                                  @"AboutViewController", @"ModernPushSettingsController", @"VKP2PViewController", 
-                                                  @"SubscriptionsSettingsViewController"];
-            
-            if (messagesUseBlur && ([selfName isEqualToString:@"MultiChatController"] || [selfName isEqualToString:@"SingleUserChatController"])) {
-                shouldAddBlur = YES;
-                blurColor = messagesBlurTone;
-                blurStyle = messagesBlurStyle;
-            } else if (groupsListUseBlur && ([selfName isEqualToString:@"GroupsController"] || [modelName isEqualToString:@"GroupsSearchModel"])) {
-                shouldAddBlur = YES;
-                blurColor = groupsListBlurTone;
-                blurStyle = groupsListBlurStyle;
-            } else if (messagesListUseBlur && [selfName isEqualToString:@"DialogsController"]) {
-                shouldAddBlur = YES;
-                blurColor = messagesListBlurTone;
-                blurStyle = messagesListBlurStyle;
-            } else if (audiosUseBlur && [audioControllers containsObject:selfName]) {
-                shouldAddBlur = YES;
-                blurColor = audiosBlurTone;
-                blurStyle = audiosBlurStyle;
-            } 
-            else if (friendsUseBlur && ([friendsControllers containsObject:selfName] || [modelName isEqualToString:@"ProfileFriendsModel"])) {
-                shouldAddBlur = YES;
-                blurColor = friendsBlurTone;
-                blurStyle = friendsBlurStyle;
-            } else if (videosUseBlur && ([selfName isEqualToString:@"VideoAlbumController"] || [modelName isEqualToString:@"VideoAlbumModel"])) {
-                shouldAddBlur = YES;
-                blurColor = videosBlurTone;
-                blurStyle = videosBlurStyle;
-            } else if (settingsUseBlur && [selfName isEqualToString:@"ModernSettingsController"]) {
-                shouldAddBlur = YES;
-                blurColor = settingsBlurTone;
-                blurStyle = settingsBlurStyle;
-            } else if (settingsExtraUseBlur && [settingsExtraControllers containsObject:selfName]) {
-                shouldAddBlur = YES;
-                blurColor = settingsExtraBlurTone;
-                blurStyle = settingsExtraBlurStyle;
-            } else if (menuUseBlur && [selfName isEqualToString:@"MenuViewController"]) {
-                shouldAddBlur = YES;
-                blurColor = menuBlurTone;
-                blurStyle = menuBlurStyle;
-            } else shouldAddBlur = NO;
-        } else shouldAddBlur = NO;
-        
-        objc_setAssociatedObject(self, "cvkShouldAddBlur", @(shouldAddBlur), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        objc_setAssociatedObject(self, "cvkBlurColor", blurColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        objc_setAssociatedObject(self, "cvkBlurStyle", @(blurStyle), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    });
+    updateControllerBlurInfo(self, nil);
 }
 
 CHDeclareMethod(1, void, VKMController, viewWillAppear, BOOL, animated)
@@ -380,43 +142,52 @@ CHDeclareMethod(1, void, VKMController, viewWillAppear, BOOL, animated)
     if (![self isKindOfClass:NSClassFromString(@"VKMTableController")] && ![self isKindOfClass:NSClassFromString(@"DialogsController")])
         return;
     
-    UIColor *blurColor = objc_getAssociatedObject(self, "cvkBlurColor");
-    if (!blurColor)
-        blurColor = [UIColor clearColor];
-    
-    __block NSNumber *shouldAddBlur = objc_getAssociatedObject(self, "cvkShouldAddBlur");
-    if (!shouldAddBlur)
-        shouldAddBlur = @NO;
-    
-    NSNumber *blurStyle = objc_getAssociatedObject(self, "cvkBlurStyle");
-    if (!blurStyle)
-        blurStyle = @0;
-    
-    if (enabled && enableNightTheme) {
-        shouldAddBlur = @NO;
+    void (^setupBlock)(void) = ^{
+        UIColor *blurColor = objc_getAssociatedObject(self, "cvkBlurColor");
+        if (!blurColor)
+            blurColor = [UIColor clearColor];
         
-        if ([self respondsToSelector:@selector(tableView)]) {
-            UITableView *tableView = objc_msgSend(self, @selector(tableView));
-            if ([tableView.tableHeaderView isKindOfClass:[UISearchBar class]]) {
-                UISearchBar *searchBar = (UISearchBar *)tableView.tableHeaderView;
-                
-                searchBar.barTintColor = cvkMainController.nightThemeScheme.foregroundColor;
-                searchBar.translucent = NO;
-                [searchBar setBackgroundImage:[UIImage imageWithColor:cvkMainController.nightThemeScheme.foregroundColor] 
-                               forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
-                searchBar.searchBarTextField.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
-                searchBar.scopeBarBackgroundImage = [UIImage imageWithColor:cvkMainController.nightThemeScheme.foregroundColor];
+        __block NSNumber *shouldAddBlur = objc_getAssociatedObject(self, "cvkShouldAddBlur");
+        if (!shouldAddBlur) 
+            shouldAddBlur = @NO;
+        
+        NSNumber *blurStyle = objc_getAssociatedObject(self, "cvkBlurStyle");
+        if (!blurStyle)
+            blurStyle = @0;
+        
+        if (enabled && enableNightTheme) {
+            shouldAddBlur = @NO;
+            
+            if ([self respondsToSelector:@selector(tableView)]) {
+                UITableView *tableView = objc_msgSend(self, @selector(tableView));
+                if ([tableView.tableHeaderView isKindOfClass:[UISearchBar class]]) {
+                    UISearchBar *searchBar = (UISearchBar *)tableView.tableHeaderView;
+                    
+                    searchBar.barTintColor = cvkMainController.nightThemeScheme.foregroundColor;
+                    searchBar.translucent = NO;
+                    [searchBar setBackgroundImage:[UIImage imageWithColor:cvkMainController.nightThemeScheme.foregroundColor] 
+                                   forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+                    searchBar.searchBarTextField.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+                    searchBar.scopeBarBackgroundImage = [UIImage imageWithColor:cvkMainController.nightThemeScheme.foregroundColor];
+                }
             }
         }
+        
+        resetNavigationBar(self.navigationController.navigationBar);
+        setBlur(self.navigationController.navigationBar, shouldAddBlur.boolValue, blurColor, blurStyle.integerValue);
+        
+        resetTabBar();
+        if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]])
+            setBlur(((UITabBarController *)cvkMainController.vkMainController).tabBar, shouldAddBlur.boolValue, blurColor, blurStyle.integerValue);
+    };
+    
+    if ([[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"] >= ColoredVKVersionCompareEqual) {
+        setupBlock();
+    } else {
+        updateControllerBlurInfo(self, setupBlock);
     }
-    
-    resetNavigationBar(self.navigationController.navigationBar);
-    setBlur(self.navigationController.navigationBar, shouldAddBlur.boolValue, blurColor, blurStyle.integerValue);
-    
-    resetTabBar();
-    if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]])
-        setBlur(((UITabBarController *)cvkMainController.vkMainController).tabBar, shouldAddBlur.boolValue, blurColor, blurStyle.integerValue);
 }
+
 
 
 #pragma mark VKMToolbarController
@@ -530,7 +301,7 @@ CHDeclareMethod(0, void, VKMMainController, viewWillLayoutSubviews)
 {
     CHSuper(0, VKMMainController, viewWillLayoutSubviews);
     
-    if (![self isKindOfClass:[UITabBarController class]] && enabled && enableNightTheme) {        
+    if (![self isKindOfClass:[UITabBarController class]] && enabled && enableNightTheme) {
         self.view.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
         if ([self.tableView.tableHeaderView isKindOfClass:[UISearchBar class]]) {
             self.tableView.tableHeaderView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
@@ -747,7 +518,7 @@ CHDeclareMethod(1, void, PhotoBrowserController, viewWillAppear, BOOL, animated)
             saveButton.rootViewController = self;
             NSMutableArray *buttons = [self.navigationItem.rightBarButtonItems mutableCopy];
             if (buttons.count < 2) [buttons addObject:saveButton];
-            self.navigationItem.rightBarButtonItems = [buttons copy];
+            self.navigationItem.rightBarButtonItems = buttons;
         }
     }
 }
@@ -878,29 +649,11 @@ CHDeclareMethod(2, UITableViewCell*, DialogsSearchController, tableView, UITable
 }
 
 
-void setupNewDialogsSearchController(DialogsSearchResultsController *controller)
-{
-    if (![controller respondsToSelector:@selector(tableView)])
-        return;
-    
-    if (enabled && !enableNightTheme && enabledMessagesListImage) {
-        if ([controller.parentViewController isKindOfClass:NSClassFromString(@"DialogsController")]) {
-            DialogsController *dialogsController = (DialogsController *)controller.parentViewController;
-            if ([dialogsController.tableView.backgroundView isKindOfClass:[ColoredVKWallpaperView class]]) {
-                controller.tableView.backgroundView = [dialogsController.tableView.backgroundView copy];
-                controller.tableView.separatorColor = dialogsController.tableView.separatorColor;
-            }
-        }
-    }
-}
-
-
+#pragma mark DialogsSearchResultsController
 CHDeclareClass(DialogsSearchResultsController);
-
 CHDeclareMethod(1, void, DialogsSearchResultsController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, DialogsSearchResultsController, viewWillAppear, animated);
-    
     setupNewDialogsSearchController(self);
 }
 
@@ -1397,7 +1150,7 @@ CHDeclareMethod(2, id, VKSession, initWithUserId, NSNumber *, userID, andToken, 
 
 CHConstructor
 {
-    @autoreleasepool {        
+    @autoreleasepool {
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         vksBundle = [NSBundle bundleWithPath:VKS_BUNDLE_PATH];
         cvkMainController = [ColoredVKMainController new];

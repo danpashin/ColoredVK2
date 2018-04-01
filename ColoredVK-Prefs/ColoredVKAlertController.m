@@ -18,6 +18,11 @@
 
 @implementation ColoredVKAlertController
 
++ (instancetype)alertControllerWithTitle:(nullable NSString *)title message:(nullable NSString *)message
+{
+    return [self alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+}
+
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     return [self init];

@@ -113,7 +113,7 @@
 }
 
 - (ColoredVKCellBackgroundView *)customBackgroundView
-{    
+{
     if ([self respondsToSelector:@selector(specifier)]) {
         PSSpecifier *specifier = objc_msgSend(self, @selector(specifier));
         if ([specifier isKindOfClass:NSClassFromString(@"PSSpecifier")]) {

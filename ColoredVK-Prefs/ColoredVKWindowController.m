@@ -71,7 +71,7 @@
 }
 
 - (void)setBackgroundStyle:(ColoredVKWindowBackgroundStyle)backgroundStyle
-{    
+{
     if ( UIAccessibilityIsReduceTransparencyEnabled() && (backgroundStyle == ColoredVKWindowBackgroundStyleBlurred))
         _backgroundStyle = ColoredVKWindowBackgroundStyleDarkened;
     else
@@ -79,7 +79,7 @@
 }
 
 - (void)setBackgroundView:(UIView *)backgroundView
-{    
+{
     if (self.isViewLoaded) {
         if (_backgroundView && [self.view.subviews containsObject:_backgroundView])
             [_backgroundView removeFromSuperview];
@@ -196,7 +196,7 @@
 }
 
 - (UIView *)backgroundView
-{    
+{
     if (!_backgroundView) {
         _backgroundView = self.defaultBackgroundView;
     }

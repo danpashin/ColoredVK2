@@ -46,12 +46,13 @@
     tweakSettings[self.specifier.identifier] = [NSString stringWithFormat:@"%.2f", value];
     [tweakSettings writeToFile:CVK_PREFS_PATH atomically:YES];
     
-    POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
-    if ([self.specifier.identifier isEqualToString:@"menuImageBlackout"]) {
+    if ([self.specifier.identifier isEqualToString:@"menuImageBlackout"])
         POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
-    } else if ([self.specifier.identifier isEqualToString:@"appCornerRadius"]) {
+    else
+        POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
+    
+    if ([self.specifier.identifier isEqualToString:@"appCornerRadius"])
         POST_CORE_NOTIFICATION(kPackageNotificationUpdateAppCorners);
-    }
 }
 
 @end

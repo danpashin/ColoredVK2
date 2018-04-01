@@ -8,13 +8,10 @@
 @class NewDialogCell, VKSearchBar;
 @class VKMBrowserController, VKMTableController;
 
-void reloadPrefs(void);
 void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 void updateCornerRadius(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
-
-void showAlertWithMessage(NSString *message);
 
 void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style);
 void setToolBar(UIToolbar *toolbar);
@@ -35,7 +32,7 @@ void resetNavigationBar(UINavigationBar *navBar);
 
 void uncaughtExceptionHandler(NSException *exception);
 
-void setupSearchController(UISearchDisplayController *controller, BOOL reset);
+extern void setupSearchController(UISearchDisplayController *controller, BOOL reset);
 void setupCellForSearchController(UITableViewCell *cell, UISearchDisplayController *searchController);
 void hideFastButtonForController(VKMBrowserController *browserController);
 
@@ -50,3 +47,6 @@ void resetNewSearchBar(VKSearchBar *searchBar);
 
 UIVisualEffectView *blurForView(UIView *view, NSInteger tag);
 NSAttributedString *attributedStringForNightTheme(NSAttributedString * text);
+
+void setupNewDialogsSearchController(DialogsSearchResultsController *controller);
+void updateControllerBlurInfo(UIViewController *controller, void (^completion)(void) );

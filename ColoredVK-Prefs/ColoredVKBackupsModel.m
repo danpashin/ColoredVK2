@@ -52,7 +52,6 @@
             
             error ? [hud showFailure] : [hud showSuccess];
             
-            POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
             POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
         });
     }]];
@@ -122,7 +121,6 @@
                 
                 movingError ? [hud showFailureWithStatus:movingError.localizedDescription] : [hud showSuccess];
                 
-                POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
                 POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
                 
                 if ([self.delegate respondsToSelector:@selector(backupsModel:didEndRestoringBackup:)])
@@ -145,12 +143,10 @@
             }
         }
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            _availableBackups = availableBackups;
-            
-            if ([self.delegate respondsToSelector:@selector(backupsModel:didEndUpdatingBackups:)])
-                [self.delegate backupsModel:self didEndUpdatingBackups:self.availableBackups];
-        });
+        self->_availableBackups = availableBackups;
+        
+        if ([self.delegate respondsToSelector:@selector(backupsModel:didEndUpdatingBackups:)])
+            [self.delegate backupsModel:self didEndUpdatingBackups:self.availableBackups];
     });
 }
 

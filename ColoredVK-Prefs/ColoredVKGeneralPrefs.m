@@ -96,13 +96,14 @@
         [self.cachedPrefs removeObjectForKey:colorPicker.identifier];
     
     [self writePrefsWithCompetion:^{
-        POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
         [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.prefs.colorUpdate" 
                                                             object:nil userInfo:@{@"identifier":colorPicker.identifier}];
         
         NSArray *identificsToReloadMenu = @[@"MenuSeparatorColor", @"switchesTintColor", @"switchesOnTintColor", @"menuTextColor"];
         if ([identificsToReloadMenu containsObject:colorPicker.identifier])
             POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
+        else
+            POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
         
         if ([ColoredVKNewInstaller sharedInstaller].application.isVKApp) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -185,7 +186,7 @@
         hud.didHiddenBlock = ^{
             [picker dismissViewControllerAnimated:YES completion:nil];
         };
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{                
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             PHFetchOptions *options = [PHFetchOptions new];
             PHFetchResult<PHAsset *> *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetDataArray.firstObject.assetId] options:options];
             if (fetchResult.count != 1) {

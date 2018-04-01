@@ -32,7 +32,7 @@ CHDeclareMethod(0, void, GroupsController, viewDidLoad)
                 search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.1f];
                 search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder 
                                                                                                   attributes:@{NSForegroundColorAttributeName:textColor}];
-            }            
+            }
         }
     }
 }

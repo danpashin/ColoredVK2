@@ -68,7 +68,7 @@
 }
 
 - (void)buttonUpdatedState:(UIButton *)button
-{    
+{
     [self button:button setHighlighted:(button.state != UIControlStateNormal)];
 }
 

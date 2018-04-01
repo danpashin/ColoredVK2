@@ -29,7 +29,7 @@
 - (instancetype)initWithFile:(NSString *)fileName localized:(BOOL)localized
 {
     self = [super initWithNibName:nil bundle:nil];
-    if (self) {        
+    if (self) {
         if (fileName) {
             NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
             NSString *extension = @"rtf";

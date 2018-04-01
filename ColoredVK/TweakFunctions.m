@@ -7,20 +7,9 @@
 
 #import "Tweak.h"
 
-void showAlertWithMessage(NSString *message)
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:@"ColoredVK 2" message:message preferredStyle:UIAlertControllerStyleAlert];
-        [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
-        [alertController present];
-    });
-}
-
-
 void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
+    void (^setBlurBlock)(void) = ^{
         if (set && !UIAccessibilityIsReduceTransparencyEnabled()) {
             UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:style]];
             blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -110,7 +99,12 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
                 if ([bar.subviews containsObject:[bar viewWithTag:10]]) [[bar viewWithTag:10] removeFromSuperview];
             }
         }
-    });
+    };
+    
+    if (![[NSThread currentThread] isMainThread])
+        dispatch_async(dispatch_get_main_queue(), setBlurBlock);
+    else
+        setBlurBlock();
 }
 
 void setupTranslucence(UIView *view, UIColor *backColor, BOOL remove)
@@ -342,15 +336,13 @@ void setupSearchController(UISearchDisplayController *controller, BOOL reset)
                         VKMTableController *tableController = (VKMTableController *)dropdown.currentViewController;
                         if ([tableController respondsToSelector:@selector(tableView)] && [tableController.tableView.backgroundView isKindOfClass:[ColoredVKWallpaperView class]]) {
                             ColoredVKWallpaperView *backView = (ColoredVKWallpaperView*)tableController.tableView.backgroundView;
-                            ColoredVKWallpaperView *imageView = [ColoredVKWallpaperView viewWithFrame:[UIScreen mainScreen].bounds imageName:backView.name blackout:backView.blackout];
-                            controller.searchResultsTableView.backgroundView = imageView;
+                            controller.searchResultsTableView.backgroundView = [backView copy];
                         }
                     } else if ([navigation.childViewControllers.firstObject respondsToSelector:@selector(tableView)]) {
                         VKMTableController *tableController = (VKMTableController*)navigation.childViewControllers.firstObject;
                         if ([tableController.tableView.backgroundView isKindOfClass:[ColoredVKWallpaperView class]]) {
                             ColoredVKWallpaperView *backView = (ColoredVKWallpaperView*)tableController.tableView.backgroundView;
-                            ColoredVKWallpaperView *imageView = [ColoredVKWallpaperView viewWithFrame:[UIScreen mainScreen].bounds imageName:backView.name blackout:backView.blackout];
-                            controller.searchResultsTableView.backgroundView = imageView;
+                            controller.searchResultsTableView.backgroundView = [backView copy];
                         }
                     }
                 }
@@ -651,41 +643,40 @@ NSAttributedString *attributedStringForNightTheme(NSAttributedString * text)
 {
     NSMutableAttributedString *mutableString = [[NSMutableAttributedString alloc] initWithAttributedString:text];
     if (enabled && enableNightTheme) {
-        [mutableString enumerateAttributesInRange:NSMakeRange(0, mutableString.length) options:0 
-                                       usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
+        [mutableString enumerateAttributesInRange:NSMakeRange(0, mutableString.length) options:0 usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
                                            
-                                           void (^setColor)(BOOL isLink, BOOL forMOCTLabel, BOOL detailed) = ^(BOOL isLink, BOOL forMOCTLabel, BOOL detailed) {
-                                               NSString *attribute = forMOCTLabel ? @"CTForegroundColor" : NSForegroundColorAttributeName;
-                                               
-                                               id textColor = cvkMainController.nightThemeScheme.textColor;
-                                               if (isLink)
-                                                   textColor = cvkMainController.nightThemeScheme.linkTextColor;
-                                               if (detailed)
-                                                   textColor = cvkMainController.nightThemeScheme.detailTextColor;
-                                               
-                                               if (forMOCTLabel) {
-                                                   textColor = (id)((UIColor *)textColor).CGColor;
-                                                   if (isLink) {
-                                                       [mutableString addAttribute:@"MOCTLinkInactiveAttributeName" value:@{@"CTForegroundColor": textColor} range:range];
-                                                       [mutableString addAttribute:@"MOCTLinkActiveAttributeName" value:@{@"CTForegroundColor": textColor} range:range];
-                                                   }
-                                               }
-                                               [mutableString addAttribute:attribute value:textColor range:range];
-                                           };
-                                           
-                                           if (attrs[@"MOCTLinkAttributeName"])
-                                               setColor(YES, YES, NO);
-                                           else if (attrs[@"VKTextLink"] || attrs[@"NSLink"])
-                                               setColor(YES, NO, NO);
-                                           else {
-                                               if (attrs[@"CTForegroundColor"])
-                                                   setColor(NO, YES, NO);
-                                               else if (attrs[@"CVKDetailed"])
-                                                   setColor(NO, NO, YES);
-                                               else
-                                                   setColor(NO, NO, NO);
-                                           }
-                                       }];
+            void (^setColor)(BOOL isLink, BOOL forMOCTLabel, BOOL detailed) = ^(BOOL isLink, BOOL forMOCTLabel, BOOL detailed) {
+                NSString *attribute = forMOCTLabel ? @"CTForegroundColor" : NSForegroundColorAttributeName;
+                
+                id textColor = cvkMainController.nightThemeScheme.textColor;
+                if (isLink)
+                    textColor = cvkMainController.nightThemeScheme.linkTextColor;
+                if (detailed)
+                    textColor = cvkMainController.nightThemeScheme.detailTextColor;
+                
+                if (forMOCTLabel) {
+                    textColor = (id)((UIColor *)textColor).CGColor;
+                    if (isLink) {
+                        [mutableString addAttribute:@"MOCTLinkInactiveAttributeName" value:@{@"CTForegroundColor": textColor} range:range];
+                        [mutableString addAttribute:@"MOCTLinkActiveAttributeName" value:@{@"CTForegroundColor": textColor} range:range];
+                    }
+                }
+                [mutableString addAttribute:attribute value:textColor range:range];
+            };
+            
+            if (attrs[@"MOCTLinkAttributeName"])
+                setColor(YES, YES, NO);
+            else if (attrs[@"VKTextLink"] || attrs[@"NSLink"])
+                setColor(YES, NO, NO);
+            else {
+                if (attrs[@"CTForegroundColor"])
+                    setColor(NO, YES, NO);
+                else if (attrs[@"CVKDetailed"])
+                    setColor(NO, NO, YES);
+                else
+                    setColor(NO, NO, NO);
+            }
+        }];
     }
     
     return mutableString;
@@ -728,21 +719,22 @@ void hideFastButtonForController(VKMBrowserController *browserController)
 
 void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
-    reloadPrefs();
-    if ([cvkMainController.vkMainController respondsToSelector:@selector(dialogsController)]) {
-        DialogsController *dialogsController = (DialogsController *)cvkMainController.vkMainController.dialogsController;
-        if ([dialogsController respondsToSelector:@selector(tableView)]) {
-            [dialogsController.tableView reloadData];
+    reloadPrefs(^{
+        if ([cvkMainController.vkMainController respondsToSelector:@selector(dialogsController)]) {
+            DialogsController *dialogsController = (DialogsController *)cvkMainController.vkMainController.dialogsController;
+            if ([dialogsController respondsToSelector:@selector(tableView)]) {
+                [dialogsController.tableView reloadData];
+            }
         }
-    }
-    [cvkMainController reloadSwitch:enabled];
-    
-    setupTabbar();
+        [cvkMainController reloadSwitch:enabled];
+        
+        setupTabbar();
+    });
 }
 
 void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    reloadPrefs(^{
         BOOL shouldShow = (enabled && !enableNightTheme && enabledMenuImage);
         
         VKMLiveController *menuController = nil;
@@ -891,4 +883,87 @@ void setupNightTextField(UITextField *textField)
             placeholderLabel.textColor = cvkMainController.nightThemeScheme.detailTextColor;
         }
     }
+}
+
+void setupNewDialogsSearchController(DialogsSearchResultsController *controller)
+{
+    if (![controller respondsToSelector:@selector(tableView)])
+        return;
+    
+    if (enabled && !enableNightTheme && enabledMessagesListImage) {
+        if ([controller.parentViewController isKindOfClass:NSClassFromString(@"DialogsController")]) {
+            DialogsController *dialogsController = (DialogsController *)controller.parentViewController;
+            if ([dialogsController.tableView.backgroundView isKindOfClass:[ColoredVKWallpaperView class]]) {
+                controller.tableView.backgroundView = [dialogsController.tableView.backgroundView copy];
+                controller.tableView.separatorColor = dialogsController.tableView.separatorColor;
+            }
+        }
+    }
+}
+
+void updateControllerBlurInfo(UIViewController *controller, void (^completion)(void) )
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        BOOL shouldAddBlur = NO;
+        UIColor *blurColor = [UIColor clearColor];
+        UIBlurEffectStyle blurStyle = 0;
+        if (enabled) {
+            NSString *selfName = CLASS_NAME(controller);
+            NSString *modelName = [controller respondsToSelector:@selector(model)] ? CLASS_NAME(objc_msgSend(controller, @selector(model))) : @"";
+            NSArray *audioControllers = @[@"AudioAlbumController", @"AudioAlbumsController", @"AudioPlaylistController", @"AudioDashboardController", 
+                                          @"AudioCatalogController", @"AudioCatalogOwnersListController", @"AudioCatalogAudiosListController", 
+                                          @"AudioPlaylistDetailController", @"AudioPlaylistsController"];
+            NSArray *friendsControllers = @[@"ProfileFriendsController", @"FriendsBDaysController", @"FriendsAllRequestsController"];
+            NSArray *settingsExtraControllers = @[@"ProfileBannedController", @"ModernGeneralSettings", @"ModernAccountSettings",
+                                                  @"SettingsPrivacyController", @"PaymentsBalanceController", @"SubscriptionSettingsViewController", 
+                                                  @"AboutViewController", @"ModernPushSettingsController", @"VKP2PViewController", 
+                                                  @"SubscriptionsSettingsViewController"];
+            
+            if (messagesUseBlur && ([selfName isEqualToString:@"MultiChatController"] || [selfName isEqualToString:@"SingleUserChatController"])) {
+                shouldAddBlur = YES;
+                blurColor = messagesBlurTone;
+                blurStyle = messagesBlurStyle;
+            } else if (groupsListUseBlur && ([selfName isEqualToString:@"GroupsController"] || [modelName isEqualToString:@"GroupsSearchModel"])) {
+                shouldAddBlur = YES;
+                blurColor = groupsListBlurTone;
+                blurStyle = groupsListBlurStyle;
+            } else if (messagesListUseBlur && [selfName isEqualToString:@"DialogsController"]) {
+                shouldAddBlur = YES;
+                blurColor = messagesListBlurTone;
+                blurStyle = messagesListBlurStyle;
+            } else if (audiosUseBlur && [audioControllers containsObject:selfName]) {
+                shouldAddBlur = YES;
+                blurColor = audiosBlurTone;
+                blurStyle = audiosBlurStyle;
+            } 
+            else if (friendsUseBlur && ([friendsControllers containsObject:selfName] || [modelName isEqualToString:@"ProfileFriendsModel"])) {
+                shouldAddBlur = YES;
+                blurColor = friendsBlurTone;
+                blurStyle = friendsBlurStyle;
+            } else if (videosUseBlur && ([selfName isEqualToString:@"VideoAlbumController"] || [modelName isEqualToString:@"VideoAlbumModel"])) {
+                shouldAddBlur = YES;
+                blurColor = videosBlurTone;
+                blurStyle = videosBlurStyle;
+            } else if (settingsUseBlur && [selfName isEqualToString:@"ModernSettingsController"]) {
+                shouldAddBlur = YES;
+                blurColor = settingsBlurTone;
+                blurStyle = settingsBlurStyle;
+            } else if (settingsExtraUseBlur && [settingsExtraControllers containsObject:selfName]) {
+                shouldAddBlur = YES;
+                blurColor = settingsExtraBlurTone;
+                blurStyle = settingsExtraBlurStyle;
+            } else if (menuUseBlur && [selfName isEqualToString:@"MenuViewController"]) {
+                shouldAddBlur = YES;
+                blurColor = menuBlurTone;
+                blurStyle = menuBlurStyle;
+            } else shouldAddBlur = NO;
+        } else shouldAddBlur = NO;
+        
+        objc_setAssociatedObject(controller, "cvkShouldAddBlur", @(shouldAddBlur), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(controller, "cvkBlurColor", blurColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(controller, "cvkBlurStyle", @(blurStyle), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        
+        if (completion)
+            completion();
+    });
 }

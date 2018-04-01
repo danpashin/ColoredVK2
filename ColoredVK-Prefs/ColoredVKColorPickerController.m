@@ -346,7 +346,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 {
     self.savedColors = [NSMutableArray array];
     if ([self.dataSource respondsToSelector:@selector(savedColorsForColorPicker:)]) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{ 
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSArray <NSString *> *savedColors = [self.dataSource savedColorsForColorPicker:self];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.savedCollectionView performBatchUpdates:^{
@@ -480,7 +480,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 }
 
 - (void)actionSaveColor
-{    
+{
     if (![self.savedColors containsObject:self.customHexColor]) {
         [self.savedColors insertObject:self.customHexColor atIndex:0];
         

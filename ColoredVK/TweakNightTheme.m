@@ -402,7 +402,7 @@ CHDeclareMethod(0, void, UICollectionViewCell, layoutSubviews)
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"vkm.MessageCell")]) {
         
         CALayer *layer = self.backgroundView.layer;
-        if ([layer isKindOfClass:[CAShapeLayer class]]) {                
+        if ([layer isKindOfClass:[CAShapeLayer class]]) {
             CAShapeLayer *shapeLayer = (CAShapeLayer *)layer;
             
 //            CGRect screenBounds = [UIScreen mainScreen].bounds;
@@ -1279,8 +1279,6 @@ CHDeclareMethod(1, void, VKProfileInfoItem, setValue, NSAttributedString *, valu
     [mutableValue addAttribute:@"CVKDetailed" value:@1 range:NSMakeRange(0, mutableValue.length)];
     CHSuper(1, VKProfileInfoItem, setValue, mutableValue);
 }
-
-
 
 
 CHDeclareClass(SFSafariViewController);

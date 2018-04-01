@@ -115,7 +115,7 @@
 #pragma mark -
 
 - (void)showActionsController:(UILongPressGestureRecognizer *)recognizer
-{    
+{
     if ([self.specifier propertyForKey:@"enabled"] && ![[self.specifier propertyForKey:@"enabled"] boolValue])
         return;
     
@@ -216,11 +216,11 @@
 
 - (void)sendNotifications
 {
-    POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
     
-    if ([self.key isEqualToString:@"enabledMenuImage"]) {
+    if ([self.key isEqualToString:@"enabledMenuImage"])
         POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
-    }
+    else
+        POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
 }
 
 @end

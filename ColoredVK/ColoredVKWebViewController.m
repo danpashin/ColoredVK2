@@ -70,7 +70,7 @@
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
-{    
+{
     if ([keyPath isEqualToString:@"estimatedProgress"]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.progressView setProgress:[change[NSKeyValueChangeNewKey] floatValue] animated:YES];
@@ -84,7 +84,7 @@
 }
 
 - (void)presentFromController:(UIViewController *)controller 
-{    
+{
     ColoredVKNavigationController *navigationController = [[ColoredVKNavigationController alloc] initWithRootViewController:self];
     navigationController.supportsAllOrientations = YES;
     navigationController.prefersLargeTitle = NO;

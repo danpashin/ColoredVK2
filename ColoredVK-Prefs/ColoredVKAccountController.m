@@ -205,7 +205,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{    
+{
     return IS_IPAD ? 48.0f : 56.0f;
 }
 
@@ -254,8 +254,5 @@
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     });
 }
-
-
-
 
 @end
