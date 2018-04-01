@@ -53,24 +53,21 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
             }
         }
         
-        NSString *footerText = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"TWEAK_FOOTER_TEXT", nil, self.bundle, nil), 
-                                [UIDevice currentDevice].systemVersion, kPackageVersion, self.vkAppVersion];
-        PSSpecifier *footer = [PSSpecifier emptyGroupSpecifier];
-        [footer setProperty:[footerText stringByAppendingString:@"\n\n© Daniil Pashin 2018\nПри поддержке theux.ru"] forKey:@"footerText"];
-        [footer setProperty:@"1" forKey:@"footerAlignment"];
-        [specifiersArray addObject:footer];
+        if (specifiersArray.count > 0) {
+            NSString *vkVersion = self.cachedPrefs[@"vkVersion"] ? self.cachedPrefs[@"vkVersion"] : CVKLocalizedString(@"UNKNOWN");
+            NSString *footerText = [NSString stringWithFormat:CVKLocalizedStringInBundle(@"TWEAK_FOOTER_TEXT", self.bundle), 
+                                    [UIDevice currentDevice].systemVersion, kPackageVersion, vkVersion];
+            footerText = [footerText stringByAppendingString:@"\n\n© Daniil Pashin 2018\nПри поддержке theux.ru"];
+            
+            PSSpecifier *footer = [PSSpecifier emptyGroupSpecifier];
+            [footer setProperty:footerText forKey:@"footerText"];
+            [footer setProperty:@"1" forKey:@"footerAlignment"];
+            [specifiersArray addObject:footer];
+        }
         
         _specifiers = specifiersArray;
     }
     return _specifiers;
-}
-
-- (void)commonInit
-{
-    [super commonInit];
-    
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    self.vkAppVersion = prefs[@"vkVersion"] ? prefs[@"vkVersion"] : CVKLocalizedString(@"UNKNOWN");
 }
 
 - (void)loadView
@@ -141,8 +138,7 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
 - (void)setShowFreeVersionFooter:(BOOL)showFreeVersionFooter
 {
     _showFreeVersionFooter = showFreeVersionFooter;
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    if (![prefs[@"hideFreeVersionFooter"] boolValue]) {
+    if (![self.cachedPrefs[@"hideFreeVersionFooter"] boolValue]) {
         _showFreeVersionFooter = showFreeVersionFooter;
         self.freeVersionFooter.hidden = !showFreeVersionFooter;
     } else {
@@ -153,12 +149,11 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
 
 - (void)actionHideFreeVersionFooter
 {
-    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    prefs[@"hideFreeVersionFooter"] = @YES;
-    [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
-    
-    self.showFreeVersionFooter = NO;
-    [self reloadSpecifiers];
+    self.cachedPrefs[@"hideFreeVersionFooter"] = @YES;
+    [self writePrefsWithCompetion:^{
+        self.showFreeVersionFooter = NO;
+        [self reloadSpecifiers];
+    }];
 }
 
 - (void)actionOpenFaq
