@@ -116,7 +116,7 @@
 - (void)setContentView:(UIView *)contentView
 {
     if (self.isViewLoaded) {
-        if (self.view.subviews.count > 2 && [self.view.subviews[1] isEqual:self.contentView])
+        if (self.view.subviews.count > 1 && [self.view.subviews[1] isEqual:self.contentView])
             [self.contentView removeFromSuperview];
     }
     

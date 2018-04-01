@@ -44,12 +44,17 @@
 
 - (void)updateColorForIdentifier:(NSString *)identifier
 {
-    self.accessoryView.backgroundColor = [UIColor savedColorForIdentifier:identifier];
-    
-    CGFloat red = 0, green = 0, blue = 0, colorAlpha = 1.0f;
-    [self.accessoryView.backgroundColor getRed:&red green:&green blue:&blue alpha:&colorAlpha];
-    if (colorAlpha == 0.0f)
-        self.accessoryView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.9f];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        UIColor *color = [UIColor savedColorForIdentifier:identifier];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.accessoryView.backgroundColor = color;
+            
+            CGFloat red = 0, green = 0, blue = 0, colorAlpha = 1.0f;
+            [self.accessoryView.backgroundColor getRed:&red green:&green blue:&blue alpha:&colorAlpha];
+            if (colorAlpha == 0.0f)
+                self.accessoryView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.9f];
+        });
+    });
 }
 
 - (void)dealloc

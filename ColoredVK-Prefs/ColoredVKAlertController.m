@@ -123,8 +123,7 @@
 
 - (void)addCancelActionWithTitle:(NSString *)title
 {
-    [self addAction:[UIAlertAction actionWithTitle:title style:UIAlertActionStyleCancel 
-                                           handler:^(UIAlertAction *action) {}]];
+    [self addAction:[UIAlertAction actionWithTitle:title style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
 }
 
 @end

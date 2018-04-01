@@ -43,7 +43,7 @@
 - (void)loadView
 {
     [super loadView];
-    self.prefsTableView.allowsMultipleSelectionDuringEditing = NO;
+    self.table.allowsMultipleSelectionDuringEditing = NO;
     
     self.backupsModel = [ColoredVKBackupsModel new];
     self.backupsModel.delegate = self;
@@ -53,8 +53,7 @@
 {
     NSString *path = [NSString stringWithFormat:@"%@/%@", CVK_BACKUP_PATH, button.accessibilityValue];
     NSArray *items = @[[NSURL fileURLWithPath:path isDirectory:NO]];
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:items 
-                                                                             applicationActivities:nil];
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
     [self presentPopover:activityVC];
 }
 

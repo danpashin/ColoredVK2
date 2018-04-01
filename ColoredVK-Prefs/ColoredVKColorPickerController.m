@@ -344,24 +344,23 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 - (void)updateSavedColorsFromPrefs
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.savedColors = [NSMutableArray array];
-        if ([self.dataSource respondsToSelector:@selector(savedColorsForColorPicker:)]) {
-            [self.savedCollectionView performBatchUpdates:^{
-                NSArray <NSString *> *savedColors = [self.dataSource savedColorsForColorPicker:self];
-                
-                int collectionViewInsertIndex = 0;
-                for (int i=(int)savedColors.count-1; i>=0; i--) {
+    self.savedColors = [NSMutableArray array];
+    if ([self.dataSource respondsToSelector:@selector(savedColorsForColorPicker:)]) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{ 
+            NSArray <NSString *> *savedColors = [self.dataSource savedColorsForColorPicker:self];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.savedCollectionView performBatchUpdates:^{
+                    [[savedColors reverseObjectEnumerator].allObjects enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                        [self.savedColors addObject:obj];
+                        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+                        [self.savedCollectionView insertItemsAtIndexPaths:@[indexPath]];
+                    }];
                     
-                    [self.savedColors addObject:savedColors[i]];
-                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:collectionViewInsertIndex inSection:0];
-                    [self.savedCollectionView insertItemsAtIndexPaths:@[indexPath]];
-                    collectionViewInsertIndex++;
-                }
-                [self.savedCollectionView reloadData];
-            } completion:nil];
-        }
-    });
+                    [self.savedCollectionView reloadData];
+                } completion:nil];
+            });
+        });
+    } 
 }
 
 
@@ -416,13 +415,15 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 - (void)hide
 {
-    if (!self.state) self.state = ColoredVKColorPickerStateDismiss;
+    if (!self.state)
+        self.state = ColoredVKColorPickerStateDismiss;
+    
     if ([self.delegate respondsToSelector:@selector(colorPicker:willDismissWithColor:)]) {
         UIColor *color = (self.state == ColoredVKColorPickerStateDismiss) ? self.customColor : nil;
         [self.delegate colorPicker:self willDismissWithColor:color];
     }
-    self.backgroundView.backgroundColor = [UIColor clearColor];
     
+    self.backgroundView.backgroundColor = [UIColor clearColor];
     [super hide];
 }
 

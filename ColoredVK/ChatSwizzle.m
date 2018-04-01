@@ -96,10 +96,8 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
             tableView = self.tableView;
         }
         
-        if (!tableView) {
-            CVKLog(@"%s tableView is nil, stopping...", __FUNCTION__);
+        if (!tableView)
             return;
-        }
         
         UISearchBar *search = (UISearchBar*)tableView.tableHeaderView;
         if ([search isKindOfClass:[UISearchBar class]]) {
@@ -314,7 +312,9 @@ CHDeclareMethod(0, void, ChatController, viewDidLoad)
     wallView.flip = YES;
     
     if ([self respondsToSelector:@selector(tableView)]) {
-        self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
+        if ([self respondsToSelector:@selector(rptr)])
+            self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
+        
         if (self.tableView.backgroundView.tag != 23)
             self.tableView.backgroundView = wallView;
     } else {

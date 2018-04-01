@@ -19,7 +19,7 @@
 #import "TweakVariables.h"
 
 #import "CaptainHook/CaptainHook.h"
-#import "hookzz.h"
+#import <hookzz.h>
 
 
 #define CVKHookCFunction(return_type, name, args...)\

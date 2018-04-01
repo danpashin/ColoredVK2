@@ -40,8 +40,7 @@
             else
                 path = [cvkBundle URLForResource:fileName withExtension:extension subdirectory:@"plists"];
             
-            _attributedText = [[NSAttributedString alloc] initWithURL:path 
-                                                              options:@{NSDocumentTypeDocumentAttribute:NSRTFTextDocumentType} 
+            _attributedText = [[NSAttributedString alloc] initWithURL:path options:@{NSDocumentTypeDocumentAttribute:NSRTFTextDocumentType} 
                                                    documentAttributes:nil error:nil];
         }
     }

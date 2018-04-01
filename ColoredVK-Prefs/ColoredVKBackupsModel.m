@@ -15,6 +15,7 @@
 
 @interface ColoredVKBackupsModel ()
 @property (strong, nonatomic) NSBundle *cvkBundle;
+@property (strong, nonatomic) dispatch_queue_t backgroundQueue;
 @end
 
 @implementation ColoredVKBackupsModel
@@ -24,7 +25,9 @@
     self = [super init];
     if (self) {
         _availableBackups = @[];
+        self.backgroundQueue = dispatch_queue_create("ru.danpashin.coloredvk2.backups.queue", DISPATCH_QUEUE_CONCURRENT);
         self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+        
         [self updateBackups];
     }
     return self;
@@ -40,7 +43,7 @@
     [alertController addAction:[UIAlertAction actionWithTitle:resetTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         ColoredVKHUD *hud = [ColoredVKHUD showHUD];
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        dispatch_async(self.backgroundQueue, ^{
             NSError *error = nil;
             NSFileManager *fileManager = [NSFileManager defaultManager];
             [fileManager removeItemAtPath:CVK_PREFS_PATH error:&error];
@@ -61,7 +64,7 @@
 {
     ColoredVKHUD *hud = [ColoredVKHUD showHUD];
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+    dispatch_async(self.backgroundQueue, ^{
         NSMutableArray *files = @[CVK_PREFS_PATH].mutableCopy;
         
         NSFileManager *filemaneger = [NSFileManager defaultManager];
@@ -87,12 +90,12 @@
 {
     ColoredVKHUD *hud = [ColoredVKHUD showHUD];
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+    dispatch_async(self.backgroundQueue, ^{
         NSString *backupPath = [NSString stringWithFormat:@"%@/%@", CVK_BACKUP_PATH, file];
         NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingString:@"coloredvk2"];
         
         [SSZipArchive unzipFileAtPath:backupPath toDestination:tmpPath progressHandler:nil completionHandler:^(NSString *path, BOOL succeeded, NSError *error) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+            dispatch_async(self.backgroundQueue, ^{
                 if (!succeeded || error) {
                     [hud showFailureWithStatus:error.localizedDescription];
                     return;
@@ -132,7 +135,7 @@
 
 - (void)updateBackups
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+    dispatch_async(self.backgroundQueue, ^{
         NSMutableArray *availableBackups = [NSMutableArray array];
         
         for (NSString *filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:CVK_BACKUP_PATH error:nil]) {

@@ -16,7 +16,7 @@
 - (void)loadView
 {
     [super loadView];
-    self.prefsTableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.prefsTableView];
+    self.table.tableHeaderView = [ColoredVKHeaderView headerForView:self.table];
 }
 
 - (void)openDeveloperProfile

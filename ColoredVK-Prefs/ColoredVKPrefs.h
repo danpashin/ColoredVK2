@@ -17,9 +17,9 @@
 @interface ColoredVKPrefs : PSListController
 
 @property (strong, nonatomic, readonly) NSBundle *cvkBundle;
+@property (strong, nonatomic) NSMutableDictionary *cachedPrefs;
 
 @property (assign, nonatomic) BOOL shouldChangeSwitchColor;
-@property (weak, nonatomic) UITableView *prefsTableView;
 
 - (void)commonInit NS_REQUIRES_SUPER;
 
@@ -30,6 +30,9 @@
 
 - (id)readPreferenceValue:(PSSpecifier *)specifier;
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier;
+
+- (void)writePrefsWithCompetion:( void(^)(void) )completionBlock;
+- (void)readPrefsWithCompetion:( void(^)(void) )completionBlock;
 
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView;
 

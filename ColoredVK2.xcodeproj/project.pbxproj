@@ -59,10 +59,6 @@
 		A50883B51FFA4E5E00C05E2A /* ColoredVKAuthPageController.m in Sources */ = {isa = PBXBuildFile; fileRef = A50883AF1FFA4E5E00C05E2A /* ColoredVKAuthPageController.m */; };
 		A50883B71FFA504E00C05E2A /* ColoredVKAuth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A50883B61FFA504E00C05E2A /* ColoredVKAuth.storyboard */; };
 		A50883B81FFA504E00C05E2A /* ColoredVKAuth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A50883B61FFA504E00C05E2A /* ColoredVKAuth.storyboard */; };
-		A50C1330206E577B000ADAAF /* hookzz.h in Headers */ = {isa = PBXBuildFile; fileRef = A50C132F206E577B000ADAAF /* hookzz.h */; };
-		A50C1331206E577B000ADAAF /* hookzz.h in Headers */ = {isa = PBXBuildFile; fileRef = A50C132F206E577B000ADAAF /* hookzz.h */; };
-		A50C1333206E5798000ADAAF /* libhookzz.static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A50C1332206E5798000ADAAF /* libhookzz.static.a */; };
-		A50C1335206E5798000ADAAF /* libhookzz.static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A50C1332206E5798000ADAAF /* libhookzz.static.a */; };
 		A50D222E1DB16572007F195C /* NSDate+DateTools.h in Headers */ = {isa = PBXBuildFile; fileRef = A504C0701DAFE839006C5FBC /* NSDate+DateTools.h */; };
 		A50D222F1DB16572007F195C /* NSDate+DateTools.m in Sources */ = {isa = PBXBuildFile; fileRef = A504C0711DAFE839006C5FBC /* NSDate+DateTools.m */; };
 		A510E7CD1EF98866001D6798 /* ColoredVKColorCollectionViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = A510E7CB1EF98866001D6798 /* ColoredVKColorCollectionViewCell.h */; };
@@ -412,6 +408,8 @@
 		A5C988DB1F2BBE410054AC62 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F09DA51F101A5200024198 /* SafariServices.framework */; };
 		A5CAC06E2026340E0006DD4A /* ColoredVKUserInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5CAC06D2026340E0006DD4A /* ColoredVKUserInfoView.xib */; };
 		A5CAC06F2026340E0006DD4A /* ColoredVKUserInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5CAC06D2026340E0006DD4A /* ColoredVKUserInfoView.xib */; };
+		A5CBBAB420702637002BDBB9 /* libhookzz.static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A52147C82070250C00224F6B /* libhookzz.static.a */; };
+		A5CBBAB520702649002BDBB9 /* libhookzz.static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A52147C82070250C00224F6B /* libhookzz.static.a */; };
 		A5CC382E20401698005A3AB0 /* VKMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = A53D91991CCA82B400E45A49 /* VKMethods.h */; };
 		A5CC382F2040169D005A3AB0 /* NSString+ColoredVK.h in Headers */ = {isa = PBXBuildFile; fileRef = A58F34131D5A378100838814 /* NSString+ColoredVK.h */; };
 		A5CC385820401949005A3AB0 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A517D7991D78A25700DD153E /* MobileCoreServices.framework */; };
@@ -580,8 +578,6 @@
 		A50883AE1FFA4E5E00C05E2A /* ColoredVKAuthPageController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKAuthPageController.h; sourceTree = "<group>"; };
 		A50883AF1FFA4E5E00C05E2A /* ColoredVKAuthPageController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKAuthPageController.m; sourceTree = "<group>"; };
 		A50883B61FFA504E00C05E2A /* ColoredVKAuth.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ColoredVKAuth.storyboard; sourceTree = "<group>"; };
-		A50C132F206E577B000ADAAF /* hookzz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hookzz.h; sourceTree = "<group>"; };
-		A50C1332206E5798000ADAAF /* libhookzz.static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libhookzz.static.a; sourceTree = "<group>"; };
 		A510E7CB1EF98866001D6798 /* ColoredVKColorCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKColorCollectionViewCell.h; sourceTree = "<group>"; };
 		A510E7CC1EF98866001D6798 /* ColoredVKColorCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKColorCollectionViewCell.m; sourceTree = "<group>"; };
 		A510E7D31EF99CE9001D6798 /* ColoredVKSimpleAlertController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKSimpleAlertController.h; sourceTree = "<group>"; };
@@ -596,6 +592,7 @@
 		A51E68B82033231400B72082 /* ColoredVKCardController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKCardController.m; sourceTree = "<group>"; };
 		A52147C2206F844400224F6B /* TweakFunctions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TweakFunctions.h; sourceTree = "<group>"; };
 		A52147C5206F86AC00224F6B /* TweakVariables.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TweakVariables.h; sourceTree = "<group>"; };
+		A52147C82070250C00224F6B /* libhookzz.static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhookzz.static.a; path = ../../../../opt/iOSOpenDev/lib/libhookzz.static.a; sourceTree = "<group>"; };
 		A523509D1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKBarDownloadButton.h; sourceTree = "<group>"; };
 		A523509E1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKBarDownloadButton.m; sourceTree = "<group>"; };
 		A526A6BE1DD50D4700B47104 /* ColoredVKAudioLyricsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKAudioLyricsView.h; sourceTree = "<group>"; };
@@ -773,6 +770,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5CBBAB420702637002BDBB9 /* libhookzz.static.a in Frameworks */,
 				A5CC38662040368F005A3AB0 /* MobileCoreServices.framework in Frameworks */,
 				A5C988DA1F2BBE2F0054AC62 /* SafariServices.framework in Frameworks */,
 				A525A3921F2A382200F86EFF /* WebKit.framework in Frameworks */,
@@ -780,7 +778,6 @@
 				A50311E41D853E800075B177 /* libMobileGestalt.tbd in Frameworks */,
 				A5ED14591DE87E0000138A65 /* OpenGLES.framework in Frameworks */,
 				A589F66B1DE1B2F100467138 /* MediaPlayer.framework in Frameworks */,
-				A50C1333206E5798000ADAAF /* libhookzz.static.a in Frameworks */,
 				A5D979721DAEB8BC00607F06 /* CoreGraphics.framework in Frameworks */,
 				A5DA87DF1D944EB700763B5F /* ImageIO.framework in Frameworks */,
 				A50731D51CD535130088EF9F /* QuartzCore.framework in Frameworks */,
@@ -794,6 +791,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5CBBAB520702649002BDBB9 /* libhookzz.static.a in Frameworks */,
 				A564059A2068DA3C0033AF40 /* AudioToolbox.framework in Frameworks */,
 				A56405992068DA350033AF40 /* LocalAuthentication.framework in Frameworks */,
 				A5CC385820401949005A3AB0 /* MobileCoreServices.framework in Frameworks */,
@@ -812,7 +810,6 @@
 				A576D1901DC621B90039884F /* UIKit.framework in Frameworks */,
 				A576D1921DC621B90039884F /* Foundation.framework in Frameworks */,
 				C12A7E1FDC46683C897AAC44 /* libPods-ColoredVK-NonJail.a in Frameworks */,
-				A50C1335206E5798000ADAAF /* libhookzz.static.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -947,6 +944,7 @@
 		A5079FB41CC92157005B9693 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A52147C82070250C00224F6B /* libhookzz.static.a */,
 				A56405962068DA120033AF40 /* AudioToolbox.framework */,
 				A53818162066CBF100B4EF4B /* LocalAuthentication.framework */,
 				A5D3D0381FE012FC007AAEF7 /* Preferences.framework */,
@@ -1050,8 +1048,6 @@
 		A53D919D1CCA82C000E45A49 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				A50C1332206E5798000ADAAF /* libhookzz.static.a */,
-				A50C132F206E577B000ADAAF /* hookzz.h */,
 				A585E16E1EAF1E7C005B30F7 /* ColoredVKCoreData.h */,
 				A585E16F1EAF1E7C005B30F7 /* ColoredVKCoreData.m */,
 				A585E1681EAF1DEC005B30F7 /* ColoredVKAudioEntity.h */,
@@ -1309,7 +1305,6 @@
 				A5CC386520403670005A3AB0 /* ColoredVKNavigationController.h in Headers */,
 				A5BC53AA1F1234C200C4E1E0 /* ColoredVKAlertController.h in Headers */,
 				A5D9796E1DAEB88F00607F06 /* UIImage+ColoredVK.h in Headers */,
-				A50C1330206E577B000ADAAF /* hookzz.h in Headers */,
 				A52147C6206F86E400224F6B /* TweakVariables.h in Headers */,
 				A50883A61FFA48BC00C05E2A /* ColoredVKUserModel.h in Headers */,
 				A55434FB1E636B19003B4256 /* Tweak.h in Headers */,
@@ -1389,7 +1384,6 @@
 				A50138DD201F2D070007300C /* ColoredVKAccountRestoreController.h in Headers */,
 				A576D1971DC621B90039884F /* NSDate+DateTools.h in Headers */,
 				A5D2DFB61DE741CF00DCDC84 /* ColoredVKAudioCover.h in Headers */,
-				A50C1331206E577B000ADAAF /* hookzz.h in Headers */,
 				A53A2E68206BC8B200A22656 /* ColoredVKAccountController+Actions.h in Headers */,
 				A52350A01DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h in Headers */,
 				A5D9A6851FACDBD900403A49 /* ColoredVKPrefsSelector.h in Headers */,
@@ -2162,6 +2156,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ColoredVK",
+					/opt/iOSOpenDev/lib,
 				);
 			};
 			name = Release_DEB;
@@ -2175,6 +2170,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ColoredVK",
+					/opt/iOSOpenDev/lib,
 				);
 			};
 			name = Release_IPA;
@@ -2264,7 +2260,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = COMPILE_APP;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -2300,8 +2296,9 @@
 			buildSettings = {
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
+					"$(inherited)/**",
 					"$(PROJECT_DIR)/ColoredVK",
+					/opt/iOSOpenDev/lib,
 				);
 			};
 			name = Debug_APP;
@@ -2334,6 +2331,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ColoredVK",
+					/opt/iOSOpenDev/lib,
 				);
 			};
 			name = Debug_APP;
@@ -2400,7 +2398,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = COMPILE_FOR_JAIL;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -2435,8 +2433,9 @@
 			buildSettings = {
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
+					"$(inherited)/**",
 					"$(PROJECT_DIR)/ColoredVK",
+					/opt/iOSOpenDev/lib,
 				);
 			};
 			name = Release_DEB;
@@ -2492,7 +2491,7 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -2527,8 +2526,9 @@
 			buildSettings = {
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
+					"$(inherited)/**",
 					"$(PROJECT_DIR)/ColoredVK",
+					/opt/iOSOpenDev/lib,
 				);
 			};
 			name = Release_IPA;

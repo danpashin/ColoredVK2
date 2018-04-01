@@ -90,55 +90,51 @@
 
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker willDismissWithColor:(UIColor *)color
 {
-    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    
     if (color)
-        prefs[colorPicker.identifier] = color.stringValue;
-    else if (prefs[colorPicker.identifier])
-        [prefs removeObjectForKey:colorPicker.identifier];
+        self.cachedPrefs[colorPicker.identifier] = color.stringValue;
+    else if (self.cachedPrefs[colorPicker.identifier])
+        [self.cachedPrefs removeObjectForKey:colorPicker.identifier];
     
-    [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
-    
-    POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.prefs.colorUpdate" 
-                                                        object:nil userInfo:@{@"identifier":colorPicker.identifier}];
-    
-    NSArray *identificsToReloadMenu = @[@"MenuSeparatorColor", @"switchesTintColor", @"switchesOnTintColor", @"menuTextColor"];
-    if ([identificsToReloadMenu containsObject:colorPicker.identifier])
-        POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
-    
-    if ([ColoredVKNewInstaller sharedInstaller].application.isVKApp) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            UINavigationBar *navBar = self.navigationController.navigationBar;
-            navBar.barTintColor = navBar.barTintColor;
-            navBar.tintColor = navBar.tintColor;
-            navBar.titleTextAttributes = navBar.titleTextAttributes;
-        });
-    }
+    [self writePrefsWithCompetion:^{
+        POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.prefs.colorUpdate" 
+                                                            object:nil userInfo:@{@"identifier":colorPicker.identifier}];
+        
+        NSArray *identificsToReloadMenu = @[@"MenuSeparatorColor", @"switchesTintColor", @"switchesOnTintColor", @"menuTextColor"];
+        if ([identificsToReloadMenu containsObject:colorPicker.identifier])
+            POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
+        
+        if ([ColoredVKNewInstaller sharedInstaller].application.isVKApp) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                UINavigationBar *navBar = self.navigationController.navigationBar;
+                navBar.barTintColor = navBar.barTintColor;
+                navBar.tintColor = navBar.tintColor;
+                navBar.titleTextAttributes = navBar.titleTextAttributes;
+            });
+        }
+    }];
 }
 
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didSaveColor:(NSString *)hexColor
 {
-    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    NSMutableArray <NSString *> *savedColors = prefs[@"savedColors"] ? prefs[@"savedColors"] : [NSMutableArray array];
+    NSMutableArray <NSString *> *savedColors = self.cachedPrefs[@"savedColors"] ? self.cachedPrefs[@"savedColors"] : [NSMutableArray array];
     
     if (![savedColors containsObject:hexColor])
         [savedColors addObject:hexColor];
     
-    prefs[@"savedColors"] = savedColors;
-    [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
+    self.cachedPrefs[@"savedColors"] = savedColors;
+    [self writePrefsWithCompetion:nil];
 }
 
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didDeleteColor:(NSString *)hexColor
 {
-    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    NSMutableArray <NSString *> *savedColors = prefs[@"savedColors"] ? prefs[@"savedColors"] : [NSMutableArray array];
+    NSMutableArray <NSString *> *savedColors = self.cachedPrefs[@"savedColors"] ? self.cachedPrefs[@"savedColors"] : [NSMutableArray array];
     
     if ([savedColors containsObject:hexColor])
         [savedColors removeObject:hexColor];
     
-    prefs[@"savedColors"] = savedColors;
-    [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
+    self.cachedPrefs[@"savedColors"] = savedColors;
+    [self writePrefsWithCompetion:nil];
 }
 
 
@@ -148,10 +144,7 @@
 
 - (NSArray <NSString *> *)savedColorsForColorPicker:(ColoredVKColorPickerController *)colorPicker
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    NSArray <NSString *> *savedColors = prefs[@"savedColors"] ? prefs[@"savedColors"] : @[];
-    
-    return savedColors;
+    return self.cachedPrefs[@"savedColors"] ? self.cachedPrefs[@"savedColors"] : @[];
 }
 
 
@@ -261,8 +254,10 @@
 
 - (NSString *)cacheSize
 {
-    float size = (float)[SDImageCache sharedImageCache].getSize / 1024.0f / 1024.0f;
-    return [NSString stringWithFormat:@"%.1f MB", size];
+    @autoreleasepool {
+        float size = (float)[SDImageCache sharedImageCache].getSize / 1024.0f / 1024.0f;
+        return [NSString stringWithFormat:@"%.1f MB", size];
+    }
 }
 
 - (void)resetSettings

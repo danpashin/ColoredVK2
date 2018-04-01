@@ -120,8 +120,7 @@
 {
     _request = request;
     
-    ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-    [network sendRequest:request success:^(NSURLRequest *blockRequest, NSHTTPURLResponse *response, NSData *rawData) {
+    [[ColoredVKNetwork sharedNetwork] sendRequest:request success:^(NSURLRequest *blockRequest, NSHTTPURLResponse *response, NSData *rawData) {
         NSString *html = [[NSString alloc] initWithData:rawData encoding:NSUTF8StringEncoding];
         
         if (self.webView) {

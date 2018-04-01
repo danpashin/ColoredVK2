@@ -42,7 +42,7 @@
         
         self.operationQueue = [[NSOperationQueue alloc] init];
         self.operationQueue.name = @"com.daniilpashin.coloredvk2.network";
-        self.backgroundQueue = dispatch_queue_create("com.daniilpashin.coloredvk2.network.background", DISPATCH_QUEUE_CONCURRENT_WITH_AUTORELEASE_POOL);
+        self.backgroundQueue = dispatch_queue_create("com.daniilpashin.coloredvk2.network.background", DISPATCH_QUEUE_CONCURRENT);
         
         _session = [NSURLSession sessionWithConfiguration:self.configuration delegate:self delegateQueue:self.operationQueue];
     }

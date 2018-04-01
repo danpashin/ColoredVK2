@@ -28,10 +28,10 @@
 
 NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
 
-- (NSArray *)specifiers
+- (NSArray <PSSpecifier *> *)specifiers
 {
     if (!_specifiers) {
-        NSMutableArray *specifiersArray = [self specifiersForPlistName:@"Main" localize:YES].mutableCopy;
+        NSMutableArray <PSSpecifier *> *specifiersArray = [self specifiersForPlistName:@"Main" localize:YES].mutableCopy;
         
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
         
@@ -60,7 +60,7 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
         [footer setProperty:@"1" forKey:@"footerAlignment"];
         [specifiersArray addObject:footer];
         
-        _specifiers = specifiersArray.copy;
+        _specifiers = specifiersArray;
     }
     return _specifiers;
 }
@@ -76,16 +76,13 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
 - (void)loadView
 {
     [super loadView];
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        [[ColoredVKNewInstaller sharedInstaller] checkStatus];
-    });
+    [[ColoredVKNewInstaller sharedInstaller] checkStatus];
     
     cvkPrefsEnabledSpecifiers = @[@"enableTweakSwitch", @"navToolBarPrefsLink", @"menuPrefsLink", 
                                   @"messagesPrefsLink", @"manageAccount", @"aboutPrefsLink",
                                   @"tweakPrefsLink", @"faqLink"];
     
-    self.prefsTableView.tableHeaderView = [ColoredVKHeaderView headerForView:self.prefsTableView];   
+    self.table.tableHeaderView = [ColoredVKHeaderView headerForView:self.table];   
 }
 
 - (void)viewDidLoad
@@ -132,7 +129,7 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
         [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[button(44)]|" options:0 metrics:nil views:@{@"button":hideButton}]];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            footerLabel.textContainer.exclusionPaths = @[ [UIBezierPath bezierPathWithRect:CGRectMake(CGRectGetWidth(self.prefsTableView.frame)-48, 0, 48, 44)] ];
+            footerLabel.textContainer.exclusionPaths = @[ [UIBezierPath bezierPathWithRect:CGRectMake(CGRectGetWidth(self.table.frame)-48, 0, 48, 44)] ];
         });
         
         _freeVersionFooter = contentView;

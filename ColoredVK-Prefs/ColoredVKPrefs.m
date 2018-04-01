@@ -36,42 +36,32 @@
 - (void)commonInit
 {
     _cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    
+    [self readPrefsWithCompetion:^{
+        if (_specifiers && _specifiers.count > 0)
+            [self reloadSpecifiers];
+        
+        self.shouldChangeSwitchColor = ([self.cachedPrefs[@"enabled"] boolValue] && [self.cachedPrefs[@"changeSwitchColor"] boolValue]);
+        
+        ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+        BOOL vkApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
+        NSInteger themeType = [self.cachedPrefs[@"nightThemeType"] integerValue];
+        [nightThemeColorScheme updateForType:themeType];
+        nightThemeColorScheme.enabled = ((themeType != -1) && [self.cachedPrefs[@"enabled"] boolValue] && vkApp);
+    }];
 }
 
 - (void)loadView
 {
     [super loadView];
     
-    static BOOL changeSwitchColor = NO;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-        
-        changeSwitchColor = ([prefs[@"enabled"] boolValue] && [prefs[@"changeSwitchColor"] boolValue]);
-        
-        ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
-        BOOL vkApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
-        NSInteger themeType = [prefs[@"nightThemeType"] integerValue];
-        [nightThemeColorScheme updateForType:themeType];
-        nightThemeColorScheme.enabled = ((themeType != -1) && [prefs[@"enabled"] boolValue] && vkApp);
-    });
-    self.shouldChangeSwitchColor = changeSwitchColor;
-    
-    
-    for (UIView *view in self.view.subviews) {
-        if ([view isKindOfClass:[UITableView class]]) {
-            self.prefsTableView = (UITableView *)view;
-            self.prefsTableView.separatorColor = [UIColor clearColor];
-            break;
-        }
-    }
-    
-    self.prefsTableView.emptyDataSetSource = self;
-    self.prefsTableView.emptyDataSetDelegate = self;
+    self.table.separatorColor = [UIColor clearColor];
+    self.table.emptyDataSetSource = self;
+    self.table.emptyDataSetDelegate = self;
     
     ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
     if ([ColoredVKNewInstaller sharedInstaller].application.isVKApp && nightThemeColorScheme.enabled) {
-        self.prefsTableView.backgroundColor = nightThemeColorScheme.backgroundColor;
+        self.table.backgroundColor = nightThemeColorScheme.backgroundColor;
         self.navigationController.navigationBar.barTintColor = nightThemeColorScheme.navbackgroundColor;
     }
 }
@@ -87,6 +77,32 @@
 #pragma mark Actions
 #pragma mark -
 
+- (void)writePrefsWithCompetion:( void(^)(void) )completionBlock
+{
+    @synchronized(self) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+            [self.cachedPrefs writeToFile:CVK_PREFS_PATH atomically:YES];
+            
+            if (completionBlock)
+                completionBlock();
+        });
+    }
+}
+
+- (void)readPrefsWithCompetion:( void(^)(void) )completionBlock
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        self.cachedPrefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+        if (!self.cachedPrefs) {
+            self.cachedPrefs = [NSMutableDictionary dictionary];
+            [self writePrefsWithCompetion:nil];
+        }
+        
+        if (completionBlock)
+            completionBlock();
+    });
+}
+
 - (void)reloadSpecifiers
 {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -99,16 +115,15 @@
     if (![ColoredVKNewInstaller sharedInstaller].application.isVKApp)
         return;
     
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    NSInteger themeType = [prefs[@"nightThemeType"] integerValue];
+    NSInteger themeType = [self.cachedPrefs[@"nightThemeType"] integerValue];
     ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
     [nightThemeColorScheme updateForType:themeType];
-    nightThemeColorScheme.enabled = ((themeType != -1) && [prefs[@"enabled"] boolValue]);
+    nightThemeColorScheme.enabled = ((themeType != -1) && [self.cachedPrefs[@"enabled"] boolValue]);
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-            self.prefsTableView.separatorColor = [UIColor clearColor];
-            self.prefsTableView.backgroundColor = [UIColor colorWithRed:0.937255f green:0.937255f blue:0.956863f alpha:1.0f];
+            self.table.separatorColor = [UIColor clearColor];
+            self.table.backgroundColor = [UIColor colorWithRed:0.937255f green:0.937255f blue:0.956863f alpha:1.0f];
             self.navigationController.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
         } completion:nil];
         
@@ -195,16 +210,7 @@
 
 - (NSArray <PSSpecifier*> *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize 
 {
-    NSMutableArray *specifiersArray = [NSMutableArray array];
-    if ([self respondsToSelector:@selector(setBundle:)] && [self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
-        self.bundle = self.cvkBundle;
-        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
-    } else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:bundle:)]) {
-        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBundle] mutableCopy];
-    } 
-    else if ([self respondsToSelector:@selector(loadSpecifiersFromPlistName:target:)]) {
-        specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self] mutableCopy];
-    }
+    NSMutableArray *specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBundle] mutableCopy];
     
     @autoreleasepool {
         if (localize) {
@@ -254,18 +260,13 @@
 
 - (id)readPreferenceValue:(PSSpecifier *)specifier
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    if (!prefs) {
-        prefs = [NSDictionary new];
-        [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
-    }
     if (!specifier.properties[@"key"])
         return nil;
     
-    if (!prefs[specifier.properties[@"key"]])
+    if (!self.cachedPrefs[specifier.properties[@"key"]])
         return specifier.properties[@"default"];
     
-    return prefs[specifier.properties[@"key"]];
+    return self.cachedPrefs[specifier.properties[@"key"]];
 }
 
 - (BOOL)openURL:(NSURL *)url
@@ -293,36 +294,34 @@
 
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
 {
-    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
     if (value)
-        [prefs setValue:value forKey:specifier.properties[@"key"]];
+        [self.cachedPrefs setValue:value forKey:specifier.properties[@"key"]];
     else
-        [prefs removeObjectForKey:specifier.properties[@"key"]];
+        [self.cachedPrefs removeObjectForKey:specifier.properties[@"key"]];
     
-    [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
-    
-    NSArray *identificsToReloadMenu = @[@"enableTweakSwitch", @"menuSelectionStyle", @"hideMenuSeparators", 
-                                        @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor", 
-                                        @"showMenuCell", @"menuUseBackgroundBlur"];
-    
-    if ([specifier.identifier isEqualToString:@"nightThemeType"]) {
-        [self updateNightTheme];
-        POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
-        POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
-    }
-    
-    POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
-    
-    if ([identificsToReloadMenu containsObject:specifier.identifier] && ![specifier.identifier isEqualToString:@"nightThemeType"])
-        POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
-    
-    if ([specifier.identifier isEqualToString:@"enableTweakSwitch"]) {
-        [self updateNightTheme];
-        POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
-        POST_CORE_NOTIFICATION(kPackageNotificationUpdateAppCorners);
-    }
+    [self writePrefsWithCompetion:^{
+        NSArray *identificsToReloadMenu = @[@"enableTweakSwitch", @"menuSelectionStyle", @"hideMenuSeparators", 
+                                            @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor", 
+                                            @"showMenuCell", @"menuUseBackgroundBlur"];
+        
+        if ([specifier.identifier isEqualToString:@"nightThemeType"]) {
+            [self updateNightTheme];
+            POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
+            POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
+        }
+        
+        POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
+        
+        if ([identificsToReloadMenu containsObject:specifier.identifier] && ![specifier.identifier isEqualToString:@"nightThemeType"])
+            POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
+        
+        if ([specifier.identifier isEqualToString:@"enableTweakSwitch"]) {
+            [self updateNightTheme];
+            POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
+            POST_CORE_NOTIFICATION(kPackageNotificationUpdateAppCorners);
+        }
+    }];
 }
-
 
 #pragma mark -
 #pragma mark UITableViewDelegate
@@ -372,7 +371,7 @@
 
 - (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView
 {
-    if (self.prefsTableView.tableHeaderView) {
+    if (self.table.tableHeaderView) {
         return -100.0f;
     }
     return -150.0f;

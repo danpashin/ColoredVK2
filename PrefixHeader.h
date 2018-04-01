@@ -19,7 +19,7 @@
 #define CVK_CACHE_PATH      [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/ColoredVK2"]
 #define CVK_BACKUP_PATH     @"/var/mobile/Documents/ColoredVK2_Backups/"
 
-#elif defined(COMPILE_APP) && defined(__x86_64__) 
+#elif defined(COMPILE_APP) && (defined(__x86_64__) || defined(__i386__))
 
 #define CVK_BUNDLE_PATH     [NSBundle mainBundle].bundlePath
 #define CVK_PREFS_PATH      @"/var/mobile/Library/Preferences/com.daniilpashin.coloredvk2.plist"
@@ -42,6 +42,7 @@
 #undef  CVK_BUNDLE_PATH
 #define CVK_BUNDLE_PATH [NSBundle mainBundle].bundlePath
 #endif
+
 
 #define IS_IPAD                               (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 #define UIKitLocalizedString(key)             [[NSBundle bundleWithIdentifier:@"com.apple.UIKit"] localizedStringForKey:key value:@"" table:nil]
