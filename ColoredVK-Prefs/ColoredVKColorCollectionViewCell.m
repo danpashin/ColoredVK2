@@ -40,6 +40,7 @@
         _deleteButton.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(5.0f, 8.0f, size/1.5f, size/1.5f) cornerRadius:size/2].CGPath;
         _deleteButton.layer.shadowOpacity = 0.2f;
         _deleteButton.layer.shadowRadius = 2.0f;
+        _deleteButton.accessibilityLabel = CVKLocalizedStringInBundle(@"REMOVE_SAVED_COLOR", cvkBundle);
         [self.contentView addSubview:_deleteButton];
         
         _deleteButton.translatesAutoresizingMaskIntoConstraints = NO;

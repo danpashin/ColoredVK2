@@ -14,6 +14,9 @@
 #import "PrefixHeader.h"
 #import "ColoredVKNightThemeColorScheme.h"
 
+
+NS_ASSUME_NONNULL_BEGIN
+
 @interface ColoredVKPrefs : PSListController
 
 @property (strong, nonatomic, readonly) NSBundle *cvkBundle;
@@ -31,9 +34,11 @@
 - (id)readPreferenceValue:(PSSpecifier *)specifier;
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier;
 
-- (void)writePrefsWithCompetion:( void(^)(void) )completionBlock;
-- (void)readPrefsWithCompetion:( void(^)(void) )completionBlock;
+- (void)writePrefsWithCompetion:(nullable void(^)(void))completionBlock;
+- (void)readPrefsWithCompetion:(nullable void(^)(void))completionBlock;
 
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -1,6 +1,7 @@
 PODS:
   - Color-Picker-for-iOS (2.0.2)
   - DZNEmptyDataSet (1.8.1)
+  - fishhook (0.2)
   - LEColorPicker (1.0.3)
   - MXParallaxHeader (0.6.1)
   - SDWebImage (4.3.0):
@@ -11,6 +12,7 @@ PODS:
 DEPENDENCIES:
   - Color-Picker-for-iOS
   - DZNEmptyDataSet
+  - fishhook
   - LEColorPicker
   - MXParallaxHeader
   - SDWebImage (~> 4.0)
@@ -19,11 +21,12 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   Color-Picker-for-iOS: 4980589b3e3cfe7198f227dd50be9adb02d8bc0b
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
+  fishhook: ea19933abfe8f2f52c55fd8b6e2718467d3ebc89
   LEColorPicker: 34509a9df7a128b1109a5dbe3f25921fc511c03d
   MXParallaxHeader: 858c403532ed933b381556a81ce333d7065ad182
   SDWebImage: 6da6c8bca115addc4de8613362e1b15f66333825
   SSZipArchive: 14401ade5f8e82aba1ff03e9f88e9de60937ae60
 
-PODFILE CHECKSUM: 7bda2dfcbef1c0b01df23af09d8a73c99e629627
+PODFILE CHECKSUM: 493aa5c524942247b9e08f526469bce92beae293
 
 COCOAPODS: 1.4.0

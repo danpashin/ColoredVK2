@@ -19,18 +19,18 @@
 #import "TweakVariables.h"
 
 #import "CaptainHook/CaptainHook.h"
-#import <hookzz.h>
+#import "fishhook.h"
 
 
-#define CVKHookCFunction(return_type, name, args...)\
+#define CVKHook(return_type, name, args...)\
 static return_type (*name ## _orig)(args);\
 return_type name ## _hook(args);\
 static void __attribute__((constructor)) name ## _constructor() {\
-ZzHook((void*)name, (void *)name ## _hook, (void *)&name ## _orig, nil, nil, NO);\
+rebind_symbols((struct rebinding[1]){{#name, name ## _hook, (void *)&name ## _orig}}, 1);\
 }\
 return_type name ## _hook(args)
 
-#define CVKHookCFunctionCallOrig(name, args...)\
+#define CVKHookSuper(name, args...)\
 name ## _orig(args)
 
 

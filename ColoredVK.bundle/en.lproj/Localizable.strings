@@ -30,12 +30,12 @@
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Enter a hexadecimal color code\n(Symbol # is not necessary)";
 "EXAMPLE_ALERT_MESSAGE" = "Like %@";
 "RESET_COLOR_QUESTION" = "Are you really want to reset color?";
+"REMOVE_SAVED_COLOR" = "Remove color";
 "RESET_SETTINGS_QUESTION" = "Are you really want to reset settings?";
 "RESTORE_BACKUP_QUESTION" = "Are you sure you want to restore this backup?\n\n%@";
 "YES_I_AM_SURE" = "Yeah, I'm sure";
 
 "NEVER" = "Never";
-"NO_ACCOUNT" = "Нет аккаунта?";
 
 "SET_THIS_IMAGE_TO" = "Set this image to";
 "VKAPP_VERSION_IS_TOO_LOW" = "ColoredVK 2 doesn't support this app version (%@).\nPlease, install VK App %@ or later";
@@ -96,7 +96,7 @@
 
 "ACCESS_TO_ACCOUNT_SETTINGS" = "Access to account settings";
 "DELETE" = "Delete";
-"ENTER_PASSCODE" = "Введите код-пароль";
+"ENTER_PASSCODE" = "Enter passcode";
 
 
 // О статусах аккаунта

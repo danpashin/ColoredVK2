@@ -46,7 +46,6 @@
 - (void)updateForType:(CVKNightThemeType)type
 {
     _type = type;
-    _enabled = (type != CVKNightThemeTypeDisabled);
     
     if (type == CVKNightThemeTypeDarkBlue) {
         _backgroundColor = [UIColor colorWithRed:0.078f green:0.114f blue:0.149f alpha:1.0f];

@@ -8,9 +8,11 @@
 #import "Tweak.h"
 #import <Preferences/PSTableCell.h>
 #import <CoreText/CoreText.h>
+//#import <dlfcn.h>
+//#import <objc/runtime.h>
 
 
-CVKHookCFunction(CTFramesetterRef, CTFramesetterCreateWithAttributedString, CFAttributedStringRef string)
+CVKHook(CTFramesetterRef, CTFramesetterCreateWithAttributedString, CFAttributedStringRef string)
 {
     CFAttributedStringRef newString = CFAttributedStringCreateCopy(NULL, string);
     
@@ -20,13 +22,41 @@ CVKHookCFunction(CTFramesetterRef, CTFramesetterCreateWithAttributedString, CFAt
         newString = (CFMutableAttributedStringRef)CFBridgingRetain(attributed);
     }
     
-    CTFramesetterRef result = CVKHookCFunctionCallOrig(CTFramesetterCreateWithAttributedString, newString);
+    CTFramesetterRef result = CVKHookSuper(CTFramesetterCreateWithAttributedString, newString);
     if (newString != NULL) {
         CFRelease(newString);
     }
     
     return result;
 }
+
+
+//static void __attribute__((constructor)) selectedMessagesIds_constructor() {
+//    
+//    NSString *vkmBinaryPath = [[NSBundle mainBundle] pathForResource:@"vkm" ofType:@"framework" inDirectory:@"Frameworks"];
+//    if (!vkmBinaryPath) {
+//        CVKLog(@"vkm.framework is missing.");
+//        return;
+//    }
+//    vkmBinaryPath = [vkmBinaryPath stringByAppendingString:@"/vkm"];
+//    
+//    void *vkmBinary = dlopen(vkmBinaryPath.UTF8String, RTLD_NOW);
+////    CVKLogSource(@"%@", dlsym(vkmBinary, "__TtC3vkm9Bootstrap"));
+////    CVKLogSource(@"%s", dlerror());
+//    
+//    unsigned int count;    
+//    const char ** classes = objc_copyClassNamesForImage(vkmBinary, &count);
+//    
+//    for (unsigned int i = 0; i< sizeof(classes)/sizeof(classes[0]); i++){
+//        CVKLog(@"class name: %s", classes[i]);
+//    }
+//    free(classes);
+//    dlclose(vkmBinary);
+//    
+//    
+////    rebind_symbols((struct rebinding[1]){{"_TtC3vkm31HistoryCollectionViewController_selectedMessagesIds", selectedMessagesIds_hook, (void *)&selectedMessagesIds_orig}}, 1);
+//}
+
 
 CHDeclareClass(ProfileView);
 CHDeclareMethod(0, void, ProfileView, layoutSubviews)

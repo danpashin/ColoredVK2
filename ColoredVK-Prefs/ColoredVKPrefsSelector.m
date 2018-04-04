@@ -6,7 +6,6 @@
 //
 
 #import "ColoredVKPrefsSelector.h"
-#import "ColoredVKNightThemeColorScheme.h"
 
 @interface ColoredVKPrefsSelector ()
 @property (strong, nonatomic) NSIndexPath *indexPathForSelectedRow;
@@ -26,8 +25,11 @@
             if (allKeys.count > 0 && allValues.count > 0) {
                 for (NSUInteger i=0; i<allKeys.count; i++) {
                     @autoreleasepool {
-                        PSSpecifier *specifier = [PSSpecifier preferenceSpecifierNamed:NSLocalizedStringFromTableInBundle(allKeys[i], @"ColoredVK", self.cvkBundle, nil)
-                                                                                target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:)
+                        NSString *name = CVKLocalizedStringFromTableInBundle(allKeys[i],  @"ColoredVK", self.cvkBundle);
+                        SEL setter = @selector(setPreferenceValue:specifier:);
+                        SEL getter = @selector(readPreferenceValue:);
+                        
+                        PSSpecifier *specifier = [PSSpecifier preferenceSpecifierNamed:name target:self set:setter get:getter
                                                                                 detail:nil cell:PSStaticTextCell edit:nil];
                         [specifier setProperty:allValues[i] forKey:@"selectorValue"];
                         [specifier setProperty:@"SelectorOption" forKey:@"selectorType"];

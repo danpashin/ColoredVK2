@@ -14,6 +14,7 @@ end
 def tweak_pods
   pod 'LEColorPicker'
   pod 'SDWebImage', '~> 4.0'
+  pod 'fishhook'
 end
 
 

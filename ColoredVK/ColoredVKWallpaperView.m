@@ -41,21 +41,22 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
         
         
         _imageView = [[UIImageView alloc] init];
+        self.imageView.backgroundColor = [UIColor blackColor];
         if ([name isEqualToString:@"barImage"])
-            _imageView.frame = CGRectMake(0, 0, bounds.size.width, bounds.size.height);
+            self.imageView.frame = CGRectMake(0, 0, bounds.size.width, bounds.size.height);
         else
-            _imageView.frame = CGRectMake(-20, -20, bounds.size.width + 40, bounds.size.height + 40);
+            self.imageView.frame = CGRectMake(-20, -20, bounds.size.width + 40, bounds.size.height + 40);
         
-        _imageView.contentMode = UIViewContentModeScaleAspectFill;
-        _imageView.layer.masksToBounds = YES;
+        self.imageView.contentMode = UIViewContentModeScaleAspectFill;
+        self.imageView.layer.masksToBounds = YES;
         [self addSubview:_imageView];
         
         _blurView = [[_UIBackdropView alloc] initWithStyle:self.blurStyle];
-        _blurView.frame = bounds;
-        [self addSubview:_blurView];
+        self.blurView.frame = bounds;
+        [self addSubview:self.blurView];
         
-        _frontView = [[UIView alloc] initWithFrame:bounds];
-        [self addSubview:_frontView];
+        self.frontView = [[UIView alloc] initWithFrame:bounds];
+        [self addSubview:self.frontView];
         
         self.blackout = blackout;
         self.parallaxEnabled = enableParallax;

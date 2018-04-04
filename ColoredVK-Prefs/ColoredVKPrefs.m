@@ -36,18 +36,24 @@
 - (void)commonInit
 {
     _cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    if (!self.cvkBundle)
+        _cvkBundle = [NSBundle mainBundle];
     
     [self readPrefsWithCompetion:^{
-        if (self->_specifiers && self->_specifiers.count > 0)
-            [self reloadSpecifiers];
-        
         self.shouldChangeSwitchColor = ([self.cachedPrefs[@"enabled"] boolValue] && [self.cachedPrefs[@"changeSwitchColor"] boolValue]);
         
-        ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
-        BOOL vkApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
-        NSInteger themeType = [self.cachedPrefs[@"nightThemeType"] integerValue];
-        [nightThemeColorScheme updateForType:themeType];
-        nightThemeColorScheme.enabled = ((themeType != -1) && [self.cachedPrefs[@"enabled"] boolValue] && vkApp);
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+            NSInteger themeType = [self.cachedPrefs[@"nightThemeType"] integerValue];
+            [nightThemeColorScheme updateForType:themeType];
+            
+            BOOL vkApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
+            nightThemeColorScheme.enabled = ((themeType != -1) && [self.cachedPrefs[@"enabled"] boolValue] && vkApp);
+        });
+        
+        if (self->_specifiers && self->_specifiers.count > 0)
+            [self reloadSpecifiers];
     }];
 }
 
@@ -77,7 +83,7 @@
 #pragma mark Actions
 #pragma mark -
 
-- (void)writePrefsWithCompetion:( void(^)(void) )completionBlock
+- (void)writePrefsWithCompetion:(nullable void(^)(void))completionBlock
 {
     @synchronized(self) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
@@ -89,7 +95,7 @@
     }
 }
 
-- (void)readPrefsWithCompetion:( void(^)(void) )completionBlock
+- (void)readPrefsWithCompetion:(nullable void(^)(void))completionBlock
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         self.cachedPrefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
@@ -115,8 +121,9 @@
     if (![ColoredVKNewInstaller sharedInstaller].application.isVKApp)
         return;
     
-    NSInteger themeType = [self.cachedPrefs[@"nightThemeType"] integerValue];
     ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    
+    NSInteger themeType = [self.cachedPrefs[@"nightThemeType"] integerValue];
     [nightThemeColorScheme updateForType:themeType];
     nightThemeColorScheme.enabled = ((themeType != -1) && [self.cachedPrefs[@"enabled"] boolValue]);
     
@@ -213,9 +220,9 @@
     NSMutableArray *specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBundle] mutableCopy];
     
     @autoreleasepool {
-        if (localize) {
+        if (specifiersArray.count > 0 && localize) {
             NSString *path = [self.cvkBundle pathForResource:@"ColoredVK" ofType:@"strings"];
-            __block NSDictionary *localizable = [NSDictionary dictionaryWithContentsOfFile:path];
+            NSDictionary *localizable = [NSDictionary dictionaryWithContentsOfFile:path];
             NSString *(^localizedStringForKey)(NSString *key) = ^NSString *(NSString *key) {
                 if (!key)
                     return @"";
@@ -226,13 +233,19 @@
             for (PSSpecifier *specifier in specifiersArray) {
                 specifier.name = localizedStringForKey(specifier.name);
                 
-                if (specifier.properties[@"footerText"]) {
-                    if ([specifier.properties[@"footerText"] isEqualToString:@"AVAILABLE_IN_%@_AND_HIGHER"]) {
-                        NSString *string = [NSString stringWithFormat:localizedStringForKey(specifier.properties[@"footerText"]), specifier.properties[@"requiredVersion"]];
-                        [specifier setProperty:string forKey:@"footerText"];
-                    } else
-                        [specifier setProperty:localizedStringForKey(specifier.properties[@"footerText"]) forKey:@"footerText"];
+                NSString *footerDictText = specifier.properties[@"footerText"];
+                if (footerDictText) {
+                    NSString *footerNewText = @"";
+                    if ([footerDictText isEqualToString:@"AVAILABLE_IN_%@_AND_HIGHER"]) {
+                        footerNewText = [NSString stringWithFormat:localizedStringForKey(footerDictText), specifier.properties[@"requiredVersion"]];
+                    } else if ([specifier.identifier isEqualToString:@"manageSettingsFooter"]) {
+                        footerNewText = [NSString stringWithFormat:localizedStringForKey(footerDictText), CVK_BACKUP_PATH];
+                    } else {
+                        footerNewText = localizedStringForKey(footerDictText);
+                    }
+                    [specifier setProperty:footerNewText forKey:@"footerText"];
                 }
+                
                 if (specifier.properties[@"label"])
                     [specifier setProperty:localizedStringForKey(specifier.properties[@"label"]) forKey:@"label"];
                 if (specifier.properties[@"detailedLabel"])
@@ -243,11 +256,8 @@
                     for (NSString *key in specifier.titleDictionary.allKeys) {
                         [tempDict setValue:localizedStringForKey(specifier.titleDictionary[key]) forKey:key];
                     }
-                    specifier.titleDictionary = [tempDict copy];
+                    specifier.titleDictionary = tempDict;
                 }
-                
-                if ([specifier.identifier isEqualToString:@"manageSettingsFooter"] && specifier.properties[@"footerText"])
-                    [specifier setProperty:[NSString stringWithFormat:localizedStringForKey(specifier.properties[@"footerText"]), CVK_BACKUP_PATH] forKey:@"footerText"];
             }
         }
     }
@@ -362,8 +372,7 @@
 
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView
 {
-    NSString *text = NSLocalizedStringFromTableInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", nil, self.cvkBundle, nil);
-    
+    NSString *text = self.cvkBundle ? CVKLocalizedStringInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", self.cvkBundle) : @"";
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1],
                                  NSForegroundColorAttributeName: [UIColor darkGrayColor]};
     
@@ -372,10 +381,7 @@
 
 - (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView
 {
-    if (self.table.tableHeaderView) {
-        return -100.0f;
-    }
-    return -150.0f;
+    return self.table.tableHeaderView ? -100.0f : -150.0f;
 }
 
 @end

@@ -30,12 +30,12 @@
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Введите 16-ричный цветовой код\n(Символ # ставить необязательно)";
 "EXAMPLE_ALERT_MESSAGE" = "Например %@";
 "RESET_COLOR_QUESTION" = "Вы действительно хотите сбросить цвет?";
+"REMOVE_SAVED_COLOR" = "Удалить цвет";
 "RESET_SETTINGS_QUESTION" = "Вы действительно хотите сбросить настройки?";
 "RESTORE_BACKUP_QUESTION" = "Вы действительно хотите восстановить настройки из этой резервной копии?\n\n%@";
 "YES_I_AM_SURE" = "Да, уверен";
 
 "NEVER" = "Никогда";
-"NO_ACCOUNT" = "Нет аккаунта?";
 
 "SET_THIS_IMAGE_TO" = "Установить это изображение в";
 "VKAPP_VERSION_IS_TOO_LOW" = "ColoredVK 2 не поддерживает данную версию приложения (%@).\nПожалуйста, установите VK App %@ или выше";
