@@ -429,33 +429,8 @@ CHDeclareMethod(0, void, UICollectionViewCell, layoutSubviews)
 {
     CHSuper(0, UICollectionViewCell, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"vkm.MessageCell")]) {
-        
-        CALayer *layer = self.backgroundView.layer;
-        if ([layer isKindOfClass:[CAShapeLayer class]]) {
-            CAShapeLayer *shapeLayer = (CAShapeLayer *)layer;
-            
-//            CGRect screenBounds = [UIScreen mainScreen].bounds;
-//            CGPoint newStartPoint = [self.superview convertPoint:self.frame.origin toView:nil];
-//            
-//            BOOL incoming = (newStartPoint.x < CGRectGetMidX(screenBounds));
-            
-            UIColor *fillColor = [UIColor colorWithCGColor:shapeLayer.fillColor];
-            if (enabled && enableNightTheme) {
-                ColoredVKNightThemeColorScheme *nightThemeScheme = cvkMainController.nightThemeScheme;
-//                fillColor = incoming ? nightThemeScheme.incomingBackgroundColor : nightThemeScheme.outgoingBackgroundColor;
-                fillColor = nightThemeScheme.incomingBackgroundColor;
-            } 
-//            else if (enabled && enabledMessagesImage && useMessageBubbleTintColor) {
-//                fillColor = incoming ? messageBubbleTintColor : messageBubbleSentTintColor;
-//            }
-            shapeLayer.fillColor = fillColor.CGColor;
-        }
-        
-        return;
-    }
-    
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionViewCell")] && ![self isKindOfClass:NSClassFromString(@"_UIAlertControllerTextFieldViewCollectionCell")]) {
+    BOOL forbiddenClass = ([self isKindOfClass:NSClassFromString(@"vkm.MessageCell")] || [self isKindOfClass:NSClassFromString(@"_UIAlertControllerTextFieldViewCollectionCell")]);
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionViewCell")] && !forbiddenClass) {
         
         NSNumber *shouldDisableBackgroundColor = (NSNumber*)objc_getAssociatedObject(self, "shouldDisableBackgroundColor");
         if (!([shouldDisableBackgroundColor isKindOfClass:[NSNumber class]] && shouldDisableBackgroundColor.boolValue)) {
@@ -949,12 +924,12 @@ CHDeclareClass(NewDialogCell);
 CHDeclareMethod(0, void, NewDialogCell, layoutSubviews)
 {
     CHSuper(0, NewDialogCell, layoutSubviews);
-    setupNewDialogCellFromNightTheme(self);
+    setupNewDialogCellForNightTheme(self);
 }
 
 CHDeclareMethod(0, void, NewDialogCell, prepareForReuse)
 {
-    setupNewDialogCellFromNightTheme(self);
+    setupNewDialogCellForNightTheme(self);
     CHSuper(0, NewDialogCell, prepareForReuse);
 }
 

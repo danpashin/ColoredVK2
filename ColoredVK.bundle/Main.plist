@@ -186,7 +186,7 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>ColoredVKTweakPrefsController</string>
+			<string>ColoredVKPrefs</string>
 			<key>plistToLoad</key>
 			<string>TweakPrefs</string>
 			<key>id</key>

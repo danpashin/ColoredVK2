@@ -14,8 +14,8 @@
 @interface ColoredVKNetwork  () <NSURLSessionDelegate>
 
 @property (strong, nonatomic) NSURLSession *session;
-@property (strong, nonatomic) NSOperationQueue *operationQueue;
-@property (strong, nonatomic) dispatch_queue_t backgroundQueue;
+@property (strong, nonatomic) NSOperationQueue *operationDelegateQueue;
+@property (strong, nonatomic) dispatch_queue_t parseQueue;
 
 @end
 
@@ -40,11 +40,11 @@
         self.configuration.allowsCellularAccess = YES;
         self.configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
         
-        self.operationQueue = [[NSOperationQueue alloc] init];
-        self.operationQueue.name = @"com.daniilpashin.coloredvk2.network";
-        self.backgroundQueue = dispatch_queue_create("com.daniilpashin.coloredvk2.network.background", DISPATCH_QUEUE_CONCURRENT);
+        self.operationDelegateQueue = [[NSOperationQueue alloc] init];
+        self.operationDelegateQueue.name = @"ru.danpashin.coloredvk2.network";
+        self.parseQueue = dispatch_queue_create("ru.danpashin.coloredvk2.network.background", DISPATCH_QUEUE_CONCURRENT);
         
-        _session = [NSURLSession sessionWithConfiguration:self.configuration delegate:self delegateQueue:self.operationQueue];
+        _session = [NSURLSession sessionWithConfiguration:self.configuration delegate:self delegateQueue:self.operationDelegateQueue];
     }
     return self;
 }
@@ -53,7 +53,7 @@
                           success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json))sucess 
                           failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    dispatch_async(self.backgroundQueue, ^{
+    dispatch_async(self.parseQueue, ^{
         NSError *requestError = nil;
         NSURLRequest *request = [self requestWithMethod:method URLString:stringURL parameters:parameters error:&requestError];
         if (requestError) {
@@ -63,7 +63,7 @@
         
         NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             [self setStatusBarIndicatorActive:NO];
-            dispatch_async(self.backgroundQueue, ^{
+            dispatch_async(self.parseQueue, ^{
                 if (!error && data) {
                     NSError *jsonError = nil;
                     NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
@@ -106,10 +106,10 @@
             success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData))sucess 
             failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    dispatch_async(self.backgroundQueue, ^{
+    dispatch_async(self.parseQueue, ^{
         NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             [self setStatusBarIndicatorActive:NO];
-            dispatch_async(self.backgroundQueue, ^{
+            dispatch_async(self.parseQueue, ^{
                 if (!error && data) {
                     if (sucess)
                         sucess(request, (NSHTTPURLResponse *)response, data);
@@ -128,7 +128,7 @@
                       success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData))sucess 
                       failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    dispatch_async(self.backgroundQueue, ^{
+    dispatch_async(self.parseQueue, ^{
         NSError *requestError = nil;
         NSURLRequest *request = [self requestWithMethod:method URLString:url parameters:parameters error:&requestError];
         if (requestError) {
@@ -138,7 +138,7 @@
         
         NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             [self setStatusBarIndicatorActive:NO];
-            dispatch_async(self.backgroundQueue, ^{
+            dispatch_async(self.parseQueue, ^{
                 if (!error && data) {
                     if (sucess)
                         sucess(request, (NSHTTPURLResponse *)response, data);
@@ -160,7 +160,7 @@
     if (!dataToUpload)
         return;
     
-    dispatch_async(self.backgroundQueue, ^{
+    dispatch_async(self.parseQueue, ^{
         NSError *requestError = nil;        
         NSMutableURLRequest *request = [self requestWithMethod:@"POST" URLString:remoteURL parameters:nil error:&requestError];
         if (requestError) {
@@ -170,7 +170,7 @@
         
         NSURLSessionDataTask *task = [self.session uploadTaskWithRequest:request fromData:dataToUpload completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             [self setStatusBarIndicatorActive:NO];
-            dispatch_async(self.backgroundQueue, ^{
+            dispatch_async(self.parseQueue, ^{
                 if (!error) {
                     if (sucess)
                         sucess((NSHTTPURLResponse *)response, data);
@@ -189,7 +189,7 @@
                     success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))sucess 
                     failure:(void(^)(NSHTTPURLResponse *response, NSError *error))failure
 {
-    dispatch_async(self.backgroundQueue, ^{
+    dispatch_async(self.parseQueue, ^{
         NSError *requestError = nil;        
         NSMutableURLRequest *request = [self requestWithMethod:@"GET" URLString:stringURL parameters:nil error:&requestError];
         if (requestError) {
@@ -199,7 +199,7 @@
         
         NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:request completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
             [self setStatusBarIndicatorActive:NO];
-            dispatch_async(self.backgroundQueue, ^{
+            dispatch_async(self.parseQueue, ^{
                 if (!error) {
                     NSData *data = [NSData dataWithContentsOfURL:location];
                     if (sucess)

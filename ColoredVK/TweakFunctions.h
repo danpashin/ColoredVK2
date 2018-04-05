@@ -20,7 +20,7 @@ void setupTranslucence(UIView *view, UIColor *backColor, BOOL remove);
 void setupTabbar(void);
 void resetTabBar(void);
 void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *tableView);
-void setupNewDialogCellFromNightTheme(NewDialogCell *dialogCell);
+void setupNewDialogCellForNightTheme(NewDialogCell *dialogCell);
 
 void performInitialCellSetup(UITableViewCell *cell);
 void setupAudioPlayer(UIView *hostView, UIColor *color);

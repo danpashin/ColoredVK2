@@ -558,16 +558,19 @@ void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *table
     }
 }
 
-void setupNewDialogCellFromNightTheme(NewDialogCell *dialogCell)
+void setupNewDialogCellForNightTheme(NewDialogCell *dialogCell)
 {
     if (enabled && enableNightTheme && [dialogCell isKindOfClass:NSClassFromString(@"NewDialogCell")]) {
         dialogCell.contentView.backgroundColor = [UIColor clearColor];
         dialogCell.backgroundView.hidden = YES;
         
-        if (!dialogCell.dialog.head.read_state && dialogCell.unread.hidden)
-            dialogCell.backgroundColor = cvkMainController.nightThemeScheme.unreadBackgroundColor;
-        else
-            dialogCell.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        if ([dialogCell.dialog.head respondsToSelector:@selector(read_state)]) {
+            if (!dialogCell.dialog.head.read_state && dialogCell.unread.hidden)
+                dialogCell.backgroundColor = cvkMainController.nightThemeScheme.unreadBackgroundColor;
+            else
+                dialogCell.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        }
+        
         dialogCell.name.textColor = cvkMainController.nightThemeScheme.textColor;
         
         objc_setAssociatedObject(dialogCell.attach, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);

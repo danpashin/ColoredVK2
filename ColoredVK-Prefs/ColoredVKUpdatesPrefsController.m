@@ -1,21 +1,21 @@
 //
-//  ColoredVKTweakPrefsController.m
+//  ColoredVKUpdatesPrefsController.m
 //  ColoredVK2
 //
 //  Created by Даниил on 04.08.17.
 //
 //
 
-#import "ColoredVKTweakPrefsController.h"
+#import "ColoredVKUpdatesPrefsController.h"
 #import "ColoredVKUpdatesController.h"
 
-@interface ColoredVKTweakPrefsController ()
+@interface ColoredVKUpdatesPrefsController ()
 
 @property (nonatomic, getter=getLastCheckForUpdates, copy) NSString *lastCheckForUpdates;
 
 @end
 
-@implementation ColoredVKTweakPrefsController
+@implementation ColoredVKUpdatesPrefsController
 
 - (void)loadView
 {

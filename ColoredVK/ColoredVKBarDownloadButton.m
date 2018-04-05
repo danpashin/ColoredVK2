@@ -68,7 +68,7 @@
             [processor processImageFromURL:url identifier:identifier andSaveToURL:urlToSave completionBlock:^(BOOL success, NSError *error) {
                 success ? [hud showSuccess] : [hud showFailureWithStatus:error.localizedDescription];
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" 
+                [[NSNotificationCenter defaultCenter] postNotificationName:kPackageNotificationUpdateImage 
                                                                     object:nil userInfo:@{@"identifier" : identifier}];
                 
                 if ([identifier isEqualToString:@"menuBackgroundImage"])

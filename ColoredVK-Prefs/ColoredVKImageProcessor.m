@@ -21,7 +21,7 @@
 {
     self = [super init];
     if (self) {
-        self.backgroundQueue = dispatch_queue_create("com.daniilpashin.coloredvk2.image.processor.background", DISPATCH_QUEUE_CONCURRENT_WITH_AUTORELEASE_POOL);
+        self.backgroundQueue = dispatch_queue_create("ru.danpashin.coloredvk2.image.processor.background", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
 }

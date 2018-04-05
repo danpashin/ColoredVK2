@@ -68,7 +68,8 @@
         [self addGestureRecognizer:longPress];
         
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateImage:) 
-                                                   name:@"com.daniilpashin.coloredvk2.image.update" object:nil];
+                                                   name:kPackageNotificationUpdateImage object:nil];
+        
         [self updateImageForIdentifier:specifierIdentifier];
     }
     return self;

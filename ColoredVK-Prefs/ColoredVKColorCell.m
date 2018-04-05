@@ -9,6 +9,7 @@
 
 #import "UIColor+ColoredVK.h"
 #import "ColoredVKColorCell.h"
+#import "PrefixHeader.h"
 
 @implementation ColoredVKColorCell
 
@@ -24,8 +25,9 @@
         self.accessoryView.layer.shadowColor = [UIColor blackColor].CGColor;
         self.accessoryView.layer.shadowOpacity = 0.15f;
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColorNotification:) name:@"com.daniilpashin.coloredvk2.prefs.colorUpdate" object:nil];
         [self updateColorForIdentifier:specifier.identifier];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColorNotification:) 
+                                                     name:kPackageNotificationUpdateColor object:nil];
     }
     return self;
 }

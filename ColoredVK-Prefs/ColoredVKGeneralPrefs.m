@@ -96,7 +96,7 @@
         [self.cachedPrefs removeObjectForKey:colorPicker.identifier];
     
     [self writePrefsWithCompetion:^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.prefs.colorUpdate" 
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPackageNotificationUpdateColor 
                                                             object:nil userInfo:@{@"identifier":colorPicker.identifier}];
         
         NSArray *identificsToReloadMenu = @[@"MenuSeparatorColor", @"switchesTintColor", @"switchesOnTintColor", @"menuTextColor"];
@@ -234,7 +234,8 @@
             handler(success, error);
         }
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"com.daniilpashin.coloredvk2.image.update" object:nil userInfo:@{@"identifier" : self.lastImageIdentifier}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPackageNotificationUpdateImage object:nil
+                                                          userInfo:@{@"identifier" : self.lastImageIdentifier}];
         
         if ([self.lastImageIdentifier isEqualToString:@"menuBackgroundImage"])
             POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);

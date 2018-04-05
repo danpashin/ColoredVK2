@@ -88,7 +88,7 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
     self.navigationItem.title = @"";
     
     __weak typeof(self) weakSelf = self;
-    [[NSNotificationCenter defaultCenter] addObserverForName:@"com.daniilpashin.coloredvk2.reload.prefs.menu" object:nil 
+    [[NSNotificationCenter defaultCenter] addObserverForName:kPackageNotificationReloadPrefsMenu object:nil 
                                                        queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
                                                            [weakSelf reloadSpecifiers];
                                                        }];

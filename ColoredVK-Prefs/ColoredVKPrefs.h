@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSArray <PSSpecifier*> *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize;
 - (void)showPurchaseAlert;
 
-- (id)readPreferenceValue:(PSSpecifier *)specifier;
+- (nullable id)readPreferenceValue:(PSSpecifier *)specifier;
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier;
 
 - (void)writePrefsWithCompetion:(nullable void(^)(void))completionBlock;
