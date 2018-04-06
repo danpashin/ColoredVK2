@@ -41,7 +41,6 @@
 		A504C0801DAFE839006C5FBC /* NSDate+DateTools.m in Sources */ = {isa = PBXBuildFile; fileRef = A504C0711DAFE839006C5FBC /* NSDate+DateTools.m */; };
 		A504C0831DB011ED006C5FBC /* PSTableCell+ColoredVK.h in Headers */ = {isa = PBXBuildFile; fileRef = A504C0811DB011ED006C5FBC /* PSTableCell+ColoredVK.h */; };
 		A504C0841DB011ED006C5FBC /* PSTableCell+ColoredVK.m in Sources */ = {isa = PBXBuildFile; fileRef = A504C0821DB011ED006C5FBC /* PSTableCell+ColoredVK.m */; };
-		A50731D51CD535130088EF9F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A50731D41CD535130088EF9F /* QuartzCore.framework */; };
 		A5079FB61CC92157005B9693 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FB51CC92157005B9693 /* Foundation.framework */; };
 		A5079FCB1CC9261B005B9693 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FCA1CC9261B005B9693 /* UIKit.framework */; };
 		A50883A61FFA48BC00C05E2A /* ColoredVKUserModel.h in Headers */ = {isa = PBXBuildFile; fileRef = A50883A41FFA48BC00C05E2A /* ColoredVKUserModel.h */; };
@@ -76,7 +75,6 @@
 		A510E7D81EF99CE9001D6798 /* ColoredVKSimpleAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = A510E7D41EF99CE9001D6798 /* ColoredVKSimpleAlertController.m */; };
 		A510E7D91EF99CE9001D6798 /* ColoredVKSimpleAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = A510E7D41EF99CE9001D6798 /* ColoredVKSimpleAlertController.m */; };
 		A510E7DA1EF99CE9001D6798 /* ColoredVKSimpleAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = A510E7D41EF99CE9001D6798 /* ColoredVKSimpleAlertController.m */; };
-		A513AB351F43666E0045F530 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F09DA51F101A5200024198 /* SafariServices.framework */; };
 		A5144F791FB4CC6C00DB1B89 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5EE64AC1FAE4C9E0050C156 /* Photos.framework */; };
 		A51D536E1F769E3900F6952A /* ColoredVKImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */; };
 		A51D536F1F769E3A00F6952A /* ColoredVKImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */; };
@@ -306,10 +304,8 @@
 		A57B56EF20553F930097CF9D /* ColoredVKCellBackgroundView.h in Headers */ = {isa = PBXBuildFile; fileRef = A57B56E920553F8A0097CF9D /* ColoredVKCellBackgroundView.h */; };
 		A57B56F020553F930097CF9D /* ColoredVKCellBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = A57B56EA20553F8A0097CF9D /* ColoredVKCellBackgroundView.m */; };
 		A585E1751EAF210C005B30F7 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A585E1741EAF210C005B30F7 /* CoreData.framework */; };
-		A585E1761EAF2113005B30F7 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A585E1741EAF210C005B30F7 /* CoreData.framework */; };
 		A589F66B1DE1B2F100467138 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A589F66A1DE1B2F100467138 /* MediaPlayer.framework */; };
 		A589F66C1DE1B2F800467138 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A589F66A1DE1B2F100467138 /* MediaPlayer.framework */; };
-		A58EBC122039C998007184C1 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5EE64AC1FAE4C9E0050C156 /* Photos.framework */; };
 		A58EBC132039CBB0007184C1 /* NSString+ColoredVK.m in Sources */ = {isa = PBXBuildFile; fileRef = A58F34121D5A378100838814 /* NSString+ColoredVK.m */; };
 		A5903F8E201DDD4000951C53 /* ColoredVKHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = A52CDBAB1E33EB2400D69AD3 /* ColoredVKHUD.m */; };
 		A5903F8F201DDD4300951C53 /* ColoredVKHUD.h in Headers */ = {isa = PBXBuildFile; fileRef = A52CDBAA1E33EB2400D69AD3 /* ColoredVKHUD.h */; };
@@ -362,10 +358,6 @@
 		A5AC3960207653E900B7EEC9 /* ColoredVKPasscodeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A53818042066981E00B4EF4B /* ColoredVKPasscodeButton.m */; };
 		A5AC3961207653E900B7EEC9 /* ColoredVKPasscodeCircle.h in Headers */ = {isa = PBXBuildFile; fileRef = A538180F2066B83C00B4EF4B /* ColoredVKPasscodeCircle.h */; };
 		A5AC3962207653E900B7EEC9 /* ColoredVKPasscodeCircle.m in Sources */ = {isa = PBXBuildFile; fileRef = A53818102066B83C00B4EF4B /* ColoredVKPasscodeCircle.m */; };
-		A5AC39692076744700B7EEC9 /* TweakNightTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5AC396320766A0A00B7EEC9 /* TweakNightTheme.swift */; };
-		A5AC396B2076744A00B7EEC9 /* TweakNightTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5AC396320766A0A00B7EEC9 /* TweakNightTheme.swift */; };
-		A5AC396D207685FE00B7EEC9 /* TweakNightTheme_SwiftBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AC396C207685FE00B7EEC9 /* TweakNightTheme_SwiftBridge.h */; };
-		A5AC396E207685FE00B7EEC9 /* TweakNightTheme_SwiftBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AC396C207685FE00B7EEC9 /* TweakNightTheme_SwiftBridge.h */; };
 		A5AE82F81EC1DE25000B7F63 /* ColoredVKStepperButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AE82F61EC1DE25000B7F63 /* ColoredVKStepperButton.h */; };
 		A5AE82F91EC1DE25000B7F63 /* ColoredVKStepperButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AE82F61EC1DE25000B7F63 /* ColoredVKStepperButton.h */; };
 		A5AE82FA1EC1DE25000B7F63 /* ColoredVKStepperButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A5AE82F61EC1DE25000B7F63 /* ColoredVKStepperButton.h */; };
@@ -391,7 +383,6 @@
 		A5B607D11F0943C4003529AF /* ColoredVKUpdatesController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5B607C91F0943C4003529AF /* ColoredVKUpdatesController.m */; };
 		A5B6ED071D3D659800383425 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FB51CC92157005B9693 /* Foundation.framework */; };
 		A5B6ED081D3D659800383425 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FCA1CC9261B005B9693 /* UIKit.framework */; };
-		A5B6ED451D3D68F000383425 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A50731D41CD535130088EF9F /* QuartzCore.framework */; };
 		A5B81EEA20238978005BD879 /* ColoredVKScrollViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B81EE820238978005BD879 /* ColoredVKScrollViewController.h */; };
 		A5B81EEB20238978005BD879 /* ColoredVKScrollViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B81EE820238978005BD879 /* ColoredVKScrollViewController.h */; };
 		A5B81EEC20238978005BD879 /* ColoredVKScrollViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5B81EE820238978005BD879 /* ColoredVKScrollViewController.h */; };
@@ -405,7 +396,6 @@
 		A5BC53B01F1234C200C4E1E0 /* ColoredVKAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5BC53A91F1234C200C4E1E0 /* ColoredVKAlertController.m */; };
 		A5BC53B11F1234C200C4E1E0 /* ColoredVKAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5BC53A91F1234C200C4E1E0 /* ColoredVKAlertController.m */; };
 		A5C988D91F2BBDB20054AC62 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F09DA51F101A5200024198 /* SafariServices.framework */; };
-		A5C988DA1F2BBE2F0054AC62 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F09DA51F101A5200024198 /* SafariServices.framework */; };
 		A5C988DB1F2BBE410054AC62 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F09DA51F101A5200024198 /* SafariServices.framework */; };
 		A5CAC06E2026340E0006DD4A /* ColoredVKUserInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5CAC06D2026340E0006DD4A /* ColoredVKUserInfoView.xib */; };
 		A5CAC06F2026340E0006DD4A /* ColoredVKUserInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5CAC06D2026340E0006DD4A /* ColoredVKUserInfoView.xib */; };
@@ -415,8 +405,6 @@
 		A5CC386320401D39005A3AB0 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A517D7991D78A25700DD153E /* MobileCoreServices.framework */; };
 		A5CC38642040366E005A3AB0 /* ColoredVKNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = A50177CF201F936000032A8D /* ColoredVKNavigationController.m */; };
 		A5CC386520403670005A3AB0 /* ColoredVKNavigationController.h in Headers */ = {isa = PBXBuildFile; fileRef = A50177CE201F936000032A8D /* ColoredVKNavigationController.h */; };
-		A5CC38662040368F005A3AB0 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A517D7991D78A25700DD153E /* MobileCoreServices.framework */; };
-		A5CC3867204036A5005A3AB0 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A517D7991D78A25700DD153E /* MobileCoreServices.framework */; };
 		A5D0A2A01DB270EC00720E41 /* libMobileGestalt.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A50311E31D853E800075B177 /* libMobileGestalt.tbd */; };
 		A5D2DFB51DE741CF00DCDC84 /* ColoredVKAudioCover.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D2DFB31DE741CF00DCDC84 /* ColoredVKAudioCover.h */; };
 		A5D2DFB61DE741CF00DCDC84 /* ColoredVKAudioCover.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D2DFB31DE741CF00DCDC84 /* ColoredVKAudioCover.h */; };
@@ -492,8 +480,6 @@
 		A5D9A6871FACDBD900403A49 /* ColoredVKPrefsSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D9A6831FACDBD900403A49 /* ColoredVKPrefsSelector.m */; };
 		A5D9A6881FACDBD900403A49 /* ColoredVKPrefsSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D9A6831FACDBD900403A49 /* ColoredVKPrefsSelector.m */; };
 		A5D9A6891FACDBD900403A49 /* ColoredVKPrefsSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D9A6831FACDBD900403A49 /* ColoredVKPrefsSelector.m */; };
-		A5DA87DE1D944EAC00763B5F /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5DA87DD1D944EAC00763B5F /* ImageIO.framework */; };
-		A5DA87DF1D944EB700763B5F /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5DA87DD1D944EAC00763B5F /* ImageIO.framework */; };
 		A5DA87E21D944ED400763B5F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5DA87E01D944ECE00763B5F /* CoreGraphics.framework */; };
 		A5DB61CB1F10DBF200FFAFF9 /* ColoredVKNewInstaller.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D921F0FF88200024198 /* ColoredVKNewInstaller.m */; };
 		A5DB61CC1F10DBFF00FFAFF9 /* ColoredVKNewInstaller.h in Headers */ = {isa = PBXBuildFile; fileRef = A5F09D911F0FF88200024198 /* ColoredVKNewInstaller.h */; };
@@ -524,7 +510,6 @@
 		A5EC6A4C2053DDB2007D6646 /* ColoredVKAnimatedButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A5EC6A472053DDB2007D6646 /* ColoredVKAnimatedButton.h */; };
 		A5EC6A4D2053DDB2007D6646 /* ColoredVKAnimatedButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A5EC6A472053DDB2007D6646 /* ColoredVKAnimatedButton.h */; };
 		A5ED14581DE874DA00138A65 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5ED14571DE874DA00138A65 /* OpenGLES.framework */; };
-		A5ED14591DE87E0000138A65 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5ED14571DE874DA00138A65 /* OpenGLES.framework */; };
 		A5EE64AD1FAE4C9E0050C156 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5EE64AC1FAE4C9E0050C156 /* Photos.framework */; };
 		A5F09D931F0FF88200024198 /* ColoredVKNewInstaller.h in Headers */ = {isa = PBXBuildFile; fileRef = A5F09D911F0FF88200024198 /* ColoredVKNewInstaller.h */; };
 		A5F09D951F0FF88200024198 /* ColoredVKNewInstaller.h in Headers */ = {isa = PBXBuildFile; fileRef = A5F09D911F0FF88200024198 /* ColoredVKNewInstaller.h */; };
@@ -711,8 +696,6 @@
 		A5A8596E1EF8110200C6E1EA /* ColoredVKColorPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKColorPreview.m; sourceTree = "<group>"; };
 		A5AB32761F34F8E100C7537C /* ColoredVKUpdatesPrefsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKUpdatesPrefsController.h; sourceTree = "<group>"; };
 		A5AB32771F34F8E100C7537C /* ColoredVKUpdatesPrefsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKUpdatesPrefsController.m; sourceTree = "<group>"; };
-		A5AC396320766A0A00B7EEC9 /* TweakNightTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TweakNightTheme.swift; sourceTree = "<group>"; };
-		A5AC396C207685FE00B7EEC9 /* TweakNightTheme_SwiftBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TweakNightTheme_SwiftBridge.h; sourceTree = "<group>"; };
 		A5AD46761DD38AF200740E30 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		A5AE82F61EC1DE25000B7F63 /* ColoredVKStepperButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKStepperButton.h; sourceTree = "<group>"; };
 		A5AE82F71EC1DE25000B7F63 /* ColoredVKStepperButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKStepperButton.m; sourceTree = "<group>"; };
@@ -784,16 +767,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A5CC38662040368F005A3AB0 /* MobileCoreServices.framework in Frameworks */,
-				A5C988DA1F2BBE2F0054AC62 /* SafariServices.framework in Frameworks */,
 				A525A3921F2A382200F86EFF /* WebKit.framework in Frameworks */,
-				A585E1761EAF2113005B30F7 /* CoreData.framework in Frameworks */,
 				A50311E41D853E800075B177 /* libMobileGestalt.tbd in Frameworks */,
-				A5ED14591DE87E0000138A65 /* OpenGLES.framework in Frameworks */,
 				A589F66B1DE1B2F100467138 /* MediaPlayer.framework in Frameworks */,
 				A5D979721DAEB8BC00607F06 /* CoreGraphics.framework in Frameworks */,
-				A5DA87DF1D944EB700763B5F /* ImageIO.framework in Frameworks */,
-				A50731D51CD535130088EF9F /* QuartzCore.framework in Frameworks */,
 				A5079FCB1CC9261B005B9693 /* UIKit.framework in Frameworks */,
 				A5079FB61CC92157005B9693 /* Foundation.framework in Frameworks */,
 				7560BCCB5DD90B5C2B79935D /* libPods-ColoredVK.a in Frameworks */,
@@ -831,15 +808,10 @@
 			files = (
 				A56405982068DA1C0033AF40 /* AudioToolbox.framework in Frameworks */,
 				A53818192066CF8F00B4EF4B /* LocalAuthentication.framework in Frameworks */,
-				A5CC3867204036A5005A3AB0 /* MobileCoreServices.framework in Frameworks */,
-				A58EBC122039C998007184C1 /* Photos.framework in Frameworks */,
 				A5D3D03B1FE01310007AAEF7 /* Preferences.framework in Frameworks */,
-				A513AB351F43666E0045F530 /* SafariServices.framework in Frameworks */,
 				A525A3911F2A381A00F86EFF /* WebKit.framework in Frameworks */,
 				A5D0A2A01DB270EC00720E41 /* libMobileGestalt.tbd in Frameworks */,
 				A5DA87E21D944ED400763B5F /* CoreGraphics.framework in Frameworks */,
-				A5DA87DE1D944EAC00763B5F /* ImageIO.framework in Frameworks */,
-				A5B6ED451D3D68F000383425 /* QuartzCore.framework in Frameworks */,
 				A5B6ED071D3D659800383425 /* Foundation.framework in Frameworks */,
 				A5B6ED081D3D659800383425 /* UIKit.framework in Frameworks */,
 				A40EE5C34D99A34D3387CD0D /* libPods-ColoredVK-Prefs.a in Frameworks */,
@@ -1234,8 +1206,6 @@
 				A5E1E08020656BA300709696 /* AudioSwizzle.m */,
 				A5E1E08320656C3700709696 /* SettingsSwizzle.m */,
 				A5D3D06E1FE063D0007AAEF7 /* TweakNightTheme.m */,
-				A5AC396C207685FE00B7EEC9 /* TweakNightTheme_SwiftBridge.h */,
-				A5AC396320766A0A00B7EEC9 /* TweakNightTheme.swift */,
 			);
 			name = Tweak;
 			sourceTree = "<group>";
@@ -1317,7 +1287,6 @@
 				A523509F1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h in Headers */,
 				A5903F91201DDD5300951C53 /* LHBackgroundView.h in Headers */,
 				A5D2DFB51DE741CF00DCDC84 /* ColoredVKAudioCover.h in Headers */,
-				A5AC396D207685FE00B7EEC9 /* TweakNightTheme_SwiftBridge.h in Headers */,
 				A5903F92201DDD5300951C53 /* LHProgressHUD.h in Headers */,
 				A50D222E1DB16572007F195C /* NSDate+DateTools.h in Headers */,
 				A5CC382E20401698005A3AB0 /* VKMethods.h in Headers */,
@@ -1383,7 +1352,6 @@
 				A5E3A9182026302800AD43AE /* ColoredVKUserInfoView.h in Headers */,
 				A5AE82F91EC1DE25000B7F63 /* ColoredVKStepperButton.h in Headers */,
 				A5739D761EA015C300367595 /* ColoredVKStepperPrefsCell.h in Headers */,
-				A5AC396E207685FE00B7EEC9 /* TweakNightTheme_SwiftBridge.h in Headers */,
 				A53104C71EC4D08C003DEB83 /* ColoredVKWindowController.h in Headers */,
 				A5288C442037327800A11223 /* ColoredVKColorMapView.h in Headers */,
 				A5363B0E1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.h in Headers */,
@@ -1945,7 +1913,6 @@
 				A50B3F8E20711C4F00A16F6C /* TweakVariables.m in Sources */,
 				A52B8F3D1F991A2600898168 /* ColoredVKNightThemeColorScheme.m in Sources */,
 				A50883AA1FFA48BC00C05E2A /* ColoredVKUserModel.m in Sources */,
-				A5AC39692076744700B7EEC9 /* TweakNightTheme.swift in Sources */,
 				A52350A11DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m in Sources */,
 				A5E1E08B206573AB00709696 /* ChatSwizzle.m in Sources */,
 				A5D979671DAEB87900607F06 /* UIImage+ColoredVK.m in Sources */,
@@ -2000,7 +1967,6 @@
 				A5F09DA31F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */,
 				A5B607D01F0943C4003529AF /* ColoredVKUpdatesController.m in Sources */,
 				A592BF4F1FA1F13700810F89 /* ColoredVKThemePrefsController.m in Sources */,
-				A5AC396B2076744A00B7EEC9 /* TweakNightTheme.swift in Sources */,
 				A528D8871DE9FCAF00B299C1 /* ColoredVKMainController.m in Sources */,
 				A51E68BD2033231400B72082 /* ColoredVKCardController.m in Sources */,
 				A576D1BC1DC6220C0039884F /* LHBackgroundView.m in Sources */,
@@ -2180,7 +2146,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.5;
+				APP_VERSION = 4.4.7;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2258,7 +2224,6 @@
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "arm64 armv7";
@@ -2272,8 +2237,6 @@
 			buildSettings = {
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				SWIFT_OBJC_BRIDGING_HEADER = ./ColoredVK/TweakNightTheme_SwiftBridge.h;
-				SWIFT_VERSION = 3.0;
 			};
 			name = Debug_DEB;
 		};
@@ -2300,8 +2263,6 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				SWIFT_OBJC_BRIDGING_HEADER = ColoredVK/TweakNightTheme_SwiftBridge.h;
-				SWIFT_VERSION = 3.0;
 			};
 			name = Debug_DEB;
 		};
@@ -2329,7 +2290,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.5;
+				APP_VERSION = 4.4.7;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2406,7 +2367,6 @@
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "arm64 armv7";
@@ -2420,8 +2380,6 @@
 			buildSettings = {
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				SWIFT_OBJC_BRIDGING_HEADER = ./ColoredVK/TweakNightTheme_SwiftBridge.h;
-				SWIFT_VERSION = 3.0;
 			};
 			name = Debug_IPA;
 		};
@@ -2448,8 +2406,6 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				SWIFT_OBJC_BRIDGING_HEADER = ColoredVK/TweakNightTheme_SwiftBridge.h;
-				SWIFT_VERSION = 3.0;
 			};
 			name = Debug_IPA;
 		};
@@ -2480,8 +2436,6 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				SWIFT_OBJC_BRIDGING_HEADER = ColoredVK/TweakNightTheme_SwiftBridge.h;
-				SWIFT_VERSION = 3.0;
 			};
 			name = Release_DEB;
 		};
@@ -2492,8 +2446,6 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				SWIFT_OBJC_BRIDGING_HEADER = ColoredVK/TweakNightTheme_SwiftBridge.h;
-				SWIFT_VERSION = 3.0;
 			};
 			name = Release_IPA;
 		};
@@ -2541,7 +2493,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.5;
+				APP_VERSION = 4.4.7;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2619,7 +2571,6 @@
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "arm64 armv7";
@@ -2633,8 +2584,6 @@
 			buildSettings = {
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				SWIFT_OBJC_BRIDGING_HEADER = ./ColoredVK/TweakNightTheme_SwiftBridge.h;
-				SWIFT_VERSION = 3.0;
 			};
 			name = Debug_APP;
 		};
@@ -2661,8 +2610,6 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				SWIFT_OBJC_BRIDGING_HEADER = ColoredVK/TweakNightTheme_SwiftBridge.h;
-				SWIFT_VERSION = 3.0;
 			};
 			name = Debug_APP;
 		};
@@ -2690,7 +2637,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.5;
+				APP_VERSION = 4.4.7;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2768,7 +2715,6 @@
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "arm64 armv7";
@@ -2782,8 +2728,6 @@
 			buildSettings = {
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				SWIFT_OBJC_BRIDGING_HEADER = ./ColoredVK/TweakNightTheme_SwiftBridge.h;
-				SWIFT_VERSION = 3.0;
 			};
 			name = Release_DEB;
 		};
@@ -2801,7 +2745,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.5;
+				APP_VERSION = 4.4.7;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2878,7 +2822,6 @@
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "arm64 armv7";
@@ -2892,8 +2835,6 @@
 			buildSettings = {
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				SWIFT_OBJC_BRIDGING_HEADER = ./ColoredVK/TweakNightTheme_SwiftBridge.h;
-				SWIFT_VERSION = 3.0;
 			};
 			name = Release_IPA;
 		};

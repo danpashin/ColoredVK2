@@ -30,34 +30,6 @@ CVKHook(CTFramesetterRef, CTFramesetterCreateWithAttributedString, CFAttributedS
     return result;
 }
 
-
-//static void __attribute__((constructor)) selectedMessagesIds_constructor() {
-//    
-//    NSString *vkmBinaryPath = [[NSBundle mainBundle] pathForResource:@"vkm" ofType:@"framework" inDirectory:@"Frameworks"];
-//    if (!vkmBinaryPath) {
-//        CVKLog(@"vkm.framework is missing.");
-//        return;
-//    }
-//    vkmBinaryPath = [vkmBinaryPath stringByAppendingString:@"/vkm"];
-//    
-//    void *vkmBinary = dlopen(vkmBinaryPath.UTF8String, RTLD_NOW);
-////    CVKLogSource(@"%@", dlsym(vkmBinary, "__TtC3vkm9Bootstrap"));
-////    CVKLogSource(@"%s", dlerror());
-//    
-//    unsigned int count;    
-//    const char ** classes = objc_copyClassNamesForImage(vkmBinary, &count);
-//    
-//    for (unsigned int i = 0; i< sizeof(classes)/sizeof(classes[0]); i++){
-//        CVKLog(@"class name: %s", classes[i]);
-//    }
-//    free(classes);
-//    dlclose(vkmBinary);
-//    
-//    
-////    rebind_symbols((struct rebinding[1]){{"_TtC3vkm31HistoryCollectionViewController_selectedMessagesIds", selectedMessagesIds_hook, (void *)&selectedMessagesIds_orig}}, 1);
-//}
-
-
 CHDeclareClass(ProfileView);
 CHDeclareMethod(0, void, ProfileView, layoutSubviews)
 {
@@ -1305,4 +1277,12 @@ CHDeclareMethod(1, void, SFSafariViewController, dismissViewControllerAnimated, 
     if (enabled && enableNightTheme && statusBar != nil) {
         statusBar.foregroundColor = [UIColor whiteColor];
     }
+}
+
+
+CHDeclareClass(_TtC3vkm31HistoryCollectionViewController);
+CHDeclareMethod(3, void, _TtC3vkm31HistoryCollectionViewController, collectionView, UICollectionView *, collectionView, willDisplayCell, UICollectionViewCell *, cell, forItemAtIndexPath, NSIndexPath *, indexPath)
+{
+    CHSuper(3, _TtC3vkm31HistoryCollectionViewController, collectionView, collectionView, willDisplayCell, cell, forItemAtIndexPath, indexPath);
+    setupNewMessageCellBubble(cell);    
 }

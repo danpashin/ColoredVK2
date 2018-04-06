@@ -50,3 +50,7 @@ NSAttributedString *attributedStringForNightTheme(NSAttributedString * text);
 
 void setupNewDialogsSearchController(DialogsSearchResultsController *controller);
 void updateControllerBlurInfo(UIViewController *controller, void (^completion)(void) );
+
+
+
+void setupNewMessageCellBubble(UICollectionViewCell *cell);

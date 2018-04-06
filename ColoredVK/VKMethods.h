@@ -885,5 +885,6 @@
 @interface CameraCaptureButtonTip : UIView
 @end
 
-
+@interface _TtC3vkm31HistoryCollectionViewController : UICollectionViewController
+@end
 

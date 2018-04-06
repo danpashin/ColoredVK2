@@ -61,6 +61,8 @@ BOOL installerShouldOpenPrefs;
     if (self) {
         __key = legacyEncryptServerString([NSProcessInfo processInfo].globallyUniqueString);
         __udid = CFBridgingRelease(MGCopyAnswer(CFSTR("re6Zb+zwFKJNlkQTUeT+/w")));
+        deviceIsJailed = (__udid.length == 40);
+        
         _user = [ColoredVKUserModel new];
         _application = [ColoredVKApplicationModel new];
         
@@ -158,7 +160,7 @@ return;
             NSString *licenceUdid = dict[@"udid"];
             
             if (__udid.length != 0) {
-                if ((licenceUdid.length != 40) || (__udid.length != 40) || ![licenceUdid isEqualToString:__udid]) {
+                if ((licenceUdid.length != 40) || !deviceIsJailed || ![licenceUdid isEqualToString:__udid]) {
                     writeFreeLicenceAndReturn
                 }
             }
@@ -241,7 +243,6 @@ return;
 - (void)writeFreeLicence
 {
     [self.user clearUser];
-    deviceIsJailed = (__udid.length == 40);
     
     NSDictionary *dict = @{@"purchased" : @NO, @"Device" : __deviceModel, 
                            @"jailed" : deviceIsJailed ? @YES : @NO, @"udid" : deviceIsJailed ? __udid : @"" };
@@ -254,7 +255,7 @@ return;
 
 - (void)downloadJBLicence
 {
-    if (__udid.length != 40)
+    if (!deviceIsJailed)
         return;
     
     NSDictionary *params = @{@"udid": legacyEncryptServerString(__udid), 

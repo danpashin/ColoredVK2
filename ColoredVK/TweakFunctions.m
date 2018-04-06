@@ -101,7 +101,7 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
         }
     };
     
-    if (![[NSThread currentThread] isMainThread])
+    if (![NSThread isMainThread])
         dispatch_async(dispatch_get_main_queue(), setBlurBlock);
     else
         setBlurBlock();
@@ -969,4 +969,29 @@ void updateControllerBlurInfo(UIViewController *controller, void (^completion)(v
         if (completion)
             completion();
     });
+}
+
+void setupNewMessageCellBubble(UICollectionViewCell *cell)
+{
+    if (!enabled)
+        return;
+    
+    UIColor *tintColor = nil;
+    if (enableNightTheme) {
+        tintColor = cvkMainController.nightThemeScheme.incomingBackgroundColor;
+    }
+    
+    if (!tintColor)
+        return;
+    
+    if (![cell respondsToSelector:@selector(bubbleView)])
+        return;
+    
+    UIView *bubbleView = objc_msgSend(cell, @selector(bubbleView));
+    if (![bubbleView isKindOfClass:[UIView class]])
+        return;
+    if (![bubbleView.layer isKindOfClass:[CAShapeLayer class]])
+        return;
+    
+    ((CAShapeLayer *)bubbleView.layer).fillColor = tintColor.CGColor;
 }
