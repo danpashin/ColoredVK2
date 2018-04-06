@@ -42,14 +42,14 @@
     CGFloat radius = min/2 - _padding;
     UIBezierPath * bezierPath = [UIBezierPath bezierPathWithArcCenter:center
                                                                radius:radius
-                                                           startAngle:-M_PI/2
-                                                             endAngle:M_PI * 2 - M_PI/2
+                                                           startAngle:(CGFloat)(-M_PI/2)
+                                                             endAngle:(CGFloat)(M_PI * 2 - M_PI/2)
                                                             clockwise:YES];
     _layerFirst.path = bezierPath.CGPath;
-    _layerFirst.strokeStart = 0.05;
-    _layerFirst.strokeEnd = 0.05;
+    _layerFirst.strokeStart = 0.05f;
+    _layerFirst.strokeEnd = 0.05f;
     _layerFirst.lineCap = kCALineCapRound;
-    _layerFirst.lineWidth = 3.0;
+    _layerFirst.lineWidth = 3.0f;
     _layerFirst.strokeColor = _spinnerColor.CGColor;
     _layerFirst.fillColor = [UIColor clearColor].CGColor;
     _layerFirst.anchorPoint = CGPointMake(0.5, 0.5);
@@ -60,12 +60,12 @@
     _thridLayer = [CAShapeLayer layer];
     UIBezierPath * bz3 = [UIBezierPath bezierPathWithArcCenter:center
                                                                radius:radius
-                                                           startAngle:-M_PI/2
-                                                             endAngle:M_PI * 2 - M_PI/2
+                                                           startAngle:(CGFloat)(-M_PI/2)
+                                                             endAngle:(CGFloat)(M_PI * 2 - M_PI/2)
                                                             clockwise:YES];
     _thridLayer.path = bz3.CGPath;
-    _thridLayer.strokeStart = 0.00;
-    _thridLayer.strokeEnd = 0.05;
+    _thridLayer.strokeStart = 0.00f;
+    _thridLayer.strokeEnd = 0.05f;
     _thridLayer.lineCap = kCALineCapRound;
     _thridLayer.lineWidth = 3.0;
     _thridLayer.strokeColor = _spinnerColor.CGColor;
@@ -131,7 +131,7 @@
     animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     [self.layerFirst addAnimation:animation forKey:@"strokeEnd"];
     [self transactionUpdate:^{
-        self.layerFirst.strokeStart = 0.05;
+        self.layerFirst.strokeStart = 0.05f;
         self.layerFirst.strokeEnd = 1.00;
     }];
 }
@@ -163,8 +163,8 @@
     [self.layerFirst removeAllAnimations];
     [self.thridLayer removeAllAnimations];
     [self transactionUpdate:^{
-        self.layerFirst.strokeStart = 0.05;
-        self.layerFirst.strokeEnd = 1.00;
+        self.layerFirst.strokeStart = 0.05f;
+        self.layerFirst.strokeEnd = 1.0f;
     }];
     if (animated) {
         _layerSecond.path = self.successPath.CGPath;
@@ -172,7 +172,7 @@
         [self animateSecondLayer];
     }else{
         [self transactionUpdate:^{
-            _layerSecond.path = self.successPath.CGPath;
+            self->_layerSecond.path = self.successPath.CGPath;
             self.layerSecond.hidden = NO;
             self.layerSecond.strokeEnd = 1.0;
         }];
@@ -184,7 +184,7 @@
     [self.thridLayer removeAllAnimations];
     [self.layerFirst removeAllAnimations];
     [self transactionUpdate:^{
-        self.layerFirst.strokeStart = 0.05;
+        self.layerFirst.strokeStart = 0.05f;
         self.layerFirst.strokeEnd = 1.00;
     }];
     if (animated) {
@@ -194,7 +194,7 @@
     }else{
         [self transactionUpdate:^{
             self.layerSecond.hidden = NO;
-            _layerSecond.path = [self failurePath].CGPath;
+            self->_layerSecond.path = [self failurePath].CGPath;
             self.layerSecond.strokeEnd = 1.0;
 
         }];
@@ -205,17 +205,17 @@
     [self.layerFirst removeAllAnimations];
     [self.thridLayer removeAllAnimations];
     [self transactionUpdate:^{
-        self.layerFirst.strokeStart = 0.05;
+        self.layerFirst.strokeStart = 0.05f;
         self.layerFirst.strokeEnd = 1.00;
     }];
     if (animated) {
         self.layerSecond.hidden = NO;
-        _layerSecond.path = [self infoPath].CGPath;
+        self->_layerSecond.path = [self infoPath].CGPath;
         [self animateSecondLayer];
     }else{
         [self transactionUpdate:^{
             self.layerSecond.hidden = NO;
-            _layerSecond.path = [self infoPath].CGPath;
+            self->_layerSecond.path = [self infoPath].CGPath;
             self.layerSecond.strokeEnd = 1.0;
             
         }];

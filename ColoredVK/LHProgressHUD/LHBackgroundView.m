@@ -18,7 +18,7 @@
 -(instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
         _blurStyle = LHBlurEffectStyleNone;
-        self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.80];
+        self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.80f];
         [self updateViews];
     }
     return self;
@@ -44,7 +44,7 @@
     }else if(_blurStyle == LHBlurEffectStyleDark){
         effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     }else{
-        self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.80];
+        self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.80f];
         return;
     }
     self.layer.allowsGroupOpacity = NO;

@@ -22,16 +22,6 @@
     return sharedScheme;
 }
 
-- (instancetype)initWithType:(CVKNightThemeType)type
-{
-    self = [super init];
-    
-    if (self) {
-        [self updateForType:type];
-    }
-    return self;
-}
-
 - (instancetype)init
 {
     self = [super init];
@@ -41,7 +31,6 @@
     }
     return self;
 }
-
 
 - (void)updateForType:(CVKNightThemeType)type
 {

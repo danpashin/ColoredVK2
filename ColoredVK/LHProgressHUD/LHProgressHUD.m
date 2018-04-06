@@ -168,13 +168,13 @@
 }
 -(void)setMargin:(CGFloat)margin{
     if (_margin != margin) {
-        _margin = MAX(margin, 0.0);
+        _margin = (CGFloat)MAX(margin, 0.0);
         [self setNeedsUpdateConstraints];
     }
 }
 -(void)setCenterMargin:(CGFloat)centerMargin{
     if (_centerMargin != centerMargin) {
-        _margin = MAX(_centerMargin, 0.0);
+        _margin = (CGFloat)MAX(_centerMargin, 0.0);
         [self setNeedsUpdateConstraints];
     }
 }
@@ -188,8 +188,8 @@
                     }
                     completion:^(BOOL finished) {
                         [self removeFromSuperview];
-                        if (_didHiddenBlock) {
-                            _didHiddenBlock();
+                        if (self->_didHiddenBlock) {
+                            self->_didHiddenBlock();
                         }
                     }];
 }

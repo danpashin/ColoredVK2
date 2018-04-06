@@ -6,11 +6,9 @@ FOLDER_TO_PACK="/Users/$USER/Desktop"
 
 cd ${PROJECT_DIR}
 
-echo "[->] Copying resources to temp directory (1)..."
+echo "[->] Copying resources to temp directory (stage 1)..."
 cp -r "${PROJECT_DIR}/ColoredVK.bundle/." "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle"
-#rm "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/Icon*"
-#ls "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/"
-mv "${BUILT_PRODUCTS_DIR}/$PRODUCT.mom"  "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/"
+#mv "${BUILT_PRODUCTS_DIR}/$PRODUCT.mom"  "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/"
 find "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" -iname '*.strings' -exec plutil -convert binary1 "{}" \;
 find "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" -iname '*.plist'   -exec plutil -convert binary1 "{}" \;
 
@@ -27,7 +25,7 @@ makeIPA () {
     mv ${BUILT_PRODUCTS_DIR}/*.nib "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/"
     mv ${BUILT_PRODUCTS_DIR}/*.storyboardc "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/"
     
-    echo "[->] Copying resources to temp directory (2)..."
+    echo "[->] Copying resources to temp directory (stage 2)..."
     TEMP_FOLDER="${BUILT_PRODUCTS_DIR}/Temp"
     mkdir "$TEMP_FOLDER"
     cp -r "$FOLDER_TO_PACK/vkclient/Payload" "$TEMP_FOLDER"
@@ -37,7 +35,7 @@ makeIPA () {
     EXECUTABLE_NAME=$(/usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" "$TEMP_FOLDER/Payload/$APP_NAME/Info.plist")
     optool install -c load -p "@executable_path/$PRODUCT.bundle/$PRODUCT.dylib" -t "$TEMP_FOLDER/Payload/$APP_NAME/$EXECUTABLE_NAME" >/dev/null
     
-    echo "[->] Cleaning (1)..."
+    echo "[->] Cleaning (stage 1)..."
     find "$TEMP_FOLDER" -name ".DS_Store" -exec rm -rf {} \;
     
     echo "[->] Archiving..."
@@ -46,7 +44,7 @@ makeIPA () {
     cd "${BUILT_PRODUCTS_DIR}"
     zip -9qr "$FOLDER_TO_PACK/${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}.bundle.zip" "./$PRODUCT.bundle"
     
-    echo "[->] Cleaning (2)..."
+    echo "[->] Cleaning (stage 2)..."
     rm -rf "$TEMP_FOLDER"
 }
 
@@ -54,14 +52,24 @@ makeDEB () {
     echo "[->] Signing binaries..."
     codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle"
     codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/$PRODUCT.dylib"
+
+    echo "[->] Copying resources to temp directory (stage 2)..."
     mkdir -p $FOLDER_TO_PACK/Package/{DEBIAN,Library/{MobileSubstrate/DynamicLibraries,PreferenceBundles,PreferenceLoader/Preferences}}
-    cp "ColoredVK-Prefs/control" "$FOLDER_TO_PACK/Package/DEBIAN"
+    cp "${PROJECT_DIR}/ColoredVK-Prefs/control" "$FOLDER_TO_PACK/Package/DEBIAN"
     cp -r "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" "$FOLDER_TO_PACK/Package/Library/PreferenceBundles"
     cp "${BUILT_PRODUCTS_DIR}/$PRODUCT.dylib" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries"
-    cp "ColoredVK-Prefs/$PRODUCT.plist" "$FOLDER_TO_PACK/Package/Library/PreferenceLoader/Preferences"
-    cp "ColoredVK-Prefs/$PRODUCT-dylib.plist" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/$PRODUCT.plist"
+    cp "${PROJECT_DIR}/ColoredVK-Prefs/$PRODUCT.plist" "$FOLDER_TO_PACK/Package/Library/PreferenceLoader/Preferences"
+    cp "${PROJECT_DIR}/ColoredVK-Prefs/$PRODUCT-dylib.plist" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/$PRODUCT.plist"
+
     cd $FOLDER_TO_PACK
+
+    echo "[->] Cleaning (stage 1)..."
+    find "Package" -name ".DS_Store" -exec rm -rf {} \;
+
+    echo "[->] Packaging..."
     dpkg-deb -b -Zlzma "Package" "${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}_${PLATFORM_NAME}-arm.deb"
+
+    echo "[->] Cleaning (stage 2)..."
     rm -rf Package
 }
 
