@@ -888,3 +888,6 @@
 @interface _TtC3vkm31HistoryCollectionViewController : UICollectionViewController
 @end
 
+@interface _TtC3vkm17MessageController : UIViewController
+@end
+

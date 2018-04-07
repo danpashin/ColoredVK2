@@ -235,7 +235,7 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
             if (!changeImageColor)
                 changeImageColor = @NO;
             
-            NSArray <NSString *> *namesToExclude = @[@"attachments/remove", @"search/clear"];
+            NSArray <NSString *> *namesToExclude = @[@"attachments/remove", @"search/clear", @"scroll_to_bottom"];
             if (![namesToExclude containsObject:[self imageForState:UIControlStateNormal].imageAsset.assetName] || changeImageColor.boolValue) {
                 if ((CGRectGetWidth(self.imageView.frame) <= 44.0f && CGRectGetHeight(self.imageView.frame) <= 44.0f) || changeImageColor.boolValue) {
                     [self setImage:[[self imageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
@@ -401,7 +401,8 @@ CHDeclareMethod(0, void, UICollectionViewCell, layoutSubviews)
 {
     CHSuper(0, UICollectionViewCell, layoutSubviews);
     
-    BOOL forbiddenClass = ([self isKindOfClass:NSClassFromString(@"vkm.MessageCell")] || [self isKindOfClass:NSClassFromString(@"_UIAlertControllerTextFieldViewCollectionCell")]);
+    NSArray <NSString *> *forbiddenClasses = @[@"_UIAlertControllerTextFieldViewCollectionCell", @"vkm.MessageCell", @"vkm.SelectionCollectionViewCell"];
+    BOOL forbiddenClass = [forbiddenClasses containsObject:CLASS_NAME(self)];
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionViewCell")] && !forbiddenClass) {
         
         NSNumber *shouldDisableBackgroundColor = (NSNumber*)objc_getAssociatedObject(self, "shouldDisableBackgroundColor");
@@ -1246,6 +1247,7 @@ CHDeclareMethod(0, void, InputPanelViewTextView, layoutSubviews)
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"InputPanelViewTextView")]) {
         objc_setAssociatedObject(self.placeholderLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
         self.placeholderLabel.textColor = cvkMainController.nightThemeScheme.detailTextColor;
+        self.layer.borderColor = cvkMainController.nightThemeScheme.backgroundColor.CGColor;
     }
 }
 
@@ -1279,10 +1281,19 @@ CHDeclareMethod(1, void, SFSafariViewController, dismissViewControllerAnimated, 
     }
 }
 
-
 CHDeclareClass(_TtC3vkm31HistoryCollectionViewController);
 CHDeclareMethod(3, void, _TtC3vkm31HistoryCollectionViewController, collectionView, UICollectionView *, collectionView, willDisplayCell, UICollectionViewCell *, cell, forItemAtIndexPath, NSIndexPath *, indexPath)
 {
     CHSuper(3, _TtC3vkm31HistoryCollectionViewController, collectionView, collectionView, willDisplayCell, cell, forItemAtIndexPath, indexPath);
     setupNewMessageCellBubble(cell);    
+}
+
+CHDeclareClass(_TtC3vkm17MessageController);
+CHDeclareMethod(1, void, _TtC3vkm17MessageController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, _TtC3vkm17MessageController, viewWillAppear, animated);
+    
+    if (enabled && enableNightTheme) {
+        self.view.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
 }
