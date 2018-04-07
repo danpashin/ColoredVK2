@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ColoredVKAudioCover : NSObject
+@interface ColoredVKAudioCover : UIView
 
 @property (strong, nonatomic, readonly) UIColor *color;
 @property (strong, nonatomic, readonly) UIColor *backColor;

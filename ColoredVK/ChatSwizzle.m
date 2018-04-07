@@ -15,8 +15,8 @@ CHDeclareMethod(0, void, GroupsController, viewDidLoad)
     CHSuper(0, GroupsController, viewDidLoad);
     if ([self isKindOfClass:NSClassFromString(@"GroupsController")]) {
         if (enabled && !enableNightTheme && enabledGroupsListImage) {
-            [ColoredVKMainController setImageToTableView:self.tableView withName:@"groupsListBackgroundImage" blackout:groupsListImageBlackout
-                                          parallaxEffect:useGroupsListParallax blurBackground:groupsListUseBackgroundBlur];
+            [cvkMainController setImageToTableView:self.tableView name:@"groupsListBackgroundImage" blackout:groupsListImageBlackout
+                                    parallaxEffect:useGroupsListParallax blur:groupsListUseBackgroundBlur];
             self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
             self.tableView.separatorColor = hideGroupsListSeparators ? [UIColor clearColor] : [self.tableView.separatorColor colorWithAlphaComponent:0.2f];
             self.segment.alpha = 0.9f;
@@ -77,8 +77,8 @@ CHDeclareMethod(0, void, DialogsController, viewDidLoad)
     
     if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && (compareResult == ColoredVKVersionCompareLess)) {
         if (enabled && !enableNightTheme && enabledMessagesListImage) {
-            [ColoredVKMainController setImageToTableView:self.tableView withName:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
-                                          parallaxEffect:useMessagesListParallax blurBackground:messagesListUseBackgroundBlur];
+            [cvkMainController setImageToTableView:self.tableView name:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
+                                    parallaxEffect:useMessagesListParallax blur:messagesListUseBackgroundBlur];
         }
     }
 }
@@ -147,9 +147,9 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
         
         if (compareResult >= 0) {
             if (enabled && !enableNightTheme && enabledMessagesListImage) {
-                [ColoredVKMainController setImageToTableView:tableView withName:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
-                                              parallaxEffect:useMessagesListParallax blurBackground:messagesListUseBackgroundBlur];
-                [ColoredVKMainController forceUpdateTableView:tableView withBlackout:chatListImageBlackout blurBackground:messagesListUseBackgroundBlur];
+                [cvkMainController setImageToTableView:tableView name:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
+                                        parallaxEffect:useMessagesListParallax blur:messagesListUseBackgroundBlur];
+                [cvkMainController forceUpdateTableView:tableView blackout:chatListImageBlackout blur:messagesListUseBackgroundBlur];
             } else
                 tableView.backgroundView = nil;
         }

@@ -55,23 +55,22 @@
     }
     
     if ([self.accessoryView isKindOfClass:[UISwitch class]]) {
-    
-    NSNumber *userChangedColor = objc_getAssociatedObject(self, "change_switch_color");
-    if (!userChangedColor)
-        userChangedColor = @NO;
-    
-    UISwitch *switchView = (UISwitch *)self.accessoryView;
-    switchView.tag = 228;
-    switchView.layer.cornerRadius = 16.0f;
-    if (!nightScheme.enabled) {
-        switchView.backgroundColor = [UIColor colorWithRed:234/255.0f green:234/255.0f blue:239/255.0f alpha:1.0f];
-        switchView.thumbTintColor = [UIColor whiteColor];
-    }
-    
-    if (!userChangedColor.boolValue) {
-        switchView.onTintColor = CVKMainColor;
-        switchView.tintColor = [UIColor clearColor];
-    }
+        NSNumber *userChangedColor = objc_getAssociatedObject(self, "change_switch_color");
+        if (!userChangedColor)
+            userChangedColor = @NO;
+        
+        UISwitch *switchView = (UISwitch *)self.accessoryView;
+        switchView.tag = 228;
+        switchView.layer.cornerRadius = 16.0f;
+        if (!nightScheme.enabled) {
+            switchView.backgroundColor = [UIColor colorWithRed:234/255.0f green:234/255.0f blue:239/255.0f alpha:1.0f];
+            switchView.thumbTintColor = [UIColor whiteColor];
+        }
+        
+        if (!userChangedColor.boolValue) {
+            switchView.onTintColor = CVKMainColor;
+            switchView.tintColor = [UIColor clearColor];
+        }
     }
 }
 

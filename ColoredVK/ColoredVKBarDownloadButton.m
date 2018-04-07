@@ -53,19 +53,19 @@
     if (self.urlBlock && !self.url)
         self.url = self.urlBlock(); 
     
-    ColoredVKAlertController *actionController = [ColoredVKAlertController alertControllerWithTitle:@"" message:CVKLocalizedString(@"SET_THIS_IMAGE_TO") preferredStyle:UIAlertControllerStyleActionSheet];
-    [actionController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+    ColoredVKAlertController *actionController = [ColoredVKAlertController alertControllerWithTitle:@"" message:CVKLocalizedString(@"SET_THIS_IMAGE_TO") 
+                                                                                     preferredStyle:UIAlertControllerStyleActionSheet];
+    [actionController addCancelAction];
     
     for (NSDictionary *dict in self.downloadInfo) {
         NSString *identifier = dict[@"identifier"];
         NSString *title = CVKLocalizedStringFromTable(dict[@"title"], @"ColoredVK");
         UIAlertAction *downloadAction = [UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             ColoredVKHUD *hud = [ColoredVKHUD showHUD];
-            ColoredVKImageProcessor *processor = [ColoredVKImageProcessor new];
             
             NSURL *url = [NSURL URLWithString:self.url];
             NSURL *urlToSave = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, identifier]];
-            [processor processImageFromURL:url identifier:identifier andSaveToURL:urlToSave completionBlock:^(BOOL success, NSError *error) {
+            [[ColoredVKImageProcessor new] processImageFromURL:url identifier:identifier andSaveToURL:urlToSave completionBlock:^(BOOL success, NSError *error) {
                 success ? [hud showSuccess] : [hud showFailureWithStatus:error.localizedDescription];
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPackageNotificationUpdateImage 

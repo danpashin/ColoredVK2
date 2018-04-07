@@ -15,14 +15,20 @@
 - (UIColor *)colorValue
 {
     NSArray *components = [[self stringByReplacingOccurrencesOfString:@" " withString:@""] componentsSeparatedByString:@","];
-    if (components.count > 0) return [UIColor colorWithRed:[components[0] floatValue] green:[components[1] floatValue] blue:[components[2] floatValue] alpha:[components[3] floatValue]];
+    if (components.count > 0)
+        return [UIColor colorWithRed:[components[0] floatValue] green:[components[1] floatValue] 
+                                blue:[components[2] floatValue] alpha:[components[3] floatValue]];
+    
     return [UIColor blackColor];
 }
 
 - (UIColor *)rgbColorValue
 {
     NSArray *components = [[self stringByReplacingOccurrencesOfString:@" " withString:@""] componentsSeparatedByString:@","];
-    if (components.count > 0) return [UIColor colorWithRed:[components[0] floatValue] * 255.0f green:[components[1] floatValue] * 255.0f blue:[components[2] floatValue] * 255.0f alpha:[components[3] floatValue]];
+    if (components.count > 0)
+        return [UIColor colorWithRed:[components[0] floatValue] * 255.0f green:[components[1] floatValue] * 255.0f 
+                                blue:[components[2] floatValue] * 255.0f alpha:[components[3] floatValue]];
+    
     return [UIColor blackColor];
 }
 

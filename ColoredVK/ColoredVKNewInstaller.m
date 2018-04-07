@@ -200,8 +200,7 @@ return;
     if (!title)
         title = kPackageName;
     
-    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:title message:text 
-                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:title message:text];
     if (buttons.count == 0) {
         [alertController addCancelActionWithTitle:UIKitLocalizedString(@"OK")];
     } else {

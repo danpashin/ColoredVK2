@@ -161,8 +161,8 @@ CHDeclareMethod(0, void, AudioAlbumController, viewWillLayoutSubviews)
     CHSuper(0, AudioAlbumController, viewWillLayoutSubviews);
     
     if (enabled && !enableNightTheme && enabledAudioImage && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
-        [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
-                                      parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
+        [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
+                                parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor =  hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
         self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
     }
@@ -196,8 +196,8 @@ CHDeclareMethod(1, void, AudioPlaylistController, viewWillAppear, BOOL, animated
     CHSuper(1, AudioPlaylistController, viewWillAppear, animated);
     
     if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioPlaylistController")]) {
-        [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
-                                      parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
+        [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
+                                parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
     }
 }
@@ -240,8 +240,8 @@ CHDeclareMethod(0, void, AudioDashboardController, viewWillLayoutSubviews)
     CHSuper(0, AudioDashboardController, viewWillLayoutSubviews);
     
     if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioDashboardController")]) {
-        [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
-                                      parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
+        [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
+                                parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
         self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
     }
@@ -268,8 +268,8 @@ CHDeclareMethod(0, void, AudioCatalogController, viewWillLayoutSubviews)
     CHSuper(0, AudioCatalogController, viewWillLayoutSubviews);
     
     if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioCatalogController")]) {
-        [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
-                                      parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
+        [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
+                                parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
         self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
     }
@@ -316,8 +316,8 @@ CHDeclareMethod(0, void, AudioCatalogOwnersListController, viewWillLayoutSubview
     CHSuper(0, AudioCatalogOwnersListController, viewWillLayoutSubviews);
     
     if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioCatalogOwnersListController")]) {
-        [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
-                                      parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
+        [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
+                                parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
         self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
     }
@@ -357,8 +357,8 @@ CHDeclareMethod(0, void, AudioCatalogAudiosListController, viewWillLayoutSubview
     CHSuper(0, AudioCatalogAudiosListController, viewWillLayoutSubviews);
     
     if (enabled  && !enableNightTheme&& enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioCatalogAudiosListController")]) {
-        [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
-                                      parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
+        [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
+                                parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
         self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
     }
@@ -387,8 +387,8 @@ CHDeclareMethod(0, void, AudioPlaylistDetailController, viewWillLayoutSubviews)
     CHSuper(0, AudioPlaylistDetailController, viewWillLayoutSubviews);
     
     if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioPlaylistDetailController")]) {
-        [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
-                                      parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
+        [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
+                                parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
         self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
     }
@@ -415,8 +415,8 @@ CHDeclareMethod(0, void, AudioPlaylistsController, viewWillLayoutSubviews)
     CHSuper(0, AudioPlaylistsController, viewWillLayoutSubviews);
     
     if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioPlaylistsController")]) {
-        [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
-                                      parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
+        [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
+                                parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
         self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
         
@@ -466,8 +466,8 @@ CHDeclareMethod(0, void, VKAudioPlayerListTableViewController, viewWillLayoutSub
     CHSuper(0, VKAudioPlayerListTableViewController, viewWillLayoutSubviews);
     
     if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"VKAudioPlayerListTableViewController")]) {
-        [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
-                                      parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
+        [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
+                                parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
     }
 }

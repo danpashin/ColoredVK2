@@ -29,7 +29,6 @@
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
-        updatesController.showErrorAlert = YES;
         updatesController.checkCompletionHandler = ^(ColoredVKUpdatesController *controller) {
             self.lastCheckForUpdates = controller.localizedLastCheckForUpdates;
             [self reloadSpecifiers];

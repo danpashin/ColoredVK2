@@ -75,8 +75,8 @@ CHDeclareMethod(0, void, ModernSettingsController, viewWillLayoutSubviews)
     CHSuper(0, ModernSettingsController, viewWillLayoutSubviews);
     
     if (enabled && !enableNightTheme && enabledSettingsImage && [self isKindOfClass:NSClassFromString(@"ModernSettingsController")]) {
-        [ColoredVKMainController setImageToTableView:self.tableView withName:@"settingsBackgroundImage" blackout:settingsImageBlackout 
-                                      parallaxEffect:useSettingsParallax blurBackground:settingsUseBackgroundBlur];
+        [cvkMainController setImageToTableView:self.tableView name:@"settingsBackgroundImage" blackout:settingsImageBlackout 
+                                parallaxEffect:useSettingsParallax blur:settingsUseBackgroundBlur];
         
         if (hideSettingsSeparators) 
             self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;

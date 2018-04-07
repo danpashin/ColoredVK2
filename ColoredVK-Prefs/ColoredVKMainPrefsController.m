@@ -18,7 +18,6 @@
 
 @interface ColoredVKMainPrefsController ()
 
-@property (strong, nonatomic) NSString *vkAppVersion;
 @property (strong, nonatomic) UIView *freeVersionFooter;
 @property (assign, nonatomic) BOOL showFreeVersionFooter;
 

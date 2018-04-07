@@ -10,7 +10,6 @@
 #import "PrefixHeader.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "LEColorPicker.h"
-#import "ColoredVKAudioEntity.h"
 #import "ColoredVKNetwork.h"
 #import "SDWebImageManager.h"
 #import "ColoredVKAudioLyricsView.h"
@@ -21,7 +20,6 @@
 @property (strong, nonatomic) NSString *track;
 @property (strong, nonatomic) NSString *artist;
 
-@property (strong, nonatomic) UIView *coverView;
 @property (strong, nonatomic) UIImageView *topImageView;
 @property (strong, nonatomic) UIImageView *bottomImageView;
 @property (strong, nonatomic) UIVisualEffectView *blurEffectView;
@@ -49,8 +47,7 @@ void corePrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef
 {
     self = [super init];
     if (self) {
-        _coverView = [[UIView alloc] init];
-        _coverView.tag = 265;
+        self.tag = 265;
         
         _defaultCover = YES;
         _manager = [SDWebImageManager sharedManager];
@@ -64,7 +61,7 @@ void corePrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef
         _topImageView.backgroundColor = [UIColor blackColor];
         _topImageView.contentMode = UIViewContentModeScaleAspectFill;
         _topImageView.layer.masksToBounds = YES;
-        [_coverView addSubview:_topImageView];
+        [self addSubview:_topImageView];
         
         _bottomImageView = [UIImageView new];
         _bottomImageView.backgroundColor = [UIColor blackColor];
@@ -76,11 +73,11 @@ void corePrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef
         _blurEffectView.frame = _bottomImageView.bounds;
         [_bottomImageView addSubview:_blurEffectView];
         
-        [_coverView addSubview:_bottomImageView];
-        [_coverView sendSubviewToBack:_bottomImageView];
+        [self addSubview:_bottomImageView];
+        [self sendSubviewToBack:_bottomImageView];
         
         _audioLyricsView = [[ColoredVKAudioLyricsView alloc] init];
-        [_coverView addSubview:_audioLyricsView];
+        [self addSubview:_audioLyricsView];
         
         _topCoverGradient = [CAGradientLayer layer];
         _topCoverGradient.colors = @[ (id)[UIColor colorWithWhite:0 alpha:0.5].CGColor, (id)[UIColor clearColor].CGColor ];
@@ -99,25 +96,25 @@ void corePrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef
 
 - (void)updateViewFrame:(CGRect)frame andSeparationPoint:(CGPoint)separationPoint
 {
-    self.coverView.frame = frame;
-    self.topImageView.frame = CGRectMake(0, 0, CGRectGetWidth(self.coverView.frame), separationPoint.y);
-    self.bottomImageView.frame = self.coverView.bounds;
+    self.frame = frame;
+    self.topImageView.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), separationPoint.y);
+    self.bottomImageView.frame = self.bounds;
     self.blurEffectView.frame = self.bottomImageView.bounds;
     self.audioLyricsView.frame = self.topImageView.bounds;
     self.topCoverGradient.frame = CGRectMake(0, 0, CGRectGetWidth(self.topImageView.frame), 79);
     
     self.topImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.coverView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topImageView(height)]|" options:0 
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[topImageView(height)]|" options:0 
                                                                            metrics:@{@"height":@(separationPoint.y)} 
                                                                              views:@{@"topImageView":self.topImageView}]];
-    [self.coverView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[topImageView]|" options:0 
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[topImageView]|" options:0 
                                                                            metrics:nil views:@{@"topImageView":self.topImageView}]];
     
     
     self.bottomImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.coverView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[btmImageView]|" options:0 
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[btmImageView]|" options:0 
                                                                            metrics:nil views:@{@"btmImageView":self.bottomImageView}]];
-    [self.coverView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[btmImageView]|" options:0 
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[btmImageView]|" options:0 
                                                                            metrics:nil views:@{@"btmImageView":self.bottomImageView}]];
     
     
@@ -131,22 +128,22 @@ void corePrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef
 - (void)addToView:(UIView *)view
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (![view.subviews containsObject:[view viewWithTag:self.coverView.tag]]) {
-            [view addSubview:self.coverView];
-            [view sendSubviewToBack:self.coverView];
+        if (![view.subviews containsObject:[view viewWithTag:self.tag]]) {
+            [view addSubview:self];
+            [view sendSubviewToBack:self];
             
-            self.coverView.translatesAutoresizingMaskIntoConstraints = NO;
+            self.translatesAutoresizingMaskIntoConstraints = NO;
             [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[coverView]|" options:0 
-                                                                         metrics:nil views:@{@"coverView":self.coverView}]];
+                                                                         metrics:nil views:@{@"coverView":self}]];
             [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[coverView]|" options:0 
-                                                                         metrics:nil views:@{@"coverView":self.coverView}]];
+                                                                         metrics:nil views:@{@"coverView":self}]];
         }
     });
 }
 
 - (void)updateCoverForArtist:(NSString *)artist title:(NSString *)title
 {
-    if (![self.track isEqualToString:title] || ![self.artist isEqualToString:artist]) {
+    @synchronized(self) {
         self.track = title;
         self.artist = artist;
         
@@ -172,9 +169,9 @@ void corePrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef
                 [self updateColorSchemeForImage:image];
             });
         }];
-    } else [self updateColorSchemeForImage:self.topImageView.image];
-    
-    [self updateLyrycsForArtist:artist title:title];
+        
+        [self updateLyrycsForArtist:artist title:title];
+    }
 }
 - (void)changeImageViewImage:(UIImageView *)imageView toImage:(UIImage *)image animated:(BOOL)animated
 {
@@ -334,7 +331,7 @@ void corePrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"<%@: %p artist '%@', track '%@', frame %@, separationPoint %@>", [self class], self, self.artist, self.track, 
-            NSStringFromCGRect(self.coverView.frame), NSStringFromCGPoint(CGPointMake(0, CGRectGetMinY(self.bottomImageView.frame)))];
+            NSStringFromCGRect(self.frame), NSStringFromCGPoint(CGPointMake(0, CGRectGetMinY(self.bottomImageView.frame)))];
 }
 
 @end

@@ -15,13 +15,8 @@
 
 @interface ColoredVKMainController : NSObject
 
-+ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect blurBackground:(BOOL)blurBackground;
-+ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip 
-             parallaxEffect:(BOOL)parallaxEffect blurBackground:(BOOL)blurBackground;
-+ (void)forceUpdateTableView:(UITableView *)tableView withBlackout:(CGFloat)blackout blurBackground:(BOOL)blurBackground;
-
-@property (strong, nonatomic) MenuCell *menuCell;
-@property (strong, nonatomic) UITableViewCell *settingsCell;
+@property (strong, nonatomic) __kindof UITableViewCell *menuCell;
+@property (strong, nonatomic) __kindof UITableViewCell *settingsCell;
 @property (strong, nonatomic) ColoredVKAudioCover *audioCover;
 @property (strong, nonatomic) ColoredVKWallpaperView *menuBackgroundView;
 @property (strong, nonatomic) ColoredVKWallpaperView *navBarImageView;
@@ -29,12 +24,14 @@
 @property (weak, nonatomic) MenuViewController *vkMenuController;
 @property (weak, nonatomic) ColoredVKNightThemeColorScheme *nightThemeScheme;
 
-
-- (void)reloadSwitch:(BOOL)on;
+- (void)setImageToTableView:(UITableView *)tableView name:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect blur:(BOOL)blur;
+- (void)setImageToTableView:(UITableView *)tableView name:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip 
+             parallaxEffect:(BOOL)parallaxEffect blur:(BOOL)blur;
+- (void)forceUpdateTableView:(UITableView *)tableView blackout:(CGFloat)blackout blur:(BOOL)blur;
 
 - (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)(void) )handler;
 - (void)actionOpenPreferencesPush:(BOOL)withPush;
+- (void)reloadSwitch:(BOOL)on;
 - (void)checkCrashes;
-
 
 @end

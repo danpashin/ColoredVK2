@@ -598,8 +598,8 @@ void setupExtraSettingsController(VKMTableController *controller)
         return;
     
     if (enabled && !enableNightTheme && enabledSettingsExtraImage) {
-        [ColoredVKMainController setImageToTableView:controller.tableView withName:@"settingsExtraBackgroundImage" blackout:settingsExtraImageBlackout 
-                                      parallaxEffect:useSettingsExtraParallax blurBackground:settingsExtraUseBackgroundBlur];
+        [cvkMainController setImageToTableView:controller.tableView name:@"settingsExtraBackgroundImage" blackout:settingsExtraImageBlackout 
+                                parallaxEffect:useSettingsExtraParallax blur:settingsExtraUseBackgroundBlur];
         
         if (hideSettingsSeparators) 
             controller.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;

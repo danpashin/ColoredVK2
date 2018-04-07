@@ -19,7 +19,8 @@
     if (self) {
         self.accessoryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 26.0f, 26.0f)];
         self.accessoryView.layer.cornerRadius = self.accessoryView.frame.size.height / 2.0f;
-        self.accessoryView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.accessoryView.frame cornerRadius:self.accessoryView.layer.cornerRadius].CGPath;
+        self.accessoryView.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.accessoryView.frame 
+                                                                         cornerRadius:self.accessoryView.layer.cornerRadius].CGPath;
         self.accessoryView.layer.shadowRadius = 2.5f;
         self.accessoryView.layer.shadowOffset = CGSizeZero;
         self.accessoryView.layer.shadowColor = [UIColor blackColor].CGColor;
@@ -52,7 +53,7 @@
             self.accessoryView.backgroundColor = color;
             
             CGFloat red = 0, green = 0, blue = 0, colorAlpha = 1.0f;
-            [self.accessoryView.backgroundColor getRed:&red green:&green blue:&blue alpha:&colorAlpha];
+            [color getRed:&red green:&green blue:&blue alpha:&colorAlpha];
             if (colorAlpha == 0.0f)
                 self.accessoryView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.9f];
         });

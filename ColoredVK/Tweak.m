@@ -76,8 +76,8 @@ CHDeclareMethod(1, void, VKMLiveController, viewWillAppear, BOOL, animated)
         
         if (enabledGroupsListImage && [self.model.description containsString:@"GroupsSearchModel"]) {
             self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2f];
-            [ColoredVKMainController setImageToTableView:self.tableView withName:@"groupsListBackgroundImage" blackout:groupsListImageBlackout 
-                                          parallaxEffect:useGroupsListParallax blurBackground:groupsListUseBackgroundBlur];
+            [cvkMainController setImageToTableView:self.tableView name:@"groupsListBackgroundImage" blackout:groupsListImageBlackout 
+                                    parallaxEffect:useGroupsListParallax blur:groupsListUseBackgroundBlur];
         }
     }
 }
@@ -89,8 +89,8 @@ CHDeclareMethod(0, void, VKMLiveController, viewWillLayoutSubviews)
     if (enabled && !enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKMLiveController")]) {
         NSArray <NSString *> *audioModelNames = @[@"AudioRecommendationsModel", @"AudioCatalogPlaylistsListModel", @"AudioCatalogExtendedPlaylistsListModel"];
         if (enabledAudioImage && [audioModelNames containsObject:CLASS_NAME(self.model)]) {
-            [ColoredVKMainController setImageToTableView:self.tableView withName:@"audioBackgroundImage" blackout:audioImageBlackout 
-                                          parallaxEffect:useAudioParallax blurBackground:audiosUseBackgroundBlur];
+            [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
+                                    parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
             self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2f];
             self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
             setBlur(self.navigationController.navigationBar, audiosUseBlur, audiosBlurTone, audiosBlurStyle);
@@ -277,7 +277,8 @@ CHDeclareMethod(0, void, VKMMainController, viewDidLoad)
             CGFloat width = (bounds.size.width > bounds.size.height)?bounds.size.height:bounds.size.width;
             CGFloat height = (bounds.size.width < bounds.size.height)?bounds.size.height:bounds.size.width;
             cvkMainController.menuBackgroundView = [[ColoredVKWallpaperView alloc] initWithFrame:CGRectMake(0, 0, width, height) 
-                                                                                       imageName:@"menuBackgroundImage" blackout:menuImageBlackout enableParallax:useMenuParallax blurBackground:menuUseBackgroundBlur];
+                                                                                       imageName:@"menuBackgroundImage" blackout:menuImageBlackout 
+                                                                                  enableParallax:useMenuParallax blurBackground:menuUseBackgroundBlur];
         }
         
         if (enabled && enabledMenuImage && !enableNightTheme) {
@@ -396,7 +397,8 @@ CHDeclareMethod(0, void, MenuViewController, viewDidLoad)
         CGFloat width = (bounds.size.width > bounds.size.height)?bounds.size.height:bounds.size.width;
         CGFloat height = (bounds.size.width < bounds.size.height)?bounds.size.height:bounds.size.width;
         cvkMainController.menuBackgroundView = [[ColoredVKWallpaperView alloc] initWithFrame:CGRectMake(0, 0, width, height) 
-                                                                                   imageName:@"menuBackgroundImage" blackout:menuImageBlackout enableParallax:useMenuParallax blurBackground:menuUseBackgroundBlur];
+                                                                                   imageName:@"menuBackgroundImage" blackout:menuImageBlackout 
+                                                                              enableParallax:useMenuParallax blurBackground:menuUseBackgroundBlur];
     }
     
     if (enabled && enabledMenuImage) {
@@ -469,7 +471,7 @@ CHDeclareMethod(0, NSArray*, MenuViewController, menu)
         NSMutableArray *tempArray = [origMenu mutableCopy];
         [tempArray addObject:cvkMainController.menuCell];
         
-        origMenu = [tempArray copy];
+        origMenu = tempArray;
     }
     
     return origMenu;
@@ -800,8 +802,8 @@ CHDeclareMethod(0, void, ProfileFriendsController, viewWillLayoutSubviews)
     CHSuper(0, ProfileFriendsController, viewWillLayoutSubviews);
     
     if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:NSClassFromString(@"ProfileFriendsController")]) {
-        [ColoredVKMainController setImageToTableView:self.tableView withName:@"friendsBackgroundImage" blackout:friendsImageBlackout 
-                                      parallaxEffect:useFriendsParallax blurBackground:friendsUseBackgroundBlur];
+        [cvkMainController setImageToTableView:self.tableView name:@"friendsBackgroundImage" blackout:friendsImageBlackout 
+                                parallaxEffect:useFriendsParallax blur:friendsUseBackgroundBlur];
         self.tableView.separatorColor = hideFriendsSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
         self.tableView.sectionIndexColor = UITableViewCellTextColor;
         self.tableView.tag = 22;
@@ -851,8 +853,8 @@ CHDeclareMethod(0, void, FriendsBDaysController, viewWillLayoutSubviews)
     CHSuper(0, FriendsBDaysController, viewWillLayoutSubviews);
     
     if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:NSClassFromString(@"FriendsBDaysController")]) {
-        [ColoredVKMainController setImageToTableView:self.tableView withName:@"friendsBackgroundImage" blackout:friendsImageBlackout 
-                                      parallaxEffect:useFriendsParallax blurBackground:friendsUseBackgroundBlur];
+        [cvkMainController setImageToTableView:self.tableView name:@"friendsBackgroundImage" blackout:friendsImageBlackout 
+                                parallaxEffect:useFriendsParallax blur:friendsUseBackgroundBlur];
         self.tableView.separatorColor = hideFriendsSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
         self.tableView.tag = 22;
         self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
@@ -884,8 +886,8 @@ CHDeclareMethod(1, void, FriendsAllRequestsController, viewWillAppear, BOOL, ani
     CHSuper(1, FriendsAllRequestsController, viewWillAppear, animated);
     
     if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:NSClassFromString(@"FriendsAllRequestsController")]) {
-        [ColoredVKMainController setImageToTableView:self.tableView withName:@"friendsBackgroundImage" blackout:friendsImageBlackout 
-                                      parallaxEffect:useFriendsParallax blurBackground:friendsUseBackgroundBlur];
+        [cvkMainController setImageToTableView:self.tableView name:@"friendsBackgroundImage" blackout:friendsImageBlackout 
+                                parallaxEffect:useFriendsParallax blur:friendsUseBackgroundBlur];
         self.tableView.separatorColor = hideFriendsSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
         self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
         if ([self respondsToSelector:@selector(toolbar)])
@@ -917,8 +919,8 @@ CHDeclareMethod(0, void, VideoAlbumController, viewWillLayoutSubviews)
     CHSuper(0, VideoAlbumController, viewWillLayoutSubviews);
     
     if (enabled && !enableNightTheme && enabledVideosImage && [self isKindOfClass:NSClassFromString(@"VideoAlbumController")]) {
-        [ColoredVKMainController setImageToTableView:self.tableView withName:@"videosBackgroundImage" blackout:videosImageBlackout 
-                                      parallaxEffect:useVideosParallax blurBackground:videosUseBackgroundBlur];
+        [cvkMainController setImageToTableView:self.tableView name:@"videosBackgroundImage" blackout:videosImageBlackout 
+                                parallaxEffect:useVideosParallax blur:videosUseBackgroundBlur];
         self.tableView.separatorColor = hideVideosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
         self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
         setBlur(self.toolbar, YES, videosBlurTone, videosBlurStyle);
@@ -1156,9 +1158,8 @@ CHConstructor
         cvkMainController = [ColoredVKMainController new];
         cvkMainController.nightThemeScheme = [ColoredVKNightThemeColorScheme sharedScheme];
         
-        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-        if (![[NSFileManager defaultManager] fileExistsAtPath:CVK_PREFS_PATH]) 
-            prefs = [NSMutableDictionary new];
+        BOOL prefsExist = [[NSFileManager defaultManager] fileExistsAtPath:CVK_PREFS_PATH];
+        NSMutableDictionary *prefs = prefsExist ? [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH] : [NSMutableDictionary new];
         prefs[@"vkVersion"] = [ColoredVKNewInstaller sharedInstaller].application.detailedVersion;
         [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
         VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil);

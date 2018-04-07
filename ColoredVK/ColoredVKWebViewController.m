@@ -80,15 +80,12 @@
 
 - (void)present
 {
-    [self presentFromController:[UIApplication sharedApplication].keyWindow.rootViewController];
-}
-
-- (void)presentFromController:(UIViewController *)controller 
-{
     ColoredVKNavigationController *navigationController = [[ColoredVKNavigationController alloc] initWithRootViewController:self];
     navigationController.supportsAllOrientations = YES;
     navigationController.prefersLargeTitle = NO;
     navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+    
+    UIViewController *controller = [UIApplication sharedApplication].keyWindow.rootViewController;
     [controller presentViewController:navigationController animated:YES completion:nil];
 }
 

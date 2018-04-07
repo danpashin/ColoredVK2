@@ -12,15 +12,14 @@
 
 + (UIImage *)imageWithColor:(UIColor *)color
 {
-    return [self imageWithColor:color andSize:CGSizeMake(1, 1)];
+    return [self imageWithColor:color size:CGSizeMake(1, 1)];
 }
 
-+ (UIImage *)imageWithColor:(UIColor *)color andSize:(CGSize)size
++ (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size
 {
     if (CGSizeEqualToSize(CGSizeZero, size)) size = CGSizeMake(1, 1);
     
-    UIView *colorView = [UIView new];
-    colorView.frame = (CGRect){{0, 0}, size};
+    UIView *colorView = [[UIView alloc] initWithFrame:(CGRect){{0, 0}, size}];
     colorView.backgroundColor = color;
     
     UIGraphicsBeginImageContext(colorView.bounds.size);
@@ -48,16 +47,6 @@
     UIGraphicsEndImageContext();
     
     return [UIImage new];
-}
-
-- (UIImage *)imageWithAlpha:(CGFloat)alpha
-{
-    UIGraphicsBeginImageContextWithOptions(self.size, NO, self.scale);
-    [self drawInRect:(CGRect){{0,0}, self.size} blendMode:kCGBlendModeScreen alpha:alpha];
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return newImage;
 }
 
 @end

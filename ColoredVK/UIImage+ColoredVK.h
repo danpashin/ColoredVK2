@@ -18,10 +18,8 @@
 /**
  Creates image with color and specified size  
  */
-+ (UIImage *)imageWithColor:(UIColor *)color andSize:(CGSize)size;
++ (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size;
 
 - (UIImage *)imageWithTintColor:(UIColor *)tintColor;
-
-- (UIImage *)imageWithAlpha:(CGFloat)alpha;
 
 @end

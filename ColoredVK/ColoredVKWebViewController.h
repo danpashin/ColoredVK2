@@ -13,6 +13,5 @@
 @property (strong, nonatomic) NSURLRequest *request;
 
 - (void)present;
-- (void)presentFromController:(UIViewController *)controller;
 
 @end

@@ -16,15 +16,14 @@
 @implementation ColoredVKMainController
 static NSString const *switchViewKey = @"cvkCellSwitchKey";
 
-+ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout 
-             parallaxEffect:(BOOL)parallaxEffect blurBackground:(BOOL)blurBackground
+- (void)setImageToTableView:(UITableView *)tableView name:(NSString *)name blackout:(CGFloat)blackout 
+             parallaxEffect:(BOOL)parallaxEffect blur:(BOOL)blur
 {
-    [self setImageToTableView:tableView withName:name blackout:blackout flip:NO parallaxEffect:parallaxEffect 
-               blurBackground:blurBackground];
+    [self setImageToTableView:tableView name:name blackout:blackout flip:NO parallaxEffect:parallaxEffect blur:blur];
 }
 
-+ (void)setImageToTableView:(UITableView *)tableView withName:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip 
-             parallaxEffect:(BOOL)parallaxEffect blurBackground:(BOOL)blurBackground
+- (void)setImageToTableView:(UITableView *)tableView name:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip 
+             parallaxEffect:(BOOL)parallaxEffect blur:(BOOL)blur
 {
     if (enabled && enableNightTheme)
         return;
@@ -32,31 +31,30 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     if (tableView.backgroundView.tag != 23) {
         ColoredVKWallpaperView *wallView = [[ColoredVKWallpaperView alloc] initWithFrame:tableView.frame imageName:name 
                                                                                 blackout:blackout enableParallax:parallaxEffect 
-                                                                          blurBackground:blurBackground];
+                                                                          blurBackground:blur];
         wallView.flip = flip;
         tableView.backgroundView = wallView;
     }
 }
 
-+ (void)forceUpdateTableView:(UITableView *)tableView withBlackout:(CGFloat)blackout blurBackground:(BOOL)blurBackground
+- (void)forceUpdateTableView:(UITableView *)tableView blackout:(CGFloat)blackout blur:(BOOL)blur
 {
     if (tableView.backgroundView.tag == 23) {
         ColoredVKWallpaperView *wallView = (ColoredVKWallpaperView *)tableView.backgroundView;
         if ([wallView isKindOfClass:[ColoredVKWallpaperView class]]) {
             [wallView updateViewWithBlackout:blackout];
-            wallView.blurBackground = blurBackground;
+            wallView.blurBackground = blur;
         }
     }
 }
 
-- (MenuCell *)menuCell
+- (__kindof UITableViewCell *)menuCell
 {
     if (!_menuCell) {
         NSString *reuseIdentifier = @"cvkMenuCell";
-        MenuCell *cell = [[objc_getClass("MenuCell") alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
-        if (!cell) {
-            cell = (MenuCell *)[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
-        }
+        
+        Class className = (NSClassFromString(@"MenuCell") != nil) ? NSClassFromString(@"MenuCell") : [UITableViewCell class];
+        UITableViewCell *cell = [[className alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
         cell.backgroundColor = kMenuCellBackgroundColor;
         cell.contentView.backgroundColor = [UIColor clearColor];
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
@@ -77,22 +75,23 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         switchView.on = enabled;
         switchView.onTintColor = [UIColor defaultColorForIdentifier:@"switchesOnTintColor"];
         [switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventValueChanged];
-        objc_setAssociatedObject(self, (__bridge const void *)(switchViewKey), switchView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(self, (__bridge const void *)(switchViewKey), switchView, OBJC_ASSOCIATION_ASSIGN);
         [cell.contentView addSubview:switchView];
         
         if ([cell respondsToSelector:@selector(select)]) {
-            cell.select = (id)^(id arg1, id arg2) {
+            ((MenuCell *)cell).select = (id)^(id arg1, id arg2) {
                 [self actionOpenPreferencesPush:NO];
                 return nil;
             };
         }
+        
         _menuCell = cell;
     }
     
     return _menuCell;
 }
 
-- (UITableViewCell *)settingsCell
+- (__kindof UITableViewCell *)settingsCell
 {
     if (!_settingsCell) {
         UITableViewCell *settingsCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
@@ -142,25 +141,29 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
 
 - (void)switchTriggered:(UISwitch *)switchView
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
-        prefs[@"enabled"] = @(switchView.on);
-        [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
-        
-        POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
-        POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
-        POST_CORE_NOTIFICATION(kPackageNotificationUpdateAppCorners);
-    });
+    @synchronized(self) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
+            prefs[@"enabled"] = @(switchView.on);
+            [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
+            
+            POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
+            POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
+            POST_CORE_NOTIFICATION(kPackageNotificationUpdateAppCorners);
+        });
+    }
 }
 
 - (void)reloadSwitch:(BOOL)on
 {
-    UISwitch *switchView = objc_getAssociatedObject(self, (__bridge const void *)(switchViewKey));
-    if ([switchView isKindOfClass:[UISwitch class]]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [switchView setOn:on animated:YES];
-            [switchView setNeedsLayout];
-        });
+    @synchronized(self) {
+        UISwitch *switchView = objc_getAssociatedObject(self, (__bridge const void *)(switchViewKey));
+        if ([switchView isKindOfClass:[UISwitch class]]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [switchView setOn:on animated:YES];
+                [switchView setNeedsLayout];
+            });
+        }
     }
 }
 
@@ -191,7 +194,6 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
             return;
         
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-        
         NSDictionary *allInfo = @{@"vk_version":newInstaller.application.detailedVersion, @"cvk_version":kPackageVersion, 
                                   @"ios_version": [UIDevice currentDevice].systemVersion,  @"device": __deviceModel,
                                   @"crash_info":crash};
@@ -201,11 +203,10 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         if (error)
             return;
         
-        ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-        [network uploadData:data toRemoteURL:[NSString stringWithFormat:@"%@/crash/", kPackageAPIURL]
-                    success:^(NSHTTPURLResponse *response, NSData *rawData) {
-                        [[NSFileManager defaultManager] removeItemAtPath:CVK_CRASH_PATH error:nil];
-                    } failure:nil];
+        NSString *url = [NSString stringWithFormat:@"%@/crash/", kPackageAPIURL];
+        [[ColoredVKNetwork sharedNetwork] uploadData:data toRemoteURL:url success:^(NSHTTPURLResponse *response, NSData *rawData) {
+            [[NSFileManager defaultManager] removeItemAtPath:CVK_CRASH_PATH error:nil];
+        } failure:nil];
     });
 }
 

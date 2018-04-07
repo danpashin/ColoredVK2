@@ -12,11 +12,6 @@
 @interface ColoredVKUpdatesController : NSObject
 
 /**
- *  Определяет, должен ли быть показан алерт с ошибкой API.
- */
-@property (assign, nonatomic) BOOL showErrorAlert;
-
-/**
  *  Возвращает YES, если версия твика является бета-версией, пользователь установил твик только что или включена проверка обновлений.
  */
 @property (assign, nonatomic, readonly) BOOL shouldCheckUpdates;
