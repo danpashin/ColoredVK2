@@ -182,7 +182,7 @@ CHDeclareMethod(1, void, VKMController, viewWillAppear, BOOL, animated)
     };
     
     if ([[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"] >= ColoredVKVersionCompareEqual) {
-        setupBlock();
+        [NSObject cvk_runVoidBlockOnMainThread:setupBlock];
     } else {
         updateControllerBlurInfo(self, setupBlock);
     }

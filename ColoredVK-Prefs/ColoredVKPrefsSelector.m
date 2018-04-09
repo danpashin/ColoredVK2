@@ -129,7 +129,11 @@
                 
                 [self didSelectValue:self.selectorCurrentValue forKey:self.selectorKey];
             }
+        } else {
+            [super tableView:tableView didSelectRowAtIndexPath:indexPath];
         }
+    } else {
+        [super tableView:tableView didSelectRowAtIndexPath:indexPath];
     }
 }
 

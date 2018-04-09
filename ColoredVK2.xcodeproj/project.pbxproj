@@ -519,7 +519,6 @@
 		A5F09DA31F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */; };
 		A5F09DA41F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */; };
 		C12A7E1FDC46683C897AAC44 /* libPods-ColoredVK-NonJail.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 54F0418CC30FC851AC9E3CD8 /* libPods-ColoredVK-NonJail.a */; };
-		FF4DBAA694835BE5696E9140 /* libPods-ColoredVK-Prefs-App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 098CA7EC3ABB2B6DD2E9924C /* libPods-ColoredVK-Prefs-App.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -826,7 +825,6 @@
 				A5D56ABE1E70427300A8FFB5 /* QuartzCore.framework in Frameworks */,
 				A5D56ABF1E70427300A8FFB5 /* Foundation.framework in Frameworks */,
 				A5D56AC11E70427300A8FFB5 /* UIKit.framework in Frameworks */,
-				FF4DBAA694835BE5696E9140 /* libPods-ColoredVK-Prefs-App.a in Frameworks */,
 				4A7E2462B01D5064FAB51557 /* libPods-Prefs Application.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
