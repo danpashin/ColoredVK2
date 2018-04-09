@@ -77,22 +77,22 @@
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
             
-            self->_backgroundColor = [UIColor savedColorForIdentifier:@"nightThemeBackgroundColor" fromPrefs:prefs];
-            self->_navbackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeNavBackgroundColor" fromPrefs:prefs];
-            self->_foregroundColor = [UIColor savedColorForIdentifier:@"nightThemeForegroundColor" fromPrefs:prefs];
+            self->_backgroundColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeBackgroundColor" fromPrefs:prefs];
+            self->_navbackgroundColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeNavBackgroundColor" fromPrefs:prefs];
+            self->_foregroundColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeForegroundColor" fromPrefs:prefs];
             
-            self->_textColor = [UIColor savedColorForIdentifier:@"nightThemeTextColor" fromPrefs:prefs];
-            self->_textColor = [UIColor savedColorForIdentifier:@"nightThemeDetailTextColor" fromPrefs:prefs];
-           self-> _linkTextColor = [UIColor savedColorForIdentifier:@"nightThemeLinkColor" fromPrefs:prefs];
+            self->_textColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeTextColor" fromPrefs:prefs];
+            self->_textColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeDetailTextColor" fromPrefs:prefs];
+           self-> _linkTextColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeLinkColor" fromPrefs:prefs];
             
-            self->_unreadBackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeUnreadBackgroundColor" fromPrefs:prefs];
-            self->_incomingBackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeIncomingBackgroundColor" fromPrefs:prefs];
-            self->_outgoingBackgroundColor = [UIColor savedColorForIdentifier:@"nightThemeOutgoingBackgroundColor" fromPrefs:prefs];
+            self->_unreadBackgroundColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeUnreadBackgroundColor" fromPrefs:prefs];
+            self->_incomingBackgroundColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeIncomingBackgroundColor" fromPrefs:prefs];
+            self->_outgoingBackgroundColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeOutgoingBackgroundColor" fromPrefs:prefs];
             
-            self->_buttonColor = [UIColor savedColorForIdentifier:@"nightThemeButtonColor" fromPrefs:prefs];
-            self->_buttonSelectedColor = [UIColor savedColorForIdentifier:@"nightThemeButtonSelectedColor" fromPrefs:prefs];
-            self->_switchThumbTintColor = [UIColor savedColorForIdentifier:@"nightThemeSwitchThumbColor" fromPrefs:prefs];
-            self->_switchOnTintColor = [UIColor savedColorForIdentifier:@"nightThemeSwitchOnTintColor" fromPrefs:prefs];
+            self->_buttonColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeButtonColor" fromPrefs:prefs];
+            self->_buttonSelectedColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeButtonSelectedColor" fromPrefs:prefs];
+            self->_switchThumbTintColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeSwitchThumbColor" fromPrefs:prefs];
+            self->_switchOnTintColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeSwitchOnTintColor" fromPrefs:prefs];
         });
     }
 }

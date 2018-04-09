@@ -13,30 +13,30 @@
 /**
  Создает цвет из строки
  */
-+ (UIColor *)colorFromString:(NSString *)string;
++ (UIColor *)cvk_colorFromString:(NSString *)string;
 
 /**
  Возвращает сохраненный цвет для идентификаторов ColoredVK
  */
-+ (UIColor *)savedColorForIdentifier:(NSString *)identifier;
++ (UIColor *)cvk_savedColorForIdentifier:(NSString *)identifier;
 
 /**
  Возвращает сохраненный цвет из настроек для идентификаторов for ColoredVK
  */
-+ (UIColor *)savedColorForIdentifier:(NSString *)identifier fromPrefs:(NSDictionary *)prefs;
++ (UIColor *)cvk_savedColorForIdentifier:(NSString *)identifier fromPrefs:(NSDictionary *)prefs;
 
 /**
  Возвращает стандартный цвет для идентификаторов ColoredVK
  */
-+ (UIColor *)defaultColorForIdentifier:(NSString *)identifier;
++ (UIColor *)cvk_defaultColorForIdentifier:(NSString *)identifier;
 
 /**
  Затемняет цвет на 0.2
  */
-@property (nonatomic, readonly, copy) UIColor *darkerColor;
+@property (nonatomic, readonly, copy) UIColor *cvk_darkerColor;
 
-@property (nonatomic, readonly, copy) NSString *stringValue;
-@property (nonatomic, readonly, copy) NSString *rgbStringValue;
-@property (nonatomic, readonly, copy) NSString *hexStringValue;
+@property (nonatomic, readonly, copy) NSString *cvk_stringValue;
+@property (nonatomic, readonly, copy) NSString *cvk_rgbStringValue;
+@property (nonatomic, readonly, copy) NSString *cvk_hexStringValue;
 
 @end

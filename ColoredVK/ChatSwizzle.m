@@ -133,7 +133,7 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
             } if ([search isKindOfClass:[UISearchBar class]]) {
                 search.searchBarTextField.backgroundColor = nil;
                 search._scopeBarBackgroundView.superview.hidden = NO;
-                search.backgroundImage = [UIImage imageWithColor:[UIColor colorWithRed:235/255.0f green:237/255.0f blue:240/255.0f alpha:1.0f]];
+                search.backgroundImage = [UIImage cvk_imageWithColor:[UIColor colorWithRed:235/255.0f green:237/255.0f blue:240/255.0f alpha:1.0f]];
             } else {
                 objc_removeAssociatedObjects(search);
             }
@@ -165,7 +165,7 @@ CHDeclareMethod(2, UITableViewCell*, DialogsController, tableView, UITableView*,
             cell.backgroundView.hidden = YES;
             
             if (!cell.dialog.head.read_state && cell.unread.hidden)
-                cell.contentView.backgroundColor = useCustomDialogsUnreadColor?dialogsUnreadColor:[UIColor defaultColorForIdentifier:@"dialogsUnreadColor"];
+                cell.contentView.backgroundColor = useCustomDialogsUnreadColor?dialogsUnreadColor:[UIColor cvk_defaultColorForIdentifier:@"dialogsUnreadColor"];
             else
                 cell.contentView.backgroundColor = [UIColor clearColor];
             
@@ -218,7 +218,7 @@ CHDeclareMethod(1, void, BackgroundView, drawRect, CGRect, rect)
         if (enableNightTheme)
             self.layer.backgroundColor = cvkMainController.nightThemeScheme.unreadBackgroundColor.CGColor;
         else if (enabledMessagesListImage)
-            self.layer.backgroundColor = useCustomDialogsUnreadColor ? dialogsUnreadColor.CGColor : [UIColor defaultColorForIdentifier:@"messageReadColor"].CGColor;
+            self.layer.backgroundColor = useCustomDialogsUnreadColor ? dialogsUnreadColor.CGColor : [UIColor cvk_defaultColorForIdentifier:@"messageReadColor"].CGColor;
         else
             CHSuper(1, BackgroundView, drawRect, rect);
     } else CHSuper(1, BackgroundView, drawRect, rect);
@@ -298,8 +298,21 @@ CHDeclareMethod(0, void, ChatController, viewDidLoad)
         return;
     
     if (hideMessagesNavBarItems) {
-        self.headerImage.hidden = YES;
         self.navigationItem.titleView.hidden = YES;
+        if ([self respondsToSelector:@selector(headerImage)])
+            self.headerImage.hidden = YES;
+        else if ([[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.5"] >= ColoredVKVersionCompareEqual) {
+            UIBarButtonItem *rightBarItem = self.navigationItem.rightBarButtonItem;
+            if ([rightBarItem.customView isKindOfClass:[UIButton class]]) {
+                UIButton *button = (UIButton *)rightBarItem.customView;
+                for (UIView *subview in button.subviews) {
+                    if ([subview isKindOfClass:NSClassFromString(@"vkm.URLImageView")]) {
+                        subview.hidden = YES;
+                        break;
+                    }
+                }
+            }
+        }
     }
     
     UIView *view = self.view;
@@ -344,7 +357,7 @@ CHDeclareMethod(0, UIButton*, ChatController, editForward)
     UIButton *forwardButton = CHSuper(0, ChatController, editForward);
     if (enabled && !enableNightTheme && messagesUseBlur) {
         [forwardButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [forwardButton setImage:[[forwardButton imageForState:UIControlStateNormal] imageWithTintColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+        [forwardButton setImage:[[forwardButton imageForState:UIControlStateNormal] cvk_imageWithTintColor:[UIColor whiteColor]] forState:UIControlStateNormal];
         for (UIView *subview in forwardButton.superview.subviews) {
             if ([subview isKindOfClass:[UIToolbar class]]) {
                 setBlur(subview, YES, messagesBlurTone, messagesBlurStyle);
@@ -369,7 +382,7 @@ CHDeclareMethod(1, void, MessageCell, updateBackground, BOOL, animated)
             if (enableNightTheme)
                 self.backgroundColor = cvkMainController.nightThemeScheme.unreadBackgroundColor;
             else
-                self.backgroundColor = useCustomMessageReadColor ? messageUnreadColor : [UIColor defaultColorForIdentifier:@"messageReadColor"];
+                self.backgroundColor = useCustomMessageReadColor ? messageUnreadColor : [UIColor cvk_defaultColorForIdentifier:@"messageReadColor"];
         } else
             self.backgroundColor = [UIColor clearColor];
     }
@@ -395,7 +408,7 @@ CHDeclareMethod(0, void, ChatCell, setBG)
         };
         
         bgHandler();
-        dispatch_async(dispatch_get_main_queue(), bgHandler);
+        [NSObject cvk_runVoidBlockOnMainThread:bgHandler];
     }
     self.bg.alpha = 1.f;
 }

@@ -223,8 +223,8 @@ static CGFloat const viewsHeight = 32.0f;
         button.titleLabel.adjustsFontSizeToFitWidth = YES;
         button.titleLabel.textAlignment = NSTextAlignmentCenter;
         [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [button setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:80/255.0f green:102/255.0f blue:151/255.0f alpha:1.0]] forState:UIControlStateNormal];
-        [button setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:60/255.0f green:82/255.0f blue:131/255.0f alpha:1.0]] forState:UIControlStateHighlighted];
+        [button setBackgroundImage:[UIImage cvk_imageWithColor:[UIColor colorWithRed:80/255.0f green:102/255.0f blue:151/255.0f alpha:1.0]] forState:UIControlStateNormal];
+        [button setBackgroundImage:[UIImage cvk_imageWithColor:[UIColor colorWithRed:60/255.0f green:82/255.0f blue:131/255.0f alpha:1.0]] forState:UIControlStateHighlighted];
         
         _button = button;
     }

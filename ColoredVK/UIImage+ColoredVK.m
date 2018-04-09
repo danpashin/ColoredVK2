@@ -10,12 +10,12 @@
 
 @implementation UIImage (ColoredVK)
 
-+ (UIImage *)imageWithColor:(UIColor *)color
++ (UIImage *)cvk_imageWithColor:(UIColor *)color
 {
-    return [self imageWithColor:color size:CGSizeMake(1, 1)];
+    return [self cvk_imageWithColor:color size:CGSizeMake(1, 1)];
 }
 
-+ (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size
++ (UIImage *)cvk_imageWithColor:(UIColor *)color size:(CGSize)size
 {
     if (CGSizeEqualToSize(CGSizeZero, size)) size = CGSizeMake(1, 1);
     
@@ -30,7 +30,7 @@
     return colorImage;
 }
 
-- (UIImage *)imageWithTintColor:(UIColor *)tintColor
+- (UIImage *)cvk_imageWithTintColor:(UIColor *)tintColor
 {
     UIGraphicsBeginImageContextWithOptions(self.size, NO, self.scale);
     CGContextRef context = UIGraphicsGetCurrentContext();

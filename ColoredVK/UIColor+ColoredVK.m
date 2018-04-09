@@ -12,12 +12,12 @@
 
 @implementation UIColor (ColoredVK)
 
-+ (UIColor *)colorFromString:(NSString *)string
++ (UIColor *)cvk_colorFromString:(NSString *)string
 {
-    return string.colorValue;
+    return string.cvk_colorValue;
 }
 
-- (UIColor *)darkerColor
+- (UIColor *)cvk_darkerColor
 {
     CGFloat r, g, b, a;
     [self getRed:&r green:&g blue:&b alpha:&a];
@@ -25,21 +25,21 @@
 }
 
 
-+ (UIColor *)savedColorForIdentifier:(NSString *)identifier 
++ (UIColor *)cvk_savedColorForIdentifier:(NSString *)identifier 
 {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    return [UIColor savedColorForIdentifier:identifier fromPrefs:prefs];
+    return [UIColor cvk_savedColorForIdentifier:identifier fromPrefs:prefs];
 }
 
-+ (UIColor *)savedColorForIdentifier:(NSString *)identifier fromPrefs:(NSDictionary *)prefs
++ (UIColor *)cvk_savedColorForIdentifier:(NSString *)identifier fromPrefs:(NSDictionary *)prefs
 {
     if (!prefs[identifier])
-        return [UIColor defaultColorForIdentifier:identifier];
+        return [UIColor cvk_defaultColorForIdentifier:identifier];
     
-    return [UIColor colorFromString:prefs[identifier]];
+    return [UIColor cvk_colorFromString:prefs[identifier]];
 }
 
-+ (UIColor *)defaultColorForIdentifier:(NSString *)identifier
++ (UIColor *)cvk_defaultColorForIdentifier:(NSString *)identifier
 {
     if      ([identifier isEqualToString:@"BarBackgroundColor"])         return [UIColor colorWithRed:0.27f green:0.46f blue:0.68f alpha:1];
     else if ([identifier isEqualToString:@"BarForegroundColor"])         return [UIColor whiteColor];
@@ -65,21 +65,21 @@
     else                                                                 return [UIColor blackColor];
 }
 
-- (NSString *)stringValue
+- (NSString *)cvk_stringValue
 {
     CGFloat red, green, blue, alpha;
     [self getRed:&red green:&green blue:&blue alpha:&alpha];
     return  [NSString stringWithFormat:@"%.3f, %.3f, %.3f, %.3f", red, green, blue, alpha];
 }
 
-- (NSString *)rgbStringValue
+- (NSString *)cvk_rgbStringValue
 {
     CGFloat red, green, blue, alpha;
     [self getRed:&red green:&green blue:&blue alpha:&alpha];
     return  [NSString stringWithFormat:@"%i, %i, %i, %.1f", (int)(red * 255), (int)(green * 255), (int)(blue * 255), alpha];
 }
 
-- (NSString *)hexStringValue
+- (NSString *)cvk_hexStringValue
 {
     CGFloat red, green, blue;
     [self getRed:&red green:&green blue:&blue alpha:nil];

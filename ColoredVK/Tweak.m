@@ -22,7 +22,7 @@ CHDeclareMethod(0, void, VKMController, VKMNavigationBarUpdate)
     UINavigationBar *navBar = self.navigationController.navigationBar;
     if (enabled) {
         if (!enableNightTheme && enabledBarImage) {
-            dispatch_async(dispatch_get_main_queue(), ^{
+            [NSObject cvk_runVoidBlockOnMainThread:^{
                 BOOL containsImageView = [navBar._backgroundView.subviews containsObject:[navBar._backgroundView viewWithTag:24]];
                 BOOL containsBlur = [navBar._backgroundView.subviews containsObject:[navBar._backgroundView viewWithTag:10]];
                 BOOL isAudioController = (changeAudioPlayerAppearance && (navBar.tag == 26));
@@ -36,7 +36,7 @@ CHDeclareMethod(0, void, VKMController, VKMNavigationBarUpdate)
                     [cvkMainController.navBarImageView addToView:navBar._backgroundView animated:NO];
                     
                 } else if (containsBlur || isAudioController) [cvkMainController.navBarImageView removeFromSuperview];
-            });
+            }];
         }
         else if (enabledBarColor) {
             [cvkMainController.navBarImageView removeFromSuperview];
@@ -108,7 +108,7 @@ CHDeclareMethod(2, UITableViewCell*, VKMLiveController, tableView, UITableView*,
             performInitialCellSetup(cell);
             
             cell.textLabel.textColor = changeAudiosTextColor ? audiosTextColor : UITableViewCellTextColor;
-            cell.detailTextLabel.textColor = changeAudiosTextColor ? audiosTextColor.darkerColor : UITableViewCellDetailedTextColor;
+            cell.detailTextLabel.textColor = changeAudiosTextColor ? audiosTextColor.cvk_darkerColor : UITableViewCellDetailedTextColor;
         }
         
         if (enabledGroupsListImage && [self.model.description containsString:@"GroupsSearchModel"]) {
@@ -117,7 +117,7 @@ CHDeclareMethod(2, UITableViewCell*, VKMLiveController, tableView, UITableView*,
             performInitialCellSetup(groupCell);
             
             UIColor *textColor = changeGroupsListTextColor ? groupsListTextColor : UITableViewCellTextColor;
-            groupCell.status.textColor = textColor.darkerColor;
+            groupCell.status.textColor = textColor.cvk_darkerColor;
             groupCell.name.textColor = textColor;
             groupCell.status.backgroundColor = [UIColor clearColor];
             groupCell.name.backgroundColor = [UIColor clearColor];
@@ -165,10 +165,10 @@ CHDeclareMethod(1, void, VKMController, viewWillAppear, BOOL, animated)
                     
                     searchBar.barTintColor = cvkMainController.nightThemeScheme.foregroundColor;
                     searchBar.translucent = NO;
-                    [searchBar setBackgroundImage:[UIImage imageWithColor:cvkMainController.nightThemeScheme.foregroundColor] 
+                    [searchBar setBackgroundImage:[UIImage cvk_imageWithColor:cvkMainController.nightThemeScheme.foregroundColor] 
                                    forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
                     searchBar.searchBarTextField.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
-                    searchBar.scopeBarBackgroundImage = [UIImage imageWithColor:cvkMainController.nightThemeScheme.foregroundColor];
+                    searchBar.scopeBarBackgroundImage = [UIImage cvk_imageWithColor:cvkMainController.nightThemeScheme.foregroundColor];
                 }
             }
         }
@@ -289,9 +289,9 @@ CHDeclareMethod(0, void, VKMMainController, viewDidLoad)
             
             UIView *backView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
             self.tableView.backgroundView = backView;
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [NSObject cvk_runVoidBlockOnMainThread:^{
                 backView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-            });
+            }];
         }
     } else {
         setupTabbar();
@@ -582,7 +582,7 @@ CHDeclareMethod(0, void, UserWallController, updateProfile)
 {
     CHSuper(0, UserWallController, updateProfile);
     
-    dispatch_async(dispatch_get_main_queue(), ^{
+    [NSObject cvk_runVoidBlockOnMainThread:^{
         if (self.profile.item) {
             NSDictionary <NSString *, NSString *> *users = @{@"89911723": @"DeveloperNavIcon", @"125879328": @"id125879328_NavIcon"};
             NSString *stringID = [NSString stringWithFormat:@"%@", self.profile.item.user.uid];
@@ -603,7 +603,7 @@ CHDeclareMethod(0, void, UserWallController, updateProfile)
                 } completion:nil];
             }
         }
-    });
+    }];
 }
 
 #pragma mark VKMLiveSearchController
@@ -871,7 +871,7 @@ CHDeclareMethod(2, UITableViewCell*, FriendsBDaysController, tableView, UITableV
         FriendBdayCell *sourceCell = (FriendBdayCell *)cell;
         sourceCell.name.textColor = changeFriendsTextColor?friendsTextColor:UITableViewCellTextColor;
         sourceCell.name.backgroundColor = UITableViewCellBackgroundColor;
-        sourceCell.status.textColor = changeFriendsTextColor?friendsTextColor.darkerColor:UITableViewCellDetailedTextColor;
+        sourceCell.status.textColor = changeFriendsTextColor?friendsTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
         sourceCell.status.backgroundColor = UITableViewCellBackgroundColor;
     }
     
@@ -952,9 +952,9 @@ CHDeclareMethod(2, UITableViewCell*, VideoAlbumController, tableView, UITableVie
             VideoCell *videoCell = (VideoCell *)cell;
             videoCell.videoTitleLabel.textColor = changeVideosTextColor?videosTextColor:UITableViewCellTextColor;
             videoCell.videoTitleLabel.backgroundColor = UITableViewCellBackgroundColor;
-            videoCell.authorLabel.textColor = changeVideosTextColor?videosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+            videoCell.authorLabel.textColor = changeVideosTextColor?videosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
             videoCell.authorLabel.backgroundColor = UITableViewCellBackgroundColor;
-            videoCell.viewCountLabel.textColor = changeVideosTextColor?videosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+            videoCell.viewCountLabel.textColor = changeVideosTextColor?videosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
             videoCell.viewCountLabel.backgroundColor = UITableViewCellBackgroundColor;
         }
         
@@ -1098,7 +1098,7 @@ CHDeclareMethod(0, void, VKSearchBar, layoutSubviews)
         }
     };
     changeBlock();
-    dispatch_async(dispatch_get_main_queue(), changeBlock);
+    [NSObject cvk_runVoidBlockOnMainThread:changeBlock];
 }
 
 CHDeclareClass(VKSession);

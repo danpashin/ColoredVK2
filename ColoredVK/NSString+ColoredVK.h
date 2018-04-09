@@ -11,9 +11,9 @@
 
 @interface NSString (ColoredVK)
 
-@property (copy, nonatomic, readonly) UIColor *colorValue;
-@property (copy, nonatomic, readonly) UIColor *rgbColorValue;
-@property (copy, nonatomic, readonly) UIColor *hexColorValue;
-@property (assign, nonatomic, readonly) BOOL hexColor;
+@property (copy, nonatomic, readonly) UIColor *cvk_colorValue;
+@property (copy, nonatomic, readonly) UIColor *cvk_rgbColorValue;
+@property (copy, nonatomic, readonly) UIColor *cvk_hexColorValue;
+@property (assign, nonatomic, readonly) BOOL cvk_hexColor;
 
 @end

@@ -43,8 +43,8 @@ CHDeclareMethod(3, void, ModernSettingsController, tableView, UITableView*, tabl
 {
     CHSuper(3, ModernSettingsController, tableView, tableView, willDisplayCell, cell, forRowAtIndexPath, indexPath);
     
-    if ([self isKindOfClass:NSClassFromString(@"ModernSettingsController")]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+    if ([self isKindOfClass:NSClassFromString(@"ModernSettingsController")]) {        
+        [NSObject cvk_runVoidBlockOnMainThread:^{
             if ([cell.textLabel.text.lowercaseString isEqualToString:@"vksettings"]) {
                 cell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
             }
@@ -55,7 +55,7 @@ CHDeclareMethod(3, void, ModernSettingsController, tableView, UITableView*, tabl
                 cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
                 cell.imageView.tintColor = cell.textLabel.textColor;
             }
-        });
+        }];
     }
 }
 
@@ -83,7 +83,7 @@ CHDeclareMethod(0, void, ModernSettingsController, viewWillLayoutSubviews)
         else
             self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.5f];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
+        [NSObject cvk_runVoidBlockOnMainThread:^{
             UIColor *textColor = changeSettingsTextColor ? settingsTextColor : UITableViewCellTextColor;
             for (UIView *subview in self.tableView.tableHeaderView.subviews) {
                 if ([subview respondsToSelector:@selector(setTextColor:)]) {
@@ -95,7 +95,7 @@ CHDeclareMethod(0, void, ModernSettingsController, viewWillLayoutSubviews)
                     [button setTitleColor:textColor forState:button.state];
                 }
             }
-        });
+        }];
     }
 }
 

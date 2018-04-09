@@ -101,7 +101,7 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
         UITextView *footerLabel = [[UITextView alloc] init];
         footerLabel.backgroundColor = [UIColor clearColor];
         footerLabel.text = CVKLocalizedString(@"YOU_HAVE_FREE_VERSION");
-        footerLabel.textColor = @"CF000F".hexColorValue;
+        footerLabel.textColor = @"CF000F".cvk_hexColorValue;
         footerLabel.textAlignment = NSTextAlignmentCenter;
         footerLabel.font = [UIFont boldSystemFontOfSize:[UIFont smallSystemFontSize]-0.5f];
         footerLabel.editable = NO;

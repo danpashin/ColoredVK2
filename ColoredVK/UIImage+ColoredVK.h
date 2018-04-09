@@ -13,13 +13,13 @@
 /**
  Creates image with color and size 1x1
  */
-+ (UIImage *)imageWithColor:(UIColor *)color;
++ (UIImage *)cvk_imageWithColor:(UIColor *)color;
 
 /**
  Creates image with color and specified size  
  */
-+ (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size;
++ (UIImage *)cvk_imageWithColor:(UIColor *)color size:(CGSize)size;
 
-- (UIImage *)imageWithTintColor:(UIColor *)tintColor;
+- (UIImage *)cvk_imageWithTintColor:(UIColor *)tintColor;
 
 @end

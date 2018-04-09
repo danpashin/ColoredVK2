@@ -13,6 +13,7 @@
 #import "UIImage+ColoredVK.h"
 #import "ColoredVKNewInstaller.h"
 #import "UIColor+ColoredVK.h"
+#import "NSObject+ColoredVK.h"
 #import "VKMethods.h"
 
 #import "TweakFunctions.h"

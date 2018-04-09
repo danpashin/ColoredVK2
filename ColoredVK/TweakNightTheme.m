@@ -8,8 +8,6 @@
 #import "Tweak.h"
 #import <Preferences/PSTableCell.h>
 #import <CoreText/CoreText.h>
-//#import <dlfcn.h>
-//#import <objc/runtime.h>
 
 
 CVKHook(CTFramesetterRef, CTFramesetterCreateWithAttributedString, CFAttributedStringRef string)
@@ -473,7 +471,7 @@ CHDeclareMethod(0, void, AdminInputPanelView, layoutSubviews)
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"AdminInputPanelView")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
         if ([self respondsToSelector:@selector(gapToolbar)])
-            [self.gapToolbar setBackgroundImage:[UIImage imageWithColor:cvkMainController.nightThemeScheme.backgroundColor] 
+            [self.gapToolbar setBackgroundImage:[UIImage cvk_imageWithColor:cvkMainController.nightThemeScheme.backgroundColor] 
                              forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
     }
 }
@@ -583,11 +581,11 @@ CHDeclareMethod(0, void, LookupAddressBookFriendsViewController, viewDidLoad)
     CHSuper(0, LookupAddressBookFriendsViewController, viewDidLoad);
     
     if (enabled && enableNightTheme) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        [NSObject cvk_runVoidBlockOnMainThread:^{
             for (UIView *subview in self.lookupTeaserViewController.componentView.subviews) {
                 subview.backgroundColor = [UIColor clearColor];
             }
-        });
+        }];
     }
 }
 
@@ -678,7 +676,7 @@ CHDeclareMethod(1, VKMTableViewSearchHeaderView*, VKMTableViewSearchHeaderView, 
     VKMTableViewSearchHeaderView *headerView = CHSuper(1, VKMTableViewSearchHeaderView, initWithFrame, frame);
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKMTableViewSearchHeaderView")]) {
-        [self setBackgroundImage:[UIImage imageWithColor:cvkMainController.nightThemeScheme.foregroundColor] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+        [self setBackgroundImage:[UIImage cvk_imageWithColor:cvkMainController.nightThemeScheme.foregroundColor] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
     }
     
     return headerView;
@@ -731,13 +729,13 @@ CHDeclareMethod(0, void, DefaultHighlightButton, layoutSubviews)
     CHSuper(0, DefaultHighlightButton, layoutSubviews);
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"DefaultHighlightButton")]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        [NSObject cvk_runVoidBlockOnMainThread:^{
             objc_setAssociatedObject(self.titleLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
             objc_setAssociatedObject(self, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
             [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             if ([CLASS_NAME(self.superview) isEqualToString:@"UIView"])
                 self.superview.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-        });
+        }];
     }
 }
 
@@ -757,7 +755,7 @@ CHDeclareMethod(0, void, StoreController, viewDidLoad)
     CHSuper(0, StoreController, viewDidLoad);
     
     if (enabled && enableNightTheme) {
-        [self.toolbar setBackgroundImage:[UIImage imageWithColor:cvkMainController.nightThemeScheme.foregroundColor] 
+        [self.toolbar setBackgroundImage:[UIImage cvk_imageWithColor:cvkMainController.nightThemeScheme.foregroundColor] 
                       forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
     }
 }
@@ -925,7 +923,7 @@ CHDeclareMethod(1, id, TouchHighlightControl, initWithFrame, CGRect, frame)
     TouchHighlightControl *control = CHSuper(1, TouchHighlightControl, initWithFrame, frame);
     
     if (enabled && enableNightTheme) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        [NSObject cvk_runVoidBlockOnMainThread:^{
             for (UIView *subview in control.subviews) {
                 if ([subview isKindOfClass:[UIImageView class]]) {
                     UIImageView *imageView = (UIImageView *)subview;
@@ -935,7 +933,7 @@ CHDeclareMethod(1, id, TouchHighlightControl, initWithFrame, CGRect, frame)
                     }
                 }
             }
-        });
+        }];
     }
     
     return control;
@@ -1028,7 +1026,7 @@ CHDeclareMethod(0, void, SketchController, viewDidLoad)
         for (UIView *subview in self.sketchView.subviews) {
             if ([subview isKindOfClass:[UIToolbar class]]) {
                 UIToolbar *toolbar = (UIToolbar *)subview;
-                [toolbar setBackgroundImage:[UIImage imageWithColor:cvkMainController.nightThemeScheme.navbackgroundColor] 
+                [toolbar setBackgroundImage:[UIImage cvk_imageWithColor:cvkMainController.nightThemeScheme.navbackgroundColor] 
                          forToolbarPosition:UIBarPositionAny 
                                  barMetrics:UIBarMetricsDefault];
             }
@@ -1150,7 +1148,7 @@ CHDeclareClassMethod(1, UIImage *, UIImage, imageNamed, NSString *, name)
         ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
         if ((compareResult == ColoredVKVersionCompareMore) && [assetName containsString:@"badge"]) {
 //            CVKLog(@"assetName: %@", assetName);
-            orig = [orig imageWithTintColor:cvkMainController.nightThemeScheme.backgroundColor];
+            orig = [orig cvk_imageWithTintColor:cvkMainController.nightThemeScheme.backgroundColor];
         }
     }
     

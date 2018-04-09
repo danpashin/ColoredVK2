@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 @class ColoredVKMainController;
 
-
+/*
+ *  Completion block вызывается на главном потоке
+ */
 void reloadPrefs(void(^completion)(void));
 
 typedef NS_ENUM(NSInteger, CVKCellSelectionStyle) {

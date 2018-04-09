@@ -133,8 +133,8 @@
         UIButton *closeAppButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [closeAppButton setTitle:CVKLocalizedString(@"CLOSE_APP_FOOTER_BUTTON_TEXT") forState:UIControlStateNormal];
         [closeAppButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-        [closeAppButton setTitleColor:[UIColor redColor].darkerColor forState:UIControlStateHighlighted];
-        [closeAppButton setTitleColor:[UIColor redColor].darkerColor forState:UIControlStateSelected];
+        [closeAppButton setTitleColor:[UIColor redColor].cvk_darkerColor forState:UIControlStateHighlighted];
+        [closeAppButton setTitleColor:[UIColor redColor].cvk_darkerColor forState:UIControlStateSelected];
         [closeAppButton addTarget:self action:@selector(actionCloseApplication) forControlEvents:UIControlEventTouchUpInside];
         [contentView addSubview:closeAppButton];
         

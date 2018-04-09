@@ -91,7 +91,7 @@
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker willDismissWithColor:(UIColor *)color
 {
     if (color)
-        self.cachedPrefs[colorPicker.identifier] = color.stringValue;
+        self.cachedPrefs[colorPicker.identifier] = color.cvk_stringValue;
     else if (self.cachedPrefs[colorPicker.identifier])
         [self.cachedPrefs removeObjectForKey:colorPicker.identifier];
     

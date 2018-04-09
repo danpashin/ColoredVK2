@@ -40,7 +40,7 @@ CHDeclareMethod(0, void, IOS7AudioController, viewDidLoad)
             self.view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
             self.cover.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
             self.hostView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-            [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:cvkMainController.nightThemeScheme.buttonColor] forState:UIControlStateSelected];
+            [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] cvk_imageWithTintColor:cvkMainController.nightThemeScheme.buttonColor] forState:UIControlStateSelected];
             setupAudioPlayer(self.hostView, cvkMainController.nightThemeScheme.buttonColor);
         }
         if (changeAudioPlayerAppearance) {
@@ -65,43 +65,39 @@ CHDeclareMethod(0, void, IOS7AudioController, viewDidLoad)
                 navBar.topItem.rightBarButtonItems = @[];
                 self.navigationController.navigationBar.hidden = YES;
                 
-                [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionDown 
-                                                                                       handler:^{
-                                                                                           if ([self respondsToSelector:@selector(done:)]) {
-                                                                                               [self done:nil];
-                                                                                           }
-                                                                                       }]];
+                [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionDown handler:^{
+                    if ([self respondsToSelector:@selector(done:)]) {
+                        [self done:nil];
+                    }
+                }]];
                 
-                [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionLeft 
-                                                                                       handler:^{
-                                                                                           if ([self respondsToSelector:@selector(actionNext:)]) {
-                                                                                               [self actionNext:nil];
-                                                                                           }
-                                                                                       }]];
+                [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionLeft handler:^{
+                    if ([self respondsToSelector:@selector(actionNext:)]) {
+                        [self actionNext:nil];
+                    }
+                }]];
                 
-                [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionRight 
-                                                                                       handler:^{
-                                                                                           if ([self respondsToSelector:@selector(actionPrev:)]) {
-                                                                                               [self actionPrev:nil];
-                                                                                           }
-                                                                                       }]];
+                [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionRight handler:^{
+                    if ([self respondsToSelector:@selector(actionPrev:)]) {
+                        [self actionPrev:nil];
+                    }
+                }]];
                 
-                [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionUp
-                                                                                       handler:^{
-                                                                                           if ([self respondsToSelector:@selector(actionPlaylist:)]) {
-                                                                                               [self actionPlaylist:nil];
-                                                                                           }
-                                                                                       }]];
+                [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionUp handler:^{
+                    if ([self respondsToSelector:@selector(actionPlaylist:)]) {
+                        [self actionPlaylist:nil];
+                    }
+                }]];
             }
             
             setupAudioPlayer(self.hostView, audioPlayerTintColor);
             self.cover.hidden = YES;
             self.hostView.backgroundColor = [UIColor clearColor];
-            [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
+            [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] cvk_imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
             
             cvkMainController.audioCover.updateCompletionBlock = ^(ColoredVKAudioCover *cover) {
                 audioPlayerTintColor = cvkMainController.audioCover.color;
-                [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
+                [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] cvk_imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
                 setupAudioPlayer(self.hostView, audioPlayerTintColor);
             };
         }
@@ -222,8 +218,8 @@ CHDeclareMethod(0, UIButton*, AudioRenderer, playIndicator)
 {
     UIButton *indicator = CHSuper(0, AudioRenderer, playIndicator);
     if (enabled && !enableNightTheme && enabledAudioImage) {
-        [indicator setImage:[[indicator imageForState:UIControlStateNormal] imageWithTintColor:[UIColor whiteColor]] forState:UIControlStateNormal];
-        [indicator setImage:[[indicator imageForState:UIControlStateSelected] imageWithTintColor:[UIColor whiteColor]] forState:UIControlStateSelected];
+        [indicator setImage:[[indicator imageForState:UIControlStateNormal] cvk_imageWithTintColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+        [indicator setImage:[[indicator imageForState:UIControlStateSelected] cvk_imageWithTintColor:[UIColor whiteColor]] forState:UIControlStateSelected];
     }
     return indicator;
 }
@@ -255,7 +251,7 @@ CHDeclareMethod(2, UITableViewCell*, AudioDashboardController, tableView, UITabl
         performInitialCellSetup(cell);
         
         cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
-        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
     }
     
     return cell;
@@ -287,12 +283,12 @@ CHDeclareMethod(2, UITableViewCell*, AudioCatalogController, tableView, UITableV
             if ([view isKindOfClass:NSClassFromString(@"AudioBlockCellHeaderView")]) {
                 AudioBlockCellHeaderView *headerView = (AudioBlockCellHeaderView *)view;
                 headerView.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
-                headerView.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+                headerView.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
                 [headerView.showAllButton setTitleColor:changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor forState:UIControlStateNormal];
             } else if ([view isKindOfClass:NSClassFromString(@"BlockCellHeaderView")]) {
                 BlockCellHeaderView *headerView = (BlockCellHeaderView *)view;
                 headerView.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
-                headerView.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+                headerView.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
                 [headerView.actionButton setTitleColor:changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor forState:UIControlStateNormal];
             }
         };
@@ -334,14 +330,14 @@ CHDeclareMethod(2, UITableViewCell*, AudioCatalogOwnersListController, tableView
             GroupCell *groupCell = (GroupCell *)cell;
             groupCell.name.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
             groupCell.name.backgroundColor = UITableViewCellBackgroundColor;
-            groupCell.status.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+            groupCell.status.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
             groupCell.status.backgroundColor = UITableViewCellBackgroundColor;
         }
         else if ([cell isKindOfClass:NSClassFromString(@"SourceCell")]) {
             SourceCell *sourceCell = (SourceCell *)cell;
             sourceCell.first.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
             sourceCell.first.backgroundColor = UITableViewCellBackgroundColor;
-            sourceCell.last.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+            sourceCell.last.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
             sourceCell.last.backgroundColor = UITableViewCellBackgroundColor;
         }
     }
@@ -372,7 +368,7 @@ CHDeclareMethod(2, UITableViewCell*, AudioCatalogAudiosListController, tableView
         performInitialCellSetup(cell);
         
         cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
-        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
     }
     
     return cell;
@@ -402,7 +398,7 @@ CHDeclareMethod(2, UITableViewCell*, AudioPlaylistDetailController, tableView, U
         performInitialCellSetup(cell);
         
         cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
-        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
     }
     
     return cell;
@@ -480,7 +476,7 @@ CHDeclareMethod(2, UITableViewCell*, VKAudioPlayerListTableViewController, table
         performInitialCellSetup(cell);
         
         cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
-        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+        cell.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
     }
     
     return cell;
@@ -501,7 +497,7 @@ CHDeclareMethod(0, void, AudioAudiosBlockTableCell, layoutSubviews)
             self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
         } else {
             self.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
-            self.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+            self.detailTextLabel.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
         }
         
     }
@@ -515,7 +511,7 @@ CHDeclareMethod(0, void, AudioPlaylistInlineCell, layoutSubviews)
     
     if (enabled && enabledAudioImage && !enableNightTheme && [self isKindOfClass:NSClassFromString(@"AudioPlaylistInlineCell")]) {
         self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
-        self.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+        self.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
     }
 }
 
@@ -542,7 +538,7 @@ CHDeclareMethod(0, void, AudioPlaylistCell, layoutSubviews)
         if (!enableNightTheme) {
             self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
             self.artistLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
-            self.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+            self.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
         }
     }
 }
@@ -578,7 +574,7 @@ CHDeclareMethod(0, void, AudioAudiosSpecialBlockView, layoutSubviews)
         if (!enableNightTheme) {
             self.backgroundColor = [UIColor clearColor];
             self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
-            self.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.darkerColor:UITableViewCellDetailedTextColor;
+            self.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
         }
         for (UIView *subview in self.subviews) {
             if ([subview isKindOfClass:NSClassFromString(@"GradientView")]) {

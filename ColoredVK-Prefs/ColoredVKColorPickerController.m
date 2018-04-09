@@ -192,7 +192,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     [self.savedColorsContainer addSubview:self.savedCollectionView];
     
     
-    self.customColor = [UIColor savedColorForIdentifier:self.identifier];
+    self.customColor = [UIColor cvk_savedColorForIdentifier:self.identifier];
     if (self.customColor == nil)
         self.customColor = [UIColor clearColor];
     
@@ -384,7 +384,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 {
     _customColor = customColor;
     
-    self.customHexColor = self.customColor.hexStringValue;
+    self.customHexColor = self.customColor.cvk_hexStringValue;
 }
 
 - (void)setColorBrightness:(HRBrightnessSlider *)brightnessSlider
@@ -445,7 +445,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 - (void)actionShowHexWindow
 {
     ColoredVKSimpleAlertController *hexWindow = [[ColoredVKSimpleAlertController alloc] init];
-    hexWindow.textField.placeholder = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"EXAMPLE_ALERT_MESSAGE", nil, self.cvkBundle, nil), self.customColor.hexStringValue];
+    hexWindow.textField.placeholder = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"EXAMPLE_ALERT_MESSAGE", nil, self.cvkBundle, nil), self.customColor.cvk_hexStringValue];
     hexWindow.textField.delegate = self;
     NSString *buttonTitle = NSLocalizedStringFromTableInBundle(@"COPY_SAVED", nil, self.cvkBundle, nil);
     [hexWindow.button setTitle:buttonTitle forState:UIControlStateNormal];
@@ -454,7 +454,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     [hexWindow.button setBackgroundImage:nil forState:UIControlStateHighlighted];
     UIColor *titleColor = [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1.0f];
     [hexWindow.button setTitleColor:titleColor forState:UIControlStateNormal];
-    [hexWindow.button setTitleColor:titleColor.darkerColor forState:UIControlStateHighlighted];
+    [hexWindow.button setTitleColor:titleColor.cvk_darkerColor forState:UIControlStateHighlighted];
     
     NSString *locString = NSLocalizedStringFromTableInBundle(@"ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE", nil, self.cvkBundle, nil);
     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:locString];
@@ -474,9 +474,9 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 - (void)actionCopySavedHex
 {
-    UIColor *savedColor = [UIColor savedColorForIdentifier:self.identifier];
+    UIColor *savedColor = [UIColor cvk_savedColorForIdentifier:self.identifier];
     if (savedColor)
-        [UIPasteboard generalPasteboard].string = savedColor.hexStringValue;
+        [UIPasteboard generalPasteboard].string = savedColor.cvk_hexStringValue;
 }
 
 - (void)actionSaveColor
@@ -520,7 +520,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 {
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
     
-    self.customColor = self.savedColors[indexPath.row].hexColorValue;
+    self.customColor = self.savedColors[indexPath.row].cvk_hexColorValue;
     
     [self updateColorsFromPicker:NO];
 }
@@ -551,12 +551,12 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (!textField.text.hexColor) {
+        if (!textField.text.cvk_hexColor) {
             textField.layer.borderColor = [UIColor colorWithRed:0.8f green:0.0f blue:0.0f alpha:1.0f].CGColor;
         } else {
             textField.layer.borderColor = [UIColor clearColor].CGColor;
             
-            self.customColor = textField.text.hexColorValue;
+            self.customColor = textField.text.cvk_hexColorValue;
             [self updateColorsFromPicker:NO];
         }
     });

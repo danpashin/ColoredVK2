@@ -48,7 +48,7 @@
 - (void)updateColorForIdentifier:(NSString *)identifier
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        UIColor *color = [UIColor savedColorForIdentifier:identifier];
+        UIColor *color = [UIColor cvk_savedColorForIdentifier:identifier];
         dispatch_async(dispatch_get_main_queue(), ^{
             self.accessoryView.backgroundColor = color;
             

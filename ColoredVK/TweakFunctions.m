@@ -101,16 +101,13 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
         }
     };
     
-    if (![NSThread isMainThread])
-        dispatch_async(dispatch_get_main_queue(), setBlurBlock);
-    else
-        setBlurBlock();
+    [NSObject cvk_runVoidBlockOnMainThread:setBlurBlock];
 }
 
 void setupTranslucence(UIView *view, UIColor *backColor, BOOL remove)
 {
     if ([view respondsToSelector:@selector(_backgroundView)]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        void (^block)(void) =  ^{
             UIView *backView = objc_msgSend(view, @selector(_backgroundView));
             
             if (remove) {
@@ -143,7 +140,9 @@ void setupTranslucence(UIView *view, UIColor *backColor, BOOL remove)
                     }
                 }
             }
-        });
+        };
+        
+        [NSObject cvk_runVoidBlockOnMainThread:block];
     }
 }
 
@@ -175,7 +174,7 @@ void setToolBar(UIToolbar *toolbar)
                     for (UIView *view in toolbar.subviews) {
                         if ([view isKindOfClass:UIButton.class]) {
                             UIButton *btn = (UIButton *)view;
-                            [btn setTitleColor:toolBarForegroundColor.darkerColor forState:UIControlStateDisabled];
+                            [btn setTitleColor:toolBarForegroundColor.cvk_darkerColor forState:UIControlStateDisabled];
                             [btn setTitleColor:toolBarForegroundColor forState:UIControlStateNormal];
                             BOOL btnToExclude = NO;
                             NSMutableArray <NSString *> *btnsWithActionsToExclude = [NSMutableArray arrayWithObject:@"actionToggleEmoji:"];
@@ -189,7 +188,7 @@ void setToolBar(UIToolbar *toolbar)
                                 if ([btnsWithActionsToExclude containsObject:action]) btnToExclude = YES;
                             }
                             if (!btnToExclude && btn.currentImage)
-                                [btn setImage:[[btn imageForState:UIControlStateNormal] imageWithTintColor:toolBarForegroundColor] forState:UIControlStateNormal];
+                                [btn setImage:[[btn imageForState:UIControlStateNormal] cvk_imageWithTintColor:toolBarForegroundColor] forState:UIControlStateNormal];
                         }
                     }
                     
@@ -217,7 +216,7 @@ void setupAudioPlayer(UIView *hostView, UIColor *color)
         view.backgroundColor = [UIColor clearColor];
         if ([view respondsToSelector:@selector(setTextColor:)]) ((UILabel *)view).textColor = color;
         if ([view respondsToSelector:@selector(setImage:forState:)]) 
-            [(UIButton*)view setImage:[[(UIButton*)view imageForState:UIControlStateNormal] imageWithTintColor:color] forState:UIControlStateNormal];
+            [(UIButton*)view setImage:[[(UIButton*)view imageForState:UIControlStateNormal] cvk_imageWithTintColor:color] forState:UIControlStateNormal];
     }
 }
 
@@ -410,18 +409,22 @@ void performInitialCellSetup(UITableViewCell *cell)
 
 void resetNavigationBar(UINavigationBar *navBar)
 {
-    setBlur(navBar, NO, nil, 0);
-    navBar._backgroundView.alpha = 1.0;
-    [cvkMainController.navBarImageView removeFromSuperview];
-    navBar.barTintColor = kNavigationBarBarTintColor;
-    for (UIView *subview in navBar._backgroundView.subviews) {
-        if ([subview isKindOfClass:[UIVisualEffectView class]]) subview.hidden = NO;
-    }
+    void (^setupBlock)(void) = ^{
+        setBlur(navBar, NO, nil, 0);
+        navBar._backgroundView.alpha = 1.0;
+        [cvkMainController.navBarImageView removeFromSuperview];
+        navBar.barTintColor = kNavigationBarBarTintColor;
+        for (UIView *subview in navBar._backgroundView.subviews) {
+            if ([subview isKindOfClass:[UIVisualEffectView class]]) subview.hidden = NO;
+        }
+    };
+    
+    [NSObject cvk_runVoidBlockOnMainThread:setupBlock];
 }
 
 void actionChangeCornerRadius()
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    [NSObject cvk_runVoidBlockOnMainThread:^{
         UIWindow *window = [UIApplication sharedApplication].keyWindow;
         window.layer.masksToBounds = YES;
         
@@ -435,7 +438,7 @@ void actionChangeCornerRadius()
         
         window.layer.cornerRadius = cornerRaduis;
         [window.layer addAnimation:cornerAnimation forKey:@"cornerAnimation"];
-    });
+    }];
 }
 
 void uncaughtExceptionHandler(NSException *exception)
@@ -454,7 +457,7 @@ void setupUISearchBar(UISearchBar *searchBar)
     if (![searchBar isKindOfClass:[UISearchBar class]])
         return;
     
-    dispatch_async(dispatch_get_main_queue(), ^{
+    void (^block)(void) = ^{
         UIView *barBackground = searchBar.subviews[0].subviews[0];
         if (menuSelectionStyle == CVKCellSelectionStyleBlurred) {
             searchBar.backgroundColor = [UIColor clearColor];
@@ -473,7 +476,9 @@ void setupUISearchBar(UISearchBar *searchBar)
             barTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:barTextField.placeholder  
                                                                                  attributes:@{NSForegroundColorAttributeName:changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1 alpha:0.5f]}];
         }
-    });
+    };
+    
+    [NSObject cvk_runVoidBlockOnMainThread:block];
 }
 
 void setupTabbar()
@@ -493,18 +498,18 @@ void setupTabbar()
             if ([tabbar respondsToSelector:@selector(setUnselectedItemTintColor:)])
                 tabbar.unselectedItemTintColor = tabbarForegroundColor;
         } else {
-            tabbar.barTintColor = [UIColor defaultColorForIdentifier:@"TabbarBackgroundColor"];
-            tabbar.tintColor = [UIColor defaultColorForIdentifier:@"TabbarSelForegroundColor"];
+            tabbar.barTintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarBackgroundColor"];
+            tabbar.tintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarSelForegroundColor"];
             if ([tabbar respondsToSelector:@selector(setUnselectedItemTintColor:)])
-                tabbar.unselectedItemTintColor = [UIColor defaultColorForIdentifier:@"TabbarForegroundColor"];
+                tabbar.unselectedItemTintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarForegroundColor"];
         }
         
         for (UITabBarItem *item in tabbar.items) {
             if (@available(iOS 10.0, *)) {
                 item.image = [item.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             } else {
-                UIColor *tintColor = (enabled && enabledTabbarColor) ? (enableNightTheme ? cvkMainController.nightThemeScheme.buttonColor : tabbarForegroundColor) : [UIColor defaultColorForIdentifier:@"TabbarForegroundColor"];
-                item.image = [item.image imageWithTintColor:tintColor];
+                UIColor *tintColor = (enabled && enabledTabbarColor) ? (enableNightTheme ? cvkMainController.nightThemeScheme.buttonColor : tabbarForegroundColor) : [UIColor cvk_defaultColorForIdentifier:@"TabbarForegroundColor"];
+                item.image = [item.image cvk_imageWithTintColor:tintColor];
             }
             item.selectedImage = [item.selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         }
@@ -529,8 +534,8 @@ void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *table
             view.contentView.backgroundColor = [UIColor clearColor];
             view.backgroundView.backgroundColor = [UIColor clearColor];
             view.textLabel.backgroundColor = [UIColor clearColor];
-            view.textLabel.textColor = (tableView.tag == 24) ? UITableViewCellTextColor.darkerColor : UITableViewCellTextColor;
-            view.detailTextLabel.textColor = (tableView.tag == 24) ? UITableViewCellTextColor.darkerColor : UITableViewCellTextColor;
+            view.textLabel.textColor = (tableView.tag == 24) ? UITableViewCellTextColor.cvk_darkerColor : UITableViewCellTextColor;
+            view.detailTextLabel.textColor = (tableView.tag == 24) ? UITableViewCellTextColor.cvk_darkerColor : UITableViewCellTextColor;
         }
     };
     if (enableNightTheme) {
@@ -689,8 +694,8 @@ NSAttributedString *attributedStringForNightTheme(NSAttributedString * text)
 void setupNightSeparatorForView(UIView *view)
 {
     if ([CLASS_NAME(view) isEqualToString:@"UIView"]) {
-        if (enabled && enableNightTheme) {
-            dispatch_async(dispatch_get_main_queue(), ^{
+        if (enabled && enableNightTheme) {            
+            [NSObject cvk_runVoidBlockOnMainThread:^{
                 if ([cvkMainController.vkMainController respondsToSelector:@selector(tabBarShadowView)]) {
                     if ([view isEqual:cvkMainController.vkMainController.tabBarShadowView])
                         return;
@@ -705,7 +710,7 @@ void setupNightSeparatorForView(UIView *view)
                     view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
                 else
                     view.backgroundColor = cachedBackgroundColor;
-            });
+            }];
         }
     }
 }
@@ -811,7 +816,7 @@ void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRe
     
     resetTabBar();
     
-    dispatch_async(dispatch_get_main_queue(), ^{
+    [NSObject cvk_runVoidBlockOnMainThread:^{
         if ([cvkMainController.vkMainController respondsToSelector:@selector(newsController)]) {
             NewsSelectorController *newsSelector = (NewsSelectorController *)cvkMainController.vkMainController.newsController;
             if ([newsSelector respondsToSelector:@selector(currentViewController)]) {
@@ -837,7 +842,7 @@ void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRe
                 [discoverController VKMScrollViewReloadData];
             }
         }
-    });
+    }];
 }
 
 void setupNewSearchBar(VKSearchBar *searchBar, UIColor *tintColor, UIColor *blurTone, UIBlurEffectStyle blurStyle)
@@ -966,8 +971,7 @@ void updateControllerBlurInfo(UIViewController *controller, void (^completion)(v
         objc_setAssociatedObject(controller, "cvkBlurColor", blurColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         objc_setAssociatedObject(controller, "cvkBlurStyle", @(blurStyle), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         
-        if (completion)
-            completion();
+        [NSObject cvk_runVoidBlockOnMainThread:completion];
     });
 }
 

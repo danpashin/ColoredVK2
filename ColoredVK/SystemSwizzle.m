@@ -28,14 +28,12 @@ CHDeclareMethod(2, BOOL, AppDelegate, application, UIApplication*, application, 
     
     BOOL orig = CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-        installerCompletionBlock = ^(BOOL purchased) {
-            premiumEnabled = purchased;
-            reloadPrefs(nil);
-        };
-        [newInstaller checkStatus];
-    });
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
+    installerCompletionBlock = ^(BOOL purchased) {
+        premiumEnabled = purchased;
+        reloadPrefs(nil);
+    };
+    [newInstaller checkStatus];
     
     return orig;
 }
@@ -132,7 +130,7 @@ CHDeclareMethod(0, void, UISearchBar, layoutSubviews)
             else if (enabledBarImage)
                 self.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.2f];
             else if (enabledBarColor)
-                self.searchBarTextField.backgroundColor = barBackgroundColor.darkerColor;
+                self.searchBarTextField.backgroundColor = barBackgroundColor.cvk_darkerColor;
         } else {
             self.searchBarTextField.backgroundColor = [UIColor colorWithRed:0.078f green:0.227f blue:0.4f alpha:0.8f];
         }

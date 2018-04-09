@@ -73,7 +73,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
                                       (cell.contentView.frame.size.height - switchView.frame.size.height)/2.0f, 0.0f, 0.0f);
         switchView.tag = 228;
         switchView.on = enabled;
-        switchView.onTintColor = [UIColor defaultColorForIdentifier:@"switchesOnTintColor"];
+        switchView.onTintColor = [UIColor cvk_defaultColorForIdentifier:@"switchesOnTintColor"];
         [switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventValueChanged];
         objc_setAssociatedObject(self, (__bridge const void *)(switchViewKey), switchView, OBJC_ASSOCIATION_ASSIGN);
         [cell.contentView addSubview:switchView];

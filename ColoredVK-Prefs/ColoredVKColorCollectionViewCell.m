@@ -58,7 +58,7 @@
 {
     _hexColor = hexColor;
     
-    self.colorPreview.color = hexColor.hexColorValue;
+    self.colorPreview.color = hexColor.cvk_hexColorValue;
 }
 
 - (void)actionDeleteColor

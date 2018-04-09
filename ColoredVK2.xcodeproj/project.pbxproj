@@ -134,6 +134,10 @@
 		A5363B0E1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.h in Headers */ = {isa = PBXBuildFile; fileRef = A5363B0B1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.h */; };
 		A5363B0F1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A5363B0C1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.m */; };
 		A5363B101E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A5363B0C1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.m */; };
+		A5364329207BD5D000030DD7 /* NSObject+ColoredVK.h in Headers */ = {isa = PBXBuildFile; fileRef = A5364327207BD5D000030DD7 /* NSObject+ColoredVK.h */; };
+		A536432A207BD5D000030DD7 /* NSObject+ColoredVK.h in Headers */ = {isa = PBXBuildFile; fileRef = A5364327207BD5D000030DD7 /* NSObject+ColoredVK.h */; };
+		A536432B207BD5D000030DD7 /* NSObject+ColoredVK.m in Sources */ = {isa = PBXBuildFile; fileRef = A5364328207BD5D000030DD7 /* NSObject+ColoredVK.m */; };
+		A536432C207BD5D000030DD7 /* NSObject+ColoredVK.m in Sources */ = {isa = PBXBuildFile; fileRef = A5364328207BD5D000030DD7 /* NSObject+ColoredVK.m */; };
 		A53818092066B11F00B4EF4B /* ColoredVKImageProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = A51D536B1F769DB600F6952A /* ColoredVKImageProcessor.h */; };
 		A538180A2066B11F00B4EF4B /* ColoredVKImageProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = A51D536C1F769DB600F6952A /* ColoredVKImageProcessor.m */; };
 		A53818172066CBF100B4EF4B /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A53818162066CBF100B4EF4B /* LocalAuthentication.framework */; };
@@ -593,6 +597,8 @@
 		A53104C51EC4D08C003DEB83 /* ColoredVKWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKWindowController.m; sourceTree = "<group>"; };
 		A5363B0B1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIGestureRecognizer+BlocksKit.h"; sourceTree = "<group>"; };
 		A5363B0C1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIGestureRecognizer+BlocksKit.m"; sourceTree = "<group>"; };
+		A5364327207BD5D000030DD7 /* NSObject+ColoredVK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+ColoredVK.h"; sourceTree = "<group>"; };
+		A5364328207BD5D000030DD7 /* NSObject+ColoredVK.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+ColoredVK.m"; sourceTree = "<group>"; };
 		A53817FD20668EBC00B4EF4B /* ColoredVKPasscodeView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKPasscodeView.h; sourceTree = "<group>"; };
 		A53817FE20668EBC00B4EF4B /* ColoredVKPasscodeView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKPasscodeView.m; sourceTree = "<group>"; };
 		A53818032066981E00B4EF4B /* ColoredVKPasscodeButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKPasscodeButton.h; sourceTree = "<group>"; };
@@ -1130,6 +1136,8 @@
 				A58F34121D5A378100838814 /* NSString+ColoredVK.m */,
 				A58F341C1D5A3BBA00838814 /* UIImage+ColoredVK.h */,
 				A58F341D1D5A3BBA00838814 /* UIImage+ColoredVK.m */,
+				A5364327207BD5D000030DD7 /* NSObject+ColoredVK.h */,
+				A5364328207BD5D000030DD7 /* NSObject+ColoredVK.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -1269,6 +1277,7 @@
 				A5903F92201DDD5300951C53 /* LHProgressHUD.h in Headers */,
 				A50D222E1DB16572007F195C /* NSDate+DateTools.h in Headers */,
 				A5CC382E20401698005A3AB0 /* VKMethods.h in Headers */,
+				A5364329207BD5D000030DD7 /* NSObject+ColoredVK.h in Headers */,
 				A558E5042052C33200F10FBB /* ColoredVKApplicationModel.h in Headers */,
 				A528D8841DE9FCAF00B299C1 /* ColoredVKMainController.h in Headers */,
 				A5903F90201DDD5300951C53 /* LHAcvitityIndicator.h in Headers */,
@@ -1317,6 +1326,7 @@
 				A576D1C91DC6222C0039884F /* PSTableCell+ColoredVK.h in Headers */,
 				A54E41F61EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */,
 				A510E7D61EF99CE9001D6798 /* ColoredVKSimpleAlertController.h in Headers */,
+				A536432A207BD5D000030DD7 /* NSObject+ColoredVK.h in Headers */,
 				A55D20A52033406C00C43454 /* ColoredVKCard.h in Headers */,
 				A57B56EF20553F930097CF9D /* ColoredVKCellBackgroundView.h in Headers */,
 				A50883A81FFA48BC00C05E2A /* ColoredVKUserModel.h in Headers */,
@@ -1896,6 +1906,7 @@
 				A5D979681DAEB87900607F06 /* UIColor+ColoredVK.m in Sources */,
 				A5B607CE1F0943C4003529AF /* ColoredVKUpdatesController.m in Sources */,
 				A5E1E08120656BA300709696 /* AudioSwizzle.m in Sources */,
+				A536432B207BD5D000030DD7 /* NSObject+ColoredVK.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1946,6 +1957,7 @@
 				A50177D4201F936000032A8D /* ColoredVKNavigationController.m in Sources */,
 				A55D20A020333DD200C43454 /* ColoredVKCollectionCardCell.m in Sources */,
 				A5A859731EF8110200C6E1EA /* ColoredVKColorPreview.m in Sources */,
+				A536432C207BD5D000030DD7 /* NSObject+ColoredVK.m in Sources */,
 				A51D53701F769E3B00F6952A /* ColoredVKImageProcessor.m in Sources */,
 				A576D1BE1DC6220C0039884F /* LHProgressHUD.m in Sources */,
 				A54D2E0A2021EA44005F95E1 /* ColoredVKPassResetController.m in Sources */,
@@ -2114,7 +2126,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.8;
+				APP_VERSION = 4.4.9;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2188,7 +2200,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.daniilpashin.coloredvk2;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -2258,7 +2270,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.8;
+				APP_VERSION = 4.4.9;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2331,7 +2343,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.daniilpashin.coloredvk2;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -2461,7 +2473,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.8;
+				APP_VERSION = 4.4.9;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2535,7 +2547,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.daniilpashin.coloredvk2;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -2605,7 +2617,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.8;
+				APP_VERSION = 4.4.9;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2713,7 +2725,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.8;
+				APP_VERSION = 4.4.9;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2786,7 +2798,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.daniilpashin.coloredvk2;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;

@@ -12,7 +12,7 @@
 
 @implementation NSString (ColoredVK)
 
-- (UIColor *)colorValue
+- (UIColor *)cvk_colorValue
 {
     NSArray *components = [[self stringByReplacingOccurrencesOfString:@" " withString:@""] componentsSeparatedByString:@","];
     if (components.count > 0)
@@ -22,7 +22,7 @@
     return [UIColor blackColor];
 }
 
-- (UIColor *)rgbColorValue
+- (UIColor *)cvk_rgbColorValue
 {
     NSArray *components = [[self stringByReplacingOccurrencesOfString:@" " withString:@""] componentsSeparatedByString:@","];
     if (components.count > 0)
@@ -32,7 +32,7 @@
     return [UIColor blackColor];
 }
 
-- (UIColor *)hexColorValue 
+- (UIColor *)cvk_hexColorValue 
 {
     NSString *hexString = self.copy;
     if (![hexString hasPrefix:@"#"]) hexString = [@"#" stringByAppendingString:hexString];
@@ -43,7 +43,7 @@
     return  [UIColor colorWithRed:red/255.0f green:green/255.0f blue:blue/255.0f alpha:1.0f];
 }
 
-- (BOOL)hexColor
+- (BOOL)cvk_hexColor
 {
     NSString *expression = @"(?:#)?(?:[0-9A-Fa-f]{2}){3}";
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", expression];
