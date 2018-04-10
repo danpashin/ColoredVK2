@@ -891,3 +891,6 @@
 @interface _TtC3vkm17MessageController : UIViewController
 @end
 
+@interface BKPasscodeViewController : UIViewController
+@end
+

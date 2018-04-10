@@ -64,8 +64,7 @@ CHDeclareMethod(1, void, UINavigationBar, setBarTintColor, UIColor*, barTintColo
             barTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
         }
         else if (enabledBarImage && self.tag != 26) {
-            if (cvkMainController.navBarImageView)  barTintColor = [UIColor colorWithPatternImage:cvkMainController.navBarImageView.imageView.image];
-            else                                    barTintColor = barBackgroundColor;
+            barTintColor = cvkMainController.navBarImageView ? [UIColor colorWithPatternImage:cvkMainController.navBarImageView.imageView.image] : barBackgroundColor;
         }
         else if (enabledBarColor && self.tag != 26) {
             barTintColor = barBackgroundColor;

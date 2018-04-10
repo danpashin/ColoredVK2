@@ -45,7 +45,7 @@
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
             ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
-            NSInteger themeType = [self.cachedPrefs[@"nightThemeType"] integerValue];
+            NSInteger themeType = self.cachedPrefs[@"nightThemeType"] ? [self.cachedPrefs[@"nightThemeType"] integerValue] : -1;
             [nightThemeColorScheme updateForType:themeType];
             
             BOOL vkApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
@@ -123,7 +123,7 @@
     
     ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
     
-    NSInteger themeType = [self.cachedPrefs[@"nightThemeType"] integerValue];
+    NSInteger themeType = self.cachedPrefs[@"nightThemeType"] ? [self.cachedPrefs[@"nightThemeType"] integerValue] : -1;
     [nightThemeColorScheme updateForType:themeType];
     nightThemeColorScheme.enabled = ((themeType != -1) && [self.cachedPrefs[@"enabled"] boolValue]);
     

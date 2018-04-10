@@ -315,23 +315,25 @@ CHDeclareMethod(0, void, ChatController, viewDidLoad)
         }
     }
     
-    UIView *view = self.view;
-    if ([self respondsToSelector:@selector(tableView)])
-        view = self.tableView;
+    if (!enabled || !enabledMessagesImage)
+        return;
+    
+    BOOL isTableView = [self respondsToSelector:@selector(tableView)];
+    UIView *view = isTableView ? self.tableView : self.view;
     
     ColoredVKWallpaperView *wallView = [[ColoredVKWallpaperView alloc] initWithFrame:view.frame imageName:@"messagesBackgroundImage" 
                                                                             blackout:chatImageBlackout enableParallax:useMessagesParallax 
                                                                       blurBackground:messagesUseBackgroundBlur];
     wallView.flip = (compareResult == ColoredVKVersionCompareLess);
     
-    if ([self respondsToSelector:@selector(tableView)]) {
+    if (isTableView) {
         if ([self respondsToSelector:@selector(rptr)])
             self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
         
-        if (self.tableView.backgroundView.tag != 23)
-            self.tableView.backgroundView = wallView;
+        if (((UITableView *)view).backgroundView.tag != 23)
+            ((UITableView *)view).backgroundView = wallView;
     } else {
-        [wallView addToBack:self.view animated:NO];
+        [wallView addToBack:view animated:NO];
     }
 }
 

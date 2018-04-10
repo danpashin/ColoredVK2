@@ -26,7 +26,7 @@
 {
     self = [super init];
     if (self) {
-        _type = CVKNightThemeTypeDarkBlue;
+        _type = CVKNightThemeTypeDisabled;
         [self updateForType:self.type];
     }
     return self;

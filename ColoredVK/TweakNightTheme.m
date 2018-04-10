@@ -1308,3 +1308,13 @@ CHDeclareMethod(1, void, _TtC3vkm17MessageController, viewWillAppear, BOOL, anim
         self.view.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
 }
+
+CHDeclareClass(BKPasscodeViewController);
+CHDeclareMethod(1, void, BKPasscodeViewController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, BKPasscodeViewController, viewWillAppear, animated);
+    
+    if (enabled && enableNightTheme) {
+        self.view.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+}
