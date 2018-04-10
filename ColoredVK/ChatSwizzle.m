@@ -259,8 +259,7 @@ CHDeclareMethod(1, void, ChatController, viewWillAppear, BOOL, animated)
     if (enableNightTheme) {
         if ([self.inputPanel respondsToSelector:@selector(pushToTalkCoverView)])
             self.inputPanel.pushToTalkCoverView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             self.inputPanel.layer.borderColor = cvkMainController.nightThemeScheme.backgroundColor.CGColor;
         });
     }
@@ -297,11 +296,12 @@ CHDeclareMethod(0, void, ChatController, viewDidLoad)
     if (![self isKindOfClass:NSClassFromString(@"ChatController")] || !enabled || (enabled && enableNightTheme))
         return;
     
+    ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.5"];
     if (hideMessagesNavBarItems) {
         self.navigationItem.titleView.hidden = YES;
         if ([self respondsToSelector:@selector(headerImage)])
             self.headerImage.hidden = YES;
-        else if ([[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.5"] >= ColoredVKVersionCompareEqual) {
+        else if (compareResult >= ColoredVKVersionCompareEqual) {
             UIBarButtonItem *rightBarItem = self.navigationItem.rightBarButtonItem;
             if ([rightBarItem.customView isKindOfClass:[UIButton class]]) {
                 UIButton *button = (UIButton *)rightBarItem.customView;
@@ -322,7 +322,7 @@ CHDeclareMethod(0, void, ChatController, viewDidLoad)
     ColoredVKWallpaperView *wallView = [[ColoredVKWallpaperView alloc] initWithFrame:view.frame imageName:@"messagesBackgroundImage" 
                                                                             blackout:chatImageBlackout enableParallax:useMessagesParallax 
                                                                       blurBackground:messagesUseBackgroundBlur];
-    wallView.flip = YES;
+    wallView.flip = (compareResult == ColoredVKVersionCompareLess);
     
     if ([self respondsToSelector:@selector(tableView)]) {
         if ([self respondsToSelector:@selector(rptr)])

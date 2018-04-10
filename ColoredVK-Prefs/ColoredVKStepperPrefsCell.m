@@ -50,9 +50,6 @@
         POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
     else
         POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
-    
-    if ([self.specifier.identifier isEqualToString:@"appCornerRadius"])
-        POST_CORE_NOTIFICATION(kPackageNotificationUpdateAppCorners);
 }
 
 @end

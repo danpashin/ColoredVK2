@@ -293,13 +293,18 @@ const NSTimeInterval ANIMATION_DURANTION = 0.2;
 
 - (void)removeFromSuperview
 {
-    if ([self.superview isKindOfClass:NSClassFromString(@"_UIBarBackground")]) {
-        for (UIView *subview in self.superview.subviews) {
-            if ([subview isKindOfClass:[UIVisualEffectView class]]) subview.hidden = NO;
-        }
-    }
+    if (!self.superview)
+        return;
     
-    [super removeFromSuperview];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([self.superview isKindOfClass:NSClassFromString(@"_UIBarBackground")]) {
+            for (UIView *subview in self.superview.subviews) {
+                if ([subview isKindOfClass:[UIVisualEffectView class]]) subview.hidden = NO;
+            }
+        }
+    });
+    
+    [super removeFromSuperview]; 
 }
 
 - (NSString *)description

@@ -329,7 +329,6 @@
         if ([specifier.identifier isEqualToString:@"enableTweakSwitch"]) {
             [self updateNightTheme];
             POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
-            POST_CORE_NOTIFICATION(kPackageNotificationUpdateAppCorners);
         }
     }];
 }

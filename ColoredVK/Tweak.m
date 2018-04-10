@@ -1166,7 +1166,6 @@ CHConstructor
         
         REGISTER_CORE_OBSERVER(reloadPrefsNotify, kPackageNotificationReloadPrefs);
         REGISTER_CORE_OBSERVER(reloadMenuNotify, kPackageNotificationReloadMenu);
-        REGISTER_CORE_OBSERVER(updateCornerRadius, kPackageNotificationUpdateAppCorners);
         REGISTER_CORE_OBSERVER(updateNightTheme, kPackageNotificationUpdateNightTheme);
     }
 }

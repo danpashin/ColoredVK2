@@ -61,7 +61,7 @@
 
 static NSString * _Nullable const kPackageIdentifier = @"com.daniilpashin.coloredvk2";
 static NSString * _Nullable const kPackageName = @"ColoredVK 2";
-static NSString * _Nullable const kPackageVersion = @"4.4.9";
+static NSString * _Nullable const kPackageVersion = @"4.4.10";
 
 static NSString * _Nullable const kPackageAPIURL = @"https://api.danpashin.ru/v1.2";
 static NSString * _Nullable const kPackageDevLink = @"https://vk.com/danpashin";
@@ -74,7 +74,6 @@ static NSString * _Nullable const kPackagePurchaseLink = @"https://danpashin.ru/
 static NSString * _Nullable const kPackageNotificationReloadPrefs = @"ru.danpashin.coloredvk2.prefs.changed";
 static NSString * _Nullable const kPackageNotificationReloadPrefsMenu = @"ru.danpashin.coloredvk2.reload.prefs.menu";
 static NSString * _Nullable const kPackageNotificationReloadMenu = @"ru.danpashin.coloredvk2.reload.menu";
-static NSString * _Nullable const kPackageNotificationUpdateAppCorners = @"ru.danpashin.coloredvk2.update.corners";
 static NSString * _Nullable const kPackageNotificationUpdateNightTheme = @"ru.danpashin.coloredvk2.night.theme";
 
 static NSString * _Nullable const kPackageNotificationUpdateImage = @"ru.danpashin.coloredvk2.image.update";

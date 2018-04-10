@@ -453,14 +453,16 @@ CHDeclareMethod(0, void, Node5CollectionViewCell, layoutSubviews)
 }
 
 CHDeclareClass(InputPanelView);
-CHDeclareMethod(0, void, InputPanelView, layoutSubviews)
+CHDeclareMethod(0, void, InputPanelView, didMoveToSuperview)
 {
-    CHSuper(0, InputPanelView, layoutSubviews);
+    CHSuper(0, InputPanelView, didMoveToSuperview);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"InputPanelView")]) {
-        self.overlay.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
-        self.overlay.layer.borderColor = cvkMainController.nightThemeScheme.backgroundColor.CGColor;
-    }
+    [NSObject cvk_runVoidBlockOnMainThread:^{
+        if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"InputPanelView")]) {
+            self.overlay.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+            self.overlay.layer.borderColor = cvkMainController.nightThemeScheme.backgroundColor.CGColor;
+        }
+    }];
 }
 
 CHDeclareClass(AdminInputPanelView);
@@ -909,10 +911,21 @@ CHDeclareClass(FreshNewsButton);
 CHDeclareMethod(1, id, FreshNewsButton, initWithFrame, CGRect, frame)
 {
     FreshNewsButton *button = CHSuper(1, FreshNewsButton, initWithFrame, frame);
-    if (enabled && enableNightTheme) {
-        [button.button setBackgroundImage:[[button.button backgroundImageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
-        button.button.imageView.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
-    }
+    objc_setAssociatedObject(button.button, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+    
+    __weak typeof(button) weakButton = button;
+    [[NSNotificationCenter defaultCenter] addObserverForName:@"ru.danpashin.prefs.reloaded" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+        if (!weakButton)
+            return;
+        
+        if (enabled && enableNightTheme) {
+            UIImage *newBackground = [[weakButton.button backgroundImageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            [weakButton.button setBackgroundImage:newBackground forState:UIControlStateNormal];
+            weakButton.button.imageView.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+        } else {
+            weakButton.button.imageView.tintColor = kVKMainColor;
+        }
+    }];
     
     return button;
 }

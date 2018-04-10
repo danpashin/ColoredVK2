@@ -6,7 +6,7 @@
 //
 
 @class NewDialogCell, VKSearchBar;
-@class VKMBrowserController, VKMTableController;
+@class VKMBrowserController, VKMTableController, DialogsSearchResultsController;
 
 void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);

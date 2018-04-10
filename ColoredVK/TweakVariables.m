@@ -11,6 +11,7 @@
 #import "ColoredVKMainController.h"
 #import "ColoredVKNewInstaller.h"
 #import "NSObject+ColoredVK.h"
+#import "TweakFunctions.h"
 
 @interface UIStatusBar : UIView
 @property (nonatomic, strong) UIColor *foregroundColor;
@@ -200,36 +201,18 @@ ColoredVKMainController *cvkMainController;
 void reloadPrefs(void(^completion)(void))
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
         NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
         
+        showFastDownloadButton = prefs[@"showFastDownloadButton"] ? [prefs[@"showFastDownloadButton"] boolValue] : YES;
+        showMenuCell = prefs[@"showMenuCell"] ? [prefs[@"showMenuCell"] boolValue] : YES;
         enabled = [prefs[@"enabled"] boolValue];
         hideMenuSearch = [prefs[@"hideMenuSearch"] boolValue];
         enabledMenuImage = [prefs[@"enabledMenuImage"] boolValue];
         menuImageBlackout = [prefs[@"menuImageBlackout"] floatValue];
         useMenuParallax = [prefs[@"useMenuParallax"] boolValue];
         useMessagesParallax = [prefs[@"useMessagesParallax"] boolValue];
-        barForegroundColor = [UIColor cvk_savedColorForIdentifier:@"BarForegroundColor" fromPrefs:prefs];
         showBar = [prefs[@"showBar"] boolValue];
-        SBBackgroundColor = [UIColor cvk_savedColorForIdentifier:@"SBBackgroundColor" fromPrefs:prefs];
-        SBForegroundColor = [UIColor cvk_savedColorForIdentifier:@"SBForegroundColor" fromPrefs:prefs];
-        
         shouldCheckUpdates = prefs[@"checkUpdates"]?[prefs[@"checkUpdates"] boolValue]:YES;
-        
-        [NSObject cvk_runVoidBlockOnMainThread:^{
-            UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
-            if (statusBar != nil) {
-                if (enabled && enableNightTheme) {
-                    statusBar.foregroundColor = [UIColor whiteColor];
-                } else if (enabled && changeSBColors) {
-                    statusBar.foregroundColor = SBForegroundColor;
-                    statusBar.backgroundColor = SBBackgroundColor;
-                } else {
-                    statusBar.foregroundColor = nil;
-                    statusBar.backgroundColor = nil;
-                }
-            }
-        }];
         
         enabledBarImage = [prefs[@"enabledBarImage"] boolValue];
         enabledBarColor = [prefs[@"enabledBarColor"] boolValue];
@@ -274,17 +257,31 @@ void reloadPrefs(void(^completion)(void))
         messagesInputBackColor =    [UIColor cvk_savedColorForIdentifier:@"messagesInputBackColor"      fromPrefs:prefs];
         dialogsUnreadColor =        [[UIColor cvk_savedColorForIdentifier:@"dialogsUnreadColor"         fromPrefs:prefs] colorWithAlphaComponent:0.3f];
         messageUnreadColor =        [[UIColor cvk_savedColorForIdentifier:@"messageReadColor"           fromPrefs:prefs] colorWithAlphaComponent:0.2f];
+        SBBackgroundColor =         [UIColor cvk_savedColorForIdentifier:@"SBBackgroundColor"           fromPrefs:prefs];
+        SBForegroundColor =         [UIColor cvk_savedColorForIdentifier:@"SBForegroundColor"           fromPrefs:prefs];
+        barForegroundColor =        [UIColor cvk_savedColorForIdentifier:@"BarForegroundColor"          fromPrefs:prefs];
         
         ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
         if (!hideMenuSeparators && !prefs[@"MenuSeparatorColor"] && (compareResult == ColoredVKVersionCompareMore)) {
             menuSeparatorColor  = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
         }
         
-        showFastDownloadButton = prefs[@"showFastDownloadButton"] ? [prefs[@"showFastDownloadButton"] boolValue] : YES;
-        showMenuCell = prefs[@"showMenuCell"] ? [prefs[@"showMenuCell"] boolValue] : YES;
+        [NSObject cvk_runVoidBlockOnMainThread:^{
+            UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
+            if (statusBar != nil) {
+                if (enabled && enableNightTheme) {
+                    statusBar.foregroundColor = [UIColor whiteColor];
+                } else if (enabled && changeSBColors) {
+                    statusBar.foregroundColor = SBForegroundColor;
+                    statusBar.backgroundColor = SBBackgroundColor;
+                } else {
+                    statusBar.foregroundColor = nil;
+                    statusBar.backgroundColor = nil;
+                }
+            }
+        }];
         
         if (prefs && premiumEnabled) {
-            
             enableNightTheme = prefs[@"nightThemeType"] ? ([prefs[@"nightThemeType"] integerValue] != -1) : NO;
             [cvkMainController.nightThemeScheme updateForType:[prefs[@"nightThemeType"] integerValue]];
             cvkMainController.nightThemeScheme.enabled = (enabled && enableNightTheme);
@@ -355,7 +352,7 @@ void reloadPrefs(void(^completion)(void))
             
             appCornerRadius = [prefs[@"appCornerRadius"] floatValue];
             
-            
+
             changeMessagesListTextColor = [prefs[@"changeMessagesListTextColor"] boolValue];
             changeGroupsListTextColor = [prefs[@"changeGroupsListTextColor"] boolValue];
             changeAudiosTextColor = [prefs[@"changeAudiosTextColor"] boolValue];
@@ -375,33 +372,37 @@ void reloadPrefs(void(^completion)(void))
             settingsExtraBlurStyle = prefs[@"settingsExtraBlurStyle"]?[prefs[@"settingsExtraBlurStyle"] integerValue]:UIBlurEffectStyleLight;
             
             
-            switchesTintColor =          [UIColor cvk_savedColorForIdentifier:@"switchesTintColor"          fromPrefs:prefs];
-            switchesOnTintColor =        [UIColor cvk_savedColorForIdentifier:@"switchesOnTintColor"        fromPrefs:prefs];
+            switchesTintColor =          [UIColor cvk_savedColorForIdentifier:@"switchesTintColor"      fromPrefs:prefs];
+            switchesOnTintColor =        [UIColor cvk_savedColorForIdentifier:@"switchesOnTintColor"    fromPrefs:prefs];
             
-            messagesListTextColor =      [UIColor cvk_savedColorForIdentifier:@"messagesListTextColor"      fromPrefs:prefs];
-            groupsListTextColor =        [UIColor cvk_savedColorForIdentifier:@"groupsListTextColor"        fromPrefs:prefs];
-            audiosTextColor =            [UIColor cvk_savedColorForIdentifier:@"audiosTextColor"            fromPrefs:prefs];
-            friendsTextColor =           [UIColor cvk_savedColorForIdentifier:@"friendsTextColor"           fromPrefs:prefs];
-            videosTextColor =            [UIColor cvk_savedColorForIdentifier:@"videosTextColor"            fromPrefs:prefs];
-            settingsTextColor =          [UIColor cvk_savedColorForIdentifier:@"settingsTextColor"          fromPrefs:prefs];
-            settingsExtraTextColor =     [UIColor cvk_savedColorForIdentifier:@"settingsExtraTextColor"     fromPrefs:prefs];
+            messagesListTextColor =      [UIColor cvk_savedColorForIdentifier:@"messagesListTextColor"  fromPrefs:prefs];
+            groupsListTextColor =        [UIColor cvk_savedColorForIdentifier:@"groupsListTextColor"    fromPrefs:prefs];
+            audiosTextColor =            [UIColor cvk_savedColorForIdentifier:@"audiosTextColor"        fromPrefs:prefs];
+            friendsTextColor =           [UIColor cvk_savedColorForIdentifier:@"friendsTextColor"       fromPrefs:prefs];
+            videosTextColor =            [UIColor cvk_savedColorForIdentifier:@"videosTextColor"        fromPrefs:prefs];
+            settingsTextColor =          [UIColor cvk_savedColorForIdentifier:@"settingsTextColor"      fromPrefs:prefs];
+            settingsExtraTextColor =     [UIColor cvk_savedColorForIdentifier:@"settingsExtraTextColor" fromPrefs:prefs];
             
-            messagesListBlurTone =      [[UIColor cvk_savedColorForIdentifier:@"messagesListBlurTone"       fromPrefs:prefs] colorWithAlphaComponent:0.3f];
-            groupsListBlurTone =        [[UIColor cvk_savedColorForIdentifier:@"groupsListBlurTone"         fromPrefs:prefs] colorWithAlphaComponent:0.3f];
-            audiosBlurTone =            [[UIColor cvk_savedColorForIdentifier:@"audiosBlurTone"             fromPrefs:prefs] colorWithAlphaComponent:0.3f];
-            friendsBlurTone =           [[UIColor cvk_savedColorForIdentifier:@"friendsBlurTone"            fromPrefs:prefs] colorWithAlphaComponent:0.3f];
-            videosBlurTone =            [[UIColor cvk_savedColorForIdentifier:@"videosBlurTone"             fromPrefs:prefs] colorWithAlphaComponent:0.3f];
-            settingsBlurTone =          [[UIColor cvk_savedColorForIdentifier:@"settingsBlurTone"           fromPrefs:prefs] colorWithAlphaComponent:0.3f];
-            settingsExtraBlurTone =     [[UIColor cvk_savedColorForIdentifier:@"settingsExtraBlurTone"      fromPrefs:prefs] colorWithAlphaComponent:0.3f];
+            messagesListBlurTone =      [[UIColor cvk_savedColorForIdentifier:@"messagesListBlurTone"   fromPrefs:prefs] colorWithAlphaComponent:0.3f];
+            groupsListBlurTone =        [[UIColor cvk_savedColorForIdentifier:@"groupsListBlurTone"     fromPrefs:prefs] colorWithAlphaComponent:0.3f];
+            audiosBlurTone =            [[UIColor cvk_savedColorForIdentifier:@"audiosBlurTone"         fromPrefs:prefs] colorWithAlphaComponent:0.3f];
+            friendsBlurTone =           [[UIColor cvk_savedColorForIdentifier:@"friendsBlurTone"        fromPrefs:prefs] colorWithAlphaComponent:0.3f];
+            videosBlurTone =            [[UIColor cvk_savedColorForIdentifier:@"videosBlurTone"         fromPrefs:prefs] colorWithAlphaComponent:0.3f];
+            settingsBlurTone =          [[UIColor cvk_savedColorForIdentifier:@"settingsBlurTone"       fromPrefs:prefs] colorWithAlphaComponent:0.3f];
+            settingsExtraBlurTone =     [[UIColor cvk_savedColorForIdentifier:@"settingsExtraBlurTone"  fromPrefs:prefs] colorWithAlphaComponent:0.3f];
             
                 //        customFontName = prefs[@"customFontName"] ? prefs[@"customFontName"] : @".SFUIText";
         }
+        
         [NSObject cvk_runVoidBlockOnMainThread:^{
             if (cvkMainController.navBarImageView)
                 [cvkMainController.navBarImageView updateViewWithBlackout:navbarImageBlackout];
             
             if (completion)
                 completion();
+            
+            actionChangeCornerRadius();
+            POST_NOTIFICATION(@"ru.danpashin.prefs.reloaded");
         }];
     });
 }

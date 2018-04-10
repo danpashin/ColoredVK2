@@ -41,7 +41,6 @@ NSString *__deviceModel;
 NSString *__udid;
 
 BOOL deviceIsJailed;
-
 BOOL installerShouldOpenPrefs;
 
 
@@ -69,9 +68,6 @@ BOOL installerShouldOpenPrefs;
         struct utsname systemInfo;
         uname(&systemInfo);
         __deviceModel = @(systemInfo.machine);
-        
-        deviceIsJailed = NO;
-        installerShouldOpenPrefs = NO;
         
         [self createFolders];
         

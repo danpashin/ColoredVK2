@@ -1,5 +1,5 @@
 //
-//  AppLogic.m
+//  SystemSwizzle.m
 //  ColoredVK
 //
 //  Created by Даниил on 23.03.18.

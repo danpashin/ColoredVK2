@@ -75,7 +75,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         switchView.on = enabled;
         switchView.onTintColor = [UIColor cvk_defaultColorForIdentifier:@"switchesOnTintColor"];
         [switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventValueChanged];
-        objc_setAssociatedObject(self, (__bridge const void *)(switchViewKey), switchView, OBJC_ASSOCIATION_ASSIGN);
+        objc_setAssociatedObject(self, (__bridge const void *)(switchViewKey), switchView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         [cell.contentView addSubview:switchView];
         
         if ([cell respondsToSelector:@selector(select)]) {
@@ -149,7 +149,6 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
             
             POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
             POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
-            POST_CORE_NOTIFICATION(kPackageNotificationUpdateAppCorners);
         });
     }
 }

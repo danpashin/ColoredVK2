@@ -9,7 +9,7 @@
 
 void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
 {
-    void (^setBlurBlock)(void) = ^{
+    [NSObject cvk_runVoidBlockOnMainThread:^{
         if (set && !UIAccessibilityIsReduceTransparencyEnabled()) {
             UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:style]];
             blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -99,51 +99,50 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
                 if ([bar.subviews containsObject:[bar viewWithTag:10]]) [[bar viewWithTag:10] removeFromSuperview];
             }
         }
-    };
-    
-    [NSObject cvk_runVoidBlockOnMainThread:setBlurBlock];
+    }];
 }
 
 void setupTranslucence(UIView *view, UIColor *backColor, BOOL remove)
 {
-    if ([view respondsToSelector:@selector(_backgroundView)]) {
-        void (^block)(void) =  ^{
-            UIView *backView = objc_msgSend(view, @selector(_backgroundView));
-            
-            if (remove) {
-                if ([backView.subviews containsObject:[backView viewWithTag:4545]]) {
-                    [[backView viewWithTag:4545] removeFromSuperview];
-                    
-                    for (UIView *subview in backView.subviews) {
-                        if ([subview isKindOfClass:[UIVisualEffectView class]]) {
-                            subview.alpha = 0.0f;
-                            subview.hidden = NO;
-                            [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                                subview.alpha = 1.0f;
-                            } completion:nil];
-                        }
-                    }
-                }
-                return;
-            }
-            if (![backView.subviews containsObject:[backView viewWithTag:4545]]) {
-                UIView *newBackView = [[UIView alloc] init];
-                newBackView.tag = 4545;
-                newBackView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-                newBackView.backgroundColor = backColor;
-                [backView addSubview:newBackView];
+    if (![view respondsToSelector:@selector(_backgroundView)])
+        return;
+    
+    [NSObject cvk_runVoidBlockOnMainThread:^{
+        UIView *backView = objc_msgSend(view, @selector(_backgroundView));
+        
+        if (remove) {
+            if ([backView.subviews containsObject:[backView viewWithTag:4545]]) {
+                [[backView viewWithTag:4545] removeFromSuperview];
                 
                 for (UIView *subview in backView.subviews) {
                     if ([subview isKindOfClass:[UIVisualEffectView class]]) {
-                        newBackView.frame = subview.frame;
-                        subview.hidden = YES;
+                        subview.alpha = 0.0f;
+                        subview.hidden = NO;
+                        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                            subview.alpha = 1.0f;
+                        } completion:nil];
+                        return;
                     }
                 }
             }
-        };
-        
-        [NSObject cvk_runVoidBlockOnMainThread:block];
-    }
+        } else if (![backView.subviews containsObject:[backView viewWithTag:4545]]) {
+            UIView *newBackView = [[UIView alloc] initWithFrame:backView.bounds];
+            newBackView.tag = 4545;
+            newBackView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            newBackView.backgroundColor = backColor;
+            [backView addSubview:newBackView];
+            
+            for (UIView *subview in backView.subviews) {
+                if ([subview isKindOfClass:[UIVisualEffectView class]]) {
+                    if (!CGRectIsEmpty(subview.bounds)) {
+                        newBackView.frame = subview.bounds;
+                        subview.hidden = YES;
+                        return;
+                    }
+                }
+            }
+        }
+    }];
 }
 
 void setToolBar(UIToolbar *toolbar)
@@ -179,7 +178,7 @@ void setToolBar(UIToolbar *toolbar)
                             BOOL btnToExclude = NO;
                             NSMutableArray <NSString *> *btnsWithActionsToExclude = [NSMutableArray arrayWithObject:@"actionToggleEmoji:"];
                             ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
-                            if (compareResult >= 0) {
+                            if (compareResult >= ColoredVKVersionCompareEqual) {
                                 [btnsWithActionsToExclude addObject:@"send:"];
                                 [btnsWithActionsToExclude addObject:@"actionSendInline:"];
                             }
@@ -378,23 +377,25 @@ void setupSearchController(UISearchDisplayController *controller, BOOL reset)
 
 void resetUISearchBar(UISearchBar *searchBar)
 {
-    if (![searchBar isKindOfClass:[UISearchBar class]])
-        return;
-    
-    if (enabled && enableNightTheme)
-        searchBar.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-    else
-        searchBar.backgroundColor = kMenuCellBackgroundColor;
-    
-    UIView *barBackground = searchBar.subviews[0].subviews[0];
-    if ([barBackground.subviews containsObject: [barBackground viewWithTag:102] ]) [[barBackground viewWithTag:102] removeFromSuperview];
-    
-    UIView *subviews = searchBar.subviews.lastObject;
-    UITextField *barTextField = subviews.subviews[1];
-    if ([barTextField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-        barTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:barTextField.placeholder
-                                                                             attributes:@{NSForegroundColorAttributeName:[UIColor colorWithRed:162/255.0f green:168/255.0f blue:173/255.0f alpha:1]}];
-    }
+    [NSObject cvk_runVoidBlockOnMainThread:^{
+        if (![searchBar isKindOfClass:[UISearchBar class]])
+            return;
+        
+        if (enabled && enableNightTheme)
+            searchBar.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        else
+            searchBar.backgroundColor = kMenuCellBackgroundColor;
+        
+        UIView *barBackground = searchBar.subviews[0].subviews[0];
+        if ([barBackground.subviews containsObject: [barBackground viewWithTag:102] ]) [[barBackground viewWithTag:102] removeFromSuperview];
+        
+        UIView *subviews = searchBar.subviews.lastObject;
+        UITextField *barTextField = subviews.subviews[1];
+        if ([barTextField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+            barTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:barTextField.placeholder
+                                                                                 attributes:@{NSForegroundColorAttributeName:[UIColor colorWithRed:162/255.0f green:168/255.0f blue:173/255.0f alpha:1]}];
+        }
+    }];
 }
 
 void performInitialCellSetup(UITableViewCell *cell)
@@ -409,7 +410,7 @@ void performInitialCellSetup(UITableViewCell *cell)
 
 void resetNavigationBar(UINavigationBar *navBar)
 {
-    void (^setupBlock)(void) = ^{
+    [NSObject cvk_runVoidBlockOnMainThread:^{
         setBlur(navBar, NO, nil, 0);
         navBar._backgroundView.alpha = 1.0;
         [cvkMainController.navBarImageView removeFromSuperview];
@@ -417,9 +418,7 @@ void resetNavigationBar(UINavigationBar *navBar)
         for (UIView *subview in navBar._backgroundView.subviews) {
             if ([subview isKindOfClass:[UIVisualEffectView class]]) subview.hidden = NO;
         }
-    };
-    
-    [NSObject cvk_runVoidBlockOnMainThread:setupBlock];
+    }];
 }
 
 void actionChangeCornerRadius()
@@ -457,7 +456,7 @@ void setupUISearchBar(UISearchBar *searchBar)
     if (![searchBar isKindOfClass:[UISearchBar class]])
         return;
     
-    void (^block)(void) = ^{
+    [NSObject cvk_runVoidBlockOnMainThread:^{
         UIView *barBackground = searchBar.subviews[0].subviews[0];
         if (menuSelectionStyle == CVKCellSelectionStyleBlurred) {
             searchBar.backgroundColor = [UIColor clearColor];
@@ -476,9 +475,7 @@ void setupUISearchBar(UISearchBar *searchBar)
             barTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:barTextField.placeholder  
                                                                                  attributes:@{NSForegroundColorAttributeName:changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1 alpha:0.5f]}];
         }
-    };
-    
-    [NSObject cvk_runVoidBlockOnMainThread:block];
+    }];
 }
 
 void setupTabbar()
@@ -695,7 +692,7 @@ void setupNightSeparatorForView(UIView *view)
 {
     if ([CLASS_NAME(view) isEqualToString:@"UIView"]) {
         if (enabled && enableNightTheme) {            
-            [NSObject cvk_runVoidBlockOnMainThread:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
                 if ([cvkMainController.vkMainController respondsToSelector:@selector(tabBarShadowView)]) {
                     if ([view isEqual:cvkMainController.vkMainController.tabBarShadowView])
                         return;
@@ -710,7 +707,7 @@ void setupNightSeparatorForView(UIView *view)
                     view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
                 else
                     view.backgroundColor = cachedBackgroundColor;
-            }];
+            });
         }
     }
 }
