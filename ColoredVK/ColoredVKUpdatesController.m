@@ -13,96 +13,84 @@
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKAlertController.h"
 #import "ColoredVKNetwork.h"
+#import "ColoredVKUINotification.h"
+
+@interface ColoredVKUpdatesController ()
+@property (strong, nonatomic) NSString *version;
+@property (strong, nonatomic) NSString *changelog;
+@property (strong, nonatomic) NSString *downloadURL;
+@end
 
 @implementation ColoredVKUpdatesController
 
-NSString *const apiErrorKey = @"error";
-NSString *const apiChangelogKey = @"changelog";
-NSString *const apiNewVersionKey = @"version";
-NSString *const apiDownloadURLKey = @"url";
-
-NSString *const prefsLastCheckKey = @"lastCheckForUpdates";
-NSString *const prefsUpdatesCheckIntervalKey = @"updatesInterval";
-NSString *const prefsCheckUpdatesKey = @"checkUpdates";
-
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        _checkedAutomatically = NO;
-    }
-    return self;
-}
+static NSString *const kCVKUpdateLastCheck = @"lastCheckForUpdates";
+static NSString *const kCVKUpdateTimeFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
 
 - (void)checkUpdates
 {
-    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-    NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php", kPackageAPIURL];
-    NSMutableDictionary *parameters = [@{@"userVers": kPackageVersion, @"ios_version":[UIDevice currentDevice].systemVersion, 
-                                         @"vk_version":[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"],
-                                         @"appTeamIdentifier": newInstaller.application.teamIdentifier, @"sellerName": newInstaller.application.sellerName, 
-                                         @"checkedAutomatically":@(self.checkedAutomatically)} mutableCopy];
     
-#ifndef COMPILE_FOR_JAIL
-    parameters[@"getIPA"] = @1;
+#ifdef COMPILE_FOR_JAIL
+    BOOL shouldReceiveIPA = NO;
+#else
+    BOOL shouldReceiveIPA = YES;
 #endif
     
+    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
+    NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php", kPackageAPIURL];
+    NSDictionary *parameters = @{@"userVers": kPackageVersion, @"ios_version":[UIDevice currentDevice].systemVersion, 
+                                 @"vk_version":newInstaller.application.version,
+                                 @"appTeamIdentifier": newInstaller.application.teamIdentifier, @"sellerName": newInstaller.application.sellerName, 
+                                 @"checkedAutomatically":@(self.checkedAutomatically), @"getIPA":@(shouldReceiveIPA)};
+
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
     [network sendJSONRequestWithMethod:@"GET" stringURL:stringURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
-        
-        NSMutableDictionary *tweakPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
-        if (!json[apiErrorKey]) {
-            NSString *newVersion = json[apiNewVersionKey];
-            NSString *skippedVersion = tweakPrefs[@"skippedVersion"];
+        NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+        if (!json[@"error"]) {
+            self.version = json[@"version"];
+            self.changelog = json[@"changelog"];
+            self.downloadURL = json[@"url"];
             
-            if (![skippedVersion isEqualToString:newVersion] || !self.checkedAutomatically) {
-                NSMutableArray <UIAlertAction *> *alertActions = [NSMutableArray array];
-                NSString *updateAlertQuestion = [NSString stringWithFormat:CVKLocalizedString(@"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE"), newVersion, json[apiChangelogKey]];
-                
-                [alertActions addObject:[UIAlertAction actionWithTitle:CVKLocalizedString(@"REMIND_LATER_BUTTON_TITLE") 
-                                                                 style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){}]];
-                
-                [alertActions addObject:[UIAlertAction actionWithTitle:CVKLocalizedString(@"SKIP_THIS_VERSION_BUTTON_TITLE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                    [tweakPrefs setValue:newVersion forKey:@"skippedVersion"];
-                    [tweakPrefs writeToFile:CVK_PREFS_PATH atomically:YES];
-                }]];
-                [alertActions addObject:[UIAlertAction actionWithTitle:CVKLocalizedString(@"UPADTE_BUTTON_TITLE") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                    NSURL *url = [NSURL URLWithString:json[apiDownloadURLKey]];
-                    UIApplication *application = [UIApplication sharedApplication];
-                    if ([application canOpenURL:url]) [application openURL:url];
-                }]];
-                
-                [self showAlertWithMessage:updateAlertQuestion actions:alertActions];
+            if (![prefs[@"skippedVersion"] isEqual:self.version] || !self.checkedAutomatically) {
+                NSString *message = [NSString stringWithFormat:CVKLocalizedString(@"UPDATE_IS_AVAILABLE"), self.version];
+                [ColoredVKUINotification showWithSubtitle:message tapHandler:^{
+                    [self showDetailUpdateInformation];
+                }];
             }
-        } else {
-            if (!self.checkedAutomatically) {
-                UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}];
-                [self showAlertWithMessage:json[apiErrorKey] actions:@[cancelAction]];
-            }
+        } else if (!self.checkedAutomatically) {
+            [ColoredVKUINotification showWithSubtitle:json[@"error"]];
         }
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-        [tweakPrefs setValue:[dateFormatter stringFromDate:[NSDate date]] forKey:prefsLastCheckKey];
-        [tweakPrefs writeToFile:CVK_PREFS_PATH atomically:YES];
+        dateFormatter.dateFormat = kCVKUpdateTimeFormat;
+        prefs[kCVKUpdateLastCheck] = [dateFormatter stringFromDate:[NSDate date]];
+        [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
         
         if (self.checkCompletionHandler)
             self.checkCompletionHandler(self);
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
         if (!self.checkedAutomatically) {
-            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}];
-            [self showAlertWithMessage:error.localizedDescription actions:@[cancelAction]];
+            [ColoredVKUINotification showWithSubtitle:error.localizedDescription];
         }
     }];
 }
 
-- (void)showAlertWithMessage:(NSString *)message actions:(NSArray <UIAlertAction *> *)actions
+- (void)showDetailUpdateInformation
 {
-    if (actions.count == 0)
-        return;
-    
+    NSString *message = [NSString stringWithFormat:CVKLocalizedString(@"UPDATE_IS_AVAILABLE_DETAIL"), self.version, self.changelog];
     ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:message];
-    for (UIAlertAction *action in actions) {
-        [alertController addAction:action];
+    [alertController addCancelActionWithTitle:CVKLocalizedString(@"REMIND_LATER")];
+    
+    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"SKIP_THIS_UPDATE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
+        [prefs setValue:self.version forKey:@"skippedVersion"];
+        [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
+    }]];
+    
+    if (self.downloadURL.length > 0) {
+        [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"UPDATE_NOW") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            NSURL *url = [NSURL URLWithString:self.downloadURL];
+            UIApplication *application = [UIApplication sharedApplication];
+            if ([application canOpenURL:url]) [application openURL:url];
+        }]];
     }
     [alertController present];
 }
@@ -113,15 +101,15 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
     return NO;
 #else
     @autoreleasepool {
-        NSMutableDictionary *tweakPrefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
-        BOOL shouldCheckUpdates = tweakPrefs[prefsCheckUpdatesKey] ? [tweakPrefs[prefsCheckUpdatesKey] boolValue] : YES;
-        NSTimeInterval updatesInterval = tweakPrefs[prefsUpdatesCheckIntervalKey] ? [tweakPrefs[prefsUpdatesCheckIntervalKey] doubleValue] : 1.0;
-        NSString *lastCheckForUpdates = tweakPrefs[prefsLastCheckKey];
+        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+        BOOL shouldCheckUpdates = prefs[@"checkUpdates"] ? [prefs[@"checkUpdates"] boolValue] : YES;
+        NSTimeInterval updatesInterval = prefs[@"updatesInterval"] ? [prefs[@"updatesInterval"] doubleValue] : 1.0;
+        NSString *lastCheckForUpdates = prefs[kCVKUpdateLastCheck];
         BOOL beta = [kPackageVersion containsString:@"beta"];
         
         if (shouldCheckUpdates || beta) {
             NSDateFormatter *dateFormatter = [NSDateFormatter new];
-            dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+            dateFormatter.dateFormat = kCVKUpdateTimeFormat;
             NSInteger daysAgo = [dateFormatter dateFromString:lastCheckForUpdates].daysAgo;
             
             BOOL allDaysPast = beta ? (daysAgo >= 7) : (daysAgo >= updatesInterval);
@@ -136,12 +124,16 @@ NSString *const prefsCheckUpdatesKey = @"checkUpdates";
 
 - (NSString *)localizedLastCheckForUpdates
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    
-    NSDateFormatter *dateFormatter = [NSDateFormatter new];
-    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-    
-    return prefs[prefsLastCheckKey] ? [dateFormatter dateFromString:prefs[prefsLastCheckKey]].timeAgoSinceNow : CVKLocalizedString(@"NEVER");
+    @autoreleasepool {
+        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
+        if (prefs[kCVKUpdateLastCheck]) {
+            NSDateFormatter *dateFormatter = [NSDateFormatter new];
+            dateFormatter.dateFormat = kCVKUpdateTimeFormat;
+            return [dateFormatter dateFromString:prefs[kCVKUpdateLastCheck]].timeAgoSinceNow;
+        }
+        
+        return CVKLocalizedString(@"NEVER");
+    }
 }
 
 @end

@@ -14,11 +14,12 @@
 "CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Can not save image. Try again or contact developer.";
 "DISMISS" = "Dismiss";
 
-"UPGRADE_IS_AVAILABLE_ALERT_MESSAGE" = "A new version is available (%@).\n\nChangelog:\n%@\n\nUpdate?";
-"REMIND_LATER_BUTTON_TITLE" = "Remind later";
-"SKIP_THIS_VERSION_BUTTON_TITLE" = "Skip this version";
-"UPADTE_BUTTON_TITLE" = "Update now";
-"NO_UPDATES_FOUND_BUTTON_TITLE" = "You have the latest version.";
+//  Окно обновлений
+"UPDATE_IS_AVAILABLE" = "Update is available (%@). Tap here for more information.";
+"UPDATE_IS_AVAILABLE_DETAIL" = "Update is available (%@).\n\nChangelog:\n%@\n\nUpdate?";
+"REMIND_LATER" = "Remind later";
+"SKIP_THIS_UPDATE" = "Skip this version";
+"UPDATE_NOW" = "Update now";
 
 "TWEAK_FOOTER_TEXT" = "iOS version: %@\nTweak version: %@\nVK App version: %@";
 "LOADING_TWEAK_FILES_ERROR_MESSAGE" = "Error loading tweak files.\nCheck their availability or contact developer.";
@@ -56,10 +57,9 @@
 
 "CLOSE_APP_FOOTER_TEXT" = "Settings are applied automatically, but for full theme application it is recommended to restart the client.";
 "CLOSE_APP_FOOTER_BUTTON_TEXT" = "Close VK App";
-//"CLOSE" = "Close";
 
 
-    // Восстановление пароля
+// Восстановление пароля
 "ACTION_LOG_IN" = "Log in";
 "COLOREDVK_AUTH" = "Log into ColoredVK 2";
 "FORGOT_PASSWORD" = "Forgot password?";
