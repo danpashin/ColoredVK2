@@ -151,11 +151,11 @@
     PSSpecifier *specifier = [self specifierAtIndexPath:indexPath];
     NSString *fileName = specifier.properties[@"filename"];
     
-    NSString *sureTitle = CVKLocalizedStringInBundle(@"YES_I_AM_SURE", self.cvkBundle);
     NSString *message = [NSString stringWithFormat:CVKLocalizedStringInBundle(@"RESTORE_BACKUP_QUESTION", self.cvkBundle), fileName];
-    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:@"ColoredVK 2" message:message 
-                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:message];
     [alertController addCancelAction];
+    
+    NSString *sureTitle = CVKLocalizedStringInBundle(@"YES_I_AM_SURE", self.cvkBundle);
     [alertController addAction:[UIAlertAction actionWithTitle:sureTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [self.backupsModel restoreSettingsFromFile:fileName];
     }]];

@@ -556,7 +556,8 @@ CHDeclareMethod(1, void, VKMBrowserController, viewWillAppear, BOOL, animated)
             [self.safariButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         }
         else if (enabled && enabledBarColor && !enableNightTheme) {
-            self.headerTitle.textColor = barForegroundColor;
+            if ([self respondsToSelector:@selector(headerTitle)])
+                self.headerTitle.textColor = barForegroundColor;
         }
         resetNavigationBar(self.navigationController.navigationBar);
         resetTabBar();

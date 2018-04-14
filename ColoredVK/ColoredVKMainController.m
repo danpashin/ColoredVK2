@@ -58,7 +58,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         cell.backgroundColor = kMenuCellBackgroundColor;
         cell.contentView.backgroundColor = [UIColor clearColor];
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-        cell.textLabel.text = @"ColoredVK 2";
+        cell.textLabel.text = kPackageName;
         cell.textLabel.textColor = kMenuCellTextColor;
         cell.textLabel.backgroundColor = [UIColor clearColor];
         cell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
@@ -99,7 +99,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         
         settingsCell.selectionStyle = UITableViewCellSelectionStyleGray;
         settingsCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        settingsCell.textLabel.text = @"ColoredVK 2";
+        settingsCell.textLabel.text = kPackageName;
         settingsCell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
         
         UIImage *icon = [UIImage imageNamed:@"vkapp/VKMenuIconAlt" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
