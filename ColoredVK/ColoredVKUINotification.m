@@ -9,6 +9,7 @@
 #import "ColoredVKUINotification.h"
 #import "PrefixHeader.h"
 #import "_UIBackdropView.h"
+#import "ColoredVKNightThemeColorScheme.h"
 
 static CGFloat const kCVKUINotificationHeight = 108.0f;
 
@@ -72,15 +73,18 @@ static CGFloat const kCVKUINotificationHeight = 108.0f;
 
 - (instancetype)initWithTitle:(NSString *)title subtitle:(NSString *)subtitle tapHandler:(void (^)(void))tapHandler
 {
-    CGRect frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, kCVKUINotificationHeight);
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+    CGRect frame = CGRectMake(0, 0, screenSize.width, kCVKUINotificationHeight);
     self = [super initWithFrame:frame];
     if (self) {
         if (tapHandler)
             self.tapHandler = [tapHandler copy];
         
-        UIBlurEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-        self.contentView = [[UIVisualEffectView alloc] initWithEffect:blur];
-        self.contentView.frame = CGRectMake(0, 0, 0.95f * CGRectGetWidth(frame), 0.8f * CGRectGetHeight(frame));
+        UIBlurEffectStyle blurStyle = [ColoredVKNightThemeColorScheme sharedScheme].enabled ? UIBlurEffectStyleDark : UIBlurEffectStyleLight;
+        self.contentView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:blurStyle]];
+        
+        CGFloat widthMultiplier = IS_IPAD ? 0.6f : 0.95f;
+        self.contentView.frame = CGRectMake(0, 0, widthMultiplier * MIN(screenSize.width, screenSize.height), 0.8f * CGRectGetHeight(frame));
         self.contentView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.4f];
         self.contentView.layer.cornerRadius = 14.0f;
         self.contentView.layer.masksToBounds = YES;

@@ -1282,9 +1282,9 @@ CHDeclareMethod(1, void, SFSafariViewController, viewWillAppear, BOOL, animated)
     }
 }
 
-CHDeclareMethod(1, void, SFSafariViewController, dismissViewControllerAnimated, BOOL, animated)
+CHDeclareMethod(1, void, SFSafariViewController, viewDidDisappear, BOOL, animated)
 {
-    CHSuper(1, SFSafariViewController, dismissViewControllerAnimated, animated);
+    CHSuper(1, SFSafariViewController, viewDidDisappear, animated);
     
     UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
     if (enabled && enableNightTheme && statusBar != nil) {
