@@ -55,7 +55,18 @@ makeDEB () {
 
     echo "[->] Copying resources to temp directory (stage 2)..."
     mkdir -p $FOLDER_TO_PACK/Package/{DEBIAN,Library/{MobileSubstrate/DynamicLibraries,PreferenceBundles,PreferenceLoader/Preferences}}
-    cp "${PROJECT_DIR}/ColoredVK-Prefs/control" "$FOLDER_TO_PACK/Package/DEBIAN"
+    
+    case ${CONFIGURATION} in
+        "Debug_DEB")
+            cp "${PROJECT_DIR}/ColoredVK-Prefs/control_debug" "$FOLDER_TO_PACK/Package/DEBIAN/control"
+            ;;
+        "Release_DEB")
+            cp "${PROJECT_DIR}/ColoredVK-Prefs/control_release" "$FOLDER_TO_PACK/Package/DEBIAN/control"
+            ;;
+    esac
+    
+    sed -i '' "s/package_version/${APP_VERSION}/g" "$FOLDER_TO_PACK/Package/DEBIAN/control"
+    
     cp -r "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" "$FOLDER_TO_PACK/Package/Library/PreferenceBundles"
     cp "${BUILT_PRODUCTS_DIR}/$PRODUCT.dylib" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries"
     cp "${PROJECT_DIR}/ColoredVK-Prefs/$PRODUCT.plist" "$FOLDER_TO_PACK/Package/Library/PreferenceLoader/Preferences"
@@ -74,8 +85,16 @@ makeDEB () {
 }
 
 case ${CONFIGURATION} in
-    "Release_DEB") makeDEB;;
-    "Debug_DEB") makeDEB;;
-    "Release_IPA") makeIPA;;
-    "Debug_IPA") makeIPA;;
+    "Release_DEB")
+        makeDEB
+        ;;
+    "Debug_DEB")
+        makeDEB
+        ;;
+    "Release_IPA")
+        makeIPA
+        ;;
+    "Debug_IPA")
+        makeIPA
+        ;;
 esac

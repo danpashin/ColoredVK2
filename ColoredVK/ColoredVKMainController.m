@@ -94,9 +94,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
 - (__kindof UITableViewCell *)settingsCell
 {
     if (!_settingsCell) {
-        UITableViewCell *settingsCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
-                                                               reuseIdentifier:@"cvkSettingsCell"];
-        
+        UITableViewCell *settingsCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cvkSettingsCell"];
         settingsCell.selectionStyle = UITableViewCellSelectionStyleGray;
         settingsCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         settingsCell.textLabel.text = kPackageName;

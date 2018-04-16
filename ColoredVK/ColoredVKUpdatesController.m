@@ -81,7 +81,7 @@ static NSString *const kCVKUpdateTimeFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
     
     [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"SKIP_THIS_UPDATE") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
-        [prefs setValue:self.version forKey:@"skippedVersion"];
+        prefs[@"skippedVersion"] = self.version;
         [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
     }]];
     

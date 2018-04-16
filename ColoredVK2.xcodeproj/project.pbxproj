@@ -632,6 +632,7 @@
 		A54D2E052021EA44005F95E1 /* ColoredVKPassResetController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKPassResetController.m; sourceTree = "<group>"; };
 		A54E41F31EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKBlurPrefsController.h; sourceTree = "<group>"; };
 		A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKBlurPrefsController.m; sourceTree = "<group>"; };
+		A552879A20832F4C00933B26 /* control_debug */ = {isa = PBXFileReference; lastKnownFileType = text; name = control_debug; path = "ColoredVK-Prefs/control_debug"; sourceTree = "<group>"; };
 		A55434FA1E636B19003B4256 /* Tweak.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tweak.h; sourceTree = "<group>"; };
 		A558E5022052C33200F10FBB /* ColoredVKApplicationModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKApplicationModel.h; sourceTree = "<group>"; };
 		A558E5032052C33200F10FBB /* ColoredVKApplicationModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKApplicationModel.m; sourceTree = "<group>"; };
@@ -665,7 +666,7 @@
 		A5739D731EA015C300367595 /* ColoredVKStepperPrefsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKStepperPrefsCell.h; sourceTree = "<group>"; };
 		A5739D741EA015C300367595 /* ColoredVKStepperPrefsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKStepperPrefsCell.m; sourceTree = "<group>"; };
 		A57620431F2B76BF0076CD5B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		A576D17A1DC601D80039884F /* control */ = {isa = PBXFileReference; lastKnownFileType = text; name = control; path = "ColoredVK-Prefs/control"; sourceTree = "<group>"; };
+		A576D17A1DC601D80039884F /* control_release */ = {isa = PBXFileReference; lastKnownFileType = text; name = control_release; path = "ColoredVK-Prefs/control_release"; sourceTree = "<group>"; };
 		A576D17B1DC601EA0039884F /* build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = SOURCE_ROOT; };
 		A576D17C1DC6071F0039884F /* ColoredVK2.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = ColoredVK2.plist; path = "ColoredVK-Prefs/ColoredVK2.plist"; sourceTree = "<group>"; };
 		A576D1A11DC621B90039884F /* ColoredVK copy.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; name = "ColoredVK copy.dylib"; path = ColoredVK2.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -915,7 +916,8 @@
 				A5B6ED0A1D3D659800383425 /* ColoredVK-Prefs */,
 				A5079FB41CC92157005B9693 /* Frameworks */,
 				A5079FB31CC92157005B9693 /* Products */,
-				A576D17A1DC601D80039884F /* control */,
+				A576D17A1DC601D80039884F /* control_release */,
+				A552879A20832F4C00933B26 /* control_debug */,
 				A576D17B1DC601EA0039884F /* build.sh */,
 				A576D17C1DC6071F0039884F /* ColoredVK2.plist */,
 				A56C4D851E56165800BEB2B1 /* ColoredVK2-dylib.plist */,
@@ -2144,7 +2146,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.10;
+				APP_VERSION = 4.4.11;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2288,7 +2290,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.10;
+				APP_VERSION = 4.4.11;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2491,7 +2493,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.10;
+				APP_VERSION = 4.4.11;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2635,7 +2637,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.10;
+				APP_VERSION = 4.4.11;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2743,7 +2745,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.10;
+				APP_VERSION = 4.4.11;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;

@@ -254,7 +254,7 @@
                 if (specifier.properties[@"validTitles"]) {
                     NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
                     for (NSString *key in specifier.titleDictionary.allKeys) {
-                        [tempDict setValue:localizedStringForKey(specifier.titleDictionary[key]) forKey:key];
+                        tempDict[key] = localizedStringForKey(specifier.titleDictionary[key]);
                     }
                     specifier.titleDictionary = tempDict;
                 }
@@ -304,8 +304,11 @@
 
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
 {
+    if (!specifier.properties[@"key"])
+        return;
+    
     if (value)
-        [self.cachedPrefs setValue:value forKey:specifier.properties[@"key"]];
+        self.cachedPrefs[specifier.properties[@"key"]] = value;
     else
         [self.cachedPrefs removeObjectForKey:specifier.properties[@"key"]];
     
