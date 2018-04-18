@@ -10,8 +10,9 @@
 #import "PrefixHeader.h"
 #import "_UIBackdropView.h"
 #import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKShadowView.h"
 
-static CGFloat const kCVKUINotificationHeight = 108.0f;
+static CGFloat const kCVKUINotificationHeight = 100.0f;
 
 @interface ColoredVKUINotification ()
 @property (assign, nonatomic) BOOL dismissed;
@@ -24,7 +25,10 @@ static CGFloat const kCVKUINotificationHeight = 108.0f;
 @property (strong, nonatomic) UIStackView *mainStackView;
 @property (strong, nonatomic) UIStackView *titleStackView;
 
-@property (strong, nonatomic) UIVisualEffectView *contentView;
+@property (strong, nonatomic) UIView *contentView;
+@property (strong, nonatomic) UIVisualEffectView *blurView;
+@property (strong, nonatomic) ColoredVKShadowView *shadowView;
+
 @property (strong, nonatomic) UILabel *titleLabel;
 @property (strong, nonatomic) UILabel *detailLabel;
 @property (strong, nonatomic) UIImageView *iconView;
@@ -80,14 +84,9 @@ static CGFloat const kCVKUINotificationHeight = 108.0f;
         if (tapHandler)
             self.tapHandler = [tapHandler copy];
         
-        UIBlurEffectStyle blurStyle = [ColoredVKNightThemeColorScheme sharedScheme].enabled ? UIBlurEffectStyleDark : UIBlurEffectStyleLight;
-        self.contentView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:blurStyle]];
-        
         CGFloat widthMultiplier = IS_IPAD ? 0.6f : 0.95f;
+        self.contentView = [[UIView alloc] init];
         self.contentView.frame = CGRectMake(0, 0, widthMultiplier * MIN(screenSize.width, screenSize.height), 0.8f * CGRectGetHeight(frame));
-        self.contentView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.4f];
-        self.contentView.layer.cornerRadius = 14.0f;
-        self.contentView.layer.masksToBounds = YES;
         [self addSubview:self.contentView];
         
         UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panRecognized:)];
@@ -96,10 +95,23 @@ static CGFloat const kCVKUINotificationHeight = 108.0f;
         UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapRecognized)];
         [self.contentView addGestureRecognizer:tapRecognizer];
         
+        
+        self.shadowView = [ColoredVKShadowView shadowWithFrame:self.contentView.bounds size:10.0f cornerRadius:14.0f offset:2.0f];
+        [self.contentView addSubview:self.shadowView];
+        
+        UIBlurEffectStyle blurStyle = [ColoredVKNightThemeColorScheme sharedScheme].enabled ? UIBlurEffectStyleDark : UIBlurEffectStyleLight;
+        self.blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:blurStyle]];
+        self.blurView.frame = self.contentView.bounds;
+        self.blurView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.4f];
+        self.blurView.layer.cornerRadius = self.shadowView.cornerRadius;
+        self.blurView.layer.masksToBounds = YES;
+        [self.contentView addSubview:self.blurView];
+        
+        
         self.mainStackView = [[UIStackView alloc] initWithFrame:self.contentView.bounds];
         self.mainStackView.axis = UILayoutConstraintAxisVertical;
         self.mainStackView.spacing = 4.0f;
-        [self.contentView.contentView addSubview:self.mainStackView];
+        [self.blurView.contentView addSubview:self.mainStackView];
         
         
         self.titleStackView = [[UIStackView alloc] initWithFrame:self.mainStackView.bounds];
@@ -208,11 +220,26 @@ static CGFloat const kCVKUINotificationHeight = 108.0f;
     [self.contentView.widthAnchor constraintEqualToConstant:CGRectGetWidth(self.contentView.frame)].active = YES;
     [self.contentView.heightAnchor constraintEqualToConstant:CGRectGetHeight(self.contentView.frame)].active = YES;
     
+    
+    NSDictionary *shadowMetrics = @{@"size":@(-self.shadowView.size)};
+    self.shadowView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.shadowView.superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-size-[view]-size-|" options:0 
+                                                                                      metrics:shadowMetrics views:@{@"view":self.shadowView}]];
+    [self.shadowView.superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-size-[view]-size-|" options:0 
+                                                                                      metrics:shadowMetrics views:@{@"view":self.shadowView}]];
+    
+    
+    self.blurView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.blurView.superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 
+                                                                                    metrics:nil views:@{@"view":self.blurView}]];
+    [self.blurView.superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 
+                                                                                    metrics:nil views:@{@"view":self.blurView}]];
+    
     self.mainStackView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.mainStackView.superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[stack]-|" options:0 
-                                                                                         metrics:nil views:@{@"stack":self.mainStackView}]];
-    [self.mainStackView.superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[stack]-|" options:0 
-                                                                                         metrics:nil views:@{@"stack":self.mainStackView}]];
+    [self.mainStackView.superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[view]-|" options:0 
+                                                                                         metrics:nil views:@{@"view":self.mainStackView}]];
+    [self.mainStackView.superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[view]-|" options:0 
+                                                                                         metrics:nil views:@{@"view":self.mainStackView}]];
     
     self.titleStackView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.titleStackView.heightAnchor constraintEqualToConstant:28.0f].active = YES;
