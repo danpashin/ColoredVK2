@@ -20,6 +20,8 @@
 #import <objc/runtime.h>
 #import <SDImageCache.h>
 
+#import "PrefixHeader.h"
+
 @interface ColoredVKGeneralPrefs () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, ColoredVKColorPickerControllerDelegate, ColoredVKColorPickerControllerDataSource>
 @property (strong, nonatomic) NSString *lastImageIdentifier;
 @end

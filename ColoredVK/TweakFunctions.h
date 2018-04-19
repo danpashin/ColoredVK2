@@ -32,7 +32,7 @@ void resetNavigationBar(UINavigationBar *navBar);
 
 void uncaughtExceptionHandler(NSException *exception);
 
-extern void setupSearchController(UISearchDisplayController *controller, BOOL reset);
+void setupSearchController(UISearchDisplayController *controller, BOOL reset);
 void setupCellForSearchController(UITableViewCell *cell, UISearchDisplayController *searchController);
 void hideFastButtonForController(VKMBrowserController *browserController);
 

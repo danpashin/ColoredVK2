@@ -17,6 +17,6 @@
 @property (assign, nonatomic) CGFloat offset;
 @property (strong, nonatomic) UIColor *color;
 
-- (instancetype)initWithFrame:(CGRect)frame size:(CGFloat)size cornerRadius:(CGFloat)cornerRadius offset:(CGFloat)offset color:(UIColor *)color;
+- (instancetype)initWithFrame:(CGRect)frame size:(CGFloat)size cornerRadius:(CGFloat)cornerRadius offset:(CGFloat)offset color:(UIColor *)color NS_DESIGNATED_INITIALIZER;
 
 @end

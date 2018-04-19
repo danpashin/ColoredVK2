@@ -7,6 +7,9 @@
 
 #import "ColoredVKPrefsSelector.h"
 
+#import "PrefixHeader.h"
+#import "ColoredVKNightThemeColorScheme.h"
+
 @interface ColoredVKPrefsSelector ()
 @property (strong, nonatomic) NSIndexPath *indexPathForSelectedRow;
 @property (strong, nonatomic) UIImageView *tickImageView;

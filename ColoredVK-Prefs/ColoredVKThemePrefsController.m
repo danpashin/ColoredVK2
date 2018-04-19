@@ -11,6 +11,8 @@
 #import <objc/message.h>
 #import "UIColor+ColoredVK.h"
 
+#import "PrefixHeader.h"
+
 @interface ColoredVKThemePrefsController ()
 
 @property (strong, nonatomic) UIView *closeAppFooter;
@@ -85,7 +87,6 @@
 
 - (void)didSelectValue:(id)value forKey:(NSString *)key
 {
-    [super didSelectValue:value forKey:key];
     [self updateType];
 }
 

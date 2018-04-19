@@ -10,9 +10,8 @@
 #import "ColoredVKUpdatesController.h"
 
 @interface ColoredVKUpdatesPrefsController ()
-
 @property (nonatomic, getter=getLastCheckForUpdates, copy) NSString *lastCheckForUpdates;
-
+@property (strong, nonatomic) ColoredVKUpdatesController *updatesController;
 @end
 
 @implementation ColoredVKUpdatesPrefsController
@@ -20,21 +19,18 @@
 - (void)loadView
 {
     [super loadView];
-    
-    ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
-    self.lastCheckForUpdates = updatesController.localizedLastCheckForUpdates;
+    self.updatesController = [ColoredVKUpdatesController new];
+    self.lastCheckForUpdates = self.updatesController.localizedLastCheckForUpdates;
 }
 
 - (void)checkForUpdates
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
-        updatesController.checkCompletionHandler = ^(ColoredVKUpdatesController *controller) {
-            self.lastCheckForUpdates = controller.localizedLastCheckForUpdates;
-            [self reloadSpecifiers];
-        };
-        [updatesController checkUpdates];
-    });
+    __weak typeof(self) weakSelf = self;
+    self.updatesController.checkCompletionHandler = ^(ColoredVKUpdatesController *controller) {
+        weakSelf.lastCheckForUpdates = controller.localizedLastCheckForUpdates;
+        [weakSelf reloadSpecifiers];
+    };
+    [self.updatesController checkUpdates];
 }
 
 @end

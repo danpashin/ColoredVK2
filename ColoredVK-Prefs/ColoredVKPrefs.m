@@ -12,6 +12,9 @@
 #import "UITableViewCell+ColoredVK.h"
 #import <objc/runtime.h>
 #import "UIScrollView+EmptyDataSet.h"
+#import "PrefixHeader.h"
+#import "ColoredVKNightThemeColorScheme.h"
+
 
 @interface ColoredVKPrefs ()  <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 @end
@@ -38,6 +41,10 @@
     _cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
     if (!self.cvkBundle)
         _cvkBundle = [NSBundle mainBundle];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:kPackageNotificationPrefsReloaded object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+        [self readPrefsWithCompetion:nil];
+    }];
     
     [self readPrefsWithCompetion:^{
         self.shouldChangeSwitchColor = ([self.cachedPrefs[@"enabled"] boolValue] && [self.cachedPrefs[@"changeSwitchColor"] boolValue]);

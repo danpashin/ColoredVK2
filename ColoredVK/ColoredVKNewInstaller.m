@@ -166,7 +166,6 @@ return;
             
             installerShouldOpenPrefs = YES;
             POST_NOTIFICATION(kPackageNotificationReloadPrefsMenu);
-            POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
             
             if (installerCompletionBlock)
                 installerCompletionBlock(YES);
@@ -277,7 +276,6 @@ return;
         
         installerShouldOpenPrefs = YES;
         POST_NOTIFICATION(kPackageNotificationReloadPrefsMenu);
-        POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
         
         if (installerCompletionBlock) 
             installerCompletionBlock(YES);

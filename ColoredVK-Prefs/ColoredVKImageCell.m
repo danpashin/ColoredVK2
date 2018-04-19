@@ -173,8 +173,7 @@
 - (void)actionRemoveImage
 {
     ColoredVKAlertController *warningAlert = [ColoredVKAlertController alertControllerWithTitle:CVKLocalizedString(@"WARNING")  
-                                                                                        message:CVKLocalizedString(@"REMOVE_IMAGE_WARNING")
-                                                                                 preferredStyle:UIAlertControllerStyleAlert];
+                                                                                        message:CVKLocalizedString(@"REMOVE_IMAGE_WARNING")];
     [warningAlert addCancelAction];
     [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") style:UIAlertActionStyleDestructive  handler:^(UIAlertAction *warningAction) {
         NSString *imagePath = [NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, self.specifier.identifier];
@@ -217,7 +216,6 @@
 
 - (void)sendNotifications
 {
-    
     if ([self.key isEqualToString:@"enabledMenuImage"])
         POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
     else

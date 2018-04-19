@@ -402,7 +402,7 @@ void reloadPrefs(void(^completion)(void))
                 completion();
             
             actionChangeCornerRadius();
-            POST_NOTIFICATION(@"ru.danpashin.prefs.reloaded");
+            POST_NOTIFICATION(kPackageNotificationPrefsReloaded);
         }];
     });
 }

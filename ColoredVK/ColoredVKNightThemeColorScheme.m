@@ -82,8 +82,8 @@
             self->_foregroundColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeForegroundColor" fromPrefs:prefs];
             
             self->_textColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeTextColor" fromPrefs:prefs];
-            self->_textColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeDetailTextColor" fromPrefs:prefs];
-           self-> _linkTextColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeLinkColor" fromPrefs:prefs];
+            self->_detailTextColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeDetailTextColor" fromPrefs:prefs];
+            self->_linkTextColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeLinkColor" fromPrefs:prefs];
             
             self->_unreadBackgroundColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeUnreadBackgroundColor" fromPrefs:prefs];
             self->_incomingBackgroundColor = [UIColor cvk_savedColorForIdentifier:@"nightThemeIncomingBackgroundColor" fromPrefs:prefs];

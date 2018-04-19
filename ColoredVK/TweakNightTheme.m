@@ -801,11 +801,7 @@ CHDeclareMethod(0, void, DiscoverLayoutShadow, layoutSubviews)
 CHDeclareClass(UIVisualEffectView);
 CHDeclareMethod(1, void, UIVisualEffectView, setEffect, UIVisualEffect *, effect)
 {
-    if (enabled && enableNightTheme && [effect isKindOfClass:[UIBlurEffect class]]) {
-        self.hidden = YES;
-    } else {
-        self.hidden = NO;
-    }
+    self.hidden = (enabled && enableNightTheme && [effect isKindOfClass:[UIBlurEffect class]]);
     
     CHSuper(1, UIVisualEffectView, setEffect, effect);
 }
@@ -821,8 +817,14 @@ CHDeclareMethod(0, void, UIAlertController, viewDidLoad)
         UIView *firstSubview = self.view.subviews.firstObject;
         UIView *alertContentView = firstSubview.subviews.firstObject;
         
-        for (UIView *subSubView in alertContentView.subviews) {
-            subSubView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        BOOL shouldUseTwoCycles = SYSTEM_VERSION_IS_LESS_THAN(@"10.0");
+        for (UIView *subview in alertContentView.subviews) {
+            subview.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+            if (shouldUseTwoCycles) {
+                for (UIView *subSubview in subview.subviews) {
+                    subSubview.backgroundColor = subview.backgroundColor;
+                }
+            }
         }
     }
 }
@@ -914,7 +916,7 @@ CHDeclareMethod(1, id, FreshNewsButton, initWithFrame, CGRect, frame)
     objc_setAssociatedObject(button.button, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
     
     __weak typeof(button) weakButton = button;
-    [[NSNotificationCenter defaultCenter] addObserverForName:@"ru.danpashin.prefs.reloaded" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+    [[NSNotificationCenter defaultCenter] addObserverForName:kPackageNotificationPrefsReloaded object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
         if (!weakButton)
             return;
         

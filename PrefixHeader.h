@@ -44,12 +44,13 @@
 #endif
 
 
-#define IS_IPAD                               (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 #define UIKitLocalizedString(key)             [[NSBundle bundleWithIdentifier:@"com.apple.UIKit"] localizedStringForKey:key value:@"" table:nil]
 #define CVKLocalizedStringFromTableInBundle(key, tbl, bndl) [bndl localizedStringForKey:key value:@"" table:tbl]
 #define CVKLocalizedStringFromTable(key, tbl) CVKLocalizedStringFromTableInBundle(key, tbl, [NSBundle bundleWithPath:CVK_BUNDLE_PATH])
 #define CVKLocalizedString(key)               CVKLocalizedStringFromTable(key, nil)
 #define CVKLocalizedStringInBundle(key, bndl) CVKLocalizedStringFromTableInBundle(key, nil, bndl)
+
+#define IS_IPAD                               (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 #define SYSTEM_VERSION_IS_LESS_THAN(version)  ([[UIDevice currentDevice].systemVersion compare:version options:NSNumericSearch] != NSOrderedDescending)
 #define CLASS_NAME(obj)                       NSStringFromClass([obj class])
 
@@ -71,13 +72,14 @@ static NSString * _Nullable const kPackagePurchaseLink = @"https://danpashin.ru/
 
 
 
-static NSString * _Nullable const kPackageNotificationReloadPrefs = @"ru.danpashin.coloredvk2.prefs.changed";
-static NSString * _Nullable const kPackageNotificationReloadPrefsMenu = @"ru.danpashin.coloredvk2.reload.prefs.menu";
-static NSString * _Nullable const kPackageNotificationReloadMenu = @"ru.danpashin.coloredvk2.reload.menu";
-static NSString * _Nullable const kPackageNotificationUpdateNightTheme = @"ru.danpashin.coloredvk2.night.theme";
+static NSString * _Nullable const kPackageNotificationReloadPrefs =         @"ru.danpashin.coloredvk2.prefs.changed";
+static NSString * _Nullable const kPackageNotificationReloadPrefsMenu =     @"ru.danpashin.coloredvk2.prefs.menu.reload";
+static NSString * _Nullable const kPackageNotificationReloadMenu =          @"ru.danpashin.coloredvk2.menu.reload";
+static NSString * _Nullable const kPackageNotificationUpdateNightTheme =    @"ru.danpashin.coloredvk2.nighttheme.reload";
 
-static NSString * _Nullable const kPackageNotificationUpdateImage = @"ru.danpashin.coloredvk2.image.update";
-static NSString * _Nullable const kPackageNotificationUpdateColor = @"ru.danpashin.coloredvk2.color.update";
+static NSString * _Nullable const kPackageNotificationUpdateImage =         @"ru.danpashin.coloredvk2.image.update";
+static NSString * _Nullable const kPackageNotificationUpdateColor =         @"ru.danpashin.coloredvk2.colorpreview.update";
+static NSString * _Nullable const kPackageNotificationPrefsReloaded =       @"ru.danpashin.coloredvk2.prefs.reloaded";
 
 #define POST_NOTIFICATION(name) [[NSNotificationCenter defaultCenter] postNotificationName:name object:nil];
 #define POST_CORE_NOTIFICATION(name) CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), (CFStringRef)name, NULL, NULL, YES)

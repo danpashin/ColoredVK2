@@ -11,8 +11,8 @@
 @interface ColoredVKUINotification : UIView
 
 + (id)new NS_UNAVAILABLE;
-- (id)init NS_UNAVAILABLE;
-- (id)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
+- (instancetype)initWithFrame:(CGRect)frame NS_UNAVAILABLE;
 
 
 + (void)removeAllNotifications;

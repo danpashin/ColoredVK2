@@ -11,10 +11,6 @@
 #import <PSSpecifier.h>
 #import <PSListController.h>
 
-#import "PrefixHeader.h"
-#import "ColoredVKNightThemeColorScheme.h"
-
-
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ColoredVKPrefs : PSListController
@@ -31,8 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSArray <PSSpecifier*> *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize;
 - (void)showPurchaseAlert;
 
-- (nullable id)readPreferenceValue:(PSSpecifier *)specifier;
-- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier;
+- (nullable id)readPreferenceValue:(PSSpecifier *)specifier NS_REQUIRES_SUPER;
+- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier NS_REQUIRES_SUPER;
 
 - (void)writePrefsWithCompetion:(nullable void(^)(void))completionBlock;
 - (void)readPrefsWithCompetion:(nullable void(^)(void))completionBlock;

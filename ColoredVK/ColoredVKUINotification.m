@@ -58,7 +58,7 @@ static CGFloat const kCVKUINotificationHeight = 100.0f;
     [self removeAllNotifications];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        ColoredVKUINotification *notification = [[self alloc] initWithTitle:title subtitle:subtitle tapHandler:tapHandler];
+        ColoredVKUINotification *notification = [[ColoredVKUINotification alloc] initWithTitle:title subtitle:subtitle tapHandler:tapHandler];
         [notification show];
     });
 }

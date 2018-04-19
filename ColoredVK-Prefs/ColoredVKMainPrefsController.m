@@ -16,6 +16,8 @@
 #import "NSString+ColoredVK.h"
 #import "ColoredVKBiometry.h"
 
+#import "PrefixHeader.h"
+
 @interface ColoredVKMainPrefsController ()
 
 @property (strong, nonatomic) UIView *freeVersionFooter;
