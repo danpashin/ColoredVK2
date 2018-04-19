@@ -128,6 +128,10 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSTableCell</string>
 			<key>cellClass</key>
 			<string>ColoredVKStepperPrefsCell</string>

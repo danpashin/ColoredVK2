@@ -36,8 +36,7 @@
 - (void)resetSettings
 {
     ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:CVKLocalizedStringInBundle(@"WARNING", self.cvkBundle)
-                                                                                           message:CVKLocalizedStringInBundle(@"RESET_SETTINGS_QUESTION", self.cvkBundle) 
-                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+                                                                                           message:CVKLocalizedStringInBundle(@"RESET_SETTINGS_QUESTION", self.cvkBundle)];
     
     NSString *resetTitle = [CVKLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"ColoredVK", self.cvkBundle) componentsSeparatedByString:@" "].firstObject;    
     [alertController addAction:[UIAlertAction actionWithTitle:resetTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {

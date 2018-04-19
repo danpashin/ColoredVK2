@@ -26,30 +26,28 @@
     return self;
 }
 
-- (void)processImageFromURL:(NSURL *)url identifier:(NSString *)identifier andSaveToURL:(NSURL *)urlToSave 
-            completionBlock:( void (^)(BOOL success, NSError *error) )completionBlock
+- (void)processImageFromURL:(NSURL *)url identifier:(NSString *)identifier saveTo:(NSURL *)urlToSave completion:(ImageProcessorCompletion)completion
 {
     dispatch_async(self.backgroundQueue, ^{
         if (!url.isFileURL) {
             [[ColoredVKNetwork sharedNetwork] downloadDataFromURL:url.absoluteString success:^(NSHTTPURLResponse *response, NSData *rawData) {
                 UIImage *image = [UIImage imageWithData:rawData];
-                [self processImage:image identifier:identifier andSaveToURL:urlToSave completionBlock:completionBlock];
+                [self processImage:image identifier:identifier saveTo:urlToSave completion:completion];
             } failure:^(NSHTTPURLResponse *response, NSError *error) {
-                completionBlock(NO, error);
+                completion(NO, error);
             }];
         } else {
             NSError *catchingError = nil;
             NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&catchingError];
             if (!catchingError)
-                [self processImage:[UIImage imageWithData:data] identifier:identifier andSaveToURL:urlToSave completionBlock:completionBlock];
+                [self processImage:[UIImage imageWithData:data] identifier:identifier saveTo:urlToSave completion:completion];
             else
-                completionBlock(NO, catchingError);
+                completion(NO, catchingError);
         }
     });
 }
 
-- (void)processImage:(UIImage *)image identifier:(NSString *)identifier andSaveToURL:(NSURL *)urlToSave 
-     completionBlock:( void (^)(BOOL success, NSError *error) )completionBlock
+- (void)processImage:(UIImage *)image identifier:(NSString *)identifier saveTo:(NSURL *)urlToSave completion:(ImageProcessorCompletion)completion
 {
     __block CGSize screenSize = CGSizeZero;
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -78,10 +76,10 @@
             NSError *writingFullImageError = nil;
             BOOL success = [UIImageJPEGRepresentation(newImage, 1.0f) writeToURL:urlToSave options:NSDataWritingAtomic error:&writingFullImageError];
             
-            completionBlock(success, writingFullImageError);
+            completion(success, writingFullImageError);
                    
         } else {
-            completionBlock(NO, writingError);
+            completion(NO, writingError);
         }
     });
 }
@@ -98,11 +96,11 @@
         CGContextRef context = UIGraphicsGetCurrentContext();
         
         if (resizedImage.imageOrientation == UIImageOrientationRight) {
-            CGContextRotateCTM (context, (CGFloat)(90 * M_PI/180.0f));
+            CGContextRotateCTM(context, (CGFloat)(90 * M_PI/180.0f));
         } else if (resizedImage.imageOrientation == UIImageOrientationLeft) {
-            CGContextRotateCTM (context, (CGFloat)(-90 * M_PI/180.0f));
+            CGContextRotateCTM(context, (CGFloat)(-90 * M_PI/180.0f));
         } else if (resizedImage.imageOrientation == UIImageOrientationUp) {
-            CGContextRotateCTM (context, (CGFloat)(180 * M_PI/180.0f));
+            CGContextRotateCTM(context, (CGFloat)(180 * M_PI/180.0f));
         }
         [resizedImage drawAtPoint:CGPointZero];
         

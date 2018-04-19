@@ -14,7 +14,7 @@
 @interface ColoredVKNetwork  () <NSURLSessionDelegate>
 
 @property (strong, nonatomic) NSURLSession *session;
-@property (strong, nonatomic) NSOperationQueue *operationDelegateQueue;
+@property (strong, nonatomic) NSOperationQueue *sessionDelegateQueue;
 @property (strong, nonatomic) dispatch_queue_t parseQueue;
 
 @end
@@ -40,11 +40,11 @@
         self.configuration.allowsCellularAccess = YES;
         self.configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
         
-        self.operationDelegateQueue = [[NSOperationQueue alloc] init];
-        self.operationDelegateQueue.name = @"ru.danpashin.coloredvk2.network";
+        self.sessionDelegateQueue = [[NSOperationQueue alloc] init];
+        self.sessionDelegateQueue.name = @"ru.danpashin.coloredvk2.network";
         self.parseQueue = dispatch_queue_create("ru.danpashin.coloredvk2.network.background", DISPATCH_QUEUE_CONCURRENT);
         
-        _session = [NSURLSession sessionWithConfiguration:self.configuration delegate:self delegateQueue:self.operationDelegateQueue];
+        _session = [NSURLSession sessionWithConfiguration:self.configuration delegate:self delegateQueue:self.sessionDelegateQueue];
     }
     return self;
 }

@@ -65,7 +65,7 @@
             
             NSURL *url = [NSURL URLWithString:self.url];
             NSURL *urlToSave = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, identifier]];
-            [[ColoredVKImageProcessor new] processImageFromURL:url identifier:identifier andSaveToURL:urlToSave completionBlock:^(BOOL success, NSError *error) {
+            [[ColoredVKImageProcessor new] processImageFromURL:url identifier:identifier saveTo:urlToSave completion:^(BOOL success, NSError *error) {
                 success ? [hud showSuccess] : [hud showFailureWithStatus:error.localizedDescription];
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:kPackageNotificationUpdateImage 

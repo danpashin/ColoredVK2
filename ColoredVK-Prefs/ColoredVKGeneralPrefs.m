@@ -120,7 +120,7 @@
 
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didSaveColor:(NSString *)hexColor
 {
-    NSMutableArray <NSString *> *savedColors = self.cachedPrefs[@"savedColors"] ? self.cachedPrefs[@"savedColors"] : [NSMutableArray array];
+    NSMutableArray <NSString *> *savedColors = self.cachedPrefs[@"savedColors"] ? [self.cachedPrefs[@"savedColors"] mutableCopy] : [NSMutableArray array];
     
     if (![savedColors containsObject:hexColor])
         [savedColors addObject:hexColor];
@@ -131,7 +131,7 @@
 
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didDeleteColor:(NSString *)hexColor
 {
-    NSMutableArray <NSString *> *savedColors = self.cachedPrefs[@"savedColors"] ? self.cachedPrefs[@"savedColors"] : [NSMutableArray array];
+    NSMutableArray <NSString *> *savedColors = self.cachedPrefs[@"savedColors"] ? [self.cachedPrefs[@"savedColors"] mutableCopy] : [NSMutableArray array];
     
     if ([savedColors containsObject:hexColor])
         [savedColors removeObject:hexColor];
@@ -231,7 +231,7 @@
 {
     ColoredVKImageProcessor *processor = [ColoredVKImageProcessor new];
     NSString *stringPath = [CVK_FOLDER_PATH stringByAppendingString:[NSString stringWithFormat:@"/%@.png", self.lastImageIdentifier]];
-    [processor processImage:image identifier:self.lastImageIdentifier andSaveToURL:[NSURL fileURLWithPath:stringPath] completionBlock:^(BOOL success, NSError *error) {
+    [processor processImage:image identifier:self.lastImageIdentifier saveTo:[NSURL fileURLWithPath:stringPath] completion:^(BOOL success, NSError *error) {
         if (handler) {
             handler(success, error);
         }

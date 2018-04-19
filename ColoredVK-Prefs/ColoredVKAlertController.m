@@ -63,7 +63,6 @@
     } else {
         [super addTextFieldWithConfigurationHandler:configurationHandler];
     }
-    
 }
 
 - (void)setupTextField:(UITextField *)textField

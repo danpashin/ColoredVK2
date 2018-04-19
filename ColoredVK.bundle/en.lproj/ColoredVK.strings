@@ -163,4 +163,5 @@
 "BLUR_PREFS_FOOTER" = "Blur will be applied to the navigation bar and toolbar (if any)";
 "SHOW_FAST_DOWNLOAD_BUTTON_FOOTER" = "If this feature is enabled, when viewing any image quick download button will be added in navigation bar. It will allow you to quickly set an image without having to save it to camera Roll.";
 "SHOW_SECTION_IN_MENU_FOOTER" = "ColoredVK 2 tab shows in VKApp main menu by default. Turning this off, you will be able to go into the settings of the tweak only using settings of VKApp.";
+"CHANGE_MESSAGES_TEXT_COLOR_FOOTER" = "In general, this function should change the color of all text in messages. But at this moment  it changes only color of time label.";
 
