@@ -48,7 +48,7 @@ CHDeclareMethod(1, void, AppDelegate, applicationDidBecomeActive, UIApplication 
         [cvkMainController.audioCover updateColorScheme];
     }
     
-    [cvkMainController checkCrashes];
+    [cvkMainController sendCrash];
 }
 
 

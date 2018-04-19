@@ -16,7 +16,7 @@
 @interface ColoredVKMainController : NSObject
 
 @property (strong, nonatomic) __kindof UITableViewCell *menuCell;
-@property (strong, nonatomic) __kindof UITableViewCell *settingsCell;
+@property (nonatomic, readonly) UITableViewCell *settingsCell;
 @property (strong, nonatomic) ColoredVKAudioCover *audioCover;
 @property (strong, nonatomic) ColoredVKWallpaperView *menuBackgroundView;
 @property (strong, nonatomic) ColoredVKWallpaperView *navBarImageView;
@@ -30,8 +30,8 @@
 - (void)forceUpdateTableView:(UITableView *)tableView blackout:(CGFloat)blackout blur:(BOOL)blur;
 
 - (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)(void) )handler;
-- (void)actionOpenPreferencesPush:(BOOL)withPush;
-- (void)reloadSwitch:(BOOL)on;
-- (void)checkCrashes;
+- (void)openPrefsWithPush:(BOOL)withPush;
+- (void)setMenuCellSwitchOn:(BOOL)on;
+- (void)sendCrash;
 
 @end

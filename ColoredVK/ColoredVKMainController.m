@@ -80,7 +80,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         
         if ([cell respondsToSelector:@selector(select)]) {
             ((MenuCell *)cell).select = (id)^(id arg1, id arg2) {
-                [self actionOpenPreferencesPush:NO];
+                [self openPrefsWithPush:NO];
                 return nil;
             };
         }
@@ -91,25 +91,30 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     return _menuCell;
 }
 
-- (__kindof UITableViewCell *)settingsCell
+- (UITableViewCell *)settingsCell
 {
-    if (!_settingsCell) {
-        UITableViewCell *settingsCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cvkSettingsCell"];
-        settingsCell.selectionStyle = UITableViewCellSelectionStyleGray;
-        settingsCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        settingsCell.textLabel.text = kPackageName;
-        settingsCell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
-        
-        UIImage *icon = [UIImage imageNamed:@"vkapp/VKMenuIconAlt" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
-        settingsCell.imageView.image = [icon imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        settingsCell.imageView.tintColor = kVKMainColor;
-        
-        _settingsCell = settingsCell;
-    }
-    return _settingsCell;
+    UITableViewCell *settingsCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cvkSettingsCell"];
+    settingsCell.selectionStyle = UITableViewCellSelectionStyleGray;
+    settingsCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    settingsCell.textLabel.text = kPackageName;
+    settingsCell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
+    
+    UIImage *icon = [UIImage imageNamed:@"vkapp/VKMenuIconAlt" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
+    settingsCell.imageView.image = [icon imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    
+    static BOOL useGrayTint = NO;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        ColoredVKVersionCompare useGrayTintResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
+        useGrayTint = (useGrayTintResult >= ColoredVKVersionCompareEqual);
+    });
+    
+    settingsCell.imageView.tintColor = useGrayTint ? [UIColor colorWithRed:0.667f green:0.682f blue:0.702f alpha:1.0f] : kVKMainColor;
+    
+    return settingsCell;
 }
 
-- (void)actionOpenPreferencesPush:(BOOL)withPush
+- (void)openPrefsWithPush:(BOOL)withPush
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         BOOL innerWithPush = withPush;
@@ -151,7 +156,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     }
 }
 
-- (void)reloadSwitch:(BOOL)on
+- (void)setMenuCellSwitchOn:(BOOL)on
 {
     @synchronized(self) {
         UISwitch *switchView = objc_getAssociatedObject(self, (__bridge const void *)(switchViewKey));
@@ -180,7 +185,7 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     return swipeGesture;
 }
 
-- (void)checkCrashes
+- (void)sendCrash
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         if (![[NSFileManager defaultManager] fileExistsAtPath:CVK_CRASH_PATH])

@@ -731,7 +731,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
                 [dialogsController.tableView reloadData];
             }
         }
-        [cvkMainController reloadSwitch:enabled];
+        [cvkMainController setMenuCellSwitchOn:enabled];
         
         setupTabbar();
     });

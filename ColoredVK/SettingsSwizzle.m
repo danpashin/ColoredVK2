@@ -18,32 +18,19 @@ CHDeclareMethod(2, NSInteger, ModernSettingsController, tableView, UITableView *
         rowsCount++;
     }
     return rowsCount;
-    
 }
 
 CHDeclareMethod(2, UITableViewCell*, ModernSettingsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, ModernSettingsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    
-    if (!cell) {
-        cell = cvkMainController.settingsCell;
-        cell.backgroundColor = (enabled && enableNightTheme) ? cvkMainController.nightThemeScheme.foregroundColor : [UIColor whiteColor];
-        cell.textLabel.textColor = (enabled && enableNightTheme) ? cvkMainController.nightThemeScheme.textColor : [UIColor blackColor];
-        cell.imageView.tintColor = kVKMainColor;
-        
-        ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
-        if (compareResult >= 0)
-            cell.imageView.tintColor = [UIColor colorWithRed:0.667f green:0.682f blue:0.702f alpha:1.0f];
-    }
-    
-    return cell;
+    return cell ? cell : cvkMainController.settingsCell;
 }
 
 CHDeclareMethod(3, void, ModernSettingsController, tableView, UITableView*, tableView, willDisplayCell, UITableViewCell *, cell, forRowAtIndexPath, NSIndexPath*, indexPath)
 {
     CHSuper(3, ModernSettingsController, tableView, tableView, willDisplayCell, cell, forRowAtIndexPath, indexPath);
     
-    if ([self isKindOfClass:NSClassFromString(@"ModernSettingsController")]) {        
+    if ([self isKindOfClass:NSClassFromString(@"ModernSettingsController")]) {
         [NSObject cvk_runVoidBlockOnMainThread:^{
             if ([cell.textLabel.text.lowercaseString isEqualToString:@"vksettings"]) {
                 cell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
@@ -64,9 +51,8 @@ CHDeclareMethod(2, void, ModernSettingsController, tableView, UITableView*, tabl
     CHSuper(2, ModernSettingsController, tableView, tableView, didSelectRowAtIndexPath, indexPath);
     
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    
     if ([cell.reuseIdentifier isEqualToString:cvkMainController.settingsCell.reuseIdentifier]) {
-        [cvkMainController actionOpenPreferencesPush:YES];
+        [cvkMainController openPrefsWithPush:YES];
     }
 }
 
