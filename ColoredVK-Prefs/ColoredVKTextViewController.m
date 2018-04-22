@@ -7,7 +7,6 @@
 //
 
 #import "ColoredVKTextViewController.h"
-#import "PrefixHeader.h"
 
 @interface ColoredVKTextViewController ()
 @property (strong, nonatomic) UITextView *textView;

@@ -8,7 +8,6 @@
 
 #import "ColoredVKUpdatesController.h"
 #import <UIKit/UIKit.h>
-#import "PrefixHeader.h"
 #import "NSDate+DateTools.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKAlertController.h"

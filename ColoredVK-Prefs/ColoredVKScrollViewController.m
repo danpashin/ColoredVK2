@@ -6,7 +6,6 @@
 //
 
 #import "ColoredVKScrollViewController.h"
-#import "PrefixHeader.h"
 
 @interface ColoredVKScrollViewController ()
 @end

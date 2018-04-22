@@ -6,7 +6,6 @@
 //
 
 #import "ColoredVKCardController.h"
-#import "PrefixHeader.h"
 #import "ColoredVKCollectionCardCell.h"
 #import <objc/runtime.h>
 

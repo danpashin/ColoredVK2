@@ -7,7 +7,6 @@
 //
 
 #import "ColoredVKAudioCover.h"
-#import "PrefixHeader.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "LEColorPicker.h"
 #import "ColoredVKNetwork.h"

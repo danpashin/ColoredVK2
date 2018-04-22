@@ -7,7 +7,6 @@
 //
 
 #import "ColoredVKBarDownloadButton.h"
-#import "PrefixHeader.h"
 #import "ColoredVKHUD.h"
 #import "ColoredVKAlertController.h"
 #import "ColoredVKImageProcessor.h"

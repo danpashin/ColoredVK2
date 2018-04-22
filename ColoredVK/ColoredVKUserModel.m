@@ -6,7 +6,6 @@
 //
 
 #import "ColoredVKNewInstaller.h"
-#import "PrefixHeader.h"
 #import "ColoredVKCrypto.h"
 #import "ColoredVKHUD.h"
 #import "ColoredVKWebViewController.h"

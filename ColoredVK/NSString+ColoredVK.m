@@ -7,7 +7,6 @@
 //
 
 #import "NSString+ColoredVK.h"
-#import "PrefixHeader.h"
 #import <CommonCrypto/CommonDigest.h>
 
 @implementation NSString (ColoredVK)

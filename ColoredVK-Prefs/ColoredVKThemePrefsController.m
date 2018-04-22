@@ -11,8 +11,6 @@
 #import <objc/message.h>
 #import "UIColor+ColoredVK.h"
 
-#import "PrefixHeader.h"
-
 @interface ColoredVKThemePrefsController ()
 
 @property (strong, nonatomic) UIView *closeAppFooter;

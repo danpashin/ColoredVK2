@@ -7,7 +7,6 @@
 
 #import "ColoredVKPrefsSelector.h"
 
-#import "PrefixHeader.h"
 #import "ColoredVKNightThemeColorScheme.h"
 
 @interface ColoredVKPrefsSelector ()

@@ -6,7 +6,6 @@
 //
 
 #import "ColoredVKNightThemeColorScheme.h"
-#import "PrefixHeader.h"
 #import "UIColor+ColoredVK.h"
 
 @implementation ColoredVKNightThemeColorScheme

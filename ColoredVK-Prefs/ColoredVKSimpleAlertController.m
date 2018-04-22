@@ -7,7 +7,6 @@
 //
 
 #import "ColoredVKSimpleAlertController.h"
-#import "PrefixHeader.h"
 #import "UIImage+ColoredVK.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKNightThemeColorScheme.h"

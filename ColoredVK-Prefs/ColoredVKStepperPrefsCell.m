@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "ColoredVKStepperButton.h"
-#import "PrefixHeader.h"
 #import "ColoredVKStepperPrefsCell.h"
 
 @interface ColoredVKStepperPrefsCell () <ColoredVKStepperButtonDelegate>

@@ -6,7 +6,6 @@
 //
 
 #import "ColoredVKTextField.h"
-#import "PrefixHeader.h"
 #import <CoreGraphics/CoreGraphics.h>
 #import "ColoredVKNightThemeColorScheme.h"
 

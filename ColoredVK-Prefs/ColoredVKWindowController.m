@@ -7,7 +7,6 @@
 //
 
 #import "ColoredVKWindowController.h"
-#import "PrefixHeader.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKNightThemeColorScheme.h"
 

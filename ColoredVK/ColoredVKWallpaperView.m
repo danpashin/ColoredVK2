@@ -7,7 +7,6 @@
 //
 
 #import "ColoredVKWallpaperView.h"
-#import "PrefixHeader.h"
 
 const NSInteger PARALLAX_EFFECT_VALUE = 20;
 const NSTimeInterval ANIMATION_DURANTION = 0.2;

@@ -8,7 +8,6 @@
 
 
 #import "ColoredVKColorPickerController.h"
-#import "PrefixHeader.h"
 #import "ColoredVKColorMapView.h"
 #import "HRBrightnessSlider.h"
 #import "ColoredVKColorPreview.h"

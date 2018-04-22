@@ -7,7 +7,6 @@
 //
 
 #import "ColoredVKAnimatedButton.h"
-#import "PrefixHeader.h"
 #import <objc/runtime.h>
 #import <UIKit/UIKit.h>
 

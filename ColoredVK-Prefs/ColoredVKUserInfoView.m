@@ -6,7 +6,6 @@
 //
 
 #import "ColoredVKUserInfoView.h"
-#import "PrefixHeader.h"
 #import "SDWebImageManager.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKNetwork.h"

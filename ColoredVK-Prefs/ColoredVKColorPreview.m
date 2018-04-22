@@ -7,7 +7,6 @@
 //
 
 #import "ColoredVKColorPreview.h"
-#import "PrefixHeader.h"
 #import <objc/runtime.h>
 #import "UIColor+ColoredVK.h"
 

@@ -7,7 +7,6 @@
 
 #import "ColoredVKAccountController.h"
 
-#import "PrefixHeader.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKUserInfoView.h"
 #import "ColoredVKCardController.h"

@@ -6,7 +6,6 @@
 //
 
 #import "ColoredVKPassChangeController.h"
-#import "PrefixHeader.h"
 #import "ColoredVKNavigationController.h"
 #import "ColoredVKTextField.h"
 #import "ColoredVKNewInstaller.h"

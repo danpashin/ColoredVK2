@@ -7,7 +7,6 @@
 //
 
 #import "ColoredVKSettingsController.h"
-#import "PrefixHeader.h"
 #import "ColoredVKAlertController.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKBackupsModel.h"

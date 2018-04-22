@@ -6,7 +6,6 @@
 //
 
 #import "TweakVariables.h"
-#import "PrefixHeader.h"
 #import "UIColor+ColoredVK.h"
 #import "ColoredVKMainController.h"
 #import "ColoredVKNewInstaller.h"

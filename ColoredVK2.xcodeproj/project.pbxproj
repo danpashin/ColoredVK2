@@ -276,7 +276,7 @@
 		A576D18F1DC621B90039884F /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A50731D41CD535130088EF9F /* QuartzCore.framework */; };
 		A576D1901DC621B90039884F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FCA1CC9261B005B9693 /* UIKit.framework */; };
 		A576D1921DC621B90039884F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5079FB51CC92157005B9693 /* Foundation.framework */; };
-		A576D1951DC621B90039884F /* PrefixHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = A53D12911D467016009567B5 /* PrefixHeader.h */; };
+		A576D1951DC621B90039884F /* PrefixHeader.pch in Headers */ = {isa = PBXBuildFile; fileRef = A53D12911D467016009567B5 /* PrefixHeader.pch */; };
 		A576D1971DC621B90039884F /* NSDate+DateTools.h in Headers */ = {isa = PBXBuildFile; fileRef = A504C0701DAFE839006C5FBC /* NSDate+DateTools.h */; };
 		A576D19C1DC621B90039884F /* UIImage+ColoredVK.h in Headers */ = {isa = PBXBuildFile; fileRef = A58F341C1D5A3BBA00838814 /* UIImage+ColoredVK.h */; };
 		A576D19D1DC621B90039884F /* UIColor+ColoredVK.h in Headers */ = {isa = PBXBuildFile; fileRef = A58F34111D5A378100838814 /* UIColor+ColoredVK.h */; };
@@ -425,7 +425,7 @@
 		A5D56A591E70427300A8FFB5 /* ColoredVKMainPrefsController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D9799D1DAEB96500607F06 /* ColoredVKMainPrefsController.h */; };
 		A5D56A5B1E70427300A8FFB5 /* ColoredVKHeaderView.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D979931DAEB96500607F06 /* ColoredVKHeaderView.h */; };
 		A5D56A5C1E70427300A8FFB5 /* ColoredVKHUD.h in Headers */ = {isa = PBXBuildFile; fileRef = A52CDBAA1E33EB2400D69AD3 /* ColoredVKHUD.h */; };
-		A5D56A5E1E70427300A8FFB5 /* PrefixHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = A53D12911D467016009567B5 /* PrefixHeader.h */; };
+		A5D56A5E1E70427300A8FFB5 /* PrefixHeader.pch in Headers */ = {isa = PBXBuildFile; fileRef = A53D12911D467016009567B5 /* PrefixHeader.pch */; };
 		A5D56A641E70427300A8FFB5 /* PSTableCell+ColoredVK.h in Headers */ = {isa = PBXBuildFile; fileRef = A504C0811DB011ED006C5FBC /* PSTableCell+ColoredVK.h */; };
 		A5D56A691E70427300A8FFB5 /* NSDate+DateTools.h in Headers */ = {isa = PBXBuildFile; fileRef = A504C0701DAFE839006C5FBC /* NSDate+DateTools.h */; };
 		A5D56A7C1E70427300A8FFB5 /* LHAcvitityIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = A5DA87BE1D944E1000763B5F /* LHAcvitityIndicator.h */; };
@@ -462,11 +462,11 @@
 		A5D979631DAEB87900607F06 /* Tweak.m in Sources */ = {isa = PBXBuildFile; fileRef = A53D91961CCA82B400E45A49 /* Tweak.m */; };
 		A5D979671DAEB87900607F06 /* UIImage+ColoredVK.m in Sources */ = {isa = PBXBuildFile; fileRef = A58F341D1D5A3BBA00838814 /* UIImage+ColoredVK.m */; };
 		A5D979681DAEB87900607F06 /* UIColor+ColoredVK.m in Sources */ = {isa = PBXBuildFile; fileRef = A58F34101D5A378100838814 /* UIColor+ColoredVK.m */; };
-		A5D979691DAEB88F00607F06 /* PrefixHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = A53D12911D467016009567B5 /* PrefixHeader.h */; };
+		A5D979691DAEB88F00607F06 /* PrefixHeader.pch in Headers */ = {isa = PBXBuildFile; fileRef = A53D12911D467016009567B5 /* PrefixHeader.pch */; };
 		A5D9796E1DAEB88F00607F06 /* UIImage+ColoredVK.h in Headers */ = {isa = PBXBuildFile; fileRef = A58F341C1D5A3BBA00838814 /* UIImage+ColoredVK.h */; };
 		A5D9796F1DAEB88F00607F06 /* UIColor+ColoredVK.h in Headers */ = {isa = PBXBuildFile; fileRef = A58F34111D5A378100838814 /* UIColor+ColoredVK.h */; };
 		A5D979721DAEB8BC00607F06 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5DA87E01D944ECE00763B5F /* CoreGraphics.framework */; };
-		A5D979731DAEB8EA00607F06 /* PrefixHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = A53D12911D467016009567B5 /* PrefixHeader.h */; };
+		A5D979731DAEB8EA00607F06 /* PrefixHeader.pch in Headers */ = {isa = PBXBuildFile; fileRef = A53D12911D467016009567B5 /* PrefixHeader.pch */; };
 		A5D979831DAEB8EA00607F06 /* LHAcvitityIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = A5DA87BE1D944E1000763B5F /* LHAcvitityIndicator.h */; };
 		A5D979841DAEB8EA00607F06 /* LHBackgroundView.h in Headers */ = {isa = PBXBuildFile; fileRef = A5DA87C01D944E1000763B5F /* LHBackgroundView.h */; };
 		A5D979861DAEB8EA00607F06 /* LHProgressHUD.h in Headers */ = {isa = PBXBuildFile; fileRef = A5DA87C41D944E1000763B5F /* LHProgressHUD.h */; };
@@ -627,7 +627,7 @@
 		A53A2E56206BC4E000A22656 /* ColoredVKSecurityController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKSecurityController.m; sourceTree = "<group>"; };
 		A53A2E65206BC8B200A22656 /* ColoredVKAccountController+Actions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ColoredVKAccountController+Actions.h"; sourceTree = "<group>"; };
 		A53A2E66206BC8B200A22656 /* ColoredVKAccountController+Actions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ColoredVKAccountController+Actions.m"; sourceTree = "<group>"; };
-		A53D12911D467016009567B5 /* PrefixHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.h; sourceTree = SOURCE_ROOT; };
+		A53D12911D467016009567B5 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = SOURCE_ROOT; };
 		A53D41661DD0AC2600584B13 /* ColoredVKWallpaperView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKWallpaperView.h; sourceTree = "<group>"; };
 		A53D41671DD0AC2600584B13 /* ColoredVKWallpaperView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKWallpaperView.m; sourceTree = "<group>"; };
 		A53D91961CCA82B400E45A49 /* Tweak.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tweak.m; sourceTree = "<group>"; };
@@ -1032,7 +1032,7 @@
 				A5F09D921F0FF88200024198 /* ColoredVKNewInstaller.m */,
 				A5F09D9B1F0FFA5D00024198 /* ColoredVKCrypto.h */,
 				A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */,
-				A53D12911D467016009567B5 /* PrefixHeader.h */,
+				A53D12911D467016009567B5 /* PrefixHeader.pch */,
 				A5E1E08220656C1800709696 /* Tweak */,
 				A528D8821DE9FCAF00B299C1 /* ColoredVKMainController.h */,
 				A528D8831DE9FCAF00B299C1 /* ColoredVKMainController.m */,
@@ -1292,7 +1292,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A526A6C01DD50D4700B47104 /* ColoredVKAudioLyricsView.h in Headers */,
-				A5D979691DAEB88F00607F06 /* PrefixHeader.h in Headers */,
+				A5D979691DAEB88F00607F06 /* PrefixHeader.pch in Headers */,
 				A5CC382F2040169D005A3AB0 /* NSString+ColoredVK.h in Headers */,
 				A5A4E2CE1F250A520001102F /* ColoredVKWebViewController.h in Headers */,
 				A523509F1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h in Headers */,
@@ -1387,7 +1387,7 @@
 				A59F458A1E917F44002D01F6 /* _UIBackdropView.h in Headers */,
 				A5788A9F1EA0A5B600BC2B54 /* ColoredVKAccountController.h in Headers */,
 				A56147B81EA0140900B3D8C8 /* ColoredVKAboutController.h in Headers */,
-				A576D1951DC621B90039884F /* PrefixHeader.h in Headers */,
+				A576D1951DC621B90039884F /* PrefixHeader.pch in Headers */,
 				A50138DD201F2D070007300C /* ColoredVKAccountRestoreController.h in Headers */,
 				A576D1971DC621B90039884F /* NSDate+DateTools.h in Headers */,
 				A5D2DFB61DE741CF00DCDC84 /* ColoredVKAudioCover.h in Headers */,
@@ -1419,7 +1419,7 @@
 				A51E68B92033231400B72082 /* ColoredVKCardController.h in Headers */,
 				A52CDBAD1E33EB2400D69AD3 /* ColoredVKHUD.h in Headers */,
 				A54E41F51EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */,
-				A5D979731DAEB8EA00607F06 /* PrefixHeader.h in Headers */,
+				A5D979731DAEB8EA00607F06 /* PrefixHeader.pch in Headers */,
 				A57D40D6208147B900CDC7DD /* ColoredVKUINotification.h in Headers */,
 				A5A8596F1EF8110200C6E1EA /* ColoredVKColorPreview.h in Headers */,
 				A5E609752000E5640094C28B /* ColoredVKTextField.h in Headers */,
@@ -1487,7 +1487,7 @@
 				A5D56A5B1E70427300A8FFB5 /* ColoredVKHeaderView.h in Headers */,
 				A5D56A5C1E70427300A8FFB5 /* ColoredVKHUD.h in Headers */,
 				A50138DE201F2D070007300C /* ColoredVKAccountRestoreController.h in Headers */,
-				A5D56A5E1E70427300A8FFB5 /* PrefixHeader.h in Headers */,
+				A5D56A5E1E70427300A8FFB5 /* PrefixHeader.pch in Headers */,
 				A5E3A9192026302800AD43AE /* ColoredVKUserInfoView.h in Headers */,
 				A5A859711EF8110200C6E1EA /* ColoredVKColorPreview.h in Headers */,
 				A5739D671EA015B200367595 /* ColoredVKColorCell.h in Headers */,
@@ -2214,6 +2214,8 @@
 				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = PrefixHeader.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = COMPILE_FOR_JAIL;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
@@ -2358,6 +2360,8 @@
 				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = PrefixHeader.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2561,6 +2565,8 @@
 				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = PrefixHeader.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = COMPILE_APP;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
@@ -2705,6 +2711,8 @@
 				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = PrefixHeader.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = COMPILE_FOR_JAIL;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
@@ -2813,6 +2821,8 @@
 				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = PrefixHeader.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

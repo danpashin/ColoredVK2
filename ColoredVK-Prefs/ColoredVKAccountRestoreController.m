@@ -9,7 +9,6 @@
 #import "ColoredVKTextField.h"
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKHUD.h"
-#import "PrefixHeader.h"
 #import "ColoredVKPassResetController.h"
 #import "ColoredVKNetwork.h"
 

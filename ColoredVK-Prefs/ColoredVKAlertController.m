@@ -8,7 +8,6 @@
 
 #import "ColoredVKAlertController.h"
 #import <UIKit/UIKit.h>
-#import "PrefixHeader.h"
 
 @interface UIAlertAction ()
 

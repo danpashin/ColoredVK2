@@ -6,8 +6,6 @@
 //
 //
 
-#import "PrefixHeader.h"
-
 #import "ColoredVKMainController.h"
 #import "ColoredVKAlertController.h"
 #import "UIImage+ColoredVK.h"

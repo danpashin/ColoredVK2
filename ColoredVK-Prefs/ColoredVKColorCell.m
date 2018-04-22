@@ -9,7 +9,6 @@
 
 #import "UIColor+ColoredVK.h"
 #import "ColoredVKColorCell.h"
-#import "PrefixHeader.h"
 
 @implementation ColoredVKColorCell
 

@@ -12,7 +12,6 @@
 #import "UITableViewCell+ColoredVK.h"
 #import <objc/runtime.h>
 #import "UIScrollView+EmptyDataSet.h"
-#import "PrefixHeader.h"
 #import "ColoredVKNightThemeColorScheme.h"
 
 

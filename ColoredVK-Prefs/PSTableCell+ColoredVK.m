@@ -8,7 +8,6 @@
 
 #import "PSTableCell+ColoredVK.h"
 
-#import "PrefixHeader.h"
 #import "ColoredVKNightThemeColorScheme.h"
 #import <objc/runtime.h>
 
