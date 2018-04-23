@@ -53,15 +53,13 @@
         [headerString appendString:@"<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"];
         provisionDictString = [NSString stringWithFormat:@"%@\n%@</plist>", headerString, provisionDictString];
         
-        NSString *tempPath = [NSTemporaryDirectory() stringByAppendingString:@"/embedded_mobileprovision.plist"];
-        [[provisionDictString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:tempPath atomically:YES];
-        
-        NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:tempPath];
-        if (dict) {
-            self->_teamIdentifier = ((NSArray *)dict[@"TeamIdentifier"]).firstObject;
-            self->_teamName = dict[@"TeamName"];
+        CFDataRef provisionData = CFBridgingRetain([provisionDictString dataUsingEncoding:NSUTF8StringEncoding]);
+        CFDictionaryRef cfPlist = CFPropertyListCreateWithData(kCFAllocatorDefault, provisionData, kCFPropertyListImmutable, NULL, NULL);
+        NSDictionary *plist = CFBridgingRelease(cfPlist);
+        if (plist) {
+            self->_teamIdentifier = ((NSArray *)plist[@"TeamIdentifier"]).firstObject;
+            self->_teamName = plist[@"TeamName"];
         }
-        [[NSFileManager defaultManager] removeItemAtPath:tempPath error:nil];
         
         if (NSClassFromString(@"Activation") != nil) {
             self->_sellerName = @"iapps";
