@@ -2,6 +2,9 @@
 platform :ios, '9.0'
 #use_frameworks!
 
+source 'git@gitlab.com:danpashin/SCParser.git'
+source 'https://github.com/CocoaPods/Specs.git'
+
 
 def prefs_pods
   pod 'SSZipArchive'
@@ -9,12 +12,14 @@ def prefs_pods
   pod 'Color-Picker-for-iOS'
   pod 'MXParallaxHeader'
   pod 'SDWebImage', '~> 4.0'
+  pod 'SCParser'
 end
 
 def tweak_pods
   pod 'LEColorPicker'
   pod 'SDWebImage', '~> 4.0'
   pod 'fishhook'
+  pod 'SCParser'
 end
 
 
