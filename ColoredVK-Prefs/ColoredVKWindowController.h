@@ -20,6 +20,8 @@ typedef NS_ENUM(NSUInteger, ColoredVKWindowBackgroundStyle) {
 @property (strong, nonatomic) UIView *contentView;
 @property (strong, nonatomic, readonly) UIWindow *window;
 @property (strong, nonatomic) UINavigationBar *contentViewNavigationBar;
+
+@property (assign, nonatomic, readonly) BOOL presented;
 /**
  *  Default ColoredVKWindowBackgroundStyleDarkened
  */

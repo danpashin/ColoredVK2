@@ -172,6 +172,13 @@
 		A54E41F81EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */; };
 		A54E41F91EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */; };
 		A54E41FA1EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */; };
+		A55383F22099AB2C002A07BC /* libSCParser.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A55383F02099AB2C002A07BC /* libSCParser.a */; };
+		A55383F32099AB2C002A07BC /* libSCParser.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A55383F02099AB2C002A07BC /* libSCParser.a */; };
+		A55383F42099AB2C002A07BC /* libSCParser.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A55383F02099AB2C002A07BC /* libSCParser.a */; };
+		A55383F62099AB2C002A07BC /* SCParser.h in Headers */ = {isa = PBXBuildFile; fileRef = A55383F12099AB2C002A07BC /* SCParser.h */; };
+		A55383F72099AB2C002A07BC /* SCParser.h in Headers */ = {isa = PBXBuildFile; fileRef = A55383F12099AB2C002A07BC /* SCParser.h */; };
+		A55383F82099AB2C002A07BC /* SCParser.h in Headers */ = {isa = PBXBuildFile; fileRef = A55383F12099AB2C002A07BC /* SCParser.h */; };
+		A55383F92099AB2C002A07BC /* SCParser.h in Headers */ = {isa = PBXBuildFile; fileRef = A55383F12099AB2C002A07BC /* SCParser.h */; };
 		A55434FB1E636B19003B4256 /* Tweak.h in Headers */ = {isa = PBXBuildFile; fileRef = A55434FA1E636B19003B4256 /* Tweak.h */; };
 		A55434FC1E636B19003B4256 /* Tweak.h in Headers */ = {isa = PBXBuildFile; fileRef = A55434FA1E636B19003B4256 /* Tweak.h */; };
 		A558E5042052C33200F10FBB /* ColoredVKApplicationModel.h in Headers */ = {isa = PBXBuildFile; fileRef = A558E5022052C33200F10FBB /* ColoredVKApplicationModel.h */; };
@@ -641,6 +648,8 @@
 		A54E41F31EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKBlurPrefsController.h; sourceTree = "<group>"; };
 		A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKBlurPrefsController.m; sourceTree = "<group>"; };
 		A552879A20832F4C00933B26 /* control_debug */ = {isa = PBXFileReference; lastKnownFileType = text; name = control_debug; path = "ColoredVK-Prefs/control_debug"; sourceTree = "<group>"; };
+		A55383F02099AB2C002A07BC /* libSCParser.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libSCParser.a; sourceTree = "<group>"; };
+		A55383F12099AB2C002A07BC /* SCParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCParser.h; sourceTree = "<group>"; };
 		A55434FA1E636B19003B4256 /* Tweak.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tweak.h; sourceTree = "<group>"; };
 		A558E5022052C33200F10FBB /* ColoredVKApplicationModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKApplicationModel.h; sourceTree = "<group>"; };
 		A558E5032052C33200F10FBB /* ColoredVKApplicationModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKApplicationModel.m; sourceTree = "<group>"; };
@@ -677,7 +686,7 @@
 		A576D17A1DC601D80039884F /* control_release */ = {isa = PBXFileReference; lastKnownFileType = text; name = control_release; path = "ColoredVK-Prefs/control_release"; sourceTree = "<group>"; };
 		A576D17B1DC601EA0039884F /* build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = SOURCE_ROOT; };
 		A576D17C1DC6071F0039884F /* ColoredVK2.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = ColoredVK2.plist; path = "ColoredVK-Prefs/ColoredVK2.plist"; sourceTree = "<group>"; };
-		A576D1A11DC621B90039884F /* ColoredVK copy.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; name = "ColoredVK copy.dylib"; path = ColoredVK2.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		A576D1A11DC621B90039884F /* ColoredVK2.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ColoredVK2.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5788A9C1EA0A5B600BC2B54 /* ColoredVKAccountController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKAccountController.h; sourceTree = "<group>"; };
 		A5788A9D1EA0A5B600BC2B54 /* ColoredVKAccountController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKAccountController.m; sourceTree = "<group>"; };
 		A57B56E920553F8A0097CF9D /* ColoredVKCellBackgroundView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKCellBackgroundView.h; sourceTree = "<group>"; };
@@ -727,7 +736,7 @@
 		A5D2DFB31DE741CF00DCDC84 /* ColoredVKAudioCover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKAudioCover.h; sourceTree = "<group>"; };
 		A5D3D0381FE012FC007AAEF7 /* Preferences.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Preferences.framework; path = ../../../../opt/iOSOpenDev/frameworks/Preferences.framework; sourceTree = "<group>"; };
 		A5D3D06E1FE063D0007AAEF7 /* TweakNightTheme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TweakNightTheme.m; sourceTree = "<group>"; };
-		A5D56AC71E70427300A8FFB5 /* ColoredVK-Prefs copy.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "ColoredVK-Prefs copy.bundle"; path = ColoredVK2.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A5D56AC71E70427300A8FFB5 /* ColoredVK2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ColoredVK2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5D56ACC1E7043DC00A8FFB5 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		A5D56ACE1E7043EF00A8FFB5 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		A5D56AD01E70440600A8FFB5 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -783,6 +792,7 @@
 				A5D979721DAEB8BC00607F06 /* CoreGraphics.framework in Frameworks */,
 				A5079FCB1CC9261B005B9693 /* UIKit.framework in Frameworks */,
 				A5079FB61CC92157005B9693 /* Foundation.framework in Frameworks */,
+				A55383F22099AB2C002A07BC /* libSCParser.a in Frameworks */,
 				7560BCCB5DD90B5C2B79935D /* libPods-ColoredVK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -809,6 +819,7 @@
 				A576D1901DC621B90039884F /* UIKit.framework in Frameworks */,
 				A576D1921DC621B90039884F /* Foundation.framework in Frameworks */,
 				C12A7E1FDC46683C897AAC44 /* libPods-ColoredVK-NonJail.a in Frameworks */,
+				A55383F42099AB2C002A07BC /* libSCParser.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -822,6 +833,7 @@
 				A525A3911F2A381A00F86EFF /* WebKit.framework in Frameworks */,
 				A5D0A2A01DB270EC00720E41 /* libMobileGestalt.tbd in Frameworks */,
 				A5DA87E21D944ED400763B5F /* CoreGraphics.framework in Frameworks */,
+				A55383F32099AB2C002A07BC /* libSCParser.a in Frameworks */,
 				A5B6ED071D3D659800383425 /* Foundation.framework in Frameworks */,
 				A5B6ED081D3D659800383425 /* UIKit.framework in Frameworks */,
 				A40EE5C34D99A34D3387CD0D /* libPods-ColoredVK-Prefs.a in Frameworks */,
@@ -940,8 +952,8 @@
 			children = (
 				A5079FB21CC92157005B9693 /* ColoredVK2.dylib */,
 				A5B6ED061D3D659800383425 /* ColoredVK2.bundle */,
-				A576D1A11DC621B90039884F /* ColoredVK copy.dylib */,
-				A5D56AC71E70427300A8FFB5 /* ColoredVK-Prefs copy.bundle */,
+				A576D1A11DC621B90039884F /* ColoredVK2.dylib */,
+				A5D56AC71E70427300A8FFB5 /* ColoredVK2.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1053,6 +1065,7 @@
 		A53D919D1CCA82C000E45A49 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				A55383EF2099AB2C002A07BC /* SCParser */,
 				A53D91991CCA82B400E45A49 /* VKMethods.h */,
 				A59F45881E917F44002D01F6 /* _UIBackdropView.h */,
 				A5363B0A1E02E6E9000E5A57 /* UIGestureRecognizer+BlocksKit */,
@@ -1072,6 +1085,16 @@
 			);
 			name = Models;
 			sourceTree = "<group>";
+		};
+		A55383EF2099AB2C002A07BC /* SCParser */ = {
+			isa = PBXGroup;
+			children = (
+				A55383F02099AB2C002A07BC /* libSCParser.a */,
+				A55383F12099AB2C002A07BC /* SCParser.h */,
+			);
+			name = SCParser;
+			path = ColoredVK/SCParser;
+			sourceTree = SOURCE_ROOT;
 		};
 		A558E50C2052C34200F10FBB /* Models */ = {
 			isa = PBXGroup;
@@ -1316,6 +1339,7 @@
 				A50883A61FFA48BC00C05E2A /* ColoredVKUserModel.h in Headers */,
 				A55434FB1E636B19003B4256 /* Tweak.h in Headers */,
 				A5D9796F1DAEB88F00607F06 /* UIColor+ColoredVK.h in Headers */,
+				A55383F62099AB2C002A07BC /* SCParser.h in Headers */,
 				A53D41681DD0AC2600584B13 /* ColoredVKWallpaperView.h in Headers */,
 				A592700F2087C74600027F72 /* ColoredVKShadowView.h in Headers */,
 				A56E89E31F31D31C0013BAE3 /* ColoredVKNetwork.h in Headers */,
@@ -1366,6 +1390,7 @@
 				A52B8F3C1F991A2600898168 /* ColoredVKNightThemeColorScheme.h in Headers */,
 				A5AB327A1F34F8E100C7537C /* ColoredVKUpdatesPrefsController.h in Headers */,
 				A5E3A9182026302800AD43AE /* ColoredVKUserInfoView.h in Headers */,
+				A55383F82099AB2C002A07BC /* SCParser.h in Headers */,
 				A5AE82F91EC1DE25000B7F63 /* ColoredVKStepperButton.h in Headers */,
 				A5739D761EA015C300367595 /* ColoredVKStepperPrefsCell.h in Headers */,
 				A53104C71EC4D08C003DEB83 /* ColoredVKWindowController.h in Headers */,
@@ -1410,6 +1435,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5DB61CC1F10DBFF00FFAFF9 /* ColoredVKNewInstaller.h in Headers */,
+				A55383F72099AB2C002A07BC /* SCParser.h in Headers */,
 				A5E3A9172026302800AD43AE /* ColoredVKUserInfoView.h in Headers */,
 				A5788A9E1EA0A5B600BC2B54 /* ColoredVKAccountController.h in Headers */,
 				A50177D0201F936000032A8D /* ColoredVKNavigationController.h in Headers */,
@@ -1491,6 +1517,7 @@
 				A5E3A9192026302800AD43AE /* ColoredVKUserInfoView.h in Headers */,
 				A5A859711EF8110200C6E1EA /* ColoredVKColorPreview.h in Headers */,
 				A5739D671EA015B200367595 /* ColoredVKColorCell.h in Headers */,
+				A55383F92099AB2C002A07BC /* SCParser.h in Headers */,
 				A510E7D71EF99CE9001D6798 /* ColoredVKSimpleAlertController.h in Headers */,
 				A510E7CF1EF98866001D6798 /* ColoredVKColorCollectionViewCell.h in Headers */,
 				A5739D571EA0159700367595 /* ColoredVKColorPickerController.h in Headers */,
@@ -1578,7 +1605,7 @@
 			);
 			name = "ColoredVK-NonJail";
 			productName = ColoredVK;
-			productReference = A576D1A11DC621B90039884F /* ColoredVK copy.dylib */;
+			productReference = A576D1A11DC621B90039884F /* ColoredVK2.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 		A5B6ED051D3D659800383425 /* ColoredVK-Prefs */ = {
@@ -1620,7 +1647,7 @@
 			);
 			name = "Prefs Application";
 			productName = "ColoredVK-Prefs";
-			productReference = A5D56AC71E70427300A8FFB5 /* ColoredVK-Prefs copy.bundle */;
+			productReference = A5D56AC71E70427300A8FFB5 /* ColoredVK2.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1634,24 +1661,29 @@
 				TargetAttributes = {
 					A5079FB11CC92157005B9693 = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = VW97WHTS78;
 						LastSwiftMigration = 0920;
 						ProvisioningStyle = Manual;
 					};
 					A576D17E1DC621B90039884F = {
+						DevelopmentTeam = VW97WHTS78;
 						LastSwiftMigration = 0920;
 						ProvisioningStyle = Manual;
 					};
 					A5B6ED051D3D659800383425 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = VW97WHTS78;
 						LastSwiftMigration = 0920;
 						ProvisioningStyle = Manual;
 					};
 					A5D56A561E70427300A8FFB5 = {
+						DevelopmentTeam = 62DQNF58FV;
 						LastSwiftMigration = 0920;
 						ProvisioningStyle = Manual;
 					};
 					A5D979AB1DAEBB0E00607F06 = {
 						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = VW97WHTS78;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -2259,6 +2291,10 @@
 			buildSettings = {
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 			};
 			name = Debug_DEB;
 		};
@@ -2268,6 +2304,10 @@
 			buildSettings = {
 				ENABLE_BITCODE = NO;
 				INSTALL_PATH = /Library/PreferenceBundles;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug_DEB;
@@ -2285,6 +2325,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 			};
 			name = Debug_DEB;
 		};
@@ -2299,6 +2343,10 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
 				PROVISIONING_PROFILE = "86d06264-68ce-4729-b8ff-5da33996ae46";
@@ -2404,6 +2452,10 @@
 			buildSettings = {
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 			};
 			name = Debug_IPA;
 		};
@@ -2413,6 +2465,10 @@
 			buildSettings = {
 				ENABLE_BITCODE = NO;
 				INSTALL_PATH = /Library/PreferenceBundles;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug_IPA;
@@ -2430,6 +2486,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 			};
 			name = Debug_IPA;
 		};
@@ -2444,6 +2504,10 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
 				PROVISIONING_PROFILE = "86d06264-68ce-4729-b8ff-5da33996ae46";
@@ -2460,6 +2524,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 			};
 			name = Release_DEB;
 		};
@@ -2470,6 +2538,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 			};
 			name = Release_IPA;
 		};
@@ -2484,6 +2556,10 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
 				PROVISIONING_PROFILE = "86d06264-68ce-4729-b8ff-5da33996ae46";
@@ -2504,6 +2580,10 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
 				PROVISIONING_PROFILE = "86d06264-68ce-4729-b8ff-5da33996ae46";
@@ -2610,6 +2690,10 @@
 			buildSettings = {
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 			};
 			name = Debug_APP;
 		};
@@ -2619,6 +2703,10 @@
 			buildSettings = {
 				ENABLE_BITCODE = NO;
 				INSTALL_PATH = /Library/PreferenceBundles;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug_APP;
@@ -2636,6 +2724,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 			};
 			name = Debug_APP;
 		};
@@ -2650,6 +2742,10 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
 				PROVISIONING_PROFILE = "3a219e9d-0182-42d6-8a63-b5718750d7ed";
@@ -2756,6 +2852,10 @@
 			buildSettings = {
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 			};
 			name = Release_DEB;
 		};
@@ -2765,6 +2865,10 @@
 			buildSettings = {
 				ENABLE_BITCODE = NO;
 				INSTALL_PATH = /Library/PreferenceBundles;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release_DEB;
@@ -2865,6 +2969,10 @@
 			buildSettings = {
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 			};
 			name = Release_IPA;
 		};
@@ -2874,6 +2982,10 @@
 			buildSettings = {
 				ENABLE_BITCODE = NO;
 				INSTALL_PATH = /Library/PreferenceBundles;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ColoredVK/SCParser",
+				);
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release_IPA;

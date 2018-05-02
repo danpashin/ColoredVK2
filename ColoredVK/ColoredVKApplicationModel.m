@@ -7,6 +7,7 @@
 
 #import "ColoredVKApplicationModel.h"
 #import <Foundation/Foundation.h>
+#import "SCParser.h"
 
 @implementation ColoredVKApplicationModel
 
@@ -29,36 +30,15 @@
 
 - (void)updateTeamInformation
 {
+#if (defined(__arm__) || defined(__arm64__))
     if (!self.isVKApp)        
         return;
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        NSString *provisionPath = [[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"];
-        if (!provisionPath)
-            return;
-        
-        NSError *error = nil;
-        NSString *provisionString = [NSString stringWithContentsOfFile:provisionPath encoding:NSISOLatin1StringEncoding 
-                                                                 error:&error];
-        if (error)
-            return;
-               
-        NSString *provisionDictString = @"";
-        
-        NSScanner *scanner = [NSScanner scannerWithString:provisionString];
-        [scanner scanUpToString:@"<plist" intoString:nil];
-        [scanner scanUpToString:@"</plist>" intoString:&provisionDictString];
-        NSMutableString *headerString = [NSMutableString string];
-        [headerString appendString:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"];
-        [headerString appendString:@"<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"];
-        provisionDictString = [NSString stringWithFormat:@"%@\n%@</plist>", headerString, provisionDictString];
-        
-        CFDataRef provisionData = CFBridgingRetain([provisionDictString dataUsingEncoding:NSUTF8StringEncoding]);
-        CFDictionaryRef cfPlist = CFPropertyListCreateWithData(kCFAllocatorDefault, provisionData, kCFPropertyListImmutable, NULL, NULL);
-        NSDictionary *plist = CFBridgingRelease(cfPlist);
-        if (plist) {
-            self->_teamIdentifier = ((NSArray *)plist[@"TeamIdentifier"]).firstObject;
-            self->_teamName = plist[@"TeamName"];
+    SCParser *parser = [SCParser new];
+    [parser parseAppProvisionWithCompletion:^(NSDictionary * _Nullable provisionDict, NSError * _Nullable error) {
+        if (!error) {
+            self->_teamIdentifier = ((NSArray *)provisionDict[@"TeamIdentifier"]).firstObject;
+            self->_teamName = provisionDict[@"TeamName"];
         }
         
         if (NSClassFromString(@"Activation") != nil) {
@@ -66,7 +46,8 @@
         } else if ([self.teamIdentifier isEqualToString:@"FL663S8EYD"]) {
             self->_sellerName = @"ishmv";
         }
-    });
+    }];
+#endif
 }
 
 - (ColoredVKVersionCompare)compareAppVersionWithVersion:(NSString *)second_version

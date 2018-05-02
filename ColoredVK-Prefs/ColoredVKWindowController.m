@@ -11,23 +11,18 @@
 #import "ColoredVKNightThemeColorScheme.h"
 
 @interface ColoredVKWindowController ()
-
-@property (assign, nonatomic) BOOL isPresented;
 @property (strong, nonatomic) UITapGestureRecognizer *closeTapRecognizer;
-
 @end
 
 
 @implementation ColoredVKWindowController
-
 @synthesize backgroundView = _backgroundView;
+@synthesize window = _window;
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        _window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-        
         _hideByTouch = YES;
         _statusBarNeedsHidden = YES;
         _animationDuration = 0.3;
@@ -95,7 +90,7 @@
         _backgroundView = backgroundView;
     }
     
-    [_backgroundView addGestureRecognizer:_closeTapRecognizer];
+    [_backgroundView addGestureRecognizer:self.closeTapRecognizer];
     _backgroundView.userInteractionEnabled = YES;
     
     if (self.isViewLoaded) {
@@ -178,7 +173,7 @@
 
 - (BOOL)prefersStatusBarHidden
 {
-    if (self.isPresented)
+    if (self.presented)
         return self.statusBarNeedsHidden;
     
     return NO;
@@ -215,7 +210,7 @@
 - (UITapGestureRecognizer *)closeTapRecognizer
 {
     if (!_closeTapRecognizer) {
-        _closeTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hide)];
+        _closeTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTapped)];
         _closeTapRecognizer.delegate = self;
     }
     return _closeTapRecognizer;
@@ -250,6 +245,19 @@
     return _contentViewNavigationBar;
 }
 
+- (UIWindow *)window
+{
+    if (!_window) {
+        void (^block)(void) = ^{
+            self->_window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+        };
+        
+        [NSThread isMainThread] ? block() : dispatch_sync(dispatch_get_main_queue(), block);
+    }
+    
+    return _window;
+}
+
 
 #pragma mark -
 #pragma mark Actions
@@ -257,6 +265,14 @@
 
 - (void)show
 {
+    [self showWithSetupHandler:nil];
+}
+
+- (void)showWithSetupHandler:(void (^)(void))handler
+{
+    if (self.presented)
+        return;
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
@@ -265,10 +281,14 @@
         self.window.rootViewController = self;
         self.window.alpha = 0.0f;
         [self.window makeKeyAndVisible];
+        
+        if (handler)
+            handler();
+        
         [UIView animateWithDuration:self.animationDuration delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
             self.window.alpha = 1.0f;
         } completion:^(BOOL finished) {
-            self.isPresented = YES;
+            self->_presented = YES;
             
             [UIView animateWithDuration:0.15f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
                 [self setNeedsStatusBarAppearanceUpdate];
@@ -283,7 +303,7 @@
         [UIView animateWithDuration:self.animationDuration delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
             self.window.alpha = 0.0f;
         } completion:^(BOOL firstFinished) {
-            self.isPresented = NO;
+            self->_presented = NO;
             
             [UIView animateWithDuration:0.15f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
                 [self setNeedsStatusBarAppearanceUpdate];
@@ -293,6 +313,11 @@
             }];
         }];
     });
+}
+
+- (void)backgroundTapped
+{
+    [self hide];
 }
 
 @end
