@@ -59,7 +59,7 @@ BOOL installerShouldOpenPrefs;
     if (self) {
         __key = legacyEncryptServerString([NSProcessInfo processInfo].globallyUniqueString);
         __udid = CFBridgingRelease(MGCopyAnswer(CFSTR("re6Zb+zwFKJNlkQTUeT+/w")));
-        deviceIsJailed = (__udid.length == 40);
+        deviceIsJailed = [[NSFileManager defaultManager] isWritableFileAtPath:@"/var/mobile/Library/Preferences/cvk.txt"];
         
         _user = [ColoredVKUserModel new];
         _application = [ColoredVKApplicationModel new];
@@ -88,10 +88,9 @@ BOOL installerShouldOpenPrefs;
         if (![fileManager fileExistsAtPath:CVK_FOLDER_PATH])
             [fileManager createDirectoryAtPath:CVK_FOLDER_PATH withIntermediateDirectories:NO attributes:nil error:nil];
         if (![fileManager fileExistsAtPath:CVK_CACHE_PATH])
-            [fileManager createDirectoryAtPath:CVK_CACHE_PATH  withIntermediateDirectories:NO attributes:nil error:nil];
-        
-        if ([fileManager fileExistsAtPath:CVK_BACKUP_PATH])
-            [fileManager removeItemAtPath:CVK_BACKUP_PATH error:nil];
+            [fileManager createDirectoryAtPath:CVK_CACHE_PATH withIntermediateDirectories:NO attributes:nil error:nil];
+        if (![fileManager fileExistsAtPath:CVK_BACKUP_PATH])
+            [fileManager createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
     });
 }
 

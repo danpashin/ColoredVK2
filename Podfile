@@ -1,9 +1,8 @@
 
-platform :ios, '9.0'
-#use_frameworks!
-
 source 'git@gitlab.com:danpashin/SCParser.git'
 source 'https://github.com/CocoaPods/Specs.git'
+
+platform :ios, '9.0'
 
 
 def prefs_pods

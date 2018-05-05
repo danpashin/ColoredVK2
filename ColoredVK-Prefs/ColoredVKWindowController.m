@@ -249,7 +249,7 @@
 {
     if (!_window) {
         void (^block)(void) = ^{
-            self->_window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+            self->_window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
         };
         
         [NSThread isMainThread] ? block() : dispatch_sync(dispatch_get_main_queue(), block);

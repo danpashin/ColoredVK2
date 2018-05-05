@@ -7,13 +7,20 @@
 
 #import "Tweak.h"
 
+@interface UITabBar ()
+- (UIView *)_backgroundView;
+@end
+
 void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
 {
     [NSObject cvk_runVoidBlockOnMainThread:^{
+        NSInteger blurViewTag = 10;
+        
         if (set && !UIAccessibilityIsReduceTransparencyEnabled()) {
+            
             UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:style]];
             blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            blurEffectView.tag = 10;
+            blurEffectView.tag = blurViewTag;
             blurEffectView.backgroundColor = color;
             
             UIView *borderView = [UIView new];
@@ -27,51 +34,48 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
                 UIView *backgroundView = navbar._backgroundView;
                 verticalFormat = @"V:[view(0.5)]|";
                 
-                if (![backgroundView.subviews containsObject:[backgroundView viewWithTag:10]]) {
-                    [navbar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-                    navbar.shadowImage = [UIImage new];
-                    
+                if (![backgroundView.subviews containsObject:[backgroundView viewWithTag:blurViewTag]]) {
                     blurEffectView.frame = backgroundView.bounds;
                     borderView.frame = CGRectMake(0.0f, blurEffectView.frame.size.height - 0.5f, blurEffectView.frame.size.width, 0.5f);
+                    [backgroundView insertSubview:blurEffectView atIndex:0];
                     
-                    [backgroundView addSubview:blurEffectView];
-                    [backgroundView sendSubviewToBack:blurEffectView];
-                    
+                    [navbar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+                    navbar.shadowImage = [UIImage new];
                 }
             } else if  ([bar isKindOfClass:[UIToolbar class]]) {
                 UIToolbar *toolBar = (UIToolbar *)bar;
                 verticalFormat = @"V:|[view(0.5)]";
                 
-                if (![toolBar.subviews containsObject:[toolBar viewWithTag:10]]) {
+                if (![toolBar.subviews containsObject:[toolBar viewWithTag:blurViewTag]]) {
                     toolBar.barTintColor = [UIColor clearColor];
                     blurEffectView.frame = CGRectMake(0, 0, toolBar.frame.size.width, toolBar.frame.size.height);
                     borderView.frame = CGRectMake(0, 0, toolBar.frame.size.width, 0.5);
                     
-                    [toolBar addSubview:blurEffectView];
-                    [toolBar sendSubviewToBack:blurEffectView];
+                    [toolBar insertSubview:blurEffectView atIndex:0];
                     [toolBar setBackgroundImage:[UIImage new] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
                 }
             } else if  ([bar isKindOfClass:[UITabBar class]]) {
                 UITabBar *tabbar = (UITabBar *)bar;
                 verticalFormat = @"V:|[view(0.5)]";
                 
-                if (![tabbar.subviews containsObject:[tabbar viewWithTag:10]]) {
+                if (![tabbar.subviews containsObject:[tabbar viewWithTag:blurViewTag]]) {
                     blurEffectView.frame = CGRectMake(0, 0, tabbar.frame.size.width, tabbar.frame.size.height);
                     borderView.frame = CGRectMake(0, 0, tabbar.frame.size.width, 0.5);
                     
-                    [tabbar addSubview:blurEffectView];
-                    [tabbar sendSubviewToBack:blurEffectView];
-                    tabbar.backgroundImage = [UIImage new];
+                    [tabbar insertSubview:blurEffectView atIndex:0];
+                    
+                    [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                        tabbar._backgroundView.alpha = 0.0f;
+                    } completion:nil];
                 }
             } else if  ([bar isKindOfClass:[UIView class]]) {
                 verticalFormat = @"V:|[view(0.5)]";
                 
-                if (![bar.subviews containsObject:[bar viewWithTag:10]]) {
+                if (![bar.subviews containsObject:[bar viewWithTag:blurViewTag]]) {
                     blurEffectView.frame = CGRectMake(0, 0, bar.frame.size.width, bar.frame.size.height);
                     borderView.frame = CGRectMake(0, 0, bar.frame.size.width, 0.5);
                     
-                    [bar addSubview:blurEffectView];
-                    [bar sendSubviewToBack:blurEffectView];
+                    [bar insertSubview:blurEffectView atIndex:0];
                 }
             }
             
@@ -84,19 +88,26 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
             if ([bar isKindOfClass:[UINavigationBar class]]) {
                 UINavigationBar *navbar = (UINavigationBar *)bar;
                 UIView *backgroundView = navbar._backgroundView;
-                if ([backgroundView.subviews containsObject:[backgroundView viewWithTag:10]]) {
-                    [[backgroundView viewWithTag:10] removeFromSuperview];
+                if ([backgroundView.subviews containsObject:[backgroundView viewWithTag:blurViewTag]]) {
+                    [[backgroundView viewWithTag:blurViewTag] removeFromSuperview];
                     [navbar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
                 }
             } else if  ([bar isKindOfClass:[UIToolbar class]]) {
                 UIToolbar *toolBar = (UIToolbar *)bar;
-                if ([toolBar.subviews containsObject:[toolBar viewWithTag:10]]) [[toolBar viewWithTag:10] removeFromSuperview];
+                if ([toolBar.subviews containsObject:[toolBar viewWithTag:blurViewTag]])
+                    [[toolBar viewWithTag:blurViewTag] removeFromSuperview];
             } else if  ([bar isKindOfClass:[UITabBar class]]) {
                 UITabBar *tabbar = (UITabBar *)bar;
-                tabbar.backgroundImage = nil;
-                if ([tabbar.subviews containsObject:[tabbar viewWithTag:10]]) [[tabbar viewWithTag:10] removeFromSuperview];
+                
+                [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                    tabbar._backgroundView.alpha = 1.0f;
+                } completion:^(BOOL finished) {
+                    if ([tabbar.subviews containsObject:[tabbar viewWithTag:blurViewTag]])
+                        [[tabbar viewWithTag:blurViewTag] removeFromSuperview];
+                }];
             } else if  ([bar isKindOfClass:[UIView class]]) {
-                if ([bar.subviews containsObject:[bar viewWithTag:10]]) [[bar viewWithTag:10] removeFromSuperview];
+                if ([bar.subviews containsObject:[bar viewWithTag:blurViewTag]])
+                    [[bar viewWithTag:blurViewTag] removeFromSuperview];
             }
         }
     }];
@@ -118,10 +129,10 @@ void setupTranslucence(UIView *view, UIColor *backColor, BOOL remove)
                     if ([subview isKindOfClass:[UIVisualEffectView class]]) {
                         subview.alpha = 0.0f;
                         subview.hidden = NO;
-                        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                        [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
                             subview.alpha = 1.0f;
                         } completion:nil];
-                        return;
+                        break;
                     }
                 }
             }
@@ -421,22 +432,25 @@ void resetNavigationBar(UINavigationBar *navBar)
     }];
 }
 
-void actionChangeCornerRadius()
+void actionChangeCornerRadius(UIWindow *window)
 {
     [NSObject cvk_runVoidBlockOnMainThread:^{
-        UIWindow *window = [UIApplication sharedApplication].keyWindow;
-        window.layer.masksToBounds = YES;
+        UIWindow *localWindowVar = window;
+        if (!localWindowVar) {
+            localWindowVar = [UIApplication sharedApplication].windows.lastObject;
+            localWindowVar.layer.masksToBounds = YES;
+        }
         
         CGFloat cornerRaduis = enabled ? appCornerRadius : 0.0f;
         
         CABasicAnimation *cornerAnimation = [CABasicAnimation animationWithKeyPath:@"cornerRadius"];
-        cornerAnimation.fromValue = @(window.layer.cornerRadius);
+        cornerAnimation.fromValue = @(localWindowVar.layer.cornerRadius);
         cornerAnimation.toValue = @(cornerRaduis);
         cornerAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
         cornerAnimation.duration = 0.3f;
         
-        window.layer.cornerRadius = cornerRaduis;
-        [window.layer addAnimation:cornerAnimation forKey:@"cornerAnimation"];
+        localWindowVar.layer.cornerRadius = cornerRaduis;
+        [localWindowVar.layer addAnimation:cornerAnimation forKey:@"cornerAnimation"];
     }];
 }
 
@@ -483,7 +497,7 @@ void setupTabbar()
     UITabBarController *controller = (UITabBarController *)cvkMainController.vkMainController;
     if ([controller isKindOfClass:[UITabBarController class]]) {
         UITabBar *tabbar = controller.tabBar;
-        setupTranslucence(tabbar, cvkMainController.nightThemeScheme.navbackgroundColor, !(enabled && enableNightTheme));
+//        setupTranslucence(tabbar, cvkMainController.nightThemeScheme.navbackgroundColor, !(enabled && enableNightTheme));
         if (enabled && enableNightTheme) {
             tabbar.barTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
             tabbar.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
@@ -799,11 +813,6 @@ void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRe
             [cvkMainController.menuBackgroundView addToBack:menuController.view animated:NO];
         }
     });
-}
-
-void updateCornerRadius(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
-{
-    actionChangeCornerRadius();
 }
 
 void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)

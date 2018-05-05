@@ -233,7 +233,7 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
             if (!changeImageColor)
                 changeImageColor = @NO;
             
-            NSArray <NSString *> *namesToExclude = @[@"attachments/remove", @"search/clear", @"scroll_to_bottom"];
+            NSArray <NSString *> *namesToExclude = @[@"attachments/remove", @"search/clear", @"scroll_to_bottom", @"dismiss_light_24"];
             if (![namesToExclude containsObject:[self imageForState:UIControlStateNormal].imageAsset.assetName] || changeImageColor.boolValue) {
                 if ((CGRectGetWidth(self.imageView.frame) <= 44.0f && CGRectGetHeight(self.imageView.frame) <= 44.0f) || changeImageColor.boolValue) {
                     [self setImage:[[self imageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
@@ -873,13 +873,19 @@ CHDeclareMethod(0, void, _UIAlertControllerTextFieldViewController, viewDidLoad)
     }
 }
 
-CHDeclareClass(_UIAlertControllerActionView);
-CHDeclareMethod(0, void, _UIAlertControllerActionView, layoutSubviews)
+CHDeclareClass(_UIAlertControlleriOSActionSheetCancelBackgroundView);
+CHDeclareMethod(0, void, _UIAlertControlleriOSActionSheetCancelBackgroundView, layoutSubviews)
 {
-    CHSuper(0, _UIAlertControllerActionView, layoutSubviews);
+    CHSuper(0, _UIAlertControlleriOSActionSheetCancelBackgroundView, layoutSubviews);
     
-    if (enabled && enableNightTheme) {
-        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"_UIAlertControlleriOSActionSheetCancelBackgroundView")]) {
+        Ivar backgroundViewIvar = class_getInstanceVariable([self class], "backgroundView");
+        if (backgroundViewIvar) {
+            UIView *backgroundView = object_getIvar(self, backgroundViewIvar);
+            if (backgroundView) {
+                backgroundView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+            }
+        }
     }
 }
 
@@ -1320,3 +1326,45 @@ CHDeclareMethod(1, void, BKPasscodeViewController, viewWillAppear, BOOL, animate
         self.view.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
 }
+
+CHDeclareClass(PopupIntroView);
+CHDeclareMethod(0, void, PopupIntroView, layoutSubviews)
+{
+    CHSuper(0, PopupIntroView, layoutSubviews);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"PopupIntroView")]) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+}
+
+
+CHDeclareClass(UIBlurEffect);
+CHDeclareClassMethod(3, id, UIBlurEffect, _effectWithStyle, long long, style, tintColor, UIColor *, tintColor, invertAutomaticStyle, BOOL, invertAutomaticStyle)
+{
+    if (enabled && enableNightTheme)
+        style = UIBlurEffectStyleLight;
+    
+    return CHSuper(3, UIBlurEffect, _effectWithStyle, style, tintColor, tintColor, invertAutomaticStyle, invertAutomaticStyle);
+}
+
+CHDeclareClassMethod(1, id, UIBlurEffect, effectWithStyle, long long, style)
+{
+    if (enabled && enableNightTheme)
+        style = UIBlurEffectStyleLight;
+    
+    return CHSuper(1, UIBlurEffect, effectWithStyle, style);
+}
+
+CHDeclareClass(UIVisualEffectView);
+CHDeclareMethod(1, void, UIVisualEffectView, willMoveToWindow, UIWindow *, window)
+{
+    CHSuper(1, UIVisualEffectView, willMoveToWindow, window);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:[UIVisualEffectView class]]) {
+        if ([self.superview isKindOfClass:NSClassFromString(@"_UIBarBackground")]) 
+            self.contentView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+        else
+            self.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+}
+

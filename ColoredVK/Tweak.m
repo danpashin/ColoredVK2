@@ -129,10 +129,29 @@ CHDeclareMethod(2, UITableViewCell*, VKMLiveController, tableView, UITableView*,
 #pragma mark VKMController
 // Настройка бара навигации
 CHDeclareClass(VKMController);
-CHDeclareMethod(0, void, VKMController, loadView)
+CHDeclareMethod(0, void, VKMController, viewDidLoad)
 {
-    CHSuper(0, VKMController, loadView);
-    updateControllerBlurInfo(self, nil);
+    CHSuper(0, VKMController, viewDidLoad);
+    
+    if (![self isKindOfClass:NSClassFromString(@"VKMTableController")] && ![self isKindOfClass:NSClassFromString(@"DialogsController")])
+        return;
+    
+    updateControllerBlurInfo(self, ^{
+        UIColor *blurColor = objc_getAssociatedObject(self, "cvkBlurColor");
+        if (!blurColor)
+            blurColor = [UIColor clearColor];
+        
+        __block NSNumber *shouldAddBlur = objc_getAssociatedObject(self, "cvkShouldAddBlur");
+        if (!shouldAddBlur) 
+            shouldAddBlur = @NO;
+        
+        NSNumber *blurStyle = objc_getAssociatedObject(self, "cvkBlurStyle");
+        if (!blurStyle)
+            blurStyle = @0;
+        
+        resetNavigationBar(self.navigationController.navigationBar);
+        setBlur(self.navigationController.navigationBar, shouldAddBlur.boolValue, blurColor, blurStyle.integerValue);
+    });
 }
 
 CHDeclareMethod(1, void, VKMController, viewWillAppear, BOOL, animated)
@@ -173,10 +192,8 @@ CHDeclareMethod(1, void, VKMController, viewWillAppear, BOOL, animated)
             }
         }
         
-        resetNavigationBar(self.navigationController.navigationBar);
         setBlur(self.navigationController.navigationBar, shouldAddBlur.boolValue, blurColor, blurStyle.integerValue);
         
-        resetTabBar();
         if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]])
             setBlur(((UITabBarController *)cvkMainController.vkMainController).tabBar, shouldAddBlur.boolValue, blurColor, blurStyle.integerValue);
     };

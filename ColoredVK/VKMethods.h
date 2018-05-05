@@ -894,3 +894,5 @@
 @interface BKPasscodeViewController : UIViewController
 @end
 
+@interface PopupIntroView : UIView
+@end

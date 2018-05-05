@@ -400,7 +400,7 @@ void reloadPrefs(void(^completion)(void))
             if (completion)
                 completion();
             
-            actionChangeCornerRadius();
+            actionChangeCornerRadius([UIApplication sharedApplication].keyWindow);
             POST_NOTIFICATION(kPackageNotificationPrefsReloaded);
         }];
     });

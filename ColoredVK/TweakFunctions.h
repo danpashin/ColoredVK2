@@ -10,7 +10,6 @@
 
 void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
-void updateCornerRadius(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 
 void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style);
@@ -24,7 +23,7 @@ void setupNewDialogCellForNightTheme(NewDialogCell *dialogCell);
 
 void performInitialCellSetup(UITableViewCell *cell);
 void setupAudioPlayer(UIView *hostView, UIColor *color);
-void actionChangeCornerRadius(void);
+void actionChangeCornerRadius(UIWindow *window);
 
 void resetUISearchBar(UISearchBar *searchBar);
 void setupUISearchBar(UISearchBar *searchBar);

@@ -35,6 +35,10 @@ CHDeclareMethod(2, BOOL, AppDelegate, application, UIApplication*, application, 
     };
     [newInstaller checkStatus];
     
+    [[NSNotificationCenter defaultCenter] addObserverForName:UIWindowDidBecomeVisibleNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+        actionChangeCornerRadius(nil);
+    }];
+    
     return orig;
 }
 
@@ -42,7 +46,7 @@ CHDeclareMethod(1, void, AppDelegate, applicationDidBecomeActive, UIApplication 
 {
     CHSuper(1, AppDelegate, applicationDidBecomeActive, application);
     
-    actionChangeCornerRadius();
+    actionChangeCornerRadius(nil);
     
     if (cvkMainController.audioCover) {
         [cvkMainController.audioCover updateColorScheme];
