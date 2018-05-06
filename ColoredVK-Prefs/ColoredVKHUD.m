@@ -13,8 +13,18 @@
 @interface LHProgressHUD ()
 - (instancetype)initWithAttachedView:(UIView *)view mode:(LHProgressHUDMode)mode subMode:(LHPRogressHUDSubMode)subMode animated:(BOOL)animated;
 @property (strong, nonatomic) UIView *lhSpinner;
-- (void)commonInit;
+
+- (void)commonInit NS_REQUIRES_SUPER;
 @end
+
+
+@interface LHAcvitityIndicator ()
+@property (strong, nonatomic) CAShapeLayer *layerFirst;
+@property (strong, nonatomic) CAShapeLayer *layerSecond;
+@property (strong, nonatomic) CAShapeLayer *thridLayer;
+@property (assign, nonatomic) BOOL shouldStop;
+@end
+
 
 @implementation ColoredVKHUD
 
@@ -30,13 +40,25 @@
 
 - (instancetype)initHudForView:(UIView *)view
 {
-    if (!view) view = UIApplication.sharedApplication.keyWindow.rootViewController.view;
+    __block UIView *localView = view;
+    __block typeof(self) localSelf = self;
     
-    self = [super initWithAttachedView:view mode:LHProgressHUDModeNormal subMode:LHProgressHUDSubModeAnimating animated:YES];
-    if (self) {
+    [self performBlockOnMainThread:^{
+        if (!localView)
+            localView = [UIApplication sharedApplication].keyWindow;
         
-    }
-    return self;
+        NSInteger tag = 771177892;
+        UIView *tagView = [localView viewWithTag:tag];
+        if (tagView && [tagView isKindOfClass:[self class]]) {
+            localView = tagView;
+            return;
+        }
+        
+        localSelf = [self initWithAttachedView:localView mode:LHProgressHUDModeNormal subMode:LHProgressHUDSubModeAnimating animated:YES];
+        localSelf.tag = tag;
+    }];
+    
+    return localSelf;
 }
 
 - (void)commonInit
@@ -47,57 +69,91 @@
     self.centerBackgroundView.blurStyle = nightScheme.enabled ? LHBlurEffectStyleDark : LHBlurEffectStyleExtraLight;
     self.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:nightScheme.enabled ? 0.0f : 1.0f alpha:0.7f];
     self.centerBackgroundView.layer.cornerRadius = 10.0f;
-    self.infoColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
+    self.infoColor = [UIColor colorWithWhite:nightScheme.enabled ? 1.0f : 0.0f alpha:0.5f];
     self.spinnerColor = [UIColor colorWithWhite:0.55f alpha:1.0f];
     self.textLabel.textColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopSpinner) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startSpinner) name:UIApplicationDidBecomeActiveNotification object:nil];
+}
+
+- (void)stopSpinner
+{
+    [self performBlockOnMainThread:^{
+        if ([self.lhSpinner isKindOfClass:[LHAcvitityIndicator class]]) {
+            LHAcvitityIndicator *activityIndicator = (LHAcvitityIndicator *)self.lhSpinner;
+            activityIndicator.shouldStop = YES;
+            [activityIndicator.layerFirst removeAllAnimations];
+            [activityIndicator.layerSecond removeAllAnimations];
+            [activityIndicator.thridLayer removeAllAnimations];
+        }
+    }];
+}
+
+- (void)startSpinner
+{
+    [self performBlockOnMainThread:^{
+        if (self.subMode == LHProgressHUDSubModeAnimating && [self.lhSpinner isKindOfClass:[LHAcvitityIndicator class]]) {
+            [(LHAcvitityIndicator *)self.lhSpinner startAnimating];
+        }
+    }];
 }
 
 - (void)showSuccess
 {
-    dispatch_async(dispatch_get_main_queue(), ^{ 
+    [self performBlockOnMainThread:^{
         [super showSuccessWithStatus:@"" animated:YES];
         [super hideAfterDelay:1.5f];
-    });
+    }];
 }
 
 - (void)showSuccessWithStatus:(NSString *)status
 {
-    dispatch_async(dispatch_get_main_queue(), ^{ 
+    [self performBlockOnMainThread:^{
         [super showSuccessWithStatus:status animated:YES];
         [super hideAfterDelay:1.5f];
-    });
+    }];
 }
 
 - (void)showFailure
 {
-    dispatch_async(dispatch_get_main_queue(), ^{ 
+    [self performBlockOnMainThread:^{
         [super showFailureWithStatus:@"" animated:YES];
         [super hideAfterDelay:1.5f];
-    });
+    }];
 }
 
 - (void)showFailureWithStatus:(NSString *)status
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    [self performBlockOnMainThread:^{
         [super showFailureWithStatus:status animated:YES];
         [super hideAfterDelay:2.8f];
-    });
+    }];
 }
 
 - (void)hide
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([self.lhSpinner isKindOfClass:[LHAcvitityIndicator class]])
-            [(LHAcvitityIndicator *)self.lhSpinner updateToSuccess:NO];
+    [self performBlockOnMainThread:^{
+        [self stopSpinner];
         [super hide];
-    });
+    }];
 }
 
 - (void)hideAfterDelay:(CGFloat)delay
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    [self performBlockOnMainThread:^{
         [super hideAfterDelay:delay];
-    });
+    }];
+}
+
+- (void)performBlockOnMainThread:( void(^_Nonnull)(void) )block
+{
+    [NSThread isMainThread] ? block() : dispatch_sync(dispatch_get_main_queue(), block);
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

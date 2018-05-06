@@ -651,7 +651,7 @@ CHDeclareMethod(0, void, MainMenuPlayer, highlightUpdated)
         self.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
         if ([self respondsToSelector:@selector(titleLabel)]) {
             self.titleLabel.textColor = cvkMainController.nightThemeScheme.textColor;
-        } 
+        }
         if ([self respondsToSelector:@selector(playerTitle)]) {
             self.playerTitle.textColor = cvkMainController.nightThemeScheme.textColor;
         }
@@ -798,19 +798,6 @@ CHDeclareMethod(0, void, UIAlertController, viewDidLoad)
     
     if (enabled && enableNightTheme) {
         self.view.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
-        
-//        UIView *firstSubview = self.view.subviews.firstObject;
-//        UIView *alertContentView = firstSubview.subviews.firstObject;
-//        
-//        BOOL shouldUseTwoCycles = SYSTEM_VERSION_IS_LESS_THAN(@"10.0");
-//        for (UIView *subview in alertContentView.subviews) {
-//            subview.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-//            if (shouldUseTwoCycles) {
-//                for (UIView *subSubview in subview.subviews) {
-//                    subSubview.backgroundColor = subview.backgroundColor;
-//                }
-//            }
-//        }
     }
 }
 
@@ -1289,7 +1276,7 @@ CHDeclareClass(_TtC3vkm31HistoryCollectionViewController);
 CHDeclareMethod(3, void, _TtC3vkm31HistoryCollectionViewController, collectionView, UICollectionView *, collectionView, willDisplayCell, UICollectionViewCell *, cell, forItemAtIndexPath, NSIndexPath *, indexPath)
 {
     CHSuper(3, _TtC3vkm31HistoryCollectionViewController, collectionView, collectionView, willDisplayCell, cell, forItemAtIndexPath, indexPath);
-    setupNewMessageCellBubble(cell);    
+    setupNewMessageCellBubble(cell);
 }
 
 CHDeclareClass(_TtC3vkm17MessageController);
@@ -1366,4 +1353,48 @@ CHDeclareMethod(1, void, _UIBackdropView, setBackgroundColor, UIColor *, backgro
     }
     
     CHSuper(1, _UIBackdropView, setBackgroundColor, backgroundColor);
+}
+
+CHDeclareClass(MBProgressHUDBackgroundLayer);
+CHDeclareMethod(1, void, MBProgressHUDBackgroundLayer, drawInContext, CGContextRef, context)
+{
+    self.backgroundColor = [UIColor redColor].CGColor;
+    if (enabled && enableNightTheme) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor.CGColor;
+        self.cornerRadius = 20.0f;
+    } else {
+        CHSuper(1, MBProgressHUDBackgroundLayer, drawInContext, context);
+    }
+}
+
+CHDeclareClass(ArticlePageController);
+CHDeclareMethod(1, void, ArticlePageController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, ArticlePageController, viewWillAppear, animated);
+    
+    if (enabled && enableNightTheme) {
+        [self.webViewManager enableDarkMode:YES];
+    }
+}
+
+CHDeclareMethod(2, void, ArticlePageController, articlePageModel, id, model, didToggleToDarkMode, BOOL, enableDarkMode)
+{
+    enableDarkMode = (enabled && enableNightTheme) ? YES : enableDarkMode;
+    CHSuper(2, ArticlePageController, articlePageModel, model, didToggleToDarkMode, enableDarkMode);
+}
+
+CHDeclareClass(ArticleWebViewManager);
+CHDeclareMethod(1, void, ArticleWebViewManager, setReady, BOOL, ready)
+{
+    CHSuper(1, ArticleWebViewManager, setReady, ready);
+    
+    if (enabled && enableNightTheme) {
+        [self enableDarkMode:YES];
+    }
+}
+
+CHDeclareMethod(1, void, ArticleWebViewManager, enableDarkMode, BOOL, enableDarkMode)
+{
+    enableDarkMode = (enabled && enableNightTheme) ? YES : enableDarkMode;
+    CHSuper(1, ArticleWebViewManager, enableDarkMode, enableDarkMode);
 }

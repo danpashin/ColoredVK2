@@ -903,3 +903,15 @@
 @interface _UIBackdropEffectView : UIView
 @property(retain, nonatomic) CALayer *backdropLayer;
 @end
+
+@interface MBProgressHUDBackgroundLayer : CALayer
+@end
+
+@interface ArticleWebViewManager : NSObject
+- (void)enableDarkMode:(BOOL)enableDarkMode;
+@end
+
+@interface ArticlePageController : VKMController
+@property(retain, nonatomic) ArticleWebViewManager *webViewManager;
+- (void)updateAppearance;
+@end

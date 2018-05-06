@@ -25,10 +25,7 @@
 
 
 @interface ColoredVKNewInstaller ()
-
-@property (strong, nonatomic) UIWindow *hudWindow;
 @property (weak, nonatomic) ColoredVKHUD *hud;
-
 @end
 
 
@@ -59,7 +56,11 @@ BOOL installerShouldOpenPrefs;
     if (self) {
         __key = legacyEncryptServerString([NSProcessInfo processInfo].globallyUniqueString);
         __udid = CFBridgingRelease(MGCopyAnswer(CFSTR("re6Zb+zwFKJNlkQTUeT+/w")));
+        if (!__udid || __udid.length != 40)
+            __udid = @"";
+        
         deviceIsJailed = [[NSFileManager defaultManager] isWritableFileAtPath:@"/var/mobile/Library/Preferences/cvk.txt"];
+        deviceIsJailed = deviceIsJailed && (__udid.length == 40);
         
         _user = [ColoredVKUserModel new];
         _application = [ColoredVKApplicationModel new];
@@ -153,10 +154,8 @@ return;
             deviceIsJailed = YES;
             NSString *licenceUdid = dict[@"udid"];
             
-            if (__udid.length != 0) {
-                if ((licenceUdid.length != 40) || !deviceIsJailed || ![licenceUdid isEqualToString:__udid]) {
-                    writeFreeLicenceAndReturn
-                }
+            if ((licenceUdid.length != 40) || !deviceIsJailed || ![licenceUdid isEqualToString:__udid]) {
+                writeFreeLicenceAndReturn
             }
             
             if (![dict[@"purchased"] boolValue])
@@ -206,25 +205,14 @@ return;
 
 - (void)showHudWithText:(NSString *)text
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.hudWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        self.hudWindow.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.2f];
-        self.hudWindow.userInteractionEnabled = NO;
-        [self.hudWindow makeKeyAndVisible];
-        
-        self.hud = [ColoredVKHUD showHUDForView:self.hudWindow];
-        [self.hud resetWithStatus:text];
-    });
+    self.hud = [ColoredVKHUD showHUD];
+    self.hud.backgroundView.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.2f];
+    [self.hud resetWithStatus:text];
 }
 
 - (void)hideHud
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.hud.didHiddenBlock = ^{
-            self.hudWindow = nil;
-        };
-        [self.hud hide];
-    });
+    [self.hud hide];
 }
 
 
@@ -237,7 +225,7 @@ return;
     [self.user clearUser];
     
     NSDictionary *dict = @{@"purchased" : @NO, @"Device" : __deviceModel, 
-                           @"jailed" : deviceIsJailed ? @YES : @NO, @"udid" : deviceIsJailed ? __udid : @"" };
+                           @"jailed" : deviceIsJailed ? @YES : @NO, @"udid" : __udid };
     NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
     [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
     
