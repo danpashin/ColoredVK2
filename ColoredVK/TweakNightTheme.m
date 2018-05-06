@@ -494,14 +494,6 @@ CHDeclareMethod(0, void, UIView, layoutSubviews)
 }
 
 
-CHDeclareClass(UIToolbar);
-CHDeclareMethod(1, void, UIToolbar, setFrame, CGRect, frame)
-{
-    CHSuper(1, UIToolbar, setFrame, frame);
-    
-    setupTranslucence(self, cvkMainController.nightThemeScheme.navbackgroundColor, !(enabled && enableNightTheme));
-}
-
 CHDeclareClass(PollAnswerButton);
 CHDeclareMethod(0, void, PollAnswerButton, layoutSubviews)
 {
@@ -798,13 +790,6 @@ CHDeclareMethod(0, void, DiscoverLayoutShadow, layoutSubviews)
     self.hidden = (enabled && enableNightTheme);
 }
 
-CHDeclareClass(UIVisualEffectView);
-CHDeclareMethod(1, void, UIVisualEffectView, setEffect, UIVisualEffect *, effect)
-{
-    self.hidden = (enabled && enableNightTheme && [effect isKindOfClass:[UIBlurEffect class]]);
-    
-    CHSuper(1, UIVisualEffectView, setEffect, effect);
-}
 
 CHDeclareClass(UIAlertController);
 CHDeclareMethod(0, void, UIAlertController, viewDidLoad)
@@ -814,18 +799,18 @@ CHDeclareMethod(0, void, UIAlertController, viewDidLoad)
     if (enabled && enableNightTheme) {
         self.view.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
         
-        UIView *firstSubview = self.view.subviews.firstObject;
-        UIView *alertContentView = firstSubview.subviews.firstObject;
-        
-        BOOL shouldUseTwoCycles = SYSTEM_VERSION_IS_LESS_THAN(@"10.0");
-        for (UIView *subview in alertContentView.subviews) {
-            subview.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-            if (shouldUseTwoCycles) {
-                for (UIView *subSubview in subview.subviews) {
-                    subSubview.backgroundColor = subview.backgroundColor;
-                }
-            }
-        }
+//        UIView *firstSubview = self.view.subviews.firstObject;
+//        UIView *alertContentView = firstSubview.subviews.firstObject;
+//        
+//        BOOL shouldUseTwoCycles = SYSTEM_VERSION_IS_LESS_THAN(@"10.0");
+//        for (UIView *subview in alertContentView.subviews) {
+//            subview.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+//            if (shouldUseTwoCycles) {
+//                for (UIView *subSubview in subview.subviews) {
+//                    subSubview.backgroundColor = subview.backgroundColor;
+//                }
+//            }
+//        }
     }
 }
 
@@ -1338,33 +1323,47 @@ CHDeclareMethod(0, void, PopupIntroView, layoutSubviews)
 }
 
 
-CHDeclareClass(UIBlurEffect);
-CHDeclareClassMethod(3, id, UIBlurEffect, _effectWithStyle, long long, style, tintColor, UIColor *, tintColor, invertAutomaticStyle, BOOL, invertAutomaticStyle)
+CHDeclareClass(_UIVisualEffectSubview);
+CHDeclareMethod(0, void, _UIVisualEffectSubview, layoutSubviews)
 {
-    if (enabled && enableNightTheme)
-        style = UIBlurEffectStyleLight;
-    
-    return CHSuper(3, UIBlurEffect, _effectWithStyle, style, tintColor, tintColor, invertAutomaticStyle, invertAutomaticStyle);
+    CHSuper(0, _UIVisualEffectSubview, layoutSubviews);
+    self.backgroundColor = self.backgroundColor;
 }
 
-CHDeclareClassMethod(1, id, UIBlurEffect, effectWithStyle, long long, style)
+CHDeclareMethod(1, void, _UIVisualEffectSubview, setBackgroundColor, UIColor *, backgroundColor)
 {
-    if (enabled && enableNightTheme)
-        style = UIBlurEffectStyleLight;
-    
-    return CHSuper(1, UIBlurEffect, effectWithStyle, style);
-}
-
-CHDeclareClass(UIVisualEffectView);
-CHDeclareMethod(1, void, UIVisualEffectView, willMoveToWindow, UIWindow *, window)
-{
-    CHSuper(1, UIVisualEffectView, willMoveToWindow, window);
-    
-    if (enabled && enableNightTheme && [self isKindOfClass:[UIVisualEffectView class]]) {
-        if ([self.superview isKindOfClass:NSClassFromString(@"_UIBarBackground")]) 
-            self.contentView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+    if (enabled && enableNightTheme) {
+        if ([self.superview.superview isKindOfClass:NSClassFromString(@"_UIBarBackground")])
+            backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
         else
-            self.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+            backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
+    
+    CHSuper(1, _UIVisualEffectSubview, setBackgroundColor, backgroundColor);
 }
 
+CHDeclareClass(_UIBackdropEffectView);
+CHDeclareMethod(0, void, _UIBackdropEffectView, layoutSubviews)
+{
+    CHSuper(0, _UIBackdropEffectView, layoutSubviews);
+    self.backdropLayer.hidden = YES;
+}
+
+CHDeclareClass(_UIBackdropView);
+CHDeclareMethod(0, void, _UIBackdropView, layoutSubviews)
+{
+    CHSuper(0, _UIBackdropView, layoutSubviews);
+    self.backgroundColor = self.backgroundColor;
+}
+
+CHDeclareMethod(1, void, _UIBackdropView, setBackgroundColor, UIColor *, backgroundColor)
+{
+    if (enabled && enableNightTheme) {
+        if ([self.superview isKindOfClass:NSClassFromString(@"_UINavigationBarBackground")])
+            backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+        else
+            backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+    
+    CHSuper(1, _UIBackdropView, setBackgroundColor, backgroundColor);
+}

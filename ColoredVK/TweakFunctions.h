@@ -14,7 +14,6 @@ void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRe
 
 void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style);
 void setToolBar(UIToolbar *toolbar);
-void setupTranslucence(UIView *view, UIColor *backColor, BOOL remove);
 
 void setupTabbar(void);
 void resetTabBar(void);

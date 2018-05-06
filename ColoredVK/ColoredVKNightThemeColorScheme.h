@@ -12,7 +12,8 @@ typedef NS_ENUM(NSInteger, CVKNightThemeType) {
     CVKNightThemeTypeDisabled = -1,
     CVKNightThemeTypeDarkBlue = 0,
     CVKNightThemeTypeBlack,
-    CVKNightThemeTypeCustom
+    CVKNightThemeTypeCustom,
+    CVKNightThemeTypeTrueBlack,
 };
 
 @interface ColoredVKNightThemeColorScheme : NSObject

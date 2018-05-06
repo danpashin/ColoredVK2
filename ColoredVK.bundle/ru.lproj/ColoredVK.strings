@@ -118,6 +118,7 @@
 "DISABLED" = "Отключена";
 "NIGHT_BLUE" = "Ночная синяя";
 "DARK_NIGHT" = "Тёмная";
+"TRUE_NIGHT" = "Тёмная (OLED)";
 "CUSTOM" = "Настраиваемая";
 
 "NAVIGATION" = "Навигация";

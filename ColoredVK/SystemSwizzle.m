@@ -61,8 +61,6 @@ CHDeclareMethod(1, void, AppDelegate, applicationDidBecomeActive, UIApplication 
 CHDeclareClass(UINavigationBar);
 CHDeclareMethod(1, void, UINavigationBar, setBarTintColor, UIColor*, barTintColor)
 {
-    setupTranslucence(self, cvkMainController.nightThemeScheme.navbackgroundColor, !(enabled && enableNightTheme));
-    
     if (enabled) {
         if (enableNightTheme) {
             barTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;

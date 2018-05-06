@@ -126,6 +126,7 @@
 "DISABLED" = "Disabled";
 "NIGHT_BLUE" = "Night blue";
 "DARK_NIGHT" = "Dark";
+"TRUE_NIGHT" = "Dark (OLED friendly)";
 "CUSTOM" = "Custom";
 
 "NAVIGATION" = "Navigation";

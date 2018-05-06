@@ -168,6 +168,7 @@
 				<string>DISABLED</string>
 				<string>NIGHT_BLUE</string>
 				<string>DARK_NIGHT</string>
+				<string>TRUE_NIGHT</string>
 				<string>CUSTOM</string>
 			</array>
 			<key>validValues</key>
@@ -175,6 +176,7 @@
 				<integer>-1</integer>
 				<integer>0</integer>
 				<integer>1</integer>
+				<integer>3</integer>
 				<integer>2</integer>
 			</array>
 		</dict>

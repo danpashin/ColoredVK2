@@ -896,3 +896,10 @@
 
 @interface PopupIntroView : UIView
 @end
+
+@interface _UIVisualEffectSubview : UIView
+@end
+
+@interface _UIBackdropEffectView : UIView
+@property(retain, nonatomic) CALayer *backdropLayer;
+@end

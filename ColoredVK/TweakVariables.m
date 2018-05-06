@@ -394,13 +394,15 @@ void reloadPrefs(void(^completion)(void))
         }
         
         [NSObject cvk_runVoidBlockOnMainThread:^{
+            resetTabBar();
+            actionChangeCornerRadius([UIApplication sharedApplication].keyWindow);
+            
             if (cvkMainController.navBarImageView)
                 [cvkMainController.navBarImageView updateViewWithBlackout:navbarImageBlackout];
             
             if (completion)
                 completion();
             
-            actionChangeCornerRadius([UIApplication sharedApplication].keyWindow);
             POST_NOTIFICATION(kPackageNotificationPrefsReloaded);
         }];
     });

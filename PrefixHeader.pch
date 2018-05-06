@@ -57,8 +57,11 @@
 #define CVKMainColor    [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1.0f]
 #define CVKAltColor     [UIColor colorWithRed:65/255.0f green:125/255.0f blue:214/255.0f alpha:1.0f]
 
-#define CVKLog(args...)			NSLog(@"[COLOREDVK2]: %@", [NSString stringWithFormat:args])
-#define CVKLogSource(args...)	NSLog(@"[COLOREDVK2]: @ " CHStringify(__LINE__) " in %s: %@", __FUNCTION__, [NSString stringWithFormat:args])
+#ifdef DEBUG
+#define CVKLog(format, ...)	NSLog((@"[COLOREDVK2] %@ %s:%d " format), @(__FILE__).lastPathComponent, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#else
+#define CVKLog(...)
+#endif
 
 static NSString * _Nullable const kPackageIdentifier = @"com.daniilpashin.coloredvk2";
 static NSString * _Nullable const kPackageName = @"ColoredVK 2";

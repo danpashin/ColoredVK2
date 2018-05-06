@@ -113,56 +113,12 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
     }];
 }
 
-void setupTranslucence(UIView *view, UIColor *backColor, BOOL remove)
-{
-    if (![view respondsToSelector:@selector(_backgroundView)])
-        return;
-    
-    [NSObject cvk_runVoidBlockOnMainThread:^{
-        UIView *backView = objc_msgSend(view, @selector(_backgroundView));
-        
-        if (remove) {
-            if ([backView.subviews containsObject:[backView viewWithTag:4545]]) {
-                [[backView viewWithTag:4545] removeFromSuperview];
-                
-                for (UIView *subview in backView.subviews) {
-                    if ([subview isKindOfClass:[UIVisualEffectView class]]) {
-                        subview.alpha = 0.0f;
-                        subview.hidden = NO;
-                        [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                            subview.alpha = 1.0f;
-                        } completion:nil];
-                        break;
-                    }
-                }
-            }
-        } else if (![backView.subviews containsObject:[backView viewWithTag:4545]]) {
-            UIView *newBackView = [[UIView alloc] initWithFrame:backView.bounds];
-            newBackView.tag = 4545;
-            newBackView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            newBackView.backgroundColor = backColor;
-            [backView addSubview:newBackView];
-            
-            for (UIView *subview in backView.subviews) {
-                if ([subview isKindOfClass:[UIVisualEffectView class]]) {
-                    if (!CGRectIsEmpty(subview.bounds)) {
-                        newBackView.frame = subview.bounds;
-                        subview.hidden = YES;
-                        return;
-                    }
-                }
-            }
-        }
-    }];
-}
-
 void setToolBar(UIToolbar *toolbar)
 {
     if (enabled && [toolbar respondsToSelector:@selector(setBarTintColor:)]) {
         if (enableNightTheme) {
             toolbar.barTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
             toolbar.tintColor = cvkMainController.nightThemeScheme.textColor;
-            setupTranslucence(toolbar, cvkMainController.nightThemeScheme.navbackgroundColor, NO);
         } else if (enabledToolBarColor) {
             
             NSArray *controllersToChange = @[@"UIView", @"RootView"];
@@ -497,7 +453,7 @@ void setupTabbar()
     UITabBarController *controller = (UITabBarController *)cvkMainController.vkMainController;
     if ([controller isKindOfClass:[UITabBarController class]]) {
         UITabBar *tabbar = controller.tabBar;
-//        setupTranslucence(tabbar, cvkMainController.nightThemeScheme.navbackgroundColor, !(enabled && enableNightTheme));
+        
         if (enabled && enableNightTheme) {
             tabbar.barTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
             tabbar.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
@@ -531,7 +487,6 @@ void resetTabBar()
 {
     if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]]) {
         UITabBar *tabbar = ((UITabBarController *)cvkMainController.vkMainController).tabBar;
-        setupTranslucence(tabbar, nil, YES);
         setBlur(tabbar, NO, nil, 0);
         
         setupTabbar();
@@ -882,7 +837,6 @@ void resetNewSearchBar(VKSearchBar *searchBar)
     searchBar.textFieldBackground.tintColor = searchBar.config.textfieldBackgroundColor;
     searchBar.separator.hidden = NO;
     searchBar.segmentedControl.layer.borderColor = searchBar.config.segmentBorderColor.CGColor;
-    
 }
 
 

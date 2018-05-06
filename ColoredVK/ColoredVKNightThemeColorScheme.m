@@ -72,6 +72,25 @@
         _switchThumbTintColor = _navbackgroundColor;
         _switchOnTintColor = [UIColor colorWithRed:0.66f green:0.66f blue:0.66f alpha:1.0f];
     } 
+    else if (type == CVKNightThemeTypeTrueBlack) {
+        _backgroundColor = [UIColor blackColor];
+        _navbackgroundColor = [UIColor blackColor];
+        _foregroundColor = [UIColor blackColor];
+        
+        _textColor = [UIColor colorWithWhite:0.9f alpha:0.9f];
+        _detailTextColor = [UIColor colorWithRed:0.49f green:0.49f blue:0.52f alpha:1.0f];
+        _linkTextColor = [UIColor colorWithRed:0.0f green:0.6f blue:0.94f alpha:1.0f];
+        
+        _unreadBackgroundColor = [UIColor colorWithRed:0.12f green:0.12f blue:0.12f alpha:1.0f];
+        _incomingBackgroundColor = [UIColor colorWithRed:0.11f green:0.11f blue:0.11f alpha:1.0f];
+        _outgoingBackgroundColor = [UIColor colorWithRed:0.17f green:0.17f blue:0.17f alpha:1.0f];
+        
+        _buttonColor = [UIColor colorWithRed:0.42f green:0.42f blue:0.43f alpha:1.0f];
+        _buttonSelectedColor = [UIColor colorWithRed:0.96f green:0.49f blue:0.0f alpha:1.0f];
+        
+        _switchThumbTintColor = _navbackgroundColor;
+        _switchOnTintColor = [UIColor colorWithRed:0.66f green:0.66f blue:0.66f alpha:1.0f];
+    } 
     else if (type == CVKNightThemeTypeCustom) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];

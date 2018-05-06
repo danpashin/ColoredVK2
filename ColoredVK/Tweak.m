@@ -565,7 +565,6 @@ CHDeclareMethod(1, void, VKMBrowserController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, VKMBrowserController, viewWillAppear, animated);
     if ([self isKindOfClass:NSClassFromString(@"VKMBrowserController")]) {
-        setupTranslucence(self.toolbar, cvkMainController.nightThemeScheme.navbackgroundColor, !(enabled && enableNightTheme));
         
         if (enabled && enableNightTheme) {
             self.webScrollView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
