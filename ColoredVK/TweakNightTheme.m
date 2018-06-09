@@ -1358,7 +1358,6 @@ CHDeclareMethod(1, void, _UIBackdropView, setBackgroundColor, UIColor *, backgro
 CHDeclareClass(MBProgressHUDBackgroundLayer);
 CHDeclareMethod(1, void, MBProgressHUDBackgroundLayer, drawInContext, CGContextRef, context)
 {
-    self.backgroundColor = [UIColor redColor].CGColor;
     if (enabled && enableNightTheme) {
         self.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor.CGColor;
         self.cornerRadius = 20.0f;
@@ -1397,4 +1396,25 @@ CHDeclareMethod(1, void, ArticleWebViewManager, enableDarkMode, BOOL, enableDark
 {
     enableDarkMode = (enabled && enableNightTheme) ? YES : enableDarkMode;
     CHSuper(1, ArticleWebViewManager, enableDarkMode, enableDarkMode);
+}
+
+
+CHDeclareClass(PostingComposePanel);
+CHDeclareMethod(0, void, PostingComposePanel, layoutSubviews)
+{
+    CHSuper(0, PostingComposePanel, layoutSubviews);
+    
+    if (enabled && enableNightTheme) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+}
+
+CHDeclareClass(VKSegmentIndicator);
+CHDeclareMethod(0, void, VKSegmentIndicator, layoutSubviews)
+{
+    CHSuper(0, VKSegmentIndicator, layoutSubviews);
+    
+    if (enabled && enableNightTheme) {
+        self.alpha = 0.7f;
+    }
 }

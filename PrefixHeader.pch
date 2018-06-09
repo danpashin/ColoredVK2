@@ -58,7 +58,7 @@
 #define CVKAltColor     [UIColor colorWithRed:65/255.0f green:125/255.0f blue:214/255.0f alpha:1.0f]
 
 #ifdef DEBUG
-#define CVKLog(format, ...)	NSLog((@"[COLOREDVK2] %@ %s:%d " format), @(__FILE__).lastPathComponent, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#define CVKLog(format, ...)	NSLog((@"[COLOREDVK2] %@:%d %s " format), @(__FILE__).lastPathComponent, __LINE__, __FUNCTION__, ##__VA_ARGS__)
 #else
 #define CVKLog(...)
 #endif

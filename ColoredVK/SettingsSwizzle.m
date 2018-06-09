@@ -52,7 +52,9 @@ CHDeclareMethod(2, void, ModernSettingsController, tableView, UITableView*, tabl
     
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if ([cell.reuseIdentifier isEqualToString:cvkMainController.settingsCell.reuseIdentifier]) {
-        [cvkMainController openPrefsWithPush:YES];
+        VKMNavContext *mainContext = [[NSClassFromString(@"VKMNavContext") applicationNavRoot] rootNavContext];
+        if ([mainContext respondsToSelector:@selector(push:animated:)])
+            [mainContext push:cvkMainController.safePreferencesController animated:YES];
     }
 }
 

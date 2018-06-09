@@ -13,8 +13,17 @@
 #import "UIColor+ColoredVK.h"
 #import "ColoredVKNetwork.h"
 
+@interface ColoredVKMainController ()
+@end
+
+
 @implementation ColoredVKMainController
 static NSString const *switchViewKey = @"cvkCellSwitchKey";
+
+BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
+{
+    return NO;
+}
 
 - (void)setImageToTableView:(UITableView *)tableView name:(NSString *)name blackout:(CGFloat)blackout 
              parallaxEffect:(BOOL)parallaxEffect blur:(BOOL)blur
@@ -79,9 +88,8 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
         [cell.contentView addSubview:switchView];
         
         if ([cell respondsToSelector:@selector(select)]) {
-            ((MenuCell *)cell).select = (id)^(id arg1, id arg2) {
-                [self openPrefsWithPush:NO];
-                return nil;
+            ((MenuCell *)cell).select = ^(id model) {
+                return self.safePreferencesController;
             };
         }
         
@@ -114,32 +122,22 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
     return settingsCell;
 }
 
-- (void)openPrefsWithPush:(BOOL)withPush
+- (__kindof UIViewController *)safePreferencesController
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        BOOL innerWithPush = withPush;
-        NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-        if (!cvkBundle.loaded)
-            [cvkBundle load];
-        
-        UIViewController *cvkPrefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
-        if (!cvkPrefs)
-            return;
-        
-        if ([[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"] >= 0)
-            innerWithPush = YES;
-        
-        VKMNavContext *mainContext = [[NSClassFromString(@"VKMNavContext") applicationNavRoot] rootNavContext];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (innerWithPush) {
-                if ([mainContext respondsToSelector:@selector(push:animated:)])
-                    [mainContext push:cvkPrefs animated:YES];
-            } else {
-                if ([mainContext respondsToSelector:@selector(reset:)])
-                    [mainContext reset:cvkPrefs];
-            }
-        });
-    });
+    NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    if (!cvkBundle.loaded)
+        [cvkBundle load];
+    
+    UIViewController *prefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
+    if (!prefs)
+        prefs = [UIViewController new];
+    
+    SEL isIdenticalControllerSel = @selector(VKMIdenticalController:);
+    if (![prefs respondsToSelector:isIdenticalControllerSel]) {
+        class_addMethod([prefs class], isIdenticalControllerSel, (IMP)VKMIdenticalController, "v@:@");
+    }
+    
+    return prefs;
 }
 
 - (void)switchTriggered:(UISwitch *)switchView

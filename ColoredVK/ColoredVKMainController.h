@@ -15,11 +15,14 @@
 
 @interface ColoredVKMainController : NSObject
 
+@property (weak, nonatomic, readonly) __kindof UIViewController *safePreferencesController;
 @property (strong, nonatomic) __kindof UITableViewCell *menuCell;
 @property (nonatomic, readonly) UITableViewCell *settingsCell;
+
 @property (strong, nonatomic) ColoredVKAudioCover *audioCover;
 @property (strong, nonatomic) ColoredVKWallpaperView *menuBackgroundView;
 @property (strong, nonatomic) ColoredVKWallpaperView *navBarImageView;
+
 @property (weak, nonatomic) VKMMainController *vkMainController;
 @property (weak, nonatomic) MenuViewController *vkMenuController;
 @property (weak, nonatomic) ColoredVKNightThemeColorScheme *nightThemeScheme;
@@ -30,7 +33,6 @@
 - (void)forceUpdateTableView:(UITableView *)tableView blackout:(CGFloat)blackout blur:(BOOL)blur;
 
 - (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)(void) )handler;
-- (void)openPrefsWithPush:(BOOL)withPush;
 - (void)setMenuCellSwitchOn:(BOOL)on;
 - (void)sendCrash;
 

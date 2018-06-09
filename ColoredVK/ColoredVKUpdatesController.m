@@ -52,7 +52,7 @@ static NSString *const kCVKUpdateTimeFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
             if (![prefs[@"skippedVersion"] isEqual:self.version] || !self.checkedAutomatically) {
                 NSString *message = [NSString stringWithFormat:CVKLocalizedString(@"UPDATE_IS_AVAILABLE"), self.version];
                 [ColoredVKUINotification showWithSubtitle:message tapHandler:^{
-                    [self showDetailUpdateInformation];
+                    [self showDetailInfo];
                 }];
             }
         } else if (!self.checkedAutomatically) {
@@ -72,7 +72,7 @@ static NSString *const kCVKUpdateTimeFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
     }];
 }
 
-- (void)showDetailUpdateInformation
+- (void)showDetailInfo
 {
     NSString *message = [NSString stringWithFormat:CVKLocalizedString(@"UPDATE_IS_AVAILABLE_DETAIL"), self.version, self.changelog];
     ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:message];

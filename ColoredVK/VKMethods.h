@@ -50,7 +50,7 @@
 
 
 @interface MenuCell : UITableViewCell
-@property (copy, nonatomic) id(^select)(id arg1, id arg2);
+@property (copy, nonatomic) __kindof UIViewController *(^select)(id model);
 @end
 
 @interface MenuViewController : VKMLiveController
@@ -914,4 +914,10 @@
 @interface ArticlePageController : VKMController
 @property(retain, nonatomic) ArticleWebViewManager *webViewManager;
 - (void)updateAppearance;
+@end
+
+@interface PostingComposePanel : UIView
+@end
+
+@interface VKSegmentIndicator : UIView
 @end
