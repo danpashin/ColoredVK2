@@ -116,7 +116,7 @@
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>detail</key>
-			<string>ColoredVKGeneralPrefs</string>
+			<string>ColoredVKMusicPrefs</string>
 			<key>plistToLoad</key>
 			<string>Audio</string>
 			<key>label</key>

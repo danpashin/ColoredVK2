@@ -62,7 +62,6 @@
     self.textView = [[UITextView alloc] initWithFrame:self.contentView.bounds];
     self.textView.backgroundColor = [UIColor clearColor];
     self.textView.editable = NO;
-    self.textView.attributedText = self.attributedText;
     [self.contentView addSubview:self.textView];
     
     self.textView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -70,6 +69,12 @@
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[textView]-|" options:0 metrics:nil views:@{@"textView":self.textView}]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[navBar]-|" options:0 metrics:nil views:@{@"navBar":navBar}]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[navBar]-[textView]|" options:0 metrics:nil views:@{@"navBar":navBar, @"textView":self.textView}]];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.textView.attributedText = self.attributedText;
 }
 
 @end

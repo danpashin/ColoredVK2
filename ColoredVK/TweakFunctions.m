@@ -454,29 +454,35 @@ void setupTabbar()
     if ([controller isKindOfClass:[UITabBarController class]]) {
         UITabBar *tabbar = controller.tabBar;
         
+        UIColor *barTintColor = nil;
+        UIColor *tintColor = nil;
+        UIColor *unselectedItemTintColor = nil;
+        
         if (enabled && enableNightTheme) {
-            tabbar.barTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
-            tabbar.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
-            if ([tabbar respondsToSelector:@selector(setUnselectedItemTintColor:)])
-                tabbar.unselectedItemTintColor = cvkMainController.nightThemeScheme.buttonColor;
+            barTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+            tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+            unselectedItemTintColor = cvkMainController.nightThemeScheme.buttonColor;
         } else if (enabled && enabledTabbarColor) {
-            tabbar.barTintColor = tabbarBackgroundColor;
-            tabbar.tintColor = tabbarSelForegroundColor;
-            if ([tabbar respondsToSelector:@selector(setUnselectedItemTintColor:)])
-                tabbar.unselectedItemTintColor = tabbarForegroundColor;
+            barTintColor = tabbarBackgroundColor;
+            tintColor = tabbarSelForegroundColor;
+            unselectedItemTintColor = tabbarForegroundColor;
         } else {
-            tabbar.barTintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarBackgroundColor"];
+            barTintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarBackgroundColor"];
             tabbar.tintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarSelForegroundColor"];
-            if ([tabbar respondsToSelector:@selector(setUnselectedItemTintColor:)])
-                tabbar.unselectedItemTintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarForegroundColor"];
+            unselectedItemTintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarForegroundColor"];
         }
+        tabbar.barTintColor = barTintColor;
+        tabbar.tintColor = tintColor;
+        
+        if (ios_available(10.0))
+            tabbar.unselectedItemTintColor = unselectedItemTintColor;
         
         for (UITabBarItem *item in tabbar.items) {
-            if (@available(iOS 10.0, *)) {
+            if (ios_available(10.0)) {
                 item.image = [item.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             } else {
-                UIColor *tintColor = (enabled && enabledTabbarColor) ? (enableNightTheme ? cvkMainController.nightThemeScheme.buttonColor : tabbarForegroundColor) : [UIColor cvk_defaultColorForIdentifier:@"TabbarForegroundColor"];
-                item.image = [item.image cvk_imageWithTintColor:tintColor];
+                UIColor *itemTintColor = (enabled && enabledTabbarColor) ? (enableNightTheme ? cvkMainController.nightThemeScheme.buttonColor : tabbarForegroundColor) : [UIColor cvk_defaultColorForIdentifier:@"TabbarForegroundColor"];
+                item.image = [item.image cvk_imageWithTintColor:itemTintColor];
             }
             item.selectedImage = [item.selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         }
@@ -703,12 +709,15 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
         [cvkMainController setMenuCellSwitchOn:enabled];
         
         setupTabbar();
+        updateNavBarColor();
     });
 }
 
 void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
     reloadPrefs(^{
+        updateNavBarColor();
+        
         BOOL shouldShow = (enabled && !enableNightTheme && enabledMenuImage);
         
         VKMLiveController *menuController = nil;
@@ -958,4 +967,20 @@ void setupNewMessageCellBubble(UICollectionViewCell *cell)
         return;
     
     ((CAShapeLayer *)bubbleView.layer).fillColor = tintColor.CGColor;
+}
+
+void updateNavBarColor(void)
+{
+    UIViewController *rootViewController = [UIApplication sharedApplication].windows.firstObject.rootViewController;
+    
+    [rootViewController.childViewControllers enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *navController = (UINavigationController *)obj;
+            [UIView animateWithDuration:0.5f delay:0.1f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                navController.navigationBar.barTintColor = navController.navigationBar.barTintColor;
+                [navController.navigationBar layoutIfNeeded];
+            } completion:nil];
+            *stop = YES;
+        }
+    }];
 }

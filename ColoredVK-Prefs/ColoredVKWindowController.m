@@ -145,7 +145,7 @@
     CGFloat leftConstant = -8.0f;
     CGFloat rightConstant = 8.0f;
     
-    if (@available(iOS 11.0, *)) {
+    if (ios_available(11.0)) {
         guide = self.view.safeAreaLayoutGuide;
         topConstant = 20.0f;
         bottomConstant = -20.0f;

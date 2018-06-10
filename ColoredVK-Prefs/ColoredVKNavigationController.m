@@ -87,7 +87,7 @@
 {
     _prefersLargeTitle = prefersLargeTitle;
     
-    if (@available(iOS 11.0, *)) {
+    if (ios_available(11.0)) {
         self.navigationBar.prefersLargeTitles = prefersLargeTitle;
         self.navigationBar.largeTitleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
     }

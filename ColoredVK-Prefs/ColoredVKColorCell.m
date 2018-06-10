@@ -25,7 +25,7 @@
         self.accessoryView.layer.shadowColor = [UIColor blackColor].CGColor;
         self.accessoryView.layer.shadowOpacity = 0.15f;
         
-        [self updateColorForIdentifier:specifier.identifier];
+        [self updateColorForIdentifier:specifier.identifier animated:NO];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColorNotification:) 
                                                      name:kPackageNotificationUpdateColor object:nil];
     }
@@ -41,20 +41,26 @@
         return;
     
 	if ([notificationID isEqualToString:selfID])
-        [self updateColorForIdentifier:selfID];
+        [self updateColorForIdentifier:selfID animated:YES];
 }
 
-- (void)updateColorForIdentifier:(NSString *)identifier
+- (void)updateColorForIdentifier:(NSString *)identifier animated:(BOOL)animated
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        UIColor *color = [UIColor cvk_savedColorForIdentifier:identifier];
+        UIColor *savedColor = [UIColor cvk_savedColorForIdentifier:identifier];
+        CGFloat red = 0, green = 0, blue = 0, colorAlpha = 1.0f;
+        [savedColor getRed:&red green:&green blue:&blue alpha:&colorAlpha];
+        
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.accessoryView.backgroundColor = color;
+            UIColor *color = (colorAlpha != 0.0f) ? savedColor : [UIColor colorWithWhite:1.0f alpha:0.9f];
+            void (^animationBlock)(void) = ^{
+                self.accessoryView.backgroundColor = color;
+            };
             
-            CGFloat red = 0, green = 0, blue = 0, colorAlpha = 1.0f;
-            [color getRed:&red green:&green blue:&blue alpha:&colorAlpha];
-            if (colorAlpha == 0.0f)
-                self.accessoryView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.9f];
+            if (animated)
+                [UIView animateWithDuration:0.5f delay:0.1f options:UIViewAnimationOptionAllowUserInteraction animations:animationBlock completion:nil];
+            else
+                animationBlock();
         });
     });
 }

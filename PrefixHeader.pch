@@ -51,8 +51,15 @@
 #define CVKLocalizedStringInBundle(key, bndl) CVKLocalizedStringFromTableInBundle(key, nil, bndl)
 
 #define IS_IPAD                               (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-#define SYSTEM_VERSION_IS_LESS_THAN(version)  ([[UIDevice currentDevice].systemVersion compare:version options:NSNumericSearch] != NSOrderedDescending)
+#define SYSTEM_VERSION_IS_LESS_THAN(version)  ([[UIDevice currentDevice].systemVersion compare:@#version options:NSNumericSearch] != NSOrderedDescending)
+#define SYSTEM_VERSION_IS_MORE_THAN(version)  ([[UIDevice currentDevice].systemVersion compare:@#version options:NSNumericSearch] != NSOrderedAscending)
 #define CLASS_NAME(obj)                       NSStringFromClass([obj class])
+
+#if __clang_major__ >= 9
+#define ios_available(version) @available(iOS version, *)
+#else
+#define ios_available(version) SYSTEM_VERSION_IS_MORE_THAN(version)
+#endif
 
 #define CVKMainColor    [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1.0f]
 #define CVKAltColor     [UIColor colorWithRed:65/255.0f green:125/255.0f blue:214/255.0f alpha:1.0f]

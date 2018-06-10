@@ -58,7 +58,7 @@
     self.changeButton.title = CVKLocalizedStringInBundle(@"CHANGE_ALT", self.cvkBundle);
     self.cancelButton.title = CVKLocalizedStringInBundle(@"CANCEL", self.cvkBundle);
     
-    if (@available(iOS 11.0, *)) {
+    if (ios_available(11.0)) {
         [self.stackView setCustomSpacing:24.0f afterView:self.currentPassTextField];
     }
 }

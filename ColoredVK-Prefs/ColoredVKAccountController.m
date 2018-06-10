@@ -135,7 +135,7 @@
 
 - (void)infoView:(ColoredVKUserInfoView *)infoView didUpdateHeight:(CGFloat)height
 {
-    if (@available(iOS 11.0, *)) {
+    if (ios_available(11.0)) {
         height *= 1.5;
     } else {
         height += 64.0f;

@@ -39,7 +39,7 @@
 {
     [super viewWillAppear:animated];
     
-    if (SYSTEM_VERSION_IS_LESS_THAN(@"10.3.3")) {
+    if (SYSTEM_VERSION_IS_LESS_THAN(10.3.3)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.scrollView.contentInset = UIEdgeInsetsZero;
             self.scrollView.contentOffset = CGPointZero;

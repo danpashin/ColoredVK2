@@ -66,18 +66,6 @@
     [self reloadSpecifiers];
 }
 
-- (void)backupsModel:(ColoredVKBackupsModel *)backupsModel didEndRestoringBackup:(NSString *)backupName
-{
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        UINavigationBar *navBar = self.navigationController.navigationBar;
-        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-            navBar.barTintColor = navBar.barTintColor;
-            navBar.tintColor = navBar.tintColor;
-            navBar.titleTextAttributes = navBar.titleTextAttributes;
-        } completion:nil];
-    });
-}
-
 
 #pragma mark -
 #pragma mark DZNEmptyDataSetSource

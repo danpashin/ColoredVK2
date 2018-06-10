@@ -92,7 +92,7 @@
 - (void)writePrefsWithCompetion:(nullable void(^)(void))completionBlock
 {
     @synchronized(self) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
             [self.cachedPrefs writeToFile:CVK_PREFS_PATH atomically:YES];
             
             if (completionBlock)
@@ -103,7 +103,7 @@
 
 - (void)readPrefsWithCompetion:(nullable void(^)(void))completionBlock
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         self.cachedPrefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
         if (!self.cachedPrefs) {
             self.cachedPrefs = [NSMutableDictionary dictionary];
