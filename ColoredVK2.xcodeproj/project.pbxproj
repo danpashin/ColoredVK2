@@ -11,7 +11,7 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = A5D979AC1DAEBB0E00607F06 /* Build configuration list for PBXAggregateTarget "ColoredVK-Builder" */;
 			buildPhases = (
-				A5D979B01DAEBB1900607F06 /* ShellScript */,
+				A5D979B01DAEBB1900607F06 /* Package */,
 			);
 			dependencies = (
 			);
@@ -1787,18 +1787,19 @@
 			shellScript = "cp -r \"${PROJECT_DIR}/ColoredVK.bundle/\" \"${BUILT_PRODUCTS_DIR}/ColoredVK2.app/\"";
 			showEnvVarsInLog = 0;
 		};
-		A5D979B01DAEBB1900607F06 /* ShellScript */ = {
+		A5D979B01DAEBB1900607F06 /* Package */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = Package;
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = "/bin/sh ${PROJECT_DIR}/build.sh";
-			shellScript = "";
+			shellPath = "/bin/sh ";
+			shellScript = "${PROJECT_DIR}/build.sh";
 			showEnvVarsInLog = 0;
 		};
 		B3FA6A759854094BBA9A74CF /* [CP] Check Pods Manifest.lock */ = {

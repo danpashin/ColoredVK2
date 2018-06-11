@@ -8,7 +8,8 @@
 
 #import "ColoredVKNetwork.h"
 #import "ColoredVKCrypto.h"
-#import <UIKit/UIKit.h>
+@import UIKit.UIDevice;
+@import UIKit.UIApplication;
 
 @interface ColoredVKNetwork  () <NSURLSessionDelegate>
 
@@ -48,70 +49,17 @@
     return self;
 }
 
-- (void)sendJSONRequestWithMethod:(NSString *)method stringURL:(NSString *)stringURL parameters:(id)parameters
-                          success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json))sucess 
-                          failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
-{
-    dispatch_async(self.parseQueue, ^{
-        NSError *requestError = nil;
-        NSURLRequest *request = [self requestWithMethod:method URLString:stringURL parameters:parameters error:&requestError];
-        if (requestError) {
-            failure(request, nil, requestError);
-            return;
-        }
-        
-        NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-            [self setStatusBarIndicatorActive:NO];
-            dispatch_async(self.parseQueue, ^{
-                if (!error && data) {
-                    NSError *jsonError = nil;
-                    NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-                    if (jsonDict && !jsonError) {
-                        if (sucess)
-                            sucess(request, (NSHTTPURLResponse *)response, jsonDict);
-                    } else {
-                        NSData *decrypted = performLegacyCrypt(kCCDecrypt, data, kColoredVKServerKey);
-                        NSString *decryptedString = [[NSString alloc] initWithData:decrypted encoding:NSUTF8StringEncoding];
-                        decryptedString = [decryptedString stringByReplacingOccurrencesOfString:@"\0" withString:@""];
-                        
-                        
-                        NSData *jsonData = [decryptedString dataUsingEncoding:NSUTF8StringEncoding];
-                        if (!jsonData)
-                            jsonData = [NSData data];
-                        
-                        jsonDict = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&jsonError];
-                        
-                        if (jsonDict) {
-                            if (sucess)
-                                sucess(request, (NSHTTPURLResponse *)response, jsonDict);
-                        } else {
-                            if (failure)
-                                failure(request, (NSHTTPURLResponse *)response, jsonError);
-                        }
-                    }
-                } else {
-                    if (failure)
-                        failure(request, (NSHTTPURLResponse *)response, error);
-                }
-            });
-        }];
-        
-        [self setStatusBarIndicatorActive:YES];
-        [task resume];
-    });
-}
-
 - (void)sendRequest:(NSURLRequest *)request 
-            success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData))sucess 
-            failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+            success:(void(^)(NSURLRequest *httpRequest, NSHTTPURLResponse *response, NSData *rawData))success 
+            failure:(void(^)(NSURLRequest *httpRequest, NSHTTPURLResponse *response, NSError *error))failure
 {
-    dispatch_async(self.parseQueue, ^{
+    [self performBackgroundBlock:^{
         NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             [self setStatusBarIndicatorActive:NO];
             dispatch_async(self.parseQueue, ^{
                 if (!error && data) {
-                    if (sucess)
-                        sucess(request, (NSHTTPURLResponse *)response, data);
+                    if (success)
+                        success(request, (NSHTTPURLResponse *)response, data);
                 } else {
                     if (failure)
                         failure(request, (NSHTTPURLResponse *)response, error);
@@ -120,40 +68,72 @@
         }];
         [self setStatusBarIndicatorActive:YES];
         [task resume];
-    });
+    }];
 }
 
 - (void)sendRequestWithMethod:(NSString *)method url:(NSString *)url parameters:(id)parameters 
-                      success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData))sucess 
+                      success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData))success 
                       failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    dispatch_async(self.parseQueue, ^{
+    [self performBackgroundBlock:^{
         NSError *requestError = nil;
         NSURLRequest *request = [self requestWithMethod:method URLString:url parameters:parameters error:&requestError];
         if (requestError) {
             failure(request, nil, requestError);
             return;
         }
-        
-        NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-            [self setStatusBarIndicatorActive:NO];
-            dispatch_async(self.parseQueue, ^{
-                if (!error && data) {
-                    if (sucess)
-                        sucess(request, (NSHTTPURLResponse *)response, data);
-                } else {
-                    if (failure)
-                        failure(request, (NSHTTPURLResponse *)response, error);
-                }
-            });
-        }];
-        [self setStatusBarIndicatorActive:YES];
-        [task resume];
-    });
+        [self sendRequest:request success:success failure:failure];
+    }];
 }
 
+- (void)sendJSONRequestWithMethod:(NSString *)method stringURL:(NSString *)stringURL parameters:(id)parameters
+                          success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json))success 
+                          failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+{
+    [self sendRequestWithMethod:method url:stringURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
+        NSError *jsonError = nil;
+        NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:rawData options:0 error:&jsonError];
+        if ([jsonDict isKindOfClass:[NSDictionary class]] && !jsonError) {
+            if (success)
+                success(request, (NSHTTPURLResponse *)httpResponse, jsonDict);
+        } else {
+            NSData *decrypted = performLegacyCrypt(kCCDecrypt, rawData, kColoredVKServerKey);
+            if (!decrypted) {
+                if (failure) {
+                    NSError *error = [NSError errorWithDomain:@"ru.danpashin.coloredvk2.common.error" code:-1001 userInfo:@{NSLocalizedDescriptionKey:@"Cannot decrypt server data."}];
+                    failure(request, (NSHTTPURLResponse *)httpResponse, error);
+                }
+                return;
+            }
+            
+            NSString *decryptedString = [[NSString alloc] initWithData:decrypted encoding:NSUTF8StringEncoding];
+            decryptedString = [decryptedString stringByReplacingOccurrencesOfString:@"\0" withString:@""];
+            
+            NSData *jsonData = [decryptedString dataUsingEncoding:NSUTF8StringEncoding];
+            if (!decrypted) {
+                if (failure) {
+                    NSError *error = [NSError errorWithDomain:@"ru.danpashin.coloredvk2.common.error" code:-1002 userInfo:@{NSLocalizedDescriptionKey:@"Cannot decrypt server data."}];
+                    failure(request, (NSHTTPURLResponse *)httpResponse, error);
+                }
+                return;
+            }
+            
+            jsonDict = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&jsonError];
+            
+            if ([jsonDict isKindOfClass:[NSDictionary class]] && !jsonError) {
+                if (success)
+                    success(request, (NSHTTPURLResponse *)httpResponse, jsonDict);
+            } else {
+                if (failure)
+                    failure(request, (NSHTTPURLResponse *)httpResponse, jsonError);
+            }
+        }
+    } failure:failure];
+}
+
+
 - (void)uploadData:(NSData *)dataToUpload toRemoteURL:(NSString *)remoteURL 
-           success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))sucess 
+           success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))success 
            failure:(void(^)(NSHTTPURLResponse *response, NSError *error))failure
 {
     if (!dataToUpload)
@@ -171,8 +151,8 @@
             [self setStatusBarIndicatorActive:NO];
             dispatch_async(self.parseQueue, ^{
                 if (!error) {
-                    if (sucess)
-                        sucess((NSHTTPURLResponse *)response, data);
+                    if (success)
+                        success((NSHTTPURLResponse *)response, data);
                 } else {
                     if (failure)
                         failure((NSHTTPURLResponse *)response, error);
@@ -185,36 +165,18 @@
 }
 
 - (void)downloadDataFromURL:(NSString *)stringURL
-                    success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))sucess 
+                    success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))success 
                     failure:(void(^)(NSHTTPURLResponse *response, NSError *error))failure
 {
-    dispatch_async(self.parseQueue, ^{
-        NSError *requestError = nil;        
-        NSMutableURLRequest *request = [self requestWithMethod:@"GET" URLString:stringURL parameters:nil error:&requestError];
-        if (requestError) {
-            if (failure)
-                failure(nil, requestError);
-        }
-        
-        NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:request completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
-            [self setStatusBarIndicatorActive:NO];
-            dispatch_async(self.parseQueue, ^{
-                if (!error) {
-                    NSData *data = [NSData dataWithContentsOfURL:location];
-                    if (sucess)
-                        sucess((NSHTTPURLResponse *)response, data);
-                    [[NSFileManager defaultManager] removeItemAtURL:location error:nil];
-                } else {
-                    if (failure)
-                        failure((NSHTTPURLResponse *)response, error);
-                }
-            });
-        }];
-        [self setStatusBarIndicatorActive:YES];
-        [task resume];
-    });
+    
+    [self sendRequestWithMethod:@"GET" url:stringURL parameters:nil success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
+        if (success)
+            success(httpResponse, rawData);
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error) {
+        if (failure)
+            failure(httpResponse, error);
+    }];
 }
-
 
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method URLString:(NSString *)urlString parameters:(id)parameters error:(NSError *__autoreleasing *)error
 {
@@ -270,8 +232,10 @@
 
 - (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler
 {
-    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+    if ([challenge.protectionSpace.host containsString:@"danpashin.ru"] && [challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
         completionHandler(NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);
+    } else {
+        completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
     }
 }
 
@@ -280,6 +244,20 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [UIApplication sharedApplication].networkActivityIndicatorVisible = active;
     });
+}
+
+- (void)performBackgroundBlock:( void (^)(void) )block
+{
+    if (!block)
+        return;
+    
+    const char *currentQueueLabel = dispatch_queue_get_label([NSOperationQueue currentQueue].underlyingQueue);
+    const char *customQueueLabel = dispatch_queue_get_label(self.parseQueue);
+    if (strcmp(currentQueueLabel, customQueueLabel) == 0) {
+        block();
+    } else {
+        dispatch_async(self.parseQueue, block);
+    }
 }
 
 @end

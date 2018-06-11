@@ -41,8 +41,9 @@
     if (!self.cvkBundle)
         _cvkBundle = [NSBundle mainBundle];
     
+    __weak typeof(self) weakSelf = self;
     [[NSNotificationCenter defaultCenter] addObserverForName:kPackageNotificationPrefsReloaded object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-        [self readPrefsWithCompetion:nil];
+        [weakSelf readPrefsWithCompetion:nil];
     }];
     
     [self readPrefsWithCompetion:^{
@@ -58,8 +59,10 @@
             nightThemeColorScheme.enabled = ((themeType != -1) && [self.cachedPrefs[@"enabled"] boolValue] && vkApp);
         });
         
-        if (self->_specifiers && self->_specifiers.count > 0)
-            [self reloadSpecifiers];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.isViewLoaded && self->_specifiers && self->_specifiers.count > 0)
+                [self reloadSpecifiers];
+        });
     }];
 }
 
@@ -117,9 +120,10 @@
 
 - (void)reloadSpecifiers
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    void (^block)(void) = ^{
         [super reloadSpecifiers];
-    });
+    };
+    [NSThread isMainThread] ? block() : dispatch_async(dispatch_get_main_queue(), block);
 }
 
 - (void)updateNightTheme

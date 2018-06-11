@@ -5,6 +5,7 @@ APP_NAME="vkclient.app"
 FOLDER_TO_PACK="/Users/$USER/Desktop"
 
 cd ${PROJECT_DIR}
+[ -e "${BUILT_PRODUCTS_DIR}/$PRODUCT.dylib" ] || exit 1;
 
 echo "[->] Copying resources to temp directory (stage 1)..."
 cp -r "${PROJECT_DIR}/ColoredVK.bundle/." "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle"
@@ -36,7 +37,7 @@ makeIPA () {
     optool install -c load -p "@executable_path/$PRODUCT.bundle/$PRODUCT.dylib" -t "$TEMP_FOLDER/Payload/$APP_NAME/$EXECUTABLE_NAME" >/dev/null
     
     echo "[->] Cleaning (stage 1)..."
-    find "$TEMP_FOLDER" -name ".DS_Store" -exec rm -rf {} \;
+    find "$TEMP_FOLDER" -name ".DS_Store" -exec rm -f {} \;
     
     echo "[->] Archiving..."
     cd "$TEMP_FOLDER"
@@ -49,6 +50,8 @@ makeIPA () {
 }
 
 makeDEB () {
+    [ -e "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/$PRODUCT" ] || exit 1;
+
     echo "[->] Signing binaries..."
     codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle"
     codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/$PRODUCT.dylib"
@@ -75,7 +78,7 @@ makeDEB () {
     cd $FOLDER_TO_PACK
 
     echo "[->] Cleaning (stage 1)..."
-    find "Package" -name ".DS_Store" -exec rm -rf {} \;
+    find "Package" -name ".DS_Store" -exec rm -f {} \;
 
     echo "[->] Packaging..."
     dpkg-deb -b -Zlzma "Package" "${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}_${PLATFORM_NAME}-arm.deb"

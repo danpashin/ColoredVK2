@@ -14,6 +14,7 @@
 @property (strong, nonatomic) CALayer *separatorLayer;
 
 @property (assign, nonatomic) CGRect backgroundFrame;
+@property (assign, nonatomic) BOOL useExtendedLandscapeEdges;
 
 @end
 
@@ -26,7 +27,7 @@
 {
     self = [super init];
     if (self) {
-        [self renderBackground];
+        [self commonInit];
     }
     return self;
 }
@@ -36,9 +37,18 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self renderBackground];
+        [self commonInit];
     }
     return self;
+}
+
+- (void)commonInit
+{
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+    CGFloat height = (screenSize.height > screenSize.width) ? screenSize.height : screenSize.width;
+    self.useExtendedLandscapeEdges = (height == 812.0f);
+    
+    [self renderBackground];
 }
 
 - (void)renderBackground
@@ -92,7 +102,7 @@
     CFRelease(pathRef);
     
     if (drawSeparator) {
-        CGFloat separatorHeight = 0.5f; // 1.0f / [UIScreen mainScreen].scale;
+        CGFloat separatorHeight = 0.5f;
         self.separatorLayer.frame = CGRectMake(CGRectGetMinX(self.backgroundFrame), CGRectGetMaxY(self.backgroundFrame) - separatorHeight / 2.0f, 
                                                CGRectGetWidth(self.backgroundFrame), separatorHeight);
         self.separatorLayer.backgroundColor = self.separatorColor.CGColor;
@@ -108,8 +118,13 @@
 {
     super.frame = frame;
     
+    CGFloat xOffset = 0.0f;
+    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) && self.useExtendedLandscapeEdges) {
+        xOffset = 36.0f;
+    }
+    
     CGRect bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(frame), CGRectGetHeight(frame));
-    self.backgroundFrame = CGRectInset(bounds, 8.0f, 0.0f);
+    self.backgroundFrame = CGRectInset(bounds, 8.0f + xOffset, 0.0f);
     
     [self drawBackground];
 }

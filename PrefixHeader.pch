@@ -70,26 +70,28 @@
 #define CVKLog(...)
 #endif
 
-static NSString * _Nullable const kPackageIdentifier = @"com.daniilpashin.coloredvk2";
-static NSString * _Nullable const kPackageName = @"ColoredVK 2";
-static NSString * _Nullable const kPackageVersion = @"4.4.11";
+NS_ASSUME_NONNULL_BEGIN
+static NSString *const kPackageIdentifier = @"com.daniilpashin.coloredvk2";
+static NSString *const kPackageName = @"ColoredVK 2";
+static NSString *const kPackageVersion = @"4.4.11";
 
-static NSString * _Nullable const kPackageAPIURL = @"https://api.danpashin.ru/v1.2";
-static NSString * _Nullable const kPackageDevLink = @"https://vk.com/danpashin";
-static NSString * _Nullable const kPackageAccountRegisterLink = @"https://danpashin.ru/projects/coloredvk/index.html#register";
-static NSString * _Nullable const kPackageFaqLink = @"https://danpashin.ru/projects/coloredvk/faq.html";
-static NSString * _Nullable const kPackagePurchaseLink = @"https://danpashin.ru/projects/coloredvk/purchase/";
+static NSString *const kPackageAPIURL = @"https://api.danpashin.ru/v1.2";
+static NSString *const kPackageDevLink = @"https://vk.com/danpashin";
+static NSString *const kPackageAccountRegisterLink = @"https://danpashin.ru/projects/coloredvk/index.html#register";
+static NSString *const kPackageFaqLink = @"https://danpashin.ru/projects/coloredvk/faq.html";
+static NSString *const kPackagePurchaseLink = @"https://danpashin.ru/projects/coloredvk/purchase/";
 
 
 
-static NSString * _Nullable const kPackageNotificationReloadPrefs =         @"ru.danpashin.coloredvk2.prefs.changed";
-static NSString * _Nullable const kPackageNotificationReloadPrefsMenu =     @"ru.danpashin.coloredvk2.prefs.menu.reload";
-static NSString * _Nullable const kPackageNotificationReloadMenu =          @"ru.danpashin.coloredvk2.menu.reload";
-static NSString * _Nullable const kPackageNotificationUpdateNightTheme =    @"ru.danpashin.coloredvk2.nighttheme.reload";
+static NSString *const kPackageNotificationReloadPrefs =         @"ru.danpashin.coloredvk2.prefs.changed";
+static NSString *const kPackageNotificationReloadPrefsMenu =     @"ru.danpashin.coloredvk2.prefs.menu.reload";
+static NSString *const kPackageNotificationReloadMenu =          @"ru.danpashin.coloredvk2.menu.reload";
+static NSString *const kPackageNotificationUpdateNightTheme =    @"ru.danpashin.coloredvk2.nighttheme.reload";
 
-static NSString * _Nullable const kPackageNotificationUpdateImage =         @"ru.danpashin.coloredvk2.image.update";
-static NSString * _Nullable const kPackageNotificationUpdateColor =         @"ru.danpashin.coloredvk2.colorpreview.update";
-static NSString * _Nullable const kPackageNotificationPrefsReloaded =       @"ru.danpashin.coloredvk2.prefs.reloaded";
+static NSString *const kPackageNotificationUpdateImage =         @"ru.danpashin.coloredvk2.image.update";
+static NSString *const kPackageNotificationUpdateColor =         @"ru.danpashin.coloredvk2.colorpreview.update";
+static NSString *const kPackageNotificationPrefsReloaded =       @"ru.danpashin.coloredvk2.prefs.reloaded";
+NS_ASSUME_NONNULL_END
 
 #define POST_NOTIFICATION(name) [[NSNotificationCenter defaultCenter] postNotificationName:name object:nil];
 #define POST_CORE_NOTIFICATION(name) CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), (CFStringRef)name, NULL, NULL, YES)
