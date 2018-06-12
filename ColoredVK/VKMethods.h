@@ -921,3 +921,6 @@
 
 @interface VKSegmentIndicator : UIView
 @end
+
+@interface TitleMenuCell : MenuCell
+@end

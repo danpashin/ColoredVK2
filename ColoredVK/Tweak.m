@@ -433,24 +433,9 @@ CHDeclareMethod(2, UITableViewCell*, MenuViewController, tableView, UITableView*
     else if (enabled && !hideMenuSeparators) tableView.separatorColor = menuSeparatorColor; 
     else tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
     
-    if (enabled && enableNightTheme) {
-        cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        cell.imageView.tintColor = cvkMainController.nightThemeScheme.buttonColor;
-        cell.textLabel.textColor = cvkMainController.nightThemeScheme.textColor;
-        cell.contentView.backgroundColor = [UIColor clearColor];
-    } else if (enabled && enabledMenuImage) {
-        cell.textLabel.textColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
-        cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        cell.imageView.tintColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1.0f alpha:0.8f];
-        cell.backgroundColor = [UIColor clearColor];
-        cell.contentView.backgroundColor = [UIColor clearColor];
-        
-        if ([cell isKindOfClass:NSClassFromString(@"MenuBirthdayCell")]) {
-            MenuBirthdayCell *birthdayCell = (MenuBirthdayCell *)cell;
-            birthdayCell.name.textColor = cell.textLabel.textColor;
-            birthdayCell.status.textColor = cell.textLabel.textColor;
-        }
-        
+    setupNewAppMenuCell(cell);
+    
+    if (enabled && enabledMenuImage && !enableNightTheme) {
         UIView *selectedBackView = [UIView new];
         if (menuSelectionStyle == CVKCellSelectionStyleTransparent) selectedBackView.backgroundColor = menuSelectionColor;
         else if (menuSelectionStyle == CVKCellSelectionStyleBlurred) {
@@ -459,13 +444,7 @@ CHDeclareMethod(2, UITableViewCell*, MenuViewController, tableView, UITableView*
             
         } else selectedBackView.backgroundColor = [UIColor clearColor];
         cell.selectedBackgroundView = selectedBackView;
-        
     } else {
-        cell.imageView.tintColor = [UIColor colorWithRed:0.667f green:0.682f blue:0.702f alpha:1.0f];
-        cell.backgroundColor = [UIColor whiteColor];
-        cell.contentView.backgroundColor = [UIColor whiteColor];
-        cell.textLabel.textColor = [UIColor blackColor];
-        
         cell.selectedBackgroundView = nil;
     }
     
@@ -476,7 +455,7 @@ CHDeclareMethod(3, void, MenuViewController, tableView, UITableView *, tableView
 {
     CHSuper(3, MenuViewController, tableView, tableView, willDisplayHeaderView, view, forSection, section);
     if ((enabled && !enableNightTheme && enabledMenuImage) && [view isKindOfClass:NSClassFromString(@"TablePrimaryHeaderView")]) {
-        ((TablePrimaryHeaderView*)view).separator.alpha = 0.3f;
+        ((TablePrimaryHeaderView *)view).separator.alpha = 0.3f;
     }
 }
 
@@ -1125,6 +1104,16 @@ CHDeclareMethod(2, id, VKSession, initWithUserId, NSNumber *, userID, andToken, 
     [ColoredVKNewInstaller sharedInstaller].vkUserID = userID;
     
     return CHSuper(2, VKSession, initWithUserId, userID, andToken, token);
+}
+
+CHDeclareClass(TitleMenuCell);
+CHDeclareMethod(0, void, TitleMenuCell, layoutSubviews)
+{
+    CHSuper(0, TitleMenuCell, layoutSubviews);
+    
+    if ([self isKindOfClass:NSClassFromString(@"TitleMenuCell")]) {
+        setupNewAppMenuCell(self);
+    }
 }
 
 

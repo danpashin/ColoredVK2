@@ -52,3 +52,4 @@ void updateControllerBlurInfo(UIViewController *controller, void (^completion)(v
 
 void setupNewMessageCellBubble(UICollectionViewCell *cell);
 void updateNavBarColor(void);
+void setupNewAppMenuCell(UITableViewCell *cell);

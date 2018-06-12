@@ -83,14 +83,14 @@ static NSString *const kPackagePurchaseLink = @"https://danpashin.ru/projects/co
 
 
 
-static NSString *const kPackageNotificationReloadPrefs =         @"ru.danpashin.coloredvk2.prefs.changed";
-static NSString *const kPackageNotificationReloadPrefsMenu =     @"ru.danpashin.coloredvk2.prefs.menu.reload";
-static NSString *const kPackageNotificationReloadMenu =          @"ru.danpashin.coloredvk2.menu.reload";
-static NSString *const kPackageNotificationUpdateNightTheme =    @"ru.danpashin.coloredvk2.nighttheme.reload";
+static NSString *const kPackageNotificationReloadPrefs =         @"ru.danpashin.coloredvk2.prefs.reload";
+static NSString *const kPackageNotificationReloadPrefsMenu =     @"ru.danpashin.coloredvk2.prefsMenu.reload";
+static NSString *const kPackageNotificationReloadMenu =          @"ru.danpashin.coloredvk2.vkMenu.reload";
+static NSString *const kPackageNotificationUpdateNightTheme =    @"ru.danpashin.coloredvk2.nightTheme.reload";
 
 static NSString *const kPackageNotificationUpdateImage =         @"ru.danpashin.coloredvk2.image.update";
-static NSString *const kPackageNotificationUpdateColor =         @"ru.danpashin.coloredvk2.colorpreview.update";
-static NSString *const kPackageNotificationPrefsReloaded =       @"ru.danpashin.coloredvk2.prefs.reloaded";
+static NSString *const kPackageNotificationUpdateColor =         @"ru.danpashin.coloredvk2.colorPreview.update";
+static NSString *const kPackageNotificationReloadInternalPrefs = @"ru.danpashin.coloredvk2.internalPrefs.reload";
 NS_ASSUME_NONNULL_END
 
 #define POST_NOTIFICATION(name) [[NSNotificationCenter defaultCenter] postNotificationName:name object:nil];

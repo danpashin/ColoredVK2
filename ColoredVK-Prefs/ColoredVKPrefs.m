@@ -41,10 +41,7 @@
     if (!self.cvkBundle)
         _cvkBundle = [NSBundle mainBundle];
     
-    __weak typeof(self) weakSelf = self;
-    [[NSNotificationCenter defaultCenter] addObserverForName:kPackageNotificationPrefsReloaded object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-        [weakSelf readPrefsWithCompetion:nil];
-    }];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadPrefsNotification) name:kPackageNotificationReloadInternalPrefs object:nil];
     
     [self readPrefsWithCompetion:^{
         self.shouldChangeSwitchColor = ([self.cachedPrefs[@"enabled"] boolValue] && [self.cachedPrefs[@"changeSwitchColor"] boolValue]);
@@ -92,11 +89,17 @@
 #pragma mark Actions
 #pragma mark -
 
+- (void)reloadPrefsNotification
+{
+    [self readPrefsWithCompetion:nil];
+}
+
 - (void)writePrefsWithCompetion:(nullable void(^)(void))completionBlock
 {
     @synchronized(self) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
             [self.cachedPrefs writeToFile:CVK_PREFS_PATH atomically:YES];
+            POST_NOTIFICATION(kPackageNotificationReloadInternalPrefs);
             
             if (completionBlock)
                 completionBlock();
@@ -110,7 +113,6 @@
         self.cachedPrefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
         if (!self.cachedPrefs) {
             self.cachedPrefs = [NSMutableDictionary dictionary];
-            [self writePrefsWithCompetion:nil];
         }
         
         if (completionBlock)
@@ -205,6 +207,24 @@
     [alertController presentFromController:self];
 }
 
+- (BOOL)openURL:(NSURL *)url
+{
+    UIApplication *application = [UIApplication sharedApplication];
+    
+    if ([application canOpenURL:url]) {
+        BOOL urlIsOpen = [application openURL:url];
+        
+        return urlIsOpen;
+    }
+    
+    return NO;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 
 #pragma mark -
 #pragma mark Getters
@@ -287,19 +307,6 @@
         return specifier.properties[@"default"];
     
     return self.cachedPrefs[specifier.properties[@"key"]];
-}
-
-- (BOOL)openURL:(NSURL *)url
-{
-    UIApplication *application = [UIApplication sharedApplication];
-    
-    if ([application canOpenURL:url]) {
-        BOOL urlIsOpen = [application openURL:url];
-        
-        return urlIsOpen;
-    }
-    
-    return NO;
 }
 
 - (BOOL)edgeToEdgeCells

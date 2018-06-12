@@ -976,11 +976,41 @@ void updateNavBarColor(void)
     [rootViewController.childViewControllers enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([obj isKindOfClass:[UINavigationController class]]) {
             UINavigationController *navController = (UINavigationController *)obj;
-            [UIView animateWithDuration:0.5f delay:0.1f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            [UIView animateWithDuration:0.5f delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
                 navController.navigationBar.barTintColor = navController.navigationBar.barTintColor;
                 [navController.navigationBar layoutIfNeeded];
             } completion:nil];
             *stop = YES;
         }
     }];
+}
+
+void setupNewAppMenuCell(UITableViewCell *cell)
+{
+    cell.contentView.backgroundColor = [UIColor clearColor];
+    if (enabled && enableNightTheme) {
+        cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        cell.imageView.tintColor = cvkMainController.nightThemeScheme.buttonColor;
+        cell.textLabel.textColor = cvkMainController.nightThemeScheme.textColor;
+    } else if (enabled && enabledMenuImage) {
+        cell.backgroundColor = [UIColor clearColor];
+        
+        cell.textLabel.textColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
+        cell.textLabel.backgroundColor = [UIColor clearColor];
+        cell.detailTextLabel.textColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
+        cell.detailTextLabel.backgroundColor = [UIColor clearColor];
+        
+        cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        cell.imageView.tintColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1.0f alpha:0.8f];
+        
+        if ([cell isKindOfClass:NSClassFromString(@"MenuBirthdayCell")]) {
+            MenuBirthdayCell *birthdayCell = (MenuBirthdayCell *)cell;
+            birthdayCell.name.textColor = cell.textLabel.textColor;
+            birthdayCell.status.textColor = cell.textLabel.textColor;
+        }
+    } else {
+        cell.imageView.tintColor = [UIColor colorWithRed:0.667f green:0.682f blue:0.702f alpha:1.0f];
+        cell.backgroundColor = [UIColor whiteColor];
+        cell.textLabel.textColor = [UIColor colorWithRed:0.18f green:0.188f blue:0.2f alpha:1.0f];
+    }
 }

@@ -544,7 +544,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		098CA7EC3ABB2B6DD2E9924C /* libPods-ColoredVK-Prefs-App.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ColoredVK-Prefs-App.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B58120A8B7E45F6585D53CB /* Pods-ColoredVK.debug_app.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK.debug_app.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK/Pods-ColoredVK.debug_app.xcconfig"; sourceTree = "<group>"; };
 		167541EA27F27AA89466A0B1 /* libPods-Prefs Application.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Prefs Application.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AA51AB455174E5512499D30 /* Pods-ColoredVK.debug_deb.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK.debug_deb.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK/Pods-ColoredVK.debug_deb.xcconfig"; sourceTree = "<group>"; };
@@ -601,7 +600,6 @@
 		A51E68B82033231400B72082 /* ColoredVKCardController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKCardController.m; sourceTree = "<group>"; };
 		A52147C2206F844400224F6B /* TweakFunctions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TweakFunctions.h; sourceTree = "<group>"; };
 		A52147C5206F86AC00224F6B /* TweakVariables.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TweakVariables.h; sourceTree = "<group>"; };
-		A52147C82070250C00224F6B /* libhookzz.static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhookzz.static.a; path = ../../../../opt/iOSOpenDev/lib/libhookzz.static.a; sourceTree = "<group>"; };
 		A523509D1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKBarDownloadButton.h; sourceTree = "<group>"; };
 		A523509E1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKBarDownloadButton.m; sourceTree = "<group>"; };
 		A526A6BE1DD50D4700B47104 /* ColoredVKAudioLyricsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKAudioLyricsView.h; sourceTree = "<group>"; };
@@ -957,7 +955,6 @@
 		A5079FB41CC92157005B9693 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A52147C82070250C00224F6B /* libhookzz.static.a */,
 				A56405962068DA120033AF40 /* AudioToolbox.framework */,
 				A53818162066CBF100B4EF4B /* LocalAuthentication.framework */,
 				A5D3D0381FE012FC007AAEF7 /* Preferences.framework */,
@@ -982,7 +979,6 @@
 				54F0418CC30FC851AC9E3CD8 /* libPods-ColoredVK-NonJail.a */,
 				4BBD17AF96855B20E5B32B0E /* libPods-ColoredVK.a */,
 				E9163808E66056B3E0F75D9B /* libPods-ColoredVK-Prefs.a */,
-				098CA7EC3ABB2B6DD2E9924C /* libPods-ColoredVK-Prefs-App.a */,
 				167541EA27F27AA89466A0B1 /* libPods-Prefs Application.a */,
 			);
 			name = Frameworks;

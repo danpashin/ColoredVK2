@@ -402,8 +402,6 @@ void reloadPrefs(void(^completion)(void))
             
             if (completion)
                 completion();
-            
-            POST_NOTIFICATION(kPackageNotificationPrefsReloaded);
         }];
     });
 }
