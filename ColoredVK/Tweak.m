@@ -360,10 +360,6 @@ CHDeclareMethod(2, UITableViewCell*, VKMMainController, tableView, UITableView*,
             [[cell valueForKeyPath:@"badge"] setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         }
         
-        cell.imageView.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
-        cell.backgroundColor = kMenuCellBackgroundColor;
-        cell.contentView.backgroundColor = kMenuCellBackgroundColor;
-        cell.textLabel.textColor = kMenuCellTextColor;
         if (((indexPath.section == 1) && (indexPath.row == 0)) || 
             (VKSettingsEnabled && [cell.textLabel.text isEqualToString:NSLocalizedStringFromTableInBundle(@"GroupsAndPeople", nil, vksBundle, nil)])) {
             cell.backgroundColor = kMenuCellSelectedColor; 

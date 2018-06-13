@@ -97,6 +97,7 @@
             if (success)
                 success(request, (NSHTTPURLResponse *)httpResponse, jsonDict);
         } else {
+            jsonError = nil;
             NSData *decrypted = performLegacyCrypt(kCCDecrypt, rawData, kColoredVKServerKey);
             if (!decrypted) {
                 if (failure) {
