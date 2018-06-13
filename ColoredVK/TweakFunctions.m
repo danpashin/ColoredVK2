@@ -14,11 +14,11 @@
 void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
 {
     [NSObject cvk_runVoidBlockOnMainThread:^{
-        NSInteger blurViewTag = 10;
+        NSInteger blurViewTag = 1054326;
         
         if (set && !UIAccessibilityIsReduceTransparencyEnabled()) {
-            
-            UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:style]];
+            UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:style];
+            UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
             blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             blurEffectView.tag = blurViewTag;
             blurEffectView.backgroundColor = color;
@@ -35,12 +35,16 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
                 verticalFormat = @"V:[view(0.5)]|";
                 
                 if (![backgroundView.subviews containsObject:[backgroundView viewWithTag:blurViewTag]]) {
+                    blurEffectView.effect = nil;
                     blurEffectView.frame = backgroundView.bounds;
                     borderView.frame = CGRectMake(0.0f, blurEffectView.frame.size.height - 0.5f, blurEffectView.frame.size.width, 0.5f);
                     [backgroundView insertSubview:blurEffectView atIndex:0];
                     
-                    [navbar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-                    navbar.shadowImage = [UIImage new];
+                    [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                        blurEffectView.effect = blurEffect;
+                        [navbar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+                        navbar.shadowImage = [UIImage new];
+                    } completion:nil];
                 }
             } else if  ([bar isKindOfClass:[UIToolbar class]]) {
                 UIToolbar *toolBar = (UIToolbar *)bar;
@@ -88,10 +92,14 @@ void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
             if ([bar isKindOfClass:[UINavigationBar class]]) {
                 UINavigationBar *navbar = (UINavigationBar *)bar;
                 UIView *backgroundView = navbar._backgroundView;
-                if ([backgroundView.subviews containsObject:[backgroundView viewWithTag:blurViewTag]]) {
-                    [[backgroundView viewWithTag:blurViewTag] removeFromSuperview];
+                UIView *blurView = [backgroundView viewWithTag:blurViewTag];
+                
+                [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
                     [navbar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-                }
+                    blurView.alpha = 0.0f;
+                } completion:^(BOOL finished) {
+                    [blurView removeFromSuperview];
+                }];
             } else if  ([bar isKindOfClass:[UIToolbar class]]) {
                 UIToolbar *toolBar = (UIToolbar *)bar;
                 if ([toolBar.subviews containsObject:[toolBar viewWithTag:blurViewTag]])
@@ -878,7 +886,7 @@ void setupNewDialogsSearchController(DialogsSearchResultsController *controller)
     }
 }
 
-void updateControllerBlurInfo(UIViewController *controller, void (^completion)(void) )
+void updateControllerBlurInfo(UIViewController *controller)
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         BOOL shouldAddBlur = NO;
@@ -939,8 +947,6 @@ void updateControllerBlurInfo(UIViewController *controller, void (^completion)(v
         objc_setAssociatedObject(controller, "cvkShouldAddBlur", @(shouldAddBlur), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         objc_setAssociatedObject(controller, "cvkBlurColor", blurColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         objc_setAssociatedObject(controller, "cvkBlurStyle", @(blurStyle), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        
-        [NSObject cvk_runVoidBlockOnMainThread:completion];
     });
 }
 

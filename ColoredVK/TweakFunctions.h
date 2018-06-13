@@ -47,7 +47,7 @@ UIVisualEffectView *blurForView(UIView *view, NSInteger tag);
 NSAttributedString *attributedStringForNightTheme(NSAttributedString * text);
 
 void setupNewDialogsSearchController(DialogsSearchResultsController *controller);
-void updateControllerBlurInfo(UIViewController *controller, void (^completion)(void) );
+void updateControllerBlurInfo(UIViewController *controller);
 
 
 void setupNewMessageCellBubble(UICollectionViewCell *cell);

@@ -129,80 +129,64 @@ CHDeclareMethod(2, UITableViewCell*, VKMLiveController, tableView, UITableView*,
 #pragma mark VKMController
 // Настройка бара навигации
 CHDeclareClass(VKMController);
-CHDeclareMethod(0, void, VKMController, viewDidLoad)
-{
-    CHSuper(0, VKMController, viewDidLoad);
-    
-    if (![self isKindOfClass:NSClassFromString(@"VKMTableController")] && ![self isKindOfClass:NSClassFromString(@"DialogsController")])
-        return;
-    
-    updateControllerBlurInfo(self, ^{
-        UIColor *blurColor = objc_getAssociatedObject(self, "cvkBlurColor");
-        if (!blurColor)
-            blurColor = [UIColor clearColor];
-        
-        __block NSNumber *shouldAddBlur = objc_getAssociatedObject(self, "cvkShouldAddBlur");
-        if (!shouldAddBlur) 
-            shouldAddBlur = @NO;
-        
-        NSNumber *blurStyle = objc_getAssociatedObject(self, "cvkBlurStyle");
-        if (!blurStyle)
-            blurStyle = @0;
-        
-        resetNavigationBar(self.navigationController.navigationBar);
-        setBlur(self.navigationController.navigationBar, shouldAddBlur.boolValue, blurColor, blurStyle.integerValue);
-    });
-}
-
 CHDeclareMethod(1, void, VKMController, viewWillAppear, BOOL, animated)
 {
+    if ([self isKindOfClass:NSClassFromString(@"VKMTableController")] ||
+        [self isKindOfClass:NSClassFromString(@"DialogsController")] || 
+        [self isKindOfClass:NSClassFromString(@"ChatController")] || 
+        [self isKindOfClass:NSClassFromString(@"VKWebAppContainerController")])
+        updateControllerBlurInfo(self);
+    
     CHSuper(1, VKMController, viewWillAppear, animated);
-    
-    if (![self isKindOfClass:NSClassFromString(@"VKMTableController")] && ![self isKindOfClass:NSClassFromString(@"DialogsController")])
-        return;
-    
-    void (^setupBlock)(void) = ^{
-        UIColor *blurColor = objc_getAssociatedObject(self, "cvkBlurColor");
-        if (!blurColor)
-            blurColor = [UIColor clearColor];
+}
+
+CHDeclareMethod(1, void, VKMController, viewDidAppear, BOOL, animated)
+{
+    if ([self isKindOfClass:NSClassFromString(@"VKMTableController")] || 
+        [self isKindOfClass:NSClassFromString(@"DialogsController")] || 
+        [self isKindOfClass:NSClassFromString(@"ChatController")] || 
+        [self isKindOfClass:NSClassFromString(@"VKWebAppContainerController")])
+        {
         
-        __block NSNumber *shouldAddBlur = objc_getAssociatedObject(self, "cvkShouldAddBlur");
-        if (!shouldAddBlur) 
-            shouldAddBlur = @NO;
-        
-        NSNumber *blurStyle = objc_getAssociatedObject(self, "cvkBlurStyle");
-        if (!blurStyle)
-            blurStyle = @0;
-        
-        if (enabled && enableNightTheme) {
-            shouldAddBlur = @NO;
+        [NSObject cvk_runVoidBlockOnMainThread:^{
+            UIColor *blurColor = objc_getAssociatedObject(self, "cvkBlurColor");
+            if (!blurColor)
+                blurColor = [UIColor clearColor];
             
-            if ([self respondsToSelector:@selector(tableView)]) {
-                UITableView *tableView = objc_msgSend(self, @selector(tableView));
-                if ([tableView.tableHeaderView isKindOfClass:[UISearchBar class]]) {
-                    UISearchBar *searchBar = (UISearchBar *)tableView.tableHeaderView;
-                    
-                    searchBar.barTintColor = cvkMainController.nightThemeScheme.foregroundColor;
-                    searchBar.translucent = NO;
-                    [searchBar setBackgroundImage:[UIImage cvk_imageWithColor:cvkMainController.nightThemeScheme.foregroundColor] 
-                                   forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
-                    searchBar.searchBarTextField.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
-                    searchBar.scopeBarBackgroundImage = [UIImage cvk_imageWithColor:cvkMainController.nightThemeScheme.foregroundColor];
+            __block NSNumber *shouldAddBlur = objc_getAssociatedObject(self, "cvkShouldAddBlur");
+            if (!shouldAddBlur) 
+                shouldAddBlur = @NO;
+            
+            NSNumber *blurStyle = objc_getAssociatedObject(self, "cvkBlurStyle");
+            if (!blurStyle)
+                blurStyle = @0;
+            
+            if (enabled && enableNightTheme) {
+                shouldAddBlur = @NO;
+                
+                if ([self respondsToSelector:@selector(tableView)]) {
+                    UITableView *tableView = objc_msgSend(self, @selector(tableView));
+                    if ([tableView.tableHeaderView isKindOfClass:[UISearchBar class]]) {
+                        UISearchBar *searchBar = (UISearchBar *)tableView.tableHeaderView;
+                        
+                        searchBar.barTintColor = cvkMainController.nightThemeScheme.foregroundColor;
+                        searchBar.translucent = NO;
+                        [searchBar setBackgroundImage:[UIImage cvk_imageWithColor:cvkMainController.nightThemeScheme.foregroundColor] 
+                                       forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+                        searchBar.searchBarTextField.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+                        searchBar.scopeBarBackgroundImage = [UIImage cvk_imageWithColor:cvkMainController.nightThemeScheme.foregroundColor];
+                    }
                 }
             }
-        }
-        
-        setBlur(self.navigationController.navigationBar, shouldAddBlur.boolValue, blurColor, blurStyle.integerValue);
-        
-        if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]])
-            setBlur(((UITabBarController *)cvkMainController.vkMainController).tabBar, shouldAddBlur.boolValue, blurColor, blurStyle.integerValue);
-    };
-    
-    if ([[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"] >= ColoredVKVersionCompareEqual) {
-        [NSObject cvk_runVoidBlockOnMainThread:setupBlock];
-    } else {
-        updateControllerBlurInfo(self, setupBlock);
+            
+            setBlur(self.navigationController.navigationBar, shouldAddBlur.boolValue, blurColor, blurStyle.integerValue);
+            
+            if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]])
+                setBlur(((UITabBarController *)cvkMainController.vkMainController).tabBar, shouldAddBlur.boolValue, blurColor, blurStyle.integerValue);
+        }];
     }
+    
+    CHSuper(1, VKMController, viewDidAppear, animated);
 }
 
 

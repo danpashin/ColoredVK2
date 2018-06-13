@@ -894,7 +894,7 @@ CHDeclareMethod(1, id, FreshNewsButton, initWithFrame, CGRect, frame)
     objc_setAssociatedObject(button.button, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
     
     __weak typeof(button) weakButton = button;
-    [[NSNotificationCenter defaultCenter] addObserverForName:kPackageNotificationPrefsReloaded object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+    [[NSNotificationCenter defaultCenter] addObserverForName:kPackageNotificationReloadInternalPrefs object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
         if (!weakButton)
             return;
         
