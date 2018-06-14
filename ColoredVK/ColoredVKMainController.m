@@ -62,8 +62,10 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
     if (!_menuCell) {
         NSString *reuseIdentifier = @"cvkMenuCell";
         
-        Class className = (NSClassFromString(@"MenuCell") != nil) ? NSClassFromString(@"MenuCell") : [UITableViewCell class];
-        UITableViewCell *cell = [[className alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
+        Class cellClass = NSClassFromString(@"TitleMenuCell");
+        if (!cellClass) cellClass = [UITableViewCell class];
+        
+        UITableViewCell *cell = [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
         cell.backgroundColor = kMenuCellBackgroundColor;
         cell.contentView.backgroundColor = [UIColor clearColor];
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
@@ -109,15 +111,7 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
     
     UIImage *icon = [UIImage imageNamed:@"vkapp/VKMenuIconAlt" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
     settingsCell.imageView.image = [icon imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    
-    static BOOL useGrayTint = NO;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        ColoredVKVersionCompare useGrayTintResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
-        useGrayTint = (useGrayTintResult >= ColoredVKVersionCompareEqual);
-    });
-    
-    settingsCell.imageView.tintColor = useGrayTint ? [UIColor colorWithRed:0.667f green:0.682f blue:0.702f alpha:1.0f] : kVKMainColor;
+    settingsCell.imageView.tintColor = isNew3XClient ? [UIColor colorWithRed:0.667f green:0.682f blue:0.702f alpha:1.0f] : kVKMainColor;
     
     return settingsCell;
 }

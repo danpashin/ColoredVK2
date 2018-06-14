@@ -152,8 +152,7 @@ void setToolBar(UIToolbar *toolbar)
                             [btn setTitleColor:toolBarForegroundColor forState:UIControlStateNormal];
                             BOOL btnToExclude = NO;
                             NSMutableArray <NSString *> *btnsWithActionsToExclude = [NSMutableArray arrayWithObject:@"actionToggleEmoji:"];
-                            ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
-                            if (compareResult >= ColoredVKVersionCompareEqual) {
+                            if (isNew3XClient) {
                                 [btnsWithActionsToExclude addObject:@"send:"];
                                 [btnsWithActionsToExclude addObject:@"actionSendInline:"];
                             }
@@ -1015,15 +1014,13 @@ void setupNewAppMenuCell(UITableViewCell *cell)
             birthdayCell.status.textColor = cell.textLabel.textColor;
         }
     } else {
-        ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
-        if (compareResult >= ColoredVKVersionCompareEqual) {
+        if (isNew3XClient) {
             cell.imageView.tintColor = [UIColor colorWithRed:0.667f green:0.682f blue:0.702f alpha:1.0f];
             cell.backgroundColor = [UIColor whiteColor];
             cell.textLabel.textColor = [UIColor colorWithRed:0.18f green:0.188f blue:0.2f alpha:1.0f];
         } else {
             cell.imageView.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
             cell.backgroundColor = kMenuCellBackgroundColor;
-            cell.contentView.backgroundColor = kMenuCellBackgroundColor;
             cell.textLabel.textColor = kMenuCellTextColor;
         }
     }

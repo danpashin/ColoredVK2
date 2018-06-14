@@ -18,10 +18,18 @@
         _sellerName = @"theux";
         _teamIdentifier = @"";
         _teamName = @"";
-        _version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-        _detailedVersion = [NSString stringWithFormat:@"%@ (%@)", self.version, 
-                            [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
-        _isVKApp = [[NSBundle mainBundle].executablePath.lastPathComponent.lowercaseString isEqualToString:@"vkclient"];
+        
+        CFBundleRef mainBundle = CFBundleGetMainBundle();
+        CFStringRef shortVersion = CFBundleGetValueForInfoDictionaryKey(mainBundle, CFSTR("CFBundleShortVersionString"));
+        CFStringRef version = CFBundleGetValueForInfoDictionaryKey(mainBundle, CFSTR("CFBundleVersion"));
+        
+        _version = (__bridge NSString *)shortVersion;
+        _detailedVersion = [NSString stringWithFormat:@"%@ (%@)", self.version, (__bridge NSString *)version];
+        
+        CFURLRef executableURL = CFBundleCopyExecutableURL(mainBundle);
+        NSString *executableName = CFBridgingRelease(CFURLCopyLastPathComponent(executableURL));
+        _isVKApp = [executableName.lowercaseString isEqualToString:@"vkclient"];
+        CFRelease(executableURL);
         
         [self updateTeamInformation];
     }
@@ -57,32 +65,16 @@
 
 - (ColoredVKVersionCompare)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version
 {
-    if ([first_version isEqualToString:second_version])
+    if ([first_version isEqualToString:second_version] || 
+        CFStringGetLength((__bridge CFStringRef)first_version) == 0 || 
+        CFStringGetLength((__bridge CFStringRef)second_version) == 0)
         return ColoredVKVersionCompareEqual;
     
-    NSArray *first_version_components = [first_version componentsSeparatedByString:@"."];
-    NSArray *second_version_components = [second_version componentsSeparatedByString:@"."];
-    NSInteger length = MIN(first_version_components.count, second_version_components.count);
-    
-    
-    for (int i = 0; i < length; i++) {
-        NSInteger first_component = [first_version_components[i] integerValue];
-        NSInteger second_component = [second_version_components[i] integerValue];
-        
-        if (first_component > second_component)
-            return ColoredVKVersionCompareMore;
-        
-        if (first_component < second_component)
-            return ColoredVKVersionCompareLess;
-    }
-    
-    
-    if (first_version_components.count > second_version_components.count)
-        return ColoredVKVersionCompareMore;
-    
-    if (first_version_components.count < second_version_components.count)
+    CFComparisonResult result = CFStringCompare((__bridge CFStringRef)first_version, (__bridge CFStringRef)second_version, kCFCompareNumerically);
+    if (result == kCFCompareLessThan)
         return ColoredVKVersionCompareLess;
-    
+    else if (result == kCFCompareGreaterThan)
+        return ColoredVKVersionCompareMore;
     
     return ColoredVKVersionCompareEqual;
 }

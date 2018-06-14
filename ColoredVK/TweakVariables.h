@@ -20,6 +20,8 @@ typedef NS_ENUM(NSInteger, CVKCellSelectionStyle) {
     CVKCellSelectionStyleBlurred
 };
 
+extern BOOL isNew3XClient;
+
 extern BOOL premiumEnabled;
 extern ColoredVKMainController *cvkMainController;
 extern NSBundle *cvkBunlde;

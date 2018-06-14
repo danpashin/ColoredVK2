@@ -22,6 +22,8 @@
 void resetUISearchBar(UISearchBar *searchBar);
 
 
+BOOL isNew3XClient;
+
 BOOL premiumEnabled = NO;
 BOOL VKSettingsEnabled;
 
@@ -260,8 +262,7 @@ void reloadPrefs(void(^completion)(void))
         SBForegroundColor =         [UIColor cvk_savedColorForIdentifier:@"SBForegroundColor"           fromPrefs:prefs];
         barForegroundColor =        [UIColor cvk_savedColorForIdentifier:@"BarForegroundColor"          fromPrefs:prefs];
         
-        ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
-        if (!hideMenuSeparators && !prefs[@"MenuSeparatorColor"] && (compareResult == ColoredVKVersionCompareMore)) {
+        if (!hideMenuSeparators && !prefs[@"MenuSeparatorColor"] && isNew3XClient) {
             menuSeparatorColor  = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
         }
         
@@ -285,10 +286,11 @@ void reloadPrefs(void(^completion)(void))
             [cvkMainController.nightThemeScheme updateForType:[prefs[@"nightThemeType"] integerValue]];
             cvkMainController.nightThemeScheme.enabled = (enabled && enableNightTheme);
             
-            if (enableNightTheme && (compareResult == ColoredVKVersionCompareLess)) {
+            if (enableNightTheme && !isNew3XClient) {
                 [NSObject cvk_runVoidBlockOnMainThread:^{
                     cvkMainController.menuBackgroundView.alpha = 0.0f;
-                    resetUISearchBar((UISearchBar*)cvkMainController.vkMainController.tableView.tableHeaderView);
+                    if ([cvkMainController.vkMainController respondsToSelector:@selector(tableView)])
+                        resetUISearchBar((UISearchBar*)cvkMainController.vkMainController.tableView.tableHeaderView);
                 }];
             }
             

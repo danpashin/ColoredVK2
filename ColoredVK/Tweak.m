@@ -1145,9 +1145,12 @@ CHConstructor
         cvkMainController = [ColoredVKMainController new];
         cvkMainController.nightThemeScheme = [ColoredVKNightThemeColorScheme sharedScheme];
         
+        ColoredVKApplicationModel *application = [ColoredVKNewInstaller sharedInstaller].application;
+        isNew3XClient = ([application compareAppVersionWithVersion:@"3.0"] >= ColoredVKVersionCompareEqual);
+        
         BOOL prefsExist = [[NSFileManager defaultManager] fileExistsAtPath:CVK_PREFS_PATH];
         NSMutableDictionary *prefs = prefsExist ? [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH] : [NSMutableDictionary new];
-        prefs[@"vkVersion"] = [ColoredVKNewInstaller sharedInstaller].application.detailedVersion;
+        prefs[@"vkVersion"] = application.detailedVersion;
         [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
         VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil);
         

@@ -1138,8 +1138,7 @@ CHDeclareClassMethod(1, UIImage *, UIImage, imageNamed, NSString *, name)
     
     if (enabled && enableNightTheme) {
         NSString *assetName = orig.imageAsset.assetName;
-        ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
-        if ((compareResult == ColoredVKVersionCompareMore) && [assetName containsString:@"badge"]) {
+        if (isNew3XClient && [assetName containsString:@"badge"]) {
 //            CVKLog(@"assetName: %@", assetName);
             orig = [orig cvk_imageWithTintColor:cvkMainController.nightThemeScheme.backgroundColor];
         }

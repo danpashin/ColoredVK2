@@ -73,9 +73,8 @@ CHDeclareClass(DialogsController);
 CHDeclareMethod(0, void, DialogsController, viewDidLoad)
 {
     CHSuper(0, DialogsController, viewDidLoad);
-    ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0"];
     
-    if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && (compareResult == ColoredVKVersionCompareLess)) {
+    if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && !isNew3XClient) {
         if (enabled && !enableNightTheme && enabledMessagesListImage) {
             [cvkMainController setImageToTableView:self.tableView name:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
                                     parallaxEffect:useMessagesListParallax blur:messagesListUseBackgroundBlur];
@@ -104,9 +103,7 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
             search.tag = 1;
         }
         
-        ColoredVKApplicationModel *app = [ColoredVKNewInstaller sharedInstaller].application;
-        ColoredVKVersionCompare compareResult = [app compareAppVersionWithVersion:@"3.0"];
-        UIColor *placeholderColor = (compareResult >= 0) ? UITableViewCellTextColor : [UIColor colorWithRed:0.556863f green:0.556863f blue:0.576471f alpha:1.0f];
+        UIColor *placeholderColor = isNew3XClient ? UITableViewCellTextColor : [UIColor colorWithRed:0.556863f green:0.556863f blue:0.576471f alpha:1.0f];
         placeholderColor = (enabled && changeMessagesListTextColor) ? messagesListTextColor : placeholderColor;
         
         if (enabled && enabledMessagesListImage) {
@@ -123,7 +120,7 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
                 search._scopeBarBackgroundView.superview.hidden = YES;
             }
             
-        } else if (compareResult >= 0) {
+        } else if (isNew3XClient) {
             if ([self respondsToSelector:@selector(rptr)])
                 self.rptr.tintColor = nil;
             
@@ -145,7 +142,7 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
             search.searchBarTextField.attributedPlaceholder = placeholder;
         }
         
-        if (compareResult >= 0) {
+        if (isNew3XClient) {
             if (enabled && !enableNightTheme && enabledMessagesListImage) {
                 [cvkMainController setImageToTableView:tableView name:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
                                         parallaxEffect:useMessagesListParallax blur:messagesListUseBackgroundBlur];
