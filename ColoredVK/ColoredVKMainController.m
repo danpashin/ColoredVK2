@@ -90,7 +90,7 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
         [cell.contentView addSubview:switchView];
         
         if ([cell respondsToSelector:@selector(select)]) {
-            ((MenuCell *)cell).select = ^(id model) {
+            ((TitleMenuCell *)cell).select = ^(id model) {
                 return self.safePreferencesController;
             };
         }

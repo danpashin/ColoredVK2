@@ -9,12 +9,10 @@
 
 @implementation NSObject (ColoredVK)
 
-+ (void)cvk_runVoidBlockOnMainThread:(SimpleVoidBlock)block
++ (void)cvk_runBlockOnMainThread:(SimpleVoidBlock)block
 {
     if (!block)
-        return;
-    else
-        block = [block copy];
+        return; 
     
     if ([NSThread isMainThread])
         block();

@@ -10,5 +10,5 @@
 typedef void(^SimpleVoidBlock)(void);
 
 @interface NSObject (ColoredVK)
-+ (void)cvk_runVoidBlockOnMainThread:(SimpleVoidBlock)block;
++ (void)cvk_runBlockOnMainThread:(SimpleVoidBlock)block;
 @end

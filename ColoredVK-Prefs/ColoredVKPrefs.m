@@ -13,6 +13,7 @@
 #import <objc/runtime.h>
 #import "UIScrollView+EmptyDataSet.h"
 #import "ColoredVKNightThemeColorScheme.h"
+#import "NSObject+ColoredVK.h"
 
 
 @interface ColoredVKPrefs ()  <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
@@ -122,10 +123,9 @@
 
 - (void)reloadSpecifiers
 {
-    void (^block)(void) = ^{
+    [NSObject cvk_runBlockOnMainThread:^{
         [super reloadSpecifiers];
-    };
-    [NSThread isMainThread] ? block() : dispatch_async(dispatch_get_main_queue(), block);
+    }];
 }
 
 - (void)updateNightTheme
@@ -247,7 +247,7 @@
 
 - (NSArray <PSSpecifier*> *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize 
 {
-    NSMutableArray *specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBundle] mutableCopy];
+    NSMutableArray <PSSpecifier *> *specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBundle] mutableCopy];
     
     @autoreleasepool {
         if (specifiersArray.count > 0 && localize) {

@@ -407,7 +407,7 @@ CHDeclareMethod(0, void, ChatCell, setBG)
         };
         
         bgHandler();
-        [NSObject cvk_runVoidBlockOnMainThread:bgHandler];
+        [NSObject cvk_runBlockOnMainThread:bgHandler];
     }
     self.bg.alpha = 1.f;
 }

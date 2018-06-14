@@ -457,7 +457,7 @@ CHDeclareMethod(0, void, InputPanelView, didMoveToSuperview)
 {
     CHSuper(0, InputPanelView, didMoveToSuperview);
     
-    [NSObject cvk_runVoidBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"InputPanelView")]) {
             self.overlay.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
             self.overlay.layer.borderColor = cvkMainController.nightThemeScheme.backgroundColor.CGColor;
@@ -575,7 +575,7 @@ CHDeclareMethod(0, void, LookupAddressBookFriendsViewController, viewDidLoad)
     CHSuper(0, LookupAddressBookFriendsViewController, viewDidLoad);
     
     if (enabled && enableNightTheme) {
-        [NSObject cvk_runVoidBlockOnMainThread:^{
+        [NSObject cvk_runBlockOnMainThread:^{
             for (UIView *subview in self.lookupTeaserViewController.componentView.subviews) {
                 subview.backgroundColor = [UIColor clearColor];
             }
@@ -723,7 +723,7 @@ CHDeclareMethod(0, void, DefaultHighlightButton, layoutSubviews)
     CHSuper(0, DefaultHighlightButton, layoutSubviews);
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"DefaultHighlightButton")]) {
-        [NSObject cvk_runVoidBlockOnMainThread:^{
+        [NSObject cvk_runBlockOnMainThread:^{
             objc_setAssociatedObject(self.titleLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
             objc_setAssociatedObject(self, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
             [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -916,7 +916,7 @@ CHDeclareMethod(1, id, TouchHighlightControl, initWithFrame, CGRect, frame)
     TouchHighlightControl *control = CHSuper(1, TouchHighlightControl, initWithFrame, frame);
     
     if (enabled && enableNightTheme) {
-        [NSObject cvk_runVoidBlockOnMainThread:^{
+        [NSObject cvk_runBlockOnMainThread:^{
             for (UIView *subview in control.subviews) {
                 if ([subview isKindOfClass:[UIImageView class]]) {
                     UIImageView *imageView = (UIImageView *)subview;

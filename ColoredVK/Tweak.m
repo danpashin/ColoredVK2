@@ -22,7 +22,7 @@ CHDeclareMethod(0, void, VKMController, VKMNavigationBarUpdate)
     UINavigationBar *navBar = self.navigationController.navigationBar;
     if (enabled) {
         if (!enableNightTheme && enabledBarImage) {
-            [NSObject cvk_runVoidBlockOnMainThread:^{
+            [NSObject cvk_runBlockOnMainThread:^{
                 BOOL containsImageView = [navBar._backgroundView.subviews containsObject:[navBar._backgroundView viewWithTag:24]];
                 BOOL containsBlur = [navBar._backgroundView.subviews containsObject:[navBar._backgroundView viewWithTag:10]];
                 BOOL isAudioController = (changeAudioPlayerAppearance && (navBar.tag == 26));
@@ -148,7 +148,7 @@ CHDeclareMethod(1, void, VKMController, viewDidAppear, BOOL, animated)
         [self isKindOfClass:NSClassFromString(@"VKWebAppContainerController")])
         {
         
-        [NSObject cvk_runVoidBlockOnMainThread:^{
+        [NSObject cvk_runBlockOnMainThread:^{
             UIColor *blurColor = objc_getAssociatedObject(self, "cvkBlurColor");
             if (!blurColor)
                 blurColor = [UIColor clearColor];
@@ -290,7 +290,7 @@ CHDeclareMethod(0, void, VKMMainController, viewDidLoad)
             
             UIView *backView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
             self.tableView.backgroundView = backView;
-            [NSObject cvk_runVoidBlockOnMainThread:^{
+            [NSObject cvk_runBlockOnMainThread:^{
                 backView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
             }];
         }
@@ -558,7 +558,7 @@ CHDeclareMethod(0, void, UserWallController, updateProfile)
 {
     CHSuper(0, UserWallController, updateProfile);
     
-    [NSObject cvk_runVoidBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         if (!self.profile.item)
             return;
         
@@ -1075,7 +1075,7 @@ CHDeclareMethod(0, void, VKSearchBar, layoutSubviews)
         }
     };
     changeBlock();
-    [NSObject cvk_runVoidBlockOnMainThread:changeBlock];
+    [NSObject cvk_runBlockOnMainThread:changeBlock];
 }
 
 CHDeclareClass(VKSession);

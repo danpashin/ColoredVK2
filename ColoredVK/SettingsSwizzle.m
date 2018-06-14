@@ -31,7 +31,7 @@ CHDeclareMethod(3, void, ModernSettingsController, tableView, UITableView*, tabl
     CHSuper(3, ModernSettingsController, tableView, tableView, willDisplayCell, cell, forRowAtIndexPath, indexPath);
     
     if ([self isKindOfClass:NSClassFromString(@"ModernSettingsController")]) {
-        [NSObject cvk_runVoidBlockOnMainThread:^{
+        [NSObject cvk_runBlockOnMainThread:^{
             if ([cell.textLabel.text.lowercaseString isEqualToString:@"vksettings"]) {
                 cell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
             }
@@ -71,7 +71,7 @@ CHDeclareMethod(0, void, ModernSettingsController, viewWillLayoutSubviews)
         else
             self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.5f];
         
-        [NSObject cvk_runVoidBlockOnMainThread:^{
+        [NSObject cvk_runBlockOnMainThread:^{
             UIColor *textColor = changeSettingsTextColor ? settingsTextColor : UITableViewCellTextColor;
             for (UIView *subview in self.tableView.tableHeaderView.subviews) {
                 if ([subview respondsToSelector:@selector(setTextColor:)]) {

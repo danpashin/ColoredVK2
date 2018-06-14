@@ -13,7 +13,7 @@
 
 void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
 {
-    [NSObject cvk_runVoidBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         NSInteger blurViewTag = 1054326;
         
         if (set && !UIAccessibilityIsReduceTransparencyEnabled()) {
@@ -351,7 +351,7 @@ void setupSearchController(UISearchDisplayController *controller, BOOL reset)
 
 void resetUISearchBar(UISearchBar *searchBar)
 {
-    [NSObject cvk_runVoidBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         if (![searchBar isKindOfClass:[UISearchBar class]])
             return;
         
@@ -384,7 +384,7 @@ void performInitialCellSetup(UITableViewCell *cell)
 
 void resetNavigationBar(UINavigationBar *navBar)
 {
-    [NSObject cvk_runVoidBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         setBlur(navBar, NO, nil, 0);
         navBar._backgroundView.alpha = 1.0;
         [cvkMainController.navBarImageView removeFromSuperview];
@@ -397,7 +397,7 @@ void resetNavigationBar(UINavigationBar *navBar)
 
 void actionChangeCornerRadius(UIWindow *window)
 {
-    [NSObject cvk_runVoidBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         UIWindow *localWindowVar = window;
         if (!localWindowVar) {
             localWindowVar = [UIApplication sharedApplication].windows.lastObject;
@@ -433,7 +433,7 @@ void setupUISearchBar(UISearchBar *searchBar)
     if (![searchBar isKindOfClass:[UISearchBar class]])
         return;
     
-    [NSObject cvk_runVoidBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         UIView *barBackground = searchBar.subviews[0].subviews[0];
         if (menuSelectionStyle == CVKCellSelectionStyleBlurred) {
             searchBar.backgroundColor = [UIColor clearColor];
@@ -628,10 +628,10 @@ void setupExtraSettingsCell(UITableViewCell *cell)
 
 NSAttributedString *attributedStringForNightTheme(NSAttributedString * text)
 {
-    NSMutableAttributedString *mutableString = [[NSMutableAttributedString alloc] initWithAttributedString:text];
     if (enabled && enableNightTheme) {
-        [mutableString enumerateAttributesInRange:NSMakeRange(0, mutableString.length) options:0 usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
-                                           
+        NSMutableAttributedString *mutableText = [[NSMutableAttributedString alloc] initWithAttributedString:text];
+        [mutableText enumerateAttributesInRange:NSMakeRange(0, mutableText.length) options:0 usingBlock:^(NSDictionary<NSAttributedStringKey,id> * _Nonnull attrs, NSRange range, BOOL * _Nonnull stop) {
+            
             void (^setColor)(BOOL isLink, BOOL forMOCTLabel, BOOL detailed) = ^(BOOL isLink, BOOL forMOCTLabel, BOOL detailed) {
                 NSString *attribute = forMOCTLabel ? @"CTForegroundColor" : NSForegroundColorAttributeName;
                 
@@ -644,11 +644,11 @@ NSAttributedString *attributedStringForNightTheme(NSAttributedString * text)
                 if (forMOCTLabel) {
                     textColor = (id)((UIColor *)textColor).CGColor;
                     if (isLink) {
-                        [mutableString addAttribute:@"MOCTLinkInactiveAttributeName" value:@{@"CTForegroundColor": textColor} range:range];
-                        [mutableString addAttribute:@"MOCTLinkActiveAttributeName" value:@{@"CTForegroundColor": textColor} range:range];
+                        [mutableText addAttribute:@"MOCTLinkInactiveAttributeName" value:@{@"CTForegroundColor": textColor} range:range];
+                        [mutableText addAttribute:@"MOCTLinkActiveAttributeName" value:@{@"CTForegroundColor": textColor} range:range];
                     }
                 }
-                [mutableString addAttribute:attribute value:textColor range:range];
+                [mutableText addAttribute:attribute value:textColor range:range];
             };
             
             if (attrs[@"MOCTLinkAttributeName"])
@@ -664,9 +664,10 @@ NSAttributedString *attributedStringForNightTheme(NSAttributedString * text)
                     setColor(NO, NO, NO);
             }
         }];
+        return mutableText;
     }
     
-    return mutableString;
+    return text;
 }
 
 
@@ -793,7 +794,7 @@ void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRe
     
     resetTabBar();
     
-    [NSObject cvk_runVoidBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         if ([cvkMainController.vkMainController respondsToSelector:@selector(newsController)]) {
             NewsSelectorController *newsSelector = (NewsSelectorController *)cvkMainController.vkMainController.newsController;
             if ([newsSelector respondsToSelector:@selector(currentViewController)]) {

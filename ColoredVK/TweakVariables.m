@@ -266,7 +266,7 @@ void reloadPrefs(void(^completion)(void))
             menuSeparatorColor  = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
         }
         
-        [NSObject cvk_runVoidBlockOnMainThread:^{
+        [NSObject cvk_runBlockOnMainThread:^{
             UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
             if (statusBar != nil) {
                 if (enabled && enableNightTheme) {
@@ -287,7 +287,7 @@ void reloadPrefs(void(^completion)(void))
             cvkMainController.nightThemeScheme.enabled = (enabled && enableNightTheme);
             
             if (enableNightTheme && !isNew3XClient) {
-                [NSObject cvk_runVoidBlockOnMainThread:^{
+                [NSObject cvk_runBlockOnMainThread:^{
                     cvkMainController.menuBackgroundView.alpha = 0.0f;
                     if ([cvkMainController.vkMainController respondsToSelector:@selector(tableView)])
                         resetUISearchBar((UISearchBar*)cvkMainController.vkMainController.tableView.tableHeaderView);
@@ -395,7 +395,7 @@ void reloadPrefs(void(^completion)(void))
                 //        customFontName = prefs[@"customFontName"] ? prefs[@"customFontName"] : @".SFUIText";
         }
         
-        [NSObject cvk_runVoidBlockOnMainThread:^{
+        [NSObject cvk_runBlockOnMainThread:^{
             resetTabBar();
             actionChangeCornerRadius([UIApplication sharedApplication].keyWindow);
             
