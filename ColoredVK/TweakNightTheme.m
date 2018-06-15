@@ -698,6 +698,12 @@ CHDeclareMethod(0, void, PersistentBackgroundColorView, layoutSubviews)
 }
 
 CHDeclareClass(GiftSendController);
+CHDeclareMethod(1, void, GiftSendController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, GiftSendController, viewWillAppear, animated);
+    self.sendFooterView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+}
+
 CHDeclareMethod(2, UITableViewCell*, GiftSendController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, GiftSendController, tableView, tableView, cellForRowAtIndexPath, indexPath);
@@ -1333,9 +1339,9 @@ CHDeclareMethod(0, void, _UIBackdropEffectView, layoutSubviews)
 {
     CHSuper(0, _UIBackdropEffectView, layoutSubviews);
     
-    if (enabled && enableNightTheme) {
-        if (![self.superview isKindOfClass:NSClassFromString(@"UIKBBackdropView")])
-            self.backdropLayer.hidden = YES;
+    if (enabled && enableNightTheme && ![self.superview isKindOfClass:NSClassFromString(@"UIKBKeyView")] && 
+        ![self.superview isKindOfClass:NSClassFromString(@"UICalloutBarBackground")]) {
+        self.backdropLayer.hidden = YES;
     }
 }
 
@@ -1351,8 +1357,11 @@ CHDeclareMethod(1, void, _UIBackdropView, setBackgroundColor, UIColor *, backgro
     if (enabled && enableNightTheme) {
         if ([self.superview isKindOfClass:NSClassFromString(@"_UINavigationBarBackground")])
             backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
-        else if (![self.superview isKindOfClass:NSClassFromString(@"UIKBKeyView")])
+        else if (![self.superview isKindOfClass:NSClassFromString(@"UIKBKeyView")] && 
+                 ![self.superview isKindOfClass:NSClassFromString(@"_UIBackdropContentView")] &&
+                 ![self isKindOfClass:NSClassFromString(@"UICalloutBarBackground")]) {
             backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        }
     }
     
     CHSuper(1, _UIBackdropView, setBackgroundColor, backgroundColor);
@@ -1428,7 +1437,11 @@ CHDeclareMethod(0, void, VKSegmentedControl, layoutSubviews)
     CHSuper(0, VKSegmentedControl, layoutSubviews);
     
     if (enabled && enableNightTheme) {
-        self.tintColor = cvkMainController.nightThemeScheme.buttonColor;
+        if ([self.superview isKindOfClass:[UINavigationBar class]])
+            self.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+        else
+            self.tintColor = cvkMainController.nightThemeScheme.buttonColor;
+        
         if ([self respondsToSelector:@selector(collectionView)])
             objc_setAssociatedObject(self.collectionView, "shouldDisableBackgroundColor", @1, OBJC_ASSOCIATION_ASSIGN);
     }
@@ -1459,7 +1472,32 @@ CHDeclareMethod(0, void, LoadingFooterView, layoutSubviews)
 {
     CHSuper(0, LoadingFooterView, layoutSubviews);
     
-    if (enabled && enableNightTheme && !self.anim.animating) {
-        self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+    if (enabled && enableNightTheme) {
+        self.backgroundColor = self.superview.backgroundColor;
+    }
+}
+
+CHDeclareClass(VKP2PSendViewController);
+CHDeclareMethod(1, void, VKP2PSendViewController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, VKP2PSendViewController, viewWillAppear, animated);
+    
+    if (enabled && enableNightTheme) {
+        self.view.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        self.bubble.image = [self.bubble.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        self.bubble.tintColor = cvkMainController.nightThemeScheme.incomingBackgroundColor;
+        for (UIView *subview in self.sendButton.superview.subviews) {
+                subview.backgroundColor = self.view.backgroundColor;
+        }
+    }
+}
+
+CHDeclareClass(PaymentsPopupView);
+CHDeclareMethod(0, void, PaymentsPopupView, layoutSubviews)
+{
+    CHSuper(0, PaymentsPopupView, layoutSubviews);
+    
+    if (enabled && enableNightTheme) {
+        self.topToolbar.barTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
     }
 }

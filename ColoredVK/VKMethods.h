@@ -692,6 +692,7 @@
 @end
 
 @interface GiftSendController : VKMLiveController
+@property(retain, nonatomic) UIView *sendFooterView;
 @end
 
 @interface DefaultHighlightButton : UIButton
@@ -930,3 +931,11 @@
 @property(retain, nonatomic) UICollectionView *collectionView;
 @end
 
+@interface VKP2PSendViewController : VKMScrollViewController
+@property(retain, nonatomic) UIImageView *bubble;
+@property(retain, nonatomic) UIButton *sendButton;
+@end
+
+@interface PaymentsPopupView : UIView
+@property(retain, nonatomic) UIToolbar *topToolbar;
+@end
