@@ -1052,30 +1052,15 @@ CHDeclareMethod(0, void, VKSearchBar, layoutSubviews)
 {
     CHSuper(0, VKSearchBar, layoutSubviews);
     
-    NSNumber *customized = objc_getAssociatedObject(self, "cvk_customized");
+    __block NSNumber *customized = objc_getAssociatedObject(self, "cvk_customized");
     if (!customized)
         customized = @NO;
     
-    void (^changeBlock)(void) = ^(void){
-        if (enabled && enableNightTheme) {
-            if ([self.superview isKindOfClass:NSClassFromString(@"DiscoverFeedTitleView")] || [self.superview isKindOfClass:[UINavigationBar class]]) {
-                self.backgroundView.backgroundColor = [UIColor clearColor];
-                self.textFieldBackground.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-            } else {
-                self.backgroundView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-                self.textFieldBackground.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
-            }
-            
-            objc_setAssociatedObject(self.placeholderLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
-            self.placeholderLabel.textColor = cvkMainController.nightThemeScheme.detailTextColor;
-            
-            self.segmentedControl.layer.borderColor = cvkMainController.nightThemeScheme.buttonSelectedColor.CGColor;
-        } else if (!customized.boolValue || !enabled) {
+    [NSObject cvk_runBlockOnMainThread:^{
+        if (!customized.boolValue || !enabled || !enableNightTheme) {
             resetNewSearchBar(self);
         }
-    };
-    changeBlock();
-    [NSObject cvk_runBlockOnMainThread:changeBlock];
+    }];
 }
 
 CHDeclareClass(VKSession);

@@ -99,7 +99,8 @@
 {
     @synchronized(self) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-            [self.cachedPrefs writeToFile:CVK_PREFS_PATH atomically:YES];
+            NSDictionary *cachedPrefsCopy = [self.cachedPrefs copy];
+            [cachedPrefsCopy writeToFile:CVK_PREFS_PATH atomically:YES];
             POST_NOTIFICATION(kPackageNotificationReloadInternalPrefs);
             
             if (completionBlock)
@@ -298,7 +299,7 @@
     return specifiersArray;
 }
 
-- (id)readPreferenceValue:(PSSpecifier *)specifier
+- (nullable id)readPreferenceValue:(PSSpecifier *)specifier
 {
     if (!specifier.properties[@"key"])
         return nil;
@@ -319,7 +320,7 @@
 #pragma mark Setters
 #pragma mark -
 
-- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier
+- (void)setPreferenceValue:(nullable id)value specifier:(PSSpecifier *)specifier
 {
     if (!specifier.properties[@"key"])
         return;

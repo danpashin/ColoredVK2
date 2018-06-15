@@ -48,7 +48,7 @@
         if ([control isKindOfClass:[UISegmentedControl class]]) {
             control.layer.cornerRadius = CGRectGetHeight(control.bounds) / 2;
             control.layer.borderWidth = 1.0f;
-            control.layer.borderColor = nightScheme.enabled ? nightScheme.buttonSelectedColor.CGColor : control.tintColor.CGColor;
+            control.layer.borderColor = nightScheme.enabled ? nightScheme.buttonColor.CGColor : control.tintColor.CGColor;
             control.layer.masksToBounds = YES;
         }
     }

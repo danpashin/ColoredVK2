@@ -612,6 +612,7 @@
 
 @interface VKAPBottomToolbar : UIView
 @property (readonly, nonatomic) UIToolbar *bg;
+@property(readonly, nonatomic) UIView *hostView;
 @end
 
 @interface WallModeRenderer : Renderer
@@ -846,7 +847,7 @@
 @end
 
 @interface VKSearchBar : UIView
-
++ (id)grayConfig;
 @property (strong, nonatomic) UIView *separator;
 @property (strong, nonatomic) UILabel *placeholderLabel;
 @property (strong, nonatomic) UITextField *textField;
@@ -919,8 +920,13 @@
 @interface PostingComposePanel : UIView
 @end
 
-@interface VKSegmentIndicator : UIView
-@end
-
 @interface TitleMenuCell : MenuCell
 @end
+
+@interface VKReusableButtonView : UIButton
+@end
+
+@interface VKSegmentedControl : UIControl
+@property(retain, nonatomic) UICollectionView *collectionView;
+@end
+

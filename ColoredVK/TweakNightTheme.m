@@ -253,7 +253,7 @@ CHDeclareMethod(0, void, UISegmentedControl, layoutSubviews)
     CHSuper(0, UISegmentedControl, layoutSubviews);
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UISegmentedControl")]) {
-        self.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+        self.tintColor = cvkMainController.nightThemeScheme.buttonColor;
         self.backgroundColor = [UIColor clearColor];
     }
 }
@@ -399,7 +399,8 @@ CHDeclareMethod(0, void, UICollectionViewCell, layoutSubviews)
 {
     CHSuper(0, UICollectionViewCell, layoutSubviews);
     
-    NSArray <NSString *> *forbiddenClasses = @[@"_UIAlertControllerTextFieldViewCollectionCell", @"vkm.MessageCell", @"vkm.SelectionCollectionViewCell"];
+    NSArray <NSString *> *forbiddenClasses = @[@"_UIAlertControllerTextFieldViewCollectionCell", @"vkm.MessageCell", 
+                                               @"vkm.SelectionCollectionViewCell", @"VKSegmentCollectionViewCell"];
     BOOL forbiddenClass = [forbiddenClasses containsObject:CLASS_NAME(self)];
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionViewCell")] && !forbiddenClass) {
         
@@ -511,8 +512,7 @@ CHDeclareMethod(0, void, VKAPBottomToolbar, layoutSubviews)
     CHSuper(0, VKAPBottomToolbar, layoutSubviews);
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKAPBottomToolbar")]) {
-        self.bg.barTintColor = cvkMainController.nightThemeScheme.backgroundColor;
-        self.bg.tintColor = cvkMainController.nightThemeScheme.textColor;
+        self.hostView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
     }
 }
 
@@ -1332,7 +1332,11 @@ CHDeclareClass(_UIBackdropEffectView);
 CHDeclareMethod(0, void, _UIBackdropEffectView, layoutSubviews)
 {
     CHSuper(0, _UIBackdropEffectView, layoutSubviews);
-    self.backdropLayer.hidden = YES;
+    
+    if (enabled && enableNightTheme) {
+        if (![self.superview isKindOfClass:NSClassFromString(@"UIKBBackdropView")])
+            self.backdropLayer.hidden = YES;
+    }
 }
 
 CHDeclareClass(_UIBackdropView);
@@ -1347,7 +1351,7 @@ CHDeclareMethod(1, void, _UIBackdropView, setBackgroundColor, UIColor *, backgro
     if (enabled && enableNightTheme) {
         if ([self.superview isKindOfClass:NSClassFromString(@"_UINavigationBarBackground")])
             backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
-        else
+        else if (![self.superview isKindOfClass:NSClassFromString(@"UIKBKeyView")])
             backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
     
@@ -1408,12 +1412,54 @@ CHDeclareMethod(0, void, PostingComposePanel, layoutSubviews)
     }
 }
 
-CHDeclareClass(VKSegmentIndicator);
-CHDeclareMethod(0, void, VKSegmentIndicator, layoutSubviews)
+CHDeclareClass(VKReusableButtonView);
+CHDeclareMethod(0, void, VKReusableButtonView, layoutSubviews)
 {
-    CHSuper(0, VKSegmentIndicator, layoutSubviews);
+    CHSuper(0, VKReusableButtonView, layoutSubviews);
     
     if (enabled && enableNightTheme) {
-        self.alpha = 0.7f;
+        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+}
+
+CHDeclareClass(VKSegmentedControl);
+CHDeclareMethod(0, void, VKSegmentedControl, layoutSubviews)
+{
+    CHSuper(0, VKSegmentedControl, layoutSubviews);
+    
+    if (enabled && enableNightTheme) {
+        self.tintColor = cvkMainController.nightThemeScheme.buttonColor;
+        if ([self respondsToSelector:@selector(collectionView)])
+            objc_setAssociatedObject(self.collectionView, "shouldDisableBackgroundColor", @1, OBJC_ASSOCIATION_ASSIGN);
+    }
+}
+
+CHDeclareClass(VKSearchBar);
+CHDeclareClassMethod(0, VKSearchBarConfig *, VKSearchBar, grayConfig)
+{
+    VKSearchBarConfig *config = CHSuper(0, VKSearchBar, grayConfig);
+    if (enabled && enableNightTheme) {
+        config.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        config.textfieldBackgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+    }
+    return config;
+}
+
+CHDeclareClassMethod(0, VKSearchBarConfig *, VKSearchBar, navigationBlueConfig)
+{
+    VKSearchBarConfig *config = CHSuper(0, VKSearchBar, navigationBlueConfig);
+    if (enabled && enableNightTheme) {
+        config.textfieldBackgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+    return config;
+}
+
+CHDeclareClass(LoadingFooterView);
+CHDeclareMethod(0, void, LoadingFooterView, layoutSubviews)
+{
+    CHSuper(0, LoadingFooterView, layoutSubviews);
+    
+    if (enabled && enableNightTheme && !self.anim.animating) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
     }
 }

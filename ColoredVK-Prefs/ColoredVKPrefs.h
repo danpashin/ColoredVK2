@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)showPurchaseAlert;
 
 - (nullable id)readPreferenceValue:(PSSpecifier *)specifier NS_REQUIRES_SUPER;
-- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier NS_REQUIRES_SUPER;
+- (void)setPreferenceValue:(nullable id)value specifier:(PSSpecifier *)specifier NS_REQUIRES_SUPER;
 
 - (void)writePrefsWithCompetion:(nullable void(^)(void))completionBlock;
 - (void)readPrefsWithCompetion:(nullable void(^)(void))completionBlock;
