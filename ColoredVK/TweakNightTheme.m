@@ -507,9 +507,9 @@ CHDeclareMethod(0, void, PollAnswerButton, layoutSubviews)
 }
 
 CHDeclareClass(VKAPBottomToolbar);
-CHDeclareMethod(0, void, VKAPBottomToolbar, layoutSubviews)
+CHDeclareMethod(0, void, VKAPBottomToolbar, layoutToolbarInSuperView)
 {
-    CHSuper(0, VKAPBottomToolbar, layoutSubviews);
+    CHSuper(0, VKAPBottomToolbar, layoutToolbarInSuperView);
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKAPBottomToolbar")]) {
         self.hostView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;

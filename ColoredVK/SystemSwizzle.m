@@ -201,8 +201,10 @@ CHDeclareMethod(1, void, UITableView, setBackgroundView, UIView*, backgroundView
         if (!backgroundView)
             backgroundView = [UIView new];
         objc_setAssociatedObject(self, "backgroundViewCachedColor", backgroundView.backgroundColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        backgroundView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+        if (![self.delegate isKindOfClass:NSClassFromString(@"VKAPPlacesViewController")])
+            backgroundView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
     }
+    
     if ([self.backgroundView isKindOfClass:[ColoredVKWallpaperView class]] && [backgroundView isKindOfClass:NSClassFromString(@"TeaserView")]) {
         TeaserView *teaserView = (TeaserView *)backgroundView;
         teaserView.labelTitle.textColor = UITableViewCellTextColor;

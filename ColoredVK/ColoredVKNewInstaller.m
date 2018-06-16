@@ -59,7 +59,7 @@ BOOL installerShouldOpenPrefs;
         if (!__udid || __udid.length != 40)
             __udid = @"";
         
-        deviceIsJailed = [[NSFileManager defaultManager] isWritableFileAtPath:@"/var/mobile/Library/Preferences/cvk.txt"];
+        deviceIsJailed = (access("/var/mobile/Library/Preferences/", W_OK) == 0);
         deviceIsJailed = deviceIsJailed && (__udid.length == 40);
         
         _user = [ColoredVKUserModel new];
@@ -174,7 +174,10 @@ return;
             self.user.email = dict[@"email"];
             if (self.user.name.length > 0) {
                 self.user.authenticated = YES;
+            } else {
+                [self downloadJBLicence];
             }
+            
             BOOL purchased = [dict[@"purchased"] boolValue];
             if (purchased) {
                 self.user.accountStatus = ColoredVKUserAccountStatusPaid;
@@ -229,8 +232,7 @@ return;
     NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
     [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
     
-    if (deviceIsJailed)
-        [self downloadJBLicence];
+    [self downloadJBLicence];
 }
 
 - (void)downloadJBLicence
