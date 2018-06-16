@@ -138,7 +138,7 @@ return;
         }
         
         NSData *decryptedData = decryptData([NSData dataWithContentsOfFile:kDRMLicencePath], nil);
-        NSDictionary *dict = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
+        NSDictionary *dict = (NSDictionary *)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
         
         if (![dict isKindOfClass:[NSDictionary class]] || (dict.allKeys.count == 0)) {
             writeFreeLicenceAndReturn
@@ -154,7 +154,7 @@ return;
             deviceIsJailed = YES;
             NSString *licenceUdid = dict[@"udid"];
             
-            if ((licenceUdid.length != 40) || !deviceIsJailed || ![licenceUdid isEqualToString:__udid]) {
+            if ((__udid.length != 0) && ((licenceUdid.length != 40) || !deviceIsJailed || ![licenceUdid isEqualToString:__udid])) {
                 writeFreeLicenceAndReturn
             }
             
@@ -228,7 +228,7 @@ return;
     [self.user clearUser];
     
     NSDictionary *dict = @{@"purchased" : @NO, @"Device" : __deviceModel, 
-                           @"jailed" : deviceIsJailed ? @YES : @NO, @"udid" : __udid };
+                           @"jailed" : @(deviceIsJailed), @"udid" : __udid };
     NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
     [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
     

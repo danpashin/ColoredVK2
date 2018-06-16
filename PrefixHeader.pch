@@ -73,7 +73,7 @@
 NS_ASSUME_NONNULL_BEGIN
 static NSString *const kPackageIdentifier = @"com.daniilpashin.coloredvk2";
 static NSString *const kPackageName = @"ColoredVK 2";
-static NSString *const kPackageVersion = @"4.4.12";
+static NSString *const kPackageVersion = @"4.4.13";
 
 static NSString *const kPackageAPIURL = @"https://api.danpashin.ru/v1.2";
 static NSString *const kPackageDevLink = @"https://vk.com/danpashin";
