@@ -1,12 +1,12 @@
 //
-//  ColoredVKUpdatesController.m
+//  ColoredVKUpdatesModel.m
 //  ColoredVK2
 //
 //  Created by Даниил on 02.07.17.
 //
 //
 
-#import "ColoredVKUpdatesController.h"
+#import "ColoredVKUpdatesModel.h"
 #import <UIKit/UIKit.h>
 #import "NSDate+DateTools.h"
 #import "ColoredVKNewInstaller.h"
@@ -14,13 +14,13 @@
 #import "ColoredVKNetwork.h"
 #import "ColoredVKUINotification.h"
 
-@interface ColoredVKUpdatesController ()
+@interface ColoredVKUpdatesModel ()
 @property (strong, nonatomic) NSString *version;
 @property (strong, nonatomic) NSString *changelog;
 @property (strong, nonatomic) NSString *downloadURL;
 @end
 
-@implementation ColoredVKUpdatesController
+@implementation ColoredVKUpdatesModel
 
 static NSString *const kCVKUpdateLastCheck = @"lastCheckForUpdates";
 static NSString *const kCVKUpdateTimeFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";

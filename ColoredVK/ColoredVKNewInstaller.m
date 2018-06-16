@@ -12,7 +12,7 @@
 
 #import "ColoredVKHUD.h"
 #import "ColoredVKAlertController.h"
-#import "ColoredVKUpdatesController.h"
+#import "ColoredVKUpdatesModel.h"
 #import "ColoredVKNetwork.h"
 
 #import <sys/utsname.h>
@@ -72,10 +72,10 @@ BOOL installerShouldOpenPrefs;
         [self createFolders];
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-            ColoredVKUpdatesController *updatesController = [ColoredVKUpdatesController new];
-            updatesController.checkedAutomatically = YES;
-            if (updatesController.shouldCheckUpdates)
-                [updatesController checkUpdates];
+            ColoredVKUpdatesModel *updatesModel = [ColoredVKUpdatesModel new];
+            updatesModel.checkedAutomatically = YES;
+            if (updatesModel.shouldCheckUpdates)
+                [updatesModel checkUpdates];
         });
     }
     return self;

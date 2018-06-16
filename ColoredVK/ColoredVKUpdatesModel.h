@@ -1,5 +1,5 @@
 //
-//  ColoredVKUpdatesController.h
+//  ColoredVKUpdatesModel.h
 //  ColoredVK2
 //
 //  Created by Даниил on 02.07.17.
@@ -9,7 +9,7 @@
 #import <Foundation/NSObject.h>
 
 
-@interface ColoredVKUpdatesController : NSObject
+@interface ColoredVKUpdatesModel : NSObject
 
 /**
  *  Возвращает YES, если версия твика является бета-версией, пользователь установил твик только что или включена проверка обновлений.
@@ -24,7 +24,7 @@
 /**
  *  Блок, который вызывается в конце проверки обновлений.
  */
-@property (nonatomic, copy) void (^checkCompletionHandler)(ColoredVKUpdatesController *controller);
+@property (nonatomic, copy) void (^checkCompletionHandler)(ColoredVKUpdatesModel *model);
 
 @property (assign, nonatomic) BOOL checkedAutomatically;
 

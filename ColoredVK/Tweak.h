@@ -12,7 +12,12 @@
 #import "ColoredVKNewInstaller.h"
 #import "UIColor+ColoredVK.h"
 #import "NSObject+ColoredVK.h"
-#import "VKMethods.h"
+
+#import "SystemClasses.h"
+#import "VKModels.h"
+#import "VKViews.h"
+#import "VKCells.h"
+#import "VKControllers.h"
 
 #import "TweakFunctions.h"
 #import "TweakVariables.h"

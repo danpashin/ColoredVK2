@@ -7,10 +7,6 @@
 
 #import "Tweak.h"
 
-@interface UITabBar ()
-- (UIView *)_backgroundView;
-@end
-
 void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
 {
     [NSObject cvk_runBlockOnMainThread:^{

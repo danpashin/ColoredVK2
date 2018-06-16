@@ -9,7 +9,6 @@
 
 #import "ColoredVKMainPrefsController.h"
 #import "ColoredVKHeaderView.h"
-#import "ColoredVKUpdatesController.h"
 #import "ColoredVKNewInstaller.h"
 #import <SafariServices/SFSafariViewController.h>
 #import "ColoredVKAccountController.h"

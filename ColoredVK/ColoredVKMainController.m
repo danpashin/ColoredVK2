@@ -8,7 +8,6 @@
 
 #import "ColoredVKMainController.h"
 #import "Tweak.h"
-#import "UIGestureRecognizer+BlocksKit.h"
 #import "ColoredVKNewInstaller.h"
 #import "UIColor+ColoredVK.h"
 #import "ColoredVKNetwork.h"
@@ -163,18 +162,24 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
 
 - (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)(void) )handler
 {
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer * _Nonnull sender) {
-        CGPoint location = [sender locationInView:sender.view];
-        UIView *view = [sender.view hitTest:location withEvent:nil];
-        if (![view isKindOfClass:[UITextView class]] && [view isKindOfClass:NSClassFromString(@"ColoredVKAudioLyricsView")]) {
-            if (handler) {
-                handler();
-            }
-        }
-    }];
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handlePlayerGesture:)];
+    objc_setAssociatedObject(swipeGesture, "handler", handler, OBJC_ASSOCIATION_COPY_NONATOMIC);
     swipeGesture.direction = direction;
     
     return swipeGesture;
+}
+
+- (void)handlePlayerGesture:(UISwipeGestureRecognizer *)swipeGesture
+{
+    CGPoint location = [swipeGesture locationInView:swipeGesture.view];
+    UIView *view = [swipeGesture.view hitTest:location withEvent:nil];
+    
+    if (![view isKindOfClass:[UITextView class]] && [view isKindOfClass:NSClassFromString(@"ColoredVKAudioLyricsView")]) {
+        void(^handler)(void) = objc_getAssociatedObject(swipeGesture, "handler");
+        if (handler) {
+            handler();
+        }
+    }
 }
 
 - (void)sendCrash
@@ -186,6 +191,7 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
         NSDictionary *crash = [NSDictionary dictionaryWithContentsOfFile:CVK_CRASH_PATH];
         if (!crash)
             return;
+        
         
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
         NSDictionary *allInfo = @{@"vk_version":newInstaller.application.detailedVersion, @"cvk_version":kPackageVersion, 
