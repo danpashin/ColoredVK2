@@ -14,8 +14,6 @@ typedef NS_ENUM(NSUInteger, ColoredVKUserAccountStatus)
     ColoredVKUserAccountStatusBanned
 };
 
-@class ColoredVKNewInstaller;
-
 @interface ColoredVKUserModel : NSObject
 
 @property (assign, nonatomic) ColoredVKUserAccountStatus accountStatus;

@@ -9,6 +9,7 @@
 #import "ColoredVKHUD.h"
 #import "ColoredVKNightThemeColorScheme.h"
 #import "LHAcvitityIndicator.h"
+#import "NSObject+ColoredVK.h"
 
 @interface LHProgressHUD ()
 - (instancetype)initWithAttachedView:(UIView *)view mode:(LHProgressHUDMode)mode subMode:(LHPRogressHUDSubMode)subMode animated:(BOOL)animated;
@@ -43,7 +44,7 @@
     __block UIView *localView = view;
     __block typeof(self) localSelf = self;
     
-    [self performBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         if (!localView)
             localView = [UIApplication sharedApplication].keyWindow;
         
@@ -79,7 +80,7 @@
 
 - (void)stopSpinner
 {
-    [self performBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         if ([self.lhSpinner isKindOfClass:[LHAcvitityIndicator class]]) {
             LHAcvitityIndicator *activityIndicator = (LHAcvitityIndicator *)self.lhSpinner;
             activityIndicator.shouldStop = YES;
@@ -92,7 +93,7 @@
 
 - (void)startSpinner
 {
-    [self performBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         if (self.subMode == LHProgressHUDSubModeAnimating && [self.lhSpinner isKindOfClass:[LHAcvitityIndicator class]]) {
             [(LHAcvitityIndicator *)self.lhSpinner startAnimating];
         }
@@ -101,7 +102,7 @@
 
 - (void)showSuccess
 {
-    [self performBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         [super showSuccessWithStatus:@"" animated:YES];
         [super hideAfterDelay:1.5f];
     }];
@@ -109,7 +110,7 @@
 
 - (void)showSuccessWithStatus:(NSString *)status
 {
-    [self performBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         [super showSuccessWithStatus:status animated:YES];
         [super hideAfterDelay:1.5f];
     }];
@@ -117,7 +118,7 @@
 
 - (void)showFailure
 {
-    [self performBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         [super showFailureWithStatus:@"" animated:YES];
         [super hideAfterDelay:1.5f];
     }];
@@ -125,7 +126,7 @@
 
 - (void)showFailureWithStatus:(NSString *)status
 {
-    [self performBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         [super showFailureWithStatus:status animated:YES];
         [super hideAfterDelay:2.8f];
     }];
@@ -133,7 +134,7 @@
 
 - (void)hide
 {
-    [self performBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         [self stopSpinner];
         [super hide];
     }];
@@ -141,14 +142,9 @@
 
 - (void)hideAfterDelay:(CGFloat)delay
 {
-    [self performBlockOnMainThread:^{
+    [NSObject cvk_runBlockOnMainThread:^{
         [super hideAfterDelay:delay];
     }];
-}
-
-- (void)performBlockOnMainThread:( void(^_Nonnull)(void) )block
-{
-    [NSThread isMainThread] ? block() : dispatch_sync(dispatch_get_main_queue(), block);
 }
 
 - (void)dealloc

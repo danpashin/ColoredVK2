@@ -97,3 +97,4 @@ NS_ASSUME_NONNULL_END
 #define POST_CORE_NOTIFICATION(name) CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), (CFStringRef)name, NULL, NULL, YES)
 
 #define REGISTER_CORE_OBSERVER(observer, notifyName) CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), nil, observer, (CFStringRef)notifyName,   nil, CFNotificationSuspensionBehaviorDeliverImmediately)
+#define REGISTER_OBSERVER(observer, sel, notifyName) [[NSNotificationCenter defaultCenter] addObserver:observer selector:sel name:notifyName object:nil]

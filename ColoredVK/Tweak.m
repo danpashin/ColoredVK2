@@ -1052,12 +1052,12 @@ CHDeclareMethod(0, void, VKSearchBar, layoutSubviews)
 {
     CHSuper(0, VKSearchBar, layoutSubviews);
     
-    __block NSNumber *customized = objc_getAssociatedObject(self, "cvk_customized");
+    NSNumber *customized = objc_getAssociatedObject(self, "cvk_customized");
     if (!customized)
         customized = @NO;
     
-    [NSObject cvk_runBlockOnMainThread:^{
-        if (!customized.boolValue || !enabled || !enableNightTheme) {
+    [NSObject cvk_runBlockOnMainThread:^(){
+        if (!enableNightTheme && (!customized.boolValue || !enabled)) {
             resetNewSearchBar(self);
         }
     }];

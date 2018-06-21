@@ -36,12 +36,6 @@
 
 @implementation ColoredVKAudioCover
 
-static NSString *const kCVKCoverInternalNotification = @"ru.danpashin.coloredvk2.audio.prefs.update";
-void corePrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
-{
-    POST_NOTIFICATION(kCVKCoverInternalNotification);
-}
-
 - (instancetype)init
 {
     self = [super init];
@@ -84,11 +78,7 @@ void corePrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef
         [_topImageView.layer addSublayer:_topCoverGradient];
         
         [self updateColorSchemeForImage:self.noCover];
-        
-        
-        REGISTER_CORE_OBSERVER(corePrefsNotify, kPackageNotificationReloadPrefs);
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updatePrefs:) 
-                                                   name:kCVKCoverInternalNotification object:nil];
+        REGISTER_OBSERVER(self, @selector(updatePrefs:), kPackageNotificationReloadInternalPrefs);
     }
     return self;
 }
