@@ -8,6 +8,7 @@
 #import "Tweak.h"
 #import <Preferences/PSTableCell.h>
 #import <CoreText/CoreText.h>
+@import SafariServices.SFSafariViewController;
 
 
 CVKHook(CTFramesetterRef, CTFramesetterCreateWithAttributedString, CFAttributedStringRef string)
@@ -1499,5 +1500,19 @@ CHDeclareMethod(0, void, PaymentsPopupView, layoutSubviews)
     
     if (enabled && enableNightTheme) {
         self.topToolbar.barTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+    }
+}
+
+
+CHDeclareClass(SFSafariViewController);
+CHDeclareMethod(0, void, SFSafariViewController, viewDidLoad)
+{
+    CHSuper(0, SFSafariViewController, viewDidLoad);
+    
+    if (ios_available(10.0)) {
+        if (enabled && enableNightTheme) {
+            self.preferredBarTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+            self.preferredControlTintColor = cvkMainController.nightThemeScheme.textColor;
+        }
     }
 }

@@ -6,7 +6,7 @@
 //
 
 @interface BackgroundView : UILabel
-@property (assign, nonatomic) int cornerRadius;
+@property (assign, nonatomic) NSInteger cornerRadius;
 @end
 
 @interface VKMImageButton : UIButton

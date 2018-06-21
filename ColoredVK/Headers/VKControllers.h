@@ -269,7 +269,7 @@
 //  Остальное
 @interface PhotoBrowserController : VKMController
 @property (strong, nonatomic) UIScrollView *paging;
-- (VKPhotoSized *)photoForPage:(NSUInteger)page;
+- (__kindof VKPhoto *)photoForPage:(NSUInteger)page;
 @end
 
 @interface VKMBrowserController : VKMController

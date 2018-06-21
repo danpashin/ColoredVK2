@@ -62,7 +62,11 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
         NSString *reuseIdentifier = @"cvkMenuCell";
         
         Class cellClass = NSClassFromString(@"TitleMenuCell");
-        if (!cellClass) cellClass = [UITableViewCell class];
+        if (!cellClass) {
+            cellClass = NSClassFromString(@"MenuCell");
+            if (!cellClass)
+                cellClass = [UITableViewCell class];
+        }
         
         UITableViewCell *cell = [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
         cell.backgroundColor = kMenuCellBackgroundColor;

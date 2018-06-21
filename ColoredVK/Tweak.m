@@ -409,6 +409,10 @@ CHDeclareMethod(2, UITableViewCell*, MenuViewController, tableView, UITableView*
 {
     UITableViewCell *cell = CHSuper(2, MenuViewController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
+    if ([cell.textLabel.text isEqualToString:@"ColoredVK 2"] && ![cell isEqual:cvkMainController.menuCell]) {
+        cell = cvkMainController.menuCell;
+    }
+    
     if (enabled && hideMenuSeparators) tableView.separatorColor = [UIColor clearColor]; 
     else if (enabled && !hideMenuSeparators) tableView.separatorColor = menuSeparatorColor; 
     else tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
@@ -439,7 +443,7 @@ CHDeclareMethod(3, void, MenuViewController, tableView, UITableView *, tableView
     }
 }
 
-CHDeclareMethod(0, NSArray*, MenuViewController, menu)
+CHDeclareMethod(0, NSArray *, MenuViewController, menu)
 {
     NSArray *origMenu = CHSuper(0, MenuViewController, menu);
     
@@ -451,6 +455,32 @@ CHDeclareMethod(0, NSArray*, MenuViewController, menu)
     }
     
     return origMenu;
+}
+
+CHDeclareMethod(2, void, MenuViewController, tableView, UITableView *, tableView, didSelectRowAtIndexPath, NSIndexPath *, indexPath)
+{
+    if (indexPath.section == 1 && indexPath.row == [self.tableView numberOfRowsInSection:1]-1) {
+        [self.navigationController pushViewController:cvkMainController.safePreferencesController animated:YES];
+    } else {
+        CHSuper(2, MenuViewController, tableView, tableView, didSelectRowAtIndexPath, indexPath);
+    }
+}
+
+CHDeclareClass(MenuModel);
+CHDeclareMethod(0, NSArray *, MenuModel, baseMenuItems)
+{
+    NSArray *items = CHSuper(0, MenuModel, baseMenuItems);
+    
+    if (showMenuCell) {
+        NSMutableArray <MenuItem *> *tempArray = [items mutableCopy];
+        
+        MenuItem *cvkItem = [[NSClassFromString(@"MenuItem") alloc] initWithType:1204 imageName:@"vkapp/VKMenuIconAlt" title:@"ColoredVK 2" statId:@""];
+        [tempArray addObject:cvkItem];
+        
+        items = tempArray;
+    }
+    
+    return items;
 }
 
 
@@ -480,17 +510,18 @@ CHDeclareMethod(1, void, PhotoBrowserController, viewWillAppear, BOOL, animated)
             __weak typeof(self) weakSelf = self;
             saveButton.urlBlock = ^NSString*() {
                 NSString *imageSource = @"";
-                int indexOfPage = (int)(weakSelf.paging.contentOffset.x / weakSelf.paging.frame.size.width);
-                VKPhotoSized *photo = [weakSelf photoForPage:indexOfPage];
-                if (photo.variants != nil) {
-                    int maxVariantIndex = 0;
-                    for (VKImageVariant *variant in photo.variants.allValues) {
-                        if (variant.type > maxVariantIndex) {
-                            maxVariantIndex = variant.type;
-                            imageSource = variant.src;
-                        }
+                
+                NSInteger pageIndex = (NSInteger)(weakSelf.paging.contentOffset.x / weakSelf.paging.frame.size.width);
+                __kindof VKPhoto *photo = [weakSelf photoForPage:pageIndex];
+                
+                NSInteger maxVariantIndex = 0;
+                for (VKImageVariant *variant in photo.variants.allValues) {
+                    if (variant.type > maxVariantIndex) {
+                        maxVariantIndex = variant.type;
+                        imageSource = variant.src;
                     }
                 }
+                
                 return imageSource;
             };
             saveButton.rootViewController = self;

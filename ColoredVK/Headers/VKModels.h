@@ -13,18 +13,16 @@
 
 @interface AudioPlayer : NSObject
 @property (strong, nonatomic) VKAudio *audio;
-@property (assign, nonatomic) int state;
+@property (assign, nonatomic) NSInteger state;
 @end
 
 @interface VKImageVariant : NSObject
-@property (assign, nonatomic) int type;
+@property (assign, nonatomic) NSInteger type;
 @property (strong, nonatomic) NSString *src; 
 @end
 
 @interface VKPhoto : NSObject
-@property (strong, nonatomic) NSMutableDictionary *variants;
-@end
-@interface VKPhotoSized : VKPhoto
+@property (strong, nonatomic) NSMutableDictionary <id, VKImageVariant *> *variants;
 @end
 
 @interface VKMBrowserTarget : NSObject
@@ -45,7 +43,6 @@
 @end
 
 @interface VKProfile : NSObject
-@property (assign, nonatomic) BOOL verified;
 @property (strong, nonatomic) VKUser *user;
 @end
 
@@ -60,7 +57,7 @@
 @end
 
 @interface VKAudioQueuePlayer : NSObject
-@property (assign, nonatomic) int state;
+@property (assign, nonatomic) NSInteger state;
 @property (nonatomic, readonly, copy) NSString *title;
 @property (nonatomic, readonly, copy) NSString *performer;
 @end
@@ -96,3 +93,6 @@
 - (void)enableDarkMode:(BOOL)enableDarkMode;
 @end
 
+@interface MenuItem : NSObject
+- (instancetype)initWithType:(NSInteger)type imageName:(NSString *)imageName title:(NSString *)title statId:(NSString *)statId;
+@end
