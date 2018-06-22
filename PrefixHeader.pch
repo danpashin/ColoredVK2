@@ -11,6 +11,12 @@
 #define CVKStringize_internal(string) #string
 #define CVKStringize(string) @CVKStringize_internal(string)
 
+#define CVKConcat_(a, b) a ## b
+#define CVKConcat(a, b) CVKConcat_(a, b)
+
+#define CVK_CONSTRUCTOR static __attribute__((constructor)) void CVKConcat(CVK, __LINE__)(void)
+#define CVK_INLINE inline __attribute__((always_inline))
+
 
 #if __clang_major__ >= 9
 #define ios_available(version) @available(iOS version, *)

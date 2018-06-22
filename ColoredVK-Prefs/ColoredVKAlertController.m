@@ -64,7 +64,7 @@
 - (void)present
 {
     UIViewController *viewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    if (viewController.presentedViewController)
+    while (viewController.presentedViewController)
         viewController = viewController.presentedViewController;
     
     [self presentFromController:viewController];

@@ -9,12 +9,22 @@
 #import <Foundation/Foundation.h>
 #import "ColoredVKCrypto.h"
 #import <CommonCrypto/CommonHMAC.h>
+
 #include <sys/sysctl.h>
+#import <sys/ioctl.h>
+#import <mach-o/dyld.h>
+#import <libgen.h>
 
 NSString *const kColoredVKServerKey = @"ACBEBB5F70D0883E875DAA6E1C5C59ED";
+BOOL allowLibs;
+NSString *cvkKey;
 
-NSData *performLegacyCrypt(CCOperation operation, NSData *data, NSString *key)
+
+CVK_INLINE NSData *performLegacyCrypt(CCOperation operation, NSData *data, NSString *key)
 {
+    if (key.length == 0)
+        return nil;
+    
     char keyPtr[kCCKeySizeAES256+1];
     bzero(keyPtr, sizeof(keyPtr));
     [key getCString:keyPtr maxLength:sizeof(keyPtr) encoding:NSUTF8StringEncoding];
@@ -35,47 +45,122 @@ NSData *performLegacyCrypt(CCOperation operation, NSData *data, NSString *key)
     return nil;
 }
 
-NSString *legacyEncryptServerString(NSString *string)
+CVK_INLINE NSString *legacyEncryptServerString(NSString *string)
 {
     NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
     return [performLegacyCrypt(kCCEncrypt, data, kColoredVKServerKey) base64EncodedStringWithOptions:0];
 }
 
-
-static NSString *encryptionKey()
+CVK_INLINE NSData *encryptData(NSData *data, NSError * __autoreleasing *error)
 {
-    static NSString *encryptionKey = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        uint64_t ramSize;
-        size_t len = sizeof(ramSize);
-        int memSizeName[] = {CTL_HW, HW_MEMSIZE};
-        sysctl(memSizeName, 2, &ramSize, &len, NULL, 0);
-        
-        char machine[256];
-        len = sizeof(machine);
-        int machineName[] = {CTL_HW, HW_MACHINE};
-        sysctl(machineName, 2, &machine, &len, NULL, 0);
-        
-        NSString *string = [NSString stringWithFormat:@"d=%s&r=%llu", machine, ramSize];
-        NSData *keyData = [kColoredVKServerKey dataUsingEncoding:NSUTF8StringEncoding];
-        NSData *encData = [string dataUsingEncoding:NSUTF8StringEncoding];
-        NSMutableData *signatureData = [NSMutableData dataWithLength:CC_SHA512_DIGEST_LENGTH];
-        CCHmac(kCCHmacAlgSHA512, keyData.bytes, keyData.length, encData.bytes, encData.length, signatureData.mutableBytes);
-        encryptionKey = [signatureData.description stringByReplacingOccurrencesOfString:@" " withString:@""];
-        encryptionKey = [encryptionKey stringByReplacingOccurrencesOfString:@"<" withString:@""];
-        encryptionKey = [encryptionKey stringByReplacingOccurrencesOfString:@">" withString:@""];
-    });
+    return performLegacyCrypt(kCCEncrypt, data, cvkKey);    
+}
+
+CVK_INLINE NSData *decryptData(NSData *data, NSError * __autoreleasing *error)
+{
+    return performLegacyCrypt(kCCDecrypt, data, cvkKey);
+}
+
+
+#pragma mark Private Functions
+
+CVK_INLINE void generateKey(void)
+{
+    uint64_t ramSize;
+    size_t len = sizeof(ramSize);
+    int memSizeName[] = {CTL_HW, HW_MEMSIZE};
+    sysctl(memSizeName, 2, &ramSize, &len, NULL, 0);
     
-    return encryptionKey;
+    char machine[256];
+    len = sizeof(machine);
+    int machineName[] = {CTL_HW, HW_MACHINE};
+    sysctl(machineName, 2, &machine, &len, NULL, 0);
+    
+    NSString *string = [NSString stringWithFormat:@"d=%s&r=%llu", machine, ramSize];
+    NSData *keyData = [kColoredVKServerKey dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *encData = [string dataUsingEncoding:NSUTF8StringEncoding];
+    NSMutableData *signatureData = [NSMutableData dataWithLength:CC_SHA512_DIGEST_LENGTH];
+    CCHmac(kCCHmacAlgSHA512, keyData.bytes, keyData.length, encData.bytes, encData.length, signatureData.mutableBytes);
+    NSString *encryptionKey = [signatureData.description stringByReplacingOccurrencesOfString:@" " withString:@""];
+    encryptionKey = [encryptionKey stringByReplacingOccurrencesOfString:@"<" withString:@""];
+    encryptionKey = [encryptionKey stringByReplacingOccurrencesOfString:@">" withString:@""];
+    cvkKey = encryptionKey;
 }
 
-NSData *encryptData(NSData *data, NSError * __autoreleasing *error)
+CVK_INLINE BOOL isDebugged(void)
 {
-    return performLegacyCrypt(kCCEncrypt, data, encryptionKey());    
+#ifdef COMPILE_APP
+    return NO;
+#else
+    int fd = STDERR_FILENO;
+    
+    if (fcntl(fd, F_GETFD, 0) < 0) {
+        return NO;
+    }
+    
+    char buf[MAXPATHLEN + 1];
+    if (fcntl(fd, F_GETPATH, buf ) >= 0) {
+        if (strcmp(buf, "/dev/null") == 0)
+            return NO;
+        if (strncmp(buf, "/dev/tty", 8) == 0)
+            return YES;
+    }
+    
+    int type;
+    if (ioctl(fd, FIODTYPE, &type) < 0) {
+        return NO;
+    }
+    
+    return type != 2;
+#endif
 }
 
-NSData *decryptData(NSData *data, NSError * __autoreleasing *error)
+CVK_INLINE void checkLibs(void)
 {
-    return performLegacyCrypt(kCCDecrypt, data, encryptionKey());
+#ifdef COMPILE_APP
+    allowLibs = YES;
+#else
+    char pathbuf[MAXPATHLEN + 1];
+    uint32_t bufsize = sizeof(pathbuf);
+    _NSGetExecutablePath(pathbuf, &bufsize);
+    
+    char *executable_name = basename(pathbuf);
+    for(int i = 0; executable_name[i]; i++){
+        executable_name[i] = (char)tolower(executable_name[i]);
+    }
+    
+    int maxLibsCount = (strstr(executable_name, "vkclient") != NULL) ? 2 : 1;
+    int libsCount = 0;
+    for (uint32_t i=0; i<_dyld_image_count(); i++) {
+        const char *imageName = _dyld_get_image_name(i);
+        if (strstr(imageName, "ColoredVK2") != NULL) {
+            libsCount++;
+        } else if (strstr(imageName, "coloredvk2") != NULL) {
+            libsCount++;
+        } else if (strstr(imageName, "Crack") != NULL) {
+            libsCount++;
+        } else if (strstr(imageName, "crack") != NULL) {
+            libsCount++;
+        } else if (strstr(imageName, "Hack") != NULL) {
+            libsCount++;
+        } else if (strstr(imageName, "hack") != NULL) {
+            libsCount++;
+        }
+    }
+    
+    allowLibs = (libsCount <= maxLibsCount);
+#endif
+}
+
+CVK_CONSTRUCTOR
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        generateKey();
+        checkLibs();
+        
+        if (isDebugged()) {
+            allowLibs = NO;
+            abort();
+        }
+    });
 }

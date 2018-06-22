@@ -1145,7 +1145,7 @@ CHDeclareMethod(0, void, TitleMenuCell, layoutSubviews)
 //}
 
 
-CHConstructor
+CVK_CONSTRUCTOR
 {
     @autoreleasepool {
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];

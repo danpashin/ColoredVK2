@@ -17,8 +17,6 @@
 
 #import <sys/utsname.h>
 #import <MobileGestalt.h>
-#import <mach-o/dyld.h>
-#import <libgen.h>
 
 #define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
 #define kDRMRemoteServerURL     [NSString stringWithFormat:@"%@/index-new.php", kPackageAPIURL]
@@ -103,33 +101,7 @@ BOOL installerShouldOpenPrefs;
 return;
         
 #ifndef COMPILE_APP
-        char pathbuf[PATH_MAX + 1];
-        uint32_t bufsize = sizeof(pathbuf);
-        _NSGetExecutablePath(pathbuf, &bufsize);
-        
-        char *executable_name = basename(pathbuf);
-        for(int i = 0; executable_name[i]; i++){
-            executable_name[i] = (char)tolower(executable_name[i]);
-        }
-        
-        int maxLibsCount = (strstr(executable_name, "vkclient") != NULL) ? 2 : 1;
-        int libsCount = 0;
-        for (uint32_t i=0; i<_dyld_image_count(); i++) {
-            const char *imageName = _dyld_get_image_name(i);
-            if (strstr(imageName, "ColoredVK2") != NULL) {
-                libsCount++;
-            }
-            
-            if (strstr(imageName, "Crack") != NULL) {
-                libsCount++;
-            }
-            
-            if (strstr(imageName, "crack") != NULL) {
-                libsCount++;
-            }
-        }
-        
-        if (libsCount > maxLibsCount)
+        if (!allowLibs)
             return;
 #endif
         
