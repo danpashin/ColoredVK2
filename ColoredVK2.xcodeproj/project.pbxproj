@@ -36,6 +36,8 @@
 		A50177D3201F936000032A8D /* ColoredVKNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = A50177CF201F936000032A8D /* ColoredVKNavigationController.m */; };
 		A50177D4201F936000032A8D /* ColoredVKNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = A50177CF201F936000032A8D /* ColoredVKNavigationController.m */; };
 		A50177D5201F936000032A8D /* ColoredVKNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = A50177CF201F936000032A8D /* ColoredVKNavigationController.m */; };
+		A501C28620DCE6E500750063 /* SystemNightTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = A501C28520DCE6E500750063 /* SystemNightTheme.m */; };
+		A501C28720DCE6E500750063 /* SystemNightTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = A501C28520DCE6E500750063 /* SystemNightTheme.m */; };
 		A50311E41D853E800075B177 /* libMobileGestalt.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A50311E31D853E800075B177 /* libMobileGestalt.tbd */; };
 		A504C07F1DAFE839006C5FBC /* NSDate+DateTools.h in Headers */ = {isa = PBXBuildFile; fileRef = A504C0701DAFE839006C5FBC /* NSDate+DateTools.h */; };
 		A504C0801DAFE839006C5FBC /* NSDate+DateTools.m in Sources */ = {isa = PBXBuildFile; fileRef = A504C0711DAFE839006C5FBC /* NSDate+DateTools.m */; };
@@ -567,6 +569,7 @@
 		A50138DB201F2D070007300C /* ColoredVKAccountRestoreController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKAccountRestoreController.m; sourceTree = "<group>"; };
 		A50177CE201F936000032A8D /* ColoredVKNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKNavigationController.h; sourceTree = "<group>"; };
 		A50177CF201F936000032A8D /* ColoredVKNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKNavigationController.m; sourceTree = "<group>"; };
+		A501C28520DCE6E500750063 /* SystemNightTheme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SystemNightTheme.m; sourceTree = "<group>"; };
 		A50311E31D853E800075B177 /* libMobileGestalt.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libMobileGestalt.tbd; path = usr/lib/libMobileGestalt.tbd; sourceTree = SDKROOT; };
 		A504C0701DAFE839006C5FBC /* NSDate+DateTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+DateTools.h"; sourceTree = "<group>"; };
 		A504C0711DAFE839006C5FBC /* NSDate+DateTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+DateTools.m"; sourceTree = "<group>"; };
@@ -1219,6 +1222,7 @@
 				A5E1E08020656BA300709696 /* AudioSwizzle.m */,
 				A5E1E08320656C3700709696 /* SettingsSwizzle.m */,
 				A5D3D06E1FE063D0007AAEF7 /* TweakNightTheme.m */,
+				A501C28520DCE6E500750063 /* SystemNightTheme.m */,
 			);
 			name = Tweak;
 			sourceTree = "<group>";
@@ -1838,6 +1842,7 @@
 				A54249CA1E052A930018D3E3 /* ColoredVKAudioCover.m in Sources */,
 				A5D979631DAEB87900607F06 /* Tweak.m in Sources */,
 				A59270132087C74600027F72 /* ColoredVKShadowView.m in Sources */,
+				A501C28620DCE6E500750063 /* SystemNightTheme.m in Sources */,
 				A558E5082052C33200F10FBB /* ColoredVKApplicationModel.m in Sources */,
 				A56E89E71F31D31C0013BAE3 /* ColoredVKNetwork.m in Sources */,
 				A526A6C21DD50D4700B47104 /* ColoredVKAudioLyricsView.m in Sources */,
@@ -1868,6 +1873,7 @@
 				A50883B41FFA4E5E00C05E2A /* ColoredVKAuthPageController.m in Sources */,
 				A5739D711EA015BB00367595 /* ColoredVKImageCell.m in Sources */,
 				A50883AC1FFA48BC00C05E2A /* ColoredVKUserModel.m in Sources */,
+				A501C28720DCE6E500750063 /* SystemNightTheme.m in Sources */,
 				A576D1A41DC6220C0039884F /* ColoredVKMainPrefsController.m in Sources */,
 				A5739D591EA0159700367595 /* ColoredVKColorPickerController.m in Sources */,
 				A5D3D0701FE063D0007AAEF7 /* TweakNightTheme.m in Sources */,
