@@ -676,16 +676,9 @@ void setupNightSeparatorForView(UIView *view)
                     if ([view isEqual:cvkMainController.vkMainController.tabBarShadowView])
                         return;
                 }
-                UIColor *cachedBackgroundColor = objc_getAssociatedObject(view, "cachedBackgroundColor");
-                if (!cachedBackgroundColor) {
-                    objc_setAssociatedObject(view, "cachedBackgroundColor", view.backgroundColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-                    cachedBackgroundColor = view.backgroundColor;
-                }
                 
                 if ((CGRectGetHeight(view.frame) < 3.0f) && !CGSizeEqualToSize(CGSizeZero, view.frame.size))
                     view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
-                else
-                    view.backgroundColor = cachedBackgroundColor;
             });
         }
     }

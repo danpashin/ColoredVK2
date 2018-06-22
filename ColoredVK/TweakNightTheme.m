@@ -1328,7 +1328,7 @@ CHDeclareMethod(1, void, _UIVisualEffectSubview, setBackgroundColor, UIColor *, 
     if (enabled && enableNightTheme) {
         if ([self.superview.superview isKindOfClass:NSClassFromString(@"_UIBarBackground")])
             backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
-        else
+        else if (![self.superview isKindOfClass:NSClassFromString(@"AVPlayerViewControllerContentView")])
             backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
     
