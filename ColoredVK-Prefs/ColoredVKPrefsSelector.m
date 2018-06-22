@@ -47,13 +47,18 @@
     return _specifiers;
 }
 
-- (void)setCachedPrefs:(NSMutableDictionary *)cachedPrefs
+- (void)readPrefsWithCompetion:(void (^)(void))completionBlock
 {
-    super.cachedPrefs = cachedPrefs;
-    
-    self.selectorKey = [self.specifier propertyForKey:@"key"];
-    self.selectorDefaultValue = [self.specifier propertyForKey:@"default"];
-    self.selectorCurrentValue = cachedPrefs[self.selectorKey] ? cachedPrefs[self.selectorKey] : self.selectorDefaultValue;
+    [super readPrefsWithCompetion:^{
+        if (completionBlock) {
+            completionBlock();
+            
+            self.selectorKey = [self.specifier propertyForKey:@"key"];
+            self.selectorDefaultValue = [self.specifier propertyForKey:@"default"];
+            self.selectorCurrentValue = self.cachedPrefs[self.selectorKey] ? self.cachedPrefs[self.selectorKey] : self.selectorDefaultValue;
+            [self reloadSpecifiers];
+        }
+    }];
 }
 
 - (void)viewDidLoad

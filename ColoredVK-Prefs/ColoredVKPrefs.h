@@ -30,8 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable id)readPreferenceValue:(PSSpecifier *)specifier NS_REQUIRES_SUPER;
 - (void)setPreferenceValue:(nullable id)value specifier:(PSSpecifier *)specifier NS_REQUIRES_SUPER;
 
-- (void)writePrefsWithCompetion:(nullable void(^)(void))completionBlock;
-- (void)readPrefsWithCompetion:(nullable void(^)(void))completionBlock;
+- (void)writePrefsWithCompetion:(nullable void(^)(void))completionBlock NS_REQUIRES_SUPER;
+- (void)readPrefsWithCompetion:(nullable void(^)(void))completionBlock NS_REQUIRES_SUPER;
 
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView;
 

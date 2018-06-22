@@ -28,29 +28,28 @@
     [super loadView];
     
     self.customColorsSpecifiers = [self specifiersForPlistName:@"plists/NightTheme" localize:YES];
+    for (PSSpecifier *specifier in self.customColorsSpecifiers) {
+        [specifier setProperty:@YES forKey:@"enabled"];
+    }
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    [self updateType];
-}
-
-- (void)updateType
+- (void)updateType:(BOOL)animated
 {
     if ([self.selectorCurrentValue integerValue] != CVKNightThemeTypeCustom) {
         self.specifiersAlreadyInserted = NO;
-        [self removeContiguousSpecifiers:self.customColorsSpecifiers animated:YES];
+        [self removeContiguousSpecifiers:self.customColorsSpecifiers animated:animated];
     } 
     else if (!self.specifiersAlreadyInserted) {
-        [self insertContiguousSpecifiers:self.customColorsSpecifiers afterSpecifierID:@"customColorsGroup" animated:YES];
+        [self insertContiguousSpecifiers:self.customColorsSpecifiers afterSpecifierID:@"customColorsGroup" animated:animated];
     }
 }
 
 - (void)reloadSpecifiers
 {
-    
+    [super reloadSpecifiers];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateType:NO];
+    });
 }
 
 - (NSArray *)specifiers
@@ -68,7 +67,7 @@
 
 - (void)didSelectValue:(id)value forKey:(NSString *)key
 {
-    [self updateType];
+    [self updateType:YES];
 }
 
 
