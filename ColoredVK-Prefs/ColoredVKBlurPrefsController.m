@@ -8,7 +8,6 @@
 
 #import "ColoredVKBlurPrefsController.h"
 
-
 @implementation ColoredVKBlurPrefsController
 
 - (NSArray *)specifiers

@@ -10,6 +10,7 @@
 #import "ColoredVKNewInstaller.h"
 #import <objc/message.h>
 #import "UIColor+ColoredVK.h"
+@import Darwin.POSIX.spawn;
 
 @interface ColoredVKThemePrefsController ()
 
@@ -59,24 +60,6 @@
         
         [specifiers addObjectsFromArray:self.customColorsSpecifiers];
         self.specifiersAlreadyInserted = YES;
-        
-        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller]; 
-        
-        BOOL shouldDisable = YES;
-        if (newInstaller.user.authenticated)
-            shouldDisable = (newInstaller.user.accountStatus != ColoredVKUserAccountStatusPaid);
-        else if (deviceIsJailed)
-            shouldDisable = !installerShouldOpenPrefs;
-        
-        for (PSSpecifier *specifier in specifiers) {
-            @autoreleasepool {
-                if (shouldDisable || ![[self.specifier propertyForKey:@"enabled"] boolValue]) {
-                    [specifier setProperty:@NO forKey:@"enabled"];
-                } else {
-                    [specifier setProperty:@YES forKey:@"enabled"];
-                }
-            }
-        }
         
         _specifiers = specifiers;
     }
@@ -158,11 +141,16 @@
 
 - (void)actionCloseApplication
 {
-    objc_msgSend([UIApplication sharedApplication], @selector(suspend));
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        exit(0);
-    });
+    if ([ColoredVKNewInstaller sharedInstaller].application.isVKApp) {
+        objc_msgSend([UIApplication sharedApplication], @selector(suspend));
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            exit(0);
+        });
+    } else {
+        char *args[] = {"/usr/bin/killall", "-9", "VKClient", NULL};
+        posix_spawn(NULL, args[0], NULL, NULL, args, NULL);
+    }
 }
 
 @end

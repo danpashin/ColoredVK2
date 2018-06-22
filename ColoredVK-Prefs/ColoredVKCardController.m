@@ -120,13 +120,26 @@
         cardSize.width += 10.0f;
     }
     
-    CGSize screenSize = [UIScreen mainScreen].bounds.size;    
-    if (screenSize.width == 320.0f) {
-        cardSize.width = 280.0f;
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+    
+    switch ((int)screenSize.width) {
+        case 320:
+            cardSize.width = 280.0f;
+            break;
+            
+        case 768:
+            cardSize.width = 360.0f;
+            break;
     }
     
-    if (screenSize.height == 480.0f) {
-        cardSize.height = 400.0f;
+    switch ((int)screenSize.height) {
+        case 480:
+            cardSize.height = 400.0f;
+            break;
+            
+        case 1024:
+            cardSize.height = 512.0f;
+            break;
     }
     
     return cardSize;

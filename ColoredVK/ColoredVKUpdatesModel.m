@@ -38,7 +38,7 @@ static NSString *const kCVKUpdateTimeFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
     NSString *stringURL = [NSString stringWithFormat:@"%@/checkUpdates.php", kPackageAPIURL];
     NSDictionary *parameters = @{@"userVers": kPackageVersion, @"ios_version":[UIDevice currentDevice].systemVersion, 
                                  @"vk_version":newInstaller.application.version,
-                                 @"appTeamIdentifier": newInstaller.application.teamIdentifier, @"sellerName": newInstaller.application.sellerName, 
+                                 @"appTeamIdentifier": newInstaller.application.teamIdentifier,
                                  @"checkedAutomatically":@(self.checkedAutomatically), @"getIPA":@(shouldReceiveIPA)};
 
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];

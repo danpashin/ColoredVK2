@@ -21,7 +21,6 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 @property (copy, nonatomic, readonly) NSString *version;
 @property (copy, nonatomic, readonly) NSString *detailedVersion;
 
-@property (copy, nonatomic, readonly) NSString *sellerName;
 @property (copy, nonatomic, readonly) NSString *teamIdentifier;
 @property (copy, nonatomic, readonly) NSString *teamName;
 

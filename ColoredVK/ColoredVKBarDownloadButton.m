@@ -52,8 +52,7 @@
     if (self.urlBlock && !self.url)
         self.url = self.urlBlock(); 
     
-    ColoredVKAlertController *actionController = [ColoredVKAlertController alertControllerWithTitle:@"" message:CVKLocalizedString(@"SET_THIS_IMAGE_TO") 
-                                                                                     preferredStyle:UIAlertControllerStyleActionSheet];
+    ColoredVKAlertController *actionController = [ColoredVKAlertController actionSheetWithMessage:CVKLocalizedString(@"SET_THIS_IMAGE_TO")];
     [actionController addCancelAction];
     
     for (NSDictionary *dict in self.downloadInfo) {

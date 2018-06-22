@@ -156,8 +156,7 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
 
 - (void)actionOpenFaq
 {
-    SFSafariViewController *sfController = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:kPackageFaqLink]];
-    [self presentViewController:sfController animated:YES completion:nil];
+    [self openURL:kPackageFaqLink];
 }
 
 

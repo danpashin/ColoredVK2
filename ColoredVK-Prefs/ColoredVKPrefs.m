@@ -15,6 +15,8 @@
 #import "ColoredVKNightThemeColorScheme.h"
 #import "NSObject+ColoredVK.h"
 
+@import SafariServices.SFSafariViewController;
+
 
 @interface ColoredVKPrefs ()  <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 @end
@@ -208,17 +210,11 @@
     [alertController presentFromController:self];
 }
 
-- (BOOL)openURL:(NSURL *)url
+- (void)openURL:(NSString *)url
 {
-    UIApplication *application = [UIApplication sharedApplication];
-    
-    if ([application canOpenURL:url]) {
-        BOOL urlIsOpen = [application openURL:url];
-        
-        return urlIsOpen;
-    }
-    
-    return NO;
+    SFSafariViewController *safariController = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:url]];
+    safariController.modalPresentationStyle = UIModalPresentationPageSheet;
+    [self presentViewController:safariController animated:YES completion:nil];
 }
 
 - (void)dealloc

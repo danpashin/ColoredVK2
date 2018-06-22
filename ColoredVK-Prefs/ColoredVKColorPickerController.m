@@ -28,7 +28,6 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 @interface ColoredVKColorPickerController () <UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate, ColoredVKColorCollectionViewCellDelegate>
 
 @property (strong, nonatomic, readonly) NSBundle *cvkBundle;
-@property (strong, nonatomic, readonly) NSString *prefsPath;
 @property (assign, nonatomic) ColoredVKColorPickerState state;
 @property (assign, nonatomic) CGFloat brightness;
 @property (strong, nonatomic) UIColor *customColor;
@@ -90,7 +89,6 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     self.backgroundView = [UIView new];
     
     _cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    _prefsPath = CVK_PREFS_PATH;
     
     [self setupDefaultContentView];
     [self.contentView addSubview:self.contentViewNavigationBar];

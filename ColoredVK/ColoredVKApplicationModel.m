@@ -6,7 +6,6 @@
 //
 
 #import "ColoredVKApplicationModel.h"
-#import <Foundation/Foundation.h>
 #import "SCParser.h"
 
 @implementation ColoredVKApplicationModel
@@ -15,7 +14,6 @@
 {
     self = [super init];
     if (self) {
-        _sellerName = @"theux";
         _teamIdentifier = @"";
         _teamName = @"";
         
@@ -47,12 +45,6 @@
         if (!error) {
             self->_teamIdentifier = ((NSArray *)provisionDict[@"TeamIdentifier"]).firstObject;
             self->_teamName = provisionDict[@"TeamName"];
-        }
-        
-        if (NSClassFromString(@"Activation") != nil) {
-            self->_sellerName = @"iapps";
-        } else if ([self.teamIdentifier isEqualToString:@"FL663S8EYD"]) {
-            self->_sellerName = @"ishmv";
         }
     }];
 #endif

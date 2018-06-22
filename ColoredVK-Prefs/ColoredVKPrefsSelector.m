@@ -6,7 +6,6 @@
 //
 
 #import "ColoredVKPrefsSelector.h"
-
 #import "ColoredVKNightThemeColorScheme.h"
 
 @interface ColoredVKPrefsSelector ()
@@ -48,15 +47,13 @@
     return _specifiers;
 }
 
-- (void)loadView
+- (void)setCachedPrefs:(NSMutableDictionary *)cachedPrefs
 {
-    [super loadView];
+    super.cachedPrefs = cachedPrefs;
     
     self.selectorKey = [self.specifier propertyForKey:@"key"];
     self.selectorDefaultValue = [self.specifier propertyForKey:@"default"];
-    
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    self.selectorCurrentValue = prefs[self.selectorKey] ? prefs[self.selectorKey] : self.selectorDefaultValue;
+    self.selectorCurrentValue = cachedPrefs[self.selectorKey] ? cachedPrefs[self.selectorKey] : self.selectorDefaultValue;
 }
 
 - (void)viewDidLoad

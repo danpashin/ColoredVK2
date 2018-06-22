@@ -8,6 +8,27 @@
 
 #import <Foundation/NSString.h>
 
+#define CVKStringize_internal(string) #string
+#define CVKStringize(string) @CVKStringize_internal(string)
+
+
+#if __clang_major__ >= 9
+#define ios_available(version) @available(iOS version, *)
+#else
+#define ios_available(version) SYSTEM_VERSION_IS_MORE_THAN(version)
+#endif
+
+#define CVKMainColor    [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1.0f]
+#define CVKAltColor     [UIColor colorWithRed:65/255.0f green:125/255.0f blue:214/255.0f alpha:1.0f]
+
+#ifdef DEBUG
+#define CVKLog(format, ...)    NSLog((@"[COLOREDVK2] %@:%d %s " format), @(__FILE__).lastPathComponent, __LINE__, __FUNCTION__, ##__VA_ARGS__)
+#else
+#define CVKLog(...)
+#endif
+
+
+
 #define CVK_CRASH_PATH      [NSHomeDirectory() stringByAppendingString:@"/Library/Caches/Crash"]
 
 #ifdef  COMPILE_FOR_JAIL
@@ -55,25 +76,11 @@
 #define SYSTEM_VERSION_IS_MORE_THAN(version)  ([[UIDevice currentDevice].systemVersion compare:@#version options:NSNumericSearch] != NSOrderedAscending)
 #define CLASS_NAME(obj)                       NSStringFromClass([obj class])
 
-#if __clang_major__ >= 9
-#define ios_available(version) @available(iOS version, *)
-#else
-#define ios_available(version) SYSTEM_VERSION_IS_MORE_THAN(version)
-#endif
-
-#define CVKMainColor    [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1.0f]
-#define CVKAltColor     [UIColor colorWithRed:65/255.0f green:125/255.0f blue:214/255.0f alpha:1.0f]
-
-#ifdef DEBUG
-#define CVKLog(format, ...)	NSLog((@"[COLOREDVK2] %@:%d %s " format), @(__FILE__).lastPathComponent, __LINE__, __FUNCTION__, ##__VA_ARGS__)
-#else
-#define CVKLog(...)
-#endif
 
 NS_ASSUME_NONNULL_BEGIN
 static NSString *const kPackageIdentifier = @"com.daniilpashin.coloredvk2";
 static NSString *const kPackageName = @"ColoredVK 2";
-static NSString *const kPackageVersion = @"4.4.14-b1";
+static NSString *const kPackageVersion = CVKStringize(APP_VERSION);
 
 static NSString *const kPackageAPIURL = @"https://api.danpashin.ru/v1.2";
 static NSString *const kPackageDevLink = @"https://vk.com/danpashin";

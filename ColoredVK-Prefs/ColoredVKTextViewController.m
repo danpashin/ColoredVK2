@@ -74,7 +74,10 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.textView.attributedText = self.attributedText;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.textView.attributedText = self.attributedText;
+    });
 }
 
 @end

@@ -13,6 +13,7 @@
 "REMOVE_IMAGE_WARNING" = "Removal of image is not reversible. Use this function with caution.";
 "CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Can not save image. Try again or contact developer.";
 "DISMISS" = "Dismiss";
+"CALCULATING..." = "Calculating...";
 
 //  Окно обновлений
 "UPDATE_IS_AVAILABLE" = "Update is available (%@). Tap here for more information.";

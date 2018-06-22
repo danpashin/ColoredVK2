@@ -7,7 +7,6 @@
 //
 
 #import "ColoredVKUINotification.h"
-#import "_UIBackdropView.h"
 #import "ColoredVKNightThemeColorScheme.h"
 #import "ColoredVKShadowView.h"
 

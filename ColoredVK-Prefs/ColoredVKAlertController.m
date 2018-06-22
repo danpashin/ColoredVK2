@@ -10,9 +10,7 @@
 #import <UIKit/UIKit.h>
 
 @interface UIAlertAction ()
-
 @property (nonatomic) UIImage *image;
-
 @end
 
 @implementation ColoredVKAlertController
@@ -22,46 +20,24 @@
     return [self alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
 }
 
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
++ (instancetype)actionSheetWithMessage:(nullable NSString *)message
 {
-    return [self init];
-}
-
-- (instancetype)initWithCoder:(NSCoder *)coder
-{
-    return [self init];
-}
-
-- (instancetype)init
-{
-    self = [super initWithNibName:nil bundle:nil];
-    if (self) {
-        _shouldReconfigureTextFields = YES;
-        _shouldUseCustomTintColor = YES;
-        _presentInCenter = YES;
-    }
-    return self;
+    return [self alertControllerWithTitle:@"" message:message preferredStyle:UIAlertControllerStyleActionSheet];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    if (self.shouldUseCustomTintColor)
-        self.view.tintColor = CVKMainColor;
+    self.view.tintColor = CVKMainColor;
 }
 
 - (void)addTextFieldWithConfigurationHandler:(void (^ __nullable)(UITextField *textField))configurationHandler
 {
-    if (self.shouldReconfigureTextFields) {
-        void (^newHandler)(UITextField * _Nonnull textField) = ^(UITextField * _Nonnull textField){
-            [self setupTextField:textField];
-            configurationHandler(textField);
-        };
-        [super addTextFieldWithConfigurationHandler:newHandler];
-    } else {
-        [super addTextFieldWithConfigurationHandler:configurationHandler];
-    }
+    __weak typeof(self) weakSelf = self;
+    [super addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField){
+        [weakSelf setupTextField:textField];
+        configurationHandler(textField);
+    }];
 }
 
 - (void)setupTextField:(UITextField *)textField
@@ -97,7 +73,7 @@
 - (void)presentFromController:(UIViewController *)viewController
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (IS_IPAD && self.presentInCenter) {
+        if (IS_IPAD) {
             self.modalPresentationStyle = UIModalPresentationPopover;
             self.popoverPresentationController.permittedArrowDirections = 0;
         }

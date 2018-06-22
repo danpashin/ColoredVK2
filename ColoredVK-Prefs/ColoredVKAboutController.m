@@ -9,7 +9,6 @@
 #import "ColoredVKAboutController.h"
 #import "ColoredVKTextViewController.h"
 #import "ColoredVKHeaderView.h"
-#import "ColoredVKNewInstaller.h"
 
 @implementation ColoredVKAboutController
 
@@ -21,7 +20,7 @@
 
 - (void)openDeveloperProfile
 {
-    [self openURL:[NSURL URLWithString:@"https://vk.com/danpashin"]];
+    [self openURL:@"https://vk.com/danpashin"];
 }
 
 - (void)showTextController:(PSSpecifier *)specifier

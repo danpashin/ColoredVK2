@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)commonInit NS_REQUIRES_SUPER;
 
-- (BOOL)openURL:(NSURL *)url;
+- (void)openURL:(NSString *)url;
 - (void)presentPopover:(UIViewController *)controller;
 - (NSArray <PSSpecifier*> *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize;
 - (void)showPurchaseAlert;

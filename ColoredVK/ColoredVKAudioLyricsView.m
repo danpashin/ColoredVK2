@@ -66,9 +66,7 @@
 
 - (void)setText:(NSString *)text
 {
-    _text = text;
-    if (!_text)
-        _text = @"";
+    _text = text ? text : @"";
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [UIView transitionWithView:self.textView duration:0.2 

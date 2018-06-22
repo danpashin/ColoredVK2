@@ -662,8 +662,6 @@
 		A56147BD1EA0157400B3D8C8 /* ColoredVKPrefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKPrefs.h; sourceTree = "<group>"; };
 		A56147BE1EA0157400B3D8C8 /* ColoredVKPrefs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKPrefs.m; sourceTree = "<group>"; };
 		A56405962068DA120033AF40 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		A566D59D1FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKFontPrefsSelector.h; sourceTree = "<group>"; };
-		A566D59E1FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKFontPrefsSelector.m; sourceTree = "<group>"; };
 		A56C4D851E56165800BEB2B1 /* ColoredVK2-dylib.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ColoredVK2-dylib.plist"; path = "ColoredVK-Prefs/ColoredVK2-dylib.plist"; sourceTree = "<group>"; };
 		A56CA331202718E9005E04A8 /* UITableViewCell+ColoredVK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITableViewCell+ColoredVK.h"; sourceTree = "<group>"; };
 		A56CA332202718E9005E04A8 /* UITableViewCell+ColoredVK.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITableViewCell+ColoredVK.m"; sourceTree = "<group>"; };
@@ -1117,8 +1115,6 @@
 				A5D9A6831FACDBD900403A49 /* ColoredVKPrefsSelector.m */,
 				A592BF491FA1F13700810F89 /* ColoredVKThemePrefsController.h */,
 				A592BF4A1FA1F13700810F89 /* ColoredVKThemePrefsController.m */,
-				A566D59D1FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.h */,
-				A566D59E1FF4E2F2005EC07A /* ColoredVKFontPrefsSelector.m */,
 			);
 			name = Selectors;
 			sourceTree = "<group>";
@@ -1654,9 +1650,9 @@
 						ProvisioningStyle = Manual;
 					};
 					A5D56A561E70427300A8FFB5 = {
-						DevelopmentTeam = 62DQNF58FV;
+						DevelopmentTeam = VW97WHTS78;
 						LastSwiftMigration = 0920;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					A5D979AB1DAEBB0E00607F06 = {
 						CreatedOnToolsVersion = 8.0;
@@ -2137,8 +2133,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					COMPILE_FOR_JAIL,
+					"APP_VERSION=${APP_VERSION}",
 					DEBUG,
+					COMPILE_FOR_JAIL,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
@@ -2217,15 +2214,14 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = FN2RK9X9Z4;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = VW97WHTS78;
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
-				PROVISIONING_PROFILE = "86d06264-68ce-4729-b8ff-5da33996ae46";
-				PROVISIONING_PROFILE_SPECIFIER = ff6b068523b664aa3f530000c32cf4d7815f29f1;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2282,7 +2278,10 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"APP_VERSION=${APP_VERSION}",
+					DEBUG,
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2360,15 +2359,14 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = FN2RK9X9Z4;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = VW97WHTS78;
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
-				PROVISIONING_PROFILE = "86d06264-68ce-4729-b8ff-5da33996ae46";
-				PROVISIONING_PROFILE_SPECIFIER = ff6b068523b664aa3f530000c32cf4d7815f29f1;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2400,15 +2398,14 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = FN2RK9X9Z4;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = VW97WHTS78;
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
-				PROVISIONING_PROFILE = "86d06264-68ce-4729-b8ff-5da33996ae46";
-				PROVISIONING_PROFILE_SPECIFIER = ff6b068523b664aa3f530000c32cf4d7815f29f1;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2420,15 +2417,14 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = FN2RK9X9Z4;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = VW97WHTS78;
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
-				PROVISIONING_PROFILE = "86d06264-68ce-4729-b8ff-5da33996ae46";
-				PROVISIONING_PROFILE_SPECIFIER = ff6b068523b664aa3f530000c32cf4d7815f29f1;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2486,8 +2482,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					COMPILE_APP,
+					"APP_VERSION=${APP_VERSION}",
 					DEBUG,
+					COMPILE_APP,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
@@ -2566,15 +2563,14 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = 62DQNF58FV;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = VW97WHTS78;
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "ColoredVK-Prefs/Info-app.plist";
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.higherapp9084.coloredvk2;
-				PROVISIONING_PROFILE = "3a219e9d-0182-42d6-8a63-b5718750d7ed";
-				PROVISIONING_PROFILE_SPECIFIER = 1ab6dc745ad2232661f27c341c996da8d894de3c;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2631,7 +2627,10 @@
 				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = COMPILE_FOR_JAIL;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"APP_VERSION=${APP_VERSION}",
+					COMPILE_FOR_JAIL,
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2738,6 +2737,7 @@
 				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PrefixHeader.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "APP_VERSION=${APP_VERSION}";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

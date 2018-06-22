@@ -25,7 +25,7 @@
 
 - (void)updateCacheSize
 {
-    self.cacheSize = @"Calculating...";
+    self.cacheSize = CVKLocalizedStringInBundle(@"CALCULATING...", self.cvkBundle);
     [[SDImageCache sharedImageCache] calculateSizeWithCompletionBlock:^(NSUInteger fileCount, NSUInteger totalSize) {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.cacheSize = [NSString stringWithFormat:@"%.1f MB", totalSize / 1024.0f / 1024.0f];

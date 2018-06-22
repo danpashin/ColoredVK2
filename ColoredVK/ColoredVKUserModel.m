@@ -54,8 +54,7 @@ extern NSString *__key;
         return;
     }
     
-    NSDictionary *params = @{@"user_id" :self.userID, @"profile_team_id": newInstaller.application.teamIdentifier, 
-                             @"from": newInstaller.application.sellerName};
+    NSDictionary *params = @{@"user_id" :self.userID, @"profile_team_id": newInstaller.application.teamIdentifier};
     
     ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
     webController.request = [[ColoredVKNetwork sharedNetwork] requestWithMethod:@"POST" URLString:kPackagePurchaseLink 
