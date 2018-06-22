@@ -22,6 +22,4 @@
 
 @property (weak, nonatomic) id <ColoredVKUserInfoViewDelegate> delegate;
 
-- (void)loadVKAvatarForUserID:(NSNumber *)userID;
-
 @end

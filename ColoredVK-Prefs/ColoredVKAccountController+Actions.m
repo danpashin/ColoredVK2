@@ -31,9 +31,6 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [self updateJailHeaderView];
             self.user = newInstaller.user;
-            if (newInstaller.vkUserID) {
-                [self.infoHeaderView loadVKAvatarForUserID:newInstaller.vkUserID];
-            }
             self.infoHeaderView.username = self.user.name;
             self.infoHeaderView.email = self.user.email;
             

@@ -1094,14 +1094,6 @@ CHDeclareMethod(0, void, VKSearchBar, layoutSubviews)
     }];
 }
 
-CHDeclareClass(VKSession);
-CHDeclareMethod(2, id, VKSession, initWithUserId, NSNumber *, userID, andToken, id, token)
-{
-    [ColoredVKNewInstaller sharedInstaller].vkUserID = userID;
-    
-    return CHSuper(2, VKSession, initWithUserId, userID, andToken, token);
-}
-
 CHDeclareClass(TitleMenuCell);
 CHDeclareMethod(0, void, TitleMenuCell, layoutSubviews)
 {

@@ -21,8 +21,6 @@ FOUNDATION_EXPORT NSString *__deviceModel;
 @property (strong, nonatomic, readonly) ColoredVKUserModel *user;
 @property (strong, nonatomic, readonly) ColoredVKApplicationModel *application;
 
-@property (strong, nonatomic) NSNumber *vkUserID;
-
 - (void)createFolders;
 - (void)checkStatus;
 
