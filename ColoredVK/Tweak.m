@@ -484,6 +484,8 @@ CHDeclareMethod(0, NSArray *, MenuModel, baseMenuItems)
 }
 
 
+#pragma GCC diagnostic push 
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #pragma mark  HintsSearchDisplayController
 CHDeclareClass(HintsSearchDisplayController);
 CHDeclareMethod(1, void, HintsSearchDisplayController, searchDisplayControllerWillBeginSearch, UISearchDisplayController*, controller)
@@ -497,6 +499,7 @@ CHDeclareMethod(1, void, HintsSearchDisplayController, searchDisplayControllerDi
     if (enabled && !enableNightTheme && enabledMenuImage) setupUISearchBar(controller.searchBar);
     CHSuper(1, HintsSearchDisplayController, searchDisplayControllerDidEndSearch, controller);
 }
+#pragma GCC diagnostic pop
 
 
 #pragma mark PhotoBrowserController
@@ -614,6 +617,8 @@ CHDeclareMethod(0, void, UserWallController, updateProfile)
     }];
 }
 
+#pragma GCC diagnostic push 
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #pragma mark VKMLiveSearchController
 CHDeclareClass(VKMLiveSearchController);
 CHDeclareMethod(1, void, VKMLiveSearchController, searchDisplayControllerWillBeginSearch, UISearchDisplayController*, controller)
@@ -658,6 +663,7 @@ CHDeclareMethod(2, UITableViewCell*, DialogsSearchController, tableView, UITable
     return cell;
 }
 
+#pragma GCC diagnostic pop
 
 #pragma mark DialogsSearchResultsController
 CHDeclareClass(DialogsSearchResultsController);
@@ -1103,46 +1109,6 @@ CHDeclareMethod(0, void, TitleMenuCell, layoutSubviews)
         setupNewAppMenuCell(self);
     }
 }
-
-
-//UIFont *customFontForSize(CGFloat fontSize, BOOL bold)
-//{
-//    if (enabled && customFontName && ![customFontName isEqualToString:@".SFUIText"]) {
-//        NSString *fontName = customFontName;
-//        if (bold)
-//            fontName = [fontName stringByAppendingString:@"-Bold"];
-//        
-//        CTFontDescriptorRef fontDescriptor = CTFontDescriptorCreateWithAttributes((__bridge CFDictionaryRef)@{(id)kCTFontFamilyNameAttribute:fontName});
-//        CTFontRef fontRef = CTFontCreateWithFontDescriptor(fontDescriptor, fontSize, nil);
-//        
-//        UIFont *font = [UIFont fontWithName:(__bridge_transfer NSString *)CTFontCopyPostScriptName(fontRef) size:fontSize];
-//        CFRelease(fontRef);
-//        CFRelease(fontDescriptor);
-//        
-//        return font;
-//    }
-//    
-//    return nil;
-//}
-//
-//CHDeclareClass(UIFont);
-//CHDeclareClassMethod(1, UIFont *, UIFont, systemFontOfSize, CGFloat, fontSize)
-//{
-//    UIFont *customFont = customFontForSize(fontSize, NO);
-//    if (customFont)
-//        return customFont;
-//    
-//    return CHSuper(1, UIFont, systemFontOfSize, fontSize);
-//}
-//
-//CHDeclareClassMethod(1, UIFont *, UIFont, boldSystemFontOfSize, CGFloat, fontSize)
-//{
-//    UIFont *customFont = customFontForSize(fontSize, YES);
-//    if (customFont)
-//        return customFont;
-//    
-//    return CHSuper(1, UIFont, boldSystemFontOfSize, fontSize);
-//}
 
 
 CVK_CONSTRUCTOR

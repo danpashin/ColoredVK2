@@ -31,8 +31,11 @@
 @property (readonly, strong, nonatomic) UIToolbar *toolbar;
 @end
 
+#pragma GCC diagnostic push 
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 @interface VKMSearchController : UISearchDisplayController
 @end
+#pragma GCC diagnostic pop
 
 @interface VKMNavigationController : UINavigationController
 @end
@@ -43,8 +46,11 @@
 @property (strong, nonatomic) UIViewController *currentViewController;
 @end
 
+#pragma GCC diagnostic push 
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 @interface  VKMLiveSearchController : UISearchDisplayController
 @end
+#pragma GCC diagnostic pop
 
 //  Меню
 @interface MenuViewController : VKMLiveController

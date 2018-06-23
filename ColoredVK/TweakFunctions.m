@@ -189,6 +189,8 @@ void setupAudioPlayer(UIView *hostView, UIColor *color)
     }
 }
 
+#pragma GCC diagnostic push 
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 void setupCellForSearchController(UITableViewCell *cell, UISearchDisplayController *searchController)
 {
     if (![searchController.searchResultsTableView.backgroundView isKindOfClass:[ColoredVKWallpaperView class]]) return;
@@ -344,6 +346,7 @@ void setupSearchController(UISearchDisplayController *controller, BOOL reset)
         }
     }
 }
+#pragma GCC diagnostic pop
 
 void resetUISearchBar(UISearchBar *searchBar)
 {

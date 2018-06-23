@@ -30,8 +30,12 @@ void resetNavigationBar(UINavigationBar *navBar);
 
 void uncaughtExceptionHandler(NSException *exception);
 
+
+#pragma GCC diagnostic push 
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 void setupSearchController(UISearchDisplayController *controller, BOOL reset);
 void setupCellForSearchController(UITableViewCell *cell, UISearchDisplayController *searchController);
+#pragma GCC diagnostic pop
 void hideFastButtonForController(VKMBrowserController *browserController);
 
 void setupExtraSettingsController(VKMTableController *controller);

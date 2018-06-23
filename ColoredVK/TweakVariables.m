@@ -194,8 +194,6 @@ UIBlurEffectStyle videosBlurStyle;
 UIBlurEffectStyle settingsBlurStyle;
 UIBlurEffectStyle settingsExtraBlurStyle;
 
-    //NSString *customFontName;
-
 ColoredVKMainController *cvkMainController;
 
 
@@ -391,8 +389,6 @@ void reloadPrefs(void(^completion)(void))
             videosBlurTone =            [[UIColor cvk_savedColorForIdentifier:@"videosBlurTone"         fromPrefs:prefs] colorWithAlphaComponent:0.3f];
             settingsBlurTone =          [[UIColor cvk_savedColorForIdentifier:@"settingsBlurTone"       fromPrefs:prefs] colorWithAlphaComponent:0.3f];
             settingsExtraBlurTone =     [[UIColor cvk_savedColorForIdentifier:@"settingsExtraBlurTone"  fromPrefs:prefs] colorWithAlphaComponent:0.3f];
-            
-                //        customFontName = prefs[@"customFontName"] ? prefs[@"customFontName"] : @".SFUIText";
         }
         
         [NSObject cvk_runBlockOnMainThread:^{
