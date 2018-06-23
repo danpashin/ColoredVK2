@@ -180,6 +180,9 @@ UIVisualEffectView *blurForView(UIView *view, NSInteger tag)
 
 void setupAudioPlayer(UIView *hostView, UIColor *color)
 {
+    if (enabled && enableNightTheme)
+        return;
+    
     if (!color) color = audioPlayerTintColor;
     for (UIView *view in hostView.subviews) {
         view.backgroundColor = [UIColor clearColor];
@@ -474,24 +477,19 @@ void setupTabbar()
             unselectedItemTintColor = tabbarForegroundColor;
         } else {
             barTintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarBackgroundColor"];
-            tabbar.tintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarSelForegroundColor"];
+            tintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarSelForegroundColor"];
             unselectedItemTintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarForegroundColor"];
         }
-        tabbar.barTintColor = barTintColor;
-        tabbar.tintColor = tintColor;
         
-        if (ios_available(10.0))
-            tabbar.unselectedItemTintColor = unselectedItemTintColor;
-        
-        for (UITabBarItem *item in tabbar.items) {
-            if (ios_available(10.0)) {
-                item.image = [item.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-            } else {
-                UIColor *itemTintColor = (enabled && enabledTabbarColor) ? (enableNightTheme ? cvkMainController.nightThemeScheme.buttonColor : tabbarForegroundColor) : [UIColor cvk_defaultColorForIdentifier:@"TabbarForegroundColor"];
-                item.image = [item.image cvk_imageWithTintColor:itemTintColor];
-            }
-            item.selectedImage = [item.selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        }
+        [NSObject cvk_runBlockOnMainThread:^{
+            [UIView transitionWithView:tabbar duration:0.3f options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionTransitionCrossDissolve animations:^{
+                tabbar.barTintColor = barTintColor;
+                tabbar.tintColor = tintColor;
+                
+                if (ios_available(10.0))
+                    tabbar.unselectedItemTintColor = unselectedItemTintColor;
+            } completion:nil];
+        }];
     }
 }
 
@@ -973,10 +971,12 @@ void updateNavBarColor(void)
     
     [rootViewController.childViewControllers enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(__kindof UIViewController * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([obj isKindOfClass:[UINavigationController class]]) {
-            UINavigationController *navController = (UINavigationController *)obj;
-            [UIView animateWithDuration:0.5f delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                navController.navigationBar.barTintColor = navController.navigationBar.barTintColor;
-                [navController.navigationBar layoutIfNeeded];
+            UINavigationBar *navigationBar = ((UINavigationController *)obj).navigationBar;
+            [UIView animateWithDuration:0.3f delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                navigationBar.barTintColor = kNavigationBarBarTintColor;
+                navigationBar.tintColor = [UIColor whiteColor];
+                navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
+                [navigationBar layoutIfNeeded];
             } completion:nil];
             *stop = YES;
         }

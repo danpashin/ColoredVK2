@@ -56,9 +56,9 @@
     else if ([identifier containsString:@"TextColor"])                   return [UIColor colorWithWhite:1.0f alpha:0.9f];
     else if ([identifier containsString:@"BlurTone"])                    return [UIColor clearColor];
     else if ([identifier isEqualToString:@"menuSelectionColor"])         return [UIColor whiteColor];
-    else if ([identifier isEqualToString:@"TabbarForegroundColor"])      return [UIColor colorWithRed:0.6f green:0.63f blue:0.67f alpha:1.0f];
+    else if ([identifier isEqualToString:@"TabbarForegroundColor"])      return [UIColor colorWithRed:149/255.0f green:159/255.0f blue:169/255.0f alpha:1.0f];
     else if ([identifier isEqualToString:@"TabbarBackgroundColor"])      return [UIColor colorWithWhite:1.0f alpha:0.9f];
-    else if ([identifier isEqualToString:@"TabbarSelForegroundColor"])   return [UIColor colorWithRed:0.28f green:0.5f blue:0.77f alpha:1.0f];
+    else if ([identifier isEqualToString:@"TabbarSelForegroundColor"])   return [UIColor colorWithRed:44/255.0f green:116/255.0f blue:200/255.0f alpha:1.0f];
     else if ([identifier isEqualToString:@"messagesInputBackColor"])     return [UIColor whiteColor];
     else if ([identifier isEqualToString:@"messagesInputTextColor"])     return [UIColor blackColor];
     else                                                                 return [UIColor blackColor];

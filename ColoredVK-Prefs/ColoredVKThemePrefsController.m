@@ -78,23 +78,33 @@
     [super updateNightTheme];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
-        
-        UIColor *titleColor = nightScheme.textColor;
-        UIColor *buttonColor = nightScheme.buttonColor;
-        UIColor *tickColor = nightScheme.buttonSelectedColor;
-        if ([self.selectorCurrentValue integerValue] == CVKNightThemeTypeDisabled || !nightScheme.enabled) {
-            titleColor = [UIColor grayColor];
-            buttonColor = [UIColor redColor];
-            tickColor = CVKMainColor;
-        }
-        
-        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-            self.closeAppFooter.titleColor = titleColor;
-            self.closeAppFooter.buttonColor = buttonColor;
-            self.tickImageView.tintColor = tickColor;
-        } completion:nil];
+        [self updateFooterColors:YES];
     });
+}
+
+- (void)updateFooterColors:(BOOL)animated
+{
+    ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    
+    UIColor *titleColor = nightScheme.textColor;
+    UIColor *buttonColor = nightScheme.buttonColor;
+    UIColor *tickColor = nightScheme.buttonSelectedColor;
+    if ([self.selectorCurrentValue integerValue] == CVKNightThemeTypeDisabled || !nightScheme.enabled) {
+        titleColor = [UIColor grayColor];
+        buttonColor = [UIColor redColor];
+        tickColor = CVKMainColor;
+    }
+    
+    void (^updateBlock)(void) = ^{
+        self.closeAppFooter.titleColor = titleColor;
+        self.closeAppFooter.buttonColor = buttonColor;
+        self.tickImageView.tintColor = tickColor;
+    };
+    
+    if (animated)
+        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:updateBlock completion:nil];
+    else 
+        updateBlock();
 }
 
 #pragma mark -
@@ -133,6 +143,7 @@
         _closeAppFooter.title = CVKLocalizedString(@"CLOSE_APP_FOOTER_TEXT");
         _closeAppFooter.buttonTitle = CVKLocalizedString(@"CLOSE_APP_FOOTER_BUTTON_TEXT");
         [_closeAppFooter.button addTarget:self action:@selector(actionCloseApplication) forControlEvents:UIControlEventTouchUpInside];
+        [self updateFooterColors:NO];
     }
     
     return _closeAppFooter;

@@ -465,9 +465,11 @@ CHDeclareMethod(1, void, SFSafariViewController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, SFSafariViewController, viewWillAppear, animated);
     
-    UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
-    if (enabled && enableNightTheme && statusBar != nil) {
-        statusBar.foregroundColor = nil;
+    if (SYSTEM_VERSION_IS_LESS_THAN(10.0)) {
+        UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
+        if (enabled && enableNightTheme && statusBar != nil) {
+            statusBar.foregroundColor = nil;
+        }
     }
 }
 
@@ -475,9 +477,11 @@ CHDeclareMethod(1, void, SFSafariViewController, viewDidDisappear, BOOL, animate
 {
     CHSuper(1, SFSafariViewController, viewDidDisappear, animated);
     
-    UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
-    if (enabled && enableNightTheme && statusBar != nil) {
-        statusBar.foregroundColor = [UIColor whiteColor];
+    if (SYSTEM_VERSION_IS_LESS_THAN(10.0)) {
+        UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
+        if (enabled && enableNightTheme && statusBar != nil) {
+            statusBar.foregroundColor = [UIColor whiteColor];
+        }
     }
 }
 

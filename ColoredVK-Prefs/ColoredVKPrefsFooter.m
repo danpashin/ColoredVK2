@@ -37,7 +37,7 @@
 
 - (void)layoutSubviews
 {
-    CGFloat maxWidth = [UIScreen mainScreen].bounds.size.width;
+    CGFloat maxWidth = CGRectGetWidth(self.superview.frame);
     
     UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
     if (UIDeviceOrientationIsPortrait(orientation))

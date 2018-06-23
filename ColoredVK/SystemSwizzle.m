@@ -340,3 +340,24 @@ CHDeclareMethod(2, UITableViewCell *, vksprefsListController, tableView, UITable
     
     return cell;
 }
+
+
+CHDeclareClass(UITabBarItem);
+CHDeclareMethod(1, void, UITabBarItem, setImage, UIImage *, image)
+{
+    if (ios_available(10.0)) {
+        image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    } else {
+        UIColor *itemTintColor = (enabled && enabledTabbarColor) ? (enableNightTheme ? cvkMainController.nightThemeScheme.buttonColor : tabbarForegroundColor) : [UIColor cvk_defaultColorForIdentifier:@"TabbarForegroundColor"];
+        image = [image cvk_imageWithTintColor:itemTintColor];
+    }
+    
+    CHSuper(1, UITabBarItem, setImage, image);
+}
+
+CHDeclareMethod(1, void, UITabBarItem, setSelectedImage, UIImage *, selectedImage)
+{
+    selectedImage = [selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    CHSuper(1, UITabBarItem, setSelectedImage, selectedImage);
+}
+
