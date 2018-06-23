@@ -13,6 +13,8 @@
 @property (strong, nonatomic) id selectorDefaultValue;
 @property (strong, nonatomic) id selectorCurrentValue;
 
+@property (strong, nonatomic, readonly) UIImageView *tickImageView;
+
 - (void)didSelectValue:(id)value forKey:(NSString *)key;
 
 @end

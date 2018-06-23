@@ -98,7 +98,7 @@
 			<key>label</key>
 			<string>GROUPS</string>
 			<key>icon</key>
-			<string>prefs/GroupsIconAlt</string>
+			<string>prefs/GroupsIcon</string>
 		</dict>
 		<dict>
 			<key>cell</key>

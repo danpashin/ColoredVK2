@@ -6,15 +6,18 @@
 //
 
 #import "ColoredVKThemePrefsController.h"
+#import "ColoredVKPrefsFooter.h"
+
 #import "ColoredVKNightThemeColorScheme.h"
 #import "ColoredVKNewInstaller.h"
+
 #import <objc/message.h>
-#import "UIColor+ColoredVK.h"
 @import Darwin.POSIX.spawn;
+
 
 @interface ColoredVKThemePrefsController ()
 
-@property (strong, nonatomic) UIView *closeAppFooter;
+@property (strong, nonatomic) ColoredVKPrefsFooter *closeAppFooter;
 @property (strong, nonatomic) NSArray <PSSpecifier *> *customColorsSpecifiers;
 @property (assign, nonatomic) BOOL specifiersAlreadyInserted;
 
@@ -70,6 +73,29 @@
     [self updateType:YES];
 }
 
+- (void)updateNightTheme
+{
+    [super updateNightTheme];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+        
+        UIColor *titleColor = nightScheme.textColor;
+        UIColor *buttonColor = nightScheme.buttonColor;
+        UIColor *tickColor = nightScheme.buttonSelectedColor;
+        if ([self.selectorCurrentValue integerValue] == CVKNightThemeTypeDisabled || !nightScheme.enabled) {
+            titleColor = [UIColor grayColor];
+            buttonColor = [UIColor redColor];
+            tickColor = CVKMainColor;
+        }
+        
+        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+            self.closeAppFooter.titleColor = titleColor;
+            self.closeAppFooter.buttonColor = buttonColor;
+            self.tickImageView.tintColor = tickColor;
+        } completion:nil];
+    });
+}
 
 #pragma mark -
 #pragma mark UITableViewDelegate
@@ -91,7 +117,7 @@
     CGFloat height = [super tableView:tableView heightForFooterInSection:section];
     
     if (section == 0) {
-        height = 100;
+        height = self.closeAppFooter.preferredHeight;
     }
     
     return height;
@@ -100,39 +126,13 @@
 #pragma mark -
 
 
-- (UIView *)closeAppFooter
+- (ColoredVKPrefsFooter *)closeAppFooter
 {
     if (!_closeAppFooter) {
-        UIView *contentView = [[UIView alloc] init];
-        
-        UITextView *footerLabel = [[UITextView alloc] init];
-        footerLabel.backgroundColor = [UIColor clearColor];
-        footerLabel.text = CVKLocalizedString(@"CLOSE_APP_FOOTER_TEXT");
-        footerLabel.textColor = [UIColor grayColor];
-        footerLabel.textAlignment = NSTextAlignmentCenter;
-        footerLabel.font = [UIFont systemFontOfSize:[UIFont smallSystemFontSize]-0.5f];
-        footerLabel.editable = NO;
-        footerLabel.selectable = NO;
-        footerLabel.scrollEnabled = NO;
-        [contentView addSubview:footerLabel];
-        
-        UIButton *closeAppButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [closeAppButton setTitle:CVKLocalizedString(@"CLOSE_APP_FOOTER_BUTTON_TEXT") forState:UIControlStateNormal];
-        [closeAppButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-        [closeAppButton setTitleColor:[UIColor redColor].cvk_darkerColor forState:UIControlStateHighlighted];
-        [closeAppButton setTitleColor:[UIColor redColor].cvk_darkerColor forState:UIControlStateSelected];
-        [closeAppButton addTarget:self action:@selector(actionCloseApplication) forControlEvents:UIControlEventTouchUpInside];
-        [contentView addSubview:closeAppButton];
-        
-        footerLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        closeAppButton.translatesAutoresizingMaskIntoConstraints = NO;
-        NSDictionary *views = @{@"footerLabel":footerLabel, @"button":closeAppButton};
-        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[footerLabel]-|" options:0 metrics:nil views:views]];
-        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[footerLabel]-|" options:0 metrics:nil views:views]];
-        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[button(44)]|" options:0 metrics:nil views:views]];
-        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[button]-|" options:0 metrics:nil views:views]];
-        
-        _closeAppFooter = contentView;
+        _closeAppFooter = [[ColoredVKPrefsFooter alloc] init];
+        _closeAppFooter.title = CVKLocalizedString(@"CLOSE_APP_FOOTER_TEXT");
+        _closeAppFooter.buttonTitle = CVKLocalizedString(@"CLOSE_APP_FOOTER_BUTTON_TEXT");
+        [_closeAppFooter.button addTarget:self action:@selector(actionCloseApplication) forControlEvents:UIControlEventTouchUpInside];
     }
     
     return _closeAppFooter;

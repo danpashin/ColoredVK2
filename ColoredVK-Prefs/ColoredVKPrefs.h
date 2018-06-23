@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (assign, nonatomic) BOOL shouldChangeSwitchColor;
 
 - (void)commonInit NS_REQUIRES_SUPER;
+- (void)updateNightTheme NS_REQUIRES_SUPER;
 
 - (void)openURL:(NSString *)url;
 - (void)presentPopover:(UIViewController *)controller;
