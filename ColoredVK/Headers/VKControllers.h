@@ -281,7 +281,6 @@
 @interface VKMBrowserController : VKMController
 @property (strong, nonatomic) UILabel *headerTitle;
 @property (strong, nonatomic) VKMBrowserTarget *target;
-@property (strong, nonatomic) UIToolbar *toolbar;
 @property (strong, nonatomic) UIButton *safariButton;
 @property (strong, nonatomic) UIScrollView *webScrollView;
 @property (strong, nonatomic) UIWebView *webView;

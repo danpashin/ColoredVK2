@@ -226,3 +226,7 @@
 @interface PaymentsPopupView : UIView
 @property (strong, nonatomic) UIToolbar *topToolbar;
 @end
+
+@interface _TtC3vkm9BadgeView : UIView
+@property (strong, nonatomic, readonly) CAShapeLayer *layer;
+@end

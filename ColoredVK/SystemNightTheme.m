@@ -138,6 +138,11 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
                     self.imageView.tintColor = isNavigation ? cvkMainController.nightThemeScheme.buttonSelectedColor : cvkMainController.nightThemeScheme.buttonColor;
                 }
             }
+        } else if ([self isKindOfClass:NSClassFromString(@"HighlightableButton")]) {
+            if ([self.currentBackgroundImage isKindOfClass:NSClassFromString(@"_UIResizableImage")]) {
+                [self setBackgroundImage:[self.currentBackgroundImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:self.state];
+                self.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+            }
         }
     }
 }

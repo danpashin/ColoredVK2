@@ -198,6 +198,14 @@ CHDeclareMethod(2, UITableViewCell*, DLVController, tableView, UITableView*, tab
             cell.bodyView.textColor = cvkMainController.nightThemeScheme.detailTextColor;
             objc_setAssociatedObject(cell.bodyView, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
             objc_setAssociatedObject(cell.titleView, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+            
+            _TtC3vkm9BadgeView *badgeView = cell.badgeView;
+            const CGFloat *components = CGColorGetComponents(badgeView.layer.fillColor);
+            if (components[2] >= 0.79f) {
+                badgeView.layer.fillColor = cvkMainController.nightThemeScheme.buttonSelectedColor.CGColor;
+            } else if (components[2] > 0.0f) {
+                badgeView.layer.fillColor = cvkMainController.nightThemeScheme.navbackgroundColor.CGColor;
+            }
         } else {
             cell.contentView.backgroundColor = [UIColor whiteColor];
         }

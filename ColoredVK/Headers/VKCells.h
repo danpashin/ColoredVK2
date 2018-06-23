@@ -30,6 +30,7 @@
 @end
 
 @interface vkmPeerListCell : UITableViewCell
+@property (strong, nonatomic) _TtC3vkm9BadgeView *badgeView;
 @property (strong, nonatomic) UILabel *titleView;
 @property (strong, nonatomic) UILabel *bodyView;
 @property (strong, nonatomic) UILabel *timeView;
