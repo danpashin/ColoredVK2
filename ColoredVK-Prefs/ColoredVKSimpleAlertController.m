@@ -9,7 +9,7 @@
 #import "ColoredVKSimpleAlertController.h"
 #import "UIImage+ColoredVK.h"
 #import "ColoredVKNewInstaller.h"
-#import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKNightScheme.h"
 
 static CGFloat const viewsHeight = 32.0f;
 
@@ -67,7 +67,7 @@ static CGFloat const viewsHeight = 32.0f;
 {
     [super viewWillAppear:animated];
     
-    ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    ColoredVKNightScheme *nightThemeColorScheme = [ColoredVKNightScheme sharedScheme];
     BOOL isVKApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
     if (isVKApp && nightThemeColorScheme.enabled) {
         self.textField.backgroundColor = nightThemeColorScheme.backgroundColor;

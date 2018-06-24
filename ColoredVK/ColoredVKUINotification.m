@@ -7,7 +7,7 @@
 //
 
 #import "ColoredVKUINotification.h"
-#import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKNightScheme.h"
 #import "ColoredVKShadowView.h"
 
 static CGFloat const kCVKUINotificationHeight = 100.0f;
@@ -97,7 +97,7 @@ static CGFloat const kCVKUINotificationHeight = 100.0f;
         self.shadowView = [ColoredVKShadowView shadowWithFrame:self.contentView.bounds size:10.0f cornerRadius:14.0f offset:2.0f];
         [self.contentView addSubview:self.shadowView];
         
-        UIBlurEffectStyle blurStyle = [ColoredVKNightThemeColorScheme sharedScheme].enabled ? UIBlurEffectStyleDark : UIBlurEffectStyleLight;
+        UIBlurEffectStyle blurStyle = [ColoredVKNightScheme sharedScheme].enabled ? UIBlurEffectStyleDark : UIBlurEffectStyleLight;
         self.blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:blurStyle]];
         self.blurView.frame = self.contentView.bounds;
         self.blurView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.4f];

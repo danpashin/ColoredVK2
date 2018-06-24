@@ -8,7 +8,7 @@
 
 #import "ColoredVKAudioCover.h"
 #import "ColoredVKWallpaperView.h"
-#import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKNightScheme.h"
 
 @class MenuCell, VKMMainController, MenuViewController;
 
@@ -25,7 +25,7 @@
 
 @property (weak, nonatomic) VKMMainController *vkMainController;
 @property (weak, nonatomic) MenuViewController *vkMenuController;
-@property (weak, nonatomic) ColoredVKNightThemeColorScheme *nightThemeScheme;
+@property (weak, nonatomic) ColoredVKNightScheme *nightThemeScheme;
 
 - (void)setImageToTableView:(UITableView *)tableView name:(NSString *)name blackout:(CGFloat)blackout parallaxEffect:(BOOL)parallaxEffect blur:(BOOL)blur;
 - (void)setImageToTableView:(UITableView *)tableView name:(NSString *)name blackout:(CGFloat)blackout flip:(BOOL)flip 

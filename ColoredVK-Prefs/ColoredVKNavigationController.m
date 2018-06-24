@@ -6,7 +6,7 @@
 //
 
 #import "ColoredVKNavigationController.h"
-#import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKNightScheme.h"
 
 @interface ColoredVKNavigationController () <UINavigationBarDelegate>
 
@@ -77,7 +77,7 @@
 
 - (void)updateNightThemeForController:(UIViewController *)viewController
 {
-    ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    ColoredVKNightScheme *nightScheme = [ColoredVKNightScheme sharedScheme];
     if (nightScheme.enabled) {
         viewController.view.backgroundColor = nightScheme.backgroundColor;
     }

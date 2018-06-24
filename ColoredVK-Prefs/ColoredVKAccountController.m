@@ -8,7 +8,7 @@
 
 #import "ColoredVKAccountController+Actions.h"
 
-#import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKNightScheme.h"
 #import <objc/runtime.h>
 #import <MXParallaxHeader.h>
 #import "UITableViewCell+ColoredVK.h"
@@ -80,7 +80,7 @@
     
     [self updateAccountInfo];
     
-    ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    ColoredVKNightScheme *nightScheme = [ColoredVKNightScheme sharedScheme];
     if (nightScheme.enabled) {
         self.infoHeaderView.backgroundColor = nightScheme.backgroundColor;
     }

@@ -8,7 +8,7 @@
 
 #import "ColoredVKWindowController.h"
 #import "ColoredVKNewInstaller.h"
-#import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKNightScheme.h"
 
 @interface ColoredVKWindowController ()
 @property (strong, nonatomic) UITapGestureRecognizer *closeTapRecognizer;
@@ -126,7 +126,7 @@
     self.contentView = [UIView new];
     self.contentViewWantsShadow = YES;
     
-    ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    ColoredVKNightScheme *nightThemeColorScheme = [ColoredVKNightScheme sharedScheme];
     BOOL isVKApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
     if (isVKApp && nightThemeColorScheme.enabled)
         self.contentView.backgroundColor = nightThemeColorScheme.foregroundColor;

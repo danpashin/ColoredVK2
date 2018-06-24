@@ -12,7 +12,7 @@
 #import "UITableViewCell+ColoredVK.h"
 #import <objc/runtime.h>
 #import "UIScrollView+EmptyDataSet.h"
-#import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKNightScheme.h"
 #import "NSObject+ColoredVK.h"
 
 @import SafariServices.SFSafariViewController;
@@ -51,7 +51,7 @@
         
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
-            ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+            ColoredVKNightScheme *nightThemeColorScheme = [ColoredVKNightScheme sharedScheme];
             NSInteger themeType = self.cachedPrefs[@"nightThemeType"] ? [self.cachedPrefs[@"nightThemeType"] integerValue] : -1;
             [nightThemeColorScheme updateForType:themeType];
             
@@ -74,7 +74,7 @@
     self.table.emptyDataSetSource = self;
     self.table.emptyDataSetDelegate = self;
     
-    ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    ColoredVKNightScheme *nightThemeColorScheme = [ColoredVKNightScheme sharedScheme];
     if ([ColoredVKNewInstaller sharedInstaller].application.isVKApp && nightThemeColorScheme.enabled) {
         self.table.backgroundColor = nightThemeColorScheme.backgroundColor;
         self.navigationController.navigationBar.barTintColor = nightThemeColorScheme.navbackgroundColor;
@@ -136,7 +136,7 @@
     if (![ColoredVKNewInstaller sharedInstaller].application.isVKApp)
         return;
     
-    ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    ColoredVKNightScheme *nightThemeColorScheme = [ColoredVKNightScheme sharedScheme];
     
     NSInteger themeType = self.cachedPrefs[@"nightThemeType"] ? [self.cachedPrefs[@"nightThemeType"] integerValue] : -1;
     [nightThemeColorScheme updateForType:themeType];
@@ -162,7 +162,7 @@
     if (![ColoredVKNewInstaller sharedInstaller].application.isVKApp)
         return;
     
-    ColoredVKNightThemeColorScheme *nightThemeColorScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    ColoredVKNightScheme *nightThemeColorScheme = [ColoredVKNightScheme sharedScheme];
     ColoredVKCellBackgroundView *backgroundView = cell.customBackgroundView;
     
     void (^changeBlock)(void) = ^{

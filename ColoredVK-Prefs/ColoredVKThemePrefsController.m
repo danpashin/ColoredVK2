@@ -8,7 +8,7 @@
 #import "ColoredVKThemePrefsController.h"
 #import "ColoredVKPrefsFooter.h"
 
-#import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKNightScheme.h"
 #import "ColoredVKNewInstaller.h"
 
 #import <objc/message.h>
@@ -84,7 +84,7 @@
 
 - (void)updateFooterColors:(BOOL)animated
 {
-    ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    ColoredVKNightScheme *nightScheme = [ColoredVKNightScheme sharedScheme];
     
     UIColor *titleColor = nightScheme.textColor;
     UIColor *buttonColor = nightScheme.buttonColor;

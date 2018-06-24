@@ -7,7 +7,7 @@
 
 #import "ColoredVKTextField.h"
 #import <CoreGraphics/CoreGraphics.h>
-#import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKNightScheme.h"
 
 @interface ColoredVKTextField () <CAAnimationDelegate, UITextFieldDelegate>
 
@@ -39,7 +39,7 @@
     
     [self addTarget:self action:@selector(didChangeText) forControlEvents:UIControlEventEditingChanged];
     
-    ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    ColoredVKNightScheme *nightScheme = [ColoredVKNightScheme sharedScheme];
     if (nightScheme.enabled) {
         self.backgroundColor = nightScheme.foregroundColor;
     }
@@ -123,7 +123,7 @@
         UIColor *layerColor = error ? [UIColor redColor] : [UIColor colorWithRed:202/255.0f green:202/255.0f blue:202/255.0f alpha:1.0f];
         CGFloat borderWidth = error ? 1.0f : 0.5f;
         
-        ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+        ColoredVKNightScheme *nightScheme = [ColoredVKNightScheme sharedScheme];
         if (nightScheme.enabled && !error) {
             layerColor = nightScheme.backgroundColor;
         }

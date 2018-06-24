@@ -8,7 +8,7 @@
 
 #import "PSTableCell+ColoredVK.h"
 
-#import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKNightScheme.h"
 #import <objc/runtime.h>
 
 @interface ColoredVKPrefs : UIViewController
@@ -23,7 +23,7 @@
     if (![self.cellTarget isKindOfClass:[ColoredVKPrefs class]])
         return;
     
-    ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    ColoredVKNightScheme *nightScheme = [ColoredVKNightScheme sharedScheme];
     
     if ([self.specifier.properties[@"shouldCenter"] boolValue])
         self.titleLabel.center = self.contentView.center;

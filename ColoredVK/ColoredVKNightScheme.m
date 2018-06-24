@@ -1,21 +1,21 @@
 //
-//  ColoredVKNightThemeColorScheme.m
+//  ColoredVKNightScheme.m
 //  ColoredVK2
 //
 //  Created by Даниил on 19.10.17.
 //
 
-#import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKNightScheme.h"
 #import "UIColor+ColoredVK.h"
 
-@implementation ColoredVKNightThemeColorScheme
+@implementation ColoredVKNightScheme
 
 + (instancetype)sharedScheme
 {
-    static ColoredVKNightThemeColorScheme *sharedScheme;
+    static ColoredVKNightScheme *sharedScheme;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedScheme = [[ColoredVKNightThemeColorScheme alloc] init];
+        sharedScheme = [[ColoredVKNightScheme alloc] init];
     });
     
     return sharedScheme;

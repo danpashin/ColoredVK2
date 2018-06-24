@@ -7,7 +7,7 @@
 //
 
 #import "ColoredVKHUD.h"
-#import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKNightScheme.h"
 #import "LHAcvitityIndicator.h"
 #import "NSObject+ColoredVK.h"
 
@@ -66,7 +66,7 @@
 {
     [super commonInit];
     
-    ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+    ColoredVKNightScheme *nightScheme = [ColoredVKNightScheme sharedScheme];
     self.centerBackgroundView.blurStyle = nightScheme.enabled ? LHBlurEffectStyleDark : LHBlurEffectStyleExtraLight;
     self.centerBackgroundView.backgroundColor = [UIColor colorWithWhite:nightScheme.enabled ? 0.0f : 1.0f alpha:0.7f];
     self.centerBackgroundView.layer.cornerRadius = 10.0f;

@@ -119,7 +119,7 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
         if (![self isKindOfClass:NSClassFromString(@"VKMImageButton")] && ![self isKindOfClass:NSClassFromString(@"HighlightableButton")] && ![self isKindOfClass:NSClassFromString(@"LinkButton")] && ![self isKindOfClass:NSClassFromString(@"BorderButton")]) {
             
             if (self.titleLabel) {
-                ColoredVKNightThemeColorScheme *nightScheme = cvkMainController.nightThemeScheme;
+                ColoredVKNightScheme *nightScheme = cvkMainController.nightThemeScheme;
                 objc_setAssociatedObject(self.titleLabel, "should_customize", self.currentImage ? @YES : @NO, OBJC_ASSOCIATION_ASSIGN);
                 [self setTitleColor:self.currentImage ? nightScheme.detailTextColor : nightScheme.buttonSelectedColor forState:UIControlStateNormal];
             }

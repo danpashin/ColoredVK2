@@ -6,7 +6,7 @@
 //
 
 #import "ColoredVKCellBackgroundView.h"
-#import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKNightScheme.h"
 
 @interface ColoredVKCellBackgroundView ()
 
@@ -155,7 +155,7 @@
 - (UIColor *)backgroundColor
 {
     if (!_backgroundColor) {
-        ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+        ColoredVKNightScheme *nightScheme = [ColoredVKNightScheme sharedScheme];
         if (nightScheme.enabled)
             _backgroundColor = nightScheme.foregroundColor;
         else
@@ -168,7 +168,7 @@
 - (UIColor *)separatorColor
 {
     if (!_separatorColor)  {
-        ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+        ColoredVKNightScheme *nightScheme = [ColoredVKNightScheme sharedScheme];
         if (nightScheme.enabled)
             _separatorColor = nightScheme.backgroundColor;
         else
@@ -180,7 +180,7 @@
 - (UIColor *)selectedBackgroundColor
 {
     if (!_selectedBackgroundColor) {
-        ColoredVKNightThemeColorScheme *nightScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+        ColoredVKNightScheme *nightScheme = [ColoredVKNightScheme sharedScheme];
         if (nightScheme.enabled)
             _selectedBackgroundColor = nightScheme.backgroundColor;
         else

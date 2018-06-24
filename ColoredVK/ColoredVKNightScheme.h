@@ -1,5 +1,5 @@
 //
-//  ColoredVKNightThemeColorScheme.h
+//  ColoredVKNightScheme.h
 //  ColoredVK2
 //
 //  Created by Даниил on 19.10.17.
@@ -16,7 +16,7 @@ typedef NS_ENUM(NSInteger, CVKNightThemeType) {
     CVKNightThemeTypeTrueBlack,
 };
 
-@interface ColoredVKNightThemeColorScheme : NSObject
+@interface ColoredVKNightScheme : NSObject
 
 + (instancetype)sharedScheme;
 

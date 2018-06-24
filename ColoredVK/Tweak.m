@@ -1117,7 +1117,7 @@ CVK_CONSTRUCTOR
         cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         vksBundle = [NSBundle bundleWithPath:VKS_BUNDLE_PATH];
         cvkMainController = [ColoredVKMainController new];
-        cvkMainController.nightThemeScheme = [ColoredVKNightThemeColorScheme sharedScheme];
+        cvkMainController.nightThemeScheme = [ColoredVKNightScheme sharedScheme];
         
         ColoredVKApplicationModel *application = [ColoredVKNewInstaller sharedInstaller].application;
         isNew3XClient = ([application compareAppVersionWithVersion:@"3.0"] >= ColoredVKVersionCompareEqual);
