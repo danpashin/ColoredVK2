@@ -217,7 +217,14 @@ return;
                              @"version":kPackageVersion, @"key": __key};
     
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-    [network sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
+    [network sendRequestWithMethod:@"POST" url:kDRMRemoteServerURL parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
+        
+        NSError *decryptError = nil;
+        NSDictionary *json = decryptServerResponse(rawData, &decryptError);
+        
+        if (!json || decryptError)
+            return;
+        
         if (!json[@"response"])
             return;
         

@@ -7,7 +7,6 @@
 //
 
 #import "ColoredVKNetwork.h"
-#import "ColoredVKCrypto.h"
 @import UIKit.UIDevice;
 @import UIKit.UIApplication;
 
@@ -20,6 +19,7 @@
 @end
 
 @implementation ColoredVKNetwork
+static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.network.error";
 
 + (instancetype)sharedNetwork
 {
@@ -57,12 +57,33 @@
         NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             [self setStatusBarIndicatorActive:NO];
             dispatch_async(self.parseQueue, ^{
+                NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                
+                if (![httpResponse.URL isEqual:request.URL]) {
+                    NSError *urlError = [self errorWithCode:1002 description:@"Response URL is invalid"];
+                    if (failure)
+                        failure(request, httpResponse, urlError);
+                    
+                    return;
+                }
+                
                 if (!error && data) {
+                    NSInteger expectedContentLength = httpResponse.allHeaderFields[@"Expected-Length"] ? [httpResponse.allHeaderFields[@"Expected-Length"] integerValue] : -1;
+                    if ((expectedContentLength != -1)) {
+                        if ((NSUInteger)expectedContentLength != data.length) {
+                            NSError *urlError = [self errorWithCode:1004 description:@"Response data has wrong size"];
+                            if (failure)
+                                failure(request, httpResponse, urlError);
+                            
+                            return;
+                        }
+                    }
+                    
                     if (success)
-                        success(request, (NSHTTPURLResponse *)response, data);
+                        success(request, httpResponse, data);
                 } else {
                     if (failure)
-                        failure(request, (NSHTTPURLResponse *)response, error);
+                        failure(request, httpResponse, error);
                 }
             });
         }];
@@ -91,43 +112,25 @@
                           failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
     [self sendRequestWithMethod:method url:stringURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
+        
+        NSDictionary *headers = httpResponse.allHeaderFields;
+        NSString *contentType = headers[@"Content-Type"];
+        if (![contentType isKindOfClass:[NSString class]] || ![contentType containsString:@"json"]) {
+            NSError *error = [self errorWithCode:1003 description:@"Response has invalid header: 'Content-Type'"];
+            if (failure)
+                failure(request, (NSHTTPURLResponse *)httpResponse, error);
+            
+            return;
+        }
+        
         NSError *jsonError = nil;
         NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:rawData options:0 error:&jsonError];
         if ([jsonDict isKindOfClass:[NSDictionary class]] && !jsonError) {
             if (success)
-                success(request, (NSHTTPURLResponse *)httpResponse, jsonDict);
+                success(request, httpResponse, jsonDict);
         } else {
-            jsonError = nil;
-            NSData *decrypted = performLegacyCrypt(kCCDecrypt, rawData, kColoredVKServerKey);
-            if (!decrypted) {
-                if (failure) {
-                    NSError *error = [NSError errorWithDomain:@"ru.danpashin.coloredvk2.common.error" code:-1001 userInfo:@{NSLocalizedDescriptionKey:@"Cannot decrypt server data."}];
-                    failure(request, (NSHTTPURLResponse *)httpResponse, error);
-                }
-                return;
-            }
-            
-            NSString *decryptedString = [[NSString alloc] initWithData:decrypted encoding:NSUTF8StringEncoding];
-            decryptedString = [decryptedString stringByReplacingOccurrencesOfString:@"\0" withString:@""];
-            
-            NSData *jsonData = [decryptedString dataUsingEncoding:NSUTF8StringEncoding];
-            if (!decrypted) {
-                if (failure) {
-                    NSError *error = [NSError errorWithDomain:@"ru.danpashin.coloredvk2.common.error" code:-1002 userInfo:@{NSLocalizedDescriptionKey:@"Cannot decrypt server data."}];
-                    failure(request, (NSHTTPURLResponse *)httpResponse, error);
-                }
-                return;
-            }
-            
-            jsonDict = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&jsonError];
-            
-            if ([jsonDict isKindOfClass:[NSDictionary class]] && !jsonError) {
-                if (success)
-                    success(request, (NSHTTPURLResponse *)httpResponse, jsonDict);
-            } else {
-                if (failure)
-                    failure(request, (NSHTTPURLResponse *)httpResponse, jsonError);
-            }
+            if (failure)
+                failure(request, httpResponse, jsonError);
         }
     } failure:failure];
 }
@@ -184,8 +187,7 @@
     NSArray *methodsAvailable = @[@"GET", @"POST"];
     if (![methodsAvailable containsObject:method.uppercaseString]) {
         if (error != NULL)
-            *error = [NSError errorWithDomain:NSCocoaErrorDomain code:100 
-                                     userInfo:@{NSLocalizedDescriptionKey:@"Method is invalid. Must be 'POST' or 'GET'."}];
+            *error = [self errorWithCode:1000 description:@"Method is invalid. Must be 'POST' or 'GET'."];
         return nil;
     }
     
@@ -200,8 +202,7 @@
         [stringParameters appendString:(NSString *)parameters];
     } else if (parameters) {
         if (error != NULL)
-            *error = [NSError errorWithDomain:NSCocoaErrorDomain code:101 
-                                     userInfo:@{NSLocalizedDescriptionKey:@"Parameters class is invalid. Use NSDictionary or NSString."}];
+            *error = [self errorWithCode:1001 description:@"Parameters class is invalid. Use NSDictionary or NSString."];
         return nil;
     }
     
@@ -259,6 +260,12 @@
     } else {
         dispatch_async(self.parseQueue, block);
     }
+}
+
+- (NSError * _Nonnull)errorWithCode:(NSInteger)code description:(NSString * _Nonnull)description
+{
+    return [NSError errorWithDomain:kColoredVKNetworkErrorDomain code:code 
+                           userInfo:@{NSLocalizedDescriptionKey:description}];
 }
 
 @end

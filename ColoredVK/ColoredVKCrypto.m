@@ -61,6 +61,34 @@ CVK_INLINE NSData *decryptData(NSData *data, NSError * __autoreleasing *error)
     return performLegacyCrypt(kCCDecrypt, data, cvkKey);
 }
 
+CVK_INLINE NSDictionary *decryptServerResponse(NSData *rawData, NSError *__autoreleasing *error)
+{
+    NSData *decrypted = performLegacyCrypt(kCCDecrypt, rawData, kColoredVKServerKey);
+    if (!decrypted || decrypted.length == 0) {
+        *error = [NSError errorWithDomain:@"ru.danpashin.coloredvk2.common.error" code:-1001 userInfo:@{NSLocalizedDescriptionKey:@"Cannot decrypt server data."}];
+        return nil;
+    }
+    
+    NSString *decryptedString = [[NSString alloc] initWithData:decrypted encoding:NSUTF8StringEncoding];
+    decryptedString = [decryptedString stringByReplacingOccurrencesOfString:@"\0" withString:@""];
+    
+    NSData *jsonData = [decryptedString dataUsingEncoding:NSUTF8StringEncoding];
+    if (!jsonData) {
+        *error = [NSError errorWithDomain:@"ru.danpashin.coloredvk2.common.error" code:-1002 userInfo:@{NSLocalizedDescriptionKey:@"Cannot decrypt server data."}];
+        return nil;
+    }
+    
+    NSError *jsonError = nil;
+    NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&jsonError];
+    
+    if ([jsonDict isKindOfClass:[NSDictionary class]] && !jsonError) {
+        return jsonDict;
+    } else {
+        *error = jsonError;
+        return nil;
+    }
+}
+
 
 #pragma mark Private Functions
 

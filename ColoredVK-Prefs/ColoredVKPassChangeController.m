@@ -171,7 +171,9 @@
                 [hud showSuccessWithStatus:json[@"message"]];
                 
                 hud.didHiddenBlock = ^{
-                    [self actionCancel];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self actionCancel];
+                    });
                 };
                 
             } else {

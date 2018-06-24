@@ -76,7 +76,13 @@ extern NSString *__key;
         NSDictionary *params = @{@"user_id":self.userID, @"token":self.accessToken};
         
         ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-        [network sendJSONRequestWithMethod:@"POST" stringURL:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
+        [network sendRequestWithMethod:@"POST" url:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
+            NSError *decryptError = nil;
+            NSDictionary *json = decryptServerResponse(rawData, &decryptError);
+            
+            if (!json || decryptError)
+                return;
+            
             if (json[@"error"])
                 return;
             
@@ -141,7 +147,19 @@ extern NSString *__key;
     };
     
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-    [network sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
+    [network sendRequestWithMethod:@"POST" url:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
+        NSError *decryptError = nil;
+        NSDictionary *json = decryptServerResponse(rawData, &decryptError);
+        
+        if (!json || decryptError) {
+            if (!decryptError)
+                decryptError = [NSError errorWithDomain:NSCocoaErrorDomain code:100
+                                               userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}];
+            
+            showAlertBlock(decryptError);
+            return;
+        }
+        
         if (json[@"error"]) {
             NSString *errorMessages = json ? json[@"error"] : @"Unknown error";
             showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain code:101 
@@ -211,7 +229,18 @@ extern NSString *__key;
                                  };
     
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-    [network sendJSONRequestWithMethod:@"POST" stringURL:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+    [network sendRequestWithMethod:@"POST" url:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
+        NSError *decryptError = nil;
+        NSDictionary *json = decryptServerResponse(rawData, &decryptError);
+        
+        if (!json || decryptError) {
+            if (!decryptError)
+                decryptError = [NSError errorWithDomain:NSCocoaErrorDomain code:100
+                                               userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}];
+            newCompletionBlock(decryptError);
+            return;
+        }
+        
         if (!json[@"error"]) {
             self.authenticated = NO;
             [newInstaller writeFreeLicence];

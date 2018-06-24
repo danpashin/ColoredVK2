@@ -16,4 +16,6 @@ extern NSString *legacyEncryptServerString(NSString *string);
 extern NSData *encryptData(NSData *data, NSError * __autoreleasing *error);
 extern NSData *decryptData(NSData *data, NSError * __autoreleasing *error);
 
+extern NSDictionary *decryptServerResponse(NSData *rawData, NSError *__autoreleasing *error);
+
 extern BOOL allowLibs;
