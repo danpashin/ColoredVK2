@@ -111,3 +111,7 @@ NS_ASSUME_NONNULL_END
 
 #define REGISTER_CORE_OBSERVER(observer, notifyName) CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), nil, observer, (CFStringRef)notifyName,   nil, CFNotificationSuspensionBehaviorDeliverImmediately)
 #define REGISTER_OBSERVER(observer, sel, notifyName) [[NSNotificationCenter defaultCenter] addObserver:observer selector:sel name:notifyName object:nil]
+
+
+#define NIGHT_THEME_DISABLE_CUSTOMISATION(view) objc_setAssociatedObject(view, "cvk_night_theme_should_customize", @NO, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+#define NIGHT_THEME_SHOULD_CUSTOMIZE(view)      objc_getAssociatedObject(view, "cvk_night_theme_should_customize")

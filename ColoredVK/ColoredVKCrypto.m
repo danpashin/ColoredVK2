@@ -65,7 +65,8 @@ CVK_INLINE NSDictionary *decryptServerResponse(NSData *rawData, NSError *__autor
 {
     NSData *decrypted = performLegacyCrypt(kCCDecrypt, rawData, kColoredVKServerKey);
     if (!decrypted || decrypted.length == 0) {
-        *error = [NSError errorWithDomain:@"ru.danpashin.coloredvk2.common.error" code:-1001 userInfo:@{NSLocalizedDescriptionKey:@"Cannot decrypt server data."}];
+        if (error)
+            *error = [NSError errorWithDomain:@"ru.danpashin.coloredvk2.common.error" code:-1001 userInfo:@{NSLocalizedDescriptionKey:@"Cannot decrypt server data."}];
         return nil;
     }
     
@@ -74,7 +75,8 @@ CVK_INLINE NSDictionary *decryptServerResponse(NSData *rawData, NSError *__autor
     
     NSData *jsonData = [decryptedString dataUsingEncoding:NSUTF8StringEncoding];
     if (!jsonData) {
-        *error = [NSError errorWithDomain:@"ru.danpashin.coloredvk2.common.error" code:-1002 userInfo:@{NSLocalizedDescriptionKey:@"Cannot decrypt server data."}];
+        if (error)
+            *error = [NSError errorWithDomain:@"ru.danpashin.coloredvk2.common.error" code:-1002 userInfo:@{NSLocalizedDescriptionKey:@"Cannot decrypt server data."}];
         return nil;
     }
     

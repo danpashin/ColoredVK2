@@ -554,19 +554,19 @@ void setupNewDialogCellForNightTheme(NewDialogCell *dialogCell)
         
         dialogCell.name.textColor = cvkMainController.nightThemeScheme.textColor;
         
-        objc_setAssociatedObject(dialogCell.attach, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+        NIGHT_THEME_DISABLE_CUSTOMISATION(dialogCell.attach);
         dialogCell.attach.textColor = cvkMainController.nightThemeScheme.detailTextColor;
         
-        objc_setAssociatedObject(dialogCell.time, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+        NIGHT_THEME_DISABLE_CUSTOMISATION(dialogCell.time);
         dialogCell.time.textColor = cvkMainController.nightThemeScheme.detailTextColor;
         
         if ([dialogCell respondsToSelector:@selector(dialogText)]) {
-            objc_setAssociatedObject(dialogCell.dialogText, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+            NIGHT_THEME_DISABLE_CUSTOMISATION(dialogCell.dialogText);
             dialogCell.dialogText.textColor = cvkMainController.nightThemeScheme.detailTextColor;
         }
         if ([dialogCell respondsToSelector:@selector(text)]) {
             if (dialogCell.text) {
-                objc_setAssociatedObject(dialogCell.text, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+                NIGHT_THEME_DISABLE_CUSTOMISATION(dialogCell.text);
                 dialogCell.text.textColor = cvkMainController.nightThemeScheme.detailTextColor;
             }
         }
@@ -854,7 +854,7 @@ void setupNightTextField(UITextField *textField)
         
         UILabel *placeholderLabel = [textField valueForKeyPath:@"_placeholderLabel"];
         if (placeholderLabel) {
-            objc_setAssociatedObject(placeholderLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+            NIGHT_THEME_DISABLE_CUSTOMISATION(placeholderLabel);
             placeholderLabel.textColor = cvkMainController.nightThemeScheme.detailTextColor;
         }
     }

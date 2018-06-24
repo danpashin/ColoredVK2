@@ -60,20 +60,19 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
                 NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                 
                 if (![httpResponse.URL isEqual:request.URL]) {
-                    NSError *urlError = [self errorWithCode:1002 description:@"Response URL is invalid"];
                     if (failure)
-                        failure(request, httpResponse, urlError);
+                        failure(request, httpResponse, [self errorWithCode:1002 description:@"Response URL is invalid"]);
                     
                     return;
                 }
                 
                 if (!error && data) {
-                    NSInteger expectedContentLength = httpResponse.allHeaderFields[@"Expected-Length"] ? [httpResponse.allHeaderFields[@"Expected-Length"] integerValue] : -1;
+                    id expectedLengthHeader = httpResponse.allHeaderFields[@"Expected-Length"];
+                    NSInteger expectedContentLength = expectedLengthHeader ? [expectedLengthHeader integerValue] : -1;
                     if ((expectedContentLength != -1)) {
                         if ((NSUInteger)expectedContentLength != data.length) {
-                            NSError *urlError = [self errorWithCode:1004 description:@"Response data has wrong size"];
                             if (failure)
-                                failure(request, httpResponse, urlError);
+                                failure(request, httpResponse, [self errorWithCode:1004 description:@"Response data has wrong size"]);
                             
                             return;
                         }
@@ -116,9 +115,8 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
         NSDictionary *headers = httpResponse.allHeaderFields;
         NSString *contentType = headers[@"Content-Type"];
         if (![contentType isKindOfClass:[NSString class]] || ![contentType containsString:@"json"]) {
-            NSError *error = [self errorWithCode:1003 description:@"Response has invalid header: 'Content-Type'"];
             if (failure)
-                failure(request, (NSHTTPURLResponse *)httpResponse, error);
+                failure(request, httpResponse, [self errorWithCode:1003 description:@"Response has invalid header: 'Content-Type'"]);
             
             return;
         }

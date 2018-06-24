@@ -48,8 +48,8 @@ static const CGFloat kButtonHeightRatio = 1.5f;
 
 - (void)commonInit
 {
-    objc_setAssociatedObject(self, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
-    objc_setAssociatedObject(self.titleLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+    NIGHT_THEME_DISABLE_CUSTOMISATION(self);
+    NIGHT_THEME_DISABLE_CUSTOMISATION(self.titleLabel);
     
     self.layer.masksToBounds = YES;
     

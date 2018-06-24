@@ -35,7 +35,7 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
     CHSuper(0, UITableViewCell, layoutSubviews);
     
     
-    NSNumber *shouldChangeBackground = objc_getAssociatedObject(self, "should_change_background");
+    NSNumber *shouldChangeBackground = NIGHT_THEME_SHOULD_CUSTOMIZE(self);
     if (!shouldChangeBackground)
         shouldChangeBackground = @YES;
     
@@ -59,7 +59,7 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
             self.textLabel.backgroundColor = [UIColor clearColor];
             
             if (self.detailTextLabel) {
-                objc_setAssociatedObject(self.detailTextLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+                NIGHT_THEME_DISABLE_CUSTOMISATION(self.detailTextLabel);
                 self.detailTextLabel.textColor = cvkMainController.nightThemeScheme.detailTextColor;
                 self.detailTextLabel.backgroundColor = [UIColor clearColor];
             }
@@ -67,7 +67,7 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
             if ([self isKindOfClass:NSClassFromString(@"GroupCell")]) {
                 GroupCell *groupCell = (GroupCell *)self;
                 if (groupCell.status) {
-                    objc_setAssociatedObject(groupCell.status, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+                    NIGHT_THEME_DISABLE_CUSTOMISATION(groupCell.status);
                     groupCell.status.textColor = cvkMainController.nightThemeScheme.detailTextColor;
                     groupCell.status.backgroundColor = [UIColor clearColor];
                 }
@@ -80,7 +80,7 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
                     for (UIView *subview in rendererCell.renderer.views) {
                         if ([subview isKindOfClass:[UILabel class]]) {
                             UILabel *label = (UILabel *)subview;
-                            objc_setAssociatedObject(label, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+                            NIGHT_THEME_DISABLE_CUSTOMISATION(label);
                             label.textColor = firstLabelFound ? cvkMainController.nightThemeScheme.detailTextColor : cvkMainController.nightThemeScheme.linkTextColor;
                             label.backgroundColor = [UIColor clearColor];
                             firstLabelFound = YES;
@@ -109,7 +109,7 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
     CHSuper(0, UIButton, layoutSubviews);
     
     if (enabled && enableNightTheme && [self isKindOfClass:[UIButton class]]) {
-        NSNumber *should_customize = objc_getAssociatedObject(self, "should_customize");
+        NSNumber *should_customize = NIGHT_THEME_SHOULD_CUSTOMIZE(self);
         if (!should_customize)
             should_customize = @YES;
         
@@ -119,8 +119,10 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
         if (![self isKindOfClass:NSClassFromString(@"VKMImageButton")] && ![self isKindOfClass:NSClassFromString(@"HighlightableButton")] && ![self isKindOfClass:NSClassFromString(@"LinkButton")] && ![self isKindOfClass:NSClassFromString(@"BorderButton")]) {
             
             if (self.titleLabel) {
+                if (self.currentImage)
+                    NIGHT_THEME_DISABLE_CUSTOMISATION(self.titleLabel);
+                
                 ColoredVKNightScheme *nightScheme = cvkMainController.nightThemeScheme;
-                objc_setAssociatedObject(self.titleLabel, "should_customize", self.currentImage ? @YES : @NO, OBJC_ASSOCIATION_ASSIGN);
                 [self setTitleColor:self.currentImage ? nightScheme.detailTextColor : nightScheme.buttonSelectedColor forState:UIControlStateNormal];
             }
             
@@ -165,7 +167,7 @@ CHDeclareMethod(0, void, UILabel, layoutSubviews)
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UILabel")] && ![CLASS_NAME(self.superview) isEqualToString:@"HighlightableButton"] && ![CLASS_NAME(self.superview) isEqualToString:@"VKPPBadge"]) {
         
-        NSNumber *should_customize = objc_getAssociatedObject(self, "should_customize");
+        NSNumber *should_customize = NIGHT_THEME_SHOULD_CUSTOMIZE(self);
         if (!should_customize)
             should_customize = @YES;
         
@@ -191,7 +193,7 @@ CHDeclareClass(UITextView);
 CHDeclareMethod(1, void, UITextView, setAttributedText, NSAttributedString *, text)
 {
     if (enabled && enableNightTheme) {
-        NSNumber *should_customize = objc_getAssociatedObject(self, "should_customize");
+        NSNumber *should_customize = NIGHT_THEME_SHOULD_CUSTOMIZE(self);
         if (!should_customize)
             should_customize = @YES;
         
@@ -205,7 +207,7 @@ CHDeclareMethod(1, void, UITextView, setAttributedText, NSAttributedString *, te
 CHDeclareMethod(1, void, UITextView, setLinkTextAttributes, NSDictionary *, linkTextAttributes)
 {
     if (enabled && enableNightTheme) {
-        NSNumber *should_customize = objc_getAssociatedObject(self, "should_customize");
+        NSNumber *should_customize = NIGHT_THEME_SHOULD_CUSTOMIZE(self);
         if (!should_customize)
             should_customize = @YES;
         
@@ -470,11 +472,9 @@ CHDeclareMethod(1, void, SFSafariViewController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, SFSafariViewController, viewWillAppear, animated);
     
-    if (SYSTEM_VERSION_IS_LESS_THAN(10.0)) {
-        UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
-        if (enabled && enableNightTheme && statusBar != nil) {
-            statusBar.foregroundColor = nil;
-        }
+    UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
+    if (enabled && enableNightTheme && statusBar != nil) {
+        statusBar.foregroundColor = nil;
     }
 }
 
@@ -482,11 +482,9 @@ CHDeclareMethod(1, void, SFSafariViewController, viewDidDisappear, BOOL, animate
 {
     CHSuper(1, SFSafariViewController, viewDidDisappear, animated);
     
-    if (SYSTEM_VERSION_IS_LESS_THAN(10.0)) {
-        UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
-        if (enabled && enableNightTheme && statusBar != nil) {
-            statusBar.foregroundColor = [UIColor whiteColor];
-        }
+    UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
+    if (enabled && enableNightTheme && statusBar != nil) {
+        statusBar.foregroundColor = [UIColor whiteColor];
     }
 }
 

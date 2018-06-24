@@ -196,8 +196,8 @@ CHDeclareMethod(2, UITableViewCell*, DLVController, tableView, UITableView*, tab
             cell.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
             cell.titleView.textColor = cvkMainController.nightThemeScheme.textColor;
             cell.bodyView.textColor = cvkMainController.nightThemeScheme.detailTextColor;
-            objc_setAssociatedObject(cell.bodyView, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
-            objc_setAssociatedObject(cell.titleView, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+            NIGHT_THEME_DISABLE_CUSTOMISATION(cell.bodyView);
+            NIGHT_THEME_DISABLE_CUSTOMISATION(cell.titleView);
             
             _TtC3vkm9BadgeView *badgeView = cell.badgeView;
             const CGFloat *components = CGColorGetComponents(badgeView.layer.fillColor);

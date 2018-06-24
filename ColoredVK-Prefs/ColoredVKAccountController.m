@@ -198,7 +198,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
     
     cell.layoutMargins = UIEdgeInsetsMake(0.0f, 18.0f, 0.0f, 18.0f);
-    objc_setAssociatedObject(cell, "should_change_background", @NO, OBJC_ASSOCIATION_ASSIGN);
+    NIGHT_THEME_DISABLE_CUSTOMISATION(cell);
     cell.backgroundColor = [UIColor clearColor];
     
     return cell;

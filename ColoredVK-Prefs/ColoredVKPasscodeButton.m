@@ -21,8 +21,8 @@
     self.titleLabel.font = [UIFont boldSystemFontOfSize:[UIFont labelFontSize] * 1.5f];
     self.tintColor = [UIColor whiteColor];
     
-    objc_setAssociatedObject(self, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
-    objc_setAssociatedObject(self.titleLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+    NIGHT_THEME_DISABLE_CUSTOMISATION(self);
+    NIGHT_THEME_DISABLE_CUSTOMISATION(self.titleLabel);
 }
 
 - (void)tintColorDidChange

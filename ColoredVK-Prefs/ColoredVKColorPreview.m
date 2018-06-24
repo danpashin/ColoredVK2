@@ -39,7 +39,7 @@ static CGFloat const kColorPreviewCornerRadius = 6.0f;
         _rgbLabel.backgroundColor = [UIColor whiteColor];
         _rgbLabel.font = [UIFont systemFontOfSize:10];
         _rgbLabel.textColor = [UIColor colorWithWhite:0.5 alpha:1];
-        objc_setAssociatedObject(_rgbLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+        NIGHT_THEME_DISABLE_CUSTOMISATION(self.rgbLabel);
         [_colorPreview addSubview:_rgbLabel];
         
         _hexLabel = [UILabel new];
@@ -48,7 +48,7 @@ static CGFloat const kColorPreviewCornerRadius = 6.0f;
         _hexLabel.backgroundColor = [UIColor whiteColor];
         _hexLabel.font = [UIFont systemFontOfSize:12];
         _hexLabel.textColor = [UIColor colorWithWhite:0.5 alpha:1];
-        objc_setAssociatedObject(_hexLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+        NIGHT_THEME_DISABLE_CUSTOMISATION(self.hexLabel);
         [_colorPreview addSubview:_hexLabel];
         
         self.layer.shadowRadius = 3.5f;

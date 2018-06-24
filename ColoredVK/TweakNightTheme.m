@@ -45,8 +45,8 @@ CHDeclareMethod(1, void, ProfileView, setButtonStatus, UIButton *, buttonStatus)
 CHDeclareMethod(1, void, ProfileView, setButtonEdit, UIButton *, buttonEdit)
 {
     if (enabled && enableNightTheme) {
-        objc_setAssociatedObject(buttonEdit, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
-        objc_setAssociatedObject(buttonEdit.titleLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+        NIGHT_THEME_DISABLE_CUSTOMISATION(buttonEdit);
+        NIGHT_THEME_DISABLE_CUSTOMISATION(buttonEdit.titleLabel);
         [buttonEdit setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [buttonEdit setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateSelected];
         [buttonEdit setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateHighlighted];
@@ -80,8 +80,8 @@ CHDeclareMethod(1, void, ProfileView, setButtonEdit, UIButton *, buttonEdit)
 CHDeclareMethod(1, void, ProfileView, setButtonMessage, UIButton *, buttonMessage)
 {
     if (enabled && enableNightTheme) {
-        objc_setAssociatedObject(buttonMessage, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
-        objc_setAssociatedObject(buttonMessage.titleLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+        NIGHT_THEME_DISABLE_CUSTOMISATION(buttonMessage);
+        NIGHT_THEME_DISABLE_CUSTOMISATION(buttonMessage.titleLabel);
         [buttonMessage setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [buttonMessage setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateSelected];
         [buttonMessage setTitleColor:cvkMainController.nightThemeScheme.textColor forState:UIControlStateHighlighted];
@@ -415,8 +415,8 @@ CHDeclareMethod(0, void, DefaultHighlightButton, layoutSubviews)
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"DefaultHighlightButton")]) {
         [NSObject cvk_runBlockOnMainThread:^{
-            objc_setAssociatedObject(self.titleLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
-            objc_setAssociatedObject(self, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+            NIGHT_THEME_DISABLE_CUSTOMISATION(self);
+            NIGHT_THEME_DISABLE_CUSTOMISATION(self.titleLabel);
             [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             if ([CLASS_NAME(self.superview) isEqualToString:@"UIView"])
                 self.superview.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
@@ -479,7 +479,7 @@ CHDeclareClass(FreshNewsButton);
 CHDeclareMethod(1, id, FreshNewsButton, initWithFrame, CGRect, frame)
 {
     FreshNewsButton *button = CHSuper(1, FreshNewsButton, initWithFrame, frame);
-    objc_setAssociatedObject(button.button, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+    NIGHT_THEME_DISABLE_CUSTOMISATION(self.button);
     
     __weak typeof(button) weakButton = button;
     [[NSNotificationCenter defaultCenter] addObserverForName:kPackageNotificationReloadInternalPrefs object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
@@ -796,7 +796,7 @@ CHDeclareMethod(0, void, InputPanelViewTextView, layoutSubviews)
     CHSuper(0, InputPanelViewTextView, layoutSubviews);
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"InputPanelViewTextView")]) {
-        objc_setAssociatedObject(self.placeholderLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+        NIGHT_THEME_DISABLE_CUSTOMISATION(self.placeholderLabel);
         self.placeholderLabel.textColor = cvkMainController.nightThemeScheme.detailTextColor;
         self.layer.borderColor = cvkMainController.nightThemeScheme.backgroundColor.CGColor;
     }
@@ -981,3 +981,11 @@ CHDeclareMethod(0, void, PaymentsPopupView, layoutSubviews)
         self.topToolbar.barTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
     }
 }
+
+CHDeclareClass(VideoThumbnailView);
+CHDeclareMethod(1, void, VideoThumbnailView, setLabel, UILabel *, label)
+{
+    NIGHT_THEME_DISABLE_CUSTOMISATION(label);
+    CHSuper(1, VideoThumbnailView, setLabel, label);
+}
+

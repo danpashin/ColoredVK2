@@ -159,10 +159,10 @@
 {
     ColoredVKCollectionCardCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cardCell" forIndexPath:indexPath];
     objc_setAssociatedObject(cell, "shouldDisableBackgroundColor", @1, OBJC_ASSOCIATION_ASSIGN);
-    objc_setAssociatedObject(cell.headerLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
-    objc_setAssociatedObject(cell.headerDetailLabel, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
-    objc_setAssociatedObject(cell.bodyTextView, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
-    objc_setAssociatedObject(cell.bottomButton, "should_customize", @NO, OBJC_ASSOCIATION_ASSIGN);
+    NIGHT_THEME_DISABLE_CUSTOMISATION(cell.headerLabel);
+    NIGHT_THEME_DISABLE_CUSTOMISATION(cell.headerDetailLabel);
+    NIGHT_THEME_DISABLE_CUSTOMISATION(cell.bodyTextView);
+    NIGHT_THEME_DISABLE_CUSTOMISATION(cell.bottomButton);
     
     ColoredVKCard *card = self.cards[indexPath.row];
     cell.headerLabel.text = card.title;
