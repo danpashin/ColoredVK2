@@ -97,6 +97,7 @@
 
 @interface PollAnswerButton : UIView
 @property (strong, nonatomic) UIView *progressView;
+@property (assign, nonatomic) BOOL lightTheme; // VK 4.6
 @end
 
 @interface VKAPBottomToolbar : UIView

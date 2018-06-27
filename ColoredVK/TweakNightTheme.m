@@ -185,8 +185,15 @@ CHDeclareMethod(0, void, PollAnswerButton, layoutSubviews)
     CHSuper(0, PollAnswerButton, layoutSubviews);
     
     if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"PollAnswerButton")]) {
-        self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
-        self.progressView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+        
+        BOOL shouldChange = YES;
+        if ([self respondsToSelector:@selector(lightTheme)])
+            shouldChange = !self.lightTheme;
+        
+        if (shouldChange) {
+            self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+            self.progressView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+        }
     }
 }
 
