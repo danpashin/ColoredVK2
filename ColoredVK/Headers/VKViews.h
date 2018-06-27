@@ -217,6 +217,7 @@
 @end
 
 @interface VKReusableButtonView : UIButton
+@property (strong, nonatomic) UIColor *highlightBackgroundColor;
 @end
 
 @interface VKSegmentedControl : UIControl
@@ -229,4 +230,7 @@
 
 @interface _TtC3vkm9BadgeView : UIView
 @property (strong, nonatomic, readonly) CAShapeLayer *layer;
+@end
+
+@interface VKReusableColorView  : UIView
 @end

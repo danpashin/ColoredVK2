@@ -22,14 +22,14 @@
 NSString *const kDRMServerKey = @"ACBEBB5F70D0883E875DAA6E1C5C59ED";
 NSString *const KDRMErrorKey = @"ru.danpashin.coloredvk2.drm.error";
 
-BOOL __allowLibs;
+BOOL __suspiciousLibsDetected;
 BOOL __deviceIsJailed;
 
 NSString *__cvkKey;
 NSString *__udid;
 NSString *__deviceModel;
 
-NSData *performCryptOperation(CCOperation operation, NSData *data, NSString *key);
+NSData *_performCryptOperation(CCOperation operation, NSData *data, NSString *key);
 CFPropertyListRef MGCopyAnswer(CFStringRef property);
 
 
@@ -37,12 +37,12 @@ CFPropertyListRef MGCopyAnswer(CFStringRef property);
 CVK_INLINE NSString *RSAEncryptServerString(NSString *string)
 {
     NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
-    return [performCryptOperation(kCCEncrypt, data, kDRMServerKey) base64EncodedStringWithOptions:0];
+    return [_performCryptOperation(kCCEncrypt, data, kDRMServerKey) base64EncodedStringWithOptions:0];
 }
 
 CVK_INLINE NSDictionary *RSADecryptServerData(NSData *rawData, NSError *__autoreleasing *error)
 {
-    NSData *decrypted = performCryptOperation(kCCDecrypt, rawData, kDRMServerKey);
+    NSData *decrypted = _performCryptOperation(kCCDecrypt, rawData, kDRMServerKey);
     if (!decrypted || decrypted.length == 0) {
         if (error)
             *error = [NSError errorWithDomain:KDRMErrorKey code:-1001 userInfo:@{NSLocalizedDescriptionKey:@"Cannot decrypt server data."}];
@@ -81,7 +81,7 @@ CVK_INLINE NSDictionary *RSADecryptLicenceData(NSString *licencePath, NSError *_
         return nil;
     }
     
-    NSData *decryptedLicenceData = performCryptOperation(kCCDecrypt, licenceData, __cvkKey);
+    NSData *decryptedLicenceData = _performCryptOperation(kCCDecrypt, licenceData, __cvkKey);
     NSDictionary *licence = [NSKeyedUnarchiver unarchiveObjectWithData:decryptedLicenceData];
     
     if (![licence isKindOfClass:[NSDictionary class]] || (licence.allKeys.count == 0)) {
@@ -97,7 +97,7 @@ CVK_INLINE NSDictionary *RSADecryptLicenceData(NSString *licencePath, NSError *_
 CVK_INLINE BOOL RSAEncryptAndWriteLicenceData(NSDictionary *licence, NSString *licencePath, NSError *__autoreleasing *error)
 {
     NSData *rawData = [NSKeyedArchiver archivedDataWithRootObject:licence];
-    NSData *encryptedLicence = performCryptOperation(kCCEncrypt, rawData, __cvkKey);
+    NSData *encryptedLicence = _performCryptOperation(kCCEncrypt, rawData, __cvkKey);
     
     return [encryptedLicence writeToFile:licencePath options:NSDataWritingAtomic error:error];
 }
@@ -105,7 +105,7 @@ CVK_INLINE BOOL RSAEncryptAndWriteLicenceData(NSDictionary *licence, NSString *l
 
 #pragma mark - Private Functions -
 
-CVK_INLINE NSData *performCryptOperation(CCOperation operation, NSData *data, NSString *key)
+CVK_INLINE NSData *_performCryptOperation(CCOperation operation, NSData *data, NSString *key)
 {
     if (key.length == 0)
         return nil;
@@ -185,7 +185,7 @@ CVK_INLINE BOOL isDebugged(void)
 CVK_INLINE void checkLibs(void)
 {
 #ifdef COMPILE_APP
-    allowLibs = YES;
+    __suspiciousLibsDetected = NO;
 #else
     char pathbuf[MAXPATHLEN + 1];
     uint32_t bufsize = sizeof(pathbuf);
@@ -215,29 +215,30 @@ CVK_INLINE void checkLibs(void)
         }
     }
     
-    __allowLibs = (libsCount <= maxLibsCount);
+    __suspiciousLibsDetected = (libsCount > maxLibsCount);
 #endif
 }
 
 CVK_CONSTRUCTOR
 {
+    __deviceModel = @"";
+    
+    __deviceIsJailed = (access("/var/mobile/Library/Preferences/", W_OK) == 0);
+    if (__deviceIsJailed) {
+        __udid = CFBridgingRelease(MGCopyAnswer(CFSTR("re6Zb+zwFKJNlkQTUeT+/w")));
+        __deviceIsJailed = __deviceIsJailed && (__udid.length == 40);
+    }
+    
+    if (!__udid || __udid.length != 40) {
+        __udid = @"";
+    }
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        __deviceModel = @"";
-        
-        __deviceIsJailed = (access("/var/mobile/Library/Preferences/", W_OK) == 0);
-        if (__deviceIsJailed) {
-            __udid = CFBridgingRelease(MGCopyAnswer(CFSTR("re6Zb+zwFKJNlkQTUeT+/w")));
-            __deviceIsJailed = __deviceIsJailed && (__udid.length == 40);
-        }
-        
-        if (!__udid || __udid.length != 40)
-            __udid = @"";
-        
         generateKey();
         checkLibs();
         
         if (isDebugged()) {
-            __allowLibs = NO;
+            __suspiciousLibsDetected = YES;
             abort();
         }
     });

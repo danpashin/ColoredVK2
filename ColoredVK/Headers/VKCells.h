@@ -133,3 +133,10 @@
 
 @interface DialogSingleCell : NewDialogCell
 @end
+
+@interface PollEditTextCell : UITableViewCell
+@property (strong, nonatomic) UIImageView *backgroundView;
+@end
+
+@interface PollEditSelectionCell : UITableViewCell
+@end

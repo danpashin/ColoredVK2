@@ -67,8 +67,6 @@ BOOL installerShouldOpenPrefs;
         
         if (![fileManager fileExistsAtPath:CVK_FOLDER_PATH])
             [fileManager createDirectoryAtPath:CVK_FOLDER_PATH withIntermediateDirectories:NO attributes:nil error:nil];
-        if (![fileManager fileExistsAtPath:CVK_CACHE_PATH])
-            [fileManager createDirectoryAtPath:CVK_CACHE_PATH withIntermediateDirectories:NO attributes:nil error:nil];
         if (![fileManager fileExistsAtPath:CVK_BACKUP_PATH])
             [fileManager createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
     });
@@ -81,7 +79,7 @@ BOOL installerShouldOpenPrefs;
 [self writeFreeLicence];\
 return;
         
-        if (!__allowLibs)
+        if (__suspiciousLibsDetected)
             return;
         
         NSDictionary *dict = RSADecryptLicenceData(kDRMLicencePath, nil);

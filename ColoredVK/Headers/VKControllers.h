@@ -329,3 +329,6 @@
 @interface SketchController : UIViewController
 @property (strong, nonatomic) SketchView *sketchView;
 @end
+
+@interface VKDatePickerController : UIViewController
+@end

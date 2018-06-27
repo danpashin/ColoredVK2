@@ -116,14 +116,20 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
         if (!should_customize.boolValue)
             return;
         
-        if (![self isKindOfClass:NSClassFromString(@"VKMImageButton")] && ![self isKindOfClass:NSClassFromString(@"HighlightableButton")] && ![self isKindOfClass:NSClassFromString(@"LinkButton")] && ![self isKindOfClass:NSClassFromString(@"BorderButton")]) {
+        if (![self isKindOfClass:NSClassFromString(@"VKMImageButton")] && 
+            ![self isKindOfClass:NSClassFromString(@"HighlightableButton")] && 
+            ![self isKindOfClass:NSClassFromString(@"LinkButton")] && 
+            ![self isKindOfClass:NSClassFromString(@"BorderButton")] &&
+            ![self isKindOfClass:NSClassFromString(@"VKReusableButtonView")]) {
             
             if (self.titleLabel) {
-                if (self.currentImage)
+                if (self.currentImage || self.currentBackgroundImage)
                     NIGHT_THEME_DISABLE_CUSTOMISATION(self.titleLabel);
                 
-                ColoredVKNightScheme *nightScheme = cvkMainController.nightThemeScheme;
-                [self setTitleColor:self.currentImage ? nightScheme.detailTextColor : nightScheme.buttonSelectedColor forState:UIControlStateNormal];
+                if (!self.currentBackgroundImage) {
+                    ColoredVKNightScheme *nightScheme = cvkMainController.nightThemeScheme;
+                    [self setTitleColor:self.currentImage ? nightScheme.detailTextColor : nightScheme.buttonSelectedColor forState:UIControlStateNormal];
+                }
             }
             
             NSNumber *changeImageColor = objc_getAssociatedObject(self, "shouldChangeImageColor");
@@ -447,7 +453,7 @@ CHDeclareClassMethod(1, UIImage *, UIImage, imageNamed, NSString *, name)
     if (enabled && enableNightTheme) {
         NSString *assetName = orig.imageAsset.assetName;
         if (isNew3XClient && [assetName containsString:@"badge"]) {
-                //            CVKLog(@"assetName: %@", assetName);
+//            CVKLog(@"assetName: %@", assetName);
             orig = [orig cvk_imageWithTintColor:cvkMainController.nightThemeScheme.backgroundColor];
         }
     }

@@ -907,8 +907,25 @@ CHDeclareMethod(0, void, VKReusableButtonView, layoutSubviews)
     CHSuper(0, VKReusableButtonView, layoutSubviews);
     
     if (enabled && enableNightTheme) {
-        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        NIGHT_THEME_DISABLE_CUSTOMISATION(self.titleLabel);
+        NIGHT_THEME_DISABLE_CUSTOMISATION(self);
+        self.highlightBackgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
     }
+}
+
+CHDeclareMethod(1, void, VKReusableButtonView, setBackgroundColor, UIColor *, color)
+{
+    if (enabled && enableNightTheme) {
+        CGFloat blue = 0;
+        [color getRed:nil green:nil blue:&blue alpha:nil];
+        if (blue >= 0.7f && blue < 0.8f) {
+            color = cvkMainController.nightThemeScheme.navbackgroundColor;
+        } else {
+            color = cvkMainController.nightThemeScheme.foregroundColor;
+        }
+    }
+    
+    CHSuper(1, VKReusableButtonView, setBackgroundColor, color);
 }
 
 CHDeclareClass(VKSegmentedControl);
@@ -989,3 +1006,71 @@ CHDeclareMethod(1, void, VideoThumbnailView, setLabel, UILabel *, label)
     CHSuper(1, VideoThumbnailView, setLabel, label);
 }
 
+
+CHDeclareClass(PollEditTextCell);
+CHDeclareMethod(0, void, PollEditTextCell, layoutSubviews)
+{
+    if (enabled && enableNightTheme) {
+        self.backgroundView.tintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+    }
+    
+    CHSuper(0, PollEditTextCell, layoutSubviews);
+}
+
+CHDeclareMethod(1, UIImage *, PollEditTextCell, inputImageSelected, BOOL, selected)
+{
+    UIImage *image = CHSuper(1, PollEditTextCell, inputImageSelected, selected);
+    if (enabled && enableNightTheme) {
+        image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    }
+    
+    return image;
+}
+
+CHDeclareClass(PollEditSelectionCell);
+CHDeclareMethod(0, void, PollEditSelectionCell, layoutSubviews)
+{
+    if (enabled && enableNightTheme && [self.backgroundView isKindOfClass:[UIImageView class]]) {
+        self.backgroundView.tintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+    }
+    
+    CHSuper(0, PollEditSelectionCell, layoutSubviews);
+}
+
+CHDeclareClassMethod(1, UIImage *, PollEditSelectionCell, backgroundImage, BOOL, selected)
+{
+    UIImage *image = CHSuper(1, PollEditSelectionCell, backgroundImage, selected);
+    if (enabled && enableNightTheme) {
+        image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    }
+    
+    return image;
+}
+
+CHDeclareClassMethod(0, UIImage *, PollEditSelectionCell, highlightedImage)
+{
+    UIImage *image = CHSuper(0, PollEditSelectionCell, highlightedImage);
+    if (enabled && enableNightTheme) {
+        image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    }
+    
+    return image;
+}
+
+CHDeclareClass(VKDatePickerController);
+CHDeclareMethod(1, void, VKDatePickerController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, VKDatePickerController, viewWillAppear, animated);
+    if (enabled && enableNightTheme) {
+        self.view.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+}
+
+CHDeclareClass(VKReusableColorView);
+CHDeclareMethod(0, void, VKReusableColorView, layoutSubviews)
+{
+    CHSuper(0, VKReusableColorView, layoutSubviews);
+    if (enabled && enableNightTheme) {
+        self.backgroundColor = self.superview.backgroundColor;
+    }
+}
