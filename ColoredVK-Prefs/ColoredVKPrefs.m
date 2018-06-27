@@ -9,7 +9,8 @@
 #import "ColoredVKPrefs.h"
 #import "ColoredVKAlertController.h"
 #import "ColoredVKNewInstaller.h"
-#import "UITableViewCell+ColoredVK.h"
+//#import "UITableViewCell+ColoredVK.h"
+#import "ColoredVKPrefsCell.h"
 #import <objc/runtime.h>
 #import "UIScrollView+EmptyDataSet.h"
 #import "ColoredVKNightScheme.h"
@@ -22,6 +23,7 @@
 @end
 
 @implementation ColoredVKPrefs
+@dynamic specifiers;
 
 - (instancetype)initWithNibName:(nullable NSString *)nibNameOrNil bundle:(nullable NSBundle *)nibBundleOrNil
 {
@@ -59,10 +61,10 @@
             nightThemeColorScheme.enabled = ((themeType != -1) && [self.cachedPrefs[@"enabled"] boolValue] && vkApp);
         });
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (self.isViewLoaded && self->_specifiers && self->_specifiers.count > 0)
-                [self reloadSpecifiers];
-        });
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            if (self.isViewLoaded && self->_specifiers && self->_specifiers.count > 0)
+//                [self reloadSpecifiers];
+//        });
     }];
 }
 
@@ -151,15 +153,18 @@
         
         
         for (PSSpecifier *specifier in self.specifiers) {
-            PSTableCell *cell = [self cachedCellForSpecifier:specifier];
+            ColoredVKPrefsCell *cell = (ColoredVKPrefsCell *)[self cachedCellForSpecifier:specifier];
             [self updateNightThemeForCell:cell animated:YES];
         }
     });
 }
 
-- (void)updateNightThemeForCell:(UITableViewCell *)cell animated:(BOOL)animated
+- (void)updateNightThemeForCell:(ColoredVKPrefsCell *)cell animated:(BOOL)animated
 {
     if (![ColoredVKNewInstaller sharedInstaller].application.isVKApp)
+        return;
+    
+    if (![cell isKindOfClass:[ColoredVKPrefsCell class]])
         return;
     
     ColoredVKNightScheme *nightThemeColorScheme = [ColoredVKNightScheme sharedScheme];
@@ -318,32 +323,39 @@
 
 - (void)setPreferenceValue:(nullable id)value specifier:(PSSpecifier *)specifier
 {
-    if (!specifier.properties[@"key"])
+    [self setPreferenceValue:value forKey:specifier.properties[@"key"]];
+}
+
+- (void)setPreferenceValue:(nullable id)value forKey:(NSString *)key
+{
+    CVKLog(@"value: %@; key: %@", value, key);
+    
+    if (!key)
         return;
     
     if (value)
-        self.cachedPrefs[specifier.properties[@"key"]] = value;
+        self.cachedPrefs[key] = value;
     else
-        [self.cachedPrefs removeObjectForKey:specifier.properties[@"key"]];
+        [self.cachedPrefs removeObjectForKey:key];
     
     [self writePrefsWithCompetion:^{
         NSArray *identificsToReloadMenu = @[@"enableTweakSwitch", @"menuSelectionStyle", @"hideMenuSeparators", 
                                             @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor", 
-                                            @"showMenuCell", @"menuUseBackgroundBlur"];
+                                            @"showMenuCell", @"menuUseBackgroundBlur", @"menuImageBlackout", @"enabledMenuImage"];
         
-        if ([specifier.identifier isEqualToString:@"nightThemeType"]) {
+        if ([key isEqualToString:@"nightThemeType"]) {
             [self updateNightTheme];
             POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
             POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
             return;
         }
         
-        if ([identificsToReloadMenu containsObject:specifier.identifier])
+        if ([identificsToReloadMenu containsObject:key])
             POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
         else 
             POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
         
-        if ([specifier.identifier isEqualToString:@"enableTweakSwitch"]) {
+        if ([key isEqualToString:@"enableTweakSwitch"]) {
             [self updateNightTheme];
             POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
         }
@@ -364,11 +376,15 @@
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView willDisplayCell:(__kindof ColoredVKPrefsCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     objc_setAssociatedObject(cell, "change_switch_color", @(self.shouldChangeSwitchColor), OBJC_ASSOCIATION_ASSIGN);
-    [cell renderBackgroundWithColor:nil separatorColor:nil forTableView:tableView indexPath:indexPath];
-    [self updateNightThemeForCell:cell animated:NO];
+    
+    if ([cell isKindOfClass:[ColoredVKPrefsCell class]]) {
+        [cell renderBackgroundWithColor:nil separatorColor:nil forTableView:tableView indexPath:indexPath];
+        [self updateNightThemeForCell:cell animated:NO];
+    }
+//    CVKLog(@"%@", cell);
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nullable id)readPreferenceValue:(PSSpecifier *)specifier NS_REQUIRES_SUPER;
 - (void)setPreferenceValue:(nullable id)value specifier:(PSSpecifier *)specifier NS_REQUIRES_SUPER;
+- (void)setPreferenceValue:(nullable id)value forKey:(NSString *)key NS_REQUIRES_SUPER;
 
 - (void)writePrefsWithCompetion:(nullable void(^)(void))completionBlock NS_REQUIRES_SUPER;
 - (void)readPrefsWithCompetion:(nullable void(^)(void))completionBlock NS_REQUIRES_SUPER;

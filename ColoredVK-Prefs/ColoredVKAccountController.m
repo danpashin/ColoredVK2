@@ -11,7 +11,6 @@
 #import "ColoredVKNightScheme.h"
 #import <objc/runtime.h>
 #import <MXParallaxHeader.h>
-#import "UITableViewCell+ColoredVK.h"
 
 
 @interface UINavigationBar ()
@@ -230,7 +229,7 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [cell renderBackgroundWithColor:nil separatorColor:nil forTableView:tableView indexPath:indexPath];
+//    [cell renderBackgroundWithColor:nil separatorColor:nil forTableView:tableView indexPath:indexPath];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

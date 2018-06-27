@@ -1,0 +1,17 @@
+//
+//  ColoredVKSwitchPrefsCell.h
+//  ColoredVK2
+//
+//  Created by Даниил on 27.06.18.
+//
+
+#import "ColoredVKPrefsCell.h"
+
+@interface ColoredVKSwitchPrefsCell : ColoredVKPrefsCell
+
+@property (nonatomic, strong) UISwitch *switchView;
+
+- (void)switchTriggered:(UISwitch *)switchView;
+- (void)updateSwitchWithSpecifier:(PSSpecifier *)specifier;
+
+@end

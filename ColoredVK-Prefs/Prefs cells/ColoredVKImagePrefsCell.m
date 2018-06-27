@@ -1,5 +1,5 @@
 //
-//  ColoredVKImageCell.m
+//  ColoredVKImagePrefsCell.m
 //  ColoredVK
 //
 //  Created by Даниил on 25.04.16.
@@ -10,35 +10,24 @@
 #import "ColoredVKHUD.h"
 #import "ColoredVKAlertController.h"
 
-#import "ColoredVKImageCell.h"
+#import "ColoredVKImagePrefsCell.h"
+#import "ColoredVKPrefs.h"
 
-@interface ColoredVKImageCell ()
+@interface ColoredVKImagePrefsCell ()
 
-@property (strong, nonatomic, readonly) NSString *key;
+@property (strong, nonatomic, readonly) NSString *switchKey;
 @property (strong, nonatomic) UIImageView *previewImageView;
-@property (strong, nonatomic) UISwitch *switchView;
 
 @end
 
-@implementation ColoredVKImageCell
+@implementation ColoredVKImagePrefsCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)identifier specifier:(PSSpecifier *)specifier
 {
     self = [super initWithStyle:style reuseIdentifier:identifier specifier:specifier];
     if (self) {
-        
-        NSString *specifierIdentifier = specifier.identifier;
-        if ([specifierIdentifier isEqualToString:@"barImage"]) _key = @"enabledBarImage"; 
-        else if ([specifierIdentifier isEqualToString:@"menuBackgroundImage"]) _key = @"enabledMenuImage"; 
-        else if ([specifierIdentifier isEqualToString:@"messagesBackgroundImage"]) _key = @"enabledMessagesImage"; 
-        else if ([specifierIdentifier isEqualToString:@"messagesListBackgroundImage"]) _key = @"enabledMessagesListImage";
-        else if ([specifierIdentifier isEqualToString:@"groupsListBackgroundImage"]) _key = @"enabledGroupsListImage";
-        else if ([specifierIdentifier isEqualToString:@"audioBackgroundImage"]) _key = @"enabledAudioImage";
-        else if ([specifierIdentifier isEqualToString:@"audioCoverImage"]) _key = @"enabledAudioCustomCover";
-        else if ([specifierIdentifier isEqualToString:@"friendsBackgroundImage"]) _key = @"enabledFriendsImage";
-        else if ([specifierIdentifier isEqualToString:@"videosBackgroundImage"]) _key = @"enabledVideosImage";
-        else if ([specifierIdentifier isEqualToString:@"settingsBackgroundImage"]) _key = @"enabledSettingsImage";
-        else if ([specifierIdentifier isEqualToString:@"settingsExtraBackgroundImage"]) _key = @"enabledSettingsExtraImage";
+        _switchKey = [self switchKeyForIdentifier:specifier.identifier];
+        self.switchView.enabled = NO;
         
         CGFloat imageViewSize = 32.0f;
         self.previewImageView = [UIImageView new];
@@ -55,26 +44,56 @@
         [self.previewImageView.centerYAnchor constraintEqualToAnchor:self.contentView.centerYAnchor].active = YES;
         [self.previewImageView.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-8.0f].active = YES;
         
-        NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-        self.switchView = [UISwitch new];
-        [self.switchView addTarget:self action:@selector(switchTriggerred:) forControlEvents:UIControlEventValueChanged];
-        self.switchView.on = prefs ? [prefs[self.key] boolValue] : NO;
-        self.switchView.enabled = NO;
-        self.accessoryView = self.switchView;
         
         UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showActionsController:)];
         longPress.minimumPressDuration = 1.0;
         [self addGestureRecognizer:longPress];
         
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateImage:) 
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(notificationUpdateImage:) 
                                                    name:kPackageNotificationUpdateImage object:nil];
-        
-        [self updateImageForIdentifier:specifierIdentifier];
+        [self updateImage];
     }
     return self;
 }
 
-- (void)updateImageForIdentifier:(NSString *)identifier
+- (NSString *)switchKeyForIdentifier:(NSString *)identifier
+{
+    if ([identifier isEqualToString:@"barImage"])                           return @"enabledBarImage"; 
+    else if ([identifier isEqualToString:@"menuBackgroundImage"])           return @"enabledMenuImage"; 
+    else if ([identifier isEqualToString:@"messagesBackgroundImage"])       return @"enabledMessagesImage"; 
+    else if ([identifier isEqualToString:@"messagesListBackgroundImage"])   return @"enabledMessagesListImage";
+    else if ([identifier isEqualToString:@"groupsListBackgroundImage"])     return @"enabledGroupsListImage";
+    else if ([identifier isEqualToString:@"audioBackgroundImage"])          return @"enabledAudioImage";
+    else if ([identifier isEqualToString:@"audioCoverImage"])               return @"enabledAudioCustomCover";
+    else if ([identifier isEqualToString:@"friendsBackgroundImage"])        return @"enabledFriendsImage";
+    else if ([identifier isEqualToString:@"videosBackgroundImage"])         return @"enabledVideosImage";
+    else if ([identifier isEqualToString:@"settingsBackgroundImage"])       return @"enabledSettingsImage";
+    else if ([identifier isEqualToString:@"settingsExtraBackgroundImage"])  return @"enabledSettingsExtraImage";
+    
+    return @"";
+}
+
+- (void)updateSwitchWithSpecifier:(PSSpecifier *)specifier
+{
+    if ([self.cellTarget isKindOfClass:[ColoredVKPrefs class]]) {
+        ColoredVKPrefs *prefsController = self.cellTarget;
+        NSDictionary *prefs = prefsController.cachedPrefs;
+        self.switchView.on = prefs[self.switchKey] ? [prefs[self.switchKey] boolValue] : NO;
+    }
+}
+
+- (void)switchTriggered:(UISwitch *)switchView
+{
+    if (self.switchKey.length == 0)
+        return;
+    
+    SEL setSelector = @selector(setPreferenceValue:forKey:);
+    if ([self.cellTarget respondsToSelector:setSelector]) {
+        objc_msgSend(self.cellTarget, setSelector, @(switchView.on), self.switchKey);
+    }
+}
+
+- (void)updateImage
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         NSString *previewPath = [NSString stringWithFormat:@"%@/%@_preview.png", CVK_FOLDER_PATH, self.specifier.identifier];
@@ -88,25 +107,11 @@
     });
 }
 
-- (void)switchTriggerred:(UISwitch *)switchView
-{
-    if (self.key.length == 0)
-        return;
-    
-    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    if (!prefs) prefs = [NSMutableDictionary dictionary];
-    
-    prefs[self.key] = @(switchView.on);
-    [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
-    
-    [self sendNotifications];
-}
-
-- (void)updateImage:(NSNotification *)notification
+- (void)notificationUpdateImage:(NSNotification *)notification
 {
     NSString *identifier = notification.userInfo[@"identifier"];
     if ([self.specifier.identifier isEqualToString:identifier])
-        [self updateImageForIdentifier:identifier];
+        [self updateImage];
 }
 
 
@@ -192,11 +197,8 @@
                 self.previewImageView.image = nil;
                 [self.switchView setOn:NO animated:YES];
                 self.switchView.enabled = NO;
+                [self switchTriggered:self.switchView];
             });
-            NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-            prefs[self.key] = @NO;
-            [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
-            [self sendNotifications];
         }
     }]];
     [warningAlert present];
@@ -211,14 +213,6 @@
 - (void)dealloc
 {
     [NSNotificationCenter.defaultCenter removeObserver:self];
-}
-
-- (void)sendNotifications
-{
-    if ([self.key isEqualToString:@"enabledMenuImage"])
-        POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
-    else
-        POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
 }
 
 @end

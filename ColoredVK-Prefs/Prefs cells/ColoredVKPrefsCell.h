@@ -1,14 +1,23 @@
 //
-//  UITableViewCell+ColoredVK.h
+//  ColoredVKPrefsCell.h
 //  ColoredVK2
 //
-//  Created by Даниил on 04/02/2018.
+//  Created by Даниил on 27.06.18.
 //
 
-#import <UIKit/UIKit.h>
-#import "ColoredVKCellBackgroundView.h"
+@import Foundation;
+@import UIKit;
 
-@interface UITableViewCell (ColoredVK)
+#import <PSSpecifier.h>
+#import <objc/message.h>
+
+#import "ColoredVKCellBackgroundView.h"
+#import "ColoredVKNightScheme.h"
+
+@interface ColoredVKPrefsCell : PSTableCell
+
+@property (assign, nonatomic, readonly) SEL defaultPrefsGetter;
+@property (weak, nonatomic, readonly) id currentPrefsValue;
 
 @property (strong, nonatomic) ColoredVKCellBackgroundView *customBackgroundView;
 
@@ -23,5 +32,6 @@
 
 - (void)renderBackgroundWithColor:(UIColor *)backgroundColor separatorColor:(UIColor *)separatorColor 
                      forTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath;
+
 
 @end

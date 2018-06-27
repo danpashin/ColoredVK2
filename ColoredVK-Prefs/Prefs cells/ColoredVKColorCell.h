@@ -6,9 +6,8 @@
 //  Copyright (c) 2016 Daniil Pashin. All rights reserved.
 //
 
+#import "ColoredVKPrefsCell.h"
 
-#import <PSSpecifier.h>
-
-@interface ColoredVKColorCell : PSTableCell
+@interface ColoredVKColorCell : ColoredVKPrefsCell
 
 @end

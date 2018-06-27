@@ -11,6 +11,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
 			<key>default</key>
 			<true/>
 			<key>key</key>
@@ -26,7 +28,7 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSSwitchCell</string>
+			<string>PSTableCell</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
@@ -35,26 +37,26 @@
 			<string>CHANGE_COLORS</string>
 		</dict>
 		<dict>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKColorCell</string>
 			<key>action</key>
 			<string>showColorPicker:</string>
 			<key>label</key>
 			<string>TEXT_COLOR</string>
-			<key>cellClass</key>
-			<string>ColoredVKColorCell</string>
-			<key>cell</key>
-			<string>PSTableCell</string>
 			<key>id</key>
 			<string>SBForegroundColor</string>
 		</dict>
 		<dict>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKColorCell</string>
 			<key>action</key>
 			<string>showColorPicker:</string>
 			<key>label</key>
 			<string>BACKGROUND_COLOR</string>
-			<key>cellClass</key>
-			<string>ColoredVKColorCell</string>
-			<key>cell</key>
-			<string>PSTableCell</string>
 			<key>id</key>
 			<string>SBBackgroundColor</string>
 		</dict>
@@ -67,6 +69,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
@@ -77,26 +81,26 @@
 			<string>CHANGE_COLORS</string>
 		</dict>
 		<dict>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKColorCell</string>
 			<key>action</key>
 			<string>showColorPicker:</string>
 			<key>label</key>
 			<string>FOREGROUND_COLOR</string>
-			<key>cellClass</key>
-			<string>ColoredVKColorCell</string>
-			<key>cell</key>
-			<string>PSTableCell</string>
 			<key>id</key>
 			<string>switchesOnTintColor</string>
 		</dict>
 		<dict>
+			<key>cell</key>
+			<string>PSTableCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKColorCell</string>
 			<key>action</key>
 			<string>showColorPicker:</string>
 			<key>label</key>
 			<string>BACKGROUND_COLOR</string>
-			<key>cellClass</key>
-			<string>ColoredVKColorCell</string>
-			<key>cell</key>
-			<string>PSTableCell</string>
 			<key>id</key>
 			<string>switchesTintColor</string>
 		</dict>
@@ -137,7 +141,7 @@
 			<string>ColoredVKStepperPrefsCell</string>
 			<key>label</key>
 			<string>APP_CORNER_RADIUS</string>
-			<key>id</key>
+			<key>key</key>
 			<string>appCornerRadius</string>
 			<key>minValue</key>
 			<integer>0</integer>

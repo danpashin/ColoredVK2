@@ -7,6 +7,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
 			<key>default</key>
 			<true/>
 			<key>key</key>

@@ -7,6 +7,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
@@ -25,6 +27,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKPrefsCell</string>
 			<key>detail</key>
 			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
@@ -39,6 +43,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKPrefsCell</string>
 			<key>detail</key>
 			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
@@ -53,6 +59,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKPrefsCell</string>
 			<key>detail</key>
 			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
@@ -67,6 +75,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKPrefsCell</string>
 			<key>detail</key>
 			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
@@ -79,6 +89,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKPrefsCell</string>
 			<key>detail</key>
 			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
@@ -91,6 +103,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKPrefsCell</string>
 			<key>detail</key>
 			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
@@ -103,6 +117,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKPrefsCell</string>
 			<key>detail</key>
 			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
@@ -115,6 +131,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKPrefsCell</string>
 			<key>detail</key>
 			<string>ColoredVKMusicPrefs</string>
 			<key>plistToLoad</key>
@@ -127,6 +145,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKPrefsCell</string>
 			<key>detail</key>
 			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
@@ -139,6 +159,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKPrefsCell</string>
 			<key>detail</key>
 			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
@@ -151,6 +173,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKPrefsCell</string>
 			<key>detail</key>
 			<string>ColoredVKThemePrefsController</string>
 			<key>id</key>
@@ -187,6 +211,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKPrefsCell</string>
 			<key>detail</key>
 			<string>ColoredVKPrefs</string>
 			<key>plistToLoad</key>
@@ -201,6 +227,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKPrefsCell</string>
 			<key>detail</key>
 			<string>ColoredVKGeneralPrefs</string>
 			<key>plistToLoad</key>
@@ -217,6 +245,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKPrefsCell</string>
 			<key>plistToLoad</key>
 			<string>ManageAccount</string>
 			<key>label</key>
@@ -233,6 +263,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKPrefsCell</string>
 			<key>action</key>
 			<string>actionOpenFaq</string>
 			<key>id</key>
@@ -245,6 +277,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSLinkCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKPrefsCell</string>
 			<key>detail</key>
 			<string>ColoredVKAboutController</string>
 			<key>plistToLoad</key>

@@ -13,6 +13,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
@@ -52,7 +54,7 @@
 		</dict>
 		<dict>
 			<key>cellClass</key>
-			<string>ColoredVKImageCell</string>
+			<string>ColoredVKImagePrefsCell</string>
 			<key>action</key>
 			<string>chooseImage:</string>
 			<key>cell</key>
@@ -67,11 +69,11 @@
 		<dict>
 			<key>cell</key>
 			<string>PSTableCell</string>
-			<key>label</key>
-			<string>IMAGE_BLACKOUT</string>
 			<key>cellClass</key>
 			<string>ColoredVKStepperPrefsCell</string>
-			<key>id</key>
+			<key>label</key>
+			<string>IMAGE_BLACKOUT</string>
+			<key>key</key>
 			<string>navbarImageBlackout</string>
 			<key>minValue</key>
 			<string>0</string>
@@ -87,6 +89,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
@@ -105,6 +109,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
@@ -151,6 +157,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>

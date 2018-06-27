@@ -13,6 +13,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
 			<key>key</key>
 			<string>UseBlur</string>
 			<key>label</key>
@@ -27,6 +29,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
 			<key>label</key>
 			<string>BLUR_BACKGROUND</string>
 			<key>key</key>

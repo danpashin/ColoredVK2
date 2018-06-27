@@ -14,7 +14,7 @@
 			<key>cell</key>
 			<string>PSButtonCell</string>
 			<key>cellClass</key>
-			<string>ColoredVKImageCell</string>
+			<string>ColoredVKImagePrefsCell</string>
 			<key>action</key>
 			<string>chooseImage:</string>
 			<key>label</key>
@@ -31,7 +31,7 @@
 			<string>IMAGE_BLACKOUT</string>
 			<key>cellClass</key>
 			<string>ColoredVKStepperPrefsCell</string>
-			<key>id</key>
+			<key>key</key>
 			<string>chatImageBlackout</string>
 			<key>minValue</key>
 			<string>0</string>
@@ -85,6 +85,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
 			<key>label</key>
 			<string>USE_PARALLAX</string>
 			<key>key</key>
@@ -103,6 +105,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
@@ -119,6 +123,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
@@ -157,6 +163,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
@@ -187,6 +195,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
