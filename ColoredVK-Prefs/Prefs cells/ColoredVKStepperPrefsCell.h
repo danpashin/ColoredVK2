@@ -9,4 +9,5 @@
 #import "ColoredVKPrefsCell.h"
 
 @interface ColoredVKStepperPrefsCell : ColoredVKPrefsCell
+
 @end

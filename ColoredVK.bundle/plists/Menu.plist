@@ -109,6 +109,8 @@
 		<dict>
 			<key>cell</key>
 			<string>PSSegmentCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSegmentPrefsCell</string>
 			<key>key</key>
 			<string>menuSelectionStyle</string>
 			<key>id</key>

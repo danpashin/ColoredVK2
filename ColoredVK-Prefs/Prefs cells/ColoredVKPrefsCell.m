@@ -31,8 +31,6 @@
 {
     [super layoutSubviews];
     
-    ColoredVKNightScheme *nightScheme = [ColoredVKNightScheme sharedScheme];
-    
     if ([self.specifier.properties[@"shouldCenter"] boolValue])
         self.titleLabel.center = self.contentView.center;
     
@@ -44,20 +42,6 @@
             self.titleLabel.textColor = [UIColor redColor];
         } else {
             self.titleLabel.textColor = CVKMainColor;
-        }
-    } else if ([self.contentView.subviews.firstObject isKindOfClass:[UIControl class]]) {
-        UIControl *control = self.contentView.subviews.firstObject;
-        control.tintColor = CVKMainColor;
-        
-        if ([self.specifier propertyForKey:@"enabled"]) {
-            control.enabled = [[self.specifier propertyForKey:@"enabled"] boolValue];
-        }
-        
-        if ([control isKindOfClass:[UISegmentedControl class]]) {
-            control.layer.cornerRadius = CGRectGetHeight(control.bounds) / 2;
-            control.layer.borderWidth = 1.0f;
-            control.layer.borderColor = nightScheme.enabled ? nightScheme.buttonColor.CGColor : control.tintColor.CGColor;
-            control.layer.masksToBounds = YES;
         }
     }
 }
