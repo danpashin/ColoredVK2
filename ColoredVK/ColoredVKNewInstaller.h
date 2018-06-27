@@ -8,13 +8,12 @@
 
 #import "ColoredVKUserModel.h"
 #import "ColoredVKApplicationModel.h"
+#import "SCDRM.h"
 
 @interface ColoredVKNewInstaller : NSObject
 
 FOUNDATION_EXPORT void(^installerCompletionBlock)(BOOL purchased);
-FOUNDATION_EXPORT BOOL deviceIsJailed;
 FOUNDATION_EXPORT BOOL installerShouldOpenPrefs;
-FOUNDATION_EXPORT NSString *__deviceModel;
 
 + (instancetype)sharedInstaller;
 

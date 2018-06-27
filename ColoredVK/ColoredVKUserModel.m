@@ -6,7 +6,6 @@
 //
 
 #import "ColoredVKNewInstaller.h"
-#import "ColoredVKCrypto.h"
 #import "ColoredVKHUD.h"
 #import "ColoredVKWebViewController.h"
 #import "ColoredVKNetwork.h"
@@ -78,7 +77,7 @@ extern NSString *__key;
         ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
         [network sendRequestWithMethod:@"POST" url:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
             NSError *decryptError = nil;
-            NSDictionary *json = decryptServerResponse(rawData, &decryptError);
+            NSDictionary *json = RSADecryptServerData(rawData, &decryptError);
             
             if (!json || decryptError)
                 return;
@@ -99,12 +98,11 @@ extern NSString *__key;
                 self.accountStatus = ColoredVKUserAccountStatusBanned;
             
             
-            NSData *decryptedData = decryptData([NSData dataWithContentsOfFile:kDRMLicencePath], nil);
-            NSMutableDictionary *dict = [(NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData] mutableCopy];
+            NSDictionary *licence = RSADecryptLicenceData(kDRMLicencePath, nil);
+            NSMutableDictionary *dict = [licence mutableCopy];
             dict[@"purchased"] = @(purchased);
             dict[@"email"] = self.email;
-            NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
-            [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
+            RSAEncryptAndWriteLicenceData(dict, kDRMLicencePath, nil);
             
             POST_NOTIFICATION(kPackageNotificationReloadPrefsMenu);
             
@@ -149,7 +147,7 @@ extern NSString *__key;
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
     [network sendRequestWithMethod:@"POST" url:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
         NSError *decryptError = nil;
-        NSDictionary *json = decryptServerResponse(rawData, &decryptError);
+        NSDictionary *json = RSADecryptServerData(rawData, &decryptError);
         
         if (!json || decryptError) {
             if (!decryptError)
@@ -185,8 +183,7 @@ extern NSString *__key;
         NSDictionary *dict = @{@"Device":__deviceModel, @"Login":self.name, @"user_id":self.userID,
                                @"token":self.accessToken, @"purchased":purchased, @"email":self.email};
         NSError *writingError = nil;
-        NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
-        [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
+        RSAEncryptAndWriteLicenceData(dict, kDRMLicencePath, nil);
         
         if (!writingError) {
             showAlertBlock(nil);
@@ -231,7 +228,7 @@ extern NSString *__key;
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
     [network sendRequestWithMethod:@"POST" url:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
         NSError *decryptError = nil;
-        NSDictionary *json = decryptServerResponse(rawData, &decryptError);
+        NSDictionary *json = RSADecryptServerData(rawData, &decryptError);
         
         if (!json || decryptError) {
             if (!decryptError)

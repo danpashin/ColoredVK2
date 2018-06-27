@@ -8,15 +8,10 @@
 
 #import "ColoredVKNewInstaller.h"
 
-#import "ColoredVKCrypto.h"
-
 #import "ColoredVKHUD.h"
 #import "ColoredVKAlertController.h"
 #import "ColoredVKUpdatesModel.h"
 #import "ColoredVKNetwork.h"
-
-#import <sys/utsname.h>
-#import <MobileGestalt.h>
 
 #define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
 #define kDRMRemoteServerURL     [NSString stringWithFormat:@"%@/index-new.php", kPackageAPIURL]
@@ -28,13 +23,9 @@
 
 
 @implementation ColoredVKNewInstaller
-
 void(^installerCompletionBlock)(BOOL purchased);
 NSString *__key;
-NSString *__deviceModel;
-NSString *__udid;
 
-BOOL deviceIsJailed;
 BOOL installerShouldOpenPrefs;
 
 
@@ -52,20 +43,10 @@ BOOL installerShouldOpenPrefs;
 {
     self = [super init];
     if (self) {
-        __key = legacyEncryptServerString([NSProcessInfo processInfo].globallyUniqueString);
-        __udid = CFBridgingRelease(MGCopyAnswer(CFSTR("re6Zb+zwFKJNlkQTUeT+/w")));
-        if (!__udid || __udid.length != 40)
-            __udid = @"";
-        
-        deviceIsJailed = (access("/var/mobile/Library/Preferences/", W_OK) == 0);
-        deviceIsJailed = deviceIsJailed && (__udid.length == 40);
+        __key = RSAEncryptServerString([NSProcessInfo processInfo].globallyUniqueString);
         
         _user = [ColoredVKUserModel new];
         _application = [ColoredVKApplicationModel new];
-        
-        struct utsname systemInfo;
-        uname(&systemInfo);
-        __deviceModel = @(systemInfo.machine);
         
         [self createFolders];
         
@@ -100,19 +81,11 @@ BOOL installerShouldOpenPrefs;
 [self writeFreeLicence];\
 return;
         
-#ifndef COMPILE_APP
-        if (!allowLibs)
+        if (!__allowLibs)
             return;
-#endif
         
-        if (![[NSFileManager defaultManager] fileExistsAtPath:kDRMLicencePath]) {
-            writeFreeLicenceAndReturn
-        }
-        
-        NSData *decryptedData = decryptData([NSData dataWithContentsOfFile:kDRMLicencePath], nil);
-        NSDictionary *dict = (NSDictionary *)[NSKeyedUnarchiver unarchiveObjectWithData:decryptedData];
-        
-        if (![dict isKindOfClass:[NSDictionary class]] || (dict.allKeys.count == 0)) {
+        NSDictionary *dict = RSADecryptLicenceData(kDRMLicencePath, nil);
+        if (!dict) {
             writeFreeLicenceAndReturn
         }
         
@@ -123,10 +96,10 @@ return;
 #endif
         
         if ([dict[@"jailed"] boolValue]) {
-            deviceIsJailed = YES;
+            __deviceIsJailed = YES;
             NSString *licenceUdid = dict[@"udid"];
             
-            if ((__udid.length != 0) && ((licenceUdid.length != 40) || !deviceIsJailed || ![licenceUdid isEqualToString:__udid])) {
+            if ((__udid.length != 0) && ((licenceUdid.length != 40) || !__deviceIsJailed || ![licenceUdid isEqualToString:__udid])) {
                 writeFreeLicenceAndReturn
             }
             
@@ -200,27 +173,26 @@ return;
     [self.user clearUser];
     
     NSDictionary *dict = @{@"purchased" : @NO, @"Device" : __deviceModel, 
-                           @"jailed" : @(deviceIsJailed), @"udid" : __udid };
-    NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
-    [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:nil];
+                           @"jailed" : @(__deviceIsJailed), @"udid" : __udid };
+    RSAEncryptAndWriteLicenceData(dict, kDRMLicencePath, nil);
     
     [self downloadJBLicence];
 }
 
 - (void)downloadJBLicence
 {
-    if (!deviceIsJailed)
+    if (!__deviceIsJailed)
         return;
     
-    NSDictionary *params = @{@"udid": legacyEncryptServerString(__udid), 
-                             @"package":legacyEncryptServerString(@"org.thebigboss.coloredvk2"), 
+    NSDictionary *params = @{@"udid": RSAEncryptServerString(__udid), 
+                             @"package":RSAEncryptServerString(@"org.thebigboss.coloredvk2"), 
                              @"version":kPackageVersion, @"key": __key};
     
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
     [network sendRequestWithMethod:@"POST" url:kDRMRemoteServerURL parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
         
         NSError *decryptError = nil;
-        NSDictionary *json = decryptServerResponse(rawData, &decryptError);
+        NSDictionary *json = RSADecryptServerData(rawData, &decryptError);
         
         if (!json || decryptError)
             return;
@@ -235,8 +207,7 @@ return;
         
         NSDictionary *dict = @{@"Device":__deviceModel, @"udid":__udid, @"jailed":@YES, @"purchased":@YES};
         NSError *writingError = nil;
-        NSData *encryptedData = encryptData([NSKeyedArchiver archivedDataWithRootObject:dict], nil);
-        [encryptedData writeToFile:kDRMLicencePath options:NSDataWritingAtomic error:&writingError];
+        RSAEncryptAndWriteLicenceData(dict, kDRMLicencePath, &writingError);
         
         if (writingError)
             return;

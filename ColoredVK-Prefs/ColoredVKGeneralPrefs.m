@@ -36,7 +36,7 @@
         BOOL shouldDisable = YES;
         if (newInstaller.user.authenticated)
             shouldDisable = (newInstaller.user.accountStatus != ColoredVKUserAccountStatusPaid);
-        else if (deviceIsJailed)
+        else if (__deviceIsJailed)
             shouldDisable = !installerShouldOpenPrefs;
         
         for (PSSpecifier *specifier in specifiersArray) {

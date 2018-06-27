@@ -50,7 +50,7 @@
 - (void)updateJailHeaderView
 {
     ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-    if (deviceIsJailed && !newInstaller.user.authenticated) {
+    if (__deviceIsJailed && !newInstaller.user.authenticated) {
         if (self.tableView.tableHeaderView.tag == 1244)
             return;
         

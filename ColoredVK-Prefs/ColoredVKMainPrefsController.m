@@ -36,7 +36,7 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
         BOOL shouldDisable = YES;
         if (newInstaller.user.authenticated)
             shouldDisable = (newInstaller.user.accountStatus != ColoredVKUserAccountStatusPaid);
-        else if (deviceIsJailed)
+        else if (__deviceIsJailed)
             shouldDisable = !installerShouldOpenPrefs;
         
         self.showFreeVersionFooter = shouldDisable;

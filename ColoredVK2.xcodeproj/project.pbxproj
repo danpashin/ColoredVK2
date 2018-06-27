@@ -536,14 +536,14 @@
 		A5F09D971F0FF88200024198 /* ColoredVKNewInstaller.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D921F0FF88200024198 /* ColoredVKNewInstaller.m */; };
 		A5F09D991F0FF88200024198 /* ColoredVKNewInstaller.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D921F0FF88200024198 /* ColoredVKNewInstaller.m */; };
 		A5F09D9A1F0FF88200024198 /* ColoredVKNewInstaller.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D921F0FF88200024198 /* ColoredVKNewInstaller.m */; };
-		A5F09D9D1F0FFA5D00024198 /* ColoredVKCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = A5F09D9B1F0FFA5D00024198 /* ColoredVKCrypto.h */; };
-		A5F09D9E1F0FFA5D00024198 /* ColoredVKCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = A5F09D9B1F0FFA5D00024198 /* ColoredVKCrypto.h */; };
-		A5F09D9F1F0FFA5D00024198 /* ColoredVKCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = A5F09D9B1F0FFA5D00024198 /* ColoredVKCrypto.h */; };
-		A5F09DA01F0FFA5D00024198 /* ColoredVKCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = A5F09D9B1F0FFA5D00024198 /* ColoredVKCrypto.h */; };
-		A5F09DA11F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */; };
-		A5F09DA21F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */; };
-		A5F09DA31F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */; };
-		A5F09DA41F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */; };
+		A5F09D9D1F0FFA5D00024198 /* SCDRM.h in Headers */ = {isa = PBXBuildFile; fileRef = A5F09D9B1F0FFA5D00024198 /* SCDRM.h */; };
+		A5F09D9E1F0FFA5D00024198 /* SCDRM.h in Headers */ = {isa = PBXBuildFile; fileRef = A5F09D9B1F0FFA5D00024198 /* SCDRM.h */; };
+		A5F09D9F1F0FFA5D00024198 /* SCDRM.h in Headers */ = {isa = PBXBuildFile; fileRef = A5F09D9B1F0FFA5D00024198 /* SCDRM.h */; };
+		A5F09DA01F0FFA5D00024198 /* SCDRM.h in Headers */ = {isa = PBXBuildFile; fileRef = A5F09D9B1F0FFA5D00024198 /* SCDRM.h */; };
+		A5F09DA11F0FFA5D00024198 /* SCDRM.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D9C1F0FFA5D00024198 /* SCDRM.m */; };
+		A5F09DA21F0FFA5D00024198 /* SCDRM.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D9C1F0FFA5D00024198 /* SCDRM.m */; };
+		A5F09DA31F0FFA5D00024198 /* SCDRM.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D9C1F0FFA5D00024198 /* SCDRM.m */; };
+		A5F09DA41F0FFA5D00024198 /* SCDRM.m in Sources */ = {isa = PBXBuildFile; fileRef = A5F09D9C1F0FFA5D00024198 /* SCDRM.m */; };
 		C12A7E1FDC46683C897AAC44 /* libPods-ColoredVK-NonJail.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 54F0418CC30FC851AC9E3CD8 /* libPods-ColoredVK-NonJail.a */; };
 /* End PBXBuildFile section */
 
@@ -775,8 +775,8 @@
 		A5EE64AC1FAE4C9E0050C156 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		A5F09D911F0FF88200024198 /* ColoredVKNewInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKNewInstaller.h; sourceTree = "<group>"; };
 		A5F09D921F0FF88200024198 /* ColoredVKNewInstaller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKNewInstaller.m; sourceTree = "<group>"; };
-		A5F09D9B1F0FFA5D00024198 /* ColoredVKCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKCrypto.h; sourceTree = "<group>"; };
-		A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = ColoredVKCrypto.m; sourceTree = "<group>"; };
+		A5F09D9B1F0FFA5D00024198 /* SCDRM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCDRM.h; sourceTree = "<group>"; };
+		A5F09D9C1F0FFA5D00024198 /* SCDRM.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = SCDRM.m; sourceTree = "<group>"; };
 		A5F09DA51F101A5200024198 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		A5FB4C731FCC795A004D46C7 /* VKPhotoPicker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VKPhotoPicker.h; sourceTree = "<group>"; };
 		C04EDD04C179B0701D3EAC9B /* Pods-ColoredVK.debug_ipa.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColoredVK.debug_ipa.xcconfig"; path = "Pods/Target Support Files/Pods-ColoredVK/Pods-ColoredVK.debug_ipa.xcconfig"; sourceTree = "<group>"; };
@@ -1048,8 +1048,8 @@
 				A53D12911D467016009567B5 /* PrefixHeader.pch */,
 				A5F09D911F0FF88200024198 /* ColoredVKNewInstaller.h */,
 				A5F09D921F0FF88200024198 /* ColoredVKNewInstaller.m */,
-				A5F09D9B1F0FFA5D00024198 /* ColoredVKCrypto.h */,
-				A5F09D9C1F0FFA5D00024198 /* ColoredVKCrypto.m */,
+				A5F09D9B1F0FFA5D00024198 /* SCDRM.h */,
+				A5F09D9C1F0FFA5D00024198 /* SCDRM.m */,
 				A5E1E08220656C1800709696 /* Tweak */,
 				A528D8821DE9FCAF00B299C1 /* ColoredVKMainController.h */,
 				A528D8831DE9FCAF00B299C1 /* ColoredVKMainController.m */,
@@ -1323,7 +1323,7 @@
 				A52B8F3B1F991A2600898168 /* ColoredVKNightScheme.h in Headers */,
 				A5B607CA1F0943C4003529AF /* ColoredVKUpdatesModel.h in Headers */,
 				A5F09D931F0FF88200024198 /* ColoredVKNewInstaller.h in Headers */,
-				A5F09D9D1F0FFA5D00024198 /* ColoredVKCrypto.h in Headers */,
+				A5F09D9D1F0FFA5D00024198 /* SCDRM.h in Headers */,
 				A5CC386520403670005A3AB0 /* ColoredVKNavigationController.h in Headers */,
 				A5D9796E1DAEB88F00607F06 /* UIImage+ColoredVK.h in Headers */,
 				A52147C6206F86E400224F6B /* TweakVariables.h in Headers */,
@@ -1406,7 +1406,7 @@
 				A52350A01DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h in Headers */,
 				A5D9A6851FACDBD900403A49 /* ColoredVKPrefsSelector.h in Headers */,
 				A576D19C1DC621B90039884F /* UIImage+ColoredVK.h in Headers */,
-				A5F09D9F1F0FFA5D00024198 /* ColoredVKCrypto.h in Headers */,
+				A5F09D9F1F0FFA5D00024198 /* SCDRM.h in Headers */,
 				A576D19D1DC621B90039884F /* UIColor+ColoredVK.h in Headers */,
 				A570305820CD1A3F0036FA8F /* ColoredVKMusicPrefs.h in Headers */,
 				A52147C7206F86E500224F6B /* TweakVariables.h in Headers */,
@@ -1446,7 +1446,7 @@
 				A510E7D51EF99CE9001D6798 /* ColoredVKSimpleAlertController.h in Headers */,
 				A54B9ECF2064FAC50097B0C6 /* ColoredVKBackupsModel.h in Headers */,
 				A510E7CD1EF98866001D6798 /* ColoredVKColorCollectionViewCell.h in Headers */,
-				A5F09D9E1F0FFA5D00024198 /* ColoredVKCrypto.h in Headers */,
+				A5F09D9E1F0FFA5D00024198 /* SCDRM.h in Headers */,
 				A504C0831DB011ED006C5FBC /* PSTableCell+ColoredVK.h in Headers */,
 				A5B81EEA20238978005BD879 /* ColoredVKScrollViewController.h in Headers */,
 				A56147B71EA0140900B3D8C8 /* ColoredVKAboutController.h in Headers */,
@@ -1509,7 +1509,7 @@
 				A510E7D71EF99CE9001D6798 /* ColoredVKSimpleAlertController.h in Headers */,
 				A510E7CF1EF98866001D6798 /* ColoredVKColorCollectionViewCell.h in Headers */,
 				A5739D571EA0159700367595 /* ColoredVKColorPickerController.h in Headers */,
-				A5F09DA01F0FFA5D00024198 /* ColoredVKCrypto.h in Headers */,
+				A5F09DA01F0FFA5D00024198 /* SCDRM.h in Headers */,
 				A54B9ED12064FAC50097B0C6 /* ColoredVKBackupsModel.h in Headers */,
 				A5739D771EA015C300367595 /* ColoredVKStepperPrefsCell.h in Headers */,
 				A53104C81EC4D08C003DEB83 /* ColoredVKWindowController.h in Headers */,
@@ -1837,7 +1837,7 @@
 				A5210C951DE785C1004F7E11 /* LHAcvitityIndicator.m in Sources */,
 				A5F09D971F0FF88200024198 /* ColoredVKNewInstaller.m in Sources */,
 				A5E1E08420656C3700709696 /* SettingsSwizzle.m in Sources */,
-				A5F09DA11F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */,
+				A5F09DA11F0FFA5D00024198 /* SCDRM.m in Sources */,
 				A528D8861DE9FCAF00B299C1 /* ColoredVKMainController.m in Sources */,
 				A5210C961DE785C1004F7E11 /* LHBackgroundView.m in Sources */,
 				A5CC38642040366E005A3AB0 /* ColoredVKNavigationController.m in Sources */,
@@ -1910,7 +1910,7 @@
 				A55D20A82033406C00C43454 /* ColoredVKCard.m in Sources */,
 				A50B3F8F20711C4F00A16F6C /* TweakVariables.m in Sources */,
 				A576D1BB1DC6220C0039884F /* LHAcvitityIndicator.m in Sources */,
-				A5F09DA31F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */,
+				A5F09DA31F0FFA5D00024198 /* SCDRM.m in Sources */,
 				A5B607D01F0943C4003529AF /* ColoredVKUpdatesModel.m in Sources */,
 				A592BF4F1FA1F13700810F89 /* ColoredVKThemePrefsController.m in Sources */,
 				A528D8871DE9FCAF00B299C1 /* ColoredVKMainController.m in Sources */,
@@ -1989,7 +1989,7 @@
 				A5D979C91DAEC1CB00607F06 /* NSString+ColoredVK.m in Sources */,
 				A57D40DA208147B900CDC7DD /* ColoredVKUINotification.m in Sources */,
 				A5288C462037327800A11223 /* ColoredVKColorMapView.m in Sources */,
-				A5F09DA21F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */,
+				A5F09DA21F0FFA5D00024198 /* SCDRM.m in Sources */,
 				A5AE82FB1EC1DE25000B7F63 /* ColoredVKStepperButton.m in Sources */,
 				A54E41F81EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */,
 				A5A4E2D31F250A520001102F /* ColoredVKWebViewController.m in Sources */,
@@ -2069,7 +2069,7 @@
 				A55D20A120333DD200C43454 /* ColoredVKCollectionCardCell.m in Sources */,
 				A5739D621EA015A900367595 /* ColoredVKTextViewController.m in Sources */,
 				A5D56AA51E70427300A8FFB5 /* ColoredVKMainPrefsController.m in Sources */,
-				A5F09DA41F0FFA5D00024198 /* ColoredVKCrypto.m in Sources */,
+				A5F09DA41F0FFA5D00024198 /* SCDRM.m in Sources */,
 				A50883B51FFA4E5E00C05E2A /* ColoredVKAuthPageController.m in Sources */,
 				A59270162087C74600027F72 /* ColoredVKShadowView.m in Sources */,
 				A57D40DC208147B900CDC7DD /* ColoredVKUINotification.m in Sources */,
