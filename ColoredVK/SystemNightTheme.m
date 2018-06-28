@@ -6,7 +6,6 @@
 //
 
 #import "Tweak.h"
-#import <Preferences/PSTableCell.h>
 #import <CoreText/CoreText.h>
 @import SafariServices.SFSafariViewController;
 
@@ -39,10 +38,9 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
     if (!shouldChangeBackground)
         shouldChangeBackground = @YES;
     
-    if ([self isKindOfClass:NSClassFromString(@"PSTableCell")]) {
-        if ([((PSTableCell *)self).cellTarget isKindOfClass:NSClassFromString(@"ColoredVKPrefs")])
-            return;
-    }
+    if ([self isKindOfClass:NSClassFromString(@"ColoredVKPrefsCell")])
+        return;
+    
     if ([self isKindOfClass:NSClassFromString(@"MessageCell")])
         return;
     

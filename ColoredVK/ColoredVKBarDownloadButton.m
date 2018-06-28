@@ -66,9 +66,6 @@
             [[ColoredVKImageProcessor new] processImageFromURL:url identifier:identifier saveTo:urlToSave completion:^(BOOL success, NSError *error) {
                 success ? [hud showSuccess] : [hud showFailureWithStatus:error.localizedDescription];
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName:kPackageNotificationUpdateImage 
-                                                                    object:nil userInfo:@{@"identifier" : identifier}];
-                
                 if ([identifier isEqualToString:@"menuBackgroundImage"])
                     POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
             }];

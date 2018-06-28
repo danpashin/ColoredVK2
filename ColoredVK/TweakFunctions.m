@@ -482,7 +482,8 @@ void setupTabbar()
         }
         
         [NSObject cvk_runBlockOnMainThread:^{
-            [UIView transitionWithView:tabbar duration:0.3f options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionTransitionCrossDissolve animations:^{
+            UIViewAnimationOptions options = UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction;
+            [UIView transitionWithView:tabbar duration:0.3f options:options animations:^{
                 tabbar.barTintColor = barTintColor;
                 tabbar.tintColor = tintColor;
                 

@@ -14,7 +14,6 @@
 #import "ColoredVKNightScheme.h"
 #import "NSObject+ColoredVK.h"
 
-#import "ColoredVKPrefsCell.h"
 #import "ColoredVKColorCell.h"
 #import "ColoredVKImagePrefsCell.h"
 #import "ColoredVKCellBackgroundView.h"
@@ -46,21 +45,12 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadPrefsNotification) name:kPackageNotificationReloadInternalPrefs object:nil];
     
     [self readPrefsWithCompetion:^{
+        ColoredVKNightScheme *nightThemeColorScheme = [ColoredVKNightScheme sharedScheme];
+        NSInteger themeType = self.cachedPrefs[@"nightThemeType"] ? [self.cachedPrefs[@"nightThemeType"] integerValue] : -1;
+        [nightThemeColorScheme updateForType:themeType];
         
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            ColoredVKNightScheme *nightThemeColorScheme = [ColoredVKNightScheme sharedScheme];
-            NSInteger themeType = self.cachedPrefs[@"nightThemeType"] ? [self.cachedPrefs[@"nightThemeType"] integerValue] : -1;
-            [nightThemeColorScheme updateForType:themeType];
-            
-            BOOL vkApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
-            nightThemeColorScheme.enabled = ((themeType != -1) && [self.cachedPrefs[@"enabled"] boolValue] && vkApp);
-        });
-        
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            if (self.isViewLoaded && self->_specifiers && self->_specifiers.count > 0)
-//                [self reloadSpecifiers];
-//        });
+        BOOL vkApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
+        nightThemeColorScheme.enabled = ((themeType != -1) && [self.cachedPrefs[@"enabled"] boolValue] && vkApp);
     }];
 }
 
@@ -71,12 +61,6 @@
     self.table.separatorColor = [UIColor clearColor];
     self.table.emptyDataSetSource = self;
     self.table.emptyDataSetDelegate = self;
-    
-    ColoredVKNightScheme *nightThemeColorScheme = [ColoredVKNightScheme sharedScheme];
-    if ([ColoredVKNewInstaller sharedInstaller].application.isVKApp && nightThemeColorScheme.enabled) {
-        self.table.backgroundColor = nightThemeColorScheme.backgroundColor;
-        self.navigationController.navigationBar.barTintColor = nightThemeColorScheme.navbackgroundColor;
-    }
 }
 
 - (void)viewDidLoad
@@ -160,6 +144,9 @@
     if (![ColoredVKNewInstaller sharedInstaller].application.isVKApp)
         return;
     
+    if (![cell isKindOfClass:[ColoredVKPrefsCell class]])
+        return;
+    
     ColoredVKNightScheme *nightThemeColorScheme = [ColoredVKNightScheme sharedScheme];
     ColoredVKCellBackgroundView *backgroundView = cell.customBackgroundView;
     
@@ -214,8 +201,7 @@
 - (void)showPurchaseAlert
 {
     ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"AVAILABLE_IN_FULL_VERSION")];
-    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"THINK_LATER") style:UIAlertActionStyleCancel 
-                                                      handler:^(UIAlertAction *action) {}]];
+    [alertController addCancelActionWithTitle:CVKLocalizedString(@"THINK_LATER")];
     [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OF_COURSE") style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
                                                           [[ColoredVKNewInstaller sharedInstaller].user actionPurchase];
@@ -359,7 +345,7 @@
                 POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
             }
             
-            if ([key isEqualToString:@"enableTweakSwitch"]) {
+            if ([key isEqualToString:@"enabled"]) {
                 [self updateNightTheme];
                 POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
             }
