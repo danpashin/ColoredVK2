@@ -11,10 +11,8 @@
 			<string>BLUR_PREFS_FOOTER</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKSwitchPrefsCell</string>
+			<key>cellType</key>
+			<string>Switch</string>
 			<key>key</key>
 			<string>UseBlur</string>
 			<key>label</key>
@@ -27,10 +25,8 @@
 			<string>PSGroupCell</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKSwitchPrefsCell</string>
+			<key>cellType</key>
+			<string>Switch</string>
 			<key>label</key>
 			<string>BLUR_BACKGROUND</string>
 			<key>key</key>
@@ -45,8 +41,8 @@
 			<string>BLUR_STYLE</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSSegmentCell</string>
+			<key>cellType</key>
+			<string>Segment</string>
 			<key>key</key>
 			<string>BlurStyle</string>
 			<key>default</key>
@@ -67,10 +63,8 @@
 			<string>showColorPicker:</string>
 			<key>label</key>
 			<string>BACKGROUND_TONE</string>
-			<key>cellClass</key>
-			<string>ColoredVKColorCell</string>
-			<key>cell</key>
-			<string>PSTableCell</string>
+			<key>cellType</key>
+			<string>ColorWheel</string>
 			<key>id</key>
 			<string>BlurTone</string>
 		</dict>

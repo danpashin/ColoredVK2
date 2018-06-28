@@ -5,8 +5,8 @@
 //  Created by Даниил on 27.06.18.
 //
 
-#import "ColoredVKPrefsCell.h"
+#import "ColoredVKControlPrefsCell.h"
 
-@interface ColoredVKSegmentPrefsCell : ColoredVKPrefsCell
+@interface ColoredVKSegmentPrefsCell : ColoredVKControlPrefsCell
 
 @end

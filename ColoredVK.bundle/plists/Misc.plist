@@ -9,10 +9,8 @@
 			<string>PSGroupCell</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKSwitchPrefsCell</string>
+			<key>cellType</key>
+			<string>Switch</string>
 			<key>default</key>
 			<true/>
 			<key>key</key>
@@ -27,8 +25,8 @@
 			<string>STATUS_BAR</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSTableCell</string>
+			<key>cellType</key>
+			<string>Switch</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
@@ -67,10 +65,8 @@
 			<string>SWITCH_COLORS</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKSwitchPrefsCell</string>
+			<key>cellType</key>
+			<string>Switch</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
@@ -111,8 +107,8 @@
 			<string>KEYBOARD_STYLE</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSSegmentCell</string>
+			<key>cellType</key>
+			<string>Segment</string>
 			<key>key</key>
 			<string>keyboardStyle</string>
 			<key>default</key>
@@ -135,10 +131,8 @@
 			<string>PSGroupCell</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSTableCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKStepperPrefsCell</string>
+			<key>cellType</key>
+			<string>Stepper</string>
 			<key>label</key>
 			<string>APP_CORNER_RADIUS</string>
 			<key>key</key>

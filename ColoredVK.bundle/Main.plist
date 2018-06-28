@@ -5,10 +5,8 @@
 	<key>items</key>
 	<array>
 		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKSwitchPrefsCell</string>
+			<key>cellType</key>
+			<string>Switch</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
@@ -25,12 +23,8 @@
 			<string>PSGroupCell</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKPrefsCell</string>
-			<key>detail</key>
-			<string>ColoredVKGeneralPrefs</string>
+			<key>cellType</key>
+			<string>Link</string>
 			<key>plistToLoad</key>
 			<string>NavToolBar</string>
 			<key>id</key>
@@ -41,12 +35,8 @@
 			<string>prefs/BarsIcon</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKPrefsCell</string>
-			<key>detail</key>
-			<string>ColoredVKGeneralPrefs</string>
+			<key>cellType</key>
+			<string>Link</string>
 			<key>plistToLoad</key>
 			<string>Menu</string>
 			<key>id</key>
@@ -57,12 +47,8 @@
 			<string>prefs/MenuIcon</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKPrefsCell</string>
-			<key>detail</key>
-			<string>ColoredVKGeneralPrefs</string>
+			<key>cellType</key>
+			<string>Link</string>
 			<key>plistToLoad</key>
 			<string>Messages</string>
 			<key>id</key>
@@ -73,12 +59,8 @@
 			<string>prefs/DialogsIcon</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKPrefsCell</string>
-			<key>detail</key>
-			<string>ColoredVKGeneralPrefs</string>
+			<key>cellType</key>
+			<string>Link</string>
 			<key>plistToLoad</key>
 			<string>Dialogs</string>
 			<key>label</key>
@@ -87,12 +69,8 @@
 			<string>prefs/MessagesIcon</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKPrefsCell</string>
-			<key>detail</key>
-			<string>ColoredVKGeneralPrefs</string>
+			<key>cellType</key>
+			<string>Link</string>
 			<key>plistToLoad</key>
 			<string>Friends</string>
 			<key>label</key>
@@ -101,12 +79,8 @@
 			<string>prefs/FriendsIcon</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKPrefsCell</string>
-			<key>detail</key>
-			<string>ColoredVKGeneralPrefs</string>
+			<key>cellType</key>
+			<string>Link</string>
 			<key>plistToLoad</key>
 			<string>Groups</string>
 			<key>label</key>
@@ -115,12 +89,8 @@
 			<string>prefs/GroupsIcon</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKPrefsCell</string>
-			<key>detail</key>
-			<string>ColoredVKGeneralPrefs</string>
+			<key>cellType</key>
+			<string>Link</string>
 			<key>plistToLoad</key>
 			<string>Videos</string>
 			<key>label</key>
@@ -129,10 +99,8 @@
 			<string>prefs/VideosIcon</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKPrefsCell</string>
+			<key>cellType</key>
+			<string>Link</string>
 			<key>detail</key>
 			<string>ColoredVKMusicPrefs</string>
 			<key>plistToLoad</key>
@@ -143,12 +111,8 @@
 			<string>prefs/AudioIcon</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKPrefsCell</string>
-			<key>detail</key>
-			<string>ColoredVKGeneralPrefs</string>
+			<key>cellType</key>
+			<string>Link</string>
 			<key>plistToLoad</key>
 			<string>Settings</string>
 			<key>label</key>
@@ -157,12 +121,8 @@
 			<string>prefs/SettingsIconAlt</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKPrefsCell</string>
-			<key>detail</key>
-			<string>ColoredVKGeneralPrefs</string>
+			<key>cellType</key>
+			<string>Link</string>
 			<key>plistToLoad</key>
 			<string>Misc</string>
 			<key>label</key>
@@ -171,10 +131,8 @@
 			<string>prefs/MoreIcon</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKPrefsCell</string>
+			<key>cellType</key>
+			<string>Link</string>
 			<key>detail</key>
 			<string>ColoredVKThemePrefsController</string>
 			<key>id</key>
@@ -209,10 +167,8 @@
 			<string>PSGroupCell</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKPrefsCell</string>
+			<key>cellType</key>
+			<string>Link</string>
 			<key>detail</key>
 			<string>ColoredVKPrefs</string>
 			<key>plistToLoad</key>
@@ -225,12 +181,8 @@
 			<string>prefs/SettingsIcon</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKPrefsCell</string>
-			<key>detail</key>
-			<string>ColoredVKGeneralPrefs</string>
+			<key>cellType</key>
+			<string>Link</string>
 			<key>plistToLoad</key>
 			<string>ManageSettings</string>
 			<key>label</key>
@@ -243,10 +195,8 @@
 			<string>PSGroupCell</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKPrefsCell</string>
+			<key>cellType</key>
+			<string>Link</string>
 			<key>plistToLoad</key>
 			<string>ManageAccount</string>
 			<key>label</key>
@@ -261,10 +211,8 @@
 			<string>PSGroupCell</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKPrefsCell</string>
+			<key>cellType</key>
+			<string>Link</string>
 			<key>action</key>
 			<string>actionOpenFaq</string>
 			<key>id</key>
@@ -275,10 +223,8 @@
 			<string>prefs/FaqIcon</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKPrefsCell</string>
+			<key>cellType</key>
+			<string>Link</string>
 			<key>detail</key>
 			<string>ColoredVKAboutController</string>
 			<key>plistToLoad</key>

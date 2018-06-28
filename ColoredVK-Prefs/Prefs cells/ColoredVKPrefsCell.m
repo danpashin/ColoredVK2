@@ -7,8 +7,6 @@
 
 #import "ColoredVKPrefsCell.h"
 
-#import "CaptainHook/CaptainHook.h"
-
 #import <objc/runtime.h>
 #import "ColoredVKPrefs.h"
 
@@ -17,15 +15,6 @@
 @end
 
 @implementation ColoredVKPrefsCell
-
-+ (Class)cellClassForSpecifier:(PSSpecifier *)specifier
-{
-    if (![specifier propertyForKey:@"cellClass"]) {
-        return [ColoredVKPrefsCell class];
-    }
-    
-    return [super cellClassForSpecifier:specifier];
-}
 
 - (void)layoutSubviews
 {
@@ -72,8 +61,14 @@
 
 - (void)setCustomBackgroundView:(ColoredVKCellBackgroundView *)customBackgroundView
 {
-    [self.specifier setProperty:customBackgroundView forKey:@"cvkCellBackgroundView"];
+    if ([self.specifier isKindOfClass:[PSSpecifier class]]) {
+        [self.specifier setProperty:customBackgroundView forKey:@"cvkCellBackgroundView"];
+        return;
+    }
+    
+    objc_setAssociatedObject(self, "cvkCellBackgroundView", customBackgroundView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
+
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
@@ -111,12 +106,25 @@
 
 - (BOOL)backgroundRendered
 {
-    return [self.specifier propertyForKey:@"cvkCellBackgroundView"] ? YES : NO;
+    if ([self.specifier isKindOfClass:[PSSpecifier class]]) {
+        return [self.specifier propertyForKey:@"cvkCellBackgroundView"] ? YES : NO;
+    }
+    
+    return objc_getAssociatedObject(self, "cvkCellBackgroundView") ? YES : NO;
 }
 
 - (ColoredVKCellBackgroundView *)customBackgroundView
 {
-    ColoredVKCellBackgroundView *customBackgroundView = [self.specifier propertyForKey:@"cvkCellBackgroundView"];
+    if ([self.specifier isKindOfClass:[PSSpecifier class]]) {
+        ColoredVKCellBackgroundView *customBackgroundView = [self.specifier propertyForKey:@"cvkCellBackgroundView"];
+        if (!customBackgroundView) {
+            customBackgroundView = [[ColoredVKCellBackgroundView alloc] initWithFrame:self.bounds];
+            self.customBackgroundView = customBackgroundView;
+        }
+        return customBackgroundView;
+    }
+    
+    ColoredVKCellBackgroundView *customBackgroundView = objc_getAssociatedObject(self, "cvkCellBackgroundView");
     if (!customBackgroundView) {
         customBackgroundView = [[ColoredVKCellBackgroundView alloc] initWithFrame:self.bounds];
         self.customBackgroundView = customBackgroundView;

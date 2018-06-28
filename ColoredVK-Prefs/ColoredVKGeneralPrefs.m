@@ -175,21 +175,7 @@
 
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker willDismissWithColor:(UIColor *)color
 {
-    if (color)
-        self.cachedPrefs[colorPicker.identifier] = color.cvk_stringValue;
-    else if (self.cachedPrefs[colorPicker.identifier])
-        [self.cachedPrefs removeObjectForKey:colorPicker.identifier];
-    
-    [self writePrefsWithCompetion:^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPackageNotificationUpdateColor 
-                                                            object:nil userInfo:@{@"identifier":colorPicker.identifier}];
-        
-        NSArray *identificsToReloadMenu = @[@"MenuSeparatorColor", @"switchesTintColor", @"switchesOnTintColor", @"menuTextColor"];
-        if ([identificsToReloadMenu containsObject:colorPicker.identifier])
-            POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
-        else
-            POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
-    }];
+    [self setPreferenceValue:color ? color.cvk_stringValue : nil forKey:colorPicker.identifier];
 }
 
 - (void)colorPicker:(ColoredVKColorPickerController *)colorPicker didSaveColor:(NSString *)hexColor

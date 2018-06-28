@@ -99,7 +99,7 @@ static NSString *const kPackageNotificationReloadMenu =          @"ru.danpashin.
 static NSString *const kPackageNotificationUpdateNightTheme =    @"ru.danpashin.coloredvk2.nightTheme.reload";
 
 static NSString *const kPackageNotificationUpdateImage =         @"ru.danpashin.coloredvk2.image.update";
-static NSString *const kPackageNotificationUpdateColor =         @"ru.danpashin.coloredvk2.colorPreview.update";
+//static NSString *const kPackageNotificationUpdateColor =         @"ru.danpashin.coloredvk2.colorPreview.update";
 static NSString *const kPackageNotificationReloadInternalPrefs = @"ru.danpashin.coloredvk2.internalPrefs.reload";
 NS_ASSUME_NONNULL_END
 

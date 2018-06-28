@@ -6,8 +6,8 @@
 //  Copyright (c) 2016 Daniil Pashin. All rights reserved.
 //
 
-#import "ColoredVKPrefsCell.h"
+#import "ColoredVKControlPrefsCell.h"
 
-@interface ColoredVKStepperPrefsCell : ColoredVKPrefsCell
+@interface ColoredVKStepperPrefsCell : ColoredVKControlPrefsCell
 
 @end

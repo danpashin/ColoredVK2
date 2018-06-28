@@ -9,6 +9,7 @@
 
 #import "UIColor+ColoredVK.h"
 #import "ColoredVKColorCell.h"
+#import "ColoredVKPrefs.h"
 
 @implementation ColoredVKColorCell
 
@@ -24,32 +25,34 @@
         self.accessoryView.layer.shadowOffset = CGSizeZero;
         self.accessoryView.layer.shadowColor = [UIColor blackColor].CGColor;
         self.accessoryView.layer.shadowOpacity = 0.15f;
-        
-        [self updateColorForIdentifier:specifier.identifier animated:NO];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateColorNotification:) 
-                                                     name:kPackageNotificationUpdateColor object:nil];
     }
     return self;
 }
 
-- (void)updateColorNotification:(NSNotification *)notification
+- (void)refreshCellContentsWithSpecifier:(PSSpecifier *)specifier
 {
-    NSString *notificationID = notification.userInfo[@"identifier"];
-    NSString *selfID = self.specifier.identifier;
+    [super refreshCellContentsWithSpecifier:specifier];
     
-    if ((notificationID.length == 0) || (selfID.length == 0))
-        return;
-    
-	if ([notificationID isEqualToString:selfID])
-        [self updateColorForIdentifier:selfID animated:YES];
+    if ([specifier propertyForKey:@"wasReloaded"]) {
+        [specifier removePropertyForKey:@"wasReloaded"];
+        [self updateColorForIdentifier:specifier.identifier animated:YES];
+    }
+}
+
+- (void)setCellTarget:(id)cellTarget
+{
+    super.cellTarget = cellTarget;
+    [self updateColorForIdentifier:self.specifier.identifier animated:NO];
 }
 
 - (void)updateColorForIdentifier:(NSString *)identifier animated:(BOOL)animated
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        UIColor *savedColor = [UIColor cvk_savedColorForIdentifier:identifier];
-        CGFloat red = 0, green = 0, blue = 0, colorAlpha = 1.0f;
-        [savedColor getRed:&red green:&green blue:&blue alpha:&colorAlpha];
+        ColoredVKPrefs *prefsController = self.cellTarget;
+        UIColor *savedColor = [UIColor cvk_savedColorForIdentifier:identifier fromPrefs:prefsController.cachedPrefs];
+        
+        CGFloat colorAlpha;
+        [savedColor getRed:nil green:nil blue:nil alpha:&colorAlpha];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             UIColor *color = (colorAlpha != 0.0f) ? savedColor : [UIColor colorWithWhite:1.0f alpha:0.9f];
@@ -57,17 +60,13 @@
                 self.accessoryView.backgroundColor = color;
             };
             
-            if (animated)
-                [UIView animateWithDuration:0.5f delay:0.1f options:UIViewAnimationOptionAllowUserInteraction animations:animationBlock completion:nil];
-            else
+            if (animated) {
+                [UIView animateWithDuration:0.5f delay:0 options:UIViewAnimationOptionAllowUserInteraction
+                                 animations:animationBlock completion:nil];
+            } else
                 animationBlock();
         });
     });
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

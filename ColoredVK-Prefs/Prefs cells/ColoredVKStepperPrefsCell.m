@@ -40,10 +40,7 @@
 
 - (void)stepperButton:(ColoredVKStepperButton *)stepperButton didUpdateValue:(CGFloat)value
 {
-    if ([self.cellTarget respondsToSelector:self.cellAction]) {
-        NSString *string = [NSString stringWithFormat:@"%.2f", value];
-        objc_msgSend(self.cellTarget, self.cellAction, string, self.specifier);
-    }
+    [self setPreferenceValue:[NSString stringWithFormat:@"%.2f", value]];
 }
 
 @end

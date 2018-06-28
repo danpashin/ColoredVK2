@@ -87,10 +87,7 @@
     if (self.switchKey.length == 0)
         return;
     
-    SEL setSelector = @selector(setPreferenceValue:forKey:);
-    if ([self.cellTarget respondsToSelector:setSelector]) {
-        objc_msgSend(self.cellTarget, setSelector, @(switchView.on), self.switchKey);
-    }
+    [self setPreferenceValue:@(switchView.on) forKey:self.switchKey];
 }
 
 - (void)updateImage

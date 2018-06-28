@@ -5,9 +5,9 @@
 //  Created by Даниил on 27.06.18.
 //
 
-#import "ColoredVKPrefsCell.h"
+#import "ColoredVKControlPrefsCell.h"
 
-@interface ColoredVKSwitchPrefsCell : ColoredVKPrefsCell
+@interface ColoredVKSwitchPrefsCell : ColoredVKControlPrefsCell
 
 @property (nonatomic, strong) UISwitch *switchView;
 

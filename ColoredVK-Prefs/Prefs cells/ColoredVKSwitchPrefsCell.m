@@ -35,9 +35,7 @@
 
 - (void)switchTriggered:(UISwitch *)switchView
 {
-    if ([self.cellTarget respondsToSelector:self.cellAction]) {
-        objc_msgSend(self.cellTarget, self.cellAction, @(switchView.on), self.specifier);
-    }
+    [self setPreferenceValue:@(switchView.on)];
 }
 
 - (void)updateSwitchWithSpecifier:(PSSpecifier *)specifier

@@ -58,12 +58,9 @@
 
 - (void)segmentTriggered:(UISegmentedControl *)segment
 {
-    if ([self.cellTarget respondsToSelector:self.cellAction]) {
-        NSArray *values = [self.specifier propertyForKey:@"validValues"];
-        id selectedValue = values[self.segment.selectedSegmentIndex];
-        
-        objc_msgSend(self.cellTarget, self.cellAction, selectedValue, self.specifier);
-    }
+    NSArray *values = [self.specifier propertyForKey:@"validValues"];
+    id selectedValue = values[self.segment.selectedSegmentIndex];
+    [self setPreferenceValue:selectedValue];
 }
 
 - (id)customBackgroundView

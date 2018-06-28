@@ -15,6 +15,7 @@
 #import "UIScrollView+EmptyDataSet.h"
 #import "ColoredVKNightScheme.h"
 #import "NSObject+ColoredVK.h"
+#import "ColoredVKColorCell.h"
 
 @import SafariServices.SFSafariViewController;
 
@@ -283,13 +284,13 @@
                 if (specifier.properties[@"detailedLabel"])
                     [specifier setProperty:localizedStringForKey(specifier.properties[@"detailedLabel"]) forKey:@"detailedLabel"];
                 
-                if (specifier.properties[@"validTitles"]) {
-                    NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
-                    for (NSString *key in specifier.titleDictionary.allKeys) {
-                        tempDict[key] = localizedStringForKey(specifier.titleDictionary[key]);
-                    }
-                    specifier.titleDictionary = tempDict;
-                }
+//                if (specifier.properties[@"validTitles"]) {
+//                    NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
+//                    for (NSString *key in specifier.titleDictionary.allKeys) {
+//                        tempDict[key] = localizedStringForKey(specifier.titleDictionary[key]);
+//                    }
+//                    specifier.titleDictionary = tempDict;
+//                }
             }
         }
     }
@@ -323,43 +324,59 @@
 
 - (void)setPreferenceValue:(nullable id)value specifier:(PSSpecifier *)specifier
 {
+    NSLog(@"[COLOREDVK 2] 327: setPreferenceValue: %@ specifier: %@", value, specifier);
     [self setPreferenceValue:value forKey:specifier.properties[@"key"]];
 }
 
 - (void)setPreferenceValue:(nullable id)value forKey:(NSString *)key
 {
-    CVKLog(@"value: %@; key: %@", value, key);
-    
-    if (!key)
-        return;
-    
-    if (value)
-        self.cachedPrefs[key] = value;
-    else
-        [self.cachedPrefs removeObjectForKey:key];
-    
-    [self writePrefsWithCompetion:^{
-        NSArray *identificsToReloadMenu = @[@"enableTweakSwitch", @"menuSelectionStyle", @"hideMenuSeparators", 
-                                            @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor", 
-                                            @"showMenuCell", @"menuUseBackgroundBlur", @"menuImageBlackout", @"enabledMenuImage"];
-        
-        if ([key isEqualToString:@"nightThemeType"]) {
-            [self updateNightTheme];
-            POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
-            POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
+    @synchronized(self) {
+        CVKLog(@"value: %@; key: %@", value, key);
+        if (!key)
             return;
-        }
         
-        if ([identificsToReloadMenu containsObject:key])
-            POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
-        else 
-            POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
+        PSSpecifier *specifier = [self specifierForID:key];
+        if (specifier)
+            [specifier setProperty:@YES forKey:@"wasReloaded"];
         
-        if ([key isEqualToString:@"enableTweakSwitch"]) {
-            [self updateNightTheme];
-            POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
-        }
-    }];
+        if (value)
+            self.cachedPrefs[key] = value;
+        else
+            [self.cachedPrefs removeObjectForKey:key];
+        
+        [self writePrefsWithCompetion:^{
+            NSArray *identificsToReloadMenu = @[@"enabled", @"menuSelectionStyle", @"hideMenuSeparators", 
+                                                @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor", 
+                                                @"showMenuCell", @"menuUseBackgroundBlur", @"menuImageBlackout", 
+                                                @"enabledMenuImage", @"MenuSeparatorColor", @"switchesTintColor",
+                                                @"switchesOnTintColor", @"menuTextColor"];
+            
+            if ([key isEqualToString:@"nightThemeType"]) {
+                [self updateNightTheme];
+                POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
+                POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
+                return;
+            }
+            
+            if ([identificsToReloadMenu containsObject:key]) {
+                POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
+            } else {
+                POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
+            }
+            
+            if ([key isEqualToString:@"enableTweakSwitch"]) {
+                [self updateNightTheme];
+                POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
+            }
+            
+            PSTableCell *cachedCell = specifier ? [self cachedCellForSpecifier:specifier] : nil;
+            if ([cachedCell isKindOfClass:[ColoredVKColorCell class]]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [cachedCell refreshCellContentsWithSpecifier:specifier];
+                });
+            }
+        }];
+    }
 }
 
 #pragma mark -
@@ -380,11 +397,8 @@
 {
     objc_setAssociatedObject(cell, "change_switch_color", @(self.shouldChangeSwitchColor), OBJC_ASSOCIATION_ASSIGN);
     
-    if ([cell isKindOfClass:[ColoredVKPrefsCell class]]) {
-        [cell renderBackgroundWithColor:nil separatorColor:nil forTableView:tableView indexPath:indexPath];
-        [self updateNightThemeForCell:cell animated:NO];
-    }
-//    CVKLog(@"%@", cell);
+    [cell renderBackgroundWithColor:nil separatorColor:nil forTableView:tableView indexPath:indexPath];
+    [self updateNightThemeForCell:cell animated:NO];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
