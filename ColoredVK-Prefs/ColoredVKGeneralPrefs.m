@@ -133,8 +133,7 @@
             handler(success, error);
         }
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:kPackageNotificationUpdateImage object:nil
-                                                          userInfo:@{@"identifier" : self.lastImageIdentifier}];
+        [self updateSpecifierWithKey:self.lastImageIdentifier];
         
         if ([self.lastImageIdentifier isEqualToString:@"menuBackgroundImage"])
             POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);

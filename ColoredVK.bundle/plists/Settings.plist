@@ -43,8 +43,8 @@
 			<string>PSGroupCell</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
+			<key>cellType</key>
+			<string>Switch</string>
 			<key>label</key>
 			<string>CHANGE_TEXT_COLOR</string>
 			<key>key</key>
@@ -83,10 +83,8 @@
 			<string>PSGroupCell</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKSwitchPrefsCell</string>
+			<key>cellType</key>
+			<string>Switch</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
@@ -95,10 +93,8 @@
 			<string>HIDE_SEPARATORS</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKSwitchPrefsCell</string>
+			<key>cellType</key>
+			<string>Switch</string>
 			<key>label</key>
 			<string>USE_PARALLAX</string>
 			<key>key</key>

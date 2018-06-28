@@ -45,8 +45,8 @@
 			<string>CHANGE_MESSAGES_TEXT_COLOR_FOOTER</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
+			<key>cellType</key>
+			<string>Switch</string>
 			<key>label</key>
 			<string>CHANGE_TEXT_COLOR</string>
 			<key>key</key>
@@ -83,10 +83,8 @@
 			<string>BLUR_SETTINGS</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKSwitchPrefsCell</string>
+			<key>cellType</key>
+			<string>Switch</string>
 			<key>label</key>
 			<string>USE_PARALLAX</string>
 			<key>key</key>
@@ -103,10 +101,8 @@
 			<string>HIDE_MESSAGE_NAV_BAR_ITEMS_FOOTER</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKSwitchPrefsCell</string>
+			<key>cellType</key>
+			<string>Switch</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>
@@ -161,10 +157,8 @@
 			<string>PSGroupCell</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>cellClass</key>
-			<string>ColoredVKSwitchPrefsCell</string>
+			<key>cellType</key>
+			<string>Switch</string>
 			<key>default</key>
 			<false/>
 			<key>key</key>

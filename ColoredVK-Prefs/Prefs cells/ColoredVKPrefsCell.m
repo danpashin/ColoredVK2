@@ -6,6 +6,7 @@
 //
 
 #import "ColoredVKPrefsCell.h"
+#import "ColoredVKCellBackgroundView.h"
 
 #import <objc/runtime.h>
 #import "ColoredVKPrefs.h"
@@ -22,12 +23,17 @@
     
     if ([self.specifier.properties[@"shouldCenter"] boolValue])
         self.titleLabel.center = self.contentView.center;
+}
+
+- (void)refreshCellContentsWithSpecifier:(PSSpecifier *)specifier
+{
+    [super refreshCellContentsWithSpecifier:specifier];
     
-    if ([self.specifier.properties[@"addDisclosureIndicator"] boolValue])
+    if ([specifier.properties[@"addDisclosureIndicator"] boolValue])
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     if (self.type == PSButtonCell) {
-        if ([self.specifier.properties[@"style"] isEqualToString:@"Destructive"]) {
+        if ([specifier.properties[@"style"] isEqualToString:@"Destructive"]) {
             self.titleLabel.textColor = [UIColor redColor];
         } else {
             self.titleLabel.textColor = CVKMainColor;

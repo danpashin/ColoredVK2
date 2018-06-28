@@ -10,15 +10,14 @@
 #import <UIKit/UIKit.h>
 #import <PSSpecifier.h>
 #import <PSListController.h>
+#import "UIScrollView+EmptyDataSet.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ColoredVKPrefs : PSListController
+@interface ColoredVKPrefs : PSListController <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
 
 @property (strong, nonatomic, readonly) NSBundle *cvkBundle;
 @property (strong, nonatomic) NSMutableDictionary *cachedPrefs;
-
-@property (assign, nonatomic) BOOL shouldChangeSwitchColor;
 
 - (void)commonInit NS_REQUIRES_SUPER;
 - (void)updateNightTheme NS_REQUIRES_SUPER;
@@ -31,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable id)readPreferenceValue:(PSSpecifier *)specifier NS_REQUIRES_SUPER;
 - (void)setPreferenceValue:(nullable id)value specifier:(PSSpecifier *)specifier NS_REQUIRES_SUPER;
 - (void)setPreferenceValue:(nullable id)value forKey:(NSString *)key NS_REQUIRES_SUPER;
+- (void)updateSpecifierWithKey:(NSString *)key;
 
 - (void)writePrefsWithCompetion:(nullable void(^)(void))completionBlock NS_REQUIRES_SUPER;
 - (void)readPrefsWithCompetion:(nullable void(^)(void))completionBlock NS_REQUIRES_SUPER;

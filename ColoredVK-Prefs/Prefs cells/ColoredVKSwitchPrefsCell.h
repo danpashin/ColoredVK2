@@ -12,6 +12,6 @@
 @property (nonatomic, strong) UISwitch *switchView;
 
 - (void)switchTriggered:(UISwitch *)switchView;
-- (void)updateSwitchWithSpecifier:(PSSpecifier *)specifier;
+- (void)updateSwitchWithSpecifier:(PSSpecifier *)specifier NS_REQUIRES_SUPER;
 
 @end

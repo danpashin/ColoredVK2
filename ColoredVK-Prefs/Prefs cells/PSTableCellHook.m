@@ -14,6 +14,7 @@
 #import "ColoredVKSwitchPrefsCell.h"
 #import "ColoredVKSegmentPrefsCell.h"
 #import "ColoredVKStepperPrefsCell.h"
+#import "ColoredVKColorCell.h"
 
 
 CHDeclareClass(PSTableCell);
@@ -33,7 +34,7 @@ CHDeclareClassMethod(1, Class, PSTableCell, cellClassForSpecifier, PSSpecifier *
         } else if ([cellType isEqualToString:@"Stepper"]) {
             return [ColoredVKStepperPrefsCell class];
         } else if ([cellType isEqualToString:@"ColorWheel"]) {
-            return [ColoredVKStepperPrefsCell class];
+            return [ColoredVKColorCell class];
         }
         
         if (![specifier propertyForKey:@"cellClass"]) {

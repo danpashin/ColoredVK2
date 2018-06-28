@@ -14,10 +14,8 @@
 #import "ColoredVKPrefs.h"
 
 @interface ColoredVKImagePrefsCell ()
-
 @property (strong, nonatomic, readonly) NSString *switchKey;
-@property (strong, nonatomic) UIImageView *previewImageView;
-
+@property (strong, nonatomic) UIImageView *preview;
 @end
 
 @implementation ColoredVKImagePrefsCell
@@ -30,28 +28,24 @@
         self.switchView.enabled = NO;
         
         CGFloat imageViewSize = 32.0f;
-        self.previewImageView = [UIImageView new];
-        self.previewImageView.backgroundColor = [UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f];
-        self.previewImageView.contentMode = UIViewContentModeScaleAspectFill;
-        self.previewImageView.userInteractionEnabled = YES;
-        self.previewImageView.layer.masksToBounds = YES;
-        self.previewImageView.layer.cornerRadius = imageViewSize / 4.0f;
-        [self.contentView addSubview:self.previewImageView];
+        self.preview = [UIImageView new];
+        self.preview.backgroundColor = [UIColor colorWithRed:239/255.0f green:239/255.0f blue:244/255.0f alpha:1.0f];
+        self.preview.contentMode = UIViewContentModeScaleAspectFill;
+        self.preview.userInteractionEnabled = YES;
+        self.preview.layer.masksToBounds = YES;
+        self.preview.layer.cornerRadius = 8.0f;
+        [self.contentView addSubview:self.preview];
         
-        self.previewImageView.translatesAutoresizingMaskIntoConstraints = NO;       
-        [self.previewImageView.widthAnchor constraintEqualToConstant:imageViewSize].active = YES;
-        [self.previewImageView.heightAnchor constraintEqualToConstant:imageViewSize].active = YES;
-        [self.previewImageView.centerYAnchor constraintEqualToAnchor:self.contentView.centerYAnchor].active = YES;
-        [self.previewImageView.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-8.0f].active = YES;
+        self.preview.translatesAutoresizingMaskIntoConstraints = NO;       
+        [self.preview.widthAnchor constraintEqualToConstant:imageViewSize].active = YES;
+        [self.preview.heightAnchor constraintEqualToConstant:imageViewSize].active = YES;
+        [self.preview.centerYAnchor constraintEqualToAnchor:self.contentView.centerYAnchor].active = YES;
+        [self.preview.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-8.0f].active = YES;
         
         
         UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showActionsController:)];
-        longPress.minimumPressDuration = 1.0;
+        longPress.minimumPressDuration = 1.0f;
         [self addGestureRecognizer:longPress];
-        
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(notificationUpdateImage:) 
-                                                   name:kPackageNotificationUpdateImage object:nil];
-        [self updateImage];
     }
     return self;
 }
@@ -75,11 +69,24 @@
 
 - (void)updateSwitchWithSpecifier:(PSSpecifier *)specifier
 {
+    [super updateSwitchWithSpecifier:specifier];
+    
     if ([self.cellTarget isKindOfClass:[ColoredVKPrefs class]]) {
         ColoredVKPrefs *prefsController = self.cellTarget;
         NSDictionary *prefs = prefsController.cachedPrefs;
         self.switchView.on = prefs[self.switchKey] ? [prefs[self.switchKey] boolValue] : NO;
     }
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        NSString *previewPath = [NSString stringWithFormat:@"%@/%@_preview.png", CVK_FOLDER_PATH, specifier.identifier];
+        UIImage *image = [UIImage imageWithContentsOfFile:previewPath];
+        if (image) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.switchView.enabled = YES;
+                self.preview.image = image;
+            });
+        }
+    });
 }
 
 - (void)switchTriggered:(UISwitch *)switchView
@@ -88,27 +95,6 @@
         return;
     
     [self setPreferenceValue:@(switchView.on) forKey:self.switchKey];
-}
-
-- (void)updateImage
-{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        NSString *previewPath = [NSString stringWithFormat:@"%@/%@_preview.png", CVK_FOLDER_PATH, self.specifier.identifier];
-        UIImage *image = [UIImage imageWithContentsOfFile:previewPath];
-        if (image) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.switchView.enabled = YES;
-                self.previewImageView.image = image;
-            });
-        }
-    });
-}
-
-- (void)notificationUpdateImage:(NSNotification *)notification
-{
-    NSString *identifier = notification.userInfo[@"identifier"];
-    if ([self.specifier.identifier isEqualToString:identifier])
-        [self updateImage];
 }
 
 
@@ -128,8 +114,7 @@
     if (![[NSFileManager defaultManager] fileExistsAtPath:imagePath])
         return;
     
-    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:nil message:nil 
-                                                                                    preferredStyle:UIAlertControllerStyleActionSheet];
+    ColoredVKAlertController *alertController = [ColoredVKAlertController actionSheetWithMessage:nil];
     
     [alertController addCancelAction];
     [alertController addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Save to Camera Roll") 
@@ -191,7 +176,7 @@
         
         if (!error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.previewImageView.image = nil;
+                self.preview.image = nil;
                 [self.switchView setOn:NO animated:YES];
                 self.switchView.enabled = NO;
                 [self switchTriggered:self.switchView];
@@ -205,11 +190,6 @@
 {
     ColoredVKHUD *hud = CFBridgingRelease(contextInfo);
     error ? [hud showFailureWithStatus:error.localizedFailureReason] : [hud showSuccess];
-}
-
-- (void)dealloc
-{
-    [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
 @end

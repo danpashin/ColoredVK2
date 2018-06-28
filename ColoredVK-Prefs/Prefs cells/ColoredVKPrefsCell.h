@@ -9,10 +9,7 @@
 @import UIKit;
 
 #import <PSSpecifier.h>
-#import <objc/message.h>
-
-#import "ColoredVKCellBackgroundView.h"
-#import "ColoredVKNightScheme.h"
+@class ColoredVKCellBackgroundView;
 
 @interface ColoredVKPrefsCell : PSTableCell
 

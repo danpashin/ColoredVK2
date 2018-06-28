@@ -8,23 +8,19 @@
 
 #import "ColoredVKPrefs.h"
 #import "ColoredVKAlertController.h"
-#import "ColoredVKNewInstaller.h"
-//#import "UITableViewCell+ColoredVK.h"
-#import "ColoredVKPrefsCell.h"
-#import <objc/runtime.h>
-#import "UIScrollView+EmptyDataSet.h"
-#import "ColoredVKNightScheme.h"
-#import "NSObject+ColoredVK.h"
-#import "ColoredVKColorCell.h"
-
 @import SafariServices.SFSafariViewController;
 
+#import "ColoredVKNewInstaller.h"
+#import "ColoredVKNightScheme.h"
+#import "NSObject+ColoredVK.h"
 
-@interface ColoredVKPrefs ()  <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
-@end
+#import "ColoredVKPrefsCell.h"
+#import "ColoredVKColorCell.h"
+#import "ColoredVKImagePrefsCell.h"
+#import "ColoredVKCellBackgroundView.h"
+
 
 @implementation ColoredVKPrefs
-@dynamic specifiers;
 
 - (instancetype)initWithNibName:(nullable NSString *)nibNameOrNil bundle:(nullable NSBundle *)nibBundleOrNil
 {
@@ -50,7 +46,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadPrefsNotification) name:kPackageNotificationReloadInternalPrefs object:nil];
     
     [self readPrefsWithCompetion:^{
-        self.shouldChangeSwitchColor = ([self.cachedPrefs[@"enabled"] boolValue] && [self.cachedPrefs[@"changeSwitchColor"] boolValue]);
         
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
@@ -160,12 +155,9 @@
     });
 }
 
-- (void)updateNightThemeForCell:(ColoredVKPrefsCell *)cell animated:(BOOL)animated
+- (void)updateNightThemeForCell:(__kindof ColoredVKPrefsCell *)cell animated:(BOOL)animated
 {
     if (![ColoredVKNewInstaller sharedInstaller].application.isVKApp)
-        return;
-    
-    if (![cell isKindOfClass:[ColoredVKPrefsCell class]])
         return;
     
     ColoredVKNightScheme *nightThemeColorScheme = [ColoredVKNightScheme sharedScheme];
@@ -190,6 +182,22 @@
         changeBlock();
 }
 
+- (void)updateSpecifierWithKey:(NSString *)key
+{
+    PSSpecifier *specifier = [self specifierForID:key];
+    if (!specifier)
+        return;
+    
+    [specifier setProperty:@YES forKey:@"wasReloaded"];
+    
+    PSTableCell *cachedCell = specifier ? [self cachedCellForSpecifier:specifier] : nil;
+    if (cachedCell) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [cachedCell refreshCellContentsWithSpecifier:specifier];
+        });
+    }
+}
+
 - (void)presentPopover:(UIViewController *)controller
 {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -205,8 +213,7 @@
 
 - (void)showPurchaseAlert
 {
-    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"AVAILABLE_IN_FULL_VERSION")
-                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"AVAILABLE_IN_FULL_VERSION")];
     [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"THINK_LATER") style:UIAlertActionStyleCancel 
                                                       handler:^(UIAlertAction *action) {}]];
     [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OF_COURSE") style:UIAlertActionStyleDefault
@@ -283,14 +290,6 @@
                     [specifier setProperty:localizedStringForKey(specifier.properties[@"label"]) forKey:@"label"];
                 if (specifier.properties[@"detailedLabel"])
                     [specifier setProperty:localizedStringForKey(specifier.properties[@"detailedLabel"]) forKey:@"detailedLabel"];
-                
-//                if (specifier.properties[@"validTitles"]) {
-//                    NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
-//                    for (NSString *key in specifier.titleDictionary.allKeys) {
-//                        tempDict[key] = localizedStringForKey(specifier.titleDictionary[key]);
-//                    }
-//                    specifier.titleDictionary = tempDict;
-//                }
             }
         }
     }
@@ -334,16 +333,13 @@
         if (!key)
             return;
         
-        PSSpecifier *specifier = [self specifierForID:key];
-        if (specifier)
-            [specifier setProperty:@YES forKey:@"wasReloaded"];
-        
         if (value)
             self.cachedPrefs[key] = value;
         else
             [self.cachedPrefs removeObjectForKey:key];
         
         [self writePrefsWithCompetion:^{
+            [self updateSpecifierWithKey:key];
             NSArray *identificsToReloadMenu = @[@"enabled", @"menuSelectionStyle", @"hideMenuSeparators", 
                                                 @"changeSwitchColor", @"useMenuParallax", @"changeMenuTextColor", 
                                                 @"showMenuCell", @"menuUseBackgroundBlur", @"menuImageBlackout", 
@@ -367,13 +363,6 @@
                 [self updateNightTheme];
                 POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
             }
-            
-            PSTableCell *cachedCell = specifier ? [self cachedCellForSpecifier:specifier] : nil;
-            if ([cachedCell isKindOfClass:[ColoredVKColorCell class]]) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [cachedCell refreshCellContentsWithSpecifier:specifier];
-                });
-            }
         }];
     }
 }
@@ -394,8 +383,6 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(__kindof ColoredVKPrefsCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    objc_setAssociatedObject(cell, "change_switch_color", @(self.shouldChangeSwitchColor), OBJC_ASSOCIATION_ASSIGN);
-    
     [cell renderBackgroundWithColor:nil separatorColor:nil forTableView:tableView indexPath:indexPath];
     [self updateNightThemeForCell:cell animated:NO];
 }

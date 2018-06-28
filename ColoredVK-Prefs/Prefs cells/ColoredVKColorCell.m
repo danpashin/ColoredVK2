@@ -33,13 +33,12 @@
 {
     [super refreshCellContentsWithSpecifier:specifier];
     
-    BOOL updateWithAnimation = NO;
     if ([specifier propertyForKey:@"wasReloaded"]) {
         [specifier removePropertyForKey:@"wasReloaded"];
-        updateWithAnimation = YES;
+        [self updateColorForIdentifier:specifier.identifier animated:YES];
+    } else if (!self.accessoryView.backgroundColor) {
+        [self updateColorForIdentifier:specifier.identifier animated:NO];
     }
-    
-    [self updateColorForIdentifier:specifier.identifier animated:updateWithAnimation];
 }
 
 - (void)updateColorForIdentifier:(NSString *)identifier animated:(BOOL)animated

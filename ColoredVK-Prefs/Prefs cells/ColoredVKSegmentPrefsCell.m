@@ -6,6 +6,7 @@
 //
 
 #import "ColoredVKSegmentPrefsCell.h"
+#import "ColoredVKNightScheme.h"
 
 @interface ColoredVKSegmentPrefsCell ()
 @property (strong, nonatomic) UISegmentedControl *segment;
@@ -43,16 +44,18 @@
 {
     [super refreshCellContentsWithSpecifier:specifier];
     
-    NSArray <NSString *> *titles = [specifier propertyForKey:@"validTitles"];
-    for (NSString *title in titles) {
-        NSString *localized = CVKLocalizedStringFromTable(title, @"ColoredVK");
-        [self.segment insertSegmentWithTitle:localized atIndex:self.segment.numberOfSegments animated:NO];
-    }
-    
-    id currentValue = self.currentPrefsValue;
-    if (currentValue) {
-        NSArray *values = [specifier propertyForKey:@"validValues"];
-        self.segment.selectedSegmentIndex = [values indexOfObject:currentValue];
+    if (self.segment.numberOfSegments == 0) {
+        NSArray <NSString *> *titles = [specifier propertyForKey:@"validTitles"];
+        for (NSString *title in titles) {
+            NSString *localized = CVKLocalizedStringFromTable(title, @"ColoredVK");
+            [self.segment insertSegmentWithTitle:localized atIndex:self.segment.numberOfSegments animated:NO];
+        }
+        
+        id currentValue = self.currentPrefsValue;
+        if (currentValue) {
+            NSArray *values = [specifier propertyForKey:@"validValues"];
+            self.segment.selectedSegmentIndex = [values indexOfObject:currentValue];
+        }
     }
 }
 
