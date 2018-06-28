@@ -33,16 +33,13 @@
 {
     [super refreshCellContentsWithSpecifier:specifier];
     
+    BOOL updateWithAnimation = NO;
     if ([specifier propertyForKey:@"wasReloaded"]) {
         [specifier removePropertyForKey:@"wasReloaded"];
-        [self updateColorForIdentifier:specifier.identifier animated:YES];
+        updateWithAnimation = YES;
     }
-}
-
-- (void)setCellTarget:(id)cellTarget
-{
-    super.cellTarget = cellTarget;
-    [self updateColorForIdentifier:self.specifier.identifier animated:NO];
+    
+    [self updateColorForIdentifier:specifier.identifier animated:updateWithAnimation];
 }
 
 - (void)updateColorForIdentifier:(NSString *)identifier animated:(BOOL)animated
@@ -61,7 +58,7 @@
             };
             
             if (animated) {
-                [UIView animateWithDuration:0.5f delay:0 options:UIViewAnimationOptionAllowUserInteraction
+                [UIView animateWithDuration:0.3f delay:0 options:UIViewAnimationOptionAllowUserInteraction
                                  animations:animationBlock completion:nil];
             } else
                 animationBlock();

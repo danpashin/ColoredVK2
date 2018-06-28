@@ -8,7 +8,7 @@
 
 #import "ColoredVKAccountController+Actions.h"
 
-#import "ColoredVKNightScheme.h"
+#import "ColoredVKPrefsCell.h"
 #import <objc/runtime.h>
 #import <MXParallaxHeader.h>
 

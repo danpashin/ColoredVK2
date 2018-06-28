@@ -324,7 +324,6 @@
 
 - (void)setPreferenceValue:(nullable id)value specifier:(PSSpecifier *)specifier
 {
-    NSLog(@"[COLOREDVK 2] 327: setPreferenceValue: %@ specifier: %@", value, specifier);
     [self setPreferenceValue:value forKey:specifier.properties[@"key"]];
 }
 
