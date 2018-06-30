@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) NSMutableDictionary *cachedPrefs;
 
 - (void)commonInit NS_REQUIRES_SUPER;
-- (void)updateNightTheme NS_REQUIRES_SUPER;
+- (void)updateControllerAppearance:(BOOL)animated NS_REQUIRES_SUPER;
 
 - (void)openURL:(NSString *)url;
 - (void)presentPopover:(UIViewController *)controller;

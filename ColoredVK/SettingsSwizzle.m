@@ -30,7 +30,7 @@ CHDeclareMethod(3, void, ModernSettingsController, tableView, UITableView*, tabl
 {
     CHSuper(3, ModernSettingsController, tableView, tableView, willDisplayCell, cell, forRowAtIndexPath, indexPath);
     
-    if ([self isKindOfClass:NSClassFromString(@"ModernSettingsController")]) {
+    if ([self isKindOfClass:objc_lookUpClass("ModernSettingsController")]) {
         [NSObject cvk_runBlockOnMainThread:^{
             if ([cell.textLabel.text.lowercaseString isEqualToString:@"vksettings"]) {
                 cell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
@@ -60,7 +60,7 @@ CHDeclareMethod(0, void, ModernSettingsController, viewWillLayoutSubviews)
 {
     CHSuper(0, ModernSettingsController, viewWillLayoutSubviews);
     
-    if (enabled && !enableNightTheme && enabledSettingsImage && [self isKindOfClass:NSClassFromString(@"ModernSettingsController")]) {
+    if (enabled && !enableNightTheme && enabledSettingsImage && [self isKindOfClass:objc_lookUpClass("ModernSettingsController")]) {
         [cvkMainController setImageToTableView:self.tableView name:@"settingsBackgroundImage" blackout:settingsImageBlackout 
                                 parallaxEffect:useSettingsParallax blur:settingsUseBackgroundBlur];
         
@@ -90,7 +90,7 @@ CHDeclareClass(BaseSectionedSettingsController);
 CHDeclareMethod(0, void, BaseSectionedSettingsController, viewWillLayoutSubviews)
 {
     CHSuper(0, BaseSectionedSettingsController, viewWillLayoutSubviews);
-    NSArray <Class> *settingsExtraClasses = @[NSClassFromString(@"ModernGeneralSettings"), NSClassFromString(@"ModernAccountSettings"), NSClassFromString(@"AboutViewController")];
+    NSArray <Class> *settingsExtraClasses = @[objc_lookUpClass("ModernGeneralSettings"), objc_lookUpClass("ModernAccountSettings"), objc_lookUpClass("AboutViewController")];
     if ([settingsExtraClasses containsObject:[self class]])
         setupExtraSettingsController(self);
 }
@@ -98,7 +98,7 @@ CHDeclareMethod(0, void, BaseSectionedSettingsController, viewWillLayoutSubviews
 CHDeclareMethod(2, UITableViewCell*, BaseSectionedSettingsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, BaseSectionedSettingsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    NSArray <Class> *settingsExtraClasses = @[NSClassFromString(@"ModernGeneralSettings"), NSClassFromString(@"ModernAccountSettings"), NSClassFromString(@"AboutViewController")];
+    NSArray <Class> *settingsExtraClasses = @[objc_lookUpClass("ModernGeneralSettings"), objc_lookUpClass("ModernAccountSettings"), objc_lookUpClass("AboutViewController")];
     if ([settingsExtraClasses containsObject:[self class]])
         setupExtraSettingsCell(cell);
     return cell;
@@ -109,14 +109,14 @@ CHDeclareClass(ProfileBannedController);
 CHDeclareMethod(0, void, ProfileBannedController, viewWillLayoutSubviews)
 {
     CHSuper(0, ProfileBannedController, viewWillLayoutSubviews);
-    if ([self isKindOfClass:NSClassFromString(@"ProfileBannedController")])
+    if ([self isKindOfClass:objc_lookUpClass("ProfileBannedController")])
         setupExtraSettingsController(self);
 }
 
 CHDeclareMethod(2, UITableViewCell*, ProfileBannedController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, ProfileBannedController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    if ([self isKindOfClass:NSClassFromString(@"ProfileBannedController")])
+    if ([self isKindOfClass:objc_lookUpClass("ProfileBannedController")])
         setupExtraSettingsCell(cell);
     return cell;
 }
@@ -126,14 +126,15 @@ CHDeclareClass(SettingsPrivacyController);
 CHDeclareMethod(0, void, SettingsPrivacyController, viewWillLayoutSubviews)
 {
     CHSuper(0, SettingsPrivacyController, viewWillLayoutSubviews);
-    if ([self isKindOfClass:NSClassFromString(@"SettingsPrivacyController")])
+    if ([self isKindOfClass:objc_lookUpClass("SettingsPrivacyController")])
         setupExtraSettingsController(self);
 }
 
 CHDeclareMethod(2, UITableViewCell*, SettingsPrivacyController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, SettingsPrivacyController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    if ([self isKindOfClass:NSClassFromString(@"SettingsPrivacyController")])
+    if ([self isKindOfClass:objc_lookUpClass("SettingsPrivacyController")])
         setupExtraSettingsCell(cell);
     return cell;
 }
+

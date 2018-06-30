@@ -45,12 +45,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadPrefsNotification) name:kPackageNotificationReloadInternalPrefs object:nil];
     
     [self readPrefsWithCompetion:^{
-        ColoredVKNightScheme *nightThemeColorScheme = [ColoredVKNightScheme sharedScheme];
-        NSInteger themeType = self.cachedPrefs[@"nightThemeType"] ? [self.cachedPrefs[@"nightThemeType"] integerValue] : -1;
-        [nightThemeColorScheme updateForType:themeType];
-        
-        BOOL vkApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
-        nightThemeColorScheme.enabled = ((themeType != -1) && [self.cachedPrefs[@"enabled"] boolValue] && vkApp);
+        [self updateNightThemeModel];
     }];
 }
 
@@ -113,33 +108,42 @@
     }];
 }
 
-- (void)updateNightTheme
+- (void)updateNightThemeModel
+{
+    ColoredVKNightScheme *nightThemeColorScheme = [ColoredVKNightScheme sharedScheme];
+    NSInteger themeType = self.cachedPrefs[@"nightThemeType"] ? [self.cachedPrefs[@"nightThemeType"] integerValue] : -1;
+    [nightThemeColorScheme updateForType:themeType];
+    
+    BOOL vkApp = [ColoredVKNewInstaller sharedInstaller].application.isVKApp;
+    nightThemeColorScheme.enabled = ((themeType != -1) && [self.cachedPrefs[@"enabled"] boolValue] && vkApp);
+}
+
+- (void)updateControllerAppearance:(BOOL)animated
 {
     if (![ColoredVKNewInstaller sharedInstaller].application.isVKApp)
         return;
     
-    ColoredVKNightScheme *nightThemeColorScheme = [ColoredVKNightScheme sharedScheme];
-    
-    NSInteger themeType = self.cachedPrefs[@"nightThemeType"] ? [self.cachedPrefs[@"nightThemeType"] integerValue] : -1;
-    [nightThemeColorScheme updateForType:themeType];
-    nightThemeColorScheme.enabled = ((themeType != -1) && [self.cachedPrefs[@"enabled"] boolValue]);
-    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+        void (^tableBlock)(void) = ^{
             self.table.separatorColor = [UIColor clearColor];
             self.table.backgroundColor = [UIColor colorWithRed:0.937255f green:0.937255f blue:0.956863f alpha:1.0f];
-            self.navigationController.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
-        } completion:nil];
+            self.navigationController.navigationBar.tintColor = [UIColor colorWithRed:0.235294f green:0.439216f blue:0.662745f alpha:1.0f];
+        };
+        
+        if (animated)
+            [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:tableBlock completion:nil];
+        else
+            tableBlock();
         
         
         for (PSSpecifier *specifier in self.specifiers) {
-            ColoredVKPrefsCell *cell = (ColoredVKPrefsCell *)[self cachedCellForSpecifier:specifier];
-            [self updateNightThemeForCell:cell animated:YES];
+            ColoredVKPrefsCell *cell = [self cachedCellForSpecifier:specifier];
+            [self updateCellAppearance:cell animated:animated];
         }
     });
 }
 
-- (void)updateNightThemeForCell:(__kindof ColoredVKPrefsCell *)cell animated:(BOOL)animated
+- (void)updateCellAppearance:(__kindof ColoredVKPrefsCell *)cell animated:(BOOL)animated
 {
     if (![ColoredVKNewInstaller sharedInstaller].application.isVKApp)
         return;
@@ -154,7 +158,9 @@
         backgroundView.backgroundColor         = nightThemeColorScheme.enabled ? nightThemeColorScheme.foregroundColor : nil;
         backgroundView.separatorColor          = nightThemeColorScheme.enabled ? nightThemeColorScheme.backgroundColor : nil;
         backgroundView.selectedBackgroundColor = nightThemeColorScheme.enabled ? nightThemeColorScheme.backgroundColor : nil;
-        cell.textLabel.textColor               = nightThemeColorScheme.enabled ? nightThemeColorScheme.textColor : [UIColor blackColor];  
+        
+        if (cell.type != PSButtonCell)
+            cell.textLabel.textColor = nightThemeColorScheme.enabled ? nightThemeColorScheme.textColor : [UIColor blackColor];  
         
         if (nightThemeColorScheme.enabled) {
             if ([cell.accessoryView isKindOfClass:NSClassFromString(@"ColoredVKStepperButton")]) {
@@ -332,8 +338,15 @@
                                                 @"enabledMenuImage", @"MenuSeparatorColor", @"switchesTintColor",
                                                 @"switchesOnTintColor", @"menuTextColor"];
             
+            void (^updateNightThemeBlock)(void) = ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self updateNightThemeModel];
+                    [self updateControllerAppearance:YES];
+                });
+            };
+            
             if ([key isEqualToString:@"nightThemeType"]) {
-                [self updateNightTheme];
+                updateNightThemeBlock();
                 POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
                 POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
                 return;
@@ -346,7 +359,7 @@
             }
             
             if ([key isEqualToString:@"enabled"]) {
-                [self updateNightTheme];
+                updateNightThemeBlock();
                 POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
             }
         }];
@@ -370,7 +383,7 @@
 - (void)tableView:(UITableView *)tableView willDisplayCell:(__kindof ColoredVKPrefsCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [cell renderBackgroundWithColor:nil separatorColor:nil forTableView:tableView indexPath:indexPath];
-    [self updateNightThemeForCell:cell animated:NO];
+    [self updateCellAppearance:cell animated:NO];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

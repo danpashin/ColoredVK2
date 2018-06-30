@@ -38,10 +38,10 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
     if (!shouldChangeBackground)
         shouldChangeBackground = @YES;
     
-    if ([self isKindOfClass:NSClassFromString(@"ColoredVKPrefsCell")])
+    if ([self isKindOfClass:objc_lookUpClass("ColoredVKPrefsCell")])
         return;
     
-    if ([self isKindOfClass:NSClassFromString(@"MessageCell")])
+    if ([self isKindOfClass:objc_lookUpClass("MessageCell")])
         return;
     
     if ([self isKindOfClass:[UITableViewCell class]]) {
@@ -62,7 +62,7 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
                 self.detailTextLabel.backgroundColor = [UIColor clearColor];
             }
             
-            if ([self isKindOfClass:NSClassFromString(@"GroupCell")]) {
+            if ([self isKindOfClass:objc_lookUpClass("GroupCell")]) {
                 GroupCell *groupCell = (GroupCell *)self;
                 if (groupCell.status) {
                     NIGHT_THEME_DISABLE_CUSTOMISATION(groupCell.status);
@@ -71,9 +71,9 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
                 }
             }
             
-            if ([self isKindOfClass:NSClassFromString(@"VKMRendererCell")]) {
+            if ([self isKindOfClass:objc_lookUpClass("VKMRendererCell")]) {
                 VKMRendererCell *rendererCell = (VKMRendererCell *)self;
-                if ([rendererCell.renderer isKindOfClass:NSClassFromString(@"CommentRenderer")]) {
+                if ([rendererCell.renderer isKindOfClass:objc_lookUpClass("CommentRenderer")]) {
                     BOOL firstLabelFound = NO;
                     for (UIView *subview in rendererCell.renderer.views) {
                         if ([subview isKindOfClass:[UILabel class]]) {
@@ -114,11 +114,11 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
         if (!should_customize.boolValue)
             return;
         
-        if (![self isKindOfClass:NSClassFromString(@"VKMImageButton")] && 
-            ![self isKindOfClass:NSClassFromString(@"HighlightableButton")] && 
-            ![self isKindOfClass:NSClassFromString(@"LinkButton")] && 
-            ![self isKindOfClass:NSClassFromString(@"BorderButton")] &&
-            ![self isKindOfClass:NSClassFromString(@"VKReusableButtonView")]) {
+        if (![self isKindOfClass:objc_lookUpClass("VKMImageButton")] && 
+            ![self isKindOfClass:objc_lookUpClass("HighlightableButton")] && 
+            ![self isKindOfClass:objc_lookUpClass("LinkButton")] && 
+            ![self isKindOfClass:objc_lookUpClass("BorderButton")] &&
+            ![self isKindOfClass:objc_lookUpClass("VKReusableButtonView")]) {
             
             if (self.titleLabel) {
                 if (self.currentImage || self.currentBackgroundImage)
@@ -144,8 +144,8 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
                     self.imageView.tintColor = isNavigation ? cvkMainController.nightThemeScheme.buttonSelectedColor : cvkMainController.nightThemeScheme.buttonColor;
                 }
             }
-        } else if ([self isKindOfClass:NSClassFromString(@"HighlightableButton")]) {
-            if ([self.currentBackgroundImage isKindOfClass:NSClassFromString(@"_UIResizableImage")]) {
+        } else if ([self isKindOfClass:objc_lookUpClass("HighlightableButton")]) {
+            if ([self.currentBackgroundImage isKindOfClass:objc_lookUpClass("_UIResizableImage")]) {
                 [self setBackgroundImage:[self.currentBackgroundImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:self.state];
                 self.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
             }
@@ -158,7 +158,7 @@ CHDeclareMethod(0, void, UISegmentedControl, layoutSubviews)
 {
     CHSuper(0, UISegmentedControl, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UISegmentedControl")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("UISegmentedControl")]) {
         self.tintColor = cvkMainController.nightThemeScheme.buttonColor;
         self.backgroundColor = [UIColor clearColor];
     }
@@ -169,7 +169,7 @@ CHDeclareMethod(0, void, UILabel, layoutSubviews)
 {
     CHSuper(0, UILabel, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UILabel")] && ![CLASS_NAME(self.superview) isEqualToString:@"HighlightableButton"] && ![CLASS_NAME(self.superview) isEqualToString:@"VKPPBadge"]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("UILabel")] && ![CLASS_NAME(self.superview) isEqualToString:@"HighlightableButton"] && ![CLASS_NAME(self.superview) isEqualToString:@"VKPPBadge"]) {
         
         NSNumber *should_customize = NIGHT_THEME_SHOULD_CUSTOMIZE(self);
         if (!should_customize)
@@ -178,13 +178,13 @@ CHDeclareMethod(0, void, UILabel, layoutSubviews)
         if (!should_customize.boolValue)
             return;
         
-        if ([self isKindOfClass:NSClassFromString(@"HighlightableLabel")]) {
+        if ([self isKindOfClass:objc_lookUpClass("HighlightableLabel")]) {
             self.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
             self.textColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
         } else {
             self.backgroundColor = [UIColor clearColor];
             
-            if ([self.superview isKindOfClass:[UIButton class]] || [self isKindOfClass:NSClassFromString(@"_UITableViewHeaderFooterViewLabel")]) {
+            if ([self.superview isKindOfClass:[UIButton class]] || [self isKindOfClass:objc_lookUpClass("_UITableViewHeaderFooterViewLabel")]) {
                 self.textColor = cvkMainController.nightThemeScheme.detailTextColor;
             } else {
                 self.textColor = cvkMainController.nightThemeScheme.textColor;
@@ -244,7 +244,7 @@ CHDeclareMethod(0, void, UITextView, layoutSubviews)
 {
     CHSuper(0, UITextView, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UITextView")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("UITextView")]) {
         self.backgroundColor = [UIColor clearColor];
         self.tintColor = cvkMainController.nightThemeScheme.textColor;
     }
@@ -255,7 +255,7 @@ CHDeclareMethod(0, void, UITextField, layoutSubviews)
 {
     CHSuper(0, UITextField, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UITextField")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("UITextField")]) {
         self.tintColor = cvkMainController.nightThemeScheme.textColor;
         
         if ([CLASS_NAME(self) isEqualToString:@"UITextField"])
@@ -290,7 +290,7 @@ CHDeclareMethod(0, void, UICollectionView, layoutSubviews)
 {
     CHSuper(0, UICollectionView, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionView")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("UICollectionView")]) {
         
         NSNumber *shouldDisableBackgroundColor = (NSNumber*)objc_getAssociatedObject(self, "shouldDisableBackgroundColor");
         if ([shouldDisableBackgroundColor isKindOfClass:[NSNumber class]] && shouldDisableBackgroundColor.boolValue)
@@ -308,7 +308,7 @@ CHDeclareMethod(0, void, UICollectionViewCell, layoutSubviews)
     NSArray <NSString *> *forbiddenClasses = @[@"_UIAlertControllerTextFieldViewCollectionCell", @"vkm.MessageCell", 
                                                @"vkm.SelectionCollectionViewCell", @"VKSegmentCollectionViewCell"];
     BOOL forbiddenClass = [forbiddenClasses containsObject:CLASS_NAME(self)];
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UICollectionViewCell")] && !forbiddenClass) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("UICollectionViewCell")] && !forbiddenClass) {
         
         NSNumber *shouldDisableBackgroundColor = (NSNumber*)objc_getAssociatedObject(self, "shouldDisableBackgroundColor");
         if (!([shouldDisableBackgroundColor isKindOfClass:[NSNumber class]] && shouldDisableBackgroundColor.boolValue)) {
@@ -337,7 +337,7 @@ CHDeclareMethod(0, void, UIView, layoutSubviews)
 CHDeclareClass(_UITableViewHeaderFooterContentView);
 CHDeclareMethod(1, void, _UITableViewHeaderFooterContentView, setBackgroundColor, UIColor *, backgroundColor)
 {
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"_UITableViewHeaderFooterContentView")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("_UITableViewHeaderFooterContentView")]) {
         backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
     }
     
@@ -422,7 +422,7 @@ CHDeclareMethod(0, void, _UIAlertControlleriOSActionSheetCancelBackgroundView, l
 {
     CHSuper(0, _UIAlertControlleriOSActionSheetCancelBackgroundView, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"_UIAlertControlleriOSActionSheetCancelBackgroundView")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("_UIAlertControlleriOSActionSheetCancelBackgroundView")]) {
         Ivar backgroundViewIvar = class_getInstanceVariable([self class], "backgroundView");
         if (backgroundViewIvar) {
             UIView *backgroundView = object_getIvar(self, backgroundViewIvar);
@@ -438,7 +438,7 @@ CHDeclareMethod(0, void, UITableViewIndex, layoutSubviews)
 {
     CHSuper(0, UITableViewIndex, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"UITableViewIndex")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("UITableViewIndex")]) {
         self.indexBackgroundColor = [UIColor clearColor];
     }
 }
@@ -502,9 +502,9 @@ CHDeclareMethod(0, void, _UIVisualEffectSubview, layoutSubviews)
 CHDeclareMethod(1, void, _UIVisualEffectSubview, setBackgroundColor, UIColor *, backgroundColor)
 {
     if (enabled && enableNightTheme) {
-        if ([self.superview.superview isKindOfClass:NSClassFromString(@"_UIBarBackground")])
+        if ([self.superview.superview isKindOfClass:objc_lookUpClass("_UIBarBackground")])
             backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
-        else if (![self.superview isKindOfClass:NSClassFromString(@"AVPlayerViewControllerContentView")])
+        else if (![self.superview isKindOfClass:objc_lookUpClass("AVPlayerViewControllerContentView")])
             backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
     
@@ -516,8 +516,8 @@ CHDeclareMethod(0, void, _UIBackdropEffectView, layoutSubviews)
 {
     CHSuper(0, _UIBackdropEffectView, layoutSubviews);
     
-    if (enabled && enableNightTheme && ![self.superview isKindOfClass:NSClassFromString(@"UIKBKeyView")] && 
-        ![self.superview isKindOfClass:NSClassFromString(@"UICalloutBarBackground")]) {
+    if (enabled && enableNightTheme && ![self.superview isKindOfClass:objc_lookUpClass("UIKBKeyView")] && 
+        ![self.superview isKindOfClass:objc_lookUpClass("UICalloutBarBackground")]) {
         self.backdropLayer.hidden = YES;
     }
 }
@@ -532,11 +532,11 @@ CHDeclareMethod(0, void, _UIBackdropView, layoutSubviews)
 CHDeclareMethod(1, void, _UIBackdropView, setBackgroundColor, UIColor *, backgroundColor)
 {
     if (enabled && enableNightTheme) {
-        if ([self.superview isKindOfClass:NSClassFromString(@"_UINavigationBarBackground")])
+        if ([self.superview isKindOfClass:objc_lookUpClass("_UINavigationBarBackground")])
             backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
-        else if (![self.superview isKindOfClass:NSClassFromString(@"UIKBKeyView")] && 
-                 ![self.superview isKindOfClass:NSClassFromString(@"_UIBackdropContentView")] &&
-                 ![self isKindOfClass:NSClassFromString(@"UICalloutBarBackground")]) {
+        else if (![self.superview isKindOfClass:objc_lookUpClass("UIKBKeyView")] && 
+                 ![self.superview isKindOfClass:objc_lookUpClass("_UIBackdropContentView")] &&
+                 ![self isKindOfClass:objc_lookUpClass("UICalloutBarBackground")]) {
             backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
         }
     }

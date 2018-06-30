@@ -199,8 +199,7 @@ extern NSString *__key;
     }];
 }
 
-
-- (void)logoutWithСompletionBlock:( void(^)(void) )completionBlock;
+- (void)logoutWithCompletionBlock:( void(^)(void) )completionBlock;
 {
     if (!self.authenticated)
         return;

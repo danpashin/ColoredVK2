@@ -73,9 +73,9 @@
     [self updateType:YES];
 }
 
-- (void)updateNightTheme
+- (void)updateControllerAppearance:(BOOL)animated
 {
-    [super updateNightTheme];
+    [super updateControllerAppearance:animated];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self updateFooterColors:YES];

@@ -61,9 +61,9 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
     if (!_menuCell) {
         NSString *reuseIdentifier = @"cvkMenuCell";
         
-        Class cellClass = NSClassFromString(@"TitleMenuCell");
+        Class cellClass = objc_lookUpClass("TitleMenuCell");
         if (!cellClass) {
-            cellClass = NSClassFromString(@"MenuCell");
+            cellClass = objc_lookUpClass("MenuCell");
             if (!cellClass)
                 cellClass = [UITableViewCell class];
         }

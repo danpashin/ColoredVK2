@@ -12,7 +12,7 @@ CHDeclareMethod(0, void, ProfileView, layoutSubviews)
 {
     CHSuper(0, ProfileView, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"ProfileView")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("ProfileView")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
         self.blocksScroll.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
@@ -118,7 +118,7 @@ CHDeclareMethod(0, void, NewsFeedPostAndStoryCreationButtonBar, layoutSubviews)
 {
     CHSuper(0, NewsFeedPostAndStoryCreationButtonBar, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"NewsFeedPostAndStoryCreationButtonBar")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("NewsFeedPostAndStoryCreationButtonBar")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
 }
@@ -128,7 +128,7 @@ CHDeclareMethod(0, void, Node5TableViewCell, layoutSubviews)
 {
     CHSuper(0, Node5TableViewCell, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"Node5TableViewCell")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("Node5TableViewCell")]) {
         
         for (UIView *subview in  self.contentView.subviews) {
             subview.backgroundColor = [UIColor clearColor];
@@ -141,7 +141,7 @@ CHDeclareMethod(0, void, Node5CollectionViewCell, layoutSubviews)
 {
     CHSuper(0, Node5CollectionViewCell, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"Node5CollectionViewCell")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("Node5CollectionViewCell")]) {
         
         if (self.contentView.subviews > 0) {
             for (UIView *subview in  self.contentView.subviews.firstObject.subviews) {
@@ -159,7 +159,7 @@ CHDeclareMethod(0, void, InputPanelView, didMoveToSuperview)
     CHSuper(0, InputPanelView, didMoveToSuperview);
     
     [NSObject cvk_runBlockOnMainThread:^{
-        if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"InputPanelView")]) {
+        if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("InputPanelView")]) {
             self.overlay.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
             self.overlay.layer.borderColor = cvkMainController.nightThemeScheme.backgroundColor.CGColor;
         }
@@ -171,7 +171,7 @@ CHDeclareMethod(0, void, AdminInputPanelView, layoutSubviews)
 {
     CHSuper(0, AdminInputPanelView, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"AdminInputPanelView")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("AdminInputPanelView")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
         if ([self respondsToSelector:@selector(gapToolbar)])
             [self.gapToolbar setBackgroundImage:[UIImage cvk_imageWithColor:cvkMainController.nightThemeScheme.backgroundColor] 
@@ -184,7 +184,7 @@ CHDeclareMethod(0, void, PollAnswerButton, layoutSubviews)
 {
     CHSuper(0, PollAnswerButton, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"PollAnswerButton")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("PollAnswerButton")]) {
         
         BOOL shouldChange = YES;
         if ([self respondsToSelector:@selector(lightTheme)])
@@ -202,7 +202,7 @@ CHDeclareMethod(0, void, VKAPBottomToolbar, layoutToolbarInSuperView)
 {
     CHSuper(0, VKAPBottomToolbar, layoutToolbarInSuperView);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKAPBottomToolbar")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("VKAPBottomToolbar")]) {
         self.hostView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
     }
 }
@@ -244,7 +244,7 @@ CHDeclareMethod(0, void, SeparatorWithBorders, layoutSubviews)
 {
     CHSuper(0, SeparatorWithBorders, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"SeparatorWithBorders")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("SeparatorWithBorders")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
         self.borderColor = cvkMainController.nightThemeScheme.backgroundColor;
     }
@@ -255,7 +255,7 @@ CHDeclareMethod(0, void, Component5HostView, layoutSubviews)
 {
     CHSuper(0, Component5HostView, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"Component5HostView")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("Component5HostView")]) {
         self.backgroundColor = [UIColor clearColor];
     }
 }
@@ -289,7 +289,7 @@ CHDeclareMethod(0, void, ProductMarketCellForProfileGallery, layoutSubviews)
 {
     CHSuper(0, ProductMarketCellForProfileGallery, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"ProductMarketCellForProfileGallery")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("ProductMarketCellForProfileGallery")]) {
         self.backgroundColor = [UIColor clearColor];
     }
 }
@@ -299,7 +299,7 @@ CHDeclareMethod(0, void, MarketGalleryDecoration, layoutSubviews)
 {
     CHSuper(0, MarketGalleryDecoration, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"MarketGalleryDecoration")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("MarketGalleryDecoration")]) {
         self.backgroundColor = [UIColor clearColor];
     }
 }
@@ -309,7 +309,7 @@ CHDeclareMethod(0, void, StoreStockItemView, layoutSubviews)
 {
     CHSuper(0, StoreStockItemView, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"StoreStockItemView")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("StoreStockItemView")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
 }
@@ -317,7 +317,7 @@ CHDeclareMethod(0, void, StoreStockItemView, layoutSubviews)
 CHDeclareClass(VKPhotoPicker);
 CHDeclareMethod(0, UIStatusBarStyle, VKPhotoPicker, preferredStatusBarStyle)
 {
-    if ([self isKindOfClass:NSClassFromString(@"VKPhotoPicker")] && enabled && (enabledBarColor || enableNightTheme || enabledBarImage))
+    if ([self isKindOfClass:objc_lookUpClass("VKPhotoPicker")] && enabled && (enabledBarColor || enableNightTheme || enabledBarImage))
         return UIStatusBarStyleLightContent;
     
     return CHSuper(0, VKPhotoPicker, preferredStatusBarStyle);
@@ -339,7 +339,7 @@ CHDeclareMethod(0, void, MainMenuPlayer, highlightUpdated)
 {
     CHSuper(0, MainMenuPlayer, highlightUpdated);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"MainMenuPlayer")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("MainMenuPlayer")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
         if ([self respondsToSelector:@selector(titleLabel)]) {
             self.titleLabel.textColor = cvkMainController.nightThemeScheme.textColor;
@@ -361,7 +361,7 @@ CHDeclareMethod(1, VKMTableViewSearchHeaderView*, VKMTableViewSearchHeaderView, 
 {
     VKMTableViewSearchHeaderView *headerView = CHSuper(1, VKMTableViewSearchHeaderView, initWithFrame, frame);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKMTableViewSearchHeaderView")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("VKMTableViewSearchHeaderView")]) {
         [self setBackgroundImage:[UIImage cvk_imageWithColor:cvkMainController.nightThemeScheme.foregroundColor] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
     }
     
@@ -383,7 +383,7 @@ CHDeclareMethod(0, void, PersistentBackgroundColorView, layoutSubviews)
 {
     CHSuper(0, PersistentBackgroundColorView, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"PersistentBackgroundColorView")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("PersistentBackgroundColorView")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
         self.persistentBackgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
     }
@@ -399,7 +399,7 @@ CHDeclareMethod(1, void, GiftSendController, viewWillAppear, BOOL, animated)
 CHDeclareMethod(2, UITableViewCell*, GiftSendController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, GiftSendController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"GiftSendController")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("GiftSendController")]) {
         cell.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
     return cell;
@@ -409,7 +409,7 @@ CHDeclareClass(GiftsCatalogController);
 CHDeclareMethod(2, UITableViewCell*, GiftsCatalogController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, GiftsCatalogController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"GiftsCatalogController")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("GiftsCatalogController")]) {
         cell.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
     return cell;
@@ -420,7 +420,7 @@ CHDeclareMethod(0, void, DefaultHighlightButton, layoutSubviews)
 {
     CHSuper(0, DefaultHighlightButton, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"DefaultHighlightButton")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("DefaultHighlightButton")]) {
         [NSObject cvk_runBlockOnMainThread:^{
             NIGHT_THEME_DISABLE_CUSTOMISATION(self);
             NIGHT_THEME_DISABLE_CUSTOMISATION(self.titleLabel);
@@ -463,7 +463,7 @@ CHDeclareMethod(0, void, VKP2PDetailedView, layoutSubviews)
 {
     CHSuper(0, VKP2PDetailedView, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKP2PDetailedView")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("VKP2PDetailedView")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
 }
@@ -617,7 +617,7 @@ CHDeclareMethod(0, void, EmojiSelectionView, layoutSubviews)
 {
     CHSuper(0, EmojiSelectionView, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"EmojiSelectionView")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("EmojiSelectionView")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
 }
@@ -710,7 +710,7 @@ CHDeclareMethod(0, void, VKPPNoAccessView, layoutSubviews)
 {
     CHSuper(0, VKPPNoAccessView, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKPPNoAccessView")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("VKPPNoAccessView")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
 }
@@ -720,7 +720,7 @@ CHDeclareMethod(0, void, VKSearchScrollTopBackgroundView, layoutSubviews)
 {
     CHSuper(0, VKSearchScrollTopBackgroundView, layoutSubviews);
     
-    if (enabled && [self isKindOfClass:NSClassFromString(@"VKSearchScrollTopBackgroundView")]) {
+    if (enabled && [self isKindOfClass:objc_lookUpClass("VKSearchScrollTopBackgroundView")]) {
         self.backgroundColor = [UIColor clearColor];
     }
 }
@@ -802,7 +802,7 @@ CHDeclareMethod(0, void, InputPanelViewTextView, layoutSubviews)
 {
     CHSuper(0, InputPanelViewTextView, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"InputPanelViewTextView")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("InputPanelViewTextView")]) {
         NIGHT_THEME_DISABLE_CUSTOMISATION(self.placeholderLabel);
         self.placeholderLabel.textColor = cvkMainController.nightThemeScheme.detailTextColor;
         self.layer.borderColor = cvkMainController.nightThemeScheme.backgroundColor.CGColor;
@@ -849,7 +849,7 @@ CHDeclareMethod(0, void, PopupIntroView, layoutSubviews)
 {
     CHSuper(0, PopupIntroView, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"PopupIntroView")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("PopupIntroView")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
 }
@@ -1081,3 +1081,4 @@ CHDeclareMethod(0, void, VKReusableColorView, layoutSubviews)
         self.backgroundColor = self.superview.backgroundColor;
     }
 }
+

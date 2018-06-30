@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)actionSheetWithMessage:(nullable NSString *)message;
 + (instancetype)alertControllerWithTitle:(nullable NSString *)title message:(nullable NSString *)message;
 
-- (void)addTextFieldWithConfigurationHandler:(void (^ __nullable)(UITextField *textField))configurationHandler;
+- (void)addTextFieldWithConfigurationHandler:(nullable void (^)(UITextField *textField))configurationHandler;
 - (void)addAction:(UIAlertAction *)action image:(NSString *)imageName;
 
 - (void)addCancelAction;

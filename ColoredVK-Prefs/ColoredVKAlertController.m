@@ -22,7 +22,7 @@
 
 + (instancetype)actionSheetWithMessage:(nullable NSString *)message
 {
-    return [self alertControllerWithTitle:@"" message:message preferredStyle:UIAlertControllerStyleActionSheet];
+    return [self alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleActionSheet];
 }
 
 - (void)viewDidLoad
@@ -31,12 +31,13 @@
     self.view.tintColor = CVKMainColor;
 }
 
-- (void)addTextFieldWithConfigurationHandler:(void (^ __nullable)(UITextField *textField))configurationHandler
+- (void)addTextFieldWithConfigurationHandler:(nullable void (^)(UITextField *textField))configurationHandler
 {
     __weak typeof(self) weakSelf = self;
     [super addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField){
         [weakSelf setupTextField:textField];
-        configurationHandler(textField);
+        if (configurationHandler)
+            configurationHandler(textField);
     }];
 }
 

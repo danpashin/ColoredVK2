@@ -119,7 +119,7 @@
     [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedStringInBundle(@"LOG_OUT_OF_ACCOUNT_ALERT", self.cvkBundle)
                                                         style:UIAlertActionStyleDestructive 
                                                       handler:^(UIAlertAction * _Nonnull action) {
-                                                          [[ColoredVKNewInstaller sharedInstaller].user logoutWithСompletionBlock:^{
+                                                          [[ColoredVKNewInstaller sharedInstaller].user logoutWithCompletionBlock:^{
                                                               [weakSelf updateAccountInfo];
                                                           }];
                                                       }]];

@@ -28,7 +28,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKUserAccountStatus)
 - (void)actionPurchase;
 
 - (void)updateAccountInfo:( void(^)(void) )completionBlock;
-- (void)logoutWithСompletionBlock:( void(^)(void) )completionBlock;
+- (void)logoutWithCompletionBlock:( void(^)(void) )completionBlock;
 - (void)authWithUsername:(NSString *)login password:(NSString *)password completionBlock:( void(^)(void) )completionBlock;
 
 @end

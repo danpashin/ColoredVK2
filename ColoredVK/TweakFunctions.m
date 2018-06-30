@@ -209,13 +209,13 @@ void setupCellForSearchController(UITableViewCell *cell, UISearchDisplayControll
     if (enabled && !enableNightTheme && shouldCustomize) {
         cell.backgroundColor = [UIColor clearColor];
         
-        if ([cell isKindOfClass:NSClassFromString(@"SourceCell")] || [cell isKindOfClass:NSClassFromString(@"UserCell")]) {
+        if ([cell isKindOfClass:objc_lookUpClass("SourceCell")] || [cell isKindOfClass:objc_lookUpClass("UserCell")]) {
             SourceCell *sourceCell = (SourceCell *)cell;
             sourceCell.last.textColor = UITableViewCellTextColor;
             sourceCell.last.backgroundColor = UITableViewCellBackgroundColor;
             sourceCell.first.textColor = UITableViewCellTextColor;
             sourceCell.first.backgroundColor = UITableViewCellBackgroundColor;
-        } else if ([cell isKindOfClass:NSClassFromString(@"NewDialogCell")]) {
+        } else if ([cell isKindOfClass:objc_lookUpClass("NewDialogCell")]) {
             NewDialogCell *dialogCell = (NewDialogCell *)cell;
             dialogCell.backgroundView = nil;
             if (!dialogCell.dialog.head.read_state && dialogCell.unread.hidden)
@@ -231,13 +231,13 @@ void setupCellForSearchController(UITableViewCell *cell, UISearchDisplayControll
             if ([dialogCell respondsToSelector:@selector(text)])
                 dialogCell.text.textColor = [UIColor colorWithWhite:0.95f alpha:0.9f];
             
-        } else if ([cell isKindOfClass:NSClassFromString(@"GroupCell")]) {
+        } else if ([cell isKindOfClass:objc_lookUpClass("GroupCell")]) {
             GroupCell *groupCell = (GroupCell *)cell;
             groupCell.name.textColor = UITableViewCellTextColor;
             groupCell.name.backgroundColor = UITableViewCellBackgroundColor;
             groupCell.status.textColor = UITableViewCellDetailedTextColor;
             groupCell.status.backgroundColor = UITableViewCellBackgroundColor;
-        } else if ([cell isKindOfClass:NSClassFromString(@"VideoCell")]) {
+        } else if ([cell isKindOfClass:objc_lookUpClass("VideoCell")]) {
             VideoCell *videoCell = (VideoCell *)cell;
             videoCell.videoTitleLabel.textColor = UITableViewCellTextColor;
             videoCell.videoTitleLabel.backgroundColor = UITableViewCellBackgroundColor;
@@ -301,10 +301,10 @@ void setupSearchController(UISearchDisplayController *controller, BOOL reset)
         } else {
             controller.searchResultsTableView.tag = 21;
             UIViewController *parentController = controller.searchContentsController.parentViewController;
-            if ([parentController isKindOfClass:NSClassFromString(@"VKMNavigationController")]) {
+            if ([parentController isKindOfClass:objc_lookUpClass("VKMNavigationController")]) {
                 VKMNavigationController *navigation = (VKMNavigationController *)parentController;
                 if (navigation.childViewControllers.count>0) {
-                    if ([navigation.childViewControllers.firstObject isKindOfClass:NSClassFromString(@"VKSelectorContainerControllerDropdown")]) {
+                    if ([navigation.childViewControllers.firstObject isKindOfClass:objc_lookUpClass("VKSelectorContainerControllerDropdown")]) {
                         VKSelectorContainerControllerDropdown *dropdown = (VKSelectorContainerControllerDropdown *)navigation.childViewControllers.firstObject;
                         VKMTableController *tableController = (VKMTableController *)dropdown.currentViewController;
                         if ([tableController respondsToSelector:@selector(tableView)] && [tableController.tableView.backgroundView isKindOfClass:[ColoredVKWallpaperView class]]) {
@@ -516,7 +516,7 @@ void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *table
         }
     };
     if (enableNightTheme) {
-        if (![tableView.delegate isKindOfClass:NSClassFromString(@"ColoredVKPrefs")]) {
+        if (![tableView.delegate isKindOfClass:objc_lookUpClass("ColoredVKPrefs")]) {
             if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
                 view.contentView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
                 view.backgroundView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
@@ -542,7 +542,7 @@ void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *table
 
 void setupNewDialogCellForNightTheme(NewDialogCell *dialogCell)
 {
-    if (enabled && enableNightTheme && [dialogCell isKindOfClass:NSClassFromString(@"NewDialogCell")]) {
+    if (enabled && enableNightTheme && [dialogCell isKindOfClass:objc_lookUpClass("NewDialogCell")]) {
         dialogCell.contentView.backgroundColor = [UIColor clearColor];
         dialogCell.backgroundView.hidden = YES;
         
@@ -576,7 +576,7 @@ void setupNewDialogCellForNightTheme(NewDialogCell *dialogCell)
 
 void setupExtraSettingsController(VKMTableController *controller)
 {
-    if (![controller isKindOfClass:NSClassFromString(@"VKMTableController")])
+    if (![controller isKindOfClass:objc_lookUpClass("VKMTableController")])
         return;
     
     if (enabled && !enableNightTheme && enabledSettingsExtraImage) {
@@ -601,20 +601,20 @@ void setupExtraSettingsCell(UITableViewCell *cell)
         UIColor *detailedTextColor = changeSettingsExtraTextColor ? settingsExtraTextColor : UITableViewCellTextColor;
         cell.textLabel.textColor = textColor;
         cell.detailTextLabel.textColor = detailedTextColor;
-        if ([cell isKindOfClass:NSClassFromString(@"SourceCell")]) {
+        if ([cell isKindOfClass:objc_lookUpClass("SourceCell")]) {
             SourceCell *sourceCell = (SourceCell *)cell;
             sourceCell.last.textColor = textColor;
             sourceCell.last.backgroundColor = UITableViewCellBackgroundColor;
             sourceCell.first.textColor = textColor;
             sourceCell.first.backgroundColor = UITableViewCellBackgroundColor;
         }
-        else if ([cell isKindOfClass:NSClassFromString(@"VKMRendererCell")]) {
+        else if ([cell isKindOfClass:objc_lookUpClass("VKMRendererCell")]) {
             for (UIView *subview in cell.contentView.subviews) {
                 if ([subview isKindOfClass:[UILabel class]]) {
                     ((UILabel *)subview).textColor = textColor;
                 }
             }
-        } else if ([cell isKindOfClass:NSClassFromString(@"CommunityCommentsCell")]) {
+        } else if ([cell isKindOfClass:objc_lookUpClass("CommunityCommentsCell")]) {
             CommunityCommentsCell *commentsCell =  (CommunityCommentsCell *)cell;
             commentsCell.titleLabel.textColor = textColor;
             commentsCell.titleLabel.backgroundColor = UITableViewCellBackgroundColor;
@@ -725,7 +725,7 @@ void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRe
             
             if (menuController.navigationController.viewControllers.count > 0) {
                 if ([menuController.navigationController.viewControllers.lastObject isEqual:menuController]) {
-                    [menuController viewWillAppear:YES];
+                    [menuController viewWillAppear:NO];
                 }
             }
         } else {
@@ -816,7 +816,7 @@ void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRe
 
 void setupNewSearchBar(VKSearchBar *searchBar, UIColor *tintColor, UIColor *blurTone, UIBlurEffectStyle blurStyle)
 {
-    if (![searchBar isKindOfClass:NSClassFromString(@"VKSearchBar")])
+    if (![searchBar isKindOfClass:objc_lookUpClass("VKSearchBar")])
         return;
     
     objc_setAssociatedObject(searchBar, "cvk_customized", @YES, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -867,7 +867,7 @@ void setupNewDialogsSearchController(DialogsSearchResultsController *controller)
         return;
     
     if (enabled && !enableNightTheme && enabledMessagesListImage) {
-        if ([controller.parentViewController isKindOfClass:NSClassFromString(@"DialogsController")]) {
+        if ([controller.parentViewController isKindOfClass:objc_lookUpClass("DialogsController")]) {
             DialogsController *dialogsController = (DialogsController *)controller.parentViewController;
             if ([dialogsController.tableView.backgroundView isKindOfClass:[ColoredVKWallpaperView class]]) {
                 controller.tableView.backgroundView = [dialogsController.tableView.backgroundView copy];
@@ -1002,7 +1002,7 @@ void setupNewAppMenuCell(UITableViewCell *cell)
         cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         cell.imageView.tintColor = changeMenuTextColor?menuTextColor:[UIColor colorWithWhite:1.0f alpha:0.8f];
         
-        if ([cell isKindOfClass:NSClassFromString(@"MenuBirthdayCell")]) {
+        if ([cell isKindOfClass:objc_lookUpClass("MenuBirthdayCell")]) {
             MenuBirthdayCell *birthdayCell = (MenuBirthdayCell *)cell;
             birthdayCell.name.textColor = cell.textLabel.textColor;
             birthdayCell.status.textColor = cell.textLabel.textColor;

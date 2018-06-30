@@ -13,7 +13,7 @@ CHDeclareClass(GroupsController);
 CHDeclareMethod(0, void, GroupsController, viewDidLoad)
 {
     CHSuper(0, GroupsController, viewDidLoad);
-    if ([self isKindOfClass:NSClassFromString(@"GroupsController")]) {
+    if ([self isKindOfClass:objc_lookUpClass("GroupsController")]) {
         if (enabled && !enableNightTheme && enabledGroupsListImage) {
             [cvkMainController setImageToTableView:self.tableView name:@"groupsListBackgroundImage" blackout:groupsListImageBlackout
                                     parallaxEffect:useGroupsListParallax blur:groupsListUseBackgroundBlur];
@@ -23,7 +23,7 @@ CHDeclareMethod(0, void, GroupsController, viewDidLoad)
             
             UIColor *textColor = changeGroupsListTextColor ? groupsListTextColor : [UIColor colorWithWhite:1.0f alpha:0.7f];
             UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
-            if ([search isKindOfClass:NSClassFromString(@"VKSearchBar")]) {
+            if ([search isKindOfClass:objc_lookUpClass("VKSearchBar")]) {
                 setupNewSearchBar((VKSearchBar *)search, textColor, groupsListBlurTone, groupsListBlurStyle);
             } else if ([search isKindOfClass:[UISearchBar class]] && [search respondsToSelector:@selector(setBackgroundImage:)]) {
                 search.backgroundImage = [UIImage new];
@@ -40,15 +40,15 @@ CHDeclareMethod(0, void, GroupsController, viewDidLoad)
 CHDeclareMethod(2, UITableViewCell*, GroupsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, GroupsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    if ([self isKindOfClass:NSClassFromString(@"GroupsController")] && enabled && !enableNightTheme && enabledGroupsListImage) {
-        if ([cell isKindOfClass:NSClassFromString(@"GroupCell")]) {
+    if ([self isKindOfClass:objc_lookUpClass("GroupsController")] && enabled && !enableNightTheme && enabledGroupsListImage) {
+        if ([cell isKindOfClass:objc_lookUpClass("GroupCell")]) {
             GroupCell *groupCell = (GroupCell *)cell;
             performInitialCellSetup(groupCell);
             groupCell.name.textColor = changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
             groupCell.name.backgroundColor = UITableViewCellBackgroundColor;
             groupCell.status.textColor = changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:0.8f alpha:0.9f];
             groupCell.status.backgroundColor = UITableViewCellBackgroundColor;
-        } else  if ([cell isKindOfClass:NSClassFromString(@"VKMRendererCell")]) {
+        } else  if ([cell isKindOfClass:objc_lookUpClass("VKMRendererCell")]) {
             performInitialCellSetup(cell);
             
             for (UIView *view in cell.contentView.subviews) {
@@ -74,7 +74,7 @@ CHDeclareMethod(0, void, DialogsController, viewDidLoad)
 {
     CHSuper(0, DialogsController, viewDidLoad);
     
-    if ([self isKindOfClass:NSClassFromString(@"DialogsController")] && !isNew3XClient) {
+    if ([self isKindOfClass:objc_lookUpClass("DialogsController")] && !isNew3XClient) {
         if (enabled && !enableNightTheme && enabledMessagesListImage) {
             [cvkMainController setImageToTableView:self.tableView name:@"messagesListBackgroundImage" blackout:chatListImageBlackout 
                                     parallaxEffect:useMessagesListParallax blur:messagesListUseBackgroundBlur];
@@ -86,7 +86,7 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, DialogsController, viewWillAppear, animated);
     
-    if (!enableNightTheme && [self isKindOfClass:NSClassFromString(@"DialogsController")]) {
+    if (!enableNightTheme && [self isKindOfClass:objc_lookUpClass("DialogsController")]) {
         
         UITableView *tableView = nil;
         if ([self respondsToSelector:@selector(listController)]) {
@@ -112,7 +112,7 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
             
             tableView.separatorColor =  hideMessagesListSeparators ? [UIColor clearColor] : [tableView.separatorColor colorWithAlphaComponent:0.2f];
             
-            if ([search isKindOfClass:NSClassFromString(@"VKSearchBar")]) {
+            if ([search isKindOfClass:objc_lookUpClass("VKSearchBar")]) {
                 setupNewSearchBar((VKSearchBar *)search, placeholderColor, messagesListBlurTone, messagesListBlurStyle);
             } else if ([search isKindOfClass:[UISearchBar class]]) {
                 search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.1f];
@@ -125,7 +125,7 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
                 self.rptr.tintColor = nil;
             
             tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
-            if ([search isKindOfClass:NSClassFromString(@"VKSearchBar")]) {
+            if ([search isKindOfClass:objc_lookUpClass("VKSearchBar")]) {
                 resetNewSearchBar((VKSearchBar *)search);
             } if ([search isKindOfClass:[UISearchBar class]]) {
                 search.searchBarTextField.backgroundColor = nil;
@@ -156,7 +156,7 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
 CHDeclareMethod(2, UITableViewCell*, DialogsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     NewDialogCell *cell = (NewDialogCell *)CHSuper(2, DialogsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    if ([self isKindOfClass:NSClassFromString(@"DialogsController")]) {
+    if ([self isKindOfClass:objc_lookUpClass("DialogsController")]) {
         if (enabled && !enableNightTheme && enabledMessagesListImage ) {
             performInitialCellSetup(cell);
             cell.backgroundView.hidden = YES;
@@ -186,7 +186,7 @@ CHDeclareClass(DLVController);
 CHDeclareMethod(2, UITableViewCell*, DLVController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     vkmPeerListCell *cell = (vkmPeerListCell *)CHSuper(2, DLVController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    if ([self isKindOfClass:NSClassFromString(@"DLVController")] && [cell isKindOfClass:NSClassFromString(@"vkm.PeerListCell")]) {
+    if ([self isKindOfClass:objc_lookUpClass("DLVController")] && [cell isKindOfClass:objc_lookUpClass("vkm.PeerListCell")]) {
         if (enabled && !enableNightTheme && enabledMessagesListImage ) {
             performInitialCellSetup(cell);            
             cell.titleView.textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
@@ -234,7 +234,7 @@ CHDeclareClass(DetailController);
 CHDeclareMethod(1, void, DetailController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, DetailController, viewWillAppear, animated);
-    if ([self isKindOfClass:NSClassFromString(@"DetailController")]) setToolBar(self.inputPanel);
+    if ([self isKindOfClass:objc_lookUpClass("DetailController")]) setToolBar(self.inputPanel);
 }
 
 
@@ -244,7 +244,7 @@ CHDeclareMethod(1, void, ChatController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, ChatController, viewWillAppear, animated);
     
-    if (![self isKindOfClass:NSClassFromString(@"ChatController")])
+    if (![self isKindOfClass:objc_lookUpClass("ChatController")])
         return;
     
     if ([self respondsToSelector:@selector(root)])
@@ -285,7 +285,7 @@ CHDeclareMethod(1, void, ChatController, viewWillAppear, BOOL, animated)
     if (self.childViewControllers.count == 0)
         return;
     UICollectionViewController *collectionViewController = self.childViewControllers.firstObject;
-    if (![self.childViewControllers.firstObject isKindOfClass:NSClassFromString(@"vkm.HistoryCollectionViewController")])
+    if (![self.childViewControllers.firstObject isKindOfClass:objc_lookUpClass("vkm.HistoryCollectionViewController")])
         return;
     
     UIColor *backColor = enableNightTheme ? cvkMainController.nightThemeScheme.foregroundColor : [UIColor clearColor];
@@ -298,7 +298,7 @@ CHDeclareMethod(0, void, ChatController, viewDidLoad)
 {
     CHSuper(0, ChatController, viewDidLoad);
     
-    if (![self isKindOfClass:NSClassFromString(@"ChatController")] || !enabled || (enabled && enableNightTheme))
+    if (![self isKindOfClass:objc_lookUpClass("ChatController")] || !enabled || (enabled && enableNightTheme))
         return;
     
     ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.5"];
@@ -311,7 +311,7 @@ CHDeclareMethod(0, void, ChatController, viewDidLoad)
             if ([rightBarItem.customView isKindOfClass:[UIButton class]]) {
                 UIButton *button = (UIButton *)rightBarItem.customView;
                 for (UIView *subview in button.subviews) {
-                    if ([subview isKindOfClass:NSClassFromString(@"vkm.URLImageView")]) {
+                    if ([subview isKindOfClass:objc_lookUpClass("vkm.URLImageView")]) {
                         subview.hidden = YES;
                         break;
                     }

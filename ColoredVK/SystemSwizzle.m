@@ -201,11 +201,11 @@ CHDeclareMethod(1, void, UITableView, setBackgroundView, UIView*, backgroundView
         if (!backgroundView)
             backgroundView = [UIView new];
         objc_setAssociatedObject(self, "backgroundViewCachedColor", backgroundView.backgroundColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        if (![self.delegate isKindOfClass:NSClassFromString(@"VKAPPlacesViewController")])
+        if (![self.delegate isKindOfClass:objc_lookUpClass("VKAPPlacesViewController")])
             backgroundView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
     }
     
-    if ([self.backgroundView isKindOfClass:[ColoredVKWallpaperView class]] && [backgroundView isKindOfClass:NSClassFromString(@"TeaserView")]) {
+    if ([self.backgroundView isKindOfClass:[ColoredVKWallpaperView class]] && [backgroundView isKindOfClass:objc_lookUpClass("TeaserView")]) {
         TeaserView *teaserView = (TeaserView *)backgroundView;
         teaserView.labelTitle.textColor = UITableViewCellTextColor;
         teaserView.labelText.textColor = UITableViewCellTextColor;
@@ -239,7 +239,7 @@ CHDeclareMethod(0, void, UITableView, layoutSubviews)
     self.separatorColor = self.separatorColor;
     
     if (enabled) {
-        if ([self.tableFooterView isKindOfClass:NSClassFromString(@"LoadingFooterView")] && [self.backgroundView isKindOfClass:[ColoredVKWallpaperView class]]) {
+        if ([self.tableFooterView isKindOfClass:objc_lookUpClass("LoadingFooterView")] && [self.backgroundView isKindOfClass:[ColoredVKWallpaperView class]]) {
             LoadingFooterView *footerView = (LoadingFooterView *)self.tableFooterView;
             footerView.label.textColor = UITableViewCellTextColor;
             footerView.anim.color = UITableViewCellTextColor;
@@ -300,7 +300,7 @@ CHDeclareMethod(1, void, UIViewController, viewWillAppear, BOOL, animated)
     CHSuper(1, UIViewController, viewWillAppear, animated);
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if ([self isKindOfClass:NSClassFromString(@"PSListController")]) {
+        if ([self isKindOfClass:objc_lookUpClass("PSListController")]) {
             resetNavigationBar(self.navigationController.navigationBar);
             resetTabBar();
         }

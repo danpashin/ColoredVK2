@@ -59,7 +59,7 @@ CHDeclareMethod(1, void, VKMLiveController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, VKMLiveController, viewWillAppear, animated);
     
-    if (enabled && !enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKMLiveController")]) {
+    if (enabled && !enableNightTheme && [self isKindOfClass:objc_lookUpClass("VKMLiveController")]) {
         NSArray <NSString *> *audioModelNames = @[@"AudioRecommendationsModel", @"AudioCatalogPlaylistsListModel", @"AudioCatalogExtendedPlaylistsListModel"];
         if (enabledAudioImage && [audioModelNames containsObject:CLASS_NAME(self.model)]) {
            UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
@@ -86,7 +86,7 @@ CHDeclareMethod(0, void, VKMLiveController, viewWillLayoutSubviews)
 {
     CHSuper(0, VKMLiveController, viewWillLayoutSubviews);
     
-    if (enabled && !enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKMLiveController")]) {
+    if (enabled && !enableNightTheme && [self isKindOfClass:objc_lookUpClass("VKMLiveController")]) {
         NSArray <NSString *> *audioModelNames = @[@"AudioRecommendationsModel", @"AudioCatalogPlaylistsListModel", @"AudioCatalogExtendedPlaylistsListModel"];
         if (enabledAudioImage && [audioModelNames containsObject:CLASS_NAME(self.model)]) {
             [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
@@ -102,7 +102,7 @@ CHDeclareMethod(2, UITableViewCell*, VKMLiveController, tableView, UITableView*,
 {
     UITableViewCell *cell = CHSuper(2, VKMLiveController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && !enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKMLiveController")]) {
+    if (enabled && !enableNightTheme && [self isKindOfClass:objc_lookUpClass("VKMLiveController")]) {
         NSArray <NSString *> *audioModelNames = @[@"AudioRecommendationsModel", @"AudioCatalogPlaylistsListModel", @"AudioCatalogExtendedPlaylistsListModel"];
         if (enabledAudioImage && [audioModelNames containsObject:CLASS_NAME(self.model)]) {
             performInitialCellSetup(cell);
@@ -131,10 +131,10 @@ CHDeclareMethod(2, UITableViewCell*, VKMLiveController, tableView, UITableView*,
 CHDeclareClass(VKMController);
 CHDeclareMethod(1, void, VKMController, viewWillAppear, BOOL, animated)
 {
-    if ([self isKindOfClass:NSClassFromString(@"VKMTableController")] ||
-        [self isKindOfClass:NSClassFromString(@"DialogsController")] || 
-        [self isKindOfClass:NSClassFromString(@"ChatController")] || 
-        [self isKindOfClass:NSClassFromString(@"VKWebAppContainerController")])
+    if ([self isKindOfClass:objc_lookUpClass("VKMTableController")] ||
+        [self isKindOfClass:objc_lookUpClass("DialogsController")] || 
+        [self isKindOfClass:objc_lookUpClass("ChatController")] || 
+        [self isKindOfClass:objc_lookUpClass("VKWebAppContainerController")])
         updateControllerBlurInfo(self);
     
     CHSuper(1, VKMController, viewWillAppear, animated);
@@ -142,10 +142,10 @@ CHDeclareMethod(1, void, VKMController, viewWillAppear, BOOL, animated)
 
 CHDeclareMethod(1, void, VKMController, viewDidAppear, BOOL, animated)
 {
-    if ([self isKindOfClass:NSClassFromString(@"VKMTableController")] || 
-        [self isKindOfClass:NSClassFromString(@"DialogsController")] || 
-        [self isKindOfClass:NSClassFromString(@"ChatController")] || 
-        [self isKindOfClass:NSClassFromString(@"VKWebAppContainerController")])
+    if ([self isKindOfClass:objc_lookUpClass("VKMTableController")] || 
+        [self isKindOfClass:objc_lookUpClass("DialogsController")] || 
+        [self isKindOfClass:objc_lookUpClass("ChatController")] || 
+        [self isKindOfClass:objc_lookUpClass("VKWebAppContainerController")])
         {
         
         [NSObject cvk_runBlockOnMainThread:^{
@@ -438,7 +438,7 @@ CHDeclareMethod(2, UITableViewCell*, MenuViewController, tableView, UITableView*
 CHDeclareMethod(3, void, MenuViewController, tableView, UITableView *, tableView, willDisplayHeaderView, UIView *, view, forSection, NSInteger, section)
 {
     CHSuper(3, MenuViewController, tableView, tableView, willDisplayHeaderView, view, forSection, section);
-    if ((enabled && !enableNightTheme && enabledMenuImage) && [view isKindOfClass:NSClassFromString(@"TablePrimaryHeaderView")]) {
+    if ((enabled && !enableNightTheme && enabledMenuImage) && [view isKindOfClass:objc_lookUpClass("TablePrimaryHeaderView")]) {
         ((TablePrimaryHeaderView *)view).separator.alpha = 0.3f;
     }
 }
@@ -474,7 +474,7 @@ CHDeclareMethod(0, NSArray *, MenuModel, baseMenuItems)
     if (showMenuCell) {
         NSMutableArray <MenuItem *> *tempArray = [items mutableCopy];
         
-        MenuItem *cvkItem = [[NSClassFromString(@"MenuItem") alloc] initWithType:1204 imageName:@"vkapp/VKMenuIconAlt" title:@"ColoredVK 2" statId:@""];
+        MenuItem *cvkItem = [[objc_lookUpClass("MenuItem") alloc] initWithType:1204 imageName:@"vkapp/VKMenuIconAlt" title:@"ColoredVK 2" statId:@""];
         [tempArray addObject:cvkItem];
         
         items = tempArray;
@@ -507,7 +507,7 @@ CHDeclareClass(PhotoBrowserController);
 CHDeclareMethod(1, void, PhotoBrowserController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, PhotoBrowserController, viewWillAppear, animated);
-    if ([self isKindOfClass:NSClassFromString(@"PhotoBrowserController")]) {
+    if ([self isKindOfClass:objc_lookUpClass("PhotoBrowserController")]) {
         if (showFastDownloadButton) {
             ColoredVKBarDownloadButton *saveButton = [ColoredVKBarDownloadButton button];
             __weak typeof(self) weakSelf = self;
@@ -541,7 +541,7 @@ CHDeclareClass(VKMBrowserController);
 
 CHDeclareMethod(0, UIStatusBarStyle, VKMBrowserController, preferredStatusBarStyle)
 {
-    if ([self isKindOfClass:NSClassFromString(@"VKMBrowserController")] && enabled && (enabledBarColor || enableNightTheme))
+    if ([self isKindOfClass:objc_lookUpClass("VKMBrowserController")] && enabled && (enabledBarColor || enableNightTheme))
         return UIStatusBarStyleLightContent;
     else return CHSuper(0, VKMBrowserController, preferredStatusBarStyle);
 }
@@ -549,7 +549,7 @@ CHDeclareMethod(0, UIStatusBarStyle, VKMBrowserController, preferredStatusBarSty
 CHDeclareMethod(0, void, VKMBrowserController, viewDidLoad)
 {
     CHSuper(0, VKMBrowserController, viewDidLoad);
-    if ([self isKindOfClass:NSClassFromString(@"VKMBrowserController")] && showFastDownloadButton) {
+    if ([self isKindOfClass:objc_lookUpClass("VKMBrowserController")] && showFastDownloadButton) {
         self.navigationItem.rightBarButtonItem = [ColoredVKBarDownloadButton buttonWithURL:self.target.url.absoluteString rootController:self];
     }
 }
@@ -557,7 +557,7 @@ CHDeclareMethod(0, void, VKMBrowserController, viewDidLoad)
 CHDeclareMethod(1, void, VKMBrowserController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, VKMBrowserController, viewWillAppear, animated);
-    if ([self isKindOfClass:NSClassFromString(@"VKMBrowserController")]) {
+    if ([self isKindOfClass:objc_lookUpClass("VKMBrowserController")]) {
         
         if (enabled && enableNightTheme) {
             self.webScrollView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
@@ -683,14 +683,14 @@ CHDeclareMethod(2, UITableViewCell*, DialogsSearchResultsController, tableView, 
         UIColor *textColor = changeMessagesListTextColor ? messagesListTextColor : UITableViewCellTextColor;
         UIColor *detailedTextColor = changeMessagesListTextColor ? messagesListTextColor : UITableViewCellTextColor;
         
-        if ([cell isKindOfClass:NSClassFromString(@"SourceCell")]) {
+        if ([cell isKindOfClass:objc_lookUpClass("SourceCell")]) {
             SourceCell *sourceCell = (SourceCell *)cell;
             sourceCell.last.textColor = detailedTextColor;
             sourceCell.last.backgroundColor = [UIColor clearColor];
             sourceCell.first.textColor =  textColor;
             sourceCell.first.backgroundColor = [UIColor clearColor];
         }
-        else if ([cell isKindOfClass:NSClassFromString(@"NewDialogCell")]) {
+        else if ([cell isKindOfClass:objc_lookUpClass("NewDialogCell")]) {
             NewDialogCell *dialogCell = (NewDialogCell *)cell;
             dialogCell.name.textColor = textColor;
             dialogCell.name.backgroundColor = [UIColor clearColor];
@@ -759,7 +759,7 @@ CHDeclareMethod(0, UIView *, ProfileCoverImageView, overlayView)
 CHDeclareClass(PostEditController);
 CHDeclareMethod(0, UIStatusBarStyle, PostEditController, preferredStatusBarStyle)
 {
-    if ([self isKindOfClass:NSClassFromString(@"PostEditController")] && enabled && (enabledBarColor || enableNightTheme))
+    if ([self isKindOfClass:objc_lookUpClass("PostEditController")] && enabled && (enabledBarColor || enableNightTheme))
         return UIStatusBarStyleLightContent;
     return CHSuper(0, PostEditController, preferredStatusBarStyle);
 }
@@ -777,7 +777,7 @@ CHDeclareMethod(0, void, PostEditController, viewDidLoad)
 CHDeclareClass(ProfileInfoEditController);
 CHDeclareMethod(0, UIStatusBarStyle, ProfileInfoEditController, preferredStatusBarStyle)
 {
-    if ([self isKindOfClass:NSClassFromString(@"ProfileInfoEditController")] && enabled && (enabledBarColor || enableNightTheme))
+    if ([self isKindOfClass:objc_lookUpClass("ProfileInfoEditController")] && enabled && (enabledBarColor || enableNightTheme))
         return UIStatusBarStyleLightContent;
     return CHSuper(0, ProfileInfoEditController, preferredStatusBarStyle);
 }
@@ -786,7 +786,7 @@ CHDeclareMethod(0, UIStatusBarStyle, ProfileInfoEditController, preferredStatusB
 CHDeclareClass(OptionSelectionController);
 CHDeclareMethod(0, UIStatusBarStyle, OptionSelectionController, preferredStatusBarStyle)
 {
-    if ([self isKindOfClass:NSClassFromString(@"OptionSelectionController")] && enabled && (enabledBarColor || enableNightTheme))
+    if ([self isKindOfClass:objc_lookUpClass("OptionSelectionController")] && enabled && (enabledBarColor || enableNightTheme))
         return UIStatusBarStyleLightContent;
     return CHSuper(0, OptionSelectionController, preferredStatusBarStyle);
 }
@@ -794,7 +794,7 @@ CHDeclareMethod(0, UIStatusBarStyle, OptionSelectionController, preferredStatusB
 CHDeclareMethod(1, void, OptionSelectionController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, OptionSelectionController, viewWillAppear, animated);
-    if ([self isKindOfClass:NSClassFromString(@"OptionSelectionController")]) {
+    if ([self isKindOfClass:objc_lookUpClass("OptionSelectionController")]) {
         resetNavigationBar(self.navigationController.navigationBar);
         resetTabBar();
     }
@@ -804,7 +804,7 @@ CHDeclareMethod(1, void, OptionSelectionController, viewWillAppear, BOOL, animat
 CHDeclareClass(VKRegionSelectionViewController);
 CHDeclareMethod(0, UIStatusBarStyle, VKRegionSelectionViewController, preferredStatusBarStyle)
 {
-    if ([self isKindOfClass:NSClassFromString(@"VKRegionSelectionViewController")] && enabled && (enabledBarColor || enableNightTheme))
+    if ([self isKindOfClass:objc_lookUpClass("VKRegionSelectionViewController")] && enabled && (enabledBarColor || enableNightTheme))
         return UIStatusBarStyleLightContent;
     return CHSuper(0, VKRegionSelectionViewController, preferredStatusBarStyle);
 }
@@ -815,7 +815,7 @@ CHDeclareMethod(0, void, ProfileFriendsController, viewWillLayoutSubviews)
 {
     CHSuper(0, ProfileFriendsController, viewWillLayoutSubviews);
     
-    if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:NSClassFromString(@"ProfileFriendsController")]) {
+    if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:objc_lookUpClass("ProfileFriendsController")]) {
         [cvkMainController setImageToTableView:self.tableView name:@"friendsBackgroundImage" blackout:friendsImageBlackout 
                                 parallaxEffect:useFriendsParallax blur:friendsUseBackgroundBlur];
         self.tableView.separatorColor = hideFriendsSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
@@ -825,7 +825,7 @@ CHDeclareMethod(0, void, ProfileFriendsController, viewWillLayoutSubviews)
         
         UIColor *textColor = changeFriendsTextColor?friendsTextColor:[UIColor colorWithWhite:1.0f alpha:0.7f];
         UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
-        if ([search isKindOfClass:NSClassFromString(@"VKSearchBar")]) {
+        if ([search isKindOfClass:objc_lookUpClass("VKSearchBar")]) {
             setupNewSearchBar((VKSearchBar *)search, textColor, friendsBlurTone, friendsBlurStyle);
         } else if ([search isKindOfClass:[UISearchBar class]] && [search respondsToSelector:@selector(setBackgroundImage:)]) {
             search.backgroundImage = [UIImage new];
@@ -842,10 +842,10 @@ CHDeclareMethod(2, UITableViewCell*, ProfileFriendsController, tableView, UITabl
 {
     UITableViewCell *cell = CHSuper(2, ProfileFriendsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:NSClassFromString(@"ProfileFriendsController")]) {
+    if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:objc_lookUpClass("ProfileFriendsController")]) {
         performInitialCellSetup(cell);
             
-        if ([cell isKindOfClass:NSClassFromString(@"SourceCell")]) {
+        if ([cell isKindOfClass:objc_lookUpClass("SourceCell")]) {
             SourceCell *sourceCell = (SourceCell *)cell;
             sourceCell.last.textColor = changeFriendsTextColor?friendsTextColor:UITableViewCellTextColor;
             sourceCell.last.backgroundColor = UITableViewCellBackgroundColor;
@@ -866,7 +866,7 @@ CHDeclareMethod(0, void, FriendsBDaysController, viewWillLayoutSubviews)
 {
     CHSuper(0, FriendsBDaysController, viewWillLayoutSubviews);
     
-    if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:NSClassFromString(@"FriendsBDaysController")]) {
+    if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:objc_lookUpClass("FriendsBDaysController")]) {
         [cvkMainController setImageToTableView:self.tableView name:@"friendsBackgroundImage" blackout:friendsImageBlackout 
                                 parallaxEffect:useFriendsParallax blur:friendsUseBackgroundBlur];
         self.tableView.separatorColor = hideFriendsSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
@@ -879,7 +879,7 @@ CHDeclareMethod(2, UITableViewCell*, FriendsBDaysController, tableView, UITableV
 {
     UITableViewCell *cell = CHSuper(2, FriendsBDaysController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:NSClassFromString(@"FriendsBDaysController")]) {
+    if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:objc_lookUpClass("FriendsBDaysController")]) {
         performInitialCellSetup(cell);
         
         FriendBdayCell *sourceCell = (FriendBdayCell *)cell;
@@ -899,7 +899,7 @@ CHDeclareMethod(1, void, FriendsAllRequestsController, viewWillAppear, BOOL, ani
 {
     CHSuper(1, FriendsAllRequestsController, viewWillAppear, animated);
     
-    if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:NSClassFromString(@"FriendsAllRequestsController")]) {
+    if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:objc_lookUpClass("FriendsAllRequestsController")]) {
         [cvkMainController setImageToTableView:self.tableView name:@"friendsBackgroundImage" blackout:friendsImageBlackout 
                                 parallaxEffect:useFriendsParallax blur:friendsUseBackgroundBlur];
         self.tableView.separatorColor = hideFriendsSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
@@ -913,7 +913,7 @@ CHDeclareMethod(2, UITableViewCell*, FriendsAllRequestsController, tableView, UI
 {
     UITableViewCell *cell = CHSuper(2, FriendsAllRequestsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:NSClassFromString(@"FriendsAllRequestsController")]) {
+    if (enabled && !enableNightTheme && enabledFriendsImage && [self isKindOfClass:objc_lookUpClass("FriendsAllRequestsController")]) {
         performInitialCellSetup(cell);
         
         for (UIView *view in cell.contentView.subviews) {
@@ -932,7 +932,7 @@ CHDeclareMethod(0, void, VideoAlbumController, viewWillLayoutSubviews)
 {
     CHSuper(0, VideoAlbumController, viewWillLayoutSubviews);
     
-    if (enabled && !enableNightTheme && enabledVideosImage && [self isKindOfClass:NSClassFromString(@"VideoAlbumController")]) {
+    if (enabled && !enableNightTheme && enabledVideosImage && [self isKindOfClass:objc_lookUpClass("VideoAlbumController")]) {
         [cvkMainController setImageToTableView:self.tableView name:@"videosBackgroundImage" blackout:videosImageBlackout 
                                 parallaxEffect:useVideosParallax blur:videosUseBackgroundBlur];
         self.tableView.separatorColor = hideVideosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
@@ -942,7 +942,7 @@ CHDeclareMethod(0, void, VideoAlbumController, viewWillLayoutSubviews)
         UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
         UIColor *textColor =  changeVideosTextColor ? videosTextColor : [UIColor colorWithWhite:1.0f alpha:0.7f];
         
-        if ([search isKindOfClass:NSClassFromString(@"VKSearchBar")]) {
+        if ([search isKindOfClass:objc_lookUpClass("VKSearchBar")]) {
             setupNewSearchBar((VKSearchBar *)search, textColor, videosBlurTone, videosBlurStyle);
         } else if ([search isKindOfClass:[UISearchBar class]] && [search respondsToSelector:@selector(setBackgroundImage:)]) {
             search.backgroundImage = [UIImage new];
@@ -959,10 +959,10 @@ CHDeclareMethod(2, UITableViewCell*, VideoAlbumController, tableView, UITableVie
 {
     UITableViewCell *cell = CHSuper(2, VideoAlbumController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && !enableNightTheme && enabledVideosImage && [self isKindOfClass:NSClassFromString(@"VideoAlbumController")]) {
+    if (enabled && !enableNightTheme && enabledVideosImage && [self isKindOfClass:objc_lookUpClass("VideoAlbumController")]) {
         performInitialCellSetup(cell);
         
-        if ([cell isKindOfClass:NSClassFromString(@"VideoCell")]) {
+        if ([cell isKindOfClass:objc_lookUpClass("VideoCell")]) {
             VideoCell *videoCell = (VideoCell *)cell;
             videoCell.videoTitleLabel.textColor = changeVideosTextColor?videosTextColor:UITableViewCellTextColor;
             videoCell.videoTitleLabel.backgroundColor = UITableViewCellBackgroundColor;
@@ -982,14 +982,14 @@ CHDeclareClass(PaymentsBalanceController);
 CHDeclareMethod(0, void, PaymentsBalanceController, viewWillLayoutSubviews)
 {
     CHSuper(0, PaymentsBalanceController, viewWillLayoutSubviews);
-    if ([self isKindOfClass:NSClassFromString(@"PaymentsBalanceController")])
+    if ([self isKindOfClass:objc_lookUpClass("PaymentsBalanceController")])
         setupExtraSettingsController(self);
 }
 
 CHDeclareMethod(2, UITableViewCell*, PaymentsBalanceController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, PaymentsBalanceController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    if ([self isKindOfClass:NSClassFromString(@"PaymentsBalanceController")])
+    if ([self isKindOfClass:objc_lookUpClass("PaymentsBalanceController")])
         setupExtraSettingsCell(cell);
     return cell;
 }
@@ -999,14 +999,14 @@ CHDeclareClass(SubscriptionsSettingsViewController);
 CHDeclareMethod(0, void, SubscriptionsSettingsViewController, viewWillLayoutSubviews)
 {
     CHSuper(0, SubscriptionsSettingsViewController, viewWillLayoutSubviews);
-    if ([self isKindOfClass:NSClassFromString(@"SubscriptionsSettingsViewController")])
+    if ([self isKindOfClass:objc_lookUpClass("SubscriptionsSettingsViewController")])
         setupExtraSettingsController(self);
 }
 
 CHDeclareMethod(2, UITableViewCell*, SubscriptionsSettingsViewController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, SubscriptionsSettingsViewController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    if ([self isKindOfClass:NSClassFromString(@"SubscriptionsSettingsViewController")])
+    if ([self isKindOfClass:objc_lookUpClass("SubscriptionsSettingsViewController")])
         setupExtraSettingsCell(cell);
     return cell;
 }
@@ -1016,14 +1016,14 @@ CHDeclareClass(ModernPushSettingsController);
 CHDeclareMethod(0, void, ModernPushSettingsController, viewWillLayoutSubviews)
 {
     CHSuper(0, ModernPushSettingsController, viewWillLayoutSubviews);
-    if ([self isKindOfClass:NSClassFromString(@"ModernPushSettingsController")])
+    if ([self isKindOfClass:objc_lookUpClass("ModernPushSettingsController")])
         setupExtraSettingsController(self);
 }
 
 CHDeclareMethod(2, UITableViewCell*, ModernPushSettingsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, ModernPushSettingsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    if ([self isKindOfClass:NSClassFromString(@"ModernPushSettingsController")])
+    if ([self isKindOfClass:objc_lookUpClass("ModernPushSettingsController")])
         setupExtraSettingsCell(cell);
     return cell;
 }
@@ -1033,14 +1033,14 @@ CHDeclareClass(VKP2PViewController);
 CHDeclareMethod(0, void, VKP2PViewController, viewWillLayoutSubviews)
 {
     CHSuper(0, VKP2PViewController, viewWillLayoutSubviews);
-    if ([self isKindOfClass:NSClassFromString(@"VKP2PViewController")])
+    if ([self isKindOfClass:objc_lookUpClass("VKP2PViewController")])
         setupExtraSettingsController(self);
 }
 
 CHDeclareMethod(2, UITableViewCell*, VKP2PViewController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, VKP2PViewController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    if ([self isKindOfClass:NSClassFromString(@"VKP2PViewController")])
+    if ([self isKindOfClass:objc_lookUpClass("VKP2PViewController")])
         setupExtraSettingsCell(cell);
     return cell;
 }
@@ -1050,7 +1050,7 @@ CHDeclareMethod(1, void, DiscoverFeedController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, DiscoverFeedController, viewWillAppear, animated);
     
-    if ([self isKindOfClass:NSClassFromString(@"DiscoverFeedController")]) {
+    if ([self isKindOfClass:objc_lookUpClass("DiscoverFeedController")]) {
         resetTabBar();
         
         if ([self respondsToSelector:@selector(topGradientBackgroundView)]) {
@@ -1093,7 +1093,7 @@ CHDeclareMethod(0, void, VKSearchBar, layoutSubviews)
     if (!customized)
         customized = @NO;
     
-    [NSObject cvk_runBlockOnMainThread:^(){
+    [NSObject cvk_runBlockOnMainThread:^{
         if (!enableNightTheme && (!customized.boolValue || !enabled)) {
             resetNewSearchBar(self);
         }
@@ -1105,7 +1105,7 @@ CHDeclareMethod(0, void, TitleMenuCell, layoutSubviews)
 {
     CHSuper(0, TitleMenuCell, layoutSubviews);
     
-    if ([self isKindOfClass:NSClassFromString(@"TitleMenuCell")]) {
+    if ([self isKindOfClass:objc_lookUpClass("TitleMenuCell")]) {
         setupNewAppMenuCell(self);
     }
 }
@@ -1126,7 +1126,7 @@ CVK_CONSTRUCTOR
         NSMutableDictionary *prefs = prefsExist ? [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH] : [NSMutableDictionary new];
         prefs[@"vkVersion"] = application.detailedVersion;
         [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
-        VKSettingsEnabled = (NSClassFromString(@"VKSettings") != nil);
+        VKSettingsEnabled = (objc_lookUpClass("VKSettings") != nil);
         
         REGISTER_CORE_OBSERVER(reloadPrefsNotify, kPackageNotificationReloadPrefs);
         REGISTER_CORE_OBSERVER(reloadMenuNotify, kPackageNotificationReloadMenu);

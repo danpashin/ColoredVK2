@@ -11,7 +11,7 @@
 CHDeclareClass(IOS7AudioController);
 CHDeclareMethod(0, UIStatusBarStyle, IOS7AudioController, preferredStatusBarStyle)
 {
-    if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")] && enabled && (enabledBarColor || changeAudioPlayerAppearance || enableNightTheme)) 
+    if ([self isKindOfClass:objc_lookUpClass("IOS7AudioController")] && enabled && (enabledBarColor || changeAudioPlayerAppearance || enableNightTheme)) 
         return UIStatusBarStyleLightContent;
     else return CHSuper(0, IOS7AudioController, preferredStatusBarStyle);
 }
@@ -20,7 +20,7 @@ CHDeclareMethod(0, void, IOS7AudioController, viewWillLayoutSubviews)
 {
     CHSuper(0, IOS7AudioController, viewWillLayoutSubviews);
     
-    if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")] && enabled && changeAudioPlayerAppearance) {
+    if ([self isKindOfClass:objc_lookUpClass("IOS7AudioController")] && enabled && changeAudioPlayerAppearance) {
         if (!cvkMainController.audioCover) {
             cvkMainController.audioCover = [[ColoredVKAudioCover alloc] init];
             [cvkMainController.audioCover updateCoverForArtist:self.actor.text title:self.song.text];
@@ -35,7 +35,7 @@ CHDeclareMethod(0, void, IOS7AudioController, viewDidLoad)
     CHSuper(0, IOS7AudioController, viewDidLoad);
     
     
-    if ([self isKindOfClass:NSClassFromString(@"IOS7AudioController")] && enabled) {
+    if ([self isKindOfClass:objc_lookUpClass("IOS7AudioController")] && enabled) {
         if (enableNightTheme) {
             self.view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
             self.cover.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
@@ -140,7 +140,7 @@ CHDeclareMethod(0, void, AudioAlbumController, viewDidLoad)
 {
     CHSuper(0, AudioAlbumController, viewDidLoad);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
+    if (enabled && !enableNightTheme && enabledAudioImage && ([self isKindOfClass:objc_lookUpClass("AudioAlbumController")] || [self isKindOfClass:objc_lookUpClass("AudioAlbumsController")])) {
         UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
         if ([search isKindOfClass:[UISearchBar class]] && [search respondsToSelector:@selector(setBackgroundImage:)]) {
             search.backgroundImage = [UIImage new];
@@ -156,7 +156,7 @@ CHDeclareMethod(0, void, AudioAlbumController, viewWillLayoutSubviews)
 {
     CHSuper(0, AudioAlbumController, viewWillLayoutSubviews);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
+    if (enabled && !enableNightTheme && enabledAudioImage && ([self isKindOfClass:objc_lookUpClass("AudioAlbumController")] || [self isKindOfClass:objc_lookUpClass("AudioAlbumsController")])) {
         [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
                                 parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor =  hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
@@ -168,7 +168,7 @@ CHDeclareMethod(2, UITableViewCell*, AudioAlbumController, tableView, UITableVie
 {
     UITableViewCell *cell = CHSuper(2, AudioAlbumController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && ([self isKindOfClass:NSClassFromString(@"AudioAlbumController")] || [self isKindOfClass:NSClassFromString(@"AudioAlbumsController")])) {
+    if (enabled && !enableNightTheme && enabledAudioImage && ([self isKindOfClass:objc_lookUpClass("AudioAlbumController")] || [self isKindOfClass:objc_lookUpClass("AudioAlbumsController")])) {
         performInitialCellSetup(cell);
         
         cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
@@ -183,7 +183,7 @@ CHDeclareMethod(2, UITableViewCell*, AudioAlbumController, tableView, UITableVie
 CHDeclareClass(AudioPlaylistController);
 CHDeclareMethod(0, UIStatusBarStyle, AudioPlaylistController, preferredStatusBarStyle)
 {
-    if ([self isKindOfClass:NSClassFromString(@"AudioPlaylistController")] && enabled && (enabledBarColor || enabledAudioImage || enableNightTheme))
+    if ([self isKindOfClass:objc_lookUpClass("AudioPlaylistController")] && enabled && (enabledBarColor || enabledAudioImage || enableNightTheme))
         return UIStatusBarStyleLightContent;
     else return CHSuper(0, AudioPlaylistController, preferredStatusBarStyle);
 }
@@ -191,7 +191,7 @@ CHDeclareMethod(1, void, AudioPlaylistController, viewWillAppear, BOOL, animated
 {
     CHSuper(1, AudioPlaylistController, viewWillAppear, animated);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioPlaylistController")]) {
+    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("AudioPlaylistController")]) {
         [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
                                 parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
@@ -202,7 +202,7 @@ CHDeclareMethod(2, UITableViewCell*, AudioPlaylistController, tableView, UITable
 {
     UITableViewCell *cell = CHSuper(2, AudioPlaylistController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioPlaylistController")]) {
+    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("AudioPlaylistController")]) {
         performInitialCellSetup(cell);
         
         cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
@@ -235,7 +235,7 @@ CHDeclareMethod(0, void, AudioDashboardController, viewWillLayoutSubviews)
 {
     CHSuper(0, AudioDashboardController, viewWillLayoutSubviews);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioDashboardController")]) {
+    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("AudioDashboardController")]) {
         [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
                                 parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
@@ -247,7 +247,7 @@ CHDeclareMethod(2, UITableViewCell*, AudioDashboardController, tableView, UITabl
 {
     UITableViewCell *cell = CHSuper(2, AudioDashboardController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioDashboardController")]) {
+    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("AudioDashboardController")]) {
         performInitialCellSetup(cell);
         
         cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
@@ -263,7 +263,7 @@ CHDeclareMethod(0, void, AudioCatalogController, viewWillLayoutSubviews)
 {
     CHSuper(0, AudioCatalogController, viewWillLayoutSubviews);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioCatalogController")]) {
+    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("AudioCatalogController")]) {
         [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
                                 parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
@@ -276,16 +276,16 @@ CHDeclareMethod(2, UITableViewCell*, AudioCatalogController, tableView, UITableV
 {
     UITableViewCell *cell = CHSuper(2, AudioCatalogController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioCatalogController")]) {
+    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("AudioCatalogController")]) {
         performInitialCellSetup(cell);
         
         void (^setupBlock)(UIView *view) = ^(UIView *view){
-            if ([view isKindOfClass:NSClassFromString(@"AudioBlockCellHeaderView")]) {
+            if ([view isKindOfClass:objc_lookUpClass("AudioBlockCellHeaderView")]) {
                 AudioBlockCellHeaderView *headerView = (AudioBlockCellHeaderView *)view;
                 headerView.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
                 headerView.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
                 [headerView.showAllButton setTitleColor:changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor forState:UIControlStateNormal];
-            } else if ([view isKindOfClass:NSClassFromString(@"BlockCellHeaderView")]) {
+            } else if ([view isKindOfClass:objc_lookUpClass("BlockCellHeaderView")]) {
                 BlockCellHeaderView *headerView = (BlockCellHeaderView *)view;
                 headerView.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
                 headerView.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
@@ -311,7 +311,7 @@ CHDeclareMethod(0, void, AudioCatalogOwnersListController, viewWillLayoutSubview
 {
     CHSuper(0, AudioCatalogOwnersListController, viewWillLayoutSubviews);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioCatalogOwnersListController")]) {
+    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("AudioCatalogOwnersListController")]) {
         [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
                                 parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
@@ -323,17 +323,17 @@ CHDeclareMethod(2, UITableViewCell*, AudioCatalogOwnersListController, tableView
 {
     UITableViewCell *cell = CHSuper(2, AudioCatalogOwnersListController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioCatalogOwnersListController")]) {
+    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("AudioCatalogOwnersListController")]) {
         performInitialCellSetup(cell);
         
-        if ([cell isKindOfClass:NSClassFromString(@"GroupCell")]) {
+        if ([cell isKindOfClass:objc_lookUpClass("GroupCell")]) {
             GroupCell *groupCell = (GroupCell *)cell;
             groupCell.name.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
             groupCell.name.backgroundColor = UITableViewCellBackgroundColor;
             groupCell.status.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
             groupCell.status.backgroundColor = UITableViewCellBackgroundColor;
         }
-        else if ([cell isKindOfClass:NSClassFromString(@"SourceCell")]) {
+        else if ([cell isKindOfClass:objc_lookUpClass("SourceCell")]) {
             SourceCell *sourceCell = (SourceCell *)cell;
             sourceCell.first.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
             sourceCell.first.backgroundColor = UITableViewCellBackgroundColor;
@@ -352,7 +352,7 @@ CHDeclareMethod(0, void, AudioCatalogAudiosListController, viewWillLayoutSubview
 {
     CHSuper(0, AudioCatalogAudiosListController, viewWillLayoutSubviews);
     
-    if (enabled  && !enableNightTheme&& enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioCatalogAudiosListController")]) {
+    if (enabled  && !enableNightTheme&& enabledAudioImage && [self isKindOfClass:objc_lookUpClass("AudioCatalogAudiosListController")]) {
         [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
                                 parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
@@ -364,7 +364,7 @@ CHDeclareMethod(2, UITableViewCell*, AudioCatalogAudiosListController, tableView
 {
     UITableViewCell *cell = CHSuper(2, AudioCatalogAudiosListController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioCatalogAudiosListController")]) {
+    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("AudioCatalogAudiosListController")]) {
         performInitialCellSetup(cell);
         
         cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
@@ -382,7 +382,7 @@ CHDeclareMethod(0, void, AudioPlaylistDetailController, viewWillLayoutSubviews)
 {
     CHSuper(0, AudioPlaylistDetailController, viewWillLayoutSubviews);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioPlaylistDetailController")]) {
+    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("AudioPlaylistDetailController")]) {
         [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
                                 parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
@@ -394,7 +394,7 @@ CHDeclareMethod(2, UITableViewCell*, AudioPlaylistDetailController, tableView, U
 {
     UITableViewCell *cell = CHSuper(2, AudioPlaylistDetailController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioPlaylistDetailController")]) {
+    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("AudioPlaylistDetailController")]) {
         performInitialCellSetup(cell);
         
         cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
@@ -410,7 +410,7 @@ CHDeclareMethod(0, void, AudioPlaylistsController, viewWillLayoutSubviews)
 {
     CHSuper(0, AudioPlaylistsController, viewWillLayoutSubviews);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioPlaylistsController")]) {
+    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("AudioPlaylistsController")]) {
         [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
                                 parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
@@ -432,7 +432,7 @@ CHDeclareMethod(2, UITableViewCell*, AudioPlaylistsController, tableView, UITabl
 {
     UITableViewCell *cell = CHSuper(2, AudioPlaylistsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioPlaylistsController")]) {
+    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("AudioPlaylistsController")]) {
         performInitialCellSetup(cell);
     }
     
@@ -443,7 +443,7 @@ CHDeclareMethod(2, UITableViewCell*, AudioPlaylistsController, tableView, UITabl
 CHDeclareClass(VKAudioPlayerListTableViewController);
 CHDeclareMethod(0, UIStatusBarStyle, VKAudioPlayerListTableViewController, preferredStatusBarStyle)
 {
-    if ([self isKindOfClass:NSClassFromString(@"VKAudioPlayerListTableViewController")] && enabled && (enabledBarColor || enableNightTheme))
+    if ([self isKindOfClass:objc_lookUpClass("VKAudioPlayerListTableViewController")] && enabled && (enabledBarColor || enableNightTheme))
         return UIStatusBarStyleLightContent;
     else return CHSuper(0, VKAudioPlayerListTableViewController, preferredStatusBarStyle);
 }
@@ -452,7 +452,7 @@ CHDeclareMethod(0, void, VKAudioPlayerListTableViewController, viewDidLoad)
 {
     CHSuper(0, VKAudioPlayerListTableViewController, viewDidLoad);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:NSClassFromString(@"VKAudioPlayerListTableViewController")]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("VKAudioPlayerListTableViewController")]) {
         self.navigationController.navigationBar.tintColor = self.navigationController.navigationBar.tintColor;
     }
 }
@@ -461,7 +461,7 @@ CHDeclareMethod(0, void, VKAudioPlayerListTableViewController, viewWillLayoutSub
 {
     CHSuper(0, VKAudioPlayerListTableViewController, viewWillLayoutSubviews);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"VKAudioPlayerListTableViewController")]) {
+    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("VKAudioPlayerListTableViewController")]) {
         [cvkMainController setImageToTableView:self.tableView name:@"audioBackgroundImage" blackout:audioImageBlackout 
                                 parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
         self.tableView.separatorColor = hideAudiosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
@@ -472,7 +472,7 @@ CHDeclareMethod(2, UITableViewCell*, VKAudioPlayerListTableViewController, table
 {
     UITableViewCell *cell = CHSuper(2, VKAudioPlayerListTableViewController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"VKAudioPlayerListTableViewController")]) {
+    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("VKAudioPlayerListTableViewController")]) {
         performInitialCellSetup(cell);
         
         cell.textLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
@@ -491,7 +491,7 @@ CHDeclareMethod(0, void, AudioAudiosBlockTableCell, layoutSubviews)
 {
     CHSuper(0, AudioAudiosBlockTableCell, layoutSubviews);
     
-    if (enabled && (enabledAudioImage || enableNightTheme) && [self isKindOfClass:NSClassFromString(@"AudioAudiosBlockTableCell")]) {
+    if (enabled && (enabledAudioImage || enableNightTheme) && [self isKindOfClass:objc_lookUpClass("AudioAudiosBlockTableCell")]) {
         performInitialCellSetup(self);
         if (enableNightTheme) {
             self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
@@ -509,7 +509,7 @@ CHDeclareMethod(0, void, AudioPlaylistInlineCell, layoutSubviews)
 {
     CHSuper(0, AudioPlaylistInlineCell, layoutSubviews);
     
-    if (enabled && enabledAudioImage && !enableNightTheme && [self isKindOfClass:NSClassFromString(@"AudioPlaylistInlineCell")]) {
+    if (enabled && enabledAudioImage && !enableNightTheme && [self isKindOfClass:objc_lookUpClass("AudioPlaylistInlineCell")]) {
         self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
         self.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
     }
@@ -521,7 +521,7 @@ CHDeclareMethod(0, void, AudioOwnersBlockItemCollectionCell, layoutSubviews)
 {
     CHSuper(0, AudioOwnersBlockItemCollectionCell, layoutSubviews);
     
-    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioOwnersBlockItemCollectionCell")]) {
+    if (enabled && !enableNightTheme && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("AudioOwnersBlockItemCollectionCell")]) {
         self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
     }
 }
@@ -533,7 +533,7 @@ CHDeclareMethod(0, void, AudioPlaylistCell, layoutSubviews)
 {
     CHSuper(0, AudioPlaylistCell, layoutSubviews);
     
-    if (enabled && (enabledAudioImage || enableNightTheme) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistCell")]) {
+    if (enabled && (enabledAudioImage || enableNightTheme) && [self isKindOfClass:objc_lookUpClass("AudioPlaylistCell")]) {
         performInitialCellSetup(self);
         if (!enableNightTheme) {
             self.titleLabel.textColor = changeAudiosTextColor?audiosTextColor:UITableViewCellTextColor;
@@ -550,7 +550,7 @@ CHDeclareMethod(0, void, AudioPlaylistsCell, layoutSubviews)
 {
     CHSuper(0, AudioPlaylistsCell, layoutSubviews);
     
-    if (enabled && (enabledAudioImage || enableNightTheme) && [self isKindOfClass:NSClassFromString(@"AudioPlaylistsCell")]) {
+    if (enabled && (enabledAudioImage || enableNightTheme) && [self isKindOfClass:objc_lookUpClass("AudioPlaylistsCell")]) {
         performInitialCellSetup(self);
         if (enableNightTheme) {
             self.hostedView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
@@ -569,7 +569,7 @@ CHDeclareMethod(0, void, AudioAudiosSpecialBlockView, layoutSubviews)
 {
     CHSuper(0, AudioAudiosSpecialBlockView, layoutSubviews);
     
-    if (enabled && (enabledAudioImage || enableNightTheme) && [self isKindOfClass:NSClassFromString(@"AudioAudiosSpecialBlockView")]) {
+    if (enabled && (enabledAudioImage || enableNightTheme) && [self isKindOfClass:objc_lookUpClass("AudioAudiosSpecialBlockView")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
         if (!enableNightTheme) {
             self.backgroundColor = [UIColor clearColor];
@@ -577,7 +577,7 @@ CHDeclareMethod(0, void, AudioAudiosSpecialBlockView, layoutSubviews)
             self.subtitleLabel.textColor = changeAudiosTextColor?audiosTextColor.cvk_darkerColor:UITableViewCellDetailedTextColor;
         }
         for (UIView *subview in self.subviews) {
-            if ([subview isKindOfClass:NSClassFromString(@"GradientView")]) {
+            if ([subview isKindOfClass:objc_lookUpClass("GradientView")]) {
                 subview.hidden = YES;
                 break;
             }
@@ -595,7 +595,7 @@ CHDeclareMethod(0, void, AudioPlaylistView, layoutSubviews)
     if (enabled && enableNightTheme) {
         self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
-    else if (enabled && enabledAudioImage && [self isKindOfClass:NSClassFromString(@"AudioPlaylistView")]) {
+    else if (enabled && enabledAudioImage && [self isKindOfClass:objc_lookUpClass("AudioPlaylistView")]) {
         self.backgroundColor = [UIColor clearColor];
         for (UIView *subview in self.subviews) {
             if ([subview isKindOfClass:[UILabel class]]) {
