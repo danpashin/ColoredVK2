@@ -10,101 +10,82 @@
 
 @interface ColoredVKCellBackgroundView ()
 
-@property (strong, nonatomic) CAShapeLayer *backgroundLayer;
+@property (strong, nonatomic, readonly) CAShapeLayer *layer; 
 @property (strong, nonatomic) CALayer *separatorLayer;
 
-@property (assign, nonatomic) CGRect backgroundFrame;
 @property (assign, nonatomic) BOOL useExtendedLandscapeEdges;
 
 @end
 
 @implementation ColoredVKCellBackgroundView
-
 @synthesize backgroundColor = _backgroundColor;
 @synthesize separatorColor = _separatorColor;
+@dynamic layer;
+
++ (Class)layerClass
+{
+    return [CAShapeLayer class];
+}
 
 - (instancetype)init
 {
     self = [super init];
     if (self) {
-        [self commonInit];
+        CGSize screenSize = [UIScreen mainScreen].bounds.size;
+        CGFloat height = (screenSize.height > screenSize.width) ? screenSize.height : screenSize.width;
+        self.useExtendedLandscapeEdges = (height == 812.0f);
+        
+        self.separatorLayer = [CALayer layer];
+        self.separatorLayer.backgroundColor = self.separatorColor.CGColor;
+        [self.layer addSublayer:self.separatorLayer];
     }
     return self;
 }
 
-
-- (instancetype)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        [self commonInit];
-    }
-    return self;
-}
-
-- (void)commonInit
-{
-    CGSize screenSize = [UIScreen mainScreen].bounds.size;
-    CGFloat height = (screenSize.height > screenSize.width) ? screenSize.height : screenSize.width;
-    self.useExtendedLandscapeEdges = (height == 812.0f);
-    
-    [self renderBackground];
-}
-
-- (void)renderBackground
+- (void)drawBackground
+//:(BOOL)animated
 {
     if (!self.tableView || !self.tableViewCell)
         return;
     
-    if (self.rendered)
-        return;
+    CGFloat xOffset = 0.0f;
+    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) && self.useExtendedLandscapeEdges) {
+        xOffset = 36.0f;
+    }
     
-    self.rendered = YES;
+    CGRect selfBounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+    CGRect frame = CGRectInset(selfBounds, 8.0f + xOffset, 0.0f);
     
-    self.backgroundLayer = [CAShapeLayer layer];
-    self.backgroundLayer.frame = self.bounds;
-    [self.layer addSublayer:self.backgroundLayer];
-    
-    self.separatorLayer = [CALayer layer];
-    self.separatorLayer.backgroundColor = self.separatorColor.CGColor;
-    [self.backgroundLayer addSublayer:self.separatorLayer];
-    
-    [self drawBackground];
-}
-
-- (void)drawBackground
-{
     CGFloat cornerRadius = 10.f;
-    CGRect bounds = self.backgroundFrame;
     BOOL drawSeparator = YES;
     CGMutablePathRef pathRef = CGPathCreateMutable();
     
     if (self.indexPath.row == 0 && self.indexPath.row == [self.tableView numberOfRowsInSection:self.indexPath.section]-1) {
-        CGPathAddRoundedRect(pathRef, nil, bounds, cornerRadius, cornerRadius);
+        CGPathAddRoundedRect(pathRef, nil, frame, cornerRadius, cornerRadius);
         drawSeparator = NO;
     } else if (self.indexPath.row == 0) {
-        CGPathMoveToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMaxY(bounds));
-        CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMinY(bounds), CGRectGetMidX(bounds), CGRectGetMinY(bounds), cornerRadius);
-        CGPathAddArcToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMinY(bounds), CGRectGetMaxX(bounds), CGRectGetMidY(bounds), cornerRadius);
-        CGPathAddLineToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMaxY(bounds));
+        CGPathMoveToPoint(pathRef, nil, CGRectGetMinX(frame), CGRectGetMaxY(frame));
+        CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(frame), CGRectGetMinY(frame), CGRectGetMidX(frame), CGRectGetMinY(frame), cornerRadius);
+        CGPathAddArcToPoint(pathRef, nil, CGRectGetMaxX(frame), CGRectGetMinY(frame), CGRectGetMaxX(frame), CGRectGetMidY(frame), cornerRadius);
+        CGPathAddLineToPoint(pathRef, nil, CGRectGetMaxX(frame), CGRectGetMaxY(frame));
     } else if (self.indexPath.row == [self.tableView numberOfRowsInSection:self.indexPath.section]-1) {
         drawSeparator = NO;
-        CGPathMoveToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMinY(bounds));
-        CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(bounds), CGRectGetMaxY(bounds), CGRectGetMidX(bounds), CGRectGetMaxY(bounds), cornerRadius);
-        CGPathAddArcToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMaxY(bounds), CGRectGetMaxX(bounds), CGRectGetMidY(bounds), cornerRadius);
-        CGPathAddLineToPoint(pathRef, nil, CGRectGetMaxX(bounds), CGRectGetMinY(bounds));
+        CGPathMoveToPoint(pathRef, nil, CGRectGetMinX(frame), CGRectGetMinY(frame));
+        CGPathAddArcToPoint(pathRef, nil, CGRectGetMinX(frame), CGRectGetMaxY(frame), CGRectGetMidX(frame), CGRectGetMaxY(frame), cornerRadius);
+        CGPathAddArcToPoint(pathRef, nil, CGRectGetMaxX(frame), CGRectGetMaxY(frame), CGRectGetMaxX(frame), CGRectGetMidY(frame), cornerRadius);
+        CGPathAddLineToPoint(pathRef, nil, CGRectGetMaxX(frame), CGRectGetMinY(frame));
     } else {
-        CGPathAddRect(pathRef, nil, bounds);
+        CGPathAddRect(pathRef, nil, frame);
     }
-    self.backgroundLayer.fillColor = self.backgroundColor.CGColor;
-    self.backgroundLayer.frame = self.bounds;
-    self.backgroundLayer.path = pathRef;
+    self.layer.fillColor = self.backgroundColor.CGColor;
+    self.layer.frame = self.bounds;
+    self.layer.path = pathRef;
     CFRelease(pathRef);
     
     if (drawSeparator) {
         CGFloat separatorHeight = 0.5f;
-        self.separatorLayer.frame = CGRectMake(CGRectGetMinX(self.backgroundFrame), CGRectGetMaxY(self.backgroundFrame) - separatorHeight / 2.0f, 
-                                               CGRectGetWidth(self.backgroundFrame), separatorHeight);
+        self.separatorLayer.frame = CGRectMake(CGRectGetMinX(frame), CGRectGetMaxY(frame) - separatorHeight / 2.0f, 
+                                               CGRectGetWidth(frame), separatorHeight);
         self.separatorLayer.backgroundColor = self.separatorColor.CGColor;
     }
 }
@@ -116,16 +97,10 @@
 
 - (void)setFrame:(CGRect)frame
 {
+    if (CGRectEqualToRect(frame, CGRectZero) || CGRectEqualToRect(frame, self.frame))
+        return;
+    
     super.frame = frame;
-    
-    CGFloat xOffset = 0.0f;
-    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) && self.useExtendedLandscapeEdges) {
-        xOffset = 36.0f;
-    }
-    
-    CGRect bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(frame), CGRectGetHeight(frame));
-    self.backgroundFrame = CGRectInset(bounds, 8.0f + xOffset, 0.0f);
-    
     [self drawBackground];
 }
 
@@ -134,7 +109,7 @@
     _backgroundColor = backgroundColor;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.backgroundLayer.fillColor = self.backgroundColor.CGColor;
+        self.layer.fillColor = self.backgroundColor.CGColor;
     });
 }
 

@@ -8,6 +8,7 @@
 
 #import "ColoredVKGeneralPrefs.h"
 
+#import "ColoredVKAlertController.h"
 #import "ColoredVKColorPickerController.h"
 #import "VKPhotoPicker.h"
 
@@ -70,7 +71,6 @@
     
     Class vkPhotoPickerClass = objc_getClass("VKPhotoPicker");
     if (!vkPhotoPickerClass) {
-        
         UIImagePickerController *picker = [UIImagePickerController new];
         picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         picker.delegate = self;
@@ -80,7 +80,6 @@
     
     VKPPService *ppService = [objc_getClass("VKPPService") standartService];
     VKPhotoPicker *photoPicker = [vkPhotoPickerClass photoPickerWithService:ppService mediaTypes:2];
-    
     photoPicker.selector.selectSingle = YES;
     photoPicker.selector.disableEdits = YES;
     
@@ -148,6 +147,17 @@
 - (void)backupSettings
 {
     [[ColoredVKBackupsModel new] createBackup];
+}
+
+- (void)showPurchaseAlert
+{
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"AVAILABLE_IN_FULL_VERSION")];
+    [alertController addCancelActionWithTitle:CVKLocalizedString(@"THINK_LATER")];
+    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OF_COURSE") style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction *action) {
+                                                          [[ColoredVKNewInstaller sharedInstaller].user actionPurchase];
+                                                      }]];
+    [alertController presentFromController:self];
 }
 
 #pragma mark -

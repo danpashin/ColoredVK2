@@ -7,7 +7,6 @@
 //
 
 #import "ColoredVKPrefs.h"
-#import "ColoredVKAlertController.h"
 @import SafariServices.SFSafariViewController;
 
 #import "ColoredVKNewInstaller.h"
@@ -202,17 +201,6 @@
         }
         [self presentViewController:controller animated:YES completion:nil];
     });
-}
-
-- (void)showPurchaseAlert
-{
-    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:CVKLocalizedString(@"AVAILABLE_IN_FULL_VERSION")];
-    [alertController addCancelActionWithTitle:CVKLocalizedString(@"THINK_LATER")];
-    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"OF_COURSE") style:UIAlertActionStyleDefault
-                                                      handler:^(UIAlertAction *action) {
-                                                          [[ColoredVKNewInstaller sharedInstaller].user actionPurchase];
-                                                      }]];
-    [alertController presentFromController:self];
 }
 
 - (void)openURL:(NSString *)url

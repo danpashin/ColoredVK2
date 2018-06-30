@@ -77,10 +77,12 @@
 
 - (void)updateNightThemeForController:(UIViewController *)viewController
 {
+#ifndef COMPILE_APP
     ColoredVKNightScheme *nightScheme = [ColoredVKNightScheme sharedScheme];
     if (nightScheme.enabled) {
         viewController.view.backgroundColor = nightScheme.backgroundColor;
     }
+#endif
 }
 
 - (void)setPrefersLargeTitle:(BOOL)prefersLargeTitle

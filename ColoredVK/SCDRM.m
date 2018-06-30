@@ -204,15 +204,16 @@ CVK_INLINE void checkLibs(void)
             libsCount++;
         } else if (strstr(imageName, "coloredvk2") != NULL) {
             libsCount++;
-        } else if (strstr(imageName, "Crack") != NULL) {
-            libsCount++;
-        } else if (strstr(imageName, "crack") != NULL) {
-            libsCount++;
-        } else if (strstr(imageName, "Hack") != NULL) {
-            libsCount++;
-        } else if (strstr(imageName, "hack") != NULL) {
-            libsCount++;
-        }
+        } 
+//        else if (strstr(imageName, "Crack") != NULL) {
+//            libsCount++;
+//        } else if (strstr(imageName, "crack") != NULL) {
+//            libsCount++;
+//        } else if (strstr(imageName, "Hack") != NULL) {
+//            libsCount++;
+//        } else if (strstr(imageName, "hack") != NULL) {
+//            libsCount++;
+//        }
     }
     
     __suspiciousLibsDetected = (libsCount > maxLibsCount);

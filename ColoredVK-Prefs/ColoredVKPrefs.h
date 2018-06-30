@@ -25,7 +25,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)openURL:(NSString *)url;
 - (void)presentPopover:(UIViewController *)controller;
 - (NSArray <PSSpecifier*> *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize;
-- (void)showPurchaseAlert;
 
 - (nullable id)readPreferenceValue:(PSSpecifier *)specifier NS_REQUIRES_SUPER;
 - (void)setPreferenceValue:(nullable id)value specifier:(PSSpecifier *)specifier NS_REQUIRES_SUPER;

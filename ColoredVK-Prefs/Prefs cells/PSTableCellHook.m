@@ -8,7 +8,6 @@
 #import <Foundation/Foundation.h>
 #import "CaptainHook/CaptainHook.h"
 
-#import "ColoredVKPrefs.h"
 #import "ColoredVKGeneralPrefs.h"
 
 #import "ColoredVKSwitchPrefsCell.h"

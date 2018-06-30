@@ -44,20 +44,19 @@
 - (void)renderBackgroundWithColor:(UIColor *)backgroundColor separatorColor:(UIColor *)separatorColor 
                      forTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
 {
-    self.backgroundColor = [UIColor clearColor];
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-    ColoredVKCellBackgroundView *backgroundView = self.customBackgroundView;
-    self.backgroundView = backgroundView;
-    
-    if (!backgroundView.rendered) {
+    if (!self.backgroundView) {
+        ColoredVKCellBackgroundView *backgroundView = self.customBackgroundView;
         backgroundView.tableView = tableView;
         backgroundView.tableViewCell = self;
         backgroundView.indexPath = indexPath;
         
         backgroundView.backgroundColor = backgroundColor;
         backgroundView.separatorColor = separatorColor;
-        [backgroundView renderBackground];
+        
+        self.backgroundColor = [UIColor clearColor];
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+        self.backgroundView = backgroundView;
     }
 }
 
@@ -74,7 +73,6 @@
     
     objc_setAssociatedObject(self, "cvkCellBackgroundView", customBackgroundView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
-
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
@@ -124,7 +122,7 @@
     if ([self.specifier isKindOfClass:[PSSpecifier class]]) {
         ColoredVKCellBackgroundView *customBackgroundView = [self.specifier propertyForKey:@"cvkCellBackgroundView"];
         if (!customBackgroundView) {
-            customBackgroundView = [[ColoredVKCellBackgroundView alloc] initWithFrame:self.bounds];
+            customBackgroundView = [[ColoredVKCellBackgroundView alloc] init];
             self.customBackgroundView = customBackgroundView;
         }
         return customBackgroundView;
@@ -132,7 +130,7 @@
     
     ColoredVKCellBackgroundView *customBackgroundView = objc_getAssociatedObject(self, "cvkCellBackgroundView");
     if (!customBackgroundView) {
-        customBackgroundView = [[ColoredVKCellBackgroundView alloc] initWithFrame:self.bounds];
+        customBackgroundView = [[ColoredVKCellBackgroundView alloc] init];
         self.customBackgroundView = customBackgroundView;
     }
     return customBackgroundView;

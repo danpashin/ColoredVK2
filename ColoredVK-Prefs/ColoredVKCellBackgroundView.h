@@ -11,14 +11,10 @@
 
 @property (weak, nonatomic) UITableView *tableView;
 @property (weak, nonatomic) UITableViewCell *tableViewCell;
-@property (weak, nonatomic) NSIndexPath *indexPath;
+@property (strong, nonatomic) NSIndexPath *indexPath;
 
 @property (strong, nonatomic) UIColor *backgroundColor;
 @property (strong, nonatomic) UIColor *selectedBackgroundColor;
 @property (strong, nonatomic) UIColor *separatorColor;
-
-@property (assign, nonatomic) BOOL rendered;
-
-- (void)renderBackground;
 
 @end
