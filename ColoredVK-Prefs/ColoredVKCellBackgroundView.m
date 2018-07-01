@@ -51,7 +51,10 @@
     CGFloat xOffset = 0.0f;
     if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) && self.useExtendedLandscapeEdges) {
         xOffset = 36.0f;
-    }
+    } 
+//    else if (IS_IPAD) {
+//        xOffset = 16.0f;
+//    }
     
     CGRect selfBounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
     CGRect frame = CGRectInset(selfBounds, 8.0f + xOffset, 0.0f);

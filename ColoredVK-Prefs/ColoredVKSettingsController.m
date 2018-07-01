@@ -48,9 +48,16 @@
     self.backupsModel.delegate = self;
 }
 
-- (void)shareBackup:(UIButton *)button
+- (void)shareBackup:(UIButton *)button event:(UIEvent *)event
 {
-    NSString *path = [NSString stringWithFormat:@"%@/%@", CVK_BACKUP_PATH, button.accessibilityValue];
+    UITouch *touch = event.allTouches.anyObject;
+    CGPoint currentTouchPosition = [touch locationInView:self.table];
+    NSIndexPath *indexPath = [self.table indexPathForRowAtPoint:currentTouchPosition];
+    if (!indexPath)
+        return;
+    
+    PSSpecifier *specifier = [self specifierAtIndexPath:indexPath];
+    NSString *path = [NSString stringWithFormat:@"%@/%@", CVK_BACKUP_PATH, specifier.properties[@"filename"]];
     NSArray *items = @[[NSURL fileURLWithPath:path isDirectory:NO]];
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
     [self presentPopover:activityVC];
@@ -96,11 +103,10 @@
     PSTableCell *cell = (PSTableCell *)[super tableView:tableView cellForRowAtIndexPath:indexPath];
     
     UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 30.0f, 30.0f)];
-    [shareButton addTarget:self action:@selector(shareBackup:) forControlEvents:UIControlEventTouchUpInside];
+    [shareButton addTarget:self action:@selector(shareBackup:event:) forControlEvents:UIControlEventTouchUpInside];
     UIImage *shareImage = [UIImage imageNamed:@"prefs/ShareIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
     [shareButton setImage:shareImage forState:UIControlStateNormal];
-    shareButton.accessibilityValue = cell.specifier.properties[@"filename"];
-    shareButton.isAccessibilityElement = NO;
+    shareButton.accessibilityLabel = CVKLocalizedStringInBundle(@"SHARE_BACKUP", self.cvkBundle);
     cell.accessoryView = shareButton;
     
     return cell;
@@ -139,7 +145,7 @@
     NSString *fileName = specifier.properties[@"filename"];
     
     NSString *message = [NSString stringWithFormat:CVKLocalizedStringInBundle(@"RESTORE_BACKUP_QUESTION", self.cvkBundle), fileName];
-    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:kPackageName message:message];
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:nil message:message];
     [alertController addCancelAction];
     
     NSString *sureTitle = CVKLocalizedStringInBundle(@"YES_I_AM_SURE", self.cvkBundle);

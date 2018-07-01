@@ -363,6 +363,8 @@
     UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.userInteractionEnabled = YES;
+    
+//    CGFloat edgeOffset = IS_IPAD ? 36.0f : 18.0f;
     cell.layoutMargins = UIEdgeInsetsMake(0.0f, 18.0f, 0.0f, 18.0f);
     
     return cell;
