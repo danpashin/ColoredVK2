@@ -11,7 +11,6 @@
 #import "ColoredVKNetwork.h"
 
 #define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
-#define kDRMRemoteServerURL     [NSString stringWithFormat:@"%@/index-new.php", kPackageAPIURL]
 
 @interface ColoredVKNewInstaller ()
 extern NSString *__key;
@@ -39,6 +38,7 @@ extern NSString *__key;
 
 - (void)clearUser
 {
+    self.authenticated = NO;
     self.name = nil;
     self.email = nil;
     self.userID = nil;
@@ -128,6 +128,7 @@ extern NSString *__key;
     NSDictionary *parameters = @{@"login": userName, @"password": password, @"action": @"login", 
                                  @"version": kPackageVersion, @"device": device, @"key": __key
                                  };
+    NSString *url = [kPackageAPIURL stringByAppendingString:@"/auth/authenticate.php"];
     
     void (^showAlertBlock)(NSError *error) = ^(NSError *error) {
         [newInstaller hideHud];
@@ -145,7 +146,7 @@ extern NSString *__key;
     };
     
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-    [network sendRequestWithMethod:@"POST" url:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
+    [network sendRequestWithMethod:@"POST" url:url parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
         NSError *decryptError = nil;
         NSDictionary *json = RSADecryptServerData(rawData, &decryptError);
         
@@ -204,56 +205,23 @@ extern NSString *__key;
     if (!self.authenticated)
         return;
     
-    ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-    [newInstaller showHudWithText:CVKLocalizedString(@"PLEASE_WAIT")];
-    
-    void (^newCompletionBlock)(NSError *error) = ^(NSError *error){
-        [newInstaller hideHud];
-        
-        if (error)
-            [newInstaller showAlertWithTitle:CVKLocalizedString(@"ERROR") text:[NSString stringWithFormat:@"%@\n(Client code %@)",
-                                                                                error.localizedDescription, @(error.code)] buttons:nil];
-        
-        if (completionBlock)
-            completionBlock();
-    };
-    
     NSString *device = [NSString stringWithFormat:@"%@ (%@)(%@)", __deviceModel, [UIDevice currentDevice].name, 
                         [UIDevice currentDevice].systemVersion];
     NSDictionary *parameters = @{@"login": self.name, @"token": self.accessToken, @"action": @"logout", 
                                  @"version": kPackageVersion, @"device": device, @"key": __key
                                  };
+    NSString *url = [kPackageAPIURL stringByAppendingString:@"/auth/authenticate.php"];
+    [[ColoredVKNetwork sharedNetwork] sendRequestWithMethod:@"POST" url:url parameters:parameters success:nil failure:nil];
     
-    ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-    [network sendRequestWithMethod:@"POST" url:kDRMRemoteServerURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
-        NSError *decryptError = nil;
-        NSDictionary *json = RSADecryptServerData(rawData, &decryptError);
-        
-        if (!json || decryptError) {
-            if (!decryptError)
-                decryptError = [NSError errorWithDomain:NSCocoaErrorDomain code:100
-                                               userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}];
-            newCompletionBlock(decryptError);
-            return;
-        }
-        
-        if (!json[@"error"]) {
-            self.authenticated = NO;
-            [newInstaller writeFreeLicence];
-            
-            newCompletionBlock(nil);
-            
-            POST_NOTIFICATION(kPackageNotificationReloadPrefsMenu);
-            
-            if (installerCompletionBlock)
-                installerCompletionBlock(NO);
-        } else {
-            NSString *errorMessages = json ? json[@"error"] : @"Unknown error";
-            newCompletionBlock([NSError errorWithDomain:NSCocoaErrorDomain code:102 userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);
-        }
-    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-        newCompletionBlock(error);
-    }];
+    
+    [[ColoredVKNewInstaller sharedInstaller] writeFreeLicence];
+    POST_NOTIFICATION(kPackageNotificationReloadPrefsMenu);
+    
+    if (installerCompletionBlock)
+        installerCompletionBlock(NO);
+    
+    if (completionBlock)
+        completionBlock();
 }
 
 @end

@@ -65,7 +65,8 @@ CVK_INLINE NSDictionary *RSADecryptServerData(NSData *rawData, NSError *__autore
     if ([jsonDict isKindOfClass:[NSDictionary class]] && !jsonError) {
         return jsonDict;
     } else {
-        *error = jsonError;
+        if (error)
+            *error = jsonError;
         return nil;
     }
 }

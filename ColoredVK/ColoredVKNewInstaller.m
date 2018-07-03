@@ -14,7 +14,6 @@
 #import "ColoredVKNetwork.h"
 
 #define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
-#define kDRMRemoteServerURL     [NSString stringWithFormat:@"%@/index-new.php", kPackageAPIURL]
 
 
 @interface ColoredVKNewInstaller ()
@@ -185,9 +184,10 @@ return;
     NSDictionary *params = @{@"udid": RSAEncryptServerString(__udid), 
                              @"package":RSAEncryptServerString(@"org.thebigboss.coloredvk2"), 
                              @"version":kPackageVersion, @"key": __key};
+    NSString *url = [kPackageAPIURL stringByAppendingString:@"/auth/auth_jail.php"];
     
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-    [network sendRequestWithMethod:@"POST" url:kDRMRemoteServerURL parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
+    [network sendRequestWithMethod:@"POST" url:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
         
         NSError *decryptError = nil;
         NSDictionary *json = RSADecryptServerData(rawData, &decryptError);

@@ -7,13 +7,15 @@
 //
 
 #import "ColoredVKNetwork.h"
-@import UIKit.UIDevice;
-@import UIKit.UIApplication;
+
+#if TARGET_OS_IOS
+#import <UIKit/UIDevice.h>
+#import <UIKit/UIApplication.h>
+#endif
 
 @interface ColoredVKNetwork  () <NSURLSessionDelegate>
 
 @property (strong, nonatomic) NSURLSession *session;
-@property (strong, nonatomic) NSOperationQueue *sessionDelegateQueue;
 @property (strong, nonatomic) dispatch_queue_t parseQueue;
 
 @end
@@ -40,11 +42,11 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
         self.configuration.allowsCellularAccess = YES;
         self.configuration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
         
-        self.sessionDelegateQueue = [[NSOperationQueue alloc] init];
-        self.sessionDelegateQueue.name = @"ru.danpashin.coloredvk2.network";
-        self.parseQueue = dispatch_queue_create("ru.danpashin.coloredvk2.network.background", DISPATCH_QUEUE_CONCURRENT);
+        NSOperationQueue *delegateQueue = [[NSOperationQueue alloc] init];
+        delegateQueue.name = @"ru.danpashin.coloredvk2.network";
+        self.parseQueue = dispatch_queue_create("ru.danpashin.coloredvk2.network.parse-queue", DISPATCH_QUEUE_CONCURRENT);
         
-        _session = [NSURLSession sessionWithConfiguration:self.configuration delegate:self delegateQueue:self.sessionDelegateQueue];
+        _session = [NSURLSession sessionWithConfiguration:self.configuration delegate:self delegateQueue:delegateQueue];
     }
     return self;
 }
@@ -170,7 +172,6 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
                     success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))success 
                     failure:(void(^)(NSHTTPURLResponse *response, NSError *error))failure
 {
-    
     [self sendRequestWithMethod:@"GET" url:stringURL parameters:nil success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
         if (success)
             success(httpResponse, rawData);
@@ -184,7 +185,7 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
 {
     NSArray *methodsAvailable = @[@"GET", @"POST"];
     if (![methodsAvailable containsObject:method.uppercaseString]) {
-        if (error != NULL)
+        if (error)
             *error = [self errorWithCode:1000 description:@"Method is invalid. Must be 'POST' or 'GET'."];
         return nil;
     }
@@ -199,7 +200,7 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     } else if ([parameters isKindOfClass:[NSString class]]) {
         [stringParameters appendString:(NSString *)parameters];
     } else if (parameters) {
-        if (error != NULL)
+        if (error)
             *error = [self errorWithCode:1001 description:@"Parameters class is invalid. Use NSDictionary or NSString."];
         return nil;
     }
@@ -222,10 +223,19 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     
     request.HTTPMethod = method.uppercaseString;
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    
+#if TARGET_OS_IOS
+    NSString *deviceModelName = [UIDevice currentDevice].model;
+    NSString *systemVersion = [UIDevice currentDevice].systemVersion;
+#elif TARGET_OS_OSX
+    NSString *deviceModelName = @"macOS;
+    NSString *systemVersion = [NSProcessInfo processInfo].operatingSystemVersionString;
+#endif
+    
     [request setValue:[NSString stringWithFormat:@"ColoredVK2/%@ (%@/%@ | %@/%@)", 
                        kPackageVersion, [NSBundle mainBundle].bundleIdentifier, 
-                       [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], [UIDevice currentDevice].model, 
-                       [UIDevice currentDevice].systemVersion] forHTTPHeaderField:@"User-Agent"];
+                       [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], deviceModelName, 
+                       systemVersion] forHTTPHeaderField:@"User-Agent"];
     
     return request;
 }
@@ -241,16 +251,15 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
 
 - (void)setStatusBarIndicatorActive:(BOOL)active
 {
+#if TARGET_OS_IOS
     dispatch_async(dispatch_get_main_queue(), ^{
         [UIApplication sharedApplication].networkActivityIndicatorVisible = active;
     });
+#endif
 }
 
-- (void)performBackgroundBlock:( void (^)(void) )block
+- (void)performBackgroundBlock:( void (^__nonnull)(void) )block
 {
-    if (!block)
-        return;
-    
     const char *currentQueueLabel = dispatch_queue_get_label([NSOperationQueue currentQueue].underlyingQueue);
     const char *customQueueLabel = dispatch_queue_get_label(self.parseQueue);
     if (strcmp(currentQueueLabel, customQueueLabel) == 0) {
@@ -260,7 +269,7 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     }
 }
 
-- (NSError * _Nonnull)errorWithCode:(NSInteger)code description:(NSString * _Nonnull)description
+- (NSError * __nonnull)errorWithCode:(NSInteger)code description:(NSString * _Nonnull)description
 {
     return [NSError errorWithDomain:kColoredVKNetworkErrorDomain code:code 
                            userInfo:@{NSLocalizedDescriptionKey:description}];
