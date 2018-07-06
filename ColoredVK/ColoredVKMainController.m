@@ -214,4 +214,17 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
     });
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+{
+    if (enabled && enableNightTheme && [keyPath isEqualToString:@"layer.fillColor"] && [object isKindOfClass:objc_lookUpClass("_TtC3vkm9BadgeView")]) {
+        _TtC3vkm9BadgeView *badgeView = object;
+        const CGFloat *components = CGColorGetComponents(badgeView.layer.fillColor);
+        if (components[2] >= 0.79f) {
+            badgeView.layer.fillColor = self.nightThemeScheme.buttonSelectedColor.CGColor;
+        } else if (components[2] > 0.0f) {
+            badgeView.layer.fillColor = self.nightThemeScheme.navbackgroundColor.CGColor;
+        }
+    }
+}
+
 @end

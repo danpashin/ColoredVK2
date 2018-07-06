@@ -235,3 +235,6 @@
 
 @interface VKReusableColorView  : UIView
 @end
+
+@interface _TtC3vkm17MessageBubbleView : UIView
+@end

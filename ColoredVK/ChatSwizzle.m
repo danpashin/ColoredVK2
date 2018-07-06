@@ -187,24 +187,30 @@ CHDeclareMethod(2, UITableViewCell*, DLVController, tableView, UITableView*, tab
 {
     vkmPeerListCell *cell = (vkmPeerListCell *)CHSuper(2, DLVController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     if ([self isKindOfClass:objc_lookUpClass("DLVController")] && [cell isKindOfClass:objc_lookUpClass("vkm.PeerListCell")]) {
-        if (enabled && !enableNightTheme && enabledMessagesListImage ) {
-            performInitialCellSetup(cell);            
-            cell.titleView.textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
-            cell.timeView.textColor = cell.titleView.textColor;
-            cell.bodyView.textColor = cell.titleView.textColor;
+        if (enabled && !enableNightTheme && enabledMessagesListImage) {
+            performInitialCellSetup(cell);
+            if ([cell respondsToSelector:@selector(titleView)]) {
+                cell.titleView.textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
+                cell.timeView.textColor = cell.titleView.textColor;
+                cell.bodyView.textColor = cell.titleView.textColor;
+            } else {
+                for (UIView *subview in cell.contentView.subviews) {
+                    if ([subview isKindOfClass:[UILabel class]])
+                        ((UILabel *)subview).textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
+                }
+            }
         } else if (enabled && enableNightTheme) {
-            cell.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-            cell.titleView.textColor = cvkMainController.nightThemeScheme.textColor;
-            cell.bodyView.textColor = cvkMainController.nightThemeScheme.detailTextColor;
-            NIGHT_THEME_DISABLE_CUSTOMISATION(cell.bodyView);
-            NIGHT_THEME_DISABLE_CUSTOMISATION(cell.titleView);
-            
-            _TtC3vkm9BadgeView *badgeView = cell.badgeView;
-            const CGFloat *components = CGColorGetComponents(badgeView.layer.fillColor);
-            if (components[2] >= 0.79f) {
-                badgeView.layer.fillColor = cvkMainController.nightThemeScheme.buttonSelectedColor.CGColor;
-            } else if (components[2] > 0.0f) {
-                badgeView.layer.fillColor = cvkMainController.nightThemeScheme.navbackgroundColor.CGColor;
+            if ([cell respondsToSelector:@selector(titleView)]) {
+                cell.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+                cell.titleView.textColor = cvkMainController.nightThemeScheme.textColor;
+                cell.bodyView.textColor = cvkMainController.nightThemeScheme.detailTextColor;
+                NIGHT_THEME_DISABLE_CUSTOMISATION(cell.bodyView);
+                NIGHT_THEME_DISABLE_CUSTOMISATION(cell.titleView);
+            } else {
+                for (UIView *subview in cell.contentView.subviews) {
+                    if ([subview isKindOfClass:[UILabel class]])
+                        ((UILabel *)subview).textColor = cvkMainController.nightThemeScheme.textColor;
+                }
             }
         } else {
             cell.contentView.backgroundColor = [UIColor whiteColor];
@@ -418,4 +424,38 @@ CHDeclareMethod(0, void, ChatCell, setBG)
         [NSObject cvk_runBlockOnMainThread:bgHandler];
     }
     self.bg.alpha = 1.f;
+}
+
+
+#pragma mark _TtC3vkm17MessageBubbleView
+CHDeclareClass(_TtC3vkm17MessageBubbleView);
+CHDeclareMethod(0, void, _TtC3vkm17MessageBubbleView, layoutSubviews)
+{
+    CHSuper(0, _TtC3vkm17MessageBubbleView, layoutSubviews);
+    
+    if (enabled && (useMessageBubbleTintColor || enableNightTheme) && [self isKindOfClass:objc_lookUpClass("_TtC3vkm17MessageBubbleView")]) {
+        CAShapeLayer *layer = (CAShapeLayer *)self.layer;
+        
+        UIColor *incomingColor = enableNightTheme ? cvkMainController.nightThemeScheme.incomingBackgroundColor : messageBubbleTintColor;
+        UIColor *outgoingColor = enableNightTheme ? cvkMainController.nightThemeScheme.outgoingBackgroundColor : messageBubbleSentTintColor;
+        
+        const CGFloat *components = CGColorGetComponents(layer.fillColor);
+        if (components[0] >= 0.9f) { // входящее
+            layer.fillColor = incomingColor.CGColor;
+        } else { // исходящее
+            layer.fillColor = outgoingColor.CGColor;
+        }
+    }
+}
+
+CHDeclareClass(_TtC3vkm9BadgeView);
+CHDeclareMethod(1, void, _TtC3vkm9BadgeView, willMoveToWindow, UIWindow *, newWindow)
+{
+    CHSuper(1, _TtC3vkm9BadgeView, willMoveToWindow, newWindow);
+    
+    if (newWindow) {
+        [self addObserver:cvkMainController forKeyPath:@"layer.fillColor" options:NSKeyValueObservingOptionNew context:nil];
+    } else {
+        [self removeObserver:cvkMainController forKeyPath:@"layer.fillColor"];
+    }
 }

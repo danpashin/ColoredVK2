@@ -941,31 +941,6 @@ void updateControllerBlurInfo(UIViewController *controller)
     });
 }
 
-void setupNewMessageCellBubble(UICollectionViewCell *cell)
-{
-    if (!enabled)
-        return;
-    
-    UIColor *tintColor = nil;
-    if (enableNightTheme) {
-        tintColor = cvkMainController.nightThemeScheme.incomingBackgroundColor;
-    }
-    
-    if (!tintColor)
-        return;
-    
-    if (![cell respondsToSelector:@selector(bubbleView)])
-        return;
-    
-    UIView *bubbleView = objc_msgSend(cell, @selector(bubbleView));
-    if (![bubbleView isKindOfClass:[UIView class]])
-        return;
-    if (![bubbleView.layer isKindOfClass:[CAShapeLayer class]])
-        return;
-    
-    ((CAShapeLayer *)bubbleView.layer).fillColor = tintColor.CGColor;
-}
-
 void updateNavBarColor(void)
 {
     UIViewController *rootViewController = [UIApplication sharedApplication].windows.firstObject.rootViewController;

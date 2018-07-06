@@ -817,13 +817,6 @@ CHDeclareMethod(1, void, VKProfileInfoItem, setValue, NSAttributedString *, valu
     CHSuper(1, VKProfileInfoItem, setValue, mutableValue);
 }
 
-CHDeclareClass(_TtC3vkm31HistoryCollectionViewController);
-CHDeclareMethod(3, void, _TtC3vkm31HistoryCollectionViewController, collectionView, UICollectionView *, collectionView, willDisplayCell, UICollectionViewCell *, cell, forItemAtIndexPath, NSIndexPath *, indexPath)
-{
-    CHSuper(3, _TtC3vkm31HistoryCollectionViewController, collectionView, collectionView, willDisplayCell, cell, forItemAtIndexPath, indexPath);
-    setupNewMessageCellBubble(cell);
-}
-
 CHDeclareClass(_TtC3vkm17MessageController);
 CHDeclareMethod(1, void, _TtC3vkm17MessageController, viewWillAppear, BOOL, animated)
 {

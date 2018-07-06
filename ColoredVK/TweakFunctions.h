@@ -54,6 +54,5 @@ void setupNewDialogsSearchController(DialogsSearchResultsController *controller)
 void updateControllerBlurInfo(UIViewController *controller);
 
 
-void setupNewMessageCellBubble(UICollectionViewCell *cell);
 void updateNavBarColor(void);
 void setupNewAppMenuCell(UITableViewCell *cell);
