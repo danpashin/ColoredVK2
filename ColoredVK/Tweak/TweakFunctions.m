@@ -537,8 +537,6 @@ void resetTabBar()
 {
     if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]]) {
         UITabBar *tabbar = ((UITabBarController *)cvkMainController.vkMainController).tabBar;
-//        setBlur(tabbar, NO, nil, 0);
-        
         removeBlur(tabbar, ^{
             setupTabbar();
         });

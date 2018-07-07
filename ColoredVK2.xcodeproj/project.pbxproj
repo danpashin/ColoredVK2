@@ -99,6 +99,8 @@
 		A52350A01DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A523509D1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h */; };
 		A52350A11DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A523509E1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m */; };
 		A52350A21DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A523509E1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m */; };
+		A524778520F111AC00A529C1 /* MenuSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A524778420F111AC00A529C1 /* MenuSwizzle.m */; };
+		A524778620F111AC00A529C1 /* MenuSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A524778420F111AC00A529C1 /* MenuSwizzle.m */; };
 		A525A3901F2A381300F86EFF /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5A4E2D61F250D0D0001102F /* WebKit.framework */; };
 		A525A3911F2A381A00F86EFF /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5A4E2D61F250D0D0001102F /* WebKit.framework */; };
 		A525A3921F2A382200F86EFF /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5A4E2D61F250D0D0001102F /* WebKit.framework */; };
@@ -181,6 +183,10 @@
 		A54E41F81EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */; };
 		A54E41F91EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */; };
 		A54E41FA1EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */; };
+		A54EBFC720F10C81008A20CF /* GroupsSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A54EBFC620F10C81008A20CF /* GroupsSwizzle.m */; };
+		A54EBFC820F10C81008A20CF /* GroupsSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A54EBFC620F10C81008A20CF /* GroupsSwizzle.m */; };
+		A54EBFCA20F10CF6008A20CF /* SettingSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A54EBFC920F10CF6008A20CF /* SettingSwizzle.m */; };
+		A54EBFCB20F10CF6008A20CF /* SettingSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A54EBFC920F10CF6008A20CF /* SettingSwizzle.m */; };
 		A55434FB1E636B19003B4256 /* Tweak.h in Headers */ = {isa = PBXBuildFile; fileRef = A55434FA1E636B19003B4256 /* Tweak.h */; };
 		A55434FC1E636B19003B4256 /* Tweak.h in Headers */ = {isa = PBXBuildFile; fileRef = A55434FA1E636B19003B4256 /* Tweak.h */; };
 		A558E5042052C33200F10FBB /* ColoredVKApplicationModel.h in Headers */ = {isa = PBXBuildFile; fileRef = A558E5022052C33200F10FBB /* ColoredVKApplicationModel.h */; };
@@ -620,6 +626,7 @@
 		A52147C5206F86AC00224F6B /* TweakVariables.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TweakVariables.h; sourceTree = "<group>"; };
 		A523509D1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKBarDownloadButton.h; sourceTree = "<group>"; };
 		A523509E1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKBarDownloadButton.m; sourceTree = "<group>"; };
+		A524778420F111AC00A529C1 /* MenuSwizzle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MenuSwizzle.m; sourceTree = "<group>"; };
 		A526A6BE1DD50D4700B47104 /* ColoredVKAudioLyricsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKAudioLyricsView.h; sourceTree = "<group>"; };
 		A526A6BF1DD50D4700B47104 /* ColoredVKAudioLyricsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKAudioLyricsView.m; sourceTree = "<group>"; };
 		A5288C412037327800A11223 /* ColoredVKColorMapView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKColorMapView.h; sourceTree = "<group>"; };
@@ -668,6 +675,8 @@
 		A54D2E052021EA44005F95E1 /* ColoredVKPassResetController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKPassResetController.m; sourceTree = "<group>"; };
 		A54E41F31EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKBlurPrefsController.h; sourceTree = "<group>"; };
 		A54E41F41EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKBlurPrefsController.m; sourceTree = "<group>"; };
+		A54EBFC620F10C81008A20CF /* GroupsSwizzle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GroupsSwizzle.m; sourceTree = "<group>"; };
+		A54EBFC920F10CF6008A20CF /* SettingSwizzle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingSwizzle.m; sourceTree = "<group>"; };
 		A552879A20832F4C00933B26 /* control_debug */ = {isa = PBXFileReference; lastKnownFileType = text; name = control_debug; path = "ColoredVK-Prefs/control_debug"; sourceTree = "<group>"; };
 		A55434FA1E636B19003B4256 /* Tweak.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tweak.h; sourceTree = "<group>"; };
 		A558E5022052C33200F10FBB /* ColoredVKApplicationModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKApplicationModel.h; sourceTree = "<group>"; };
@@ -1011,6 +1020,28 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		A524778820F1149200A529C1 /* Tweak */ = {
+			isa = PBXGroup;
+			children = (
+				A55434FA1E636B19003B4256 /* Tweak.h */,
+				A524778420F111AC00A529C1 /* MenuSwizzle.m */,
+				A53D91961CCA82B400E45A49 /* Tweak.m */,
+				A52147C5206F86AC00224F6B /* TweakVariables.h */,
+				A50B3F8D20711C4F00A16F6C /* TweakVariables.m */,
+				A52147C2206F844400224F6B /* TweakFunctions.h */,
+				A5AF3CF91FDD2BC300638AC2 /* TweakFunctions.m */,
+				A5E1E08A206573AB00709696 /* ChatSwizzle.m */,
+				A54EBFC620F10C81008A20CF /* GroupsSwizzle.m */,
+				A54EBFC920F10CF6008A20CF /* SettingSwizzle.m */,
+				A5E1E08520656CE200709696 /* SystemSwizzle.m */,
+				A5E1E08020656BA300709696 /* AudioSwizzle.m */,
+				A5E1E08320656C3700709696 /* SettingsSwizzle.m */,
+				A5D3D06E1FE063D0007AAEF7 /* TweakNightTheme.m */,
+				A501C28520DCE6E500750063 /* SystemNightTheme.m */,
+			);
+			path = Tweak;
+			sourceTree = "<group>";
+		};
 		A530659920D512D500817B62 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
@@ -1070,7 +1101,7 @@
 				A5F09D921F0FF88200024198 /* ColoredVKNewInstaller.m */,
 				A5F09D9B1F0FFA5D00024198 /* SCDRM.h */,
 				A5F09D9C1F0FFA5D00024198 /* SCDRM.m */,
-				A5E1E08220656C1800709696 /* Tweak */,
+				A524778820F1149200A529C1 /* Tweak */,
 				A528D8821DE9FCAF00B299C1 /* ColoredVKMainController.h */,
 				A528D8831DE9FCAF00B299C1 /* ColoredVKMainController.m */,
 				A5B607C81F0943C4003529AF /* ColoredVKUpdatesModel.h */,
@@ -1252,25 +1283,6 @@
 				A5DA87BC1D944E0F00763B5F /* LHProgressHUD */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		A5E1E08220656C1800709696 /* Tweak */ = {
-			isa = PBXGroup;
-			children = (
-				A55434FA1E636B19003B4256 /* Tweak.h */,
-				A53D91961CCA82B400E45A49 /* Tweak.m */,
-				A52147C5206F86AC00224F6B /* TweakVariables.h */,
-				A50B3F8D20711C4F00A16F6C /* TweakVariables.m */,
-				A52147C2206F844400224F6B /* TweakFunctions.h */,
-				A5AF3CF91FDD2BC300638AC2 /* TweakFunctions.m */,
-				A5E1E08A206573AB00709696 /* ChatSwizzle.m */,
-				A5E1E08520656CE200709696 /* SystemSwizzle.m */,
-				A5E1E08020656BA300709696 /* AudioSwizzle.m */,
-				A5E1E08320656C3700709696 /* SettingsSwizzle.m */,
-				A5D3D06E1FE063D0007AAEF7 /* TweakNightTheme.m */,
-				A501C28520DCE6E500750063 /* SystemNightTheme.m */,
-			);
-			name = Tweak;
 			sourceTree = "<group>";
 		};
 		A5E1E08D20657C1200709696 /* Views */ = {
@@ -1879,6 +1891,7 @@
 				A5F09DA11F0FFA5D00024198 /* SCDRM.m in Sources */,
 				A528D8861DE9FCAF00B299C1 /* ColoredVKMainController.m in Sources */,
 				A5210C961DE785C1004F7E11 /* LHBackgroundView.m in Sources */,
+				A524778520F111AC00A529C1 /* MenuSwizzle.m in Sources */,
 				A5CC38642040366E005A3AB0 /* ColoredVKNavigationController.m in Sources */,
 				A5AF3CFA1FDD2BC400638AC2 /* TweakFunctions.m in Sources */,
 				A58EBC132039CBB0007184C1 /* NSString+ColoredVK.m in Sources */,
@@ -1898,9 +1911,11 @@
 				A52B8F3D1F991A2600898168 /* ColoredVKNightScheme.m in Sources */,
 				A50883AA1FFA48BC00C05E2A /* ColoredVKUserModel.m in Sources */,
 				A52350A11DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m in Sources */,
+				A54EBFC720F10C81008A20CF /* GroupsSwizzle.m in Sources */,
 				A5E1E08B206573AB00709696 /* ChatSwizzle.m in Sources */,
 				A5D979671DAEB87900607F06 /* UIImage+ColoredVK.m in Sources */,
 				A5903F8E201DDD4000951C53 /* ColoredVKHUD.m in Sources */,
+				A54EBFCA20F10CF6008A20CF /* SettingSwizzle.m in Sources */,
 				A50D222F1DB16572007F195C /* NSDate+DateTools.m in Sources */,
 				A538180A2066B11F00B4EF4B /* ColoredVKImageProcessor.m in Sources */,
 				A5D979681DAEB87900607F06 /* UIColor+ColoredVK.m in Sources */,
@@ -1916,6 +1931,7 @@
 			files = (
 				A5F09D991F0FF88200024198 /* ColoredVKNewInstaller.m in Sources */,
 				A576D1A31DC6220C0039884F /* NSString+ColoredVK.m in Sources */,
+				A54EBFC820F10C81008A20CF /* GroupsSwizzle.m in Sources */,
 				A5A4E2D41F250A520001102F /* ColoredVKWebViewController.m in Sources */,
 				A54E41F91EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */,
 				A50883B41FFA4E5E00C05E2A /* ColoredVKAuthPageController.m in Sources */,
@@ -1982,6 +1998,7 @@
 				A510E7D91EF99CE9001D6798 /* ColoredVKSimpleAlertController.m in Sources */,
 				A5739D691EA015B200367595 /* ColoredVKColorCell.m in Sources */,
 				A570305B20CD1A3F0036FA8F /* ColoredVKMusicPrefs.m in Sources */,
+				A524778620F111AC00A529C1 /* MenuSwizzle.m in Sources */,
 				A558E50A2052C33200F10FBB /* ColoredVKApplicationModel.m in Sources */,
 				A5EC6A492053DDB2007D6646 /* ColoredVKAnimatedButton.m in Sources */,
 				A52350A21DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m in Sources */,
@@ -1990,6 +2007,7 @@
 				A576D1871DC621B90039884F /* NSDate+DateTools.m in Sources */,
 				A54B9ED32064FAC50097B0C6 /* ColoredVKBackupsModel.m in Sources */,
 				A56147BB1EA0140900B3D8C8 /* ColoredVKAboutController.m in Sources */,
+				A54EBFCB20F10CF6008A20CF /* SettingSwizzle.m in Sources */,
 				A5BC53B01F1234C200C4E1E0 /* ColoredVKAlertController.m in Sources */,
 				A576D1881DC621B90039884F /* UIColor+ColoredVK.m in Sources */,
 				A5E1E0892065713600709696 /* SystemSwizzle.m in Sources */,

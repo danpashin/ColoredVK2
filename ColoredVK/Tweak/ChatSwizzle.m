@@ -8,64 +8,72 @@
 #import "Tweak.h"
 
 
-#pragma mark GroupsController - список групп
-CHDeclareClass(GroupsController);
-CHDeclareMethod(0, void, GroupsController, viewDidLoad)
+#pragma GCC diagnostic push 
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#pragma mark DialogsSearchController
+CHDeclareClass(DialogsSearchController);
+CHDeclareMethod(1, void, DialogsSearchController, searchDisplayControllerWillBeginSearch, UISearchDisplayController*, controller)
 {
-    CHSuper(0, GroupsController, viewDidLoad);
-    if ([self isKindOfClass:objc_lookUpClass("GroupsController")]) {
-        if (enabled && !enableNightTheme && enabledGroupsListImage) {
-            [cvkMainController setImageToTableView:self.tableView name:@"groupsListBackgroundImage" blackout:groupsListImageBlackout
-                                    parallaxEffect:useGroupsListParallax blur:groupsListUseBackgroundBlur];
-            self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
-            self.tableView.separatorColor = hideGroupsListSeparators ? [UIColor clearColor] : [self.tableView.separatorColor colorWithAlphaComponent:0.2f];
-            self.segment.alpha = 0.9f;
-            
-            UIColor *textColor = changeGroupsListTextColor ? groupsListTextColor : [UIColor colorWithWhite:1.0f alpha:0.7f];
-            UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
-            if ([search isKindOfClass:objc_lookUpClass("VKSearchBar")]) {
-                setupNewSearchBar((VKSearchBar *)search, textColor, groupsListBlurTone, groupsListBlurStyle);
-            } else if ([search isKindOfClass:[UISearchBar class]] && [search respondsToSelector:@selector(setBackgroundImage:)]) {
-                search.backgroundImage = [UIImage new];
-                search.scopeBarBackgroundImage = [UIImage new];
-                search.tag = 2;
-                search.searchBarTextField.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.1f];
-                search.searchBarTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:search.searchBarTextField.placeholder 
-                                                                                                  attributes:@{NSForegroundColorAttributeName:textColor}];
-            }
-        }
-    }
+    CHSuper(1, DialogsSearchController, searchDisplayControllerWillBeginSearch, controller);
+    setupSearchController(controller, NO);
+    if (enabled && !enableNightTheme && enabledMessagesImage)
+        controller.searchResultsTableView.separatorColor = [controller.searchResultsTableView.separatorColor colorWithAlphaComponent:0.2f];
 }
 
-CHDeclareMethod(2, UITableViewCell*, GroupsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+CHDeclareMethod(1, void, DialogsSearchController, searchDisplayControllerWillEndSearch, UISearchDisplayController*, controller)
 {
-    UITableViewCell *cell = CHSuper(2, GroupsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    if ([self isKindOfClass:objc_lookUpClass("GroupsController")] && enabled && !enableNightTheme && enabledGroupsListImage) {
-        if ([cell isKindOfClass:objc_lookUpClass("GroupCell")]) {
-            GroupCell *groupCell = (GroupCell *)cell;
-            performInitialCellSetup(groupCell);
-            groupCell.name.textColor = changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
-            groupCell.name.backgroundColor = UITableViewCellBackgroundColor;
-            groupCell.status.textColor = changeGroupsListTextColor?groupsListTextColor:[UIColor colorWithWhite:0.8f alpha:0.9f];
-            groupCell.status.backgroundColor = UITableViewCellBackgroundColor;
-        } else  if ([cell isKindOfClass:objc_lookUpClass("VKMRendererCell")]) {
-            performInitialCellSetup(cell);
-            
-            for (UIView *view in cell.contentView.subviews) {
-                if ([view isKindOfClass:[UILabel class]]) {
-                    UILabel *label = (UILabel *)view;
-                    label.textColor = [UIColor colorWithWhite:1.0f alpha:0.9f];
-                    label.backgroundColor = [UIColor clearColor];
-                }
-            }
-        }
-        
-    }
-    
+    setupSearchController(controller, YES);
+    CHSuper(1, DialogsSearchController, searchDisplayControllerWillEndSearch, controller);
+}
+
+CHDeclareMethod(2, UITableViewCell*, DialogsSearchController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, DialogsSearchController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    setupCellForSearchController(cell, self);
     return cell;
 }
+#pragma GCC diagnostic pop
 
 
+#pragma mark DialogsSearchResultsController
+CHDeclareClass(DialogsSearchResultsController);
+CHDeclareMethod(1, void, DialogsSearchResultsController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, DialogsSearchResultsController, viewWillAppear, animated);
+    setupNewDialogsSearchController(self);
+}
+
+CHDeclareMethod(2, UITableViewCell*, DialogsSearchResultsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    UITableViewCell *cell = CHSuper(2, DialogsSearchResultsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    
+    if (enabled && !enableNightTheme && enabledMessagesListImage) {
+        performInitialCellSetup (cell);
+        cell.backgroundView.hidden = YES;
+        UIColor *textColor = changeMessagesListTextColor ? messagesListTextColor : UITableViewCellTextColor;
+        UIColor *detailedTextColor = changeMessagesListTextColor ? messagesListTextColor : UITableViewCellTextColor;
+        
+        if ([cell isKindOfClass:objc_lookUpClass("SourceCell")]) {
+            SourceCell *sourceCell = (SourceCell *)cell;
+            sourceCell.last.textColor = detailedTextColor;
+            sourceCell.last.backgroundColor = [UIColor clearColor];
+            sourceCell.first.textColor =  textColor;
+            sourceCell.first.backgroundColor = [UIColor clearColor];
+        }
+        else if ([cell isKindOfClass:objc_lookUpClass("NewDialogCell")]) {
+            NewDialogCell *dialogCell = (NewDialogCell *)cell;
+            dialogCell.name.textColor = textColor;
+            dialogCell.name.backgroundColor = [UIColor clearColor];
+            dialogCell.time.textColor = textColor;
+            dialogCell.time.backgroundColor = [UIColor clearColor];
+            if ([dialogCell respondsToSelector:@selector(dialogText)]) {
+                dialogCell.dialogText.textColor = detailedTextColor;
+                dialogCell.dialogText.backgroundColor = [UIColor clearColor];
+            }
+        }
+    }
+    return cell;
+}
 
 #pragma mark DialogsController - список диалогов
 CHDeclareClass(DialogsController);
@@ -381,6 +389,14 @@ CHDeclareMethod(0, UIButton*, ChatController, editForward)
     return forwardButton;
 }
 
+#pragma mark - MessageController
+CHDeclareClass(MessageController);
+CHDeclareMethod(1, void, MessageController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, MessageController, viewWillAppear, animated);
+    resetNavigationBar(self.navigationController.navigationBar);
+    resetTabBar();
+}
 
 
 #pragma mark MessageCell
