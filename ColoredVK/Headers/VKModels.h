@@ -87,6 +87,9 @@
 @property (strong, nonatomic) UIColor *backgroundColor;
 @property (strong, nonatomic) UIColor *placeholderBackgroundColor;
 @property (strong, nonatomic) UIColor *placeholderTextColor;
+@property (strong, nonatomic) UIColor *clearButtonColor;
+@property (strong, nonatomic) UIColor *searchIconColor;
+@property (strong, nonatomic) UIColor *cancelButtonTitleColor;
 @end
 
 @interface ArticleWebViewManager : NSObject

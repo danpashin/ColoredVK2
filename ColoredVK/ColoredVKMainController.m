@@ -12,9 +12,6 @@
 #import "UIColor+ColoredVK.h"
 #import "ColoredVKNetwork.h"
 
-@interface ColoredVKMainController ()
-@end
-
 
 @implementation ColoredVKMainController
 static NSString const *switchViewKey = @"cvkCellSwitchKey";
@@ -22,6 +19,20 @@ static NSString const *switchViewKey = @"cvkCellSwitchKey";
 BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
 {
     return NO;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        __weak NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+        __block id crashObserver = [center addObserverForName:UIWindowDidBecomeVisibleNotification object:nil 
+                                                queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+                                                    [center removeObserver:crashObserver];
+                                                    [self sendCrashIfNeeded];
+                                                }];
+    }
+    return self;
 }
 
 - (void)setImageToTableView:(UITableView *)tableView name:(NSString *)name blackout:(CGFloat)blackout 
@@ -186,7 +197,7 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
     }
 }
 
-- (void)sendCrash
+- (void)sendCrashIfNeeded
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         if (![[NSFileManager defaultManager] fileExistsAtPath:CVK_CRASH_PATH])

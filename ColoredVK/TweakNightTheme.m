@@ -330,7 +330,6 @@ CHDeclareMethod(0, void, VKPhotoPicker, viewDidLoad)
     if (enabled && enableNightTheme) {
         self.pickerToolbar.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
         self.pickerToolbar.bg._backgroundView.hidden = YES;
-        self.navigationBar.tintColor = self.navigationBar.tintColor;
     }
 }
 
@@ -934,7 +933,7 @@ CHDeclareMethod(0, void, VKSegmentedControl, layoutSubviews)
     CHSuper(0, VKSegmentedControl, layoutSubviews);
     
     if (enabled && enableNightTheme) {
-        if ([self.superview isKindOfClass:[UINavigationBar class]])
+        if ([self.superview isKindOfClass:[UINavigationBar class]] || [self.superview.superview isKindOfClass:[UINavigationBar class]])
             self.tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
         else
             self.tintColor = cvkMainController.nightThemeScheme.buttonColor;
@@ -960,6 +959,14 @@ CHDeclareClassMethod(0, VKSearchBarConfig *, VKSearchBar, navigationBlueConfig)
     VKSearchBarConfig *config = CHSuper(0, VKSearchBar, navigationBlueConfig);
     if (enabled && enableNightTheme) {
         config.textfieldBackgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        config.cancelButtonTitleColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+        config.searchIconColor = cvkMainController.nightThemeScheme.textColor;
+        config.clearButtonColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
+    } else if (enabled && enabledBarColor) {
+        config.textfieldBackgroundColor = barBackgroundColor.cvk_darkerColor;
+        config.placeholderTextColor = barForegroundColor;
+        config.searchIconColor = barForegroundColor;
+        config.clearButtonColor = barForegroundColor;
     }
     return config;
 }

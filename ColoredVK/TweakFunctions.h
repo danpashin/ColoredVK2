@@ -8,11 +8,8 @@
 @class NewDialogCell, VKSearchBar;
 @class VKMBrowserController, VKMTableController, DialogsSearchResultsController;
 
-void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
-void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
-void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
-
-void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style);
+void setupBlur(UIView *bar, UIColor *color, UIBlurEffectStyle style);
+void removeBlur(UIView *bar, void(^completion)(void));
 void setToolBar(UIToolbar *toolbar);
 
 void setupTabbar(void);

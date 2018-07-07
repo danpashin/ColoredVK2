@@ -24,7 +24,6 @@ extern BOOL isNew3XClient;
 
 extern BOOL premiumEnabled;
 extern ColoredVKMainController *cvkMainController;
-extern NSBundle *cvkBunlde;
 extern NSBundle *vksBundle;
 extern BOOL VKSettingsEnabled;
 

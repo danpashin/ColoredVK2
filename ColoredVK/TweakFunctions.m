@@ -7,112 +7,151 @@
 
 #import "Tweak.h"
 
-void setBlur(UIView *bar, BOOL set, UIColor *color, UIBlurEffectStyle style)
+
+void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
+void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
+void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
+
+CVK_CONSTRUCTOR
+{
+    @autoreleasepool {
+        REGISTER_CORE_OBSERVER(reloadPrefsNotify, kPackageNotificationReloadPrefs);
+        REGISTER_CORE_OBSERVER(reloadMenuNotify, kPackageNotificationReloadMenu);
+        REGISTER_CORE_OBSERVER(updateNightTheme, kPackageNotificationUpdateNightTheme);
+    }
+}
+
+void setupBlur(UIView *bar, UIColor *color, UIBlurEffectStyle style)
 {
     [NSObject cvk_runBlockOnMainThread:^{
         NSInteger blurViewTag = 1054326;
         
-        if (set && !UIAccessibilityIsReduceTransparencyEnabled()) {
-            UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:style];
-            UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-            blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            blurEffectView.tag = blurViewTag;
-            blurEffectView.backgroundColor = color;
+        if (UIAccessibilityIsReduceTransparencyEnabled())
+            return;
+        
+        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:style];
+        UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        blurEffectView.tag = blurViewTag;
+        blurEffectView.backgroundColor = color;
+        
+        UIView *borderView = [UIView new];
+        borderView.backgroundColor = [UIColor whiteColor];
+        borderView.alpha = 0.15f;
+        [blurEffectView.contentView addSubview:borderView];
+        
+        NSString *verticalFormat = @"";
+        if ([bar isKindOfClass:[UINavigationBar class]]) {
+            UINavigationBar *navbar = (UINavigationBar *)bar;
+            UIView *backgroundView = navbar._backgroundView;
+            verticalFormat = @"V:[view(0.5)]|";
             
-            UIView *borderView = [UIView new];
-            borderView.backgroundColor = [UIColor whiteColor];
-            borderView.alpha = 0.15f;
-            [blurEffectView.contentView addSubview:borderView];
-            
-            NSString *verticalFormat = @"";
-            if ([bar isKindOfClass:[UINavigationBar class]]) {
-                UINavigationBar *navbar = (UINavigationBar *)bar;
-                UIView *backgroundView = navbar._backgroundView;
-                verticalFormat = @"V:[view(0.5)]|";
-                
-                if (![backgroundView.subviews containsObject:[backgroundView viewWithTag:blurViewTag]]) {
-                    blurEffectView.effect = nil;
-                    blurEffectView.frame = backgroundView.bounds;
-                    borderView.frame = CGRectMake(0.0f, blurEffectView.frame.size.height - 0.5f, blurEffectView.frame.size.width, 0.5f);
-                    [backgroundView insertSubview:blurEffectView atIndex:0];
-                    
-                    [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                        blurEffectView.effect = blurEffect;
-                        [navbar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-                        navbar.shadowImage = [UIImage new];
-                    } completion:nil];
-                }
-            } else if  ([bar isKindOfClass:[UIToolbar class]]) {
-                UIToolbar *toolBar = (UIToolbar *)bar;
-                verticalFormat = @"V:|[view(0.5)]";
-                
-                if (![toolBar.subviews containsObject:[toolBar viewWithTag:blurViewTag]]) {
-                    toolBar.barTintColor = [UIColor clearColor];
-                    blurEffectView.frame = CGRectMake(0, 0, toolBar.frame.size.width, toolBar.frame.size.height);
-                    borderView.frame = CGRectMake(0, 0, toolBar.frame.size.width, 0.5);
-                    
-                    [toolBar insertSubview:blurEffectView atIndex:0];
-                    [toolBar setBackgroundImage:[UIImage new] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
-                }
-            } else if  ([bar isKindOfClass:[UITabBar class]]) {
-                UITabBar *tabbar = (UITabBar *)bar;
-                verticalFormat = @"V:|[view(0.5)]";
-                
-                if (![tabbar.subviews containsObject:[tabbar viewWithTag:blurViewTag]]) {
-                    blurEffectView.frame = CGRectMake(0, 0, tabbar.frame.size.width, tabbar.frame.size.height);
-                    borderView.frame = CGRectMake(0, 0, tabbar.frame.size.width, 0.5);
-                    
-                    [tabbar insertSubview:blurEffectView atIndex:0];
-                    
-                    [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                        tabbar._backgroundView.alpha = 0.0f;
-                    } completion:nil];
-                }
-            } else if  ([bar isKindOfClass:[UIView class]]) {
-                verticalFormat = @"V:|[view(0.5)]";
-                
-                if (![bar.subviews containsObject:[bar viewWithTag:blurViewTag]]) {
-                    blurEffectView.frame = CGRectMake(0, 0, bar.frame.size.width, bar.frame.size.height);
-                    borderView.frame = CGRectMake(0, 0, bar.frame.size.width, 0.5);
-                    
-                    [bar insertSubview:blurEffectView atIndex:0];
-                }
-            }
-            
-            if (verticalFormat.length > 2) {
-                borderView.translatesAutoresizingMaskIntoConstraints = NO;
-                [blurEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:verticalFormat options:0 metrics:nil views:@{@"view":borderView}]];
-                [blurEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|"  options:0 metrics:nil views:@{@"view":borderView}]];
-            }
-        } else {
-            if ([bar isKindOfClass:[UINavigationBar class]]) {
-                UINavigationBar *navbar = (UINavigationBar *)bar;
-                UIView *backgroundView = navbar._backgroundView;
-                UIView *blurView = [backgroundView viewWithTag:blurViewTag];
+            if (![backgroundView.subviews containsObject:[backgroundView viewWithTag:blurViewTag]]) {
+                blurEffectView.effect = nil;
+                blurEffectView.frame = backgroundView.bounds;
+                borderView.frame = CGRectMake(0.0f, blurEffectView.frame.size.height - 0.5f, blurEffectView.frame.size.width, 0.5f);
+                [backgroundView insertSubview:blurEffectView atIndex:0];
                 
                 [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                    [navbar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-                    blurView.alpha = 0.0f;
-                } completion:^(BOOL finished) {
-                    [blurView removeFromSuperview];
-                }];
-            } else if  ([bar isKindOfClass:[UIToolbar class]]) {
-                UIToolbar *toolBar = (UIToolbar *)bar;
-                if ([toolBar.subviews containsObject:[toolBar viewWithTag:blurViewTag]])
-                    [[toolBar viewWithTag:blurViewTag] removeFromSuperview];
-            } else if  ([bar isKindOfClass:[UITabBar class]]) {
-                UITabBar *tabbar = (UITabBar *)bar;
+                    blurEffectView.effect = blurEffect;
+                    [navbar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+                    navbar.shadowImage = [UIImage new];
+                } completion:nil];
+            }
+        } else if  ([bar isKindOfClass:[UIToolbar class]]) {
+            UIToolbar *toolBar = (UIToolbar *)bar;
+            verticalFormat = @"V:|[view(0.5)]";
+            
+            if (![toolBar.subviews containsObject:[toolBar viewWithTag:blurViewTag]]) {
+                toolBar.barTintColor = [UIColor clearColor];
+                blurEffectView.frame = CGRectMake(0, 0, toolBar.frame.size.width, toolBar.frame.size.height);
+                borderView.frame = CGRectMake(0, 0, toolBar.frame.size.width, 0.5);
+                
+                [toolBar insertSubview:blurEffectView atIndex:0];
+                [toolBar setBackgroundImage:[UIImage new] forToolbarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
+            }
+        } else if  ([bar isKindOfClass:[UITabBar class]]) {
+            UITabBar *tabbar = (UITabBar *)bar;
+            verticalFormat = @"V:|[view(0.5)]";
+            
+            if (![tabbar.subviews containsObject:[tabbar viewWithTag:blurViewTag]]) {
+                blurEffectView.frame = CGRectMake(0, 0, tabbar.frame.size.width, tabbar.frame.size.height);
+                borderView.frame = CGRectMake(0, 0, tabbar.frame.size.width, 0.5);
+                
+                [tabbar insertSubview:blurEffectView atIndex:0];
                 
                 [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                    tabbar._backgroundView.alpha = 1.0f;
-                } completion:^(BOOL finished) {
-                    if ([tabbar.subviews containsObject:[tabbar viewWithTag:blurViewTag]])
-                        [[tabbar viewWithTag:blurViewTag] removeFromSuperview];
-                }];
-            } else if  ([bar isKindOfClass:[UIView class]]) {
-                if ([bar.subviews containsObject:[bar viewWithTag:blurViewTag]])
-                    [[bar viewWithTag:blurViewTag] removeFromSuperview];
+                    tabbar._backgroundView.alpha = 0.0f;
+                } completion:nil];
             }
+        } else if  ([bar isKindOfClass:[UIView class]]) {
+            verticalFormat = @"V:|[view(0.5)]";
+            
+            if (![bar.subviews containsObject:[bar viewWithTag:blurViewTag]]) {
+                blurEffectView.frame = CGRectMake(0, 0, bar.frame.size.width, bar.frame.size.height);
+                borderView.frame = CGRectMake(0, 0, bar.frame.size.width, 0.5);
+                
+                [bar insertSubview:blurEffectView atIndex:0];
+            }
+        }
+        
+        if (verticalFormat.length > 2) {
+            borderView.translatesAutoresizingMaskIntoConstraints = NO;
+            [blurEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:verticalFormat options:0 metrics:nil views:@{@"view":borderView}]];
+            [blurEffectView.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|"  options:0 metrics:nil views:@{@"view":borderView}]];
+        }
+    }];
+}
+
+void removeBlur(UIView *bar, void(^completion)(void))
+{
+    [NSObject cvk_runBlockOnMainThread:^{
+        NSInteger blurViewTag = 1054326;
+        if ([bar isKindOfClass:[UINavigationBar class]]) {
+            UINavigationBar *navbar = (UINavigationBar *)bar;
+            UIView *backgroundView = navbar._backgroundView;
+            UIView *blurView = [backgroundView viewWithTag:blurViewTag];
+            
+            [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                [navbar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+                blurView.alpha = 0.0f;
+            } completion:^(BOOL finished) {
+                [blurView removeFromSuperview];
+                if (completion)
+                    completion();
+            }];
+        } else if ([bar isKindOfClass:[UIToolbar class]]) {
+            UIToolbar *toolBar = (UIToolbar *)bar;
+            if ([toolBar.subviews containsObject:[toolBar viewWithTag:blurViewTag]])
+                [[toolBar viewWithTag:blurViewTag] removeFromSuperview];
+            
+            if (completion)
+                completion();
+        } else if ([bar isKindOfClass:[UITabBar class]]) {
+            UITabBar *tabbar = (UITabBar *)bar;
+            UIVisualEffectView *effectView = [bar viewWithTag:blurViewTag];
+            effectView.backgroundColor = tabbar.barTintColor;
+            effectView.tag = 0;
+            [UIView animateWithDuration:0.2f delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                tabbar._backgroundView.alpha = 1.0f;
+            } completion:^(BOOL finishedOne) {
+                [UIView animateWithDuration:0.2f delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+                    effectView.effect = nil;
+                    effectView.alpha = 0;
+                } completion:^(BOOL finishedTwo) {
+                    [effectView removeFromSuperview];
+                    
+                    if (completion)
+                        completion();
+                }];
+                
+            }];
+        } else if ([bar isKindOfClass:[UIView class]]) {
+            if ([bar.subviews containsObject:[bar viewWithTag:blurViewTag]])
+                [[bar viewWithTag:blurViewTag] removeFromSuperview];
+            
+            if (completion)
+                completion();
         }
     }];
 }
@@ -165,7 +204,7 @@ void setToolBar(UIToolbar *toolbar)
                 
             }
         } 
-    } else setBlur(toolbar, NO, nil, 0);
+    } else removeBlur(toolbar, nil);
 }
 
 UIVisualEffectView *blurForView(UIView *view, NSInteger tag)
@@ -387,7 +426,7 @@ void performInitialCellSetup(UITableViewCell *cell)
 void resetNavigationBar(UINavigationBar *navBar)
 {
     [NSObject cvk_runBlockOnMainThread:^{
-        setBlur(navBar, NO, nil, 0);
+        removeBlur(navBar, nil);
         navBar._backgroundView.alpha = 1.0;
         [cvkMainController.navBarImageView removeFromSuperview];
         navBar.barTintColor = kNavigationBarBarTintColor;
@@ -498,9 +537,11 @@ void resetTabBar()
 {
     if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]]) {
         UITabBar *tabbar = ((UITabBarController *)cvkMainController.vkMainController).tabBar;
-        setBlur(tabbar, NO, nil, 0);
+//        setBlur(tabbar, NO, nil, 0);
         
-        setupTabbar();
+        removeBlur(tabbar, ^{
+            setupTabbar();
+        });
     }
 }
 
@@ -672,8 +713,8 @@ NSAttributedString *attributedStringForNightTheme(NSAttributedString * text)
 void setupNightSeparatorForView(UIView *view)
 {
     if ([CLASS_NAME(view) isEqualToString:@"UIView"]) {
-        if (enabled && enableNightTheme) {            
-            dispatch_async(dispatch_get_main_queue(), ^{
+        if (enabled && enableNightTheme) {
+            void (^setupBlock)(void) = ^{
                 if ([cvkMainController.vkMainController respondsToSelector:@selector(tabBarShadowView)]) {
                     if ([view isEqual:cvkMainController.vkMainController.tabBarShadowView])
                         return;
@@ -681,7 +722,9 @@ void setupNightSeparatorForView(UIView *view)
                 
                 if ((CGRectGetHeight(view.frame) < 3.0f) && !CGSizeEqualToSize(CGSizeZero, view.frame.size))
                     view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
-            });
+            };
+            [NSObject cvk_runBlockOnMainThread:setupBlock];
+            dispatch_async(dispatch_get_main_queue(), setupBlock);
         }
     }
 }
@@ -835,7 +878,7 @@ void setupNewSearchBar(VKSearchBar *searchBar, UIColor *tintColor, UIColor *blur
 
 void resetNewSearchBar(VKSearchBar *searchBar)
 {
-    setBlur(searchBar.backgroundView, NO, nil, 0);
+    removeBlur(searchBar.backgroundView, nil);
     searchBar.backgroundView.backgroundColor = searchBar.config.backgroundColor;
     searchBar.placeholderLabel.textColor = searchBar.config.placeholderTextColor;
     searchBar.textFieldBackground.backgroundColor = searchBar.config.textfieldBackgroundColor;

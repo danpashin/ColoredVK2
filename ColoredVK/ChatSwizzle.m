@@ -262,7 +262,7 @@ CHDeclareMethod(1, void, ChatController, viewWillAppear, BOOL, animated)
     
     setToolBar(self.inputPanel);
     if (enabled && !enableNightTheme && messagesUseBlur)
-        setBlur(self.inputPanel, YES, messagesBlurTone, messagesBlurStyle);
+        setupBlur(self.inputPanel, messagesBlurTone, messagesBlurStyle);
     
     if (!enabled)
         return;
@@ -373,7 +373,7 @@ CHDeclareMethod(0, UIButton*, ChatController, editForward)
         [forwardButton setImage:[[forwardButton imageForState:UIControlStateNormal] cvk_imageWithTintColor:[UIColor whiteColor]] forState:UIControlStateNormal];
         for (UIView *subview in forwardButton.superview.subviews) {
             if ([subview isKindOfClass:[UIToolbar class]]) {
-                setBlur(subview, YES, messagesBlurTone, messagesBlurStyle);
+                setupBlur(subview, messagesBlurTone, messagesBlurStyle);
                 break;
             }
         }

@@ -34,6 +34,5 @@
 
 - (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)(void) )handler;
 - (void)setMenuCellSwitchOn:(BOOL)on;
-- (void)sendCrash;
 
 @end

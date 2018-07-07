@@ -238,3 +238,7 @@
 
 @interface _TtC3vkm17MessageBubbleView : UIView
 @end
+
+@interface DiscoverFeedTitleView : UIView
+@property(retain, nonatomic) UIToolbar *toolbar;
+@end

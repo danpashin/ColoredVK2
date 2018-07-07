@@ -332,3 +332,8 @@
 
 @interface VKDatePickerController : UIViewController
 @end
+
+@interface DiscoverSearchResultsController : VKMController
+@property (strong, nonatomic) UIToolbar *toolbar;
+@property (strong, nonatomic) VKSegmentedControl *segmentedControl;
+@end

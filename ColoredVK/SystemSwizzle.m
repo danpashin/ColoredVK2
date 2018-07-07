@@ -6,15 +6,23 @@
 //
 
 #import "Tweak.h"
+#import <dlfcn.h>
 
 @interface PSListController : UIViewController
 @end
-@interface vksprefsListController : PSListController
-@end
-@interface ColoredVKPrefs : PSListController
-@end
 @interface SelectAccountTableViewController : UITableViewController
 @end
+
+CVK_CONSTRUCTOR
+{
+    @autoreleasepool {
+        dlopen("/System/Library/PrivateFrameworks/Preferences.framework/Preferences", RTLD_LAZY);
+        [[NSNotificationCenter defaultCenter] addObserverForName:UIWindowDidBecomeVisibleNotification object:nil 
+                                                           queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+                                                               actionChangeCornerRadius(nil);
+                                                           }];
+    }
+}
 
 
 #pragma mark - AppDelegate
@@ -23,7 +31,6 @@ CHDeclareMethod(2, BOOL, AppDelegate, application, UIApplication*, application, 
 {
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
-    [cvkBunlde load];
     reloadPrefs(nil);
     
     BOOL orig = CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
@@ -34,10 +41,6 @@ CHDeclareMethod(2, BOOL, AppDelegate, application, UIApplication*, application, 
         reloadPrefs(nil);
     };
     [newInstaller checkStatus];
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName:UIWindowDidBecomeVisibleNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-        actionChangeCornerRadius(nil);
-    }];
     
     return orig;
 }
@@ -51,8 +54,6 @@ CHDeclareMethod(1, void, AppDelegate, applicationDidBecomeActive, UIApplication 
     if (cvkMainController.audioCover) {
         [cvkMainController.audioCover updateColorScheme];
     }
-    
-    [cvkMainController sendCrash];
 }
 
 
@@ -104,18 +105,6 @@ CHDeclareMethod(1, void, UINavigationBar, setTitleTextAttributes, NSDictionary*,
     
     CHSuper(1, UINavigationBar, setTitleTextAttributes, mutableAttributes);
 }
-
-CHDeclareMethod(1, void, UINavigationBar, setFrame, CGRect, frame)
-{
-    CHSuper(1, UINavigationBar, setFrame, frame);
-    
-    if ([self isKindOfClass:[UINavigationBar class]]) {
-        self.tintColor = self.tintColor;
-        self.titleTextAttributes = self.titleTextAttributes;
-    }
-}
-
-
 
 
 
@@ -171,11 +160,13 @@ CHDeclareMethod(0, void, UISwitch, layoutSubviews)
         } else if (enabled && changeSwitchColor) {
             self.tintColor = switchesTintColor;
             self.onTintColor = switchesOnTintColor;
-            self.thumbTintColor = nil;
-            self.backgroundColor = nil;
-        } else {
+            if (self.tag != 228) {
+                self.thumbTintColor = nil;
+                self.backgroundColor = nil;
+            }
+        } else if (self.tag != 228)  {
             self.tintColor = nil;
-            self.onTintColor = (self.tag == 228) ? CVKMainColor : nil;
+            self.onTintColor = nil;
             self.thumbTintColor = nil;
             self.backgroundColor = nil;
         }
@@ -200,7 +191,7 @@ CHDeclareMethod(1, void, UITableView, setBackgroundView, UIView*, backgroundView
     if (enabled && enableNightTheme) {
         if (!backgroundView)
             backgroundView = [UIView new];
-        objc_setAssociatedObject(self, "backgroundViewCachedColor", backgroundView.backgroundColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        
         if (![self.delegate isKindOfClass:objc_lookUpClass("VKAPPlacesViewController")])
             backgroundView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
     }
@@ -231,48 +222,43 @@ CHDeclareMethod(2, void, UITableView, _configureCellForDisplay, UITableViewCell 
     }
 }
 
-CHDeclareMethod(0, void, UITableView, layoutSubviews)
+CHDeclareMethod(1, void, UITableView, willMoveToWindow, UIWindow *, window)
 {
-    CHSuper(0, UITableView, layoutSubviews);
+    CHSuper(1, UITableView, willMoveToWindow, window);
     
-    self.backgroundColor = self.backgroundColor;
-    self.separatorColor = self.separatorColor;
-    
-    if (enabled) {
-        if ([self.tableFooterView isKindOfClass:objc_lookUpClass("LoadingFooterView")] && [self.backgroundView isKindOfClass:[ColoredVKWallpaperView class]]) {
-            LoadingFooterView *footerView = (LoadingFooterView *)self.tableFooterView;
-            footerView.label.textColor = UITableViewCellTextColor;
-            footerView.anim.color = UITableViewCellTextColor;
-        }
+    if (window) {
+        self.backgroundColor = self.backgroundColor;
+        self.separatorColor = self.separatorColor;
     }
 }
 
 CHDeclareMethod(1, void, UITableView, setSeparatorColor, UIColor *, separatorColor)
 {
-    if (![separatorColor isEqual:cvkMainController.nightThemeScheme.backgroundColor])
-        objc_setAssociatedObject(self, "cachedSeparatorColor", [separatorColor copy], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    
     if (enabled && enableNightTheme)
         separatorColor = cvkMainController.nightThemeScheme.backgroundColor;
-    else
-        separatorColor = objc_getAssociatedObject(self, "cachedSeparatorColor");
     
     CHSuper(1, UITableView, setSeparatorColor, separatorColor);
 }
 
 CHDeclareMethod(1, void, UITableView, setBackgroundColor, UIColor *, backgroundColor)
 {
-    if (![backgroundColor isEqual:cvkMainController.nightThemeScheme.backgroundColor])
-        objc_setAssociatedObject(self, "cachedBackgroundColor", [backgroundColor copy], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    
     if (enabled && enableNightTheme)
         backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
-    else {
-        self.backgroundView.backgroundColor = objc_getAssociatedObject(self, "backgroundViewCachedColor");
-        backgroundColor = objc_getAssociatedObject(self, "cachedBackgroundColor");
-    }
     
     CHSuper(1, UITableView, setBackgroundColor, backgroundColor);
+}
+
+CHDeclareClass(LoadingFooterView);
+CHDeclareMethod(0, void, LoadingFooterView, layoutSubviews)
+{
+    CHSuper(0, LoadingFooterView, layoutSubviews);
+    
+    if (enabled && !enableNightTheme && [self.superview isKindOfClass:[UITableView class]]) {
+        if ([((UITableView *)self.superview).backgroundView isKindOfClass:[ColoredVKWallpaperView class]]) {
+            self.label.textColor = UITableViewCellTextColor;
+            self.anim.color = UITableViewCellTextColor;
+        }
+    }
 }
 
 
@@ -295,18 +281,6 @@ CHDeclareMethod(3, void, UIViewController, presentViewController, UIViewControll
     
 }
 
-CHDeclareMethod(1, void, UIViewController, viewWillAppear, BOOL, animated)
-{
-    CHSuper(1, UIViewController, viewWillAppear, animated);
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if ([self isKindOfClass:objc_lookUpClass("PSListController")]) {
-            resetNavigationBar(self.navigationController.navigationBar);
-            resetTabBar();
-        }
-    });
-}
-
 
 #pragma mark -
 #pragma mark VKSettings
@@ -319,6 +293,14 @@ CHDeclareMethod(0, UIStatusBarStyle, PSListController, preferredStatusBarStyle)
     return UIStatusBarStyleLightContent;
 }
 
+CHDeclareMethod(1, void, PSListController, viewWillAppear, BOOL, animated)
+{
+    resetNavigationBar(self.navigationController.navigationBar);
+    resetTabBar();
+    
+    CHSuper(1, PSListController, viewWillAppear, animated);
+}
+
 #pragma mark SelectAccountTableViewController
 CHDeclareClass(SelectAccountTableViewController);
 CHDeclareMethod(1, void, SelectAccountTableViewController, viewWillAppear, BOOL, animated)
@@ -326,19 +308,6 @@ CHDeclareMethod(1, void, SelectAccountTableViewController, viewWillAppear, BOOL,
     CHSuper(1, SelectAccountTableViewController, viewWillAppear, animated);
     resetNavigationBar(self.navigationController.navigationBar);
     resetTabBar();
-}
-
-#pragma mark vksprefsListController
-CHDeclareClass(vksprefsListController);
-CHDeclareMethod(2, UITableViewCell *, vksprefsListController, tableView, UITableView *, tableView, cellForRowAtIndexPath, NSIndexPath *, indexPath)
-{
-    UITableViewCell * cell = CHSuper(2, vksprefsListController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    
-    if ([cell.accessoryView isKindOfClass:[UISwitch class]]) {
-        cell.accessoryView.tag = 404;
-    }
-    
-    return cell;
 }
 
 
@@ -360,4 +329,3 @@ CHDeclareMethod(1, void, UITabBarItem, setSelectedImage, UIImage *, selectedImag
     selectedImage = [selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     CHSuper(1, UITabBarItem, setSelectedImage, selectedImage);
 }
-

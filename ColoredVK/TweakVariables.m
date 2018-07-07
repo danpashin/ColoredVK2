@@ -32,7 +32,6 @@ BOOL enableNightTheme;
 BOOL showFastDownloadButton;
 BOOL showMenuCell;
 
-NSBundle *cvkBunlde;
 NSBundle *vksBundle;
 
 BOOL enabled;

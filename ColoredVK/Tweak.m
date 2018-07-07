@@ -93,7 +93,10 @@ CHDeclareMethod(0, void, VKMLiveController, viewWillLayoutSubviews)
                                     parallaxEffect:useAudioParallax blur:audiosUseBackgroundBlur];
             self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent:0.2f];
             self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
-            setBlur(self.navigationController.navigationBar, audiosUseBlur, audiosBlurTone, audiosBlurStyle);
+            if (audiosUseBlur)
+                setupBlur(self.navigationController.navigationBar, audiosBlurTone, audiosBlurStyle);
+            else
+                removeBlur(self.navigationController.navigationBar, nil);
         }
     }
 }
@@ -179,10 +182,17 @@ CHDeclareMethod(1, void, VKMController, viewDidAppear, BOOL, animated)
                 }
             }
             
-            setBlur(self.navigationController.navigationBar, shouldAddBlur.boolValue, blurColor, blurStyle.integerValue);
+            if (shouldAddBlur.boolValue)
+                setupBlur(self.navigationController.navigationBar, blurColor, blurStyle.integerValue);
+            else
+                removeBlur(self.navigationController.navigationBar, nil);
             
-            if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]])
-                setBlur(((UITabBarController *)cvkMainController.vkMainController).tabBar, shouldAddBlur.boolValue, blurColor, blurStyle.integerValue);
+            if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]]) {
+                if (shouldAddBlur.boolValue)
+                    setupBlur(((UITabBarController *)cvkMainController.vkMainController).tabBar, blurColor, blurStyle.integerValue);
+                else
+                    removeBlur(((UITabBarController *)cvkMainController.vkMainController).tabBar, nil);
+            }
         }];
     }
     
@@ -222,7 +232,10 @@ CHDeclareMethod(1, void, VKMToolbarController, viewWillAppear, BOOL, animated)
             shouldAddBlur = NO;
         }
         
-        setBlur(self.toolbar, shouldAddBlur, blurColor, blurStyle);
+        if (shouldAddBlur)
+            setupBlur(self.toolbar, blurColor, blurStyle);
+        else
+            removeBlur(self.toolbar, nil);
     }
 }
 
@@ -347,6 +360,9 @@ CHDeclareMethod(2, UITableViewCell*, VKMMainController, tableView, UITableView*,
         cell.selectedBackgroundView = selectedBackView;
         
         if (VKSettingsEnabled) {
+            if (!vksBundle)
+                vksBundle = [NSBundle bundleWithPath:VKS_BUNDLE_PATH];
+            
             if ([cell.textLabel.text isEqualToString:NSLocalizedStringFromTableInBundle(@"GroupsAndPeople", nil, vksBundle, nil)] && (menuSelectionStyle != CVKCellSelectionStyleNone)) 
                 cell.contentView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.3f];
         }
@@ -603,7 +619,9 @@ CHDeclareMethod(0, void, UserWallController, updateProfile)
             CGRect navBarFrame = self.navigationController.navigationBar.bounds;
             UIImageView *titleView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 30.0f, 30.0f)];
             titleView.center = CGPointMake(CGRectGetMidX(navBarFrame), CGRectGetMidY(navBarFrame));
-            titleView.image = [UIImage imageNamed:users[stringID] inBundle:cvkBunlde compatibleWithTraitCollection:nil];
+            
+            NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+            titleView.image = [UIImage imageNamed:users[stringID] inBundle:cvkBundle compatibleWithTraitCollection:nil];
             if ([stringID isEqualToString:@"89911723"]) {
                 titleView.image = [titleView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
                 titleView.tintColor = enableNightTheme ? cvkMainController.nightThemeScheme.textColor : barForegroundColor;
@@ -904,8 +922,9 @@ CHDeclareMethod(1, void, FriendsAllRequestsController, viewWillAppear, BOOL, ani
                                 parallaxEffect:useFriendsParallax blur:friendsUseBackgroundBlur];
         self.tableView.separatorColor = hideFriendsSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
         self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
-        if ([self respondsToSelector:@selector(toolbar)])
-            setBlur(self.toolbar, friendsUseBlur, friendsBlurTone, friendsBlurStyle);
+        if ([self respondsToSelector:@selector(toolbar)]) {
+            friendsUseBlur ? setupBlur(self.toolbar, friendsBlurTone, friendsBlurStyle) : removeBlur(self.toolbar, nil);
+        }
     }
 }
 
@@ -937,7 +956,7 @@ CHDeclareMethod(0, void, VideoAlbumController, viewWillLayoutSubviews)
                                 parallaxEffect:useVideosParallax blur:videosUseBackgroundBlur];
         self.tableView.separatorColor = hideVideosSeparators?[UIColor clearColor]:[self.tableView.separatorColor colorWithAlphaComponent:0.2f];
         self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
-        setBlur(self.toolbar, YES, videosBlurTone, videosBlurStyle);
+        setupBlur(self.toolbar, videosBlurTone, videosBlurStyle);
         
         UISearchBar *search = (UISearchBar*)self.tableView.tableHeaderView;
         UIColor *textColor =  changeVideosTextColor ? videosTextColor : [UIColor colorWithWhite:1.0f alpha:0.7f];
@@ -1075,9 +1094,9 @@ CHDeclareMethod(2, void, VKSearchBar, setActive, BOOL, active, animated, BOOL, a
                 NSNumber *blurStyle = objc_getAssociatedObject(self, "cvk_blurStyle");
                 if (!blurStyle)
                     blurStyle = @(UIBlurEffectStyleLight);
-                setBlur(self.backgroundView, YES, blurColor, blurStyle.integerValue);
+                setupBlur(self.backgroundView, blurColor, blurStyle.integerValue);
             } else {
-                setBlur(self.backgroundView, NO, nil, 0);
+                removeBlur(self.backgroundView, nil);
             }
         } else {
             resetNewSearchBar(self);
@@ -1110,26 +1129,42 @@ CHDeclareMethod(0, void, TitleMenuCell, layoutSubviews)
     }
 }
 
+CHDeclareClass(DiscoverFeedTitleView);
+CHDeclareMethod(0, void, DiscoverFeedTitleView, layoutSubviews)
+{
+    CHSuper(0, DiscoverFeedTitleView, layoutSubviews);
+    
+    if (enabled && enabledBarColor && !enableNightTheme) {
+        self.toolbar.barTintColor = barBackgroundColor;
+        self.toolbar.tintColor = barForegroundColor;
+    }
+}
+
+CHDeclareClass(DiscoverSearchResultsController);
+CHDeclareMethod(0, void, DiscoverSearchResultsController, viewDidLoad)
+{
+    CHSuper(0, DiscoverSearchResultsController, viewDidLoad);
+    
+    if (enabled && enabledBarColor && !enableNightTheme) {
+        self.toolbar.barTintColor = barBackgroundColor;
+        self.toolbar.tintColor = barForegroundColor;
+        self.segmentedControl.tintColor = barForegroundColor;
+    }
+}
 
 CVK_CONSTRUCTOR
 {
     @autoreleasepool {
-        cvkBunlde = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-        vksBundle = [NSBundle bundleWithPath:VKS_BUNDLE_PATH];
         cvkMainController = [ColoredVKMainController new];
         cvkMainController.nightThemeScheme = [ColoredVKNightScheme sharedScheme];
         
         ColoredVKApplicationModel *application = [ColoredVKNewInstaller sharedInstaller].application;
         isNew3XClient = ([application compareAppVersionWithVersion:@"3.0"] >= ColoredVKVersionCompareEqual);
+        VKSettingsEnabled = (objc_lookUpClass("VKSettings") != nil);
         
         BOOL prefsExist = [[NSFileManager defaultManager] fileExistsAtPath:CVK_PREFS_PATH];
         NSMutableDictionary *prefs = prefsExist ? [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH] : [NSMutableDictionary new];
         prefs[@"vkVersion"] = application.detailedVersion;
         [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
-        VKSettingsEnabled = (objc_lookUpClass("VKSettings") != nil);
-        
-        REGISTER_CORE_OBSERVER(reloadPrefsNotify, kPackageNotificationReloadPrefs);
-        REGISTER_CORE_OBSERVER(reloadMenuNotify, kPackageNotificationReloadMenu);
-        REGISTER_CORE_OBSERVER(updateNightTheme, kPackageNotificationUpdateNightTheme);
     }
 }
