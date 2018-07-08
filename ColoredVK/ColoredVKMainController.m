@@ -207,6 +207,8 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
         if (!crash)
             return;
         
+        if (__deviceModel.length == 0)
+            return;
         
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
         NSDictionary *allInfo = @{@"vk_version":newInstaller.application.detailedVersion, @"cvk_version":kPackageVersion, 

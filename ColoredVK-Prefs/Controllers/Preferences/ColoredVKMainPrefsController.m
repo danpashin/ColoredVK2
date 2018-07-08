@@ -71,7 +71,10 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
 - (void)loadView
 {
     [super loadView];
-    [[ColoredVKNewInstaller sharedInstaller] checkStatus];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [[ColoredVKNewInstaller sharedInstaller] checkStatus];
+    });
     
     cvkPrefsEnabledSpecifiers = @[@"enableTweakSwitch", @"navToolBarPrefsLink", @"menuPrefsLink", 
                                   @"messagesPrefsLink", @"manageAccount", @"aboutPrefsLink",

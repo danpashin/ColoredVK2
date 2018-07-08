@@ -11,10 +11,10 @@ typedef NS_ENUM(NSUInteger, ColoredVKUserAccountStatus)
 {
     ColoredVKUserAccountStatusFree = 0,
     ColoredVKUserAccountStatusPaid,
-    ColoredVKUserAccountStatusBanned
+//    ColoredVKUserAccountStatusBanned
 };
 
-@interface ColoredVKUserModel : NSObject
+@interface ColoredVKUserModel : NSObject <NSSecureCoding>
 
 @property (assign, nonatomic) ColoredVKUserAccountStatus accountStatus;
 @property (assign, nonatomic) BOOL authenticated;
@@ -23,6 +23,9 @@ typedef NS_ENUM(NSUInteger, ColoredVKUserAccountStatus)
 @property (strong, nonatomic) NSString *email;
 @property (strong, nonatomic) NSNumber *userID;
 @property (strong, nonatomic) NSString *accessToken;
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
 
 - (void)clearUser;
 - (void)actionPurchase;

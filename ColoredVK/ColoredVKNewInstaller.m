@@ -43,8 +43,6 @@ BOOL installerShouldOpenPrefs;
     self = [super init];
     if (self) {
         __key = RSAEncryptServerString([NSProcessInfo processInfo].globallyUniqueString);
-        
-        _user = [ColoredVKUserModel new];
         _application = [ColoredVKApplicationModel new];
         
         [self createFolders];
@@ -110,23 +108,28 @@ return;
                 installerCompletionBlock(YES);
             
         } else {
-            self.user.name = dict[@"Login"];
-            self.user.userID = dict[@"user_id"];
-            self.user.accessToken = dict[@"token"];
-            self.user.email = dict[@"email"];
-            if (self.user.name.length > 0) {
-                self.user.authenticated = YES;
+            
+            if ([dict[@"user"] isKindOfClass:[NSData class]]) {
+                self->_user = [NSKeyedUnarchiver unarchiveObjectWithData:dict[@"user"]];
             } else {
-                [self downloadJBLicence];
+                self->_user = [ColoredVKUserModel new];
+                self.user.name = dict[@"Login"];
+                self.user.userID = dict[@"user_id"];
+                self.user.accessToken = dict[@"token"];
+                self.user.email = dict[@"email"];
             }
             
+            if (self.user.name.length > 0)
+                self.user.authenticated = YES;
+            
+            
             BOOL purchased = [dict[@"purchased"] boolValue];
-            if (purchased) {
-                self.user.accountStatus = ColoredVKUserAccountStatusPaid;
-                
-                if (installerCompletionBlock)
-                    installerCompletionBlock(YES);
-            }
+            self.user.accountStatus = purchased ? ColoredVKUserAccountStatusPaid : ColoredVKUserAccountStatusFree;
+            if (purchased && installerCompletionBlock)
+                installerCompletionBlock(YES);
+            
+            if (!purchased)
+                [self downloadJBLicence];
         }
 #undef writeFreeLicenceAndReturn
     });

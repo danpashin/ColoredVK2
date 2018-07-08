@@ -14,18 +14,48 @@
 
 @interface ColoredVKNewInstaller ()
 extern NSString *__key;
-
 @property (weak, nonatomic) ColoredVKHUD *hud;
-
 - (void)showHudWithText:(NSString *)text;
 - (void)hideHud;
 - (void)showAlertWithTitle:(NSString *)title text:(NSString *)text buttons:(NSArray <__kindof UIAlertAction *> *)buttons;
 - (void)writeFreeLicence;
-
 @end
 
 
 @implementation ColoredVKUserModel
+
++ (BOOL)supportsSecureCoding
+{
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    if (self) {
+        [self clearUser];
+        
+        [self setValue:@([aDecoder decodeIntegerForKey:@"accountStatus"]) forKey:@"accountStatus"];
+        [self setValue:@([aDecoder decodeBoolForKey:@"authenticated"]) forKey:@"authenticated"];
+        
+        [self setValue:[aDecoder decodeObjectForKey:@"userID"] forKey:@"userID"];
+        [self setValue:[aDecoder decodeObjectForKey:@"email"] forKey:@"email"];
+        [self setValue:[aDecoder decodeObjectForKey:@"name"] forKey:@"name"];
+        [self setValue:[aDecoder decodeObjectForKey:@"accessToken"] forKey:@"accessToken"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeInteger:self.accountStatus forKey:@"accountStatus"];
+    [aCoder encodeBool:self.authenticated forKey:@"authenticated"];
+    
+    [aCoder encodeObject:self.userID forKey:@"userID"];
+    [aCoder encodeObject:self.email forKey:@"email"];
+    [aCoder encodeObject:self.name forKey:@"name"];
+    [aCoder encodeObject:self.accessToken forKey:@"accessToken"];
+}
 
 - (instancetype)init
 {
@@ -86,22 +116,15 @@ extern NSString *__key;
                 return;
             
             NSDictionary *response = json[@"response"];
-            self.accountStatus = ColoredVKUserAccountStatusFree;
-            self.email = response[@"email"] ? response[@"email"] : @"";
-            
             BOOL purchased = [response[@"is_purchased"] boolValue];
-            if (purchased)
-                self.accountStatus = ColoredVKUserAccountStatusPaid;
             
-            BOOL banned = [response[@"is_banned"] boolValue];
-            if (banned)
-                self.accountStatus = ColoredVKUserAccountStatusBanned;
-            
+            self.email = response[@"email"] ? response[@"email"] : @"";
+            self.accountStatus = purchased ? ColoredVKUserAccountStatusPaid : ColoredVKUserAccountStatusFree;
             
             NSDictionary *licence = RSADecryptLicenceData(kDRMLicencePath, nil);
             NSMutableDictionary *dict = [licence mutableCopy];
             dict[@"purchased"] = @(purchased);
-            dict[@"email"] = self.email;
+            dict[@"user"] = [NSKeyedArchiver archivedDataWithRootObject:self];
             RSAEncryptAndWriteLicenceData(dict, kDRMLicencePath, nil);
             
             POST_NOTIFICATION(kPackageNotificationReloadPrefsMenu);
@@ -181,8 +204,8 @@ extern NSString *__key;
         self.email = response[@"email"] ? response[@"email"] : @"";
         self.accountStatus = purchased.boolValue ? ColoredVKUserAccountStatusPaid : ColoredVKUserAccountStatusFree;
         
-        NSDictionary *dict = @{@"Device":__deviceModel, @"Login":self.name, @"user_id":self.userID,
-                               @"token":self.accessToken, @"purchased":purchased, @"email":self.email};
+        NSData *user = [NSKeyedArchiver archivedDataWithRootObject:self];
+        NSDictionary *dict = @{@"Device":__deviceModel, @"purchased":purchased, @"user":user};
         NSError *writingError = nil;
         RSAEncryptAndWriteLicenceData(dict, kDRMLicencePath, nil);
         
@@ -222,6 +245,11 @@ extern NSString *__key;
     
     if (completionBlock)
         completionBlock();
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<%@ %p: name: %@; authenticated %@; id: %@; status: %@>", [self class], self, self.name, @(self.authenticated), self.userID, @(self.accountStatus)];
 }
 
 @end
