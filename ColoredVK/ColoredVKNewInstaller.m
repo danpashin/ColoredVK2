@@ -169,6 +169,9 @@ return;
 {
     [self.user clearUser];
     
+    if (__deviceModel.length == 0)
+        return;
+    
     NSDictionary *dict = @{@"purchased" : @NO, @"Device" : __deviceModel, 
                            @"jailed" : @(__deviceIsJailed), @"udid" : __udid };
     RSAEncryptAndWriteLicenceData(dict, kDRMLicencePath, nil);

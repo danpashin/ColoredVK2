@@ -9,7 +9,6 @@
 
 #import <SDImageCache.h>
 #import "ColoredVKHUD.h"
-#import "ColoredVKNewInstaller.h"
 
 @interface ColoredVKMusicPrefs ()
 @property (strong, nonatomic) NSString *cacheSize;
@@ -46,7 +45,6 @@
     ColoredVKHUD *hud = [ColoredVKHUD showHUD];
     [[SDImageCache sharedImageCache] clearDiskOnCompletion:^{
         [hud showSuccess];
-        [[ColoredVKNewInstaller sharedInstaller] createFolders];
         [self updateCacheSize];
     }];
 }

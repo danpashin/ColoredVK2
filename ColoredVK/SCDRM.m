@@ -17,6 +17,8 @@
 
 #import <sys/sysctl.h>
 #import <sys/ioctl.h>
+#import <sys/utsname.h>
+
 
 
 NSString *const kDRMServerKey = @"ACBEBB5F70D0883E875DAA6E1C5C59ED";
@@ -131,20 +133,32 @@ CVK_INLINE NSData *_performCryptOperation(CCOperation operation, NSData *data, N
     return nil;
 }
 
+CVK_INLINE NSString *deviceModel()
+{
+    char machine[256];
+    size_t length = sizeof(machine);
+    int machineName[] = {CTL_HW, HW_MACHINE};
+    sysctl(machineName, 2, &machine, &length, NULL, 0);
+    if (strlen(machine) >= 5) {
+        return @(machine);
+    }
+    
+    struct utsname deviceInfo;
+    uname(&deviceInfo);
+    
+    return @(deviceInfo.machine);
+}
+
 CVK_INLINE void generateKey(void)
 {
+    __deviceModel = deviceModel();
+    
     uint64_t ramSize;
     size_t len = sizeof(ramSize);
     int memSizeName[] = {CTL_HW, HW_MEMSIZE};
     sysctl(memSizeName, 2, &ramSize, &len, NULL, 0);
     
-    char machine[256];
-    len = sizeof(machine);
-    int machineName[] = {CTL_HW, HW_MACHINE};
-    sysctl(machineName, 2, &machine, &len, NULL, 0);
-    __deviceModel = @(machine);
-    
-    NSString *string = [NSString stringWithFormat:@"d=%s&r=%llu", machine, ramSize];
+    NSString *string = [NSString stringWithFormat:@"d=%@&r=%llu", __deviceModel, ramSize];
     NSData *keyData = [kDRMServerKey dataUsingEncoding:NSUTF8StringEncoding];
     NSData *encData = [string dataUsingEncoding:NSUTF8StringEncoding];
     NSMutableData *signatureData = [NSMutableData dataWithLength:CC_SHA512_DIGEST_LENGTH];
@@ -230,6 +244,7 @@ CVK_CONSTRUCTOR
         __udid = CFBridgingRelease(MGCopyAnswer(CFSTR("re6Zb+zwFKJNlkQTUeT+/w")));
         __deviceIsJailed = __deviceIsJailed && (__udid.length == 40);
     }
+    
     
     if (!__udid || __udid.length != 40) {
         __udid = @"";
