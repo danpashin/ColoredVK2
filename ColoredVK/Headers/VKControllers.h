@@ -62,6 +62,7 @@
 @property (strong, nonatomic) UIViewController *newsController;
 @property (strong, nonatomic) VKMController *discoverController;
 @property (strong, nonatomic) UIView *tabBarShadowView;
+@property (strong, nonatomic) UIViewController *feedbackController;
 @end
 
 //  Аудио
@@ -217,8 +218,8 @@
 @interface MainNewsFeedController : NewsFeedController
 @end
 
-@interface NewsSelectorController : VKSelectorContainerControllerDropdown
-@end
+//@interface NewsSelectorController : VKSelectorContainerControllerDropdown
+//@end
 
 @interface PostEditController : UIViewController
 @property (strong, nonatomic) MOTextView *textView;
@@ -336,4 +337,11 @@
 @interface DiscoverSearchResultsController : VKMController
 @property (strong, nonatomic) UIToolbar *toolbar;
 @property (strong, nonatomic) VKSegmentedControl *segmentedControl;
+@end
+
+
+@interface VKMViewControllerContainer : VKMController
+@property(retain, nonatomic) UIViewController *currentViewController;
+@end
+@interface VKSelectorContainerController : VKMViewControllerContainer 
 @end

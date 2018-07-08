@@ -12,9 +12,11 @@
 #import "UIColor+ColoredVK.h"
 #import "ColoredVKNetwork.h"
 
+@interface ColoredVKMainController ()
+@property (strong, nonatomic) UISwitch *menuCellSwitch;
+@end
 
 @implementation ColoredVKMainController
-static NSString const *switchViewKey = @"cvkCellSwitchKey";
 
 BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
 {
@@ -93,15 +95,14 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
         backgroundView.backgroundColor = kMenuCellSelectedColor;
         cell.selectedBackgroundView = backgroundView;
         
-        UISwitch *switchView = [UISwitch new];
-        switchView.frame = CGRectMake([UIScreen mainScreen].bounds.size.width/1.2f - switchView.frame.size.width, 
-                                      (cell.contentView.frame.size.height - switchView.frame.size.height)/2.0f, 0.0f, 0.0f);
-        switchView.tag = 228;
-        switchView.on = enabled;
-        switchView.onTintColor = [UIColor cvk_defaultColorForIdentifier:@"switchesOnTintColor"];
-        [switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventValueChanged];
-        objc_setAssociatedObject(self, (__bridge const void *)(switchViewKey), switchView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        [cell.contentView addSubview:switchView];
+        self.menuCellSwitch = [UISwitch new];
+        self.menuCellSwitch.frame = CGRectMake([UIScreen mainScreen].bounds.size.width/1.2f - self.menuCellSwitch.frame.size.width, 
+                                      (cell.contentView.frame.size.height - self.menuCellSwitch.frame.size.height)/2.0f, 0.0f, 0.0f);
+        self.menuCellSwitch.tag = 228;
+        self.menuCellSwitch.on = enabled;
+        self.menuCellSwitch.onTintColor = [UIColor cvk_defaultColorForIdentifier:@"switchesOnTintColor"];
+        [self.menuCellSwitch addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventValueChanged];
+        [cell.contentView addSubview:self.menuCellSwitch];
         
         if ([cell respondsToSelector:@selector(select)]) {
             ((TitleMenuCell *)cell).select = ^(id model) {
@@ -157,7 +158,6 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
             [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
             
             POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
-            POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
         });
     }
 }
@@ -165,13 +165,10 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
 - (void)setMenuCellSwitchOn:(BOOL)on
 {
     @synchronized(self) {
-        UISwitch *switchView = objc_getAssociatedObject(self, (__bridge const void *)(switchViewKey));
-        if ([switchView isKindOfClass:[UISwitch class]]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [switchView setOn:on animated:YES];
-                [switchView setNeedsLayout];
-            });
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.menuCellSwitch setOn:on animated:YES];
+            [self.menuCellSwitch setNeedsLayout];
+        });
     }
 }
 

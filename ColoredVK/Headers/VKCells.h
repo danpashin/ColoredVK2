@@ -29,7 +29,7 @@
 @property (readonly, strong, nonatomic) UILabel *text;
 @end
 
-@interface vkmPeerListCell : UITableViewCell
+@interface _TtC3vkm12PeerListCell : UITableViewCell
 @property (strong, nonatomic) _TtC3vkm9BadgeView *badgeView;
 @property (strong, nonatomic) UILabel *titleView;
 @property (strong, nonatomic) UILabel *bodyView;

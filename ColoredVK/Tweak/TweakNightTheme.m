@@ -977,7 +977,7 @@ CHDeclareMethod(0, void, LoadingFooterView, layoutSubviews)
     CHSuper(0, LoadingFooterView, layoutSubviews);
     
     if (enabled && enableNightTheme) {
-        self.backgroundColor = self.superview.backgroundColor;
+        self.backgroundColor = [UIColor clearColor];
     }
 }
 

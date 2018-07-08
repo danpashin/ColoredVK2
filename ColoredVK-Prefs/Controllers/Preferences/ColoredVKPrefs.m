@@ -326,16 +326,12 @@
                                                 @"enabledMenuImage", @"MenuSeparatorColor", @"switchesTintColor",
                                                 @"switchesOnTintColor", @"menuTextColor"];
             
-            void (^updateNightThemeBlock)(void) = ^{
+            if ([key isEqualToString:@"nightThemeType"] || [key isEqualToString:@"enabled"]) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self updateNightThemeModel];
                     [self updateControllerAppearance:YES];
                 });
-            };
-            
-            if ([key isEqualToString:@"nightThemeType"]) {
-                updateNightThemeBlock();
-                POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
+                
                 POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
                 return;
             }
@@ -344,11 +340,6 @@
                 POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
             } else {
                 POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);
-            }
-            
-            if ([key isEqualToString:@"enabled"]) {
-                updateNightThemeBlock();
-                POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
             }
         }];
     }

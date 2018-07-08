@@ -6,7 +6,7 @@
 //
 
 #import "Tweak.h"
-
+@import CoreText;
 
 #pragma GCC diagnostic push 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -193,7 +193,7 @@ CHDeclareMethod(2, UITableViewCell*, DialogsController, tableView, UITableView*,
 CHDeclareClass(DLVController);
 CHDeclareMethod(2, UITableViewCell*, DLVController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
-    vkmPeerListCell *cell = (vkmPeerListCell *)CHSuper(2, DLVController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    _TtC3vkm12PeerListCell *cell = (_TtC3vkm12PeerListCell *)CHSuper(2, DLVController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     if ([self isKindOfClass:objc_lookUpClass("DLVController")] && [cell isKindOfClass:objc_lookUpClass("vkm.PeerListCell")]) {
         if (enabled && !enableNightTheme && enabledMessagesListImage) {
             performInitialCellSetup(cell);
@@ -216,8 +216,14 @@ CHDeclareMethod(2, UITableViewCell*, DLVController, tableView, UITableView*, tab
                 NIGHT_THEME_DISABLE_CUSTOMISATION(cell.titleView);
             } else {
                 for (UIView *subview in cell.contentView.subviews) {
-                    if ([subview isKindOfClass:[UILabel class]])
-                        ((UILabel *)subview).textColor = cvkMainController.nightThemeScheme.textColor;
+                    if ([subview isKindOfClass:[UILabel class]]) {
+                        UILabel *label = (UILabel *)subview;
+                        NIGHT_THEME_DISABLE_CUSTOMISATION(label);
+                        
+                        CTFontSymbolicTraits traits = CTFontGetSymbolicTraits((__bridge CTFontRef)label.font);
+                        BOOL isBold = ((traits & kCTFontTraitBold) == kCTFontTraitBold);
+                        label.textColor = isBold ? cvkMainController.nightThemeScheme.textColor : cvkMainController.nightThemeScheme.detailTextColor;
+                    }
                 }
             }
         } else {

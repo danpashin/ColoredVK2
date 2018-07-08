@@ -130,6 +130,13 @@ void removeBlur(UIView *bar, void(^completion)(void))
         } else if ([bar isKindOfClass:[UITabBar class]]) {
             UITabBar *tabbar = (UITabBar *)bar;
             UIVisualEffectView *effectView = [bar viewWithTag:blurViewTag];
+            if (!effectView) {
+                if (completion)
+                    completion();
+                
+                return;
+            }
+            
             effectView.backgroundColor = tabbar.barTintColor;
             effectView.tag = 0;
             [UIView animateWithDuration:0.2f delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
@@ -545,37 +552,25 @@ void resetTabBar()
 
 void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *tableView)
 {
-    void (^setColors)(void) = ^(void){
-        if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
-            view.contentView.backgroundColor = [UIColor clearColor];
-            view.backgroundView.backgroundColor = [UIColor clearColor];
-            view.textLabel.backgroundColor = [UIColor clearColor];
-            view.textLabel.textColor = (tableView.tag == 24) ? UITableViewCellTextColor.cvk_darkerColor : UITableViewCellTextColor;
-            view.detailTextLabel.textColor = (tableView.tag == 24) ? UITableViewCellTextColor.cvk_darkerColor : UITableViewCellTextColor;
-        }
-    };
-    if (enableNightTheme) {
-        if (![tableView.delegate isKindOfClass:objc_lookUpClass("ColoredVKPrefs")]) {
-            if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
-                view.contentView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
-                view.backgroundView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
-            }
-        }
-    } else if (tableView.tag == 21) {
-        setColors();
-        
-        if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
-            UIVisualEffectView *blurView = blurForView(view, 5);
-            if (![view.contentView.subviews containsObject:[view.contentView viewWithTag:5]])   [view.contentView addSubview:blurView];
-        }
+    if (![view isKindOfClass:[UITableViewHeaderFooterView class]])
+        return;
+    
+    if (enabled && enableNightTheme) {
+        view.contentView.backgroundColor = [UIColor clearColor];
+        view.backgroundView.backgroundColor = [UIColor clearColor];
+        return;
+    }
+    
+    view.contentView.backgroundColor = [UIColor clearColor];
+    view.backgroundView.backgroundColor = [UIColor clearColor];
+    view.textLabel.backgroundColor = [UIColor clearColor];
+    view.textLabel.textColor = (tableView.tag == 24) ? UITableViewCellTextColor.cvk_darkerColor : UITableViewCellTextColor;
+    view.detailTextLabel.textColor = (tableView.tag == 24) ? UITableViewCellTextColor.cvk_darkerColor : UITableViewCellTextColor;
+
+    if (tableView.tag == 21 && ![view.contentView.subviews containsObject:[view.contentView viewWithTag:5]]) {
+        [view.contentView addSubview:blurForView(view, 5)];
     } else if (tableView.tag == 22) {
-        setColors();
-        
-        if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
-            view.contentView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.1f];
-        }
-    } else if (tableView.tag == 24) {
-        setColors();
+        view.contentView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.1f];
     }
 }
 
@@ -753,7 +748,7 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
     });
 }
 
-void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
+void reloadMenu(void(^completion)(void))
 {
     reloadPrefs(^{
         updateNavBarColor();
@@ -764,11 +759,11 @@ void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRe
         if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]]) {
             menuController = cvkMainController.vkMenuController;
             
-            if (menuController.navigationController.viewControllers.count > 0) {
-                if ([menuController.navigationController.viewControllers.lastObject isEqual:menuController]) {
-                    [menuController viewWillAppear:NO];
-                }
-            }
+//            if (menuController.navigationController.viewControllers.count > 0) {
+//                if ([menuController.navigationController.viewControllers.lastObject isEqual:menuController]) {
+//                    [menuController viewWillAppear:NO];
+//                }
+//            }
         } else {
             menuController = cvkMainController.vkMainController;
             menuController.view.backgroundColor = (enabled && enableNightTheme) ? cvkMainController.nightThemeScheme.backgroundColor : kMenuCellBackgroundColor;
@@ -782,25 +777,23 @@ void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRe
             [menuTableView deselectRowAtIndexPath:menuTableView.indexPathForSelectedRow animated:YES];
         }
         
-        NSTimeInterval animationDuration = 0.2f;
-        UIViewAnimationOptions options = UIViewAnimationOptionAllowUserInteraction;
-        
         if (shouldShow) {
             if (menuTableView) {
                 setupUISearchBar(searchBar);
                 [menuTableView reloadData];
                 menuTableView.backgroundColor = [UIColor clearColor];
+                menuTableView.backgroundView = nil;
             }
             
-            [UIView animateWithDuration:animationDuration delay:0 options:options animations:^{
+            [UIView animateWithDuration:0.2f delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
                 cvkMainController.menuBackgroundView.alpha = 1.0f;
             } completion:nil];
         } else {
-            [UIView animateWithDuration:animationDuration delay:0 options:options animations:^{
+            [UIView animateWithDuration:0.2f delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
                 cvkMainController.menuBackgroundView.alpha = 0.0f;
             } completion:^(BOOL finished) {
                 if (menuTableView) {
-                    if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]])
+                    if (isNew3XClient)
                         menuTableView.backgroundColor = [UIColor colorWithRed:235/255.0f green:237/255.0f blue:240/255.0f alpha:1.0f];
                     else
                         menuTableView.backgroundColor = kMenuCellBackgroundColor;
@@ -816,43 +809,52 @@ void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRe
             [cvkMainController.menuBackgroundView updateViewWithBlackout:menuImageBlackout];
             [cvkMainController.menuBackgroundView addToBack:menuController.view animated:NO];
         }
+        
+        if (completion)
+            completion();
     });
+}
+
+void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
+{
+    reloadMenu(nil);
 }
 
 void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
-    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
-    [cvkMainController.nightThemeScheme updateForType:[prefs[@"nightThemeType"] integerValue]];
-    
-    resetTabBar();
-    
-    [NSObject cvk_runBlockOnMainThread:^{
-        if ([cvkMainController.vkMainController respondsToSelector:@selector(newsController)]) {
-            NewsSelectorController *newsSelector = (NewsSelectorController *)cvkMainController.vkMainController.newsController;
-            if ([newsSelector respondsToSelector:@selector(currentViewController)]) {
-                MainNewsFeedController *newsController = (MainNewsFeedController *)newsSelector.currentViewController;
-                if ([newsController respondsToSelector:@selector(VKMScrollViewReset)]) {
-                    [newsController VKMScrollViewReset];
+    reloadMenu(^{
+        resetTabBar();
+        void (^resetController)(id rootController, SEL controllerSelector) = ^(id rootController, SEL controllerSelector) {
+            if ([rootController respondsToSelector:controllerSelector]) {
+                VKMTableController *controller = objc_msgSend(rootController, controllerSelector);
+                if ([controller respondsToSelector:@selector(VKMScrollViewReset)]) {
+                    [controller VKMScrollViewReset];
+                    [controller VKMScrollViewReloadData];
+                }
+                
+                UIColor *backgroundColor = [UIColor colorWithRed:235/255.0f green:237/255.0f blue:240/255.0f alpha:1.0f];
+                if ([controller respondsToSelector:@selector(tableView)]) {
+                    controller.tableView.backgroundColor = backgroundColor;
+                    controller.tableView.separatorColor = backgroundColor;
+                    controller.tableView.backgroundView = nil;
+                }
+                if ([controller respondsToSelector:@selector(collectionView)]) {
+                    UICollectionView *collectionView = objc_msgSend(controller, @selector(collectionView));
+                    collectionView.backgroundColor = backgroundColor;
                 }
             }
-        }
+        };
         
-        if ([cvkMainController.vkMainController respondsToSelector:@selector(dialogsController)]) {
-            DialogsController *dialogsController = (DialogsController *)cvkMainController.vkMainController.dialogsController;
-            if ([dialogsController respondsToSelector:@selector(VKMScrollViewReset)]) {
-                [dialogsController VKMScrollViewReset];
-                [dialogsController VKMScrollViewReloadData];
-            }
-        }
+        if ([cvkMainController.vkMainController respondsToSelector:@selector(newsController)])
+            resetController(cvkMainController.vkMainController.newsController, @selector(currentViewController));
         
-        if ([cvkMainController.vkMainController respondsToSelector:@selector(discoverController)]) {
-            VKMTableController *discoverController = (VKMTableController *)cvkMainController.vkMainController.discoverController;
-            if ([discoverController respondsToSelector:@selector(VKMScrollViewReset)]) {
-                [discoverController VKMScrollViewReset];
-                [discoverController VKMScrollViewReloadData];
-            }
-        }
-    }];
+        if ([cvkMainController.vkMainController respondsToSelector:@selector(feedbackController)]) 
+            resetController(cvkMainController.vkMainController.feedbackController, @selector(currentViewController));
+        
+        resetController(cvkMainController.vkMainController, @selector(discoverController));
+        resetController(cvkMainController.vkMainController, @selector(dialogsController));
+        resetController(cvkMainController.vkMainController, @selector(menuController));
+    });
 }
 
 void setupNewSearchBar(VKSearchBar *searchBar, UIColor *tintColor, UIColor *blurTone, UIBlurEffectStyle blurStyle)
