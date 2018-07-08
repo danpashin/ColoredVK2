@@ -169,7 +169,9 @@ CHDeclareMethod(0, void, UILabel, layoutSubviews)
 {
     CHSuper(0, UILabel, layoutSubviews);
     
-    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("UILabel")] && ![CLASS_NAME(self.superview) isEqualToString:@"HighlightableButton"] && ![CLASS_NAME(self.superview) isEqualToString:@"VKPPBadge"]) {
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("UILabel")] && 
+        ![CLASS_NAME(self.superview) isEqualToString:@"HighlightableButton"] && 
+        ![CLASS_NAME(self.superview) isEqualToString:@"VKPPBadge"]) {
         
         NSNumber *should_customize = NIGHT_THEME_SHOULD_CUSTOMIZE(self);
         if (!should_customize)
@@ -184,10 +186,11 @@ CHDeclareMethod(0, void, UILabel, layoutSubviews)
         } else {
             self.backgroundColor = [UIColor clearColor];
             
-            if ([self.superview isKindOfClass:[UIButton class]] || [self isKindOfClass:objc_lookUpClass("_UITableViewHeaderFooterViewLabel")]) {
-                self.textColor = cvkMainController.nightThemeScheme.detailTextColor;
-            } else {
+            if (![self.superview isKindOfClass:[UIButton class]] && 
+                ![self isKindOfClass:objc_lookUpClass("_UITableViewHeaderFooterViewLabel")]) {
                 self.textColor = cvkMainController.nightThemeScheme.textColor;
+            } else if ([self.superview isKindOfClass:objc_lookUpClass("UINavigationItemView")]) {
+                self.textColor = cvkMainController.nightThemeScheme.detailTextColor;
             }
         }
     }
