@@ -400,7 +400,6 @@ CHDeclareMethod(1, void, UIAlertController, addTextFieldWithConfigurationHandler
             });
             
             void (^configurationHandler)(UITextField *textField) = handler;
-            
             configurationHandler(textField);
         };
         CHSuper(1,  UIAlertController, addTextFieldWithConfigurationHandler, newHandler);

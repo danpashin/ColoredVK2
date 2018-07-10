@@ -99,8 +99,10 @@ return;
                 writeFreeLicenceAndReturn
             }
             
-            if (![dict[@"purchased"] boolValue])
+            if (![dict[@"purchased"] boolValue]) {
+                [self downloadJBLicence];
                 return;
+            }
             
             installerShouldOpenPrefs = YES;
             POST_NOTIFICATION(kPackageNotificationReloadPrefsMenu);

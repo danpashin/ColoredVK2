@@ -455,19 +455,25 @@ CHDeclareMethod(0, void, _TtC3vkm17MessageBubbleView, layoutSubviews)
 {
     CHSuper(0, _TtC3vkm17MessageBubbleView, layoutSubviews);
     
-    if (enabled && (useMessageBubbleTintColor || enableNightTheme) && [self isKindOfClass:objc_lookUpClass("_TtC3vkm17MessageBubbleView")]) {
-        CAShapeLayer *layer = (CAShapeLayer *)self.layer;
-        
-        UIColor *incomingColor = enableNightTheme ? cvkMainController.nightThemeScheme.incomingBackgroundColor : messageBubbleTintColor;
-        UIColor *outgoingColor = enableNightTheme ? cvkMainController.nightThemeScheme.outgoingBackgroundColor : messageBubbleSentTintColor;
-        
-        const CGFloat *components = CGColorGetComponents(layer.fillColor);
-        if (components[0] >= 0.9f) { // входящее
-            layer.fillColor = incomingColor.CGColor;
-        } else { // исходящее
-            layer.fillColor = outgoingColor.CGColor;
+//    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("_TtC3vkm17MessageBubbleView")]) {
+//        self.layer.fillColor = cvkMainController.nightThemeScheme.incomingBackgroundColor.CGColor;
+//    }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (enabled && (useMessageBubbleTintColor || enableNightTheme) && [self isKindOfClass:objc_lookUpClass("_TtC3vkm17MessageBubbleView")]) {
+            CAShapeLayer *layer = (CAShapeLayer *)self.layer;
+            
+            UIColor *incomingColor = enableNightTheme ? cvkMainController.nightThemeScheme.incomingBackgroundColor : messageBubbleTintColor;
+            UIColor *outgoingColor = enableNightTheme ? cvkMainController.nightThemeScheme.outgoingBackgroundColor : messageBubbleSentTintColor;
+            
+            const CGFloat *components = CGColorGetComponents(layer.fillColor);
+            if (components[0] >= 0.9f) { // входящее
+                layer.fillColor = incomingColor.CGColor;
+            } else { // исходящее
+                layer.fillColor = outgoingColor.CGColor;
+            }
         }
-    }
+    });
 }
 
 CHDeclareClass(_TtC3vkm9BadgeView);

@@ -96,7 +96,7 @@ CHDeclareMethod(0, void, IOS7AudioController, viewDidLoad)
             [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] cvk_imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
             
             cvkMainController.audioCover.updateCompletionBlock = ^(ColoredVKAudioCover *cover) {
-                audioPlayerTintColor = cvkMainController.audioCover.color;
+                audioPlayerTintColor = cover.color;
                 [self.pp setImage:[[self.pp imageForState:UIControlStateSelected] cvk_imageWithTintColor:audioPlayerTintColor] forState:UIControlStateSelected];
                 setupAudioPlayer(self.hostView, audioPlayerTintColor);
             };
