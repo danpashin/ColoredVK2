@@ -552,7 +552,7 @@ void resetTabBar()
 
 void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *tableView)
 {
-    if (![view isKindOfClass:[UITableViewHeaderFooterView class]])
+    if (![view isKindOfClass:[UITableViewHeaderFooterView class]] || ![tableView isKindOfClass:[UITableView class]])
         return;
     
     if (enabled && enableNightTheme) {
@@ -560,6 +560,9 @@ void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *table
         view.backgroundView.backgroundColor = [UIColor clearColor];
         return;
     }
+    
+    if (tableView.tag != 21 && tableView.tag != 22 && tableView.tag != 24)
+        return;
     
     view.contentView.backgroundColor = [UIColor clearColor];
     view.backgroundView.backgroundColor = [UIColor clearColor];
@@ -758,12 +761,7 @@ void reloadMenu(void(^completion)(void))
         VKMLiveController *menuController = nil;
         if ([cvkMainController.vkMainController isKindOfClass:[UITabBarController class]]) {
             menuController = cvkMainController.vkMenuController;
-            
-//            if (menuController.navigationController.viewControllers.count > 0) {
-//                if ([menuController.navigationController.viewControllers.lastObject isEqual:menuController]) {
-//                    [menuController viewWillAppear:NO];
-//                }
-//            }
+            [cvkMainController.menuBackgroundView updateViewWithBlackout:menuImageBlackout];
         } else {
             menuController = cvkMainController.vkMainController;
             menuController.view.backgroundColor = (enabled && enableNightTheme) ? cvkMainController.nightThemeScheme.backgroundColor : kMenuCellBackgroundColor;
@@ -853,7 +851,9 @@ void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRe
         
         resetController(cvkMainController.vkMainController, @selector(discoverController));
         resetController(cvkMainController.vkMainController, @selector(dialogsController));
-        resetController(cvkMainController.vkMainController, @selector(menuController));
+        
+        if (!enabled || !enabledMenuImage)
+            resetController(cvkMainController.vkMainController, @selector(menuController));
     });
 }
 

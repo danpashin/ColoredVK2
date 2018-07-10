@@ -237,6 +237,7 @@
 @end
 
 @interface _TtC3vkm17MessageBubbleView : UIView
+@property (strong, nonatomic, readonly) CAShapeLayer *layer;
 @end
 
 @interface DiscoverFeedTitleView : UIView

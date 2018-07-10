@@ -27,6 +27,7 @@ NSString *__key;
 
 BOOL installerShouldOpenPrefs;
 
+@synthesize user = _user;
 
 + (instancetype)sharedInstaller
 {
@@ -112,7 +113,6 @@ return;
             if ([dict[@"user"] isKindOfClass:[NSData class]]) {
                 self->_user = [NSKeyedUnarchiver unarchiveObjectWithData:dict[@"user"]];
             } else {
-                self->_user = [ColoredVKUserModel new];
                 self.user.name = dict[@"Login"];
                 self.user.userID = dict[@"user_id"];
                 self.user.accessToken = dict[@"token"];
@@ -133,6 +133,14 @@ return;
         }
 #undef writeFreeLicenceAndReturn
     });
+}
+
+- (ColoredVKUserModel *)user
+{
+    if (!_user) {
+        _user = [ColoredVKUserModel new];
+    }
+    return _user;
 }
 
 - (void)showAlertWithTitle:(NSString *)title text:(NSString *)text buttons:(NSArray <__kindof UIAlertAction *> *)buttons
