@@ -3,11 +3,10 @@ Name: ColoredVK 2
 Version: package_version
 Description: Change your VK App sense!
 Section: Tweaks
-Depends: firmware (>= 9.0), mobilesubstrate (>= 0.9.5000), preferenceloader
+Depends: firmware (>= 9.0), mobilesubstrate (>= 0.9.5000), preferenceloader, com.rpetrich.rocketbootstrap
 Architecture: iphoneos-arm
 Author: Daniil Pashin <daniilpashin@icloud.com>
 Maintainer: Daniil Pashin <daniilpashin@icloud.com>
-Replaces: com.daniilpashin.coloredvk
 Icon: file:///Library/PreferenceBundles/ColoredVK2.bundle/Icon-big.png
 Depiction: http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=coloredvk2Dp
 Homepage: http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=coloredvk2Dp

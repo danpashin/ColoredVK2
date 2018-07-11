@@ -53,7 +53,7 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
         
         if (specifiersArray.count > 0) {
             NSString *vkVersion = self.cachedPrefs[@"vkVersion"] ? self.cachedPrefs[@"vkVersion"] : CVKLocalizedString(@"UNKNOWN");
-            NSString *footerText = [NSString stringWithFormat:CVKLocalizedStringInBundle(@"TWEAK_FOOTER_TEXT", self.bundle), 
+            NSString *footerText = [NSString stringWithFormat:CVKLocalizedStringInBundle(@"TWEAK_FOOTER_TEXT", self.cvkBundle), 
                                     [UIDevice currentDevice].systemVersion, kPackageVersion, vkVersion];
             footerText = [footerText stringByAppendingString:@"\n\n© Daniil Pashin 2018\nПри поддержке theux.ru"];
             

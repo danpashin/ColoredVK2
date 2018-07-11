@@ -133,9 +133,9 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
 
 - (__kindof UIViewController *)safePreferencesController
 {
-    NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    if (!cvkBundle.loaded)
-        [cvkBundle load];
+//    NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+//    if (!cvkBundle.loaded)
+//        [cvkBundle load];
     
     UIViewController *prefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
     if (!prefs)
@@ -199,7 +199,8 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
         if (![[NSFileManager defaultManager] fileExistsAtPath:CVK_CRASH_PATH])
             return;
         
-        NSDictionary *crash = [NSDictionary dictionaryWithContentsOfFile:CVK_CRASH_PATH];
+        NSData *crashData = [NSData dataWithContentsOfFile:CVK_CRASH_PATH];
+        NSDictionary *crash = [NSKeyedUnarchiver unarchiveObjectWithData:crashData];
         if (!crash)
             return;
         

@@ -31,10 +31,10 @@ CPDistributedMessagingCenter *cvk_notifyCenter(void);
         error = [self createFolder:userInfo];
     }
     
-    if (error) {
-        success = (error == nil);
+    success = (error == nil);
+    
+    if (error)
         return @{@"success":@(success), @"error":error};
-    }
     
     return @{@"success":@(success)};
 }

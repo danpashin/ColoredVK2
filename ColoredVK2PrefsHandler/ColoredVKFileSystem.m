@@ -7,24 +7,30 @@
 
 #import "MessagingCenter.h"
 
+#ifdef COMPILE_FOR_JAIL
+NSDictionary *cvk_sendNotification(NSString *name, NSDictionary *userInfo)
+{
+    CPDistributedMessagingCenter *center = cvk_notifyCenter();
+    return [center sendMessageAndReceiveReplyName:name userInfo:userInfo];
+}
+#endif
+
+
 BOOL cvk_writePrefs(NSDictionary *prefs, NSString *notificationName)
 {
-    if (!notificationName)
-        notificationName = @"";
+    BOOL success = [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
     
-    if ([prefs writeToFile:CVK_PREFS_PATH atomically:YES]) {
-        if (notificationName.length > 0)
-            POST_CORE_NOTIFICATION(notificationName);
-        
-        return YES;
-    } else {
 #ifdef COMPILE_FOR_JAIL
-        CPDistributedMessagingCenter *center = cvk_notifyCenter();
-        NSDictionary *reply = [center sendMessageAndReceiveReplyName:kPackageNotificationWritePrefs 
-                                                            userInfo:@{@"prefs":prefs, @"notifyName":notificationName}];
-        return [reply[@"success"] boolValue];
-#endif
+    if (!success) {
+        NSDictionary *reply = cvk_sendNotification(kPackageNotificationWritePrefs, @{@"prefs":prefs});
+        success = [reply[@"success"] boolValue];
     }
+#endif
+    
+    if (notificationName)
+        POST_CORE_NOTIFICATION(notificationName);
+    
+    return success;
 }
 
 BOOL cvk_writeData(NSData *data, NSString *path, NSError *__autoreleasing *error)
@@ -34,9 +40,7 @@ BOOL cvk_writeData(NSData *data, NSString *path, NSError *__autoreleasing *error
     
 #ifdef COMPILE_FOR_JAIL
     if (!success && localError) {
-        CPDistributedMessagingCenter *center = cvk_notifyCenter();
-        NSDictionary *reply = [center sendMessageAndReceiveReplyName:kPackageNotificationWriteData
-                                                            userInfo:@{@"data":data, @"path":path}];
+        NSDictionary *reply = cvk_sendNotification(kPackageNotificationWriteData, @{@"data":data, @"path":path});
         success = [reply[@"success"] boolValue];
         localError = reply[@"error"];
     }
@@ -58,9 +62,7 @@ BOOL cvk_removeFile(NSString *path, NSError *__autoreleasing *error)
     
 #ifdef COMPILE_FOR_JAIL
     if (!success && localError) {
-        CPDistributedMessagingCenter *center = cvk_notifyCenter();
-        NSDictionary *reply = [center sendMessageAndReceiveReplyName:kPackageNotificationRemoveFile
-                                                            userInfo:@{@"path":path}];
+        NSDictionary *reply = cvk_sendNotification(kPackageNotificationRemoveFile, @{@"path":path});
         success = [reply[@"success"] boolValue];
         localError = reply[@"error"];
     }
@@ -82,9 +84,7 @@ BOOL cvk_createFolder(NSString *path, NSError *__autoreleasing *error)
     
 #ifdef COMPILE_FOR_JAIL
     if (!success && localError) {
-        CPDistributedMessagingCenter *center = cvk_notifyCenter();
-        NSDictionary *reply = [center sendMessageAndReceiveReplyName:kPackageNotificationCreateFolder
-                                                            userInfo:@{@"path":path}];
+        NSDictionary *reply = cvk_sendNotification(kPackageNotificationCreateFolder, @{@"path":path});
         success = [reply[@"success"] boolValue];
         localError = reply[@"error"];
     }
@@ -95,7 +95,3 @@ BOOL cvk_createFolder(NSString *path, NSError *__autoreleasing *error)
     
     return success;
 }
-
-
-
-
