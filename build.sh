@@ -1,40 +1,38 @@
 #!/bin/bash
 
-PRODUCT="ColoredVK2"
 APP_NAME="vkclient.app"
 FOLDER_TO_PACK="/Users/$USER/Desktop"
 
 cd ${PROJECT_DIR}
-[ -e "${BUILT_PRODUCTS_DIR}/$PRODUCT.dylib" ] || exit 1;
+[ -e "${BUILT_PRODUCTS_DIR}/ColoredVK2.dylib" ] || exit 1;
 
 echo "[->] Copying resources to temp directory (stage 1)..."
-cp -r "${PROJECT_DIR}/ColoredVK.bundle/." "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle"
-#mv "${BUILT_PRODUCTS_DIR}/$PRODUCT.mom"  "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/"
-find "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" -iname '*.strings' -exec plutil -convert binary1 "{}" \;
-find "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" -iname '*.plist'   -exec plutil -convert binary1 "{}" \;
+cp -r "${PROJECT_DIR}/ColoredVK.bundle/." "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle"
+#mv "${BUILT_PRODUCTS_DIR}/ColoredVK2.mom"  "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle/"
+find "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle" -iname '*.strings' -iname '*.plist' -exec plutil -convert binary1 "{}" \;
 
 makeIPA () {
-    cp "${BUILT_PRODUCTS_DIR}/$PRODUCT.dylib"  "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle"
-    cp "${PROJECT_DIR}/${INFOPLIST_FILE}" "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle"
+    cp "${BUILT_PRODUCTS_DIR}/ColoredVK2.dylib"  "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle"
+    cp "${PROJECT_DIR}/${INFOPLIST_FILE}" "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle"
     
     echo "[->] Compiling additional resources..."
-    ${DEVELOPER_BIN_DIR}/actool --minimum-deployment-target ${IPHONEOS_DEPLOYMENT_TARGET} --platform ${PLATFORM_NAME} --compile "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" "${PROJECT_DIR}/ColoredVK-Prefs/Images.xcassets" >/dev/null
+    ${DEVELOPER_BIN_DIR}/actool --minimum-deployment-target ${IPHONEOS_DEPLOYMENT_TARGET} --platform ${PLATFORM_NAME} --compile "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle" "${PROJECT_DIR}/ColoredVK-Prefs/Images.xcassets" >/dev/null
     find ${PROJECT_DIR} -iname '*.xib' -exec bash -c 'FULL_XIB=$(basename {}); XIB_NAME="${FULL_XIB%.*}"; ${DEVELOPER_BIN_DIR}/ibtool --compile "${BUILT_PRODUCTS_DIR}/$XIB_NAME.nib" {} >> /dev/null' \;
     find ${PROJECT_DIR} -type f \( -iname '*.storyboard' ! -iname "Launch Screen.storyboard" ! -iname "Main.storyboard" \) -exec bash -c 'FULL_SB=$(basename {}); SB_NAME="${FULL_SB%.*}"; ${DEVELOPER_BIN_DIR}/ibtool --target-device iphone --target-device ipad --minimum-deployment-target 9.0 --compilation-directory "${BUILT_PRODUCTS_DIR}" "{}" >> /dev/null' \;
-    rm -rf ${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/*.nib
-    rm -rf ${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/*.storyboardc
-    mv ${BUILT_PRODUCTS_DIR}/*.nib "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/"
-    mv ${BUILT_PRODUCTS_DIR}/*.storyboardc "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/"
+    rm -rf ${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle/*.nib
+    rm -rf ${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle/*.storyboardc
+    mv ${BUILT_PRODUCTS_DIR}/*.nib "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle/"
+    mv ${BUILT_PRODUCTS_DIR}/*.storyboardc "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle/"
     
     echo "[->] Copying resources to temp directory (stage 2)..."
     TEMP_FOLDER="${BUILT_PRODUCTS_DIR}/Temp"
     mkdir "$TEMP_FOLDER"
     cp -r "$FOLDER_TO_PACK/vkclient/Payload" "$TEMP_FOLDER"
-    cp -r "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" "$TEMP_FOLDER/Payload/$APP_NAME"
+    cp -r "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle" "$TEMP_FOLDER/Payload/$APP_NAME"
     
     echo "[->] Injecting LOAD commands..."
     EXECUTABLE_NAME=$(/usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" "$TEMP_FOLDER/Payload/$APP_NAME/Info.plist")
-    optool install -c load -p "@executable_path/$PRODUCT.bundle/$PRODUCT.dylib" -t "$TEMP_FOLDER/Payload/$APP_NAME/$EXECUTABLE_NAME" >/dev/null
+    optool install -c load -p "@executable_path/ColoredVK2.bundle/ColoredVK2.dylib" -t "$TEMP_FOLDER/Payload/$APP_NAME/$EXECUTABLE_NAME" >/dev/null
     
     echo "[->] Cleaning (stage 1)..."
     find "$TEMP_FOLDER" -name ".DS_Store" -exec rm -f {} \;
@@ -43,18 +41,19 @@ makeIPA () {
     cd "$TEMP_FOLDER"
     zip -9qr "$FOLDER_TO_PACK/${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}.ipa" "./Payload"
     cd "${BUILT_PRODUCTS_DIR}"
-    zip -9qr "$FOLDER_TO_PACK/${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}.bundle.zip" "./$PRODUCT.bundle"
+    zip -9qr "$FOLDER_TO_PACK/${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}.bundle.zip" "./ColoredVK2.bundle"
     
     echo "[->] Cleaning (stage 2)..."
     rm -rf "$TEMP_FOLDER"
 }
 
 makeDEB () {
-    [ -e "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle/$PRODUCT" ] || exit 1;
+    [ -e "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle/ColoredVK2" ] || exit 1;
 
     echo "[->] Signing binaries..."
-    codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle"
-    codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/$PRODUCT.dylib"
+    codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle"
+    codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/ColoredVK2.dylib"
+    codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/ColoredVK2PrefsHandler.dylib"
 
     echo "[->] Copying resources to temp directory (stage 2)..."
     mkdir -p $FOLDER_TO_PACK/Package/{DEBIAN,Library/{MobileSubstrate/DynamicLibraries,PreferenceBundles,PreferenceLoader/Preferences}}
@@ -70,10 +69,13 @@ makeDEB () {
     
     sed -i '' "s/package_version/${APP_VERSION}/g" "$FOLDER_TO_PACK/Package/DEBIAN/control"
     
-    cp -r "${BUILT_PRODUCTS_DIR}/$PRODUCT.bundle" "$FOLDER_TO_PACK/Package/Library/PreferenceBundles"
-    cp "${BUILT_PRODUCTS_DIR}/$PRODUCT.dylib" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries"
-    cp "${PROJECT_DIR}/ColoredVK-Prefs/$PRODUCT.plist" "$FOLDER_TO_PACK/Package/Library/PreferenceLoader/Preferences"
-    cp "${PROJECT_DIR}/ColoredVK-Prefs/$PRODUCT-dylib.plist" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/$PRODUCT.plist"
+    cp -r "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle" "$FOLDER_TO_PACK/Package/Library/PreferenceBundles"
+    cp "${BUILT_PRODUCTS_DIR}/ColoredVK2.dylib" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries"
+    cp "${BUILT_PRODUCTS_DIR}/ColoredVK2PrefsHandler.dylib" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries"
+
+    cp "${PROJECT_DIR}/ColoredVK-Prefs/ColoredVK2.plist" "$FOLDER_TO_PACK/Package/Library/PreferenceLoader/Preferences"
+    cp "${PROJECT_DIR}/ColoredVK-Prefs/ColoredVK2-dylib.plist" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/ColoredVK2.plist"
+    cp "${PROJECT_DIR}/ColoredVK2PrefsHandler/ColoredVK2PrefsHandler.plist" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/ColoredVK2PrefsHandler.plist"
 
     cd $FOLDER_TO_PACK
 

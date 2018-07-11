@@ -4,8 +4,6 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
-	<key>CFBundleDisplayName</key>
-	<string>ColoredVK 2</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
@@ -20,15 +18,6 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>vk</string>
-	</array>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow ColoredVK2 access photos to set images</string>
 	<key>NSPrincipalClass</key>

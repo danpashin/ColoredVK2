@@ -12,6 +12,9 @@
 #import "UIColor+ColoredVK.h"
 #import "ColoredVKNetwork.h"
 
+#import <rocketbootstrap/rocketbootstrap.h>
+#import <CPDistributedMessagingCenter.h>
+
 @interface ColoredVKMainController ()
 @property (strong, nonatomic) UISwitch *menuCellSwitch;
 @end
@@ -155,9 +158,16 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
             prefs[@"enabled"] = @(switchView.on);
-            [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
             
-            POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
+            if ([prefs writeToFile:CVK_PREFS_PATH atomically:YES]) {
+                POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
+            } else {
+#ifdef COMPILE_FOR_JAIL
+                CPDistributedMessagingCenter *center = [objc_lookUpClass("CPDistributedMessagingCenter") centerNamed:@"ru.danpashin.coloredvk2.notification-center"];
+                rocketbootstrap_distributedmessagingcenter_apply(center);
+                [center sendMessageName:@"ru.danpashin.coloredvk2.write.prefs" userInfo:@{@"prefs":prefs}];
+#endif
+            }
         });
     }
 }
