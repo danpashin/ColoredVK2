@@ -7,7 +7,6 @@
 //
 
 #import "MessagingCenter.h"
-#import <CPDistributedMessagingCenter.h>
 #import <dlfcn.h>
 
 CPDistributedMessagingCenter *cvk_notifyCenter(void);
@@ -98,8 +97,6 @@ CPDistributedMessagingCenter *cvk_notifyCenter(void);
 CVK_CONSTRUCTOR
 {
 	@autoreleasepool {
-        dlopen("/System/Library/PrivateFrameworks/AppSupport.framework/AppSupport", RTLD_NOW);
-        
         CPDistributedMessagingCenter *center = cvk_notifyCenter();
         [center registerForMessageName:kPackageNotificationWritePrefs target:[ColoredVKSBHandler class] selector:@selector(handleMessageNamed:userInfo:)];
         [center registerForMessageName:kPackageNotificationWriteData target:[ColoredVKSBHandler class] selector:@selector(handleMessageNamed:userInfo:)];

@@ -17,9 +17,6 @@ CVK_CONSTRUCTOR
 {
     @autoreleasepool {
         dlopen("/System/Library/PrivateFrameworks/Preferences.framework/Preferences", RTLD_LAZY);
-#ifdef COMPILE_FOR_JAIL
-        dlopen("/System/Library/PrivateFrameworks/AppSupport.framework/AppSupport", RTLD_NOW);
-#endif
         
         [[NSNotificationCenter defaultCenter] addObserverForName:UIWindowDidBecomeVisibleNotification object:nil 
                                                            queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {

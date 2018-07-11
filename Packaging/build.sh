@@ -13,7 +13,7 @@ find "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle" -iname '*.strings' -iname '*.plis
 
 makeIPA () {
     cp "${BUILT_PRODUCTS_DIR}/ColoredVK2.dylib"  "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle"
-    cp "${PROJECT_DIR}/${INFOPLIST_FILE}" "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle"
+    cp "${PROJECT_DIR}/${INFOPLIST_FILE}"        "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle"
     
     echo "[->] Compiling additional resources..."
     ${DEVELOPER_BIN_DIR}/actool --minimum-deployment-target ${IPHONEOS_DEPLOYMENT_TARGET} --platform ${PLATFORM_NAME} --compile "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle" "${PROJECT_DIR}/ColoredVK-Prefs/Images.xcassets" >/dev/null
@@ -60,22 +60,22 @@ makeDEB () {
     
     case ${CONFIGURATION} in
         "Debug_DEB")
-            cp "${PROJECT_DIR}/ColoredVK-Prefs/control_debug" "$FOLDER_TO_PACK/Package/DEBIAN/control"
+            cp "${PROJECT_DIR}/Packaging/control_debug" "$FOLDER_TO_PACK/Package/DEBIAN/control"
             ;;
         "Release_DEB")
-            cp "${PROJECT_DIR}/ColoredVK-Prefs/control_release" "$FOLDER_TO_PACK/Package/DEBIAN/control"
+            cp "${PROJECT_DIR}/Packaging/control_release" "$FOLDER_TO_PACK/Package/DEBIAN/control"
             ;;
     esac
     
     sed -i '' "s/package_version/${APP_VERSION}/g" "$FOLDER_TO_PACK/Package/DEBIAN/control"
     
-    cp -r "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle" "$FOLDER_TO_PACK/Package/Library/PreferenceBundles"
-    cp "${BUILT_PRODUCTS_DIR}/ColoredVK2.dylib" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries"
+    cp -r "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle"         "$FOLDER_TO_PACK/Package/Library/PreferenceBundles"
+    cp "${BUILT_PRODUCTS_DIR}/ColoredVK2.dylib"             "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries"
     cp "${BUILT_PRODUCTS_DIR}/ColoredVK2PrefsHandler.dylib" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries"
 
-    cp "${PROJECT_DIR}/ColoredVK-Prefs/ColoredVK2.plist" "$FOLDER_TO_PACK/Package/Library/PreferenceLoader/Preferences"
-    cp "${PROJECT_DIR}/ColoredVK-Prefs/ColoredVK2-dylib.plist" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/ColoredVK2.plist"
-    cp "${PROJECT_DIR}/ColoredVK2PrefsHandler/ColoredVK2PrefsHandler.plist" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/ColoredVK2PrefsHandler.plist"
+    cp "${PROJECT_DIR}/Packaging/ColoredVK2.plist"              "$FOLDER_TO_PACK/Package/Library/PreferenceLoader/Preferences"
+    cp "${PROJECT_DIR}/Packaging/ColoredVK2-dylib.plist"        "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/ColoredVK2.plist"
+    cp "${PROJECT_DIR}/Packaging/ColoredVK2PrefsHandler.plist"  "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/ColoredVK2PrefsHandler.plist"
 
     cd $FOLDER_TO_PACK
 

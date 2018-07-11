@@ -9,7 +9,7 @@
 
 
 #ifdef COMPILE_FOR_JAIL
-#import <CPDistributedMessagingCenter.h>
+#import <AppSupport/CPDistributedMessagingCenter.h>
 
 NS_ASSUME_NONNULL_BEGIN
 static NSString *const kPackageNotificationWritePrefs = @"ru.danpashin.coloredvk2.prefs.write";

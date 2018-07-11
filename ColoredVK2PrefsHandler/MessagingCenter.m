@@ -12,7 +12,7 @@
 
 CPDistributedMessagingCenter *cvk_notifyCenter(void)
 {
-    CPDistributedMessagingCenter *center = [objc_lookUpClass("CPDistributedMessagingCenter") centerNamed:@"ru.danpashin.coloredvk2.notification-center"];
+    CPDistributedMessagingCenter *center = [CPDistributedMessagingCenter centerNamed:@"ru.danpashin.coloredvk2.notification-center"];
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
