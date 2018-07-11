@@ -63,7 +63,7 @@
         
         NSError *writingError = nil;
         UIImage *preview = [self resizeImage:image toSize:CGSizeMake(40.0f, 40.0f)];
-        [UIImageJPEGRepresentation(preview, 1.0f) writeToURL:previewURL options:NSDataWritingAtomic error:&writingError];
+        cvk_writeData(UIImageJPEGRepresentation(preview, 1.0f), previewURL.path, &writingError);
         
         if (!writingError) {
             screenSize.width += 30.0f;
@@ -74,7 +74,7 @@
             UIImage *newImage = [self resizeImage:image toSize:screenSize];
             
             NSError *writingFullImageError = nil;
-            BOOL success = [UIImageJPEGRepresentation(newImage, 1.0f) writeToURL:urlToSave options:NSDataWritingAtomic error:&writingFullImageError];
+            BOOL success = cvk_writeData(UIImageJPEGRepresentation(newImage, 1.0f), urlToSave.path, &writingFullImageError);
             
             completion(success, writingFullImageError);
                    

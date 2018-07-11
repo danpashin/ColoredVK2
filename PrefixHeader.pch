@@ -92,13 +92,18 @@ static NSString *const kPackageFaqLink = @"https://danpashin.ru/projects/colored
 static NSString *const kPackagePurchaseLink = @"https://danpashin.ru/projects/coloredvk/purchase/";
 
 
-
 static NSString *const kPackageNotificationReloadPrefs =         @"ru.danpashin.coloredvk2.prefs.reload";
 static NSString *const kPackageNotificationReloadPrefsMenu =     @"ru.danpashin.coloredvk2.prefsMenu.reload";
 static NSString *const kPackageNotificationReloadMenu =          @"ru.danpashin.coloredvk2.vkMenu.reload";
 static NSString *const kPackageNotificationUpdateNightTheme =    @"ru.danpashin.coloredvk2.nightTheme.reload";
 
 static NSString *const kPackageNotificationReloadInternalPrefs = @"ru.danpashin.coloredvk2.internalPrefs.reload";
+
+
+BOOL cvk_writePrefs(NSDictionary *prefs, NSString *_Nullable notificationName);
+BOOL cvk_writeData(NSData *data, NSString *path, NSError *__autoreleasing *error);
+BOOL cvk_removeFile(NSString *path, NSError *__autoreleasing *error);
+BOOL cvk_createFolder(NSString *path, NSError *__autoreleasing *error);
 NS_ASSUME_NONNULL_END
 
 #define POST_NOTIFICATION(name) [[NSNotificationCenter defaultCenter] postNotificationName:name object:nil];

@@ -166,13 +166,8 @@
         NSString *previewPath = [NSString stringWithFormat:@"%@/%@_preview.png", CVK_FOLDER_PATH, self.specifier.identifier];
         
         NSError *error = nil;
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        
-        if ([fileManager fileExistsAtPath:previewPath])
-            [fileManager removeItemAtPath:previewPath error:&error];
-        
-        if ([fileManager fileExistsAtPath:imagePath])
-            [fileManager removeItemAtPath:imagePath error:&error];
+        cvk_removeFile(previewPath, &error);
+        cvk_removeFile(imagePath, &error);
         
         if (!error) {
             dispatch_async(dispatch_get_main_queue(), ^{

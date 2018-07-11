@@ -77,9 +77,7 @@
 {
     @synchronized(self) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-            NSDictionary *cachedPrefsCopy = [self.cachedPrefs copy];
-            [cachedPrefsCopy writeToFile:CVK_PREFS_PATH atomically:YES];
-            POST_NOTIFICATION(kPackageNotificationReloadInternalPrefs);
+            cvk_writePrefs([self.cachedPrefs copy], kPackageNotificationReloadInternalPrefs);
             
             if (completionBlock)
                 completionBlock();

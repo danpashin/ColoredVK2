@@ -61,12 +61,8 @@ BOOL installerShouldOpenPrefs;
 - (void)createFolders
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        
-        if (![fileManager fileExistsAtPath:CVK_FOLDER_PATH])
-            [fileManager createDirectoryAtPath:CVK_FOLDER_PATH withIntermediateDirectories:NO attributes:nil error:nil];
-        if (![fileManager fileExistsAtPath:CVK_BACKUP_PATH])
-            [fileManager createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
+        cvk_createFolder(CVK_FOLDER_PATH, nil);
+        cvk_createFolder(CVK_BACKUP_PATH, nil);
     });
 }
 

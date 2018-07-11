@@ -128,7 +128,7 @@
         PSSpecifier *specifier = [self specifierAtIndexPath:indexPath];
         
         NSString *filePath = [NSString stringWithFormat:@"%@/%@", CVK_BACKUP_PATH, specifier.properties[@"filename"]];
-        if ([[NSFileManager defaultManager] removeItemAtPath:filePath error:nil]) {
+        if (cvk_removeFile(filePath, nil)) {
             [self removeSpecifier:specifier animated:YES];
             [self.backupsModel updateBackups];
         }

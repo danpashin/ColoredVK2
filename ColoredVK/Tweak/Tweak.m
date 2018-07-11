@@ -698,9 +698,11 @@ CVK_CONSTRUCTOR
         ColoredVKApplicationModel *application = [ColoredVKNewInstaller sharedInstaller].application;
         isNew3XClient = ([application compareAppVersionWithVersion:@"3.0"] >= ColoredVKVersionCompareEqual);
         
-        BOOL prefsExist = [[NSFileManager defaultManager] fileExistsAtPath:CVK_PREFS_PATH];
-        NSMutableDictionary *prefs = prefsExist ? [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH] : [NSMutableDictionary new];
-        prefs[@"vkVersion"] = application.detailedVersion;
-        [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+            BOOL prefsExist = [[NSFileManager defaultManager] fileExistsAtPath:CVK_PREFS_PATH];
+            NSMutableDictionary *prefs = prefsExist ? [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH] : [NSMutableDictionary new];
+            prefs[@"vkVersion"] = application.detailedVersion;
+            cvk_writePrefs(prefs, nil);
+        });
     }
 }

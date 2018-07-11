@@ -102,7 +102,7 @@ CVK_INLINE BOOL RSAEncryptAndWriteLicenceData(NSDictionary *licence, NSString *l
     NSData *rawData = [NSKeyedArchiver archivedDataWithRootObject:licence];
     NSData *encryptedLicence = _performCryptOperation(kCCEncrypt, rawData, __cvkKey);
     
-    return [encryptedLicence writeToFile:licencePath options:NSDataWritingAtomic error:error];
+    return cvk_writeData(encryptedLicence, licencePath, error);
 }
 
 

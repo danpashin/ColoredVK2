@@ -473,7 +473,8 @@ void uncaughtExceptionHandler(NSException *exception)
     
     NSDictionary *crash = @{@"reason": exception.reason, @"callStackReturnAddresses": exception.callStackReturnAddresses, 
                             @"callStackSymbols":exception.callStackSymbols, @"date":stringDate};
-    [crash writeToFile:CVK_CRASH_PATH atomically:YES];
+    NSData *crashData = [NSKeyedArchiver archivedDataWithRootObject:crash];
+    cvk_writeData(crashData, CVK_CRASH_PATH, nil);
 }
 
 void setupUISearchBar(UISearchBar *searchBar)

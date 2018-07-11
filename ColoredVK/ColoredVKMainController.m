@@ -12,9 +12,6 @@
 #import "UIColor+ColoredVK.h"
 #import "ColoredVKNetwork.h"
 
-#import <rocketbootstrap/rocketbootstrap.h>
-#import <CPDistributedMessagingCenter.h>
-
 @interface ColoredVKMainController ()
 @property (strong, nonatomic) UISwitch *menuCellSwitch;
 @end
@@ -104,7 +101,7 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
         self.menuCellSwitch.tag = 228;
         self.menuCellSwitch.on = enabled;
         self.menuCellSwitch.onTintColor = [UIColor cvk_defaultColorForIdentifier:@"switchesOnTintColor"];
-        [self.menuCellSwitch addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventValueChanged];
+        [self.menuCellSwitch addTarget:self action:@selector(switchTriggered) forControlEvents:UIControlEventValueChanged];
         [cell.contentView addSubview:self.menuCellSwitch];
         
         if ([cell respondsToSelector:@selector(select)]) {
@@ -152,22 +149,14 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
     return prefs;
 }
 
-- (void)switchTriggered:(UISwitch *)switchView
+- (void)switchTriggered
 {
     @synchronized(self) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
-            prefs[@"enabled"] = @(switchView.on);
+            prefs[@"enabled"] = @(self.menuCellSwitch.on);
             
-            if ([prefs writeToFile:CVK_PREFS_PATH atomically:YES]) {
-                POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
-            } else {
-#ifdef COMPILE_FOR_JAIL
-                CPDistributedMessagingCenter *center = [objc_lookUpClass("CPDistributedMessagingCenter") centerNamed:@"ru.danpashin.coloredvk2.notification-center"];
-                rocketbootstrap_distributedmessagingcenter_apply(center);
-                [center sendMessageName:@"ru.danpashin.coloredvk2.write.prefs" userInfo:@{@"prefs":prefs}];
-#endif
-            }
+            cvk_writePrefs(prefs, kPackageNotificationUpdateNightTheme);
         });
     }
 }
@@ -229,7 +218,7 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
         
         NSString *url = [NSString stringWithFormat:@"%@/crash/", kPackageAPIURL];
         [[ColoredVKNetwork sharedNetwork] uploadData:data toRemoteURL:url success:^(NSHTTPURLResponse *response, NSData *rawData) {
-            [[NSFileManager defaultManager] removeItemAtPath:CVK_CRASH_PATH error:nil];
+            cvk_removeFile(CVK_CRASH_PATH, nil);
         } failure:nil];
     });
 }

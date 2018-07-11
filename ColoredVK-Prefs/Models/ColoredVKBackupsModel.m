@@ -43,9 +43,8 @@
         
         dispatch_async(self.backgroundQueue, ^{
             NSError *error = nil;
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            [fileManager removeItemAtPath:CVK_PREFS_PATH error:&error];
-            [fileManager removeItemAtPath:CVK_FOLDER_PATH error:&error];
+            cvk_removeFile(CVK_PREFS_PATH, &error);
+            cvk_removeFile(CVK_FOLDER_PATH, &error);
             [[ColoredVKNewInstaller sharedInstaller] createFolders];
             
             error ? [hud showFailure] : [hud showSuccess];
@@ -65,9 +64,6 @@
         NSMutableArray *files = @[CVK_PREFS_PATH].mutableCopy;
         
         NSFileManager *filemaneger = [NSFileManager defaultManager];
-        if (![filemaneger fileExistsAtPath:CVK_BACKUP_PATH])
-            [filemaneger createDirectoryAtPath:CVK_BACKUP_PATH withIntermediateDirectories:NO attributes:nil error:nil];
-        
         for (NSString *fileName in [filemaneger contentsOfDirectoryAtPath:CVK_FOLDER_PATH error:nil]) {
             if (![fileName containsString:@"Cache"])
                 [files addObject:[NSString stringWithFormat:@"%@/%@", CVK_FOLDER_PATH, fileName]];
@@ -99,9 +95,9 @@
                 }
                 NSFileManager *filemanager = [NSFileManager defaultManager];
                 
-                [filemanager removeItemAtPath:CVK_PREFS_PATH error:nil];
-                [filemanager removeItemAtPath:CVK_FOLDER_PATH error:nil];
-                [filemanager createDirectoryAtPath:CVK_FOLDER_PATH withIntermediateDirectories:NO attributes:nil error:nil];
+                cvk_removeFile(CVK_PREFS_PATH, nil);
+                cvk_removeFile(CVK_FOLDER_PATH, nil);
+                cvk_createFolder(CVK_FOLDER_PATH, nil);
                 
                 NSError *movingError = nil;
                 for (NSString *filename in [filemanager contentsOfDirectoryAtPath:tmpPath error:nil]) {
@@ -115,7 +111,7 @@
                     if (movingError)
                         break;
                 }
-                [filemanager removeItemAtPath:tmpPath error:nil];
+                cvk_removeFile(tmpPath, nil);
                 
                 movingError ? [hud showFailureWithStatus:movingError.localizedDescription] : [hud showSuccess];
                 
