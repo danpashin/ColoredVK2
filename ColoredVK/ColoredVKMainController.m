@@ -219,7 +219,7 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
         
         NSString *url = [NSString stringWithFormat:@"%@/crash/", kPackageAPIURL];
         [[ColoredVKNetwork sharedNetwork] uploadData:data toRemoteURL:url success:^(NSHTTPURLResponse *response, NSData *rawData) {
-            cvk_removeFile(CVK_CRASH_PATH, nil);
+            cvk_removeItem(CVK_CRASH_PATH, nil);
         } failure:nil];
     });
 }

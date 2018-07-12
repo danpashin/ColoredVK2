@@ -43,8 +43,8 @@
         
         dispatch_async(self.backgroundQueue, ^{
             NSError *error = nil;
-            cvk_removeFile(CVK_PREFS_PATH, &error);
-            cvk_removeFile(CVK_FOLDER_PATH, &error);
+            cvk_removeItem(CVK_PREFS_PATH, &error);
+            cvk_removeItem(CVK_FOLDER_PATH, &error);
             [[ColoredVKNewInstaller sharedInstaller] createFolders];
             
             error ? [hud showFailure] : [hud showSuccess];
@@ -63,18 +63,22 @@
     dispatch_async(self.backgroundQueue, ^{
         NSMutableArray *files = @[CVK_PREFS_PATH].mutableCopy;
         
-        NSFileManager *filemaneger = [NSFileManager defaultManager];
-        for (NSString *fileName in [filemaneger contentsOfDirectoryAtPath:CVK_FOLDER_PATH error:nil]) {
+        for (NSString *fileName in cvk_folderContents(CVK_FOLDER_PATH, nil)) {
             if (![fileName containsString:@"Cache"])
                 [files addObject:[NSString stringWithFormat:@"%@/%@", CVK_FOLDER_PATH, fileName]];
         }
         
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
         dateFormatter.dateFormat = @"yyyy-MM-dd_HH-mm";
-        NSString *backupPath = [NSString stringWithFormat:@"%@/com.daniilpashin.coloredvk2_%@.cvkb", 
-                                CVK_BACKUP_PATH, [dateFormatter stringFromDate:[NSDate date]]];
+        NSString *backupName = [NSString stringWithFormat:@"com.daniilpashin.coloredvk2_%@.cvkb", [dateFormatter stringFromDate:[NSDate date]]];
+        NSString *tmpBackupPath = [NSString stringWithFormat:@"%@/%@", NSTemporaryDirectory(), backupName];
         
-        BOOL success = [SSZipArchive createZipFileAtPath:backupPath withFilesAtPaths:files];
+        BOOL success = [SSZipArchive createZipFileAtPath:tmpBackupPath withFilesAtPaths:files];
+        if (success) {
+            NSString *backupPath = [NSString stringWithFormat:@"%@/%@", CVK_BACKUP_PATH, backupName];
+            success = cvk_moveItem(tmpBackupPath, backupPath, nil);
+        }
+        
         success ? [hud showSuccess] : [hud showFailure];
     });
 }
@@ -85,33 +89,36 @@
     
     dispatch_async(self.backgroundQueue, ^{
         NSString *backupPath = [NSString stringWithFormat:@"%@/%@", CVK_BACKUP_PATH, file];
-        NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingString:@"coloredvk2"];
+        NSString *backupTempPath = [NSString stringWithFormat:@"%@/%@", NSTemporaryDirectory(), file];
+        cvk_copyItem(backupPath, backupTempPath, nil);
         
-        [SSZipArchive unzipFileAtPath:backupPath toDestination:tmpPath progressHandler:nil completionHandler:^(NSString *path, BOOL succeeded, NSError *error) {
+        NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingString:@"coloredvk2"];
+        [SSZipArchive unzipFileAtPath:backupTempPath toDestination:tmpPath progressHandler:nil completionHandler:^(NSString *path, BOOL succeeded, NSError *error) {
             dispatch_async(self.backgroundQueue, ^{
                 if (!succeeded || error) {
                     [hud showFailureWithStatus:error.localizedDescription];
                     return;
                 }
-                NSFileManager *filemanager = [NSFileManager defaultManager];
                 
-                cvk_removeFile(CVK_PREFS_PATH, nil);
-                cvk_removeFile(CVK_FOLDER_PATH, nil);
+                cvk_removeItem(CVK_PREFS_PATH, nil);
+                cvk_removeItem(CVK_FOLDER_PATH, nil);
                 cvk_createFolder(CVK_FOLDER_PATH, nil);
                 
                 NSError *movingError = nil;
-                for (NSString *filename in [filemanager contentsOfDirectoryAtPath:tmpPath error:nil]) {
+                for (NSString *filename in cvk_folderContents(tmpPath, nil)) {
                     NSString *filePath = [NSString stringWithFormat:@"%@/%@", tmpPath, filename];
                     if ([filename containsString:@"Image"]) {
                         NSString *newPath = [NSString stringWithFormat:@"%@/%@", CVK_FOLDER_PATH, filename];
-                        [filemanager copyItemAtPath:filePath toPath:newPath error:&movingError];
+                        cvk_moveItem(filePath, newPath, &movingError);
                     } else if ([filename containsString:@"plist"]) {
-                        [filemanager copyItemAtPath:filePath toPath:CVK_PREFS_PATH error:&movingError];
+                        cvk_moveItem(filePath, CVK_PREFS_PATH, &movingError);
+                        
                     }
                     if (movingError)
                         break;
                 }
-                cvk_removeFile(tmpPath, nil);
+                cvk_removeItem(tmpPath, nil);
+                cvk_removeItem(backupTempPath, nil);
                 
                 movingError ? [hud showFailureWithStatus:movingError.localizedDescription] : [hud showSuccess];
                 
@@ -130,7 +137,7 @@
     dispatch_async(self.backgroundQueue, ^{
         NSMutableArray *availableBackups = [NSMutableArray array];
         
-        for (NSString *filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:CVK_BACKUP_PATH error:nil]) {
+        for (NSString *filename in cvk_folderContents(CVK_BACKUP_PATH, nil)) {
             NSArray <NSString *> *extensions = @[@"zip", @"cvkb"];
             if ([filename containsString:@"com.daniilpashin.coloredvk2"] && [extensions containsObject:filename.pathExtension]) {
                 [availableBackups addObject:filename];
@@ -157,7 +164,7 @@
         [readableName deleteCharactersInRange:NSMakeRange(readableName.length-1, 1)];
         
         NSString *path = [NSString stringWithFormat:@"%@/%@", CVK_BACKUP_PATH, backup];
-        float fileSize = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil].fileSize;
+        float fileSize = cvk_itemAttributes(path, nil).fileSize;
         fileSize = fileSize / 1024.0f / 1024.0f;
         
         [readableName appendFormat:@" (%.1f MB)", fileSize];

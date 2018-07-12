@@ -655,6 +655,10 @@
 		A5E1E0892065713600709696 /* SystemSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E1E08520656CE200709696 /* SystemSwizzle.m */; };
 		A5E1E08B206573AB00709696 /* ChatSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E1E08A206573AB00709696 /* ChatSwizzle.m */; };
 		A5E1E08C206573AB00709696 /* ChatSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E1E08A206573AB00709696 /* ChatSwizzle.m */; };
+		A5E7965C20F7343E00118D21 /* ColoredVKFileSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E7965B20F733F600118D21 /* ColoredVKFileSystem.h */; };
+		A5E7965D20F7343E00118D21 /* ColoredVKFileSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E7965B20F733F600118D21 /* ColoredVKFileSystem.h */; };
+		A5E7965E20F7343F00118D21 /* ColoredVKFileSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E7965B20F733F600118D21 /* ColoredVKFileSystem.h */; };
+		A5E7965F20F7343F00118D21 /* ColoredVKFileSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = A5E7965B20F733F600118D21 /* ColoredVKFileSystem.h */; };
 		A5ED14581DE874DA00138A65 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5ED14571DE874DA00138A65 /* OpenGLES.framework */; };
 		A5EE64AD1FAE4C9E0050C156 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5EE64AC1FAE4C9E0050C156 /* Photos.framework */; };
 		A5F09D931F0FF88200024198 /* ColoredVKNewInstaller.h in Headers */ = {isa = PBXBuildFile; fileRef = A5F09D911F0FF88200024198 /* ColoredVKNewInstaller.h */; };
@@ -913,6 +917,7 @@
 		A5E3A9162026302800AD43AE /* ColoredVKUserInfoView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKUserInfoView.m; sourceTree = "<group>"; };
 		A5E609732000E5640094C28B /* ColoredVKTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKTextField.h; sourceTree = "<group>"; };
 		A5E609742000E5640094C28B /* ColoredVKTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKTextField.m; sourceTree = "<group>"; };
+		A5E7965B20F733F600118D21 /* ColoredVKFileSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKFileSystem.h; sourceTree = "<group>"; };
 		A5EC6A462053DDB2007D6646 /* ColoredVKAnimatedButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKAnimatedButton.m; sourceTree = "<group>"; };
 		A5EC6A472053DDB2007D6646 /* ColoredVKAnimatedButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKAnimatedButton.h; sourceTree = "<group>"; };
 		A5ED14571DE874DA00138A65 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -1126,9 +1131,10 @@
 		A52433ED20F623BF000B06D2 /* ColoredVK2PrefsHandler */ = {
 			isa = PBXGroup;
 			children = (
+				A5E7965B20F733F600118D21 /* ColoredVKFileSystem.h */,
+				A524347220F63E92000B06D2 /* ColoredVKFileSystem.m */,
 				A524347B20F65DE7000B06D2 /* MessagingCenter.h */,
 				A524348120F65E7F000B06D2 /* MessagingCenter.m */,
-				A524347220F63E92000B06D2 /* ColoredVKFileSystem.m */,
 				A52433F520F623BF000B06D2 /* HandlerMain.m */,
 			);
 			path = ColoredVK2PrefsHandler;
@@ -1557,6 +1563,7 @@
 				A524341820F63BEA000B06D2 /* ColoredVKBlurPrefsController.h in Headers */,
 				A524341C20F63BEA000B06D2 /* ColoredVKUpdatesPrefsController.h in Headers */,
 				A52B8F3B1F991A2600898168 /* ColoredVKNightScheme.h in Headers */,
+				A5E7965C20F7343E00118D21 /* ColoredVKFileSystem.h in Headers */,
 				A524342320F63BEA000B06D2 /* ColoredVKCardController.h in Headers */,
 				A5B607CA1F0943C4003529AF /* ColoredVKUpdatesModel.h in Headers */,
 				A5F09D931F0FF88200024198 /* ColoredVKNewInstaller.h in Headers */,
@@ -1656,6 +1663,7 @@
 				A50138DD201F2D070007300C /* ColoredVKAccountRestoreController.h in Headers */,
 				A576D1971DC621B90039884F /* NSDate+DateTools.h in Headers */,
 				A5D2DFB61DE741CF00DCDC84 /* ColoredVKAudioCover.h in Headers */,
+				A5E7965E20F7343F00118D21 /* ColoredVKFileSystem.h in Headers */,
 				A53A2E68206BC8B200A22656 /* ColoredVKAccountController+Actions.h in Headers */,
 				A5AC321D20F118D300AE11B0 /* ColoredVKHUD.h in Headers */,
 				A52350A01DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h in Headers */,
@@ -1709,6 +1717,7 @@
 				A504C07F1DAFE839006C5FBC /* NSDate+DateTools.h in Headers */,
 				A54D2E062021EA44005F95E1 /* ColoredVKPassResetController.h in Headers */,
 				A53104C61EC4D08C003DEB83 /* ColoredVKWindowController.h in Headers */,
+				A5E7965D20F7343E00118D21 /* ColoredVKFileSystem.h in Headers */,
 				A558E5052052C33200F10FBB /* ColoredVKApplicationModel.h in Headers */,
 				A5739D751EA015C300367595 /* ColoredVKStepperPrefsCell.h in Headers */,
 				A5480D6B20E4EDA3007CE28A /* ColoredVKControlPrefsCell.h in Headers */,
@@ -1782,6 +1791,7 @@
 				A558E5072052C33200F10FBB /* ColoredVKApplicationModel.h in Headers */,
 				A592BF4D1FA1F13700810F89 /* ColoredVKThemePrefsController.h in Headers */,
 				A56E89E61F31D31C0013BAE3 /* ColoredVKNetwork.h in Headers */,
+				A5E7965F20F7343F00118D21 /* ColoredVKFileSystem.h in Headers */,
 				A5B607CD1F0943C4003529AF /* ColoredVKUpdatesModel.h in Headers */,
 				A5D9A6861FACDBD900403A49 /* ColoredVKPrefsSelector.h in Headers */,
 				A559969E202DB59500E1861D /* ColoredVKPassChangeController.h in Headers */,

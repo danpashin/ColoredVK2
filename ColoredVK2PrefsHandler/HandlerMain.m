@@ -12,14 +12,17 @@
 CPDistributedMessagingCenter *cvk_notifyCenter(void);
 
 
-@interface ColoredVKSBHandler : NSObject
+@interface ColoredVKFSHandler : NSObject
 @end
-@implementation ColoredVKSBHandler
+@implementation ColoredVKFSHandler
 
 + (NSDictionary *)handleMessageNamed:(NSString *)name userInfo:(NSDictionary *)userInfo
 {
+    NSArray *folderContents = nil;
+    NSDictionary *itemAttributes = nil;
     NSError *error = nil;
     BOOL success = NO;
+    
     if ([name isEqualToString:kPackageNotificationWritePrefs]) {
         success = [self writePrefs:userInfo];
     } else if ([name isEqualToString:kPackageNotificationWriteData]) {
@@ -28,14 +31,31 @@ CPDistributedMessagingCenter *cvk_notifyCenter(void);
         error = [self removeFile:userInfo];
     } else if ([name isEqualToString:kPackageNotificationCreateFolder]) {
         error = [self createFolder:userInfo];
+    } else if ([name isEqualToString:kPackageNotificationMoveFile]) {
+        error = [self moveFile:userInfo];
+    } else if ([name isEqualToString:kPackageNotificationFolderContents]) {
+        folderContents = [self folderContents:userInfo error:&error];
+    } else if ([name isEqualToString:kPackageNotificationItemAttributes]) {
+        itemAttributes = [self itemAttributes:userInfo error:&error];
+    } else if ([name isEqualToString:kPackageNotificationCopyFile]) {
+        error = [self copyFile:userInfo];
     }
     
     success = (error == nil);
     
-    if (error)
-        return @{@"success":@(success), @"error":error};
+    NSMutableDictionary *reply = [NSMutableDictionary dictionary];
+    reply[@"success"] = @(success);
     
-    return @{@"success":@(success)};
+    if (error)
+        reply[@"error"] = error;
+    
+    if (folderContents)
+        reply[@"folderContents"] = folderContents;
+    
+    if (itemAttributes)
+        reply[@"itemAttributes"] = itemAttributes;
+    
+    return reply;
 }
 
 + (BOOL)writePrefs:(NSDictionary *)notifyUserInfo
@@ -92,16 +112,63 @@ CPDistributedMessagingCenter *cvk_notifyCenter(void);
     return error;
 }
 
++ (NSError *)moveFile:(NSDictionary *)notifyUserInfo
+{
+    NSString *oldPath = notifyUserInfo[@"oldPath"];
+    NSString *newPath = notifyUserInfo[@"newPath"];
+    
+    NSError *error = nil;
+    [[NSFileManager defaultManager] moveItemAtPath:oldPath toPath:newPath error:&error];
+    
+    return error;
+}
+
++ (NSError *)copyFile:(NSDictionary *)notifyUserInfo
+{
+    NSString *path = notifyUserInfo[@"path"];
+    NSString *copyPath = notifyUserInfo[@"copyPath"];
+    
+    NSError *error = nil;
+    [[NSFileManager defaultManager] copyItemAtPath:path toPath:copyPath error:&error];
+    
+    return error;
+}
+
++ (NSArray *)folderContents:(NSDictionary *)notifyUserInfo error:(NSError * __autoreleasing *)error
+{
+    NSString *folderPath = notifyUserInfo[@"path"];
+    return [[NSFileManager defaultManager] contentsOfDirectoryAtPath:folderPath error:error];
+}
+
++ (NSDictionary *)itemAttributes:(NSDictionary *)notifyUserInfo error:(NSError * __autoreleasing *)error
+{
+    NSString *itemPath = notifyUserInfo[@"path"];
+    return [[NSFileManager defaultManager] attributesOfItemAtPath:itemPath error:error];
+}
+
+
 @end
 
 CVK_CONSTRUCTOR
 {
 	@autoreleasepool {
         CPDistributedMessagingCenter *center = cvk_notifyCenter();
-        [center registerForMessageName:kPackageNotificationWritePrefs target:[ColoredVKSBHandler class] selector:@selector(handleMessageNamed:userInfo:)];
-        [center registerForMessageName:kPackageNotificationWriteData target:[ColoredVKSBHandler class] selector:@selector(handleMessageNamed:userInfo:)];
-        [center registerForMessageName:kPackageNotificationRemoveFile target:[ColoredVKSBHandler class] selector:@selector(handleMessageNamed:userInfo:)];
-        [center registerForMessageName:kPackageNotificationCreateFolder target:[ColoredVKSBHandler class] selector:@selector(handleMessageNamed:userInfo:)];
+        
+        Class targetClass = [ColoredVKFSHandler class];
+        SEL targetSelector = @selector(handleMessageNamed:userInfo:);
+        
+        [center registerForMessageName:kPackageNotificationWritePrefs   target:targetClass selector:targetSelector];
+        [center registerForMessageName:kPackageNotificationWriteData    target:targetClass selector:targetSelector];
+        
+        [center registerForMessageName:kPackageNotificationRemoveFile   target:targetClass selector:targetSelector];
+        [center registerForMessageName:kPackageNotificationCreateFolder target:targetClass selector:targetSelector];
+        
+        [center registerForMessageName:kPackageNotificationMoveFile     target:targetClass selector:targetSelector];
+        [center registerForMessageName:kPackageNotificationCopyFile     target:targetClass selector:targetSelector];
+        
+        [center registerForMessageName:kPackageNotificationFolderContents   target:targetClass selector:targetSelector];
+        [center registerForMessageName:kPackageNotificationItemAttributes   target:targetClass selector:targetSelector];
+        
         [center runServerOnCurrentThread];
 	}
 }

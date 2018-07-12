@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/NSString.h>
+#import "ColoredVKFileSystem.h"
 
 #define CVKStringize_internal(string) #string
 #define CVKStringize(string) @CVKStringize_internal(string)
@@ -43,14 +44,14 @@
 #define VKS_BUNDLE_PATH     @"/Library/PreferenceBundles/vksprefs.bundle"
 #define CVK_PREFS_PATH      @"/var/mobile/Library/Preferences/com.daniilpashin.coloredvk2.plist"
 #define CVK_FOLDER_PATH     @"/var/mobile/Library/Preferences/ColoredVK2"
-#define CVK_BACKUP_PATH     @"/var/mobile/Documents/ColoredVK2_Backups/"
+#define CVK_BACKUP_PATH     @"/var/mobile/Documents/ColoredVK2_Backups"
 
 #elif defined(COMPILE_APP) && (defined(__x86_64__) || defined(__i386__))
 
 #define CVK_BUNDLE_PATH     [NSBundle mainBundle].bundlePath
 #define CVK_PREFS_PATH      @"/var/mobile/Library/Preferences/com.daniilpashin.coloredvk2.plist"
 #define CVK_FOLDER_PATH     @"/var/mobile/Library/Preferences/ColoredVK2"
-#define CVK_BACKUP_PATH     @"/var/mobile/Documents/ColoredVK2_Backups/"
+#define CVK_BACKUP_PATH     @"/var/mobile/Documents/ColoredVK2_Backups"
 
 #else
 
@@ -98,12 +99,6 @@ static NSString *const kPackageNotificationReloadMenu =          @"ru.danpashin.
 static NSString *const kPackageNotificationUpdateNightTheme =    @"ru.danpashin.coloredvk2.nightTheme.reload";
 
 static NSString *const kPackageNotificationReloadInternalPrefs = @"ru.danpashin.coloredvk2.internalPrefs.reload";
-
-
-BOOL cvk_writePrefs(NSDictionary *prefs, NSString *_Nullable notificationName);
-BOOL cvk_writeData(NSData *data, NSString *path, NSError *__autoreleasing *error);
-BOOL cvk_removeFile(NSString *path, NSError *__autoreleasing *error);
-BOOL cvk_createFolder(NSString *path, NSError *__autoreleasing *error);
 NS_ASSUME_NONNULL_END
 
 #define POST_NOTIFICATION(name) [[NSNotificationCenter defaultCenter] postNotificationName:name object:nil];

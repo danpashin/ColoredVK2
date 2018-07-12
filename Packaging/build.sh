@@ -61,6 +61,8 @@ makeDEB () {
     case ${CONFIGURATION} in
         "Debug_DEB")
             cp "${PROJECT_DIR}/Packaging/control_debug" "$FOLDER_TO_PACK/Package/DEBIAN/control"
+            cp "${PROJECT_DIR}/Packaging/respring" "$FOLDER_TO_PACK/Package/DEBIAN/postinst"
+            cp "${PROJECT_DIR}/Packaging/respring" "$FOLDER_TO_PACK/Package/DEBIAN/postrm"
             ;;
         "Release_DEB")
             cp "${PROJECT_DIR}/Packaging/control_release" "$FOLDER_TO_PACK/Package/DEBIAN/control"
