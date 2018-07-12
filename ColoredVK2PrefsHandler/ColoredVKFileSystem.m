@@ -21,6 +21,9 @@ NSDictionary *cvk_sendNotification(NSString *name, NSDictionary *userInfo)
 
 BOOL cvk_writePrefs(NSDictionary *prefs, NSString *notificationName)
 {
+    if (!prefs)
+        return NO;
+    
     BOOL success = [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
     
 #ifdef COMPILE_FOR_JAIL

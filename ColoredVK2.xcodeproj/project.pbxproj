@@ -812,7 +812,7 @@
 		A56F2C8D20F68317004091D3 /* build.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
 		A56F2C8E20F68317004091D3 /* ColoredVK2-dylib.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ColoredVK2-dylib.plist"; sourceTree = "<group>"; };
 		A56F2C8F20F68317004091D3 /* ColoredVK2.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ColoredVK2.plist; sourceTree = "<group>"; };
-		A56F2C9020F68317004091D3 /* ColoredVK2PrefsHandler.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ColoredVK2PrefsHandler.plist; sourceTree = "<group>"; };
+		A56F2C9020F68317004091D3 /* ColoredVK2_SBHelper.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ColoredVK2_SBHelper.plist; sourceTree = "<group>"; };
 		A56F2C9120F68317004091D3 /* control_debug */ = {isa = PBXFileReference; lastKnownFileType = text; path = control_debug; sourceTree = "<group>"; };
 		A56F2C9220F68317004091D3 /* control_release */ = {isa = PBXFileReference; lastKnownFileType = text; path = control_release; sourceTree = "<group>"; };
 		A56F2C9320F68317004091D3 /* Info-app.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-app.plist"; sourceTree = "<group>"; };
@@ -1449,7 +1449,7 @@
 				A56F2C8D20F68317004091D3 /* build.sh */,
 				A56F2C8E20F68317004091D3 /* ColoredVK2-dylib.plist */,
 				A56F2C8F20F68317004091D3 /* ColoredVK2.plist */,
-				A56F2C9020F68317004091D3 /* ColoredVK2PrefsHandler.plist */,
+				A56F2C9020F68317004091D3 /* ColoredVK2_SBHelper.plist */,
 				A56F2C9120F68317004091D3 /* control_debug */,
 				A56F2C9220F68317004091D3 /* control_release */,
 				A56F2C9320F68317004091D3 /* Info-app.plist */,
@@ -1848,9 +1848,9 @@
 			productReference = A5079FB21CC92157005B9693 /* ColoredVK2.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
-		A52433EA20F623BF000B06D2 /* ColoredVK2PrefsHandler */ = {
+		A52433EA20F623BF000B06D2 /* ColoredVK2_SBHelper */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A524340020F623BF000B06D2 /* Build configuration list for PBXNativeTarget "ColoredVK2PrefsHandler" */;
+			buildConfigurationList = A524340020F623BF000B06D2 /* Build configuration list for PBXNativeTarget "ColoredVK2_SBHelper" */;
 			buildPhases = (
 				A52433E620F623BF000B06D2 /* Sources */,
 				A52433E720F623BF000B06D2 /* Frameworks */,
@@ -1860,7 +1860,7 @@
 			);
 			dependencies = (
 			);
-			name = ColoredVK2PrefsHandler;
+			name = ColoredVK2_SBHelper;
 			productName = ColoredVK2PrefsHandler;
 			productReference = A52433EB20F623BF000B06D2 /* ColoredVK2PrefsHandler.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
@@ -1982,7 +1982,7 @@
 				A5D979AB1DAEBB0E00607F06 /* ColoredVK-Builder */,
 				A576D17E1DC621B90039884F /* ColoredVK-NonJail */,
 				A5D56A561E70427300A8FFB5 /* Prefs Application */,
-				A52433EA20F623BF000B06D2 /* ColoredVK2PrefsHandler */,
+				A52433EA20F623BF000B06D2 /* ColoredVK2_SBHelper */,
 			);
 		};
 /* End PBXProject section */
@@ -2785,6 +2785,7 @@
 		A52433FB20F623BF000B06D2 /* Release_DEB */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APP_VERSION = "4.4.15-b5";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/iOSOpenDev/frameworks,
@@ -2801,6 +2802,7 @@
 		A52433FC20F623BF000B06D2 /* Debug_DEB */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APP_VERSION = "4.4.15-b5";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/iOSOpenDev/frameworks,
@@ -2817,6 +2819,7 @@
 		A52433FD20F623BF000B06D2 /* Release_IPA */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APP_VERSION = "4.4.15-b5";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/iOSOpenDev/frameworks,
@@ -2833,6 +2836,7 @@
 		A52433FE20F623BF000B06D2 /* Debug_IPA */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APP_VERSION = "4.4.15-b5";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/iOSOpenDev/frameworks,
@@ -2849,6 +2853,7 @@
 		A52433FF20F623BF000B06D2 /* Debug_APP */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APP_VERSION = "4.4.15-b5";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/iOSOpenDev/frameworks,
@@ -3367,7 +3372,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release_IPA;
 		};
-		A524340020F623BF000B06D2 /* Build configuration list for PBXNativeTarget "ColoredVK2PrefsHandler" */ = {
+		A524340020F623BF000B06D2 /* Build configuration list for PBXNativeTarget "ColoredVK2_SBHelper" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A52433FB20F623BF000B06D2 /* Release_DEB */,
