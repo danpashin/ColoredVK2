@@ -1082,3 +1082,32 @@ CHDeclareMethod(0, void, VKReusableColorView, layoutSubviews)
     }
 }
 
+CHDeclareClass(_TtC3vkm19PinnedMessageButton);
+CHDeclareMethod(0, void, _TtC3vkm19PinnedMessageButton, layoutSubviews)
+{
+    CHSuper(0, _TtC3vkm19PinnedMessageButton, layoutSubviews);
+    
+    if (enabled && enableNightTheme) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+    }
+}
+
+CHDeclareClass(VKAPPollViewController);
+CHDeclareMethod(1, void, VKAPPollViewController, viewWillAppear, BOOL, animated)
+{
+    CHSuper(1, VKAPPollViewController, viewWillAppear, animated);
+    
+    if (enabled && enableNightTheme) {
+        self.view.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    }
+}
+
+CHDeclareClass(_TtC3vkm20BotKeyboardInputView);
+CHDeclareMethod(0, void, _TtC3vkm20BotKeyboardInputView, layoutSubviews)
+{
+    CHSuper(0, _TtC3vkm20BotKeyboardInputView, layoutSubviews);
+    
+    if (enabled && enableNightTheme) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+    }
+}

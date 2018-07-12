@@ -736,7 +736,7 @@
 		A52147C5206F86AC00224F6B /* TweakVariables.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TweakVariables.h; sourceTree = "<group>"; };
 		A523509D1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKBarDownloadButton.h; sourceTree = "<group>"; };
 		A523509E1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKBarDownloadButton.m; sourceTree = "<group>"; };
-		A52433EB20F623BF000B06D2 /* ColoredVK2PrefsHandler.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ColoredVK2PrefsHandler.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		A52433EB20F623BF000B06D2 /* ColoredVK2PrefsHandler.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; name = ColoredVK2PrefsHandler.dylib; path = ColoredVK2_SBHelper.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		A52433F520F623BF000B06D2 /* HandlerMain.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HandlerMain.m; sourceTree = "<group>"; };
 		A524347220F63E92000B06D2 /* ColoredVKFileSystem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKFileSystem.m; sourceTree = "<group>"; };
 		A524347B20F65DE7000B06D2 /* MessagingCenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessagingCenter.h; sourceTree = "<group>"; };
@@ -2096,7 +2096,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/bin/sh ";
 			shellScript = "${PROJECT_DIR}/Packaging/build.sh";
-			showEnvVarsInLog = 0;
 		};
 		B3FA6A759854094BBA9A74CF /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2465,7 +2464,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = "4.4.15-b4";
+				APP_VERSION = 4.4.15;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2626,7 +2625,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = "4.4.15-b4";
+				APP_VERSION = 4.4.15;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2785,7 +2784,6 @@
 		A52433FB20F623BF000B06D2 /* Release_DEB */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "4.4.15-b5";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/iOSOpenDev/frameworks,
@@ -2802,7 +2800,6 @@
 		A52433FC20F623BF000B06D2 /* Debug_DEB */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "4.4.15-b5";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/iOSOpenDev/frameworks,
@@ -2819,7 +2816,6 @@
 		A52433FD20F623BF000B06D2 /* Release_IPA */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "4.4.15-b5";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/iOSOpenDev/frameworks,
@@ -2836,7 +2832,6 @@
 		A52433FE20F623BF000B06D2 /* Debug_IPA */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "4.4.15-b5";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/iOSOpenDev/frameworks,
@@ -2853,7 +2848,6 @@
 		A52433FF20F623BF000B06D2 /* Debug_APP */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_VERSION = "4.4.15-b5";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/iOSOpenDev/frameworks,
@@ -2927,7 +2921,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = "4.4.15-b4";
+				APP_VERSION = 4.4.15;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -3088,7 +3082,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = "4.4.15-b4";
+				APP_VERSION = 4.4.15;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -3214,7 +3208,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = "4.4.15-b4";
+				APP_VERSION = 4.4.15;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;

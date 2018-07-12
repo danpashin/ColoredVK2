@@ -662,7 +662,7 @@ void setupExtraSettingsCell(UITableViewCell *cell)
     }
 }
 
-NSAttributedString *attributedStringForNightTheme(NSAttributedString * text)
+NSAttributedString *attributedStringForNightTheme(NSAttributedString *text)
 {
     if (enabled && enableNightTheme) {
         NSMutableAttributedString *mutableText = [[NSMutableAttributedString alloc] initWithAttributedString:text];
@@ -696,7 +696,16 @@ NSAttributedString *attributedStringForNightTheme(NSAttributedString * text)
                     setColor(NO, YES, NO);
                 else if (attrs[@"CVKDetailed"])
                     setColor(NO, NO, YES);
-                else
+                else if (attrs[NSFontAttributeName]) {
+                    BOOL isMedium = [((UIFont *)attrs[NSFontAttributeName]).fontName.lowercaseString containsString:@"medium"];
+                    BOOL isNumerical = (mutableText.string.integerValue != 0);
+                    
+                    if (isMedium)
+                        setColor(!isNumerical, NO, isNumerical);
+                    else
+                        setColor(NO, NO, NO);
+                        
+                } else
                     setColor(NO, NO, NO);
             }
         }];

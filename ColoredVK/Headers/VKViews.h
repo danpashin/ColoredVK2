@@ -243,3 +243,9 @@
 @interface DiscoverFeedTitleView : UIView
 @property(retain, nonatomic) UIToolbar *toolbar;
 @end
+
+@interface _TtC3vkm19PinnedMessageButton : UIButton
+@end
+
+@interface _TtC3vkm20BotKeyboardInputView : UIView
+@end

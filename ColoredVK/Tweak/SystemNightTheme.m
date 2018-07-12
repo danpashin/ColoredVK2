@@ -118,7 +118,9 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
             ![self isKindOfClass:objc_lookUpClass("HighlightableButton")] && 
             ![self isKindOfClass:objc_lookUpClass("LinkButton")] && 
             ![self isKindOfClass:objc_lookUpClass("BorderButton")] &&
-            ![self isKindOfClass:objc_lookUpClass("VKReusableButtonView")]) {
+            ![self isKindOfClass:objc_lookUpClass("VKReusableButtonView")] &&
+            ![self isKindOfClass:objc_lookUpClass("_TtC3vkm17BotKeyboardButton")]
+            ) {
             
             if (self.titleLabel) {
                 if (self.currentImage || self.currentBackgroundImage)
@@ -195,6 +197,19 @@ CHDeclareMethod(0, void, UILabel, layoutSubviews)
         }
     }
 }
+
+//CHDeclareMethod(1, void, UILabel, setAttributedText, NSAttributedString *, text)
+//{
+//    if (enabled && enableNightTheme) {
+//        NSNumber *should_customize = NIGHT_THEME_SHOULD_CUSTOMIZE(self);
+//        if (!should_customize)
+//            should_customize = @YES;
+//        
+//        if (should_customize.boolValue)
+//            text = attributedStringForNightTheme(text);
+//    }
+//    CHSuper(1, UILabel, setAttributedText, text);
+//}
 
 CHDeclareClass(UITextView);
 CHDeclareMethod(1, void, UITextView, setAttributedText, NSAttributedString *, text)

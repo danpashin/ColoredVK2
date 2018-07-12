@@ -345,3 +345,6 @@
 @end
 @interface VKSelectorContainerController : VKMViewControllerContainer 
 @end
+
+@interface VKAPPollViewController : VKMController
+@end
