@@ -198,18 +198,18 @@ CHDeclareMethod(0, void, UILabel, layoutSubviews)
     }
 }
 
-//CHDeclareMethod(1, void, UILabel, setAttributedText, NSAttributedString *, text)
-//{
-//    if (enabled && enableNightTheme) {
-//        NSNumber *should_customize = NIGHT_THEME_SHOULD_CUSTOMIZE(self);
-//        if (!should_customize)
-//            should_customize = @YES;
-//        
-//        if (should_customize.boolValue)
-//            text = attributedStringForNightTheme(text);
-//    }
-//    CHSuper(1, UILabel, setAttributedText, text);
-//}
+CHDeclareMethod(1, void, UILabel, setAttributedText, NSAttributedString *, text)
+{
+    if (enabled && enableNightTheme) {
+        NSNumber *should_customize = NIGHT_THEME_SHOULD_CUSTOMIZE(self);
+        if (!should_customize)
+            should_customize = @YES;
+        
+        if (should_customize.boolValue)
+            text = attributedStringForNightTheme(text);
+    }
+    CHSuper(1, UILabel, setAttributedText, text);
+}
 
 CHDeclareClass(UITextView);
 CHDeclareMethod(1, void, UITextView, setAttributedText, NSAttributedString *, text)
