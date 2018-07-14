@@ -6,12 +6,13 @@
 //
 
 #import "ColoredVKControlPrefsCell.h"
+@class ColoredVKSwitch;
 
 @interface ColoredVKSwitchPrefsCell : ColoredVKControlPrefsCell
 
-@property (nonatomic, strong) UISwitch *switchView;
+@property (nonatomic, strong) ColoredVKSwitch *switchView;
 
-- (void)switchTriggered:(UISwitch *)switchView;
+- (void)switchTriggered:(ColoredVKSwitch *)switchView;
 - (void)updateSwitchWithSpecifier:(PSSpecifier *)specifier NS_REQUIRES_SUPER;
 
 @end

@@ -12,6 +12,7 @@
 #import "ColoredVKNetwork.h"
 #import "SDWebImageManager.h"
 #import "ColoredVKAudioLyricsView.h"
+#import <objc/runtime.h>
 
 
 @interface ColoredVKAudioCover ()
@@ -265,7 +266,7 @@
 - (UIImage *)noCover
 {
     if (self.customCover) return [UIImage imageWithContentsOfFile:[CVK_FOLDER_PATH stringByAppendingString:@"/audioCoverImage.png"]];
-    else                  return [UIImage imageNamed:@"CoverImage" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    else                  return CVKImageInBundle(@"CoverImage", self.cvkBundle);
 }
 
 - (void)updatePrefs:(NSNotification *)notification
@@ -321,6 +322,27 @@
 {
     return [NSString stringWithFormat:@"<%@: %p artist '%@', track '%@', frame %@, separationPoint %@>", [self class], self, self.artist, self.track, 
             NSStringFromCGRect(self.frame), NSStringFromCGPoint(CGPointMake(0, CGRectGetMinY(self.bottomImageView.frame)))];
+}
+
+- (void)addGestureToView:(UIView *)view direction:(UISwipeGestureRecognizerDirection)direction handler:( void(^)(void) )handler
+{
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+    objc_setAssociatedObject(swipeGesture, "handler", handler, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    swipeGesture.direction = direction;
+    [view addGestureRecognizer:swipeGesture];
+}
+
+- (void)handleGesture:(UISwipeGestureRecognizer *)swipeGesture
+{
+    CGPoint location = [swipeGesture locationInView:swipeGesture.view];
+    UIView *view = [swipeGesture.view hitTest:location withEvent:nil];
+    
+    if (![view isKindOfClass:[UITextView class]]) {
+        void(^handler)(void) = objc_getAssociatedObject(swipeGesture, "handler");
+        if (handler) {
+            handler();
+        }
+    }
 }
 
 @end

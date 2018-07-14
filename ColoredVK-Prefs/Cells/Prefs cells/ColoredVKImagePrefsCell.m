@@ -12,6 +12,7 @@
 
 #import "ColoredVKImagePrefsCell.h"
 #import "ColoredVKPrefs.h"
+#import "ColoredVKSwitch.h"
 
 @interface ColoredVKImagePrefsCell ()
 @property (strong, nonatomic, readonly) NSString *switchKey;

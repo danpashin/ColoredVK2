@@ -377,7 +377,7 @@
 
 - (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView
 {
-    return [UIImage imageNamed:@"WarningIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    return CVKImageInBundle(@"WarningIcon", self.cvkBundle);
 }
 
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView

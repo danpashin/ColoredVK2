@@ -66,7 +66,7 @@
     [self.contentView.bottomRightButton setTitle:@"" forState:UIControlStateSelected];
     [self.contentView.bottomRightButton setTitleColor:CVKAltColor forState:UIControlStateNormal];
     
-    UIImage *backspace = [UIImage imageNamed:@"BackspaceIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    UIImage *backspace = CVKImageInBundle(@"BackspaceIcon", self.cvkBundle);
     backspace = [backspace imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.contentView.bottomRightButton.imageView.tintColor = CVKAltColor;
     [self.contentView.bottomRightButton setImage:backspace forState:UIControlStateSelected];

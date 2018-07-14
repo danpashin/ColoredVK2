@@ -32,7 +32,7 @@
 
 - (instancetype)initWithURL:(NSString *)url rootController:(UIViewController *)controller
 {
-    UIImage *downloadIcon = [UIImage imageNamed:@"vkapp/downloadCloudIcon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
+    UIImage *downloadIcon = CVKImage(@"vkapp/downloadCloudIcon");
     self = [super initWithImage:downloadIcon style:UIBarButtonItemStylePlain target:self action:@selector(actionDownloadImage)];
     if (self)  {
         _url = url;

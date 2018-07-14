@@ -89,8 +89,7 @@
 - (void)addAction:(UIAlertAction *)action image:(NSString *)imageName
 {
     if ([action respondsToSelector:@selector(setImage:)] && imageName.length > 0) {
-        UIImage *image = [UIImage imageNamed:imageName inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
-        image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        UIImage *image = [CVKImage(imageName) imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         action.image = image;
     }
     [super addAction:action];

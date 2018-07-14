@@ -90,7 +90,7 @@
 
 - (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView
 {
-    return [UIImage imageNamed:@"prefs/TabsIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    return CVKImageInBundle(@"prefs/TabsIcon", self.cvkBundle);
 }
 
 
@@ -104,7 +104,7 @@
     
     UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 30.0f, 30.0f)];
     [shareButton addTarget:self action:@selector(shareBackup:event:) forControlEvents:UIControlEventTouchUpInside];
-    UIImage *shareImage = [UIImage imageNamed:@"prefs/ShareIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    UIImage *shareImage = CVKImageInBundle(@"prefs/ShareIcon", self.cvkBundle);
     [shareButton setImage:shareImage forState:UIControlStateNormal];
     shareButton.accessibilityLabel = CVKLocalizedStringInBundle(@"SHARE_BACKUP", self.cvkBundle);
     cell.accessoryView = shareButton;

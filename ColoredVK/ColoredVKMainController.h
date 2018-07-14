@@ -32,7 +32,6 @@
              parallaxEffect:(BOOL)parallaxEffect blur:(BOOL)blur;
 - (void)forceUpdateTableView:(UITableView *)tableView blackout:(CGFloat)blackout blur:(BOOL)blur;
 
-- (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)(void) )handler;
 - (void)setMenuCellSwitchOn:(BOOL)on;
 
 @end

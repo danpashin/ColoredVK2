@@ -65,29 +65,29 @@ CHDeclareMethod(0, void, IOS7AudioController, viewDidLoad)
                 navBar.topItem.rightBarButtonItems = @[];
                 self.navigationController.navigationBar.hidden = YES;
                 
-                [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionDown handler:^{
+                [cvkMainController.audioCover addGestureToView:self.view direction:UISwipeGestureRecognizerDirectionDown handler:^{
                     if ([self respondsToSelector:@selector(done:)]) {
                         [self done:nil];
                     }
-                }]];
+                }];
                 
-                [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionLeft handler:^{
+                [cvkMainController.audioCover addGestureToView:self.view direction:UISwipeGestureRecognizerDirectionLeft handler:^{
                     if ([self respondsToSelector:@selector(actionNext:)]) {
                         [self actionNext:nil];
                     }
-                }]];
+                }];
                 
-                [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionRight handler:^{
+                [cvkMainController.audioCover addGestureToView:self.view direction:UISwipeGestureRecognizerDirectionRight handler:^{
                     if ([self respondsToSelector:@selector(actionPrev:)]) {
                         [self actionPrev:nil];
                     }
-                }]];
+                }];
                 
-                [self.view addGestureRecognizer:[cvkMainController swipeForPlayerWithDirection:UISwipeGestureRecognizerDirectionUp handler:^{
+                [cvkMainController.audioCover addGestureToView:self.view direction:UISwipeGestureRecognizerDirectionUp handler:^{
                     if ([self respondsToSelector:@selector(actionPlaylist:)]) {
                         [self actionPlaylist:nil];
                     }
-                }]];
+                }];
             }
             
             setupAudioPlayer(self.hostView, audioPlayerTintColor);

@@ -79,7 +79,7 @@
 }
 
 - (void)didChangeText
-{    
+{
     BOOL removeWhiteSpaces = NO;
     if ([self.delegate respondsToSelector:@selector(textFieldShouldRemoveWhiteSpaces:)])
         removeWhiteSpaces = [self.delegate textFieldShouldRemoveWhiteSpaces:self];
@@ -178,8 +178,8 @@
         _securedShowButton.accessibilityLabel = CVKLocalizedString(@"SHOW_HIDE_PASSWORD");
         
         NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-        UIImage *viewIcon = [UIImage imageNamed:@"user/ViewIcon" inBundle:cvkBundle compatibleWithTraitCollection:nil];
-        UIImage *viewIconSelected = [UIImage imageNamed:@"user/ViewIcon-selected" inBundle:cvkBundle compatibleWithTraitCollection:nil];
+        UIImage *viewIcon = CVKImageInBundle(@"user/ViewIcon", cvkBundle);
+        UIImage *viewIconSelected = CVKImageInBundle(@"user/ViewIcon-selected", cvkBundle);
         [_securedShowButton setImage:viewIcon forState:UIControlStateNormal];
         [_securedShowButton setImage:viewIconSelected forState:UIControlStateSelected];
     }
@@ -187,7 +187,7 @@
 }
 
 - (CGRect)textRectForBounds:(CGRect)bounds
-{    
+{
     CGRect origRect = [super textRectForBounds:bounds];  
     
     return CGRectInset(origRect, 16.0f, 0.0f);

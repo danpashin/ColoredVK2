@@ -19,4 +19,6 @@
 - (void)addToView:(UIView *)view;
 - (void)updateColorScheme;
 
+- (void)addGestureToView:(UIView *)view direction:(UISwipeGestureRecognizerDirection)direction handler:( void(^)(void) )handler;
+
 @end

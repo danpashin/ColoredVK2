@@ -356,9 +356,7 @@ CHDeclareMethod(0, void, UserWallController, updateProfile)
             CGRect navBarFrame = self.navigationController.navigationBar.bounds;
             UIImageView *titleView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 30.0f, 30.0f)];
             titleView.center = CGPointMake(CGRectGetMidX(navBarFrame), CGRectGetMidY(navBarFrame));
-            
-            NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-            titleView.image = [UIImage imageNamed:users[stringID] inBundle:cvkBundle compatibleWithTraitCollection:nil];
+            titleView.image = CVKImage(users[stringID]);
             if ([stringID isEqualToString:@"89911723"]) {
                 titleView.image = [titleView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
                 titleView.tintColor = enableNightTheme ? cvkMainController.nightThemeScheme.textColor : barForegroundColor;

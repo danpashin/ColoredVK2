@@ -118,7 +118,7 @@ static CGFloat const kCVKUINotificationHeight = 100.0f;
         [self.mainStackView addArrangedSubview:self.titleStackView];
         
         self.iconView = [[UIImageView alloc] init];
-        self.iconView.image = [UIImage imageNamed:@"Icon" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
+        self.iconView.image = CVKImage(@"Icon");
         self.iconView.layer.masksToBounds = YES;
         self.iconView.layer.cornerRadius = 6.0f;
         [self.titleStackView addArrangedSubview:self.iconView];

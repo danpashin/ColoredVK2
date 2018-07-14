@@ -7,6 +7,7 @@
 
 #import "Tweak.h"
 #import <dlfcn.h>
+#import "ColoredVKSwitch.h"
 
 @interface PSListController : UIViewController
 @end
@@ -161,11 +162,11 @@ CHDeclareMethod(0, void, UISwitch, layoutSubviews)
         } else if (enabled && changeSwitchColor) {
             self.tintColor = switchesTintColor;
             self.onTintColor = switchesOnTintColor;
-            if (self.tag != 228) {
+            if (![self isKindOfClass:[ColoredVKSwitch class]]) {
                 self.thumbTintColor = nil;
                 self.backgroundColor = nil;
             }
-        } else if (self.tag != 228)  {
+        } else if (![self isKindOfClass:[ColoredVKSwitch class]])  {
             self.tintColor = nil;
             self.onTintColor = nil;
             self.thumbTintColor = nil;

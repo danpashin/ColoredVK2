@@ -65,7 +65,7 @@
     [super viewDidLoad];
     
     _tickImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-    self.tickImageView.image = [UIImage imageNamed:@"prefs/TickIcon" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    self.tickImageView.image = CVKImageInBundle(@"prefs/TickIcon", self.cvkBundle);
     
     ColoredVKNightScheme *nightScheme = [ColoredVKNightScheme sharedScheme];
     if (nightScheme.enabled) {

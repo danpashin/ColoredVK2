@@ -55,7 +55,7 @@
         self.contentView.bottomLeftButton.alpha = 0.8f;
         
         NSString *imageName = self.supportsTouchID ? @"prefs/FingerprintIcon" : @"prefs/FaceIcon";
-        UIImage *image = [UIImage imageNamed:imageName inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+        UIImage *image = CVKImageInBundle(imageName, self.cvkBundle);
         image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         [self.contentView.bottomLeftButton setImage:image forState:UIControlStateNormal];
     }

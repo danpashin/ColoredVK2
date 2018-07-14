@@ -144,7 +144,7 @@
     ColoredVKCard *freeCard = [ColoredVKCard new];
     freeCard.title = CVKLocalizedStringInBundle(@"FREE", self.cvkBundle);
     freeCard.titleColor = [UIColor blackColor];
-    freeCard.backgroundImage = [UIImage imageNamed:@"DayBackground" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    freeCard.backgroundImage = CVKImageInBundle(@"DayBackground", self.cvkBundle);
     freeCard.backgroundColor = [UIColor colorWithRed:172/255.0f green:197/255.0f blue:226/255.0f alpha:1.0f];
     NSString *freeText = CVKLocalizedStringInBundle(@"MORE_ABOUT_FREE_ACCOUNT", self.cvkBundle);
     freeCard.attributedBody = [self attributedMoreString:freeText headerColor:[UIColor blackColor] 
@@ -153,7 +153,7 @@
     ColoredVKCard *premiumCard = [ColoredVKCard new];
     premiumCard.title = CVKLocalizedStringInBundle(@"PREMIUM", self.cvkBundle);
     premiumCard.backgroundColor = [UIColor colorWithRed:84/255.0f green:91/255.0f blue:135/255.0f alpha:1.0f];
-    premiumCard.backgroundImage = [UIImage imageNamed:@"NightBackground" inBundle:self.cvkBundle compatibleWithTraitCollection:nil];
+    premiumCard.backgroundImage = CVKImageInBundle(@"NightBackground", self.cvkBundle);
     NSString *premiumText = CVKLocalizedStringInBundle(@"MORE_ABOUT_PREMIUM_ACCOUNT", self.cvkBundle);
     premiumCard.attributedBody = [self attributedMoreString:premiumText headerColor:[UIColor whiteColor] 
                                                   bodyColor:[UIColor colorWithWhite:1.0f alpha:0.9f]];

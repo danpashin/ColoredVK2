@@ -10,6 +10,7 @@
 #import "ColoredVKPrefs.h"
 #import "ColoredVKNewInstaller.h"
 #import "UIColor+ColoredVK.h"
+#import "ColoredVKSwitch.h"
 
 @interface ColoredVKSwitchPrefsCell ()
 @property (assign, nonatomic) BOOL switchPrefsLoaded;
@@ -21,11 +22,7 @@
 {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier specifier:specifier];
     if (self) {
-        self.switchView = [UISwitch new];
-        self.switchView.tag = 228;
-        self.switchView.layer.cornerRadius = 16.0f;
-        self.switchView.thumbTintColor = [UIColor whiteColor];
-        self.switchView.backgroundColor = [UIColor colorWithRed:234/255.0f green:234/255.0f blue:239/255.0f alpha:1.0f];
+        self.switchView = [ColoredVKSwitch new];
         [self.switchView addTarget:self action:@selector(switchTriggered:) forControlEvents:UIControlEventValueChanged];
         self.accessoryView = self.switchView;
     }
@@ -57,20 +54,6 @@
     NSNumber *currentValue = self.currentPrefsValue;
     if ([currentValue isKindOfClass:[NSNumber class]]) {
         self.switchView.on = currentValue.boolValue;
-    }
-    
-    if ([ColoredVKNightScheme sharedScheme].enabled)
-        return;
-    
-    ColoredVKPrefs *prefsController = self.cellTarget;
-    BOOL userChangedSwitchColor = NO;
-    if ([prefsController isKindOfClass:[ColoredVKPrefs class]] && [ColoredVKNewInstaller sharedInstaller].application.isVKApp) {
-        userChangedSwitchColor = ([prefsController.cachedPrefs[@"enabled"] boolValue] && [prefsController.cachedPrefs[@"changeSwitchColor"] boolValue]);
-    }
-    
-    if (!userChangedSwitchColor) {
-        self.switchView.onTintColor = CVKMainColor;
-        self.switchView.tintColor = [UIColor clearColor];
     }
 }
 

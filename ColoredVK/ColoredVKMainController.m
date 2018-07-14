@@ -11,9 +11,10 @@
 #import "ColoredVKNewInstaller.h"
 #import "UIColor+ColoredVK.h"
 #import "ColoredVKNetwork.h"
+#import "ColoredVKSwitch.h"
 
 @interface ColoredVKMainController ()
-@property (strong, nonatomic) UISwitch *menuCellSwitch;
+@property (strong, nonatomic) ColoredVKSwitch *menuCellSwitch;
 @end
 
 @implementation ColoredVKMainController
@@ -89,20 +90,25 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
         cell.textLabel.textColor = kMenuCellTextColor;
         cell.textLabel.backgroundColor = [UIColor clearColor];
         cell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
-        cell.imageView.image = [UIImage imageNamed:@"vkapp/VKMenuIconAlt" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
+        cell.imageView.image = CVKImage(@"vkapp/VKMenuIconAlt");
         
         UIView *backgroundView = [UIView new];
         backgroundView.backgroundColor = kMenuCellSelectedColor;
         cell.selectedBackgroundView = backgroundView;
         
-        self.menuCellSwitch = [UISwitch new];
-        self.menuCellSwitch.frame = CGRectMake([UIScreen mainScreen].bounds.size.width/1.2f - self.menuCellSwitch.frame.size.width, 
-                                      (cell.contentView.frame.size.height - self.menuCellSwitch.frame.size.height)/2.0f, 0.0f, 0.0f);
-        self.menuCellSwitch.tag = 228;
+        self.menuCellSwitch = [ColoredVKSwitch new];
         self.menuCellSwitch.on = enabled;
-        self.menuCellSwitch.onTintColor = [UIColor cvk_defaultColorForIdentifier:@"switchesOnTintColor"];
         [self.menuCellSwitch addTarget:self action:@selector(switchTriggered) forControlEvents:UIControlEventValueChanged];
         [cell.contentView addSubview:self.menuCellSwitch];
+        
+        if (isNew3XClient) {
+            self.menuCellSwitch.translatesAutoresizingMaskIntoConstraints = NO;
+            [self.menuCellSwitch.centerYAnchor constraintEqualToAnchor:cell.contentView.centerYAnchor].active = YES;
+            [self.menuCellSwitch.trailingAnchor constraintEqualToAnchor:cell.contentView.trailingAnchor constant:-16.0f].active = YES;
+        } else {
+            self.menuCellSwitch.frame = CGRectMake([UIScreen mainScreen].bounds.size.width/1.2f - self.menuCellSwitch.frame.size.width, 
+                                                   (cell.contentView.frame.size.height - self.menuCellSwitch.frame.size.height)/2.0f, 0.0f, 0.0f);
+        }
         
         if ([cell respondsToSelector:@selector(select)]) {
             ((TitleMenuCell *)cell).select = ^(id model) {
@@ -124,7 +130,7 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
     settingsCell.textLabel.text = kPackageName;
     settingsCell.textLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
     
-    UIImage *icon = [UIImage imageNamed:@"vkapp/VKMenuIconAlt" inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil];
+    UIImage *icon = CVKImage(@"vkapp/VKMenuIconAlt");
     settingsCell.imageView.image = [icon imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     settingsCell.imageView.tintColor = isNew3XClient ? [UIColor colorWithRed:0.667f green:0.682f blue:0.702f alpha:1.0f] : kVKMainColor;
     
@@ -165,31 +171,8 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
 {
     @synchronized(self) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.menuCellSwitch setOn:on animated:YES];
-            [self.menuCellSwitch setNeedsLayout];
+            [self.menuCellSwitch setOn:on animated:NO];
         });
-    }
-}
-
-- (UISwipeGestureRecognizer *)swipeForPlayerWithDirection:(UISwipeGestureRecognizerDirection)direction handler:( void(^)(void) )handler
-{
-    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handlePlayerGesture:)];
-    objc_setAssociatedObject(swipeGesture, "handler", handler, OBJC_ASSOCIATION_COPY_NONATOMIC);
-    swipeGesture.direction = direction;
-    
-    return swipeGesture;
-}
-
-- (void)handlePlayerGesture:(UISwipeGestureRecognizer *)swipeGesture
-{
-    CGPoint location = [swipeGesture locationInView:swipeGesture.view];
-    UIView *view = [swipeGesture.view hitTest:location withEvent:nil];
-    
-    if (![view isKindOfClass:[UITextView class]] && [view isKindOfClass:NSClassFromString(@"ColoredVKAudioLyricsView")]) {
-        void(^handler)(void) = objc_getAssociatedObject(swipeGesture, "handler");
-        if (handler) {
-            handler();
-        }
     }
 }
 
