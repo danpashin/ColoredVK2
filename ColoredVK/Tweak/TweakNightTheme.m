@@ -1111,3 +1111,13 @@ CHDeclareMethod(0, void, _TtC3vkm20BotKeyboardInputView, layoutSubviews)
         self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
     }
 }
+
+CHDeclareClass(VKMGradientView);
+CHDeclareMethod(0, void, VKMGradientView, layoutSubviews)
+{
+    CHSuper(0, VKMGradientView, layoutSubviews);
+    
+    if (enabled && enableNightTheme) {
+        self.hidden = YES;
+    }
+}

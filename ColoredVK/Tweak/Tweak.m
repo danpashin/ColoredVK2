@@ -314,7 +314,7 @@ CHDeclareMethod(1, void, VKMBrowserController, viewWillAppear, BOOL, animated)
         
         if (enabled && enableNightTheme) {
             self.webScrollView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
-            self.webView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+//            self.webView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
             [self.safariButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         }
         else if (enabled && enabledBarColor && !enableNightTheme) {

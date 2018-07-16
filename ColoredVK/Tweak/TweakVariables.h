@@ -23,7 +23,6 @@ typedef NS_ENUM(NSInteger, CVKCellSelectionStyle) {
 BOOL isNew3XClient;
 
 BOOL premiumEnabled;
-ColoredVKMainController *cvkMainController;
 NSBundle *vksBundle;
 
 CVKCellSelectionStyle menuSelectionStyle;

@@ -198,6 +198,28 @@ CHDeclareMethod(0, void, UILabel, layoutSubviews)
     }
 }
 
+CHDeclareMethod(1, void, UILabel, setTextColor, UIColor *, textColor)
+{
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("UILabel")] && 
+        ![CLASS_NAME(self.superview) isEqualToString:@"HighlightableButton"] && 
+        ![CLASS_NAME(self.superview) isEqualToString:@"VKPPBadge"]) {
+        
+        NSNumber *should_customize = NIGHT_THEME_SHOULD_CUSTOMIZE(self);
+        if (!should_customize)
+            should_customize = @YES;
+        
+        if (should_customize.boolValue) {
+            CGFloat white;
+            [textColor getWhite:&white alpha:nil];
+            if (white < 0.5f)
+                textColor = cvkMainController.nightThemeScheme.textColor;
+        }
+        
+    }
+    
+    CHSuper(1, UILabel, setTextColor, textColor);
+}
+
 CHDeclareMethod(1, void, UILabel, setAttributedText, NSAttributedString *, text)
 {
     if (enabled && enableNightTheme) {
@@ -559,4 +581,12 @@ CHDeclareMethod(1, void, _UIBackdropView, setBackgroundColor, UIColor *, backgro
     }
     
     CHSuper(1, _UIBackdropView, setBackgroundColor, backgroundColor);
+}
+
+CHDeclareClass(_UIPageViewControllerContentView);
+CHDeclareMethod(0, void, _UIPageViewControllerContentView, layoutSubviews)
+{
+    CHSuper(0, _UIPageViewControllerContentView, layoutSubviews);
+    if (enabled && enableNightTheme)
+        self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
 }

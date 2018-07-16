@@ -70,3 +70,6 @@
 @interface _UIBackdropEffectView : UIView
 @property (strong, nonatomic) CALayer *backdropLayer;
 @end
+
+@interface _UIPageViewControllerContentView : UIView
+@end

@@ -35,3 +35,5 @@
 - (void)setMenuCellSwitchOn:(BOOL)on;
 
 @end
+
+__strong ColoredVKMainController *cvkMainController;

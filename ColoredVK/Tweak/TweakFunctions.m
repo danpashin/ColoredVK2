@@ -747,7 +747,7 @@ NSAttributedString *attributedStringForNightTheme(NSAttributedString *text)
 
 void setupNightSeparatorForView(UIView *view)
 {
-    if ([CLASS_NAME(view) isEqualToString:@"UIView"]) {
+    if ([CLASS_NAME(view) isEqualToString:@"UIView"] || [CLASS_NAME(view) isEqualToString:@"VKReusableColorView"]) {
         if (enabled && enableNightTheme) {
             void (^setupBlock)(void) = ^{
                 if ([cvkMainController.vkMainController respondsToSelector:@selector(tabBarShadowView)]) {

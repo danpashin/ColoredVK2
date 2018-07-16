@@ -7,6 +7,8 @@
 
 #import "Tweak.h"
 @import CoreText;
+#import "ColoredVKBadgeViewLayer.h"
+#import "ColoredVKMessageBubbleViewLayer.h"
 
 #pragma GCC diagnostic push 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -451,39 +453,21 @@ CHDeclareMethod(0, void, ChatCell, setBG)
 
 #pragma mark _TtC3vkm17MessageBubbleView
 CHDeclareClass(_TtC3vkm17MessageBubbleView);
-CHDeclareMethod(0, void, _TtC3vkm17MessageBubbleView, layoutSubviews)
+CHDeclareClassMethod(0, Class, _TtC3vkm17MessageBubbleView, layerClass)
 {
-    CHSuper(0, _TtC3vkm17MessageBubbleView, layoutSubviews);
+    Class origClass = CHSuper(0, _TtC3vkm17MessageBubbleView, layerClass);
+    if ([ColoredVKMessageBubbleViewLayer isSubclassOfClass:origClass])
+        return [ColoredVKMessageBubbleViewLayer class];
     
-    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("_TtC3vkm17MessageBubbleView")]) {
-        self.layer.fillColor = cvkMainController.nightThemeScheme.incomingBackgroundColor.CGColor;
-    }
-    
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        if (enabled && (useMessageBubbleTintColor || enableNightTheme) && [self isKindOfClass:objc_lookUpClass("_TtC3vkm17MessageBubbleView")]) {
-//            CAShapeLayer *layer = (CAShapeLayer *)self.layer;
-//            
-//            UIColor *incomingColor = enableNightTheme ? cvkMainController.nightThemeScheme.incomingBackgroundColor : messageBubbleTintColor;
-//            UIColor *outgoingColor = enableNightTheme ? cvkMainController.nightThemeScheme.outgoingBackgroundColor : messageBubbleSentTintColor;
-//            
-//            const CGFloat *components = CGColorGetComponents(layer.fillColor);
-//            if (components[0] >= 0.9f) { // входящее
-//                layer.fillColor = incomingColor.CGColor;
-//            } else { // исходящее
-//                layer.fillColor = outgoingColor.CGColor;
-//            }
-//        }
-//    });
+    return origClass;
 }
 
 CHDeclareClass(_TtC3vkm9BadgeView);
-CHDeclareMethod(1, void, _TtC3vkm9BadgeView, willMoveToWindow, UIWindow *, newWindow)
+CHDeclareClassMethod(0, Class, _TtC3vkm9BadgeView, layerClass)
 {
-    CHSuper(1, _TtC3vkm9BadgeView, willMoveToWindow, newWindow);
-    
-    if (newWindow) {
-        [self addObserver:cvkMainController forKeyPath:@"layer.fillColor" options:NSKeyValueObservingOptionNew context:nil];
-    } else {
-        [self removeObserver:cvkMainController forKeyPath:@"layer.fillColor"];
-    }
+    Class origClass = CHSuper(0, _TtC3vkm9BadgeView, layerClass);
+    if ([ColoredVKBadgeViewLayer isSubclassOfClass:origClass])
+        return [ColoredVKBadgeViewLayer class];
+        
+    return origClass;
 }

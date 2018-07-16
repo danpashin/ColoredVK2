@@ -249,3 +249,6 @@
 
 @interface _TtC3vkm20BotKeyboardInputView : UIView
 @end
+
+@interface VKMGradientView : UIView
+@end
