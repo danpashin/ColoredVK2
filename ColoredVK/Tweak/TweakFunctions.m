@@ -6,7 +6,7 @@
 //
 
 #import "Tweak.h"
-
+#import <mach-o/dyld.h>
 
 void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
@@ -44,9 +44,9 @@ void setupBlur(UIView *bar, UIColor *color, UIBlurEffectStyle style)
         if ([bar isKindOfClass:[UINavigationBar class]]) {
             UINavigationBar *navbar = (UINavigationBar *)bar;
             UIView *backgroundView = navbar._backgroundView;
-            verticalFormat = @"V:[view(0.5)]|";
             
             if (![backgroundView.subviews containsObject:[backgroundView viewWithTag:blurViewTag]]) {
+                verticalFormat = @"V:[view(0.5)]|";
                 blurEffectView.effect = nil;
                 blurEffectView.frame = backgroundView.bounds;
                 borderView.frame = CGRectMake(0.0f, blurEffectView.frame.size.height - 0.5f, blurEffectView.frame.size.width, 0.5f);
@@ -60,9 +60,9 @@ void setupBlur(UIView *bar, UIColor *color, UIBlurEffectStyle style)
             }
         } else if  ([bar isKindOfClass:[UIToolbar class]]) {
             UIToolbar *toolBar = (UIToolbar *)bar;
-            verticalFormat = @"V:|[view(0.5)]";
             
             if (![toolBar.subviews containsObject:[toolBar viewWithTag:blurViewTag]]) {
+                verticalFormat = @"V:|[view(0.5)]";
                 toolBar.barTintColor = [UIColor clearColor];
                 blurEffectView.frame = CGRectMake(0, 0, toolBar.frame.size.width, toolBar.frame.size.height);
                 borderView.frame = CGRectMake(0, 0, toolBar.frame.size.width, 0.5);
@@ -72,9 +72,9 @@ void setupBlur(UIView *bar, UIColor *color, UIBlurEffectStyle style)
             }
         } else if  ([bar isKindOfClass:[UITabBar class]]) {
             UITabBar *tabbar = (UITabBar *)bar;
-            verticalFormat = @"V:|[view(0.5)]";
             
             if (![tabbar.subviews containsObject:[tabbar viewWithTag:blurViewTag]]) {
+                verticalFormat = @"V:|[view(0.5)]";
                 blurEffectView.frame = CGRectMake(0, 0, tabbar.frame.size.width, tabbar.frame.size.height);
                 borderView.frame = CGRectMake(0, 0, tabbar.frame.size.width, 0.5);
                 
@@ -85,9 +85,9 @@ void setupBlur(UIView *bar, UIColor *color, UIBlurEffectStyle style)
                 } completion:nil];
             }
         } else if  ([bar isKindOfClass:[UIView class]]) {
-            verticalFormat = @"V:|[view(0.5)]";
             
             if (![bar.subviews containsObject:[bar viewWithTag:blurViewTag]]) {
+                verticalFormat = @"V:|[view(0.5)]";
                 blurEffectView.frame = CGRectMake(0, 0, bar.frame.size.width, bar.frame.size.height);
                 borderView.frame = CGRectMake(0, 0, bar.frame.size.width, 0.5);
                 
@@ -465,17 +465,46 @@ void actionChangeCornerRadius(UIWindow *window)
     }];
 }
 
+#pragma mark -
+#pragma mark Exception
+NSMutableArray <NSDictionary *> *handleCallStack(NSArray<NSString *> *callStackSymbols, NSArray<NSNumber *> *callStackReturnAddresses)
+{
+    NSMutableArray <NSDictionary *> *callStack = [NSMutableArray array];
+    for (NSString *symbol in callStackSymbols) {
+        NSUInteger index = [callStackSymbols indexOfObject:symbol];
+        NSNumber *address = @0;
+        
+        if (index <= callStackReturnAddresses.count - 1) {
+            address = callStackReturnAddresses[index];
+        }
+        
+        [callStack addObject:@{@"symbol":symbol, @"address":address}];
+    }
+    
+    return callStack;
+}
+
 void uncaughtExceptionHandler(NSException *exception)
 {
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
     NSString *stringDate = [dateFormatter stringFromDate:[NSDate date]];
     
-    NSDictionary *crash = @{@"reason": exception.reason, @"callStackReturnAddresses": exception.callStackReturnAddresses, 
-                            @"callStackSymbols":exception.callStackSymbols, @"date":stringDate};
+    NSMutableArray <NSString *> *loadedLibs = [NSMutableArray array];
+    for (uint32_t i=0; i<_dyld_image_count(); i++) {
+        [loadedLibs addObject:@(_dyld_get_image_name(i))];
+    }
+    
+    NSMutableArray *callStack = handleCallStack(exception.callStackSymbols, exception.callStackReturnAddresses);
+    
+    NSDictionary *crash = @{@"reason": exception.reason,
+                            @"callStack":callStack, @"date":stringDate, @"loadedLibs":loadedLibs,@"currentThread":[NSThread currentThread].description
+                            };
     NSData *crashData = [NSKeyedArchiver archivedDataWithRootObject:crash];
     cvk_writeData(crashData, CVK_CRASH_PATH, nil);
 }
+#pragma mark -
+
 
 void setupUISearchBar(UISearchBar *searchBar)
 {
