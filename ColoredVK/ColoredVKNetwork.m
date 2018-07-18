@@ -228,7 +228,7 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     NSString *deviceModelName = [UIDevice currentDevice].model;
     NSString *systemVersion = [UIDevice currentDevice].systemVersion;
 #elif TARGET_OS_OSX
-    NSString *deviceModelName = @"macOS;
+    NSString *deviceModelName = @"macOS";
     NSString *systemVersion = [NSProcessInfo processInfo].operatingSystemVersionString;
 #endif
     

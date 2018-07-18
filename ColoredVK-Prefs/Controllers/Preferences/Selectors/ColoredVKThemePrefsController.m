@@ -11,7 +11,7 @@
 #import "ColoredVKNightScheme.h"
 #import "ColoredVKNewInstaller.h"
 
-#import <objc/message.h>
+#import "NSObject+ColoredVK.h"
 @import Darwin.POSIX.spawn;
 
 
@@ -152,7 +152,7 @@
 - (void)actionCloseApplication
 {
     if ([ColoredVKNewInstaller sharedInstaller].application.isVKApp) {
-        objc_msgSend([UIApplication sharedApplication], @selector(suspend));
+        [[UIApplication sharedApplication] cvk_executeSelector:@selector(suspend)];
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             exit(0);

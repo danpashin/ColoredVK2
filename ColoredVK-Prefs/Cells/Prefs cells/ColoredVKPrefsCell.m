@@ -17,17 +17,12 @@
 
 @implementation ColoredVKPrefsCell
 
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-    
-    if ([self.specifier.properties[@"shouldCenter"] boolValue])
-        self.titleLabel.center = self.contentView.center;
-}
-
 - (void)refreshCellContentsWithSpecifier:(PSSpecifier *)specifier
 {
     [super refreshCellContentsWithSpecifier:specifier];
+    
+    if ([specifier.properties[@"shouldCenter"] boolValue])
+        [self setAlignment:PSTableCellAlignmentCenter];
     
     if ([specifier.properties[@"addDisclosureIndicator"] boolValue])
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;

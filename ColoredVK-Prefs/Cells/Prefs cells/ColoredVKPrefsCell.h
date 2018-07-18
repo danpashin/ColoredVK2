@@ -8,7 +8,7 @@
 @import Foundation;
 @import UIKit;
 
-#import <PSSpecifier.h>
+#import <Preferences/PSSpecifier.h>
 @class ColoredVKCellBackgroundView;
 
 @interface ColoredVKPrefsCell : PSTableCell

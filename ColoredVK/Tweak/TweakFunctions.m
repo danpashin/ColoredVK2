@@ -758,7 +758,7 @@ void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRe
         resetTabBar();
         void (^resetController)(id rootController, SEL controllerSelector) = ^(id rootController, SEL controllerSelector) {
             if ([rootController respondsToSelector:controllerSelector]) {
-                VKMTableController *controller = objc_msgSend(rootController, controllerSelector);
+                VKMTableController *controller = [rootController cvk_executeSelector:controllerSelector];
                 if ([controller respondsToSelector:@selector(VKMScrollViewReset)]) {
                     [controller VKMScrollViewReset];
                     [controller VKMScrollViewReloadData];
@@ -771,7 +771,7 @@ void updateNightTheme(CFNotificationCenterRef center, void *observer, CFStringRe
                     controller.tableView.backgroundView = nil;
                 }
                 if ([controller respondsToSelector:@selector(collectionView)]) {
-                    UICollectionView *collectionView = objc_msgSend(controller, @selector(collectionView));
+                    UICollectionView *collectionView = [rootController cvk_executeSelector:@selector(collectionView)];
                     collectionView.backgroundColor = backgroundColor;
                 }
             }
@@ -848,7 +848,7 @@ void updateControllerBlurInfo(UIViewController *controller)
         UIBlurEffectStyle blurStyle = 0;
         if (enabled) {
             NSString *selfName = CLASS_NAME(controller);
-            NSString *modelName = [controller respondsToSelector:@selector(model)] ? CLASS_NAME(objc_msgSend(controller, @selector(model))) : @"";
+            NSString *modelName = [controller respondsToSelector:@selector(model)] ? CLASS_NAME((__bridge id)[controller cvk_executeSelector:@selector(model)]) : @"";
             NSArray *audioControllers = @[@"AudioAlbumController", @"AudioAlbumsController", @"AudioPlaylistController", @"AudioDashboardController", 
                                           @"AudioCatalogController", @"AudioCatalogOwnersListController", @"AudioCatalogAudiosListController", 
                                           @"AudioPlaylistDetailController", @"AudioPlaylistsController"];

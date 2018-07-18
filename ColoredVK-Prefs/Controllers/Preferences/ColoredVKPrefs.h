@@ -8,8 +8,7 @@
 
 
 #import <UIKit/UIKit.h>
-#import <PSSpecifier.h>
-#import <PSListController.h>
+#import <Preferences/PSListController.h>
 #import "UIScrollView+EmptyDataSet.h"
 
 NS_ASSUME_NONNULL_BEGIN

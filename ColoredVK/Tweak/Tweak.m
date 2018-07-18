@@ -168,7 +168,7 @@ CHDeclareMethod(1, void, VKMController, viewDidAppear, BOOL, animated)
                 shouldAddBlur = @NO;
                 
                 if ([self respondsToSelector:@selector(tableView)]) {
-                    UITableView *tableView = objc_msgSend(self, @selector(tableView));
+                    UITableView *tableView = [self cvk_executeSelector:@selector(tableView)];
                     if ([tableView.tableHeaderView isKindOfClass:[UISearchBar class]]) {
                         UISearchBar *searchBar = (UISearchBar *)tableView.tableHeaderView;
                         

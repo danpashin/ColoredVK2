@@ -88,7 +88,7 @@ makeDEB () {
     find "Package" -name ".DS_Store" -exec rm -f {} \;
 
     echo "[->] Packaging..."
-    dpkg-deb -b -Zlzma "Package" "${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}_${PLATFORM_NAME}-arm.deb"
+    dpkg-deb -b -Zlzma "Package" "${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}_${PLATFORM_NAME}-arm.deb" >> /dev/null
 
     echo "[->] Cleaning (stage 2)..."
     rm -rf Package
