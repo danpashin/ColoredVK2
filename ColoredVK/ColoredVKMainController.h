@@ -36,4 +36,4 @@
 
 @end
 
-__strong ColoredVKMainController *cvkMainController;
+extern ColoredVKMainController *cvkMainController;

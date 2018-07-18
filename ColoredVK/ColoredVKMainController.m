@@ -17,6 +17,8 @@
 @property (strong, nonatomic) ColoredVKSwitch *menuCellSwitch;
 @end
 
+__strong ColoredVKMainController *cvkMainController;
+
 @implementation ColoredVKMainController
 
 BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)

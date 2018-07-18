@@ -8,43 +8,43 @@
 @class VKSearchBar;
 @class VKMBrowserController, VKMTableController, DialogsSearchResultsController;
 
-void setupBlur(UIView *bar, UIColor *color, UIBlurEffectStyle style);
-void removeBlur(UIView *bar, void(^completion)(void));
-void setToolBar(UIToolbar *toolbar);
+extern void setupBlur(UIView *bar, UIColor *color, UIBlurEffectStyle style);
+extern void removeBlur(UIView *bar, void(^completion)(void));
+extern void setToolBar(UIToolbar *toolbar);
 
-void setupTabbar(void);
-void resetTabBar(void);
-void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *tableView);
+extern void setupTabbar(void);
+extern void resetTabBar(void);
+extern void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *tableView);
 
-void performInitialCellSetup(UITableViewCell *cell);
-void setupAudioPlayer(UIView *hostView, UIColor *color);
-void actionChangeCornerRadius(UIWindow *window);
+extern void performInitialCellSetup(UITableViewCell *cell);
+extern void setupAudioPlayer(UIView *hostView, UIColor *color);
+extern void actionChangeCornerRadius(UIWindow *window);
 
-void resetUISearchBar(UISearchBar *searchBar);
-void setupUISearchBar(UISearchBar *searchBar);
-void resetNavigationBar(UINavigationBar *navBar);
+extern void resetUISearchBar(UISearchBar *searchBar);
+extern void setupUISearchBar(UISearchBar *searchBar);
+extern void resetNavigationBar(UINavigationBar *navBar);
 
-void uncaughtExceptionHandler(NSException *exception);
+extern void uncaughtExceptionHandler(NSException *exception);
 
 
 #pragma GCC diagnostic push 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-void setupSearchController(UISearchDisplayController *controller, BOOL reset);
-void setupCellForSearchController(UITableViewCell *cell, UISearchDisplayController *searchController);
+extern void setupSearchController(UISearchDisplayController *controller, BOOL reset);
+extern void setupCellForSearchController(UITableViewCell *cell, UISearchDisplayController *searchController);
 #pragma GCC diagnostic pop
-void hideFastButtonForController(VKMBrowserController *browserController);
+extern void hideFastButtonForController(VKMBrowserController *browserController);
 
-void setupExtraSettingsController(VKMTableController *controller);
-void setupExtraSettingsCell(UITableViewCell *cell);
+extern void setupExtraSettingsController(VKMTableController *controller);
+extern void setupExtraSettingsCell(UITableViewCell *cell);
 
-void setupNewSearchBar(VKSearchBar *searchBar, UIColor *tintColor, UIColor *blurTone, UIBlurEffectStyle blurStyle);
-void resetNewSearchBar(VKSearchBar *searchBar);
+extern void setupNewSearchBar(VKSearchBar *searchBar, UIColor *tintColor, UIColor *blurTone, UIBlurEffectStyle blurStyle);
+extern void resetNewSearchBar(VKSearchBar *searchBar);
 
-UIVisualEffectView *blurForView(UIView *view, NSInteger tag);
+extern UIVisualEffectView *blurForView(UIView *view, NSInteger tag);
 
-void setupNewDialogsSearchController(DialogsSearchResultsController *controller);
-void updateControllerBlurInfo(UIViewController *controller);
+extern void setupNewDialogsSearchController(DialogsSearchResultsController *controller);
+extern void updateControllerBlurInfo(UIViewController *controller);
 
 
-void updateNavBarColor(void);
-void setupNewAppMenuCell(UITableViewCell *cell);
+extern void updateNavBarColor(void);
+extern void setupNewAppMenuCell(UITableViewCell *cell);
