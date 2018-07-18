@@ -687,6 +687,13 @@ CHDeclareMethod(0, void, DiscoverSearchResultsController, viewDidLoad)
     }
 }
 
+CHDeclareClass(UICollectionView);
+CHDeclareMethod(0, void, UICollectionView, reloadData)
+{
+    CHSuper(0, UICollectionView, reloadData);
+    [self.collectionViewLayout invalidateLayout];
+}
+
 CVK_CONSTRUCTOR
 {
     @autoreleasepool {

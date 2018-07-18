@@ -5,7 +5,7 @@
 //  Created by Даниил on 31.03.18.
 //
 
-@class NewDialogCell, VKSearchBar;
+@class VKSearchBar;
 @class VKMBrowserController, VKMTableController, DialogsSearchResultsController;
 
 void setupBlur(UIView *bar, UIColor *color, UIBlurEffectStyle style);
@@ -15,7 +15,6 @@ void setToolBar(UIToolbar *toolbar);
 void setupTabbar(void);
 void resetTabBar(void);
 void setupHeaderFooterView(UITableViewHeaderFooterView *view, UITableView *tableView);
-void setupNewDialogCellForNightTheme(NewDialogCell *dialogCell);
 
 void performInitialCellSetup(UITableViewCell *cell);
 void setupAudioPlayer(UIView *hostView, UIColor *color);
@@ -38,14 +37,10 @@ void hideFastButtonForController(VKMBrowserController *browserController);
 void setupExtraSettingsController(VKMTableController *controller);
 void setupExtraSettingsCell(UITableViewCell *cell);
 
-void setupNightSeparatorForView(UIView *view);
-void setupNightTextField(UITextField *textField);
-
 void setupNewSearchBar(VKSearchBar *searchBar, UIColor *tintColor, UIColor *blurTone, UIBlurEffectStyle blurStyle);
 void resetNewSearchBar(VKSearchBar *searchBar);
 
 UIVisualEffectView *blurForView(UIView *view, NSInteger tag);
-NSAttributedString *attributedStringForNightTheme(NSAttributedString * text);
 
 void setupNewDialogsSearchController(DialogsSearchResultsController *controller);
 void updateControllerBlurInfo(UIViewController *controller);

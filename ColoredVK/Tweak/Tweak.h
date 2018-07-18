@@ -20,6 +20,7 @@
 #import "VKControllers.h"
 
 #import "TweakFunctions.h"
+#import "TweakNightFunctions.h"
 #import "TweakVariables.h"
 
 #import "CaptainHook/CaptainHook.h"

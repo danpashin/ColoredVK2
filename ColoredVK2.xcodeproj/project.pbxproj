@@ -459,6 +459,10 @@
 		A599A8311EA140F600D747D7 /* ColoredVKGeneralPrefs.m in Sources */ = {isa = PBXBuildFile; fileRef = A599A82D1EA140F600D747D7 /* ColoredVKGeneralPrefs.m */; };
 		A599A8321EA140F600D747D7 /* ColoredVKGeneralPrefs.m in Sources */ = {isa = PBXBuildFile; fileRef = A599A82D1EA140F600D747D7 /* ColoredVKGeneralPrefs.m */; };
 		A599A8331EA140F600D747D7 /* ColoredVKGeneralPrefs.m in Sources */ = {isa = PBXBuildFile; fileRef = A599A82D1EA140F600D747D7 /* ColoredVKGeneralPrefs.m */; };
+		A5A1E7C820FE90F4008E66AC /* TweakNightFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = A5A1E7C720FE90F4008E66AC /* TweakNightFunctions.m */; };
+		A5A1E7C920FE90F4008E66AC /* TweakNightFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = A5A1E7C720FE90F4008E66AC /* TweakNightFunctions.m */; };
+		A5A1E7CB20FE919D008E66AC /* TweakNightFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = A5A1E7CA20FE919B008E66AC /* TweakNightFunctions.h */; };
+		A5A1E7CC20FE919E008E66AC /* TweakNightFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = A5A1E7CA20FE919B008E66AC /* TweakNightFunctions.h */; };
 		A5A4E2CE1F250A520001102F /* ColoredVKWebViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5A4E2CC1F250A520001102F /* ColoredVKWebViewController.h */; };
 		A5A4E2CF1F250A520001102F /* ColoredVKWebViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5A4E2CC1F250A520001102F /* ColoredVKWebViewController.h */; };
 		A5A4E2D01F250A520001102F /* ColoredVKWebViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A5A4E2CC1F250A520001102F /* ColoredVKWebViewController.h */; };
@@ -874,6 +878,8 @@
 		A592BF4A1FA1F13700810F89 /* ColoredVKThemePrefsController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKThemePrefsController.m; sourceTree = "<group>"; };
 		A599A82C1EA140F600D747D7 /* ColoredVKGeneralPrefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKGeneralPrefs.h; sourceTree = "<group>"; };
 		A599A82D1EA140F600D747D7 /* ColoredVKGeneralPrefs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKGeneralPrefs.m; sourceTree = "<group>"; };
+		A5A1E7C720FE90F4008E66AC /* TweakNightFunctions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TweakNightFunctions.m; sourceTree = "<group>"; };
+		A5A1E7CA20FE919B008E66AC /* TweakNightFunctions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TweakNightFunctions.h; sourceTree = "<group>"; };
 		A5A4E2CC1F250A520001102F /* ColoredVKWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKWebViewController.h; sourceTree = "<group>"; };
 		A5A4E2CD1F250A520001102F /* ColoredVKWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKWebViewController.m; sourceTree = "<group>"; };
 		A5A4E2D61F250D0D0001102F /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
@@ -1172,6 +1178,8 @@
 				A50B3F8D20711C4F00A16F6C /* TweakVariables.m */,
 				A52147C2206F844400224F6B /* TweakFunctions.h */,
 				A5AF3CF91FDD2BC300638AC2 /* TweakFunctions.m */,
+				A5A1E7CA20FE919B008E66AC /* TweakNightFunctions.h */,
+				A5A1E7C720FE90F4008E66AC /* TweakNightFunctions.m */,
 				A5E1E08A206573AB00709696 /* ChatSwizzle.m */,
 				A54EBFC620F10C81008A20CF /* GroupsSwizzle.m */,
 				A54EBFC920F10CF6008A20CF /* SettingSwizzle.m */,
@@ -1586,6 +1594,7 @@
 				A558E5042052C33200F10FBB /* ColoredVKApplicationModel.h in Headers */,
 				A524342B20F63BFF000B06D2 /* ColoredVKColorPickerController.h in Headers */,
 				A528D8841DE9FCAF00B299C1 /* ColoredVKMainController.h in Headers */,
+				A5A1E7CB20FE919D008E66AC /* TweakNightFunctions.h in Headers */,
 				A524343D20F63C13000B06D2 /* ColoredVKPassChangeController.h in Headers */,
 				A524345620F63C28000B06D2 /* ColoredVKAnimatedButton.h in Headers */,
 				A5903F90201DDD5300951C53 /* LHAcvitityIndicator.h in Headers */,
@@ -1653,6 +1662,7 @@
 				A59270112087C74600027F72 /* ColoredVKShadowView.h in Headers */,
 				A51E68BA2033231400B72082 /* ColoredVKCardController.h in Headers */,
 				A5AC324E20F119A600AE11B0 /* ColoredVKColorPreview.h in Headers */,
+				A5A1E7CC20FE919E008E66AC /* TweakNightFunctions.h in Headers */,
 				A5739D5E1EA015A900367595 /* ColoredVKTextViewController.h in Headers */,
 				A5AC325420F119A600AE11B0 /* ColoredVKColorMapView.h in Headers */,
 				A5AC325820F119A600AE11B0 /* ColoredVKPrefsFooter.h in Headers */,
@@ -2229,6 +2239,7 @@
 				A524345B20F63C28000B06D2 /* ColoredVKStepperButton.m in Sources */,
 				A5D979671DAEB87900607F06 /* UIImage+ColoredVK.m in Sources */,
 				A5150F1320FCB4E40029F23E /* ColoredVKBadgeViewLayer.m in Sources */,
+				A5A1E7C820FE90F4008E66AC /* TweakNightFunctions.m in Sources */,
 				A54EBFCA20F10CF6008A20CF /* SettingSwizzle.m in Sources */,
 				A50D222F1DB16572007F195C /* NSDate+DateTools.m in Sources */,
 				A5AC321B20F118D100AE11B0 /* ColoredVKHUD.m in Sources */,
@@ -2347,6 +2358,7 @@
 				A5BC53B01F1234C200C4E1E0 /* ColoredVKAlertController.m in Sources */,
 				A576D1881DC621B90039884F /* UIColor+ColoredVK.m in Sources */,
 				A5E1E0892065713600709696 /* SystemSwizzle.m in Sources */,
+				A5A1E7C920FE90F4008E66AC /* TweakNightFunctions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
