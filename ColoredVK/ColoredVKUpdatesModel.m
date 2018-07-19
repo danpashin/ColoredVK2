@@ -88,7 +88,13 @@ static NSString *const kCVKUpdateTimeFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
         [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"UPDATE_NOW") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             NSURL *url = [NSURL URLWithString:self.downloadURL];
             UIApplication *application = [UIApplication sharedApplication];
-            if ([application canOpenURL:url]) [application openURL:url];
+            if ([application canOpenURL:url]) {
+                if (ios_available(10_0)) {
+                    [application openURL:url options:@{} completionHandler:nil];
+                } else {
+                    [application openURL:url];
+                }
+            }
         }]];
     }
     [alertController present];

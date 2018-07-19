@@ -21,6 +21,7 @@
 @end
 
 @implementation ColoredVKNetwork
+@synthesize defaultUserAgent = _defaultUserAgent;
 static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.network.error";
 
 + (instancetype)sharedNetwork
@@ -197,6 +198,9 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
         for (NSString *key in [dictParameters.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]) {
             [stringParameters appendFormat:@"%@=%@&", key, dictParameters[key]];
         }
+        
+        if ([stringParameters hasSuffix:@"&"])
+            [stringParameters replaceCharactersInRange:NSMakeRange(stringParameters.length-1, 1) withString:@""];
     } else if ([parameters isKindOfClass:[NSString class]]) {
         [stringParameters appendString:(NSString *)parameters];
     } else if (parameters) {
@@ -204,10 +208,6 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
             *error = [self errorWithCode:1001 description:@"Parameters class is invalid. Use NSDictionary or NSString."];
         return nil;
     }
-    
-    
-    if ([stringParameters hasSuffix:@"&"])
-        [stringParameters replaceCharactersInRange:NSMakeRange(stringParameters.length-1, 1) withString:@""];
     
     if ([method.uppercaseString isEqualToString:@"GET"])
         urlString = [urlString stringByAppendingString:[NSString stringWithFormat:@"?%@", stringParameters]];
@@ -218,26 +218,37 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]
                                                            cachePolicy:self.configuration.requestCachePolicy
                                                        timeoutInterval:self.configuration.timeoutIntervalForResource];
-    if ([method.uppercaseString isEqualToString:@"POST"])
+    
+    if ([method.uppercaseString isEqualToString:@"POST"]) {
         request.HTTPBody = [stringParameters dataUsingEncoding:NSUTF8StringEncoding];
+        [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    }
     
     request.HTTPMethod = method.uppercaseString;
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    
-#if TARGET_OS_IOS
-    NSString *deviceModelName = [UIDevice currentDevice].model;
-    NSString *systemVersion = [UIDevice currentDevice].systemVersion;
-#elif TARGET_OS_OSX
-    NSString *deviceModelName = @"macOS";
-    NSString *systemVersion = [NSProcessInfo processInfo].operatingSystemVersionString;
-#endif
-    
-    [request setValue:[NSString stringWithFormat:@"ColoredVK2/%@ (%@/%@ | %@/%@)", 
-                       kPackageVersion, [NSBundle mainBundle].bundleIdentifier, 
-                       [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], deviceModelName, 
-                       systemVersion] forHTTPHeaderField:@"User-Agent"];
+    [request setValue:self.defaultUserAgent forHTTPHeaderField:@"User-Agent"];
     
     return request;
+}
+
+- (NSString *)defaultUserAgent
+{
+    if (!_defaultUserAgent) {
+        
+#if TARGET_OS_IOS
+        NSString *deviceModelName = [UIDevice currentDevice].model;
+        NSString *systemVersion = [UIDevice currentDevice].systemVersion;
+#elif TARGET_OS_OSX
+        NSString *deviceModelName = @"macOS";
+        NSString *systemVersion = [NSProcessInfo processInfo].operatingSystemVersionString;
+#endif
+        
+        _defaultUserAgent = [NSString stringWithFormat:@"ColoredVK2/%@ (%@/%@ | %@/%@)", 
+                             kPackageVersion, [NSBundle mainBundle].bundleIdentifier, 
+                             [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], deviceModelName, 
+                             systemVersion];
+    }
+    
+    return _defaultUserAgent;
 }
 
 - (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler
