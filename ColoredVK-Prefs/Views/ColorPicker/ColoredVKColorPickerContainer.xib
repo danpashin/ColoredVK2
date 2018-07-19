@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14269.12" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14252.5"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="ColoredVKColorPickerContainer">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="w2W-3N-pgL" userLabel="Main Stack">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="WG1-X6-xPx" userLabel="Color Map Container">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="415"/>
+                            <subviews>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ur3-YY-HKR" customClass="ColoredVKColorMapView">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="391"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </view>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pmc-Qf-3yc" customClass="HRBrightnessSlider">
+                                    <rect key="frame" x="0.0" y="399" width="375" height="16"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="16" id="5N2-le-T5H"/>
+                                    </constraints>
+                                </view>
+                            </subviews>
+                        </stackView>
+                        <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X30-TN-U5q">
+                            <rect key="frame" x="0.0" y="423" width="375" height="90"/>
+                            <subviews>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dQK-i1-CRx" customClass="ColoredVKColorPreview">
+                                    <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="90" id="hgD-xo-2nG"/>
+                                        <constraint firstAttribute="width" constant="90" id="jvZ-It-3yK"/>
+                                    </constraints>
+                                </view>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zeg-1e-Hr2">
+                                    <rect key="frame" x="90" y="0.0" width="285" height="90"/>
+                                    <state key="normal" title="Button"/>
+                                </button>
+                            </subviews>
+                            <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
+                        </stackView>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="3sT-tD-UKL">
+                            <rect key="frame" x="0.0" y="521" width="375" height="146"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bfJ-Jx-c0b">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="26"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="26" id="VUK-M4-dOZ">
+                                            <variation key="heightClass=compact-widthClass=compact" constant="42"/>
+                                        </constraint>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="none" prefetchingEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ki6-L5-ju8">
+                                    <rect key="frame" x="0.0" y="26" width="375" height="120"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="90" id="rvw-tz-GwU"/>
+                                        <constraint firstAttribute="height" constant="120" id="sfO-B1-zeh"/>
+                                    </constraints>
+                                    <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="S1J-3R-ddH">
+                                        <size key="itemSize" width="50" height="50"/>
+                                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                        <inset key="sectionInset" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
+                                    </collectionViewFlowLayout>
+                                    <variation key="default">
+                                        <mask key="constraints">
+                                            <exclude reference="rvw-tz-GwU"/>
+                                        </mask>
+                                    </variation>
+                                    <variation key="heightClass=compact-widthClass=compact">
+                                        <mask key="constraints">
+                                            <include reference="rvw-tz-GwU"/>
+                                            <exclude reference="sfO-B1-zeh"/>
+                                        </mask>
+                                    </variation>
+                                </collectionView>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <variation key="heightClass=compact-widthClass=compact" spacing="8"/>
+                        </stackView>
+                    </subviews>
+                    <variation key="heightClass=compact-widthClass=compact" axis="horizontal"/>
+                </stackView>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="w2W-3N-pgL" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Wty-As-6se"/>
+                <constraint firstItem="w2W-3N-pgL" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="f0D-Lb-N1h"/>
+                <constraint firstItem="w2W-3N-pgL" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="sNX-gV-8OD"/>
+                <constraint firstAttribute="trailing" secondItem="w2W-3N-pgL" secondAttribute="trailing" id="tgc-fv-xey"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="brightnessSlider" destination="pmc-Qf-3yc" id="EzI-sU-P8Y"/>
+                <outlet property="colorMap" destination="Ur3-YY-HKR" id="uRv-OR-rFq"/>
+                <outlet property="colorMapStackView" destination="WG1-X6-xPx" id="kBb-OQ-Una"/>
+                <outlet property="colorPreview" destination="dQK-i1-CRx" id="SPK-W0-j2k"/>
+                <outlet property="colorPreviewHeightConstraint" destination="hgD-xo-2nG" id="ANS-go-cLn"/>
+                <outlet property="colorPreviewStackView" destination="X30-TN-U5q" id="7Si-ql-BUb"/>
+                <outlet property="colorPreviewWidthConstraint" destination="jvZ-It-3yK" id="kf5-mE-iN8"/>
+                <outlet property="mainStackView" destination="w2W-3N-pgL" id="QRi-I8-EoE"/>
+                <outlet property="saveColorButton" destination="Zeg-1e-Hr2" id="sTw-bR-1tV"/>
+                <outlet property="savedCollectionView" destination="Ki6-L5-ju8" id="oGT-Ah-uD6"/>
+                <outlet property="savedCollectionViewHeightConstraint" destination="sfO-B1-zeh" id="Gce-zD-WWZ"/>
+                <outlet property="savedCollectionViewWidthConstraint" destination="rvw-tz-GwU" id="wuN-nb-Rhm"/>
+                <outlet property="savedStackView" destination="3sT-tD-UKL" id="PmE-D8-31h"/>
+                <outlet property="savedTitleLabel" destination="bfJ-Jx-c0b" id="OMR-bw-0YJ"/>
+            </connections>
+            <point key="canvasLocation" x="24.5" y="51.5"/>
+        </view>
+    </objects>
+</document>
