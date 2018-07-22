@@ -173,7 +173,7 @@
     } else imageView.image = image;
 }
 
-- (void)downloadCoverWithCompletionBlock:( void(^)(UIImage *image, BOOL wasDownloaded) )block;
+- (void)downloadCoverWithCompletionBlock:( void(^)(UIImage *image, BOOL wasDownloaded) )block
 {
     if ((self.artist.length == 0) || (self.track.length == 0))
         return;

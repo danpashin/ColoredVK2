@@ -235,7 +235,7 @@
         UIImage *closeImage = CVKImage(@"CloseIcon");
         closeImage = [closeImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         navItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:closeImage style:UIBarButtonItemStylePlain target:self action:@selector(hide)];
-        navItem.rightBarButtonItem.accessibilityLabel = CVKLocalizedString(@"Dismiss");
+        navItem.rightBarButtonItem.accessibilityLabel = CVKLocalizedString(@"DISMISS");
         
         navigationBar.items = @[navItem];
         

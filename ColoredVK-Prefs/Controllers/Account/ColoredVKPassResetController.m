@@ -58,7 +58,7 @@
 #pragma mark ColoredVKTextFieldDelegate
 #pragma mark -
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     if ([textField isEqual:self.confPassTextField]) {
         NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];

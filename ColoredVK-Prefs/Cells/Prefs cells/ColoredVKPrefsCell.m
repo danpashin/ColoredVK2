@@ -99,6 +99,11 @@
     }
 }
 
+- (void)setCellEnabled:(BOOL)cellEnabled
+{
+    super.cellEnabled = YES;
+}
+
 #pragma mark -
 #pragma mark Getters
 #pragma mark -
@@ -147,6 +152,11 @@
 //    }
     
     return nil;
+}
+
+- (BOOL)cellEnabled
+{
+    return YES;
 }
 
 @end

@@ -9,7 +9,7 @@
 
 @implementation NSObject (ColoredVK)
 
-+ (void)cvk_runBlockOnMainThread:(void(^)(void))block;
++ (void)cvk_runBlockOnMainThread:(void(^)(void))block
 {
     if (!block)
         return; 

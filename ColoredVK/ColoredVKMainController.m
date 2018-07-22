@@ -101,6 +101,7 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
         self.menuCellSwitch = [ColoredVKSwitch new];
         self.menuCellSwitch.on = enabled;
         [self.menuCellSwitch addTarget:self action:@selector(switchTriggered) forControlEvents:UIControlEventValueChanged];
+        self.menuCellSwitch.accessibilityLabel = CVKLocalizedString(@"TWEAK_IS_ENABLED");
         [cell.contentView addSubview:self.menuCellSwitch];
         
         if (isNew3XClient) {
