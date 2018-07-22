@@ -7,9 +7,8 @@
 
 #import "ColoredVKPasscodeController.h"
 
-#import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKNightScheme.h"
 #import "_UIBackdropView.h"
-#import "PrefixHeader.h"
 
 @interface ColoredVKPasscodeController ()
 
@@ -28,7 +27,7 @@
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
-    if ([ColoredVKNightThemeColorScheme sharedScheme].enabled)
+    if ([ColoredVKNightScheme sharedScheme].enabled)
         return UIStatusBarStyleLightContent;
     
     return UIStatusBarStyleDefault;
@@ -50,14 +49,14 @@
 {
     [super viewDidLoad];
     
-    BOOL nightSchemeEnabled = [ColoredVKNightThemeColorScheme sharedScheme].enabled;
+    BOOL nightSchemeEnabled = [ColoredVKNightScheme sharedScheme].enabled;
     
     _UIBackdropViewStyle backgroundStyle = nightSchemeEnabled ? _UIBackdropViewStyleDark : _UIBackdropViewSettingsUltraLight;
     _UIBackdropView *backgroundView = [[_UIBackdropView alloc] initWithStyle:backgroundStyle];
     self.backgroundView = backgroundView;
     
     self.contentView = [ColoredVKPasscodeView viewForOwner:self];
-    self.contentView.titleLabel.text = CVKLocalizedStringInBundle(@"ENTER_PASSCODE", self.cvkBundle);
+    self.contentView.titleText = CVKLocalizedStringInBundle(@"ENTER_PASSCODE", self.cvkBundle);
     self.contentView.delegate = self;
     self.contentView.backgroundColor = [UIColor clearColor];
     
@@ -75,8 +74,7 @@
     if (nightSchemeEnabled) {
         self.contentView.tintColor = [UIColor colorWithWhite:1.0f alpha:0.9f];
     } else {
-        backgroundView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.5f];
-        self.contentView.tintColor = [UIColor colorWithRed:84/255.0f green:85/255.0f blue:85/255.0f alpha:1.0f];
+        self.contentView.tintColor = [UIColor colorWithWhite:0.2f alpha:1.0f];
     }
     
     [self setupConstraints];
@@ -94,6 +92,36 @@
     [self.contentView.bottomAnchor constraintEqualToAnchor:guide.bottomAnchor].active = YES;
     [self.contentView.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor].active = YES;
     [self.contentView.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor].active = YES; 
+}
+
++ (void)performFeedbackWithType:(UINotificationFeedbackType)type
+{
+    if (@available(iOS 10.0, *)) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UINotificationFeedbackGenerator *generator = [[UINotificationFeedbackGenerator alloc] init];
+            [generator prepare];
+            [generator notificationOccurred:type];
+        });
+    }
+}
+
+- (void)performFeedbackWithType:(UINotificationFeedbackType)type
+{
+    [self.class performFeedbackWithType:type];
+}
+
+#pragma mark -
+#pragma mark ColoredVKPasscodeViewDelegate
+#pragma mark -
+
+- (void)passcodeView:(ColoredVKPasscodeView *)passcodeView didUpdatedPasscode:(NSString *)passcode
+{
+    
+}
+
+- (void)passcodeView:(ColoredVKPasscodeView *)passcodeView didTapBottomButton:(UIButton *)button
+{
+    
 }
 
 @end

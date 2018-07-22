@@ -669,7 +669,7 @@ CHDeclareMethod(0, void, DiscoverFeedTitleView, layoutSubviews)
 {
     CHSuper(0, DiscoverFeedTitleView, layoutSubviews);
     
-    if (enabled && enabledBarColor && !enableNightTheme) {
+    if (enabled && enabledBarColor && !enableNightTheme && [self respondsToSelector:@selector(toolbar)]) {
         self.toolbar.barTintColor = barBackgroundColor;
         self.toolbar.tintColor = barForegroundColor;
     }

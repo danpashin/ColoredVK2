@@ -40,7 +40,6 @@
 "NEVER" = "Never";
 
 "SET_THIS_IMAGE_TO" = "Set this image to";
-"VKAPP_VERSION_IS_TOO_LOW" = "ColoredVK 2 doesn't support this app version (%@).\nPlease, install VK App %@ or later";
 
 "CONTINUE" = "Continue";
 
@@ -89,16 +88,25 @@
 "CHANGE_PASSWORD" = "Change password";
 "LOG_OUT_OF_ACCOUNT" = "Log out";
 "LOG_OUT_OF_ACCOUNT_ALERT" = "Log out";
-"SECURITY_SETTINGS" = "Security settings";
+"ACCOUNT_SECURITY" = "Account security";
 "NO_ACCOUNT_QUESTION" = "No account?";
+
+"MENU_ACCESS_PROTECTION" = "Menu access protection";
+"SET_MENU_PASSCODE" = "Set passcode";
+"CHANGE_MENU_PASSCODE" = "Change passcode";
+"REMOVE_MENU_PASSCODE" = "Remove passcode";
 
 "PASSWORD" = "Password";
 
-
-"ACCESS_TO_ACCOUNT_SETTINGS" = "Access to account settings";
+//  Защита биометрикой
+"ACCESS_TO_ENCRYPTED_MENU" = "Access to encrypted menu";
 "DELETE" = "Delete";
 "ENTER_PASSCODE" = "Enter passcode";
-
+"ENTER_NEW_PASSCODE" = "Enter new passcode";
+"ENTER_OLD_PASSCODE" = "Enter old passcode";
+"CONFIRM_PASSCODE" = "Confirm passcode";
+"INVALID_PASSCODE" = "Invalid passcode";
+"PASSCODES_DO_NOT_MATCH" = "Passcodes do not match. Try again";
 
 // О статусах аккаунта
 "YOUR_STATUS" = "Your status";
@@ -117,4 +125,3 @@
 "RESET_COLOR" = "Reset color?";
 "SHOW_HIDE_PASSWORD" = "Show or hide password";
 "SHARE_BACKUP" = "Share backup";
-

@@ -10,6 +10,7 @@
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKUserInfoView.h"
 #import "ColoredVKCardController.h"
+#import "ColoredVKPrefsCell.h"
 
 
 @interface ColoredVKAccountController (Actions)
@@ -23,12 +24,16 @@
 
 - (void)actionChangePassword;
 - (void)actionMoreAboutStatus;
-- (void)actionSetupSecurity;
 
+- (void)actionSetMenuPasscode;
+- (void)actionChangeMenuPasscode;
+- (void)actionRemoveMenuPasscode;
 @end
 
 
 @interface ColoredVKAccountController () <ColoredVKUserInfoViewDelegate>
+
+@property (assign, nonatomic) BOOL defaultPasswordIsSet;
 
 @property (strong, nonatomic) NSBundle *cvkBundle;
 @property (assign, nonatomic) BOOL controllerIsShown;
@@ -38,12 +43,15 @@
 @property (weak, nonatomic) ColoredVKUserModel *user;
 @property (strong, nonatomic) ColoredVKUserInfoView *infoHeaderView;
 
-@property (strong, nonatomic) IBOutlet UITableViewCell *statusCell;
-@property (strong, nonatomic) IBOutlet UITableViewCell *moreAboutCell;
-@property (strong, nonatomic) IBOutlet UITableViewCell *changePassCell;
-@property (strong, nonatomic) IBOutlet UITableViewCell *logoutCell;
-@property (strong, nonatomic) IBOutlet UITableViewCell *loginCell;
-@property (strong, nonatomic) IBOutlet UITableViewCell *registerCell;
-@property (strong, nonatomic) IBOutlet UITableViewCell *sectionSecurityCell;
+@property (strong, nonatomic) IBOutlet ColoredVKPrefsCell *statusCell;
+@property (strong, nonatomic) IBOutlet ColoredVKPrefsCell *moreAboutCell;
+@property (strong, nonatomic) IBOutlet ColoredVKPrefsCell *changePassCell;
+@property (strong, nonatomic) IBOutlet ColoredVKPrefsCell *logoutCell;
+@property (strong, nonatomic) IBOutlet ColoredVKPrefsCell *loginCell;
+@property (strong, nonatomic) IBOutlet ColoredVKPrefsCell *registerCell;
+
+@property (strong, nonatomic) IBOutlet ColoredVKPrefsCell *setMenuPasscodeCell;
+@property (strong, nonatomic) IBOutlet ColoredVKPrefsCell *changeMenuPasscodeCell;
+@property (strong, nonatomic) IBOutlet ColoredVKPrefsCell *removeMenuPasscodeCell;
 
 @end

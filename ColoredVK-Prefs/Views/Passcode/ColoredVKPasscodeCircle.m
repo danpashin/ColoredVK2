@@ -6,7 +6,6 @@
 //
 
 #import "ColoredVKPasscodeCircle.h"
-#import "PrefixHeader.h"
 
 @implementation ColoredVKPasscodeCircle
 

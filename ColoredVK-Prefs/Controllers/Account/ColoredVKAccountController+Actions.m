@@ -15,7 +15,7 @@
 #import "ColoredVKAuthPageController.h"
 #import <SafariServices/SafariServices.h>
 #import "ColoredVKPassChangeController.h"
-#import "ColoredVKSecurityController.h"
+#import "ColoredVKPasscodeUpdateController.h"
 
 
 @implementation ColoredVKAccountController (Actions)
@@ -196,10 +196,28 @@
     return attributedString;
 }
 
-- (void)actionSetupSecurity
+- (void)actionSetMenuPasscode
 {
-//    ColoredVKSecurityController *security = [ColoredVKSecurityController new];
-//    [self.navigationController pushViewController:security animated:YES];
+    [ColoredVKPasscodeUpdateController setNewPasscode:^(BOOL defaultPasswordIsSet) {
+        self.defaultPasswordIsSet = defaultPasswordIsSet;
+        [self.tableView reloadData];
+    }];
+}
+
+- (void)actionChangeMenuPasscode
+{
+    [ColoredVKPasscodeUpdateController updatePasscode:^(BOOL defaultPasswordIsSet) {
+        self.defaultPasswordIsSet = defaultPasswordIsSet;
+        [self.tableView reloadData];
+    }];
+}
+
+- (void)actionRemoveMenuPasscode
+{
+    [ColoredVKPasscodeUpdateController removePasscode:^(BOOL defaultPasswordIsSet) {
+        self.defaultPasswordIsSet = defaultPasswordIsSet;
+        [self.tableView reloadData];
+    }];
 }
 
 @end

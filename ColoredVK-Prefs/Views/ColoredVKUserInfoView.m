@@ -25,6 +25,16 @@
 
 @implementation ColoredVKUserInfoView
 
++ (ColoredVKUserInfoView *)defaultNibView
+{
+    id nibView = nil;
+    NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    NSArray *nibViews = [cvkBundle loadNibNamed:NSStringFromClass([self class]) owner:nibView options:nil];
+    nibView =  nibViews.firstObject;
+    
+    return nibView;
+}
+
 - (void)awakeFromNib
 {
     [super awakeFromNib];

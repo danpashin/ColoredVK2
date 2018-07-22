@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14269.12" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14252.5"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -16,11 +15,10 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L7H-vV-qj8">
-                    <rect key="frame" x="57.5" y="95.5" width="260" height="32"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L7H-vV-qj8">
+                    <rect key="frame" x="20" y="95.5" width="335" height="32"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="32" id="PNl-Gx-krt"/>
-                        <constraint firstAttribute="width" constant="260" id="YBf-OK-lfo"/>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="32" id="PNl-Gx-krt"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="21"/>
                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -40,7 +38,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="260" height="97"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AGV-hw-yex" customClass="ColoredVKPasscodeButton">
-                                    <rect key="frame" x="0.0" y="14" width="69.5" height="69"/>
+                                    <rect key="frame" x="0.0" y="14" width="69.5" height="69.5"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="AGV-hw-yex" secondAttribute="height" multiplier="1:1" id="b0P-DG-tf4"/>
                                     </constraints>
@@ -50,7 +48,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nXy-6g-C5C" customClass="ColoredVKPasscodeButton">
-                                    <rect key="frame" x="95.5" y="14" width="69" height="69"/>
+                                    <rect key="frame" x="95.5" y="14" width="69" height="69.5"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="nXy-6g-C5C" secondAttribute="height" multiplier="1:1" id="wvz-U2-Rfs"/>
                                     </constraints>
@@ -60,7 +58,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cI8-SP-hjL" customClass="ColoredVKPasscodeButton">
-                                    <rect key="frame" x="190.5" y="14" width="69.5" height="69"/>
+                                    <rect key="frame" x="190.5" y="14" width="69.5" height="69.5"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="cI8-SP-hjL" secondAttribute="height" multiplier="1:1" id="1F7-ZS-Uzl"/>
                                     </constraints>
@@ -145,7 +143,7 @@
                             <rect key="frame" x="0.0" y="291" width="260" height="97"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ipa-fj-fmp">
-                                    <rect key="frame" x="0.0" y="14" width="69.5" height="69"/>
+                                    <rect key="frame" x="0.0" y="13.5" width="69.5" height="69.5"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="ipa-fj-fmp" secondAttribute="height" multiplier="1:1" id="DbK-AF-YN2"/>
                                     </constraints>
@@ -155,7 +153,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JYG-c7-eHZ" customClass="ColoredVKPasscodeButton">
-                                    <rect key="frame" x="95.5" y="14" width="69" height="69"/>
+                                    <rect key="frame" x="95.5" y="13.5" width="69" height="69.5"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="JYG-c7-eHZ" secondAttribute="height" multiplier="1:1" id="eEC-K0-WxM"/>
                                     </constraints>
@@ -165,7 +163,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CQw-Ef-ojq">
-                                    <rect key="frame" x="190.5" y="14" width="69.5" height="69"/>
+                                    <rect key="frame" x="190.5" y="13.5" width="69.5" height="69.5"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="CQw-Ef-ojq" secondAttribute="height" multiplier="1:1" id="zWJ-js-rJs"/>
                                     </constraints>
@@ -229,7 +227,9 @@
                     <variation key="heightClass=regular-widthClass=regular" constant="32"/>
                 </constraint>
                 <constraint firstItem="DpA-Tt-Ghz" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Qi5-VF-arh"/>
+                <constraint firstAttribute="trailing" secondItem="L7H-vV-qj8" secondAttribute="trailing" constant="20" symbolic="YES" id="X3M-9G-I7G"/>
                 <constraint firstItem="0nw-jY-UYU" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="fwX-Qs-beT"/>
+                <constraint firstItem="L7H-vV-qj8" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" symbolic="YES" id="pYj-mC-EYt"/>
                 <constraint firstItem="0nw-jY-UYU" firstAttribute="top" secondItem="L7H-vV-qj8" secondAttribute="bottom" constant="16" id="x7p-4n-olj"/>
                 <constraint firstItem="DpA-Tt-Ghz" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="32" id="yjA-cb-hCH"/>
             </constraints>

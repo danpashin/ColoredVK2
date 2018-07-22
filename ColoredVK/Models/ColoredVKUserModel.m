@@ -10,8 +10,6 @@
 #import "ColoredVKWebViewController.h"
 #import "ColoredVKNetwork.h"
 
-#define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
-
 @interface ColoredVKNewInstaller ()
 extern NSString *__key;
 @property (weak, nonatomic) ColoredVKHUD *hud;
@@ -42,6 +40,7 @@ extern NSString *__key;
         [self setValue:[aDecoder decodeObjectForKey:@"email"] forKey:@"email"];
         [self setValue:[aDecoder decodeObjectForKey:@"name"] forKey:@"name"];
         [self setValue:[aDecoder decodeObjectForKey:@"accessToken"] forKey:@"accessToken"];
+        [self setValue:[aDecoder decodeObjectForKey:@"menuPasscode"] forKey:@"menuPasscode"];
     }
     return self;
 }
@@ -55,6 +54,7 @@ extern NSString *__key;
     [aCoder encodeObject:self.email forKey:@"email"];
     [aCoder encodeObject:self.name forKey:@"name"];
     [aCoder encodeObject:self.accessToken forKey:@"accessToken"];
+    [aCoder encodeObject:self.menuPasscode forKey:@"menuPasscode"];
 }
 
 - (instancetype)init
@@ -121,11 +121,11 @@ extern NSString *__key;
             self.email = response[@"email"] ? response[@"email"] : @"";
             self.accountStatus = purchased ? ColoredVKUserAccountStatusPaid : ColoredVKUserAccountStatusFree;
             
-            NSDictionary *licence = RSADecryptLicenceData(kDRMLicencePath, nil);
+            NSDictionary *licence = RSADecryptLicenceData(nil);
             NSMutableDictionary *dict = [licence mutableCopy];
             dict[@"purchased"] = @(purchased);
             dict[@"user"] = [NSKeyedArchiver archivedDataWithRootObject:self];
-            RSAEncryptAndWriteLicenceData(dict, kDRMLicencePath, nil);
+            RSAEncryptAndWriteLicenceData(dict, nil);
             
             POST_NOTIFICATION(kPackageNotificationReloadPrefsMenu);
             
@@ -207,7 +207,7 @@ extern NSString *__key;
         NSData *user = [NSKeyedArchiver archivedDataWithRootObject:self];
         NSDictionary *dict = @{@"Device":__deviceModel, @"purchased":purchased, @"user":user};
         NSError *writingError = nil;
-        RSAEncryptAndWriteLicenceData(dict, kDRMLicencePath, nil);
+        RSAEncryptAndWriteLicenceData(dict, nil);
         
         if (!writingError) {
             showAlertBlock(nil);

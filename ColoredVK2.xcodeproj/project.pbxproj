@@ -443,6 +443,56 @@
 		A589F66B1DE1B2F100467138 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A589F66A1DE1B2F100467138 /* MediaPlayer.framework */; };
 		A589F66C1DE1B2F800467138 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A589F66A1DE1B2F100467138 /* MediaPlayer.framework */; };
 		A58EBC132039CBB0007184C1 /* NSString+ColoredVK.m in Sources */ = {isa = PBXBuildFile; fileRef = A58F34121D5A378100838814 /* NSString+ColoredVK.m */; };
+		A58FE2D021031CF6007DF805 /* ColoredVKPasscodeController.h in Headers */ = {isa = PBXBuildFile; fileRef = A53A2DAE206B93BC00A22656 /* ColoredVKPasscodeController.h */; };
+		A58FE2D121031CF6007DF805 /* ColoredVKPasscodeController.m in Sources */ = {isa = PBXBuildFile; fileRef = A53A2DAF206B93BC00A22656 /* ColoredVKPasscodeController.m */; };
+		A58FE2D221031CF6007DF805 /* ColoredVKBiometry.h in Headers */ = {isa = PBXBuildFile; fileRef = A515A2CF2066582C007DCB1F /* ColoredVKBiometry.h */; };
+		A58FE2D321031CF6007DF805 /* ColoredVKBiometry.m in Sources */ = {isa = PBXBuildFile; fileRef = A515A2D02066582C007DCB1F /* ColoredVKBiometry.m */; };
+		A58FE2D421031CF7007DF805 /* ColoredVKPasscodeController.h in Headers */ = {isa = PBXBuildFile; fileRef = A53A2DAE206B93BC00A22656 /* ColoredVKPasscodeController.h */; };
+		A58FE2D521031CF7007DF805 /* ColoredVKPasscodeController.m in Sources */ = {isa = PBXBuildFile; fileRef = A53A2DAF206B93BC00A22656 /* ColoredVKPasscodeController.m */; };
+		A58FE2D621031CF7007DF805 /* ColoredVKBiometry.h in Headers */ = {isa = PBXBuildFile; fileRef = A515A2CF2066582C007DCB1F /* ColoredVKBiometry.h */; };
+		A58FE2D721031CF7007DF805 /* ColoredVKBiometry.m in Sources */ = {isa = PBXBuildFile; fileRef = A515A2D02066582C007DCB1F /* ColoredVKBiometry.m */; };
+		A58FE2D821031CF8007DF805 /* ColoredVKPasscodeController.h in Headers */ = {isa = PBXBuildFile; fileRef = A53A2DAE206B93BC00A22656 /* ColoredVKPasscodeController.h */; };
+		A58FE2D921031CF8007DF805 /* ColoredVKPasscodeController.m in Sources */ = {isa = PBXBuildFile; fileRef = A53A2DAF206B93BC00A22656 /* ColoredVKPasscodeController.m */; };
+		A58FE2DA21031CF8007DF805 /* ColoredVKBiometry.h in Headers */ = {isa = PBXBuildFile; fileRef = A515A2CF2066582C007DCB1F /* ColoredVKBiometry.h */; };
+		A58FE2DB21031CF8007DF805 /* ColoredVKBiometry.m in Sources */ = {isa = PBXBuildFile; fileRef = A515A2D02066582C007DCB1F /* ColoredVKBiometry.m */; };
+		A58FE2DC21031CF8007DF805 /* ColoredVKPasscodeController.h in Headers */ = {isa = PBXBuildFile; fileRef = A53A2DAE206B93BC00A22656 /* ColoredVKPasscodeController.h */; };
+		A58FE2DD21031CF8007DF805 /* ColoredVKPasscodeController.m in Sources */ = {isa = PBXBuildFile; fileRef = A53A2DAF206B93BC00A22656 /* ColoredVKPasscodeController.m */; };
+		A58FE2DE21031CF8007DF805 /* ColoredVKBiometry.h in Headers */ = {isa = PBXBuildFile; fileRef = A515A2CF2066582C007DCB1F /* ColoredVKBiometry.h */; };
+		A58FE2DF21031CF8007DF805 /* ColoredVKBiometry.m in Sources */ = {isa = PBXBuildFile; fileRef = A515A2D02066582C007DCB1F /* ColoredVKBiometry.m */; };
+		A58FE2E021031D09007DF805 /* ColoredVKPasscodeView.h in Headers */ = {isa = PBXBuildFile; fileRef = A53817FD20668EBC00B4EF4B /* ColoredVKPasscodeView.h */; };
+		A58FE2E121031D09007DF805 /* ColoredVKPasscodeView.m in Sources */ = {isa = PBXBuildFile; fileRef = A53817FE20668EBC00B4EF4B /* ColoredVKPasscodeView.m */; };
+		A58FE2E221031D09007DF805 /* ColoredVKPasscodeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A515A2D620668AF8007DCB1F /* ColoredVKPasscodeView.xib */; };
+		A58FE2E321031D09007DF805 /* ColoredVKPasscodeButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A53818032066981E00B4EF4B /* ColoredVKPasscodeButton.h */; };
+		A58FE2E421031D09007DF805 /* ColoredVKPasscodeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A53818042066981E00B4EF4B /* ColoredVKPasscodeButton.m */; };
+		A58FE2E521031D09007DF805 /* ColoredVKPasscodeCircle.h in Headers */ = {isa = PBXBuildFile; fileRef = A538180F2066B83C00B4EF4B /* ColoredVKPasscodeCircle.h */; };
+		A58FE2E621031D09007DF805 /* ColoredVKPasscodeCircle.m in Sources */ = {isa = PBXBuildFile; fileRef = A53818102066B83C00B4EF4B /* ColoredVKPasscodeCircle.m */; };
+		A58FE2E721031D0B007DF805 /* ColoredVKPasscodeView.h in Headers */ = {isa = PBXBuildFile; fileRef = A53817FD20668EBC00B4EF4B /* ColoredVKPasscodeView.h */; };
+		A58FE2E821031D0B007DF805 /* ColoredVKPasscodeView.m in Sources */ = {isa = PBXBuildFile; fileRef = A53817FE20668EBC00B4EF4B /* ColoredVKPasscodeView.m */; };
+		A58FE2E921031D0B007DF805 /* ColoredVKPasscodeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A515A2D620668AF8007DCB1F /* ColoredVKPasscodeView.xib */; };
+		A58FE2EA21031D0B007DF805 /* ColoredVKPasscodeButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A53818032066981E00B4EF4B /* ColoredVKPasscodeButton.h */; };
+		A58FE2EB21031D0B007DF805 /* ColoredVKPasscodeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A53818042066981E00B4EF4B /* ColoredVKPasscodeButton.m */; };
+		A58FE2EC21031D0B007DF805 /* ColoredVKPasscodeCircle.h in Headers */ = {isa = PBXBuildFile; fileRef = A538180F2066B83C00B4EF4B /* ColoredVKPasscodeCircle.h */; };
+		A58FE2ED21031D0B007DF805 /* ColoredVKPasscodeCircle.m in Sources */ = {isa = PBXBuildFile; fileRef = A53818102066B83C00B4EF4B /* ColoredVKPasscodeCircle.m */; };
+		A58FE2EE21031D0F007DF805 /* ColoredVKPasscodeView.h in Headers */ = {isa = PBXBuildFile; fileRef = A53817FD20668EBC00B4EF4B /* ColoredVKPasscodeView.h */; };
+		A58FE2EF21031D0F007DF805 /* ColoredVKPasscodeView.m in Sources */ = {isa = PBXBuildFile; fileRef = A53817FE20668EBC00B4EF4B /* ColoredVKPasscodeView.m */; };
+		A58FE2F021031D0F007DF805 /* ColoredVKPasscodeButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A53818032066981E00B4EF4B /* ColoredVKPasscodeButton.h */; };
+		A58FE2F121031D0F007DF805 /* ColoredVKPasscodeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A53818042066981E00B4EF4B /* ColoredVKPasscodeButton.m */; };
+		A58FE2F221031D0F007DF805 /* ColoredVKPasscodeCircle.h in Headers */ = {isa = PBXBuildFile; fileRef = A538180F2066B83C00B4EF4B /* ColoredVKPasscodeCircle.h */; };
+		A58FE2F321031D0F007DF805 /* ColoredVKPasscodeCircle.m in Sources */ = {isa = PBXBuildFile; fileRef = A53818102066B83C00B4EF4B /* ColoredVKPasscodeCircle.m */; };
+		A58FE2F421031D0F007DF805 /* ColoredVKPasscodeView.h in Headers */ = {isa = PBXBuildFile; fileRef = A53817FD20668EBC00B4EF4B /* ColoredVKPasscodeView.h */; };
+		A58FE2F521031D0F007DF805 /* ColoredVKPasscodeView.m in Sources */ = {isa = PBXBuildFile; fileRef = A53817FE20668EBC00B4EF4B /* ColoredVKPasscodeView.m */; };
+		A58FE2F621031D0F007DF805 /* ColoredVKPasscodeButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A53818032066981E00B4EF4B /* ColoredVKPasscodeButton.h */; };
+		A58FE2F721031D0F007DF805 /* ColoredVKPasscodeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A53818042066981E00B4EF4B /* ColoredVKPasscodeButton.m */; };
+		A58FE2F821031D0F007DF805 /* ColoredVKPasscodeCircle.h in Headers */ = {isa = PBXBuildFile; fileRef = A538180F2066B83C00B4EF4B /* ColoredVKPasscodeCircle.h */; };
+		A58FE2F921031D0F007DF805 /* ColoredVKPasscodeCircle.m in Sources */ = {isa = PBXBuildFile; fileRef = A53818102066B83C00B4EF4B /* ColoredVKPasscodeCircle.m */; };
+		A58FE2FC210321F4007DF805 /* ColoredVKPasscodeUpdateController.h in Headers */ = {isa = PBXBuildFile; fileRef = A58FE2FA210321F4007DF805 /* ColoredVKPasscodeUpdateController.h */; };
+		A58FE2FD210321F4007DF805 /* ColoredVKPasscodeUpdateController.h in Headers */ = {isa = PBXBuildFile; fileRef = A58FE2FA210321F4007DF805 /* ColoredVKPasscodeUpdateController.h */; };
+		A58FE2FE210321F4007DF805 /* ColoredVKPasscodeUpdateController.h in Headers */ = {isa = PBXBuildFile; fileRef = A58FE2FA210321F4007DF805 /* ColoredVKPasscodeUpdateController.h */; };
+		A58FE2FF210321F4007DF805 /* ColoredVKPasscodeUpdateController.h in Headers */ = {isa = PBXBuildFile; fileRef = A58FE2FA210321F4007DF805 /* ColoredVKPasscodeUpdateController.h */; };
+		A58FE300210321F4007DF805 /* ColoredVKPasscodeUpdateController.m in Sources */ = {isa = PBXBuildFile; fileRef = A58FE2FB210321F4007DF805 /* ColoredVKPasscodeUpdateController.m */; };
+		A58FE301210321F4007DF805 /* ColoredVKPasscodeUpdateController.m in Sources */ = {isa = PBXBuildFile; fileRef = A58FE2FB210321F4007DF805 /* ColoredVKPasscodeUpdateController.m */; };
+		A58FE302210321F4007DF805 /* ColoredVKPasscodeUpdateController.m in Sources */ = {isa = PBXBuildFile; fileRef = A58FE2FB210321F4007DF805 /* ColoredVKPasscodeUpdateController.m */; };
+		A58FE303210321F4007DF805 /* ColoredVKPasscodeUpdateController.m in Sources */ = {isa = PBXBuildFile; fileRef = A58FE2FB210321F4007DF805 /* ColoredVKPasscodeUpdateController.m */; };
 		A5903F90201DDD5300951C53 /* LHAcvitityIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = A5DA87BE1D944E1000763B5F /* LHAcvitityIndicator.h */; };
 		A5903F91201DDD5300951C53 /* LHBackgroundView.h in Headers */ = {isa = PBXBuildFile; fileRef = A5DA87C01D944E1000763B5F /* LHBackgroundView.h */; };
 		A5903F92201DDD5300951C53 /* LHProgressHUD.h in Headers */ = {isa = PBXBuildFile; fileRef = A5DA87C41D944E1000763B5F /* LHProgressHUD.h */; };
@@ -807,8 +857,6 @@
 		A53818162066CBF100B4EF4B /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		A53A2DAE206B93BC00A22656 /* ColoredVKPasscodeController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKPasscodeController.h; sourceTree = "<group>"; };
 		A53A2DAF206B93BC00A22656 /* ColoredVKPasscodeController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKPasscodeController.m; sourceTree = "<group>"; };
-		A53A2E55206BC4E000A22656 /* ColoredVKSecurityController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKSecurityController.h; sourceTree = "<group>"; };
-		A53A2E56206BC4E000A22656 /* ColoredVKSecurityController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKSecurityController.m; sourceTree = "<group>"; };
 		A53A2E65206BC8B200A22656 /* ColoredVKAccountController+Actions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ColoredVKAccountController+Actions.h"; sourceTree = "<group>"; };
 		A53A2E66206BC8B200A22656 /* ColoredVKAccountController+Actions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ColoredVKAccountController+Actions.m"; sourceTree = "<group>"; };
 		A53D12911D467016009567B5 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = SOURCE_ROOT; };
@@ -885,6 +933,8 @@
 		A58F34131D5A378100838814 /* NSString+ColoredVK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ColoredVK.h"; sourceTree = "<group>"; };
 		A58F341C1D5A3BBA00838814 /* UIImage+ColoredVK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ColoredVK.h"; sourceTree = "<group>"; };
 		A58F341D1D5A3BBA00838814 /* UIImage+ColoredVK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ColoredVK.m"; sourceTree = "<group>"; };
+		A58FE2FA210321F4007DF805 /* ColoredVKPasscodeUpdateController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKPasscodeUpdateController.h; sourceTree = "<group>"; };
+		A58FE2FB210321F4007DF805 /* ColoredVKPasscodeUpdateController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKPasscodeUpdateController.m; sourceTree = "<group>"; };
 		A592700D2087C74600027F72 /* ColoredVKShadowView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKShadowView.h; sourceTree = "<group>"; };
 		A592700E2087C74600027F72 /* ColoredVKShadowView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKShadowView.m; sourceTree = "<group>"; };
 		A592BF491FA1F13700810F89 /* ColoredVKThemePrefsController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKThemePrefsController.h; sourceTree = "<group>"; };
@@ -1291,8 +1341,6 @@
 				A5788A9D1EA0A5B600BC2B54 /* ColoredVKAccountController.m */,
 				A53A2E65206BC8B200A22656 /* ColoredVKAccountController+Actions.h */,
 				A53A2E66206BC8B200A22656 /* ColoredVKAccountController+Actions.m */,
-				A53A2E55206BC4E000A22656 /* ColoredVKSecurityController.h */,
-				A53A2E56206BC4E000A22656 /* ColoredVKSecurityController.m */,
 			);
 			path = Account;
 			sourceTree = "<group>";
@@ -1308,10 +1356,7 @@
 				A5739D5C1EA015A900367595 /* ColoredVKTextViewController.m */,
 				A510E7D31EF99CE9001D6798 /* ColoredVKSimpleAlertController.h */,
 				A510E7D41EF99CE9001D6798 /* ColoredVKSimpleAlertController.m */,
-				A53A2DAE206B93BC00A22656 /* ColoredVKPasscodeController.h */,
-				A53A2DAF206B93BC00A22656 /* ColoredVKPasscodeController.m */,
-				A515A2CF2066582C007DCB1F /* ColoredVKBiometry.h */,
-				A515A2D02066582C007DCB1F /* ColoredVKBiometry.m */,
+				A58FE30421032200007DF805 /* Passcode */,
 			);
 			path = Window;
 			sourceTree = "<group>";
@@ -1504,6 +1549,19 @@
 			path = Packaging;
 			sourceTree = "<group>";
 		};
+		A58FE30421032200007DF805 /* Passcode */ = {
+			isa = PBXGroup;
+			children = (
+				A53A2DAE206B93BC00A22656 /* ColoredVKPasscodeController.h */,
+				A53A2DAF206B93BC00A22656 /* ColoredVKPasscodeController.m */,
+				A515A2CF2066582C007DCB1F /* ColoredVKBiometry.h */,
+				A515A2D02066582C007DCB1F /* ColoredVKBiometry.m */,
+				A58FE2FA210321F4007DF805 /* ColoredVKPasscodeUpdateController.h */,
+				A58FE2FB210321F4007DF805 /* ColoredVKPasscodeUpdateController.m */,
+			);
+			path = Passcode;
+			sourceTree = "<group>";
+		};
 		A5B6ED0A1D3D659800383425 /* ColoredVK-Prefs */ = {
 			isa = PBXGroup;
 			children = (
@@ -1586,15 +1644,20 @@
 				A524341E20F63BEA000B06D2 /* ColoredVKSettingsController.h in Headers */,
 				A5CC382F2040169D005A3AB0 /* NSString+ColoredVK.h in Headers */,
 				A524342F20F63BFF000B06D2 /* ColoredVKSimpleAlertController.h in Headers */,
+				A58FE2F021031D0F007DF805 /* ColoredVKPasscodeButton.h in Headers */,
+				A58FE2F221031D0F007DF805 /* ColoredVKPasscodeCircle.h in Headers */,
 				A524344A20F63C1E000B06D2 /* ColoredVKColorCell.h in Headers */,
 				A5A4E2CE1F250A520001102F /* ColoredVKWebViewController.h in Headers */,
 				A524343920F63C13000B06D2 /* ColoredVKAccountRestoreController.h in Headers */,
+				A58FE2EE21031D0F007DF805 /* ColoredVKPasscodeView.h in Headers */,
 				A524345420F63C1E000B06D2 /* ColoredVKSegmentPrefsCell.h in Headers */,
 				A524345E20F63C28000B06D2 /* ColoredVKTextField.h in Headers */,
 				A523509F1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h in Headers */,
 				A5903F91201DDD5300951C53 /* LHBackgroundView.h in Headers */,
 				A524347C20F65DE7000B06D2 /* MessagingCenter.h in Headers */,
 				A524346420F63C28000B06D2 /* ColoredVKCellBackgroundView.h in Headers */,
+				A58FE2DE21031CF8007DF805 /* ColoredVKBiometry.h in Headers */,
+				A58FE2FC210321F4007DF805 /* ColoredVKPasscodeUpdateController.h in Headers */,
 				A524344E20F63C1E000B06D2 /* ColoredVKSwitchPrefsCell.h in Headers */,
 				A524342720F63BEF000B06D2 /* ColoredVKThemePrefsController.h in Headers */,
 				A5D2DFB51DE741CF00DCDC84 /* ColoredVKAudioCover.h in Headers */,
@@ -1602,6 +1665,7 @@
 				A524346820F63C32000B06D2 /* ColoredVKBackupsModel.h in Headers */,
 				A5903F92201DDD5300951C53 /* LHProgressHUD.h in Headers */,
 				A524344C20F63C1E000B06D2 /* ColoredVKControlPrefsCell.h in Headers */,
+				A58FE2DC21031CF8007DF805 /* ColoredVKPasscodeController.h in Headers */,
 				A524344520F63C19000B06D2 /* ColoredVKCollectionCardCell.h in Headers */,
 				A50D222E1DB16572007F195C /* NSDate+DateTools.h in Headers */,
 				A524341A20F63BEA000B06D2 /* ColoredVKAboutController.h in Headers */,
@@ -1669,6 +1733,7 @@
 			files = (
 				A5AC325020F119A600AE11B0 /* ColoredVKTextField.h in Headers */,
 				A54B9ED02064FAC50097B0C6 /* ColoredVKBackupsModel.h in Headers */,
+				A58FE2D421031CF7007DF805 /* ColoredVKPasscodeController.h in Headers */,
 				A52F515120FA007800835D37 /* ColoredVKSwitch.h in Headers */,
 				A599A82F1EA140F600D747D7 /* ColoredVKGeneralPrefs.h in Headers */,
 				A526A6C11DD50D4700B47104 /* ColoredVKAudioLyricsView.h in Headers */,
@@ -1679,6 +1744,7 @@
 				A50883B11FFA4E5E00C05E2A /* ColoredVKAuthPageController.h in Headers */,
 				A5AC325620F119A600AE11B0 /* ColoredVKCellBackgroundView.h in Headers */,
 				A5AC325220F119A600AE11B0 /* ColoredVKUserInfoView.h in Headers */,
+				A58FE2F621031D0F007DF805 /* ColoredVKPasscodeButton.h in Headers */,
 				A5A4E2D01F250A520001102F /* ColoredVKWebViewController.h in Headers */,
 				A576D1C21DC6222C0039884F /* ColoredVKMainPrefsController.h in Headers */,
 				A524341120F63BE4000B06D2 /* ColoredVKAlertController.h in Headers */,
@@ -1686,6 +1752,7 @@
 				A5F09D951F0FF88200024198 /* ColoredVKNewInstaller.h in Headers */,
 				A59270112087C74600027F72 /* ColoredVKShadowView.h in Headers */,
 				A51E68BA2033231400B72082 /* ColoredVKCardController.h in Headers */,
+				A58FE2D621031CF7007DF805 /* ColoredVKBiometry.h in Headers */,
 				A5AC324E20F119A600AE11B0 /* ColoredVKColorPreview.h in Headers */,
 				A5A1E7CC20FE919E008E66AC /* TweakNightFunctions.h in Headers */,
 				A5739D5E1EA015A900367595 /* ColoredVKTextViewController.h in Headers */,
@@ -1706,6 +1773,7 @@
 				A528D8851DE9FCAF00B299C1 /* ColoredVKMainController.h in Headers */,
 				A50177D1201F936000032A8D /* ColoredVKNavigationController.h in Headers */,
 				A52B8F3C1F991A2600898168 /* ColoredVKNightScheme.h in Headers */,
+				A58FE2F421031D0F007DF805 /* ColoredVKPasscodeView.h in Headers */,
 				A5AB327A1F34F8E100C7537C /* ColoredVKUpdatesPrefsController.h in Headers */,
 				A5739D761EA015C300367595 /* ColoredVKStepperPrefsCell.h in Headers */,
 				A53104C71EC4D08C003DEB83 /* ColoredVKWindowController.h in Headers */,
@@ -1724,9 +1792,11 @@
 				A5AC324C20F119A600AE11B0 /* ColoredVKStepperButton.h in Headers */,
 				A576D1DA1DC6222C0039884F /* LHBackgroundView.h in Headers */,
 				A54D2E072021EA44005F95E1 /* ColoredVKPassResetController.h in Headers */,
+				A58FE2FE210321F4007DF805 /* ColoredVKPasscodeUpdateController.h in Headers */,
 				A576D1DC1DC6222C0039884F /* LHProgressHUD.h in Headers */,
 				A5788A9F1EA0A5B600BC2B54 /* ColoredVKAccountController.h in Headers */,
 				A56147B81EA0140900B3D8C8 /* ColoredVKAboutController.h in Headers */,
+				A58FE2F821031D0F007DF805 /* ColoredVKPasscodeCircle.h in Headers */,
 				A576D1951DC621B90039884F /* PrefixHeader.pch in Headers */,
 				A50138DD201F2D070007300C /* ColoredVKAccountRestoreController.h in Headers */,
 				A57E080C2100A92A004F2331 /* ColoredVKColorPickerContainer.h in Headers */,
@@ -1754,7 +1824,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				A570305720CD1A3F0036FA8F /* ColoredVKMusicPrefs.h in Headers */,
+				A58FE2FD210321F4007DF805 /* ColoredVKPasscodeUpdateController.h in Headers */,
 				A5DB61CC1F10DBFF00FFAFF9 /* ColoredVKNewInstaller.h in Headers */,
+				A58FE2D821031CF8007DF805 /* ColoredVKPasscodeController.h in Headers */,
+				A58FE2DA21031CF8007DF805 /* ColoredVKBiometry.h in Headers */,
 				A52F515020FA007800835D37 /* ColoredVKSwitch.h in Headers */,
 				A5788A9E1EA0A5B600BC2B54 /* ColoredVKAccountController.h in Headers */,
 				A50177D0201F936000032A8D /* ColoredVKNavigationController.h in Headers */,
@@ -1797,6 +1870,7 @@
 				A56E89E41F31D31C0013BAE3 /* ColoredVKNetwork.h in Headers */,
 				A5B607CB1F0943C4003529AF /* ColoredVKUpdatesModel.h in Headers */,
 				A5739D651EA015B200367595 /* ColoredVKColorCell.h in Headers */,
+				A58FE2EA21031D0B007DF805 /* ColoredVKPasscodeButton.h in Headers */,
 				A5AB32791F34F8E100C7537C /* ColoredVKUpdatesPrefsController.h in Headers */,
 				A5A4E2CF1F250A520001102F /* ColoredVKWebViewController.h in Headers */,
 				A592BF4B1FA1F13700810F89 /* ColoredVKThemePrefsController.h in Headers */,
@@ -1814,10 +1888,12 @@
 				A5B1E29E1E509246001B8442 /* ColoredVKSettingsController.h in Headers */,
 				A5D979881DAEB8EA00607F06 /* UIImage+ColoredVK.h in Headers */,
 				A5AC324420F1199E00AE11B0 /* ColoredVKCellBackgroundView.h in Headers */,
+				A58FE2EC21031D0B007DF805 /* ColoredVKPasscodeCircle.h in Headers */,
 				A5AC323F20F1199E00AE11B0 /* ColoredVKUserInfoView.h in Headers */,
 				A51D53711F769E4000F6952A /* ColoredVKImageProcessor.h in Headers */,
 				A55D20A42033406C00C43454 /* ColoredVKCard.h in Headers */,
 				A5D979891DAEB8EA00607F06 /* UIColor+ColoredVK.h in Headers */,
+				A58FE2E721031D0B007DF805 /* ColoredVKPasscodeView.h in Headers */,
 				A50883B01FFA4E5E00C05E2A /* ColoredVKAuthPageController.h in Headers */,
 				A5AC323D20F1199E00AE11B0 /* ColoredVKTextField.h in Headers */,
 				A5D9798A1DAEB8EA00607F06 /* NSString+ColoredVK.h in Headers */,
@@ -1830,7 +1906,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				A50177D2201F936000032A8D /* ColoredVKNavigationController.h in Headers */,
+				A58FE2FF210321F4007DF805 /* ColoredVKPasscodeUpdateController.h in Headers */,
 				A5D56A591E70427300A8FFB5 /* ColoredVKMainPrefsController.h in Headers */,
+				A58FE2D021031CF6007DF805 /* ColoredVKPasscodeController.h in Headers */,
+				A58FE2D221031CF6007DF805 /* ColoredVKBiometry.h in Headers */,
 				A52F515220FA007800835D37 /* ColoredVKSwitch.h in Headers */,
 				A51D53731F769E4100F6952A /* ColoredVKImageProcessor.h in Headers */,
 				A54E41F71EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.h in Headers */,
@@ -1873,6 +1952,7 @@
 				A5BF98E320E42FFF0001A532 /* ColoredVKSegmentPrefsCell.h in Headers */,
 				A5385F9D20D28CA300C6386C /* NSObject+ColoredVK.h in Headers */,
 				A5B81EEC20238978005BD879 /* ColoredVKScrollViewController.h in Headers */,
+				A58FE2E321031D09007DF805 /* ColoredVKPasscodeButton.h in Headers */,
 				A56147B91EA0140900B3D8C8 /* ColoredVKAboutController.h in Headers */,
 				A570305920CD1A3F0036FA8F /* ColoredVKMusicPrefs.h in Headers */,
 				A5D56A7C1E70427300A8FFB5 /* LHAcvitityIndicator.h in Headers */,
@@ -1890,10 +1970,12 @@
 				A5AC323120F1199D00AE11B0 /* ColoredVKCellBackgroundView.h in Headers */,
 				A5AC322620F1199D00AE11B0 /* ColoredVKStepperButton.h in Headers */,
 				A5BC53AD1F1234C200C4E1E0 /* ColoredVKAlertController.h in Headers */,
+				A58FE2E521031D09007DF805 /* ColoredVKPasscodeCircle.h in Headers */,
 				A5D56A811E70427300A8FFB5 /* UIImage+ColoredVK.h in Headers */,
 				A5D56A821E70427300A8FFB5 /* UIColor+ColoredVK.h in Headers */,
 				A5F09D961F0FF88200024198 /* ColoredVKNewInstaller.h in Headers */,
 				A5AC322220F1199D00AE11B0 /* ColoredVKAnimatedButton.h in Headers */,
+				A58FE2E021031D09007DF805 /* ColoredVKPasscodeView.h in Headers */,
 				A55D209E20333DD200C43454 /* ColoredVKCollectionCardCell.h in Headers */,
 				A57D40D8208147B900CDC7DD /* ColoredVKUINotification.h in Headers */,
 				A5D56A851E70427300A8FFB5 /* NSString+ColoredVK.h in Headers */,
@@ -2066,6 +2148,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A58FE2E221031D09007DF805 /* ColoredVKPasscodeView.xib in Resources */,
 				A5D56ACF1E7043EF00A8FFB5 /* Launch Screen.storyboard in Resources */,
 				A55D209920332E5500C43454 /* ColoredVKMain.storyboard in Resources */,
 				A50883B81FFA504E00C05E2A /* ColoredVKAuth.storyboard in Resources */,
@@ -2080,6 +2163,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A58FE2E921031D0B007DF805 /* ColoredVKPasscodeView.xib in Resources */,
 				A5B5C82A202C9ABF00AA06B7 /* Images.xcassets in Resources */,
 				A5AC324120F1199E00AE11B0 /* ColoredVKUserInfoView.xib in Resources */,
 				A55D209820332E5500C43454 /* ColoredVKMain.storyboard in Resources */,
@@ -2200,6 +2284,7 @@
 			files = (
 				A5D3D06F1FE063D0007AAEF7 /* TweakNightTheme.m in Sources */,
 				A524344620F63C19000B06D2 /* ColoredVKCollectionCardCell.m in Sources */,
+				A58FE2F121031D0F007DF805 /* ColoredVKPasscodeButton.m in Sources */,
 				A5A4E2D21F250A520001102F /* ColoredVKWebViewController.m in Sources */,
 				A5210C951DE785C1004F7E11 /* LHAcvitityIndicator.m in Sources */,
 				A524341520F63BEA000B06D2 /* ColoredVKGeneralPrefs.m in Sources */,
@@ -2233,6 +2318,7 @@
 				A524346520F63C28000B06D2 /* ColoredVKCellBackgroundView.m in Sources */,
 				A5BC53AE1F1234C200C4E1E0 /* ColoredVKAlertController.m in Sources */,
 				A54249CA1E052A930018D3E3 /* ColoredVKAudioCover.m in Sources */,
+				A58FE300210321F4007DF805 /* ColoredVKPasscodeUpdateController.m in Sources */,
 				A524342820F63BEF000B06D2 /* ColoredVKThemePrefsController.m in Sources */,
 				A524347320F63E92000B06D2 /* ColoredVKFileSystem.m in Sources */,
 				A5D979631DAEB87900607F06 /* Tweak.m in Sources */,
@@ -2244,6 +2330,7 @@
 				A524343820F63C13000B06D2 /* ColoredVKAuthPageController.m in Sources */,
 				A558E5082052C33200F10FBB /* ColoredVKApplicationModel.m in Sources */,
 				A524348220F65E7F000B06D2 /* MessagingCenter.m in Sources */,
+				A58FE2F321031D0F007DF805 /* ColoredVKPasscodeCircle.m in Sources */,
 				A524342620F63BEF000B06D2 /* ColoredVKPrefsSelector.m in Sources */,
 				A56E89E71F31D31C0013BAE3 /* ColoredVKNetwork.m in Sources */,
 				A524342420F63BEA000B06D2 /* ColoredVKCardController.m in Sources */,
@@ -2254,6 +2341,7 @@
 				A50B3F8E20711C4F00A16F6C /* TweakVariables.m in Sources */,
 				A524343620F63C13000B06D2 /* ColoredVKScrollViewController.m in Sources */,
 				A524342120F63BEA000B06D2 /* ColoredVKMusicPrefs.m in Sources */,
+				A58FE2DF21031CF8007DF805 /* ColoredVKBiometry.m in Sources */,
 				A52B8F3D1F991A2600898168 /* ColoredVKNightScheme.m in Sources */,
 				A50883AA1FFA48BC00C05E2A /* ColoredVKUserModel.m in Sources */,
 				A524344420F63C19000B06D2 /* ColoredVKColorCollectionViewCell.m in Sources */,
@@ -2265,6 +2353,7 @@
 				A5A0174D2100CBF800571A1E /* ColoredVKColorPickerContainer.m in Sources */,
 				A524345120F63C1E000B06D2 /* ColoredVKImagePrefsCell.m in Sources */,
 				A52350A11DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m in Sources */,
+				A58FE2EF21031D0F007DF805 /* ColoredVKPasscodeView.m in Sources */,
 				A54EBFC720F10C81008A20CF /* GroupsSwizzle.m in Sources */,
 				A5E1E08B206573AB00709696 /* ChatSwizzle.m in Sources */,
 				A524345B20F63C28000B06D2 /* ColoredVKStepperButton.m in Sources */,
@@ -2285,6 +2374,7 @@
 				A524341720F63BEA000B06D2 /* ColoredVKMainPrefsController.m in Sources */,
 				A5E1E08120656BA300709696 /* AudioSwizzle.m in Sources */,
 				A536432B207BD5D000030DD7 /* NSObject+ColoredVK.m in Sources */,
+				A58FE2DD21031CF8007DF805 /* ColoredVKPasscodeController.m in Sources */,
 				A524341920F63BEA000B06D2 /* ColoredVKBlurPrefsController.m in Sources */,
 				A524342E20F63BFF000B06D2 /* ColoredVKTextViewController.m in Sources */,
 			);
@@ -2304,6 +2394,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A5F09D991F0FF88200024198 /* ColoredVKNewInstaller.m in Sources */,
+				A58FE2F921031D0F007DF805 /* ColoredVKPasscodeCircle.m in Sources */,
 				A576D1A31DC6220C0039884F /* NSString+ColoredVK.m in Sources */,
 				A54EBFC820F10C81008A20CF /* GroupsSwizzle.m in Sources */,
 				A5AC325520F119A600AE11B0 /* ColoredVKColorMapView.m in Sources */,
@@ -2314,7 +2405,9 @@
 				A501C28720DCE6E500750063 /* SystemNightTheme.m in Sources */,
 				A576D1A41DC6220C0039884F /* ColoredVKMainPrefsController.m in Sources */,
 				A5739D591EA0159700367595 /* ColoredVKColorPickerController.m in Sources */,
+				A58FE2F721031D0F007DF805 /* ColoredVKPasscodeButton.m in Sources */,
 				A57E080F2100A92A004F2331 /* ColoredVKColorPickerContainer.m in Sources */,
+				A58FE302210321F4007DF805 /* ColoredVKPasscodeUpdateController.m in Sources */,
 				A5D3D0701FE063D0007AAEF7 /* TweakNightTheme.m in Sources */,
 				A5BF98D420E407620001A532 /* ColoredVKSwitchPrefsCell.m in Sources */,
 				A5788AA21EA0A5B600BC2B54 /* ColoredVKAccountController.m in Sources */,
@@ -2365,6 +2458,7 @@
 				A5AC324D20F119A600AE11B0 /* ColoredVKStepperButton.m in Sources */,
 				A5E1E08C206573AB00709696 /* ChatSwizzle.m in Sources */,
 				A56147C31EA0157400B3D8C8 /* ColoredVKPrefs.m in Sources */,
+				A58FE2D721031CF7007DF805 /* ColoredVKBiometry.m in Sources */,
 				A5BF98CC20E3FF530001A532 /* ColoredVKPrefsCell.m in Sources */,
 				A5E1E0872065713100709696 /* SettingsSwizzle.m in Sources */,
 				A5AB327E1F34F8E100C7537C /* ColoredVKUpdatesPrefsController.m in Sources */,
@@ -2387,7 +2481,9 @@
 				A5150F1A20FCB6FA0029F23E /* ColoredVKMessageBubbleViewLayer.m in Sources */,
 				A54EBFCB20F10CF6008A20CF /* SettingSwizzle.m in Sources */,
 				A5AC324920F119A600AE11B0 /* ColoredVKAnimatedButton.m in Sources */,
+				A58FE2D521031CF7007DF805 /* ColoredVKPasscodeController.m in Sources */,
 				A5BC53B01F1234C200C4E1E0 /* ColoredVKAlertController.m in Sources */,
+				A58FE2F521031D0F007DF805 /* ColoredVKPasscodeView.m in Sources */,
 				A576D1881DC621B90039884F /* UIColor+ColoredVK.m in Sources */,
 				A5E1E0892065713600709696 /* SystemSwizzle.m in Sources */,
 				A5A1E7C920FE90F4008E66AC /* TweakNightFunctions.m in Sources */,
@@ -2414,10 +2510,12 @@
 				A524347420F63E92000B06D2 /* ColoredVKFileSystem.m in Sources */,
 				A5BC53AF1F1234C200C4E1E0 /* ColoredVKAlertController.m in Sources */,
 				A5D979C21DAEC1CB00607F06 /* LHAcvitityIndicator.m in Sources */,
+				A58FE2E821031D0B007DF805 /* ColoredVKPasscodeView.m in Sources */,
 				A5D979C31DAEC1CB00607F06 /* LHBackgroundView.m in Sources */,
 				A5AC323A20F1199E00AE11B0 /* ColoredVKStepperButton.m in Sources */,
 				A5480D6E20E4EDA3007CE28A /* ColoredVKControlPrefsCell.m in Sources */,
 				A51E68BC2033231400B72082 /* ColoredVKCardController.m in Sources */,
+				A58FE2ED21031D0B007DF805 /* ColoredVKPasscodeCircle.m in Sources */,
 				A56E89E81F31D31C0013BAE3 /* ColoredVKNetwork.m in Sources */,
 				A57E080E2100A92A004F2331 /* ColoredVKColorPickerContainer.m in Sources */,
 				A50138DF201F2D070007300C /* ColoredVKAccountRestoreController.m in Sources */,
@@ -2425,11 +2523,13 @@
 				A5B1E2A01E509246001B8442 /* ColoredVKSettingsController.m in Sources */,
 				A558E5092052C33200F10FBB /* ColoredVKApplicationModel.m in Sources */,
 				A524348320F65E7F000B06D2 /* MessagingCenter.m in Sources */,
+				A58FE2D921031CF8007DF805 /* ColoredVKPasscodeController.m in Sources */,
 				A5D979C71DAEC1CB00607F06 /* UIImage+ColoredVK.m in Sources */,
 				A5B81EED20238978005BD879 /* ColoredVKScrollViewController.m in Sources */,
 				A5D979C81DAEC1CB00607F06 /* UIColor+ColoredVK.m in Sources */,
 				A5739D601EA015A900367595 /* ColoredVKTextViewController.m in Sources */,
 				A5D979C91DAEC1CB00607F06 /* NSString+ColoredVK.m in Sources */,
+				A58FE2EB21031D0B007DF805 /* ColoredVKPasscodeButton.m in Sources */,
 				A57D40DA208147B900CDC7DD /* ColoredVKUINotification.m in Sources */,
 				A5F09DA21F0FFA5D00024198 /* SCDRM.m in Sources */,
 				A54E41F81EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */,
@@ -2440,6 +2540,7 @@
 				A50883B31FFA4E5E00C05E2A /* ColoredVKAuthPageController.m in Sources */,
 				A5AC324020F1199E00AE11B0 /* ColoredVKUserInfoView.m in Sources */,
 				A55D209F20333DD200C43454 /* ColoredVKCollectionCardCell.m in Sources */,
+				A58FE301210321F4007DF805 /* ColoredVKPasscodeUpdateController.m in Sources */,
 				A5739D781EA015C300367595 /* ColoredVKStepperPrefsCell.m in Sources */,
 				A56147BA1EA0140900B3D8C8 /* ColoredVKAboutController.m in Sources */,
 				A5BF98D320E407620001A532 /* ColoredVKSwitchPrefsCell.m in Sources */,
@@ -2454,6 +2555,7 @@
 				A592BF4E1FA1F13700810F89 /* ColoredVKThemePrefsController.m in Sources */,
 				A510E7D81EF99CE9001D6798 /* ColoredVKSimpleAlertController.m in Sources */,
 				A5BF98E420E42FFF0001A532 /* ColoredVKSegmentPrefsCell.m in Sources */,
+				A58FE2DB21031CF8007DF805 /* ColoredVKBiometry.m in Sources */,
 				A5AC321F20F1192C00AE11B0 /* ColoredVKImagePrefsCell.m in Sources */,
 				A50177D3201F936000032A8D /* ColoredVKNavigationController.m in Sources */,
 				A5AC323C20F1199E00AE11B0 /* ColoredVKColorPreview.m in Sources */,
@@ -2500,6 +2602,7 @@
 				A510E7DA1EF99CE9001D6798 /* ColoredVKSimpleAlertController.m in Sources */,
 				A51E68BE2033231400B72082 /* ColoredVKCardController.m in Sources */,
 				A5AB327F1F34F8E100C7537C /* ColoredVKUpdatesPrefsController.m in Sources */,
+				A58FE2D321031CF6007DF805 /* ColoredVKBiometry.m in Sources */,
 				A5AC323220F1199D00AE11B0 /* ColoredVKCellBackgroundView.m in Sources */,
 				A570305C20CD1A3F0036FA8F /* ColoredVKMusicPrefs.m in Sources */,
 				A5D56A9C1E70427300A8FFB5 /* ColoredVKSettingsController.m in Sources */,
@@ -2509,7 +2612,9 @@
 				A5A4E2D51F250A520001102F /* ColoredVKWebViewController.m in Sources */,
 				A5D9A6891FACDBD900403A49 /* ColoredVKPrefsSelector.m in Sources */,
 				A54D2E0B2021EA44005F95E1 /* ColoredVKPassResetController.m in Sources */,
+				A58FE303210321F4007DF805 /* ColoredVKPasscodeUpdateController.m in Sources */,
 				A54B9ED42064FAC50097B0C6 /* ColoredVKBackupsModel.m in Sources */,
+				A58FE2D121031CF6007DF805 /* ColoredVKPasscodeController.m in Sources */,
 				A5D56A9F1E70427300A8FFB5 /* UIColor+ColoredVK.m in Sources */,
 				A5AC322D20F1199D00AE11B0 /* ColoredVKUserInfoView.m in Sources */,
 				A524347620F65A7F000B06D2 /* ColoredVKFileSystem.m in Sources */,
@@ -2528,6 +2633,7 @@
 				A57D40DC208147B900CDC7DD /* ColoredVKUINotification.m in Sources */,
 				A5480D7020E4EDA3007CE28A /* ColoredVKControlPrefsCell.m in Sources */,
 				A5D56AD41E70440600A8FFB5 /* AppDelegate.m in Sources */,
+				A58FE2E121031D09007DF805 /* ColoredVKPasscodeView.m in Sources */,
 				A52F515620FA007800835D37 /* ColoredVKSwitch.m in Sources */,
 				A54E41FA1EA7E1A6009A64E1 /* ColoredVKBlurPrefsController.m in Sources */,
 				A56E89EA1F31D31C0013BAE3 /* ColoredVKNetwork.m in Sources */,
@@ -2538,8 +2644,10 @@
 				A5BF98CD20E3FF530001A532 /* ColoredVKPrefsCell.m in Sources */,
 				A5AC322920F1199D00AE11B0 /* ColoredVKColorPreview.m in Sources */,
 				A5D56AB21E70427300A8FFB5 /* ColoredVKHUD.m in Sources */,
+				A58FE2E421031D09007DF805 /* ColoredVKPasscodeButton.m in Sources */,
 				A50177D5201F936000032A8D /* ColoredVKNavigationController.m in Sources */,
 				A5480D6820E4CAE8007CE28A /* PSTableCellHook.m in Sources */,
+				A58FE2E621031D09007DF805 /* ColoredVKPasscodeCircle.m in Sources */,
 				A5B607D11F0943C4003529AF /* ColoredVKUpdatesModel.m in Sources */,
 				A5D56AB31E70427300A8FFB5 /* NSDate+DateTools.m in Sources */,
 				A5BC53B11F1234C200C4E1E0 /* ColoredVKAlertController.m in Sources */,

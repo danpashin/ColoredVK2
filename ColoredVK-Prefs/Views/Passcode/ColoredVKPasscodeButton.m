@@ -7,8 +7,7 @@
 
 #import "ColoredVKPasscodeButton.h"
 #import "UIImage+ColoredVK.h"
-#import "PrefixHeader.h"
-#import "ColoredVKNightThemeColorScheme.h"
+#import "ColoredVKNightScheme.h"
 #import <objc/runtime.h>
 
 @implementation ColoredVKPasscodeButton
@@ -29,11 +28,11 @@
 {
     [super tintColorDidChange];
     
-    BOOL nightSchemeEnabled = [ColoredVKNightThemeColorScheme sharedScheme].enabled;
+    BOOL nightSchemeEnabled = [ColoredVKNightScheme sharedScheme].enabled;
     UIColor *backgroundColor = [UIColor colorWithWhite:nightSchemeEnabled ? 0.0f : 1.0f alpha:1.0f];
-    [self setBackgroundImage:[UIImage imageWithColor:backgroundColor] forState:UIControlStateNormal];
+    [self setBackgroundImage:[UIImage cvk_imageWithColor:backgroundColor] forState:UIControlStateNormal];
     
-    [self setBackgroundImage:[UIImage imageWithColor:CVKAltColor] forState:UIControlStateHighlighted];
+    [self setBackgroundImage:[UIImage cvk_imageWithColor:CVKAltColor] forState:UIControlStateHighlighted];
     
     [self setTitleColor:self.tintColor forState:UIControlStateNormal];
     [self setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];

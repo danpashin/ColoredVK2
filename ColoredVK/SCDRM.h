@@ -10,8 +10,8 @@
 
 extern NSString *RSAEncryptServerString(NSString *string);
 extern NSDictionary *RSADecryptServerData(NSData *rawData, NSError *__autoreleasing *error);
-extern NSDictionary *RSADecryptLicenceData(NSString *licencePath, NSError *__autoreleasing *error);
-extern BOOL RSAEncryptAndWriteLicenceData(NSDictionary *licence, NSString *licencePath, NSError *__autoreleasing *error);
+extern NSDictionary *RSADecryptLicenceData(NSError *__autoreleasing *error);
+extern BOOL RSAEncryptAndWriteLicenceData(NSDictionary *licence, NSError *__autoreleasing *error);
 
 extern BOOL __suspiciousLibsDetected;
 extern BOOL __deviceIsJailed;

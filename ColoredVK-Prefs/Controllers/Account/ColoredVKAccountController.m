@@ -10,6 +10,7 @@
 
 #import "ColoredVKNightScheme.h"
 #import "ColoredVKPrefsCell.h"
+#import "COloredVKBiometry.h"
 
 #import <objc/runtime.h>
 #import <MXParallaxHeader.h>
@@ -44,9 +45,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.defaultPasswordIsSet = ColoredVKBiometry.defaultPasswordIsSet;
     
-    NSArray *nibViews = [self.cvkBundle loadNibNamed:NSStringFromClass([ColoredVKUserInfoView class]) owner:self options:nil];
-    self.infoHeaderView =  nibViews.firstObject;
+    self.infoHeaderView =  ColoredVKUserInfoView.defaultNibView;
     CGRect headerFrame = self.infoHeaderView.frame;
     headerFrame.size = CGSizeMake(CGRectGetWidth(self.tableView.frame), 176.0f);
     self.infoHeaderView.frame = headerFrame;
@@ -59,14 +60,6 @@
     self.tableView.separatorColor = [UIColor clearColor];
     
     [self updateJailHeaderView];
-    
-    self.loginCell.textLabel.text = CVKLocalizedStringInBundle(@"LOG_INTO_YOUR_ACCOUNT", self.cvkBundle);
-    self.registerCell.textLabel.text = CVKLocalizedStringInBundle(@"REGISTER", self.cvkBundle);
-    self.statusCell.textLabel.text = CVKLocalizedStringInBundle(@"ACCOUNT_STATUS", self.cvkBundle);
-    self.moreAboutCell.textLabel.text = CVKLocalizedStringInBundle(@"MORE_ABOUT_STATUS", self.cvkBundle);
-    self.changePassCell.textLabel.text = CVKLocalizedStringInBundle(@"CHANGE_PASSWORD", self.cvkBundle);
-    self.logoutCell.textLabel.text = CVKLocalizedStringInBundle(@"LOG_OUT_OF_ACCOUNT", self.cvkBundle);
-    self.sectionSecurityCell.textLabel.text = CVKLocalizedStringInBundle(@"SECTION_SECURITY", self.cvkBundle);
     
     CGRect accessoryViewFrame = CGRectMake(0.0f, 0.0f, 44.0f, 30.0f);
     UIView *contentAccessoryView = [[UIView alloc] initWithFrame:accessoryViewFrame];
@@ -156,12 +149,12 @@
     if (!self.user.authenticated)
         return 2;
     
-    return 3;
+    return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (self.user.authenticated && (section == 0 /*|| section == 1*/))
+    if (self.user.authenticated && (section == 0  || (section == 2 && self.defaultPasswordIsSet)))
         return 2;
     
     return 1;
@@ -178,13 +171,16 @@
                 cell = self.moreAboutCell;
             }
             
-        } else if (indexPath.section == 1) {
+        } else if (indexPath.section == 1 && indexPath.row == 0) {
+            cell = self.changePassCell;
+        } else if (indexPath.section == 2) {
             if (indexPath.row == 0) {
-                cell = self.changePassCell;
+                cell = self.defaultPasswordIsSet ? self.changeMenuPasscodeCell : self.setMenuPasscodeCell;
             } else if (indexPath.row == 1) {
-                cell = self.sectionSecurityCell;
+                cell = self.removeMenuPasscodeCell;
             }
-        } else if (indexPath.section == 2 && indexPath.row == 0) {
+        }
+        else if (indexPath.section == 3 && indexPath.row == 0) {
             cell = self.logoutCell;
         }
     } else {
@@ -196,11 +192,7 @@
     }
     
     if (!cell)
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
-    
-    cell.layoutMargins = UIEdgeInsetsMake(0.0f, 18.0f, 0.0f, 18.0f);
-    NIGHT_THEME_DISABLE_CUSTOMISATION(cell);
-    cell.backgroundColor = [UIColor clearColor];
+        cell = [[ColoredVKPrefsCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
     
     return cell;
 }
@@ -217,8 +209,12 @@
     }
     
     if (section == 1) {
-        NSString *key = self.user.authenticated ? @"SECURITY_SETTINGS" : @"NO_ACCOUNT_QUESTION";
+        NSString *key = self.user.authenticated ? @"ACCOUNT_SECURITY" : @"NO_ACCOUNT_QUESTION";
         return CVKLocalizedStringInBundle(key, self.cvkBundle);
+    }
+    
+    if (section == 2 && self.user.authenticated) {
+        return CVKLocalizedStringInBundle(@"MENU_ACCESS_PROTECTION", self.cvkBundle);
     }
     
     return @"";
@@ -231,6 +227,14 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(ColoredVKPrefsCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    cell.textLabel.adjustsFontSizeToFitWidth = YES;
+    cell.layoutMargins = UIEdgeInsetsMake(0.0f, 18.0f, 0.0f, 18.0f);
+    cell.textLabel.text = CVKLocalizedStringInBundle(cell.textLabel.text, self.cvkBundle);
+    
+    if (cell.accessoryType == UITableViewCellAccessoryDisclosureIndicator) {
+        cell.textLabel.textColor = CVKMainColor;
+    }
+    
     [cell renderBackgroundWithColor:nil separatorColor:nil forTableView:tableView indexPath:indexPath];
 }
 
@@ -247,8 +251,12 @@
         [self actionChangePassword];
     } else if ([cell isEqual:self.moreAboutCell]) {
         [self actionMoreAboutStatus];
-    } else if ([cell isEqual:self.sectionSecurityCell]) {
-        [self actionSetupSecurity];
+    } else if ([cell isEqual:self.setMenuPasscodeCell]) {
+        [self actionSetMenuPasscode];
+    } else if ([cell isEqual:self.changeMenuPasscodeCell]) {
+        [self actionChangeMenuPasscode];
+    } else if ([cell isEqual:self.removeMenuPasscodeCell]) {
+        [self actionRemoveMenuPasscode];
     }
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

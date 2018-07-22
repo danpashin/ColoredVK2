@@ -6,30 +6,59 @@
 //
 
 #import "ColoredVKBiometry.h"
-#import "PrefixHeader.h"
-
 #import <LocalAuthentication/LocalAuthentication.h>
-#import <AudioToolbox/AudioServices.h>
+#import "COloredVKNewInstaller.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface ColoredVKBiometry ()
 
 @property (strong, nonatomic) LAContext *authContext;
 
-@property (strong, nonatomic) NSString *passcode;
-@property (nonatomic, copy) void (^successBlock)(void);
-@property (nonatomic, copy) void (^failureBlock)(void);
+@property (copy, nonatomic) void (^successBlock)(void);
+@property (copy, nonatomic) void (^failureBlock)(void);
 
 @end
 
-@implementation ColoredVKBiometry
+__strong NSNumber *__biometryDefaultPasswordIsSet;
 
-+ (void)authenticateWithPasscode:(NSString *)passcode success:( void(^)(void) )successBlock failure:( void(^)(void) )failureBlock
+@implementation ColoredVKBiometry
+__strong NSString *__biometryPasscode;
+
++ (void)authenticateWithSuccess:( void(^)(void) )successBlock failure:( void(^_Nullable)(void) )failureBlock
 {
+    NSData *menuPasscodeData = [ColoredVKNewInstaller sharedInstaller].user.menuPasscode;
+    if (!menuPasscodeData) {
+        __biometryDefaultPasswordIsSet = @NO;
+        return;
+    }
+    
+    __biometryPasscode = [[NSString alloc] initWithData:menuPasscodeData encoding:NSUTF8StringEncoding];
+    if (!__biometryPasscode || __biometryPasscode.length == 0) {
+        __biometryDefaultPasswordIsSet = @NO;
+        return;
+    }
+    
     ColoredVKBiometry *biometry = [ColoredVKBiometry new];
     biometry.successBlock = [successBlock copy];
     biometry.failureBlock = [failureBlock copy];
-    biometry.passcode = passcode;
     [biometry show];
+}
+
++ (BOOL)defaultPasswordIsSet
+{
+    if (!__biometryDefaultPasswordIsSet) {
+        BOOL defaultPasswordIsSet = NO;
+        NSData *menuPasscodeData = [ColoredVKNewInstaller sharedInstaller].user.menuPasscode;
+        if (menuPasscodeData) {
+            NSString *stringPasscode = [[NSString alloc] initWithData:menuPasscodeData encoding:NSUTF8StringEncoding];
+            defaultPasswordIsSet = stringPasscode.length > 0;
+        }
+        
+        __biometryDefaultPasswordIsSet = @(defaultPasswordIsSet);
+    }
+    
+    return __biometryDefaultPasswordIsSet.boolValue;
 }
 
 - (instancetype)init
@@ -41,6 +70,8 @@
         _supportsTouchID = [self.authContext canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:nil];
         if (@available(iOS 11.0, *)) {
             _supportsFaceID = (self.authContext.biometryType == LABiometryTypeFaceID);
+            _supportsFaceID = (self.supportsFaceID && [self.cvkBundle objectForInfoDictionaryKey:@"NSFaceIDUsageDescription"]);
+            
             _supportsTouchID = (self.supportsTouchID && (self.authContext.biometryType == LABiometryTypeTouchID));
         }
     }
@@ -76,20 +107,12 @@
 #pragma mark Actions
 #pragma mark -
 
-- (void)tapticFeedbackWithType:(UINotificationFeedbackType)type
-{
-    if (@available(iOS 10.0, *)) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            UINotificationFeedbackGenerator *generator = [[UINotificationFeedbackGenerator alloc] init];
-            [generator prepare];
-            [generator notificationOccurred:type];
-        });
-    }
-}
-
 - (void)dismissWithSuccess
 {
+    [self performFeedbackWithType:UINotificationFeedbackTypeSuccess];
+    
     [self hide];
+    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if (self.successBlock)
             self.successBlock();
@@ -101,12 +124,12 @@
     if (!self.supportsTouchID && !self.supportsFaceID)
         return;
     
-    NSString *reson = CVKLocalizedStringInBundle(@"ACCESS_TO_ACCOUNT_SETTINGS", self.cvkBundle);
+    NSString *reson = CVKLocalizedStringInBundle(@"ACCESS_TO_ENCRYPTED_MENU", self.cvkBundle);
     [self.authContext evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics localizedReason:reson reply:^(BOOL success, NSError * _Nullable error) {
         if (!success) {
             if (error.code == -1) {
-                [self tapticFeedbackWithType:UINotificationFeedbackTypeError];
-                self.contentView.invalidPasscode = YES;
+                [self performFeedbackWithType:UINotificationFeedbackTypeError];
+                [self.contentView invalidate];
             }
             return;
         }
@@ -121,12 +144,11 @@
 
 - (void)passcodeView:(ColoredVKPasscodeView *)passcodeView didUpdatedPasscode:(NSString *)passcode
 {
-    if ([self.passcode isEqualToString:passcode]) {
-        [self tapticFeedbackWithType:UINotificationFeedbackTypeSuccess];
+    if ([__biometryPasscode isEqualToString:passcode]) {
          [self dismissWithSuccess];
     } else {
-        [self tapticFeedbackWithType:UINotificationFeedbackTypeError];
-        self.contentView.invalidPasscode = YES;
+        [self performFeedbackWithType:UINotificationFeedbackTypeError];
+        [self.contentView invalidate];
     }
 }
 
@@ -144,4 +166,12 @@
     }
 }
 
+- (void)dealloc
+{
+    __biometryPasscode = nil;
+}
+
 @end
+
+
+NS_ASSUME_NONNULL_END

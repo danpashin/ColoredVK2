@@ -13,8 +13,6 @@
 #import "ColoredVKUpdatesModel.h"
 #import "ColoredVKNetwork.h"
 
-#define kDRMLicencePath         [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
-
 
 @interface ColoredVKNewInstaller ()
 @property (weak, nonatomic) ColoredVKHUD *hud;
@@ -76,7 +74,7 @@ return;
         if (__suspiciousLibsDetected)
             return;
         
-        NSDictionary *dict = RSADecryptLicenceData(kDRMLicencePath, nil);
+        NSDictionary *dict = RSADecryptLicenceData(nil);
         if (!dict) {
             writeFreeLicenceAndReturn
         }
@@ -183,7 +181,7 @@ return;
     
     NSDictionary *dict = @{@"purchased" : @NO, @"Device" : __deviceModel, 
                            @"jailed" : @(__deviceIsJailed), @"udid" : __udid };
-    RSAEncryptAndWriteLicenceData(dict, kDRMLicencePath, nil);
+    RSAEncryptAndWriteLicenceData(dict, nil);
     
     [self downloadJBLicence];
 }
@@ -217,7 +215,7 @@ return;
         
         NSDictionary *dict = @{@"Device":__deviceModel, @"udid":__udid, @"jailed":@YES, @"purchased":@YES};
         NSError *writingError = nil;
-        RSAEncryptAndWriteLicenceData(dict, kDRMLicencePath, &writingError);
+        RSAEncryptAndWriteLicenceData(dict, &writingError);
         
         if (writingError)
             return;

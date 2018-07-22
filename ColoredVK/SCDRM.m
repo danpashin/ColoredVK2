@@ -20,6 +20,7 @@
 #import <sys/utsname.h>
 
 
+#define kDRMLicencePath [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
 
 NSString *const kDRMServerKey = @"ACBEBB5F70D0883E875DAA6E1C5C59ED";
 NSString *const KDRMErrorKey = @"ru.danpashin.coloredvk2.drm.error";
@@ -74,9 +75,9 @@ CVK_INLINE NSDictionary *RSADecryptServerData(NSData *rawData, NSError *__autore
 }
 
 
-CVK_INLINE NSDictionary *RSADecryptLicenceData(NSString *licencePath, NSError *__autoreleasing *error)
+CVK_INLINE NSDictionary *RSADecryptLicenceData(NSError *__autoreleasing *error)
 {
-    NSData *licenceData = [NSData dataWithContentsOfFile:licencePath];
+    NSData *licenceData = [NSData dataWithContentsOfFile:kDRMLicencePath];
     if (!licenceData) {
         if (error)
             *error = [NSError errorWithDomain:KDRMErrorKey code:0 userInfo:@{NSLocalizedDescriptionKey:@"Licence does not exist"}];
@@ -97,12 +98,12 @@ CVK_INLINE NSDictionary *RSADecryptLicenceData(NSString *licencePath, NSError *_
     return licence;
 }
 
-CVK_INLINE BOOL RSAEncryptAndWriteLicenceData(NSDictionary *licence, NSString *licencePath, NSError *__autoreleasing *error)
+CVK_INLINE BOOL RSAEncryptAndWriteLicenceData(NSDictionary *licence, NSError *__autoreleasing *error)
 {
     NSData *rawData = [NSKeyedArchiver archivedDataWithRootObject:licence];
     NSData *encryptedLicence = _performCryptOperation(kCCEncrypt, rawData, __cvkKey);
     
-    return cvk_writeData(encryptedLicence, licencePath, error);
+    return cvk_writeData(encryptedLicence, kDRMLicencePath, error);
 }
 
 

@@ -23,6 +23,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKUserAccountStatus)
 @property (strong, nonatomic) NSString *email;
 @property (strong, nonatomic) NSNumber *userID;
 @property (strong, nonatomic) NSString *accessToken;
+@property (strong, nonatomic) NSData *menuPasscode;
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_DESIGNATED_INITIALIZER;

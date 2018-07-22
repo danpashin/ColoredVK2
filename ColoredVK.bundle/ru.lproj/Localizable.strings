@@ -88,15 +88,25 @@
 "CHANGE_PASSWORD" = "Изменить пароль";
 "LOG_OUT_OF_ACCOUNT" = "Выйти из аккаунта";
 "LOG_OUT_OF_ACCOUNT_ALERT" = "Выйти";
-"SECURITY_SETTINGS" = "Настройки безопасности";
+"ACCOUNT_SECURITY" = "Безопасность аккаунта";
 "NO_ACCOUNT_QUESTION" = "Нет аккаунта?";
+
+"MENU_ACCESS_PROTECTION" = "Защита доступа к меню";
+"SET_MENU_PASSCODE" = "Установить код-пароль";
+"CHANGE_MENU_PASSCODE" = "Изменить код-пароль";
+"REMOVE_MENU_PASSCODE" = "Удалить код-пароль";
 
 "PASSWORD" = "Пароль";
 
-
-"ACCESS_TO_ACCOUNT_SETTINGS" = "Доступ к настройкам аккаунта";
+// Защита биометрикой
+"ACCESS_TO_ENCRYPTED_MENU" = "Доступ к защищённому меню";
 "DELETE" = "Стереть";
 "ENTER_PASSCODE" = "Введите код-пароль";
+"ENTER_NEW_PASSCODE" = "Введите новый код-пароль";
+"ENTER_OLD_PASSCODE" = "Введите старый код-пароль";
+"CONFIRM_PASSCODE" = "Подтвердите код-пароль";
+"INVALID_PASSCODE" = "Неверный код-пароль";
+"PASSCODES_DO_NOT_MATCH" = "Код-пароли не совпадают. Повторите ввод";
 
 // О статусах аккаунта
 "YOUR_STATUS" = "Ваш статус";

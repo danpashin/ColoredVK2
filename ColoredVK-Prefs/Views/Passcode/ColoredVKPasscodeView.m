@@ -6,13 +6,15 @@
 //
 
 #import "ColoredVKPasscodeView.h"
-#import "PrefixHeader.h"
 
 #import "ColoredVKPasscodeCircle.h"
 #import "ColoredVKPasscodeButton.h"
 
 @interface ColoredVKPasscodeView () <CAAnimationDelegate>
 
+@property (assign, nonatomic) BOOL invalidPasscode;
+
+@property (strong, nonatomic) IBOutlet UILabel *titleLabel;
 @property (strong, nonatomic) IBOutlet UIStackView *numbersStackView;
 @property (strong, nonatomic) IBOutlet UIStackView *circlesStackView;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *circlesStackWidthConstraint;
@@ -34,6 +36,8 @@
     
     self.maxDigits = 4;
     _passcode = [NSMutableString string];
+    
+    self.titleLabel.adjustsFontSizeToFitWidth = YES;
 }
 
 
@@ -103,36 +107,65 @@
     }
 }
 
+- (void)invalidate
+{
+    [self invalidateWithError:YES];
+}
+
+- (void)invalidateWithError:(BOOL)withError
+{
+    self.invalidPasscode = withError;
+    if (withError) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            for (NSUInteger i=0; i<self.maxDigits; i++) {
+                ColoredVKPasscodeCircle *circle = self.circlesStackView.subviews[i];
+                [circle setFilled:YES animated:NO];
+            }
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"position.x"];
+                animation.delegate = self;
+                CGFloat positionX = self.circlesStackView.layer.position.x;
+                animation.values = @[@(positionX - 5.0f), @(positionX), @(positionX + 5.0f)];
+                animation.repeatCount = 3.0f;
+                animation.duration = 0.07f;
+                animation.autoreverses = YES;
+                [self.circlesStackView.layer addAnimation:animation forKey:nil];
+            });
+        });
+    } else {
+        [self clearPasscode];
+    }
+}
+
+- (void)clearPasscode
+{
+    _invalidPasscode = NO;
+    for (NSUInteger i=0; i<self.maxDigits; i++) {
+        ColoredVKPasscodeCircle *circle = self.circlesStackView.subviews[i];
+        [circle setFilled:NO animated:YES];
+    }
+    [self.passcode setString:@""];
+    [self updateCancelButton];
+}
+
+
+- (void)setTitleText:(NSString *)text
+{
+    _titleText = text;
+    
+    void (^setBlock)(void) = ^{
+        [UIView transitionWithView:self.titleLabel duration:0.3f options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionTransitionCrossDissolve animations:^{
+            self.titleLabel.text = text;
+        } completion:nil];
+    };
+    
+    [NSThread isMainThread] ? setBlock() : dispatch_async(dispatch_get_main_queue(), setBlock);
+}
 
 #pragma mark -
 #pragma mark Setters
 #pragma mark -
-
-- (void)setInvalidPasscode:(BOOL)invalidPasscode
-{
-    _invalidPasscode = invalidPasscode;
-    
-    if (!self.invalidPasscode)
-        return;
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        for (NSUInteger i=0; i<self.maxDigits; i++) {
-            ColoredVKPasscodeCircle *circle = self.circlesStackView.subviews[i];
-            [circle setFilled:YES animated:NO];
-        }
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"position.x"];
-            animation.delegate = self;
-            CGFloat positionX = self.circlesStackView.layer.position.x;
-            animation.values = @[@(positionX - 5.0f), @(positionX), @(positionX + 5.0f)];
-            animation.repeatCount = 3.0f;
-            animation.duration = 0.07f;
-            animation.autoreverses = YES;
-            [self.circlesStackView.layer addAnimation:animation forKey:nil];
-        });
-    });
-}
 
 - (void)setMaxDigits:(NSUInteger)maxDigits
 {
@@ -168,13 +201,7 @@
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
 {
     if (self.invalidPasscode) {
-        _invalidPasscode = NO;
-        for (NSUInteger i=0; i<self.maxDigits; i++) {
-            ColoredVKPasscodeCircle *circle = self.circlesStackView.subviews[i];
-            [circle setFilled:NO animated:YES];
-        }
-        [self.passcode setString:@""];
-        [self updateCancelButton];
+        [self clearPasscode];
     }
 }
 
