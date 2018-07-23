@@ -35,7 +35,7 @@
             self.infoHeaderView.email = self.user.email;
             
             BOOL accountPaid = (self.user.accountStatus == ColoredVKUserAccountStatusPaid);
-            self.statusCell.detailTextLabel.text = CVKLocalizedStringInBundle(accountPaid ? @"PREMIUM" : @"FREE", self.cvkBundle);
+            self.statusCell.detailTextLabel.text = CVKLocalizedString(accountPaid ? @"PREMIUM" : @"FREE");
             self.statusCell.accessoryView.frame = accountPaid ? CGRectMake(0.0f, 0.0f, 44.0f, 30.0f) : CGRectZero;
             self.statusCell.accessoryView.hidden = !accountPaid;
             
@@ -64,18 +64,16 @@
         
         if (installerShouldOpenPrefs) {
             button.tintColor = self.infoHeaderView.backgroundColor;
-            button.text = CVKLocalizedStringInBundle(@"ACTIVATED_VIA_BIGBOSS", self.cvkBundle);
+            button.text = CVKLocalizedString(@"ACTIVATED_VIA_BIGBOSS");
         } else {
             button.tintColor = [UIColor colorWithRed:235/255.0f green:149/255.0f blue:50/255.0f alpha:1.0f];
-            button.text = CVKLocalizedStringInBundle(@"CANNOT_GET_JAIL_PURCHASE_INFO", self.cvkBundle);;
+            button.text = CVKLocalizedString(@"CANNOT_GET_JAIL_PURCHASE_INFO");;
             
             __weak typeof(self) weakSelf = self;
             button.selectHandler = ^{
-                NSString *errorText = CVKLocalizedStringInBundle(@"CANNOT_GET_JAIL_PURCHASE_INFO_DETAIL", weakSelf.cvkBundle);
-                ColoredVKAlertController *alert = [ColoredVKAlertController alertControllerWithTitle:@"" message:errorText 
-                                                                                      preferredStyle:UIAlertControllerStyleAlert];
-                [alert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"OK") style:UIAlertActionStyleCancel 
-                                                        handler:^(UIAlertAction *action) {}]];
+                NSString *errorText = CVKLocalizedString(@"CANNOT_GET_JAIL_PURCHASE_INFO_DETAIL");
+                ColoredVKAlertController *alert = [ColoredVKAlertController alertControllerWithTitle:@"" message:errorText];
+                [alert addCancelActionWithTitle:UIKitLocalizedString(@"OK")];
                 [alert presentFromController:weakSelf];
             };
         }
@@ -116,7 +114,7 @@
 {
     __weak typeof(self) weakSelf = self;
     ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedStringInBundle(@"LOG_OUT_OF_ACCOUNT_ALERT", self.cvkBundle)
+    [alertController addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"LOG_OUT_OF_ACCOUNT_ALERT")
                                                         style:UIAlertActionStyleDestructive 
                                                       handler:^(UIAlertAction * _Nonnull action) {
                                                           [[ColoredVKNewInstaller sharedInstaller].user logoutWithCompletionBlock:^{
@@ -142,30 +140,30 @@
 - (void)actionMoreAboutStatus
 {
     ColoredVKCard *freeCard = [ColoredVKCard new];
-    freeCard.title = CVKLocalizedStringInBundle(@"FREE", self.cvkBundle);
+    freeCard.title = CVKLocalizedString(@"FREE");
     freeCard.titleColor = [UIColor blackColor];
     freeCard.backgroundImage = CVKImageInBundle(@"DayBackground", self.cvkBundle);
     freeCard.backgroundColor = [UIColor colorWithRed:172/255.0f green:197/255.0f blue:226/255.0f alpha:1.0f];
-    NSString *freeText = CVKLocalizedStringInBundle(@"MORE_ABOUT_FREE_ACCOUNT", self.cvkBundle);
+    NSString *freeText = CVKLocalizedString(@"MORE_ABOUT_FREE_ACCOUNT");
     freeCard.attributedBody = [self attributedMoreString:freeText headerColor:[UIColor blackColor] 
                                                bodyColor:[UIColor colorWithWhite:0.1f alpha:1.0f]];
     
     ColoredVKCard *premiumCard = [ColoredVKCard new];
-    premiumCard.title = CVKLocalizedStringInBundle(@"PREMIUM", self.cvkBundle);
+    premiumCard.title = CVKLocalizedString(@"PREMIUM");
     premiumCard.backgroundColor = [UIColor colorWithRed:84/255.0f green:91/255.0f blue:135/255.0f alpha:1.0f];
     premiumCard.backgroundImage = CVKImageInBundle(@"NightBackground", self.cvkBundle);
-    NSString *premiumText = CVKLocalizedStringInBundle(@"MORE_ABOUT_PREMIUM_ACCOUNT", self.cvkBundle);
+    NSString *premiumText = CVKLocalizedString(@"MORE_ABOUT_PREMIUM_ACCOUNT");
     premiumCard.attributedBody = [self attributedMoreString:premiumText headerColor:[UIColor whiteColor] 
                                                   bodyColor:[UIColor colorWithWhite:1.0f alpha:0.9f]];
     
     if (self.user.accountStatus == ColoredVKUserAccountStatusFree) {
-        freeCard.detailTitle = CVKLocalizedStringInBundle(@"YOUR_STATUS", self.cvkBundle);
+        freeCard.detailTitle = CVKLocalizedString(@"YOUR_STATUS");
         freeCard.detailTitleColor = [UIColor colorWithRed:255/255.0f green:102/255.0f blue:0/255.0f alpha:1.0f];
-        premiumCard.buttonText = CVKLocalizedStringInBundle(@"BUY_PREMIUM", self.cvkBundle);
+        premiumCard.buttonText = CVKLocalizedString(@"BUY_PREMIUM");
         premiumCard.buttonTarget = self;
         premiumCard.buttonAction = @selector(actionPurchase);
     } else if (self.user.accountStatus == ColoredVKUserAccountStatusPaid) {
-        premiumCard.detailTitle = CVKLocalizedStringInBundle(@"YOUR_STATUS", self.cvkBundle);
+        premiumCard.detailTitle = CVKLocalizedString(@"YOUR_STATUS");
     }
     
     self.statusCardsController = [ColoredVKCardController new];

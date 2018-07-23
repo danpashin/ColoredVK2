@@ -23,10 +23,11 @@
 
 @implementation ColoredVKPasscodeView
 
-+ (instancetype)viewForOwner:(id)owner
++ (ColoredVKPasscodeView *)loadNib
 {
+    id nibOwner = nil;
     NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    NSArray *nibViews = [cvkBundle loadNibNamed:NSStringFromClass([self class]) owner:owner options:nil];
+    NSArray *nibViews = [cvkBundle loadNibNamed:NSStringFromClass([self class]) owner:nibOwner options:nil];
     return nibViews.firstObject;
 }
 
@@ -38,6 +39,7 @@
     _passcode = [NSMutableString string];
     
     self.titleLabel.adjustsFontSizeToFitWidth = YES;
+    [self.forgotPassButton setTitle:CVKLocalizedString(@"FORGOT_PASSWORD") forState:UIControlStateNormal];
 }
 
 
@@ -45,37 +47,41 @@
 #pragma mark Actions
 #pragma mark -
 
-- (IBAction)buttonPressed:(UIButton *)button
+- (IBAction)numericButtonPressed:(UIButton *)button
 {
-    if ([button isEqual:self.bottomRightButton]) {
-        if (self.passcode.length == 0) {
-            if ([self.delegate respondsToSelector:@selector(passcodeView:didTapBottomButton:)])
-                [self.delegate passcodeView:self didTapBottomButton:self.bottomRightButton];
-            return;
-        }
-        
-        [self.passcode deleteCharactersInRange:NSMakeRange(self.passcode.length-1, 1)];
-        [self updateCirclesByAddingChar:NO];
-    }
-    else if ([button isEqual:self.bottomLeftButton]) {
-        if ([self.delegate respondsToSelector:@selector(passcodeView:didTapBottomButton:)])
-            [self.delegate passcodeView:self didTapBottomButton:self.bottomLeftButton];
-        
-        return;
-    }
-    else if (self.passcode.length + 1 <= self.maxDigits) {
+    if (self.passcode.length + 1 <= self.maxDigits) {
         [self.passcode appendString:button.titleLabel.text];
         [self updateCirclesByAddingChar:YES];
         
         if (self.passcode.length == self.maxDigits) {
-            if ([self.delegate respondsToSelector:@selector(passcodeView:didUpdatedPasscode:)])
-                [self.delegate passcodeView:self didUpdatedPasscode:self.passcode];
-            
+            [self.delegate passcodeView:self didUpdatedPasscode:self.passcode];
             return;
         }
     }
     
     [self updateCancelButton];
+}
+
+- (IBAction)bottomButtonPressed:(UIButton *)button
+{
+    if ([button isEqual:self.bottomRightButton]) {
+        if (self.passcode.length == 0) {
+            [self.delegate passcodeView:self didTapBottomButton:self.bottomRightButton];
+            return;
+        }
+        
+        [self.passcode deleteCharactersInRange:NSMakeRange(self.passcode.length-1, 1)];
+        [self updateCirclesByAddingChar:NO];
+        [self updateCancelButton];
+    }
+    else if ([button isEqual:self.bottomLeftButton]) {
+        [self.delegate passcodeView:self didTapBottomButton:self.bottomLeftButton];
+    }
+}
+
+- (IBAction)forgotButtonPressed:(UIButton *)button
+{
+    [self.delegate passcodeView:self didTapForgotButton:self.forgotPassButton];
 }
 
 - (void)updateCirclesByAddingChar:(BOOL)addingChar
@@ -99,6 +105,7 @@
     [super tintColorDidChange];
     
     self.titleLabel.textColor = self.tintColor;
+    self.forgotPassButton.tintColor = self.tintColor;
     
     for (UIStackView *stackView in self.numbersStackView.arrangedSubviews) {
         for (UIButton *button in stackView.arrangedSubviews) {

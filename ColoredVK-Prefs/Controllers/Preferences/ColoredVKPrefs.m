@@ -382,7 +382,7 @@
 
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView
 {
-    NSString *text = self.cvkBundle ? CVKLocalizedStringInBundle(@"LOADING_TWEAK_FILES_ERROR_MESSAGE", self.cvkBundle) : @"";
+    NSString *text = self.cvkBundle ? CVKLocalizedString(@"LOADING_TWEAK_FILES_ERROR_MESSAGE") : @"";
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1],
                                  NSForegroundColorAttributeName: [UIColor darkGrayColor]};
     

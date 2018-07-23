@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14269.12" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14306.4" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14252.5"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14278.2"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -44,7 +44,7 @@
                                     </constraints>
                                     <state key="normal" title="1"/>
                                     <connections>
-                                        <action selector="buttonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="oY5-4K-NFr"/>
+                                        <action selector="numericButtonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="oY5-4K-NFr"/>
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nXy-6g-C5C" customClass="ColoredVKPasscodeButton">
@@ -54,7 +54,7 @@
                                     </constraints>
                                     <state key="normal" title="2"/>
                                     <connections>
-                                        <action selector="buttonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="In6-fA-9br"/>
+                                        <action selector="numericButtonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="In6-fA-9br"/>
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cI8-SP-hjL" customClass="ColoredVKPasscodeButton">
@@ -64,7 +64,7 @@
                                     </constraints>
                                     <state key="normal" title="3"/>
                                     <connections>
-                                        <action selector="buttonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="JoV-3j-QeP"/>
+                                        <action selector="numericButtonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="JoV-3j-QeP"/>
                                     </connections>
                                 </button>
                             </subviews>
@@ -79,7 +79,7 @@
                                     </constraints>
                                     <state key="normal" title="4"/>
                                     <connections>
-                                        <action selector="buttonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="Ka6-AM-oka"/>
+                                        <action selector="numericButtonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="Ka6-AM-oka"/>
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dCt-Ze-Bj3" customClass="ColoredVKPasscodeButton">
@@ -89,7 +89,7 @@
                                     </constraints>
                                     <state key="normal" title="5"/>
                                     <connections>
-                                        <action selector="buttonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="L2t-c4-oxL"/>
+                                        <action selector="numericButtonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="L2t-c4-oxL"/>
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3ng-BW-763" customClass="ColoredVKPasscodeButton">
@@ -99,7 +99,7 @@
                                     </constraints>
                                     <state key="normal" title="6"/>
                                     <connections>
-                                        <action selector="buttonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="g7l-Xb-W8w"/>
+                                        <action selector="numericButtonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="g7l-Xb-W8w"/>
                                     </connections>
                                 </button>
                             </subviews>
@@ -114,7 +114,7 @@
                                     </constraints>
                                     <state key="normal" title="7"/>
                                     <connections>
-                                        <action selector="buttonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="Ik6-MT-WEv"/>
+                                        <action selector="numericButtonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="Ik6-MT-WEv"/>
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ohk-QV-nKm" customClass="ColoredVKPasscodeButton">
@@ -124,7 +124,7 @@
                                     </constraints>
                                     <state key="normal" title="8"/>
                                     <connections>
-                                        <action selector="buttonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="2Ci-KW-QRr"/>
+                                        <action selector="numericButtonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="2Ci-KW-QRr"/>
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VDs-9j-Ib5" customClass="ColoredVKPasscodeButton">
@@ -134,7 +134,7 @@
                                     </constraints>
                                     <state key="normal" title="9"/>
                                     <connections>
-                                        <action selector="buttonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="Vu5-sQ-GOg"/>
+                                        <action selector="numericButtonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="Vu5-sQ-GOg"/>
                                     </connections>
                                 </button>
                             </subviews>
@@ -149,7 +149,7 @@
                                     </constraints>
                                     <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <connections>
-                                        <action selector="buttonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="eEm-bL-KxG"/>
+                                        <action selector="bottomButtonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="b05-nq-wM8"/>
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JYG-c7-eHZ" customClass="ColoredVKPasscodeButton">
@@ -159,7 +159,7 @@
                                     </constraints>
                                     <state key="normal" title="0"/>
                                     <connections>
-                                        <action selector="buttonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="Ic4-Ng-LPX"/>
+                                        <action selector="numericButtonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="Ic4-Ng-LPX"/>
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CQw-Ef-ojq">
@@ -168,7 +168,7 @@
                                         <constraint firstAttribute="width" secondItem="CQw-Ef-ojq" secondAttribute="height" multiplier="1:1" id="zWJ-js-rJs"/>
                                     </constraints>
                                     <connections>
-                                        <action selector="buttonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="2Gq-aK-fFC"/>
+                                        <action selector="bottomButtonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="x1M-cr-7xR"/>
                                     </connections>
                                 </button>
                             </subviews>
@@ -218,6 +218,16 @@
                         </mask>
                     </variation>
                 </stackView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EBj-Vh-bqN">
+                    <rect key="frame" x="20" y="603" width="91" height="44"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="Zz4-3q-2Xe"/>
+                    </constraints>
+                    <state key="normal" title="Forgot code?"/>
+                    <connections>
+                        <action selector="forgotButtonPressed:" destination="iN0-l3-epB" eventType="touchUpInside" id="yyR-cm-ORa"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="0.25364756579999997" green="0.49019491669999998" blue="0.83840852980000002" alpha="1" colorSpace="deviceRGB"/>
             <constraints>
@@ -228,7 +238,9 @@
                 </constraint>
                 <constraint firstItem="DpA-Tt-Ghz" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Qi5-VF-arh"/>
                 <constraint firstAttribute="trailing" secondItem="L7H-vV-qj8" secondAttribute="trailing" constant="20" symbolic="YES" id="X3M-9G-I7G"/>
+                <constraint firstItem="EBj-Vh-bqN" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="aLo-zt-hV2"/>
                 <constraint firstItem="0nw-jY-UYU" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="fwX-Qs-beT"/>
+                <constraint firstAttribute="bottom" secondItem="EBj-Vh-bqN" secondAttribute="bottom" constant="20" id="gdX-XJ-S9q"/>
                 <constraint firstItem="L7H-vV-qj8" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" symbolic="YES" id="pYj-mC-EYt"/>
                 <constraint firstItem="0nw-jY-UYU" firstAttribute="top" secondItem="L7H-vV-qj8" secondAttribute="bottom" constant="16" id="x7p-4n-olj"/>
                 <constraint firstItem="DpA-Tt-Ghz" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="32" id="yjA-cb-hCH"/>
@@ -238,6 +250,7 @@
                 <outlet property="bottomRightButton" destination="CQw-Ef-ojq" id="VqC-Vp-y6Z"/>
                 <outlet property="circlesStackView" destination="0nw-jY-UYU" id="NlP-Nb-Fia"/>
                 <outlet property="circlesStackWidthConstraint" destination="jy0-hv-fhu" id="X2t-Ah-Pjx"/>
+                <outlet property="forgotPassButton" destination="EBj-Vh-bqN" id="6iG-YW-Gjd"/>
                 <outlet property="numbersStackView" destination="DpA-Tt-Ghz" id="j0Y-Xm-Qxi"/>
                 <outlet property="titleLabel" destination="L7H-vV-qj8" id="9C4-es-msn"/>
             </connections>

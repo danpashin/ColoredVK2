@@ -81,7 +81,7 @@
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView
 {
     NSMutableAttributedString *string = [[super titleForEmptyDataSet:scrollView] mutableCopy];
-    string.mutableString.string = NSLocalizedStringFromTableInBundle(@"NO_FILES_TO_RESTORE", @"ColoredVK", self.cvkBundle, nil);
+    string.mutableString.string = CVKLocalizedStringFromTable(@"NO_FILES_TO_RESTORE", @"ColoredVK");
     UIFont *font =  [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     [string addAttribute:NSFontAttributeName value:font range:NSMakeRange(0, string.length)];
     
@@ -106,7 +106,7 @@
     [shareButton addTarget:self action:@selector(shareBackup:event:) forControlEvents:UIControlEventTouchUpInside];
     UIImage *shareImage = CVKImageInBundle(@"prefs/ShareIcon", self.cvkBundle);
     [shareButton setImage:shareImage forState:UIControlStateNormal];
-    shareButton.accessibilityLabel = CVKLocalizedStringInBundle(@"SHARE_BACKUP", self.cvkBundle);
+    shareButton.accessibilityLabel = CVKLocalizedString(@"SHARE_BACKUP");
     cell.accessoryView = shareButton;
     
     return cell;
@@ -144,11 +144,11 @@
     PSSpecifier *specifier = [self specifierAtIndexPath:indexPath];
     NSString *fileName = specifier.properties[@"filename"];
     
-    NSString *message = [NSString stringWithFormat:CVKLocalizedStringInBundle(@"RESTORE_BACKUP_QUESTION", self.cvkBundle), fileName];
+    NSString *message = [NSString stringWithFormat:CVKLocalizedString(@"RESTORE_BACKUP_QUESTION"), fileName];
     ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:nil message:message];
     [alertController addCancelAction];
     
-    NSString *sureTitle = CVKLocalizedStringInBundle(@"YES_I_AM_SURE", self.cvkBundle);
+    NSString *sureTitle = CVKLocalizedString(@"YES_I_AM_SURE");
     [alertController addAction:[UIAlertAction actionWithTitle:sureTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [self.backupsModel restoreSettingsFromFile:fileName];
     }]];

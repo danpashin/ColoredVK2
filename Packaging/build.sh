@@ -72,7 +72,7 @@ makeDEB () {
             ;;
     esac
     
-    sed -i '' "s/package_version/${APP_VERSION}/g" "$FOLDER_TO_PACK/Package/DEBIAN/control"
+    sed -i '' "s/PACKAGE_VERSION/${APP_VERSION}/g" "$FOLDER_TO_PACK/Package/DEBIAN/control"
     
     cp -r "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle"         "$FOLDER_TO_PACK/Package/Library/PreferenceBundles"
     cp "${BUILT_PRODUCTS_DIR}/ColoredVK2.dylib"             "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries"

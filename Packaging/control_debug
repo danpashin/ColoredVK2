@@ -1,7 +1,7 @@
 Package: com.daniilpashin.coloredvk2
 Name: ColoredVK 2 Beta
-Version: package_version
-Description: Change your VK App sense!
+Version: PACKAGE_VERSION
+Description: Твик изменяет дизайн VK App под ваш вкус
 Section: Tweaks
 Depends: firmware (>= 9.0), mobilesubstrate (>= 0.9.5000), preferenceloader, com.rpetrich.rocketbootstrap
 Architecture: iphoneos-arm
@@ -10,3 +10,4 @@ Maintainer: Daniil Pashin <admin@danpashin.ru>
 Icon: file:///Library/PreferenceBundles/ColoredVK2.bundle/Icon-big.png
 Depiction: https://danpashin.ru/repo/depictions?pack=ru.danpashin.coloredvk2
 Homepage: https://danpashin.ru/repo/depictions?pack=ru.danpashin.coloredvk2
+Tag: purpose::extension, compatible_min::ios9, compatible_max::ios12

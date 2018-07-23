@@ -107,6 +107,7 @@
 "CONFIRM_PASSCODE" = "Confirm passcode";
 "INVALID_PASSCODE" = "Invalid passcode";
 "PASSCODES_DO_NOT_MATCH" = "Passcodes do not match. Try again";
+"FORGOT_PASSCODE_DETAIL_MESSAGE" = "You can log out of your account, re-enter your username and password, then set up protection.";
 
 // О статусах аккаунта
 "YOUR_STATUS" = "Your status";

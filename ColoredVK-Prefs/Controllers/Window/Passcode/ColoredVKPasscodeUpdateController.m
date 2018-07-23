@@ -71,6 +71,7 @@ BOOL __oldMenuPasscodeValid = NO;
         __oldMenuPasscode = [[NSString alloc] initWithData:passcodeData encoding:NSUTF8StringEncoding];
     
     if (self.type == ColoredVKPasscodeUpdateControllerTypeNew) {
+        self.contentView.forgotPassButton.hidden = YES;
         self.contentView.titleText = CVKLocalizedString(@"ENTER_NEW_PASSCODE");
     } else if (self.type == ColoredVKPasscodeUpdateControllerTypeUpdate) {
         self.contentView.titleText = CVKLocalizedString(@"ENTER_OLD_PASSCODE");
@@ -146,6 +147,7 @@ BOOL __oldMenuPasscodeValid = NO;
                     self.contentView.titleText = CVKLocalizedString(@"ENTER_OLD_PASSCODE");
                 });
             } else {
+                self.contentView.forgotPassButton.hidden = YES;
                 [self.contentView invalidateWithError:NO];
                 self.contentView.titleText = CVKLocalizedString(@"ENTER_NEW_PASSCODE");
                 __oldMenuPasscodeValid = YES;

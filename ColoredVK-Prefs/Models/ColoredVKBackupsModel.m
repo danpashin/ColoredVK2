@@ -34,10 +34,10 @@
 
 - (void)resetSettings
 {
-    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:CVKLocalizedStringInBundle(@"WARNING", self.cvkBundle)
-                                                                                           message:CVKLocalizedStringInBundle(@"RESET_SETTINGS_QUESTION", self.cvkBundle)];
+    ColoredVKAlertController *alertController = [ColoredVKAlertController alertControllerWithTitle:CVKLocalizedString(@"WARNING")
+                                                                                           message:CVKLocalizedString(@"RESET_SETTINGS_QUESTION")];
     
-    NSString *resetTitle = [CVKLocalizedStringFromTableInBundle(@"RESET_SETTINGS", @"ColoredVK", self.cvkBundle) componentsSeparatedByString:@" "].firstObject;    
+    NSString *resetTitle = [CVKLocalizedStringFromTable(@"RESET_SETTINGS", @"ColoredVK") componentsSeparatedByString:@" "].firstObject;    
     [alertController addAction:[UIAlertAction actionWithTitle:resetTitle style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         ColoredVKHUD *hud = [ColoredVKHUD showHUD];
         

@@ -29,10 +29,10 @@
     self.passTextField.delegate = self;
     self.confPassTextField.delegate = self;
     
-    self.passTextField.placeholder = CVKLocalizedStringInBundle(@"ENTER_NEW_PASSWORD", self.cvkBundle);
-    self.confPassTextField.placeholder = CVKLocalizedStringInBundle(@"CONFIRM_NEW_PASSWORD", self.cvkBundle);
-    self.footerLabel.text = CVKLocalizedStringInBundle(@"PASSWORD_WARNING", self.cvkBundle);
-    self.changeButton.title = CVKLocalizedStringInBundle(@"CHANGE", self.cvkBundle);
+    self.passTextField.placeholder = CVKLocalizedString(@"ENTER_NEW_PASSWORD");
+    self.confPassTextField.placeholder = CVKLocalizedString(@"CONFIRM_NEW_PASSWORD");
+    self.footerLabel.text = CVKLocalizedString(@"PASSWORD_WARNING");
+    self.changeButton.title = CVKLocalizedString(@"CHANGE");
 }
 
 - (void)viewDidAppear:(BOOL)animated

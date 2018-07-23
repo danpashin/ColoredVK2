@@ -25,7 +25,7 @@
             if (allKeys.count > 0 && allValues.count > 0) {
                 for (NSUInteger i=0; i<allKeys.count; i++) {
                     @autoreleasepool {
-                        NSString *name = CVKLocalizedStringFromTableInBundle(allKeys[i],  @"ColoredVK", self.cvkBundle);
+                        NSString *name = CVKLocalizedStringFromTable(allKeys[i],  @"ColoredVK");
                         SEL setter = @selector(setPreferenceValue:specifier:);
                         SEL getter = @selector(readPreferenceValue:);
                         

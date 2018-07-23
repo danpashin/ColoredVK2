@@ -50,13 +50,13 @@
     self.passNewTextField.delegate = self;
     self.passNewConfTextField.delegate = self;
     
-    self.title = CVKLocalizedStringInBundle(@"CHANGE_PASSWORD_TITLE", self.cvkBundle);
-    self.currentPassTextField.placeholder = CVKLocalizedStringInBundle(@"ENTER_OLD_PASSWORD", self.cvkBundle);
-    self.passNewTextField.placeholder = CVKLocalizedStringInBundle(@"ENTER_NEW_PASSWORD", self.cvkBundle);
-    self.passNewConfTextField.placeholder = CVKLocalizedStringInBundle(@"CONFIRM_NEW_PASSWORD", self.cvkBundle);
-    self.footerLabel.text = CVKLocalizedStringInBundle(@"PASSWORD_WARNING", self.cvkBundle);
-    self.changeButton.title = CVKLocalizedStringInBundle(@"CHANGE_ALT", self.cvkBundle);
-    self.cancelButton.title = CVKLocalizedStringInBundle(@"CANCEL", self.cvkBundle);
+    self.title = CVKLocalizedString(@"CHANGE_PASSWORD_TITLE");
+    self.currentPassTextField.placeholder = CVKLocalizedString(@"ENTER_OLD_PASSWORD");
+    self.passNewTextField.placeholder = CVKLocalizedString(@"ENTER_NEW_PASSWORD");
+    self.passNewConfTextField.placeholder = CVKLocalizedString(@"CONFIRM_NEW_PASSWORD");
+    self.footerLabel.text = CVKLocalizedString(@"PASSWORD_WARNING");
+    self.changeButton.title = CVKLocalizedString(@"CHANGE_ALT");
+    self.cancelButton.title = CVKLocalizedString(@"CANCEL");
     
     if (ios_available(11.0)) {
         [self.stackView setCustomSpacing:24.0f afterView:self.currentPassTextField];

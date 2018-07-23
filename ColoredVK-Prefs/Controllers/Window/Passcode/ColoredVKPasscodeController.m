@@ -6,9 +6,11 @@
 //
 
 #import "ColoredVKPasscodeController.h"
+#import "ColoredVKAlertController.h"
 
 #import "ColoredVKNightScheme.h"
 #import "_UIBackdropView.h"
+#import "ColoredVKNewInstaller.h"
 
 @interface ColoredVKPasscodeController ()
 
@@ -55,8 +57,8 @@
     _UIBackdropView *backgroundView = [[_UIBackdropView alloc] initWithStyle:backgroundStyle];
     self.backgroundView = backgroundView;
     
-    self.contentView = [ColoredVKPasscodeView viewForOwner:self];
-    self.contentView.titleText = CVKLocalizedStringInBundle(@"ENTER_PASSCODE", self.cvkBundle);
+    self.contentView = [ColoredVKPasscodeView loadNib];
+    self.contentView.titleText = CVKLocalizedString(@"ENTER_PASSCODE");
     self.contentView.delegate = self;
     self.contentView.backgroundColor = [UIColor clearColor];
     
@@ -122,6 +124,20 @@
 - (void)passcodeView:(ColoredVKPasscodeView *)passcodeView didTapBottomButton:(UIButton *)button
 {
     
+}
+
+- (void)passcodeView:(ColoredVKPasscodeView *)passcodeView didTapForgotButton:(UIButton *)button
+{
+    ColoredVKAlertController *alert = [ColoredVKAlertController alertControllerWithTitle:button.titleLabel.text
+                                                                                 message:CVKLocalizedString(@"FORGOT_PASSCODE_DETAIL_MESSAGE")];
+    [alert addCancelAction];
+    [alert addAction:[UIAlertAction actionWithTitle:CVKLocalizedString(@"LOG_OUT_OF_ACCOUNT_ALERT") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        ColoredVKUserModel *user = [ColoredVKNewInstaller sharedInstaller].user;
+        [user logoutWithCompletionBlock:^{
+            [self hide];
+        }];
+    }]];
+    [alert present];
 }
 
 @end

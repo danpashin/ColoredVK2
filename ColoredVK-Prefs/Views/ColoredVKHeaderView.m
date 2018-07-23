@@ -31,7 +31,7 @@
         
         UILabel *subtitle = [[UILabel alloc] initWithFrame:CGRectZero];
         subtitle.font = [UIFont systemFontOfSize:14.0];
-        subtitle.text = @"Change your VK App sense!";
+        subtitle.text = CVKLocalizedString(@"Change VK App for yourself!");
         subtitle.backgroundColor = [UIColor clearColor];
         subtitle.textColor = [UIColor colorWithRed:52/255.0f green:138/255.0f blue:199/255.0f alpha:1.0f];
         subtitle.textAlignment = heading.textAlignment;

@@ -205,16 +205,16 @@
 - (nullable NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     if (section == 0) {
-        return CVKLocalizedStringFromTableInBundle(@"MANAGE_ACCOUNT", @"Main", self.cvkBundle);
+        return CVKLocalizedStringFromTable(@"MANAGE_ACCOUNT", @"Main");
     }
     
     if (section == 1) {
         NSString *key = self.user.authenticated ? @"ACCOUNT_SECURITY" : @"NO_ACCOUNT_QUESTION";
-        return CVKLocalizedStringInBundle(key, self.cvkBundle);
+        return CVKLocalizedString(key);
     }
     
     if (section == 2 && self.user.authenticated) {
-        return CVKLocalizedStringInBundle(@"MENU_ACCESS_PROTECTION", self.cvkBundle);
+        return CVKLocalizedString(@"MENU_ACCESS_PROTECTION");
     }
     
     return @"";
@@ -229,7 +229,7 @@
 {
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.layoutMargins = UIEdgeInsetsMake(0.0f, 18.0f, 0.0f, 18.0f);
-    cell.textLabel.text = CVKLocalizedStringInBundle(cell.textLabel.text, self.cvkBundle);
+    cell.textLabel.text = CVKLocalizedString(cell.textLabel.text);
     
     if (cell.accessoryType == UITableViewCellAccessoryDisclosureIndicator) {
         cell.textLabel.textColor = CVKMainColor;

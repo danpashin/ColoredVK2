@@ -41,12 +41,12 @@
     self.loginTextField.delegate = self;
     self.passTextField.delegate = self;
     
-    self.navigationItem.title = CVKLocalizedStringInBundle(@"COLOREDVK_AUTH", self.cvkBundle);
+    self.navigationItem.title = CVKLocalizedString(@"COLOREDVK_AUTH");
     self.navigationItem.backBarButtonItem.title = @"";
-    self.loginTextField.placeholder = CVKLocalizedStringInBundle(@"USERNAME", self.cvkBundle);
-    self.passTextField.placeholder = CVKLocalizedStringInBundle(@"PASSWORD", self.cvkBundle);
+    self.loginTextField.placeholder = CVKLocalizedString(@"USERNAME");
+    self.passTextField.placeholder = CVKLocalizedString(@"PASSWORD");
     
-    NSString *forgotPassString = CVKLocalizedStringInBundle(@"FORGOT_PASSWORD", self.cvkBundle);
+    NSString *forgotPassString = CVKLocalizedString(@"FORGOT_PASSWORD");
     [self.forgotPassFooterButton setTitle:forgotPassString forState:UIControlStateNormal];
 }
 

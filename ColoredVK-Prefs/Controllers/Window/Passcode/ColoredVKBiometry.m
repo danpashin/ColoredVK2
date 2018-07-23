@@ -124,7 +124,7 @@ __strong NSString *__biometryPasscode;
     if (!self.supportsTouchID && !self.supportsFaceID)
         return;
     
-    NSString *reson = CVKLocalizedStringInBundle(@"ACCESS_TO_ENCRYPTED_MENU", self.cvkBundle);
+    NSString *reson = CVKLocalizedString(@"ACCESS_TO_ENCRYPTED_MENU");
     [self.authContext evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics localizedReason:reson reply:^(BOOL success, NSError * _Nullable error) {
         if (!success) {
             if (error.code == -1) {

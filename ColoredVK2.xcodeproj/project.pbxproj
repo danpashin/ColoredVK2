@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 47;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -2121,7 +2121,7 @@
 				};
 			};
 			buildConfigurationList = A5079FAC1CC92157005B9693 /* Build configuration list for PBXProject "ColoredVK2" */;
-			compatibilityVersion = "Xcode 6.3";
+			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -2744,9 +2744,14 @@
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Packaging/Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_GENERATE_MAP_FILE = YES;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
+				LOCALIZED_STRING_MACRO_NAMES = (
+					NSLocalizedString,
+					CFLocalizedString,
+					CVKLocalizedString,
+					UIKitLocalizedString,
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
@@ -2913,9 +2918,14 @@
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Packaging/Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_GENERATE_MAP_FILE = YES;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
+				LOCALIZED_STRING_MACRO_NAMES = (
+					NSLocalizedString,
+					CFLocalizedString,
+					CVKLocalizedString,
+					UIKitLocalizedString,
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
@@ -3219,9 +3229,14 @@
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Packaging/Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_GENERATE_MAP_FILE = YES;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
+				LOCALIZED_STRING_MACRO_NAMES = (
+					NSLocalizedString,
+					CFLocalizedString,
+					CVKLocalizedString,
+					UIKitLocalizedString,
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
@@ -3389,9 +3404,14 @@
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Packaging/Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_GENERATE_MAP_FILE = YES;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
+				LOCALIZED_STRING_MACRO_NAMES = (
+					NSLocalizedString,
+					CFLocalizedString,
+					CVKLocalizedString,
+					UIKitLocalizedString,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
@@ -3519,9 +3539,14 @@
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Packaging/Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_GENERATE_MAP_FILE = YES;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
+				LOCALIZED_STRING_MACRO_NAMES = (
+					NSLocalizedString,
+					CFLocalizedString,
+					CVKLocalizedString,
+					UIKitLocalizedString,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;

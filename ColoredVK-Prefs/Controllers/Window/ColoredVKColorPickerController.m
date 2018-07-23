@@ -77,7 +77,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     UINavigationItem *navItem = self.contentViewNavigationBar.items.firstObject;
     UIImage *resetImage = [CVKImageInBundle(@"color_picker/ResetIcon", self.cvkBundle) imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     navItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:resetImage style:UIBarButtonItemStylePlain target:self action:@selector(actionResetColor)];
-    navItem.leftBarButtonItem.accessibilityLabel = CVKLocalizedStringFromTableInBundle(@"RESET_COLOR", nil, self.cvkBundle);
+    navItem.leftBarButtonItem.accessibilityLabel = CVKLocalizedString(@"RESET_COLOR");
     
     self.container = [ColoredVKColorPickerContainer loadNib];
     [self.contentView addSubview:self.container];
@@ -208,10 +208,10 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 - (void)actionResetColor
 {
-    ColoredVKAlertController *warningAlert = [ColoredVKAlertController alertControllerWithTitle:NSLocalizedStringFromTableInBundle(@"WARNING", nil, self.cvkBundle, nil)  
-                                                                                        message:NSLocalizedStringFromTableInBundle(@"RESET_COLOR_QUESTION", nil, self.cvkBundle, nil) 
+    ColoredVKAlertController *warningAlert = [ColoredVKAlertController alertControllerWithTitle:CVKLocalizedString(@"WARNING")  
+                                                                                        message:CVKLocalizedString(@"RESET_COLOR_QUESTION") 
                                                                                  preferredStyle:UIAlertControllerStyleAlert];
-    [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+    [warningAlert addCancelAction];
     [warningAlert addAction:[UIAlertAction actionWithTitle:UIKitLocalizedString(@"Delete") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         self.state = ColoredVKColorPickerStateReset;
         [self hide];
@@ -222,18 +222,17 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 - (void)actionShowHexWindow
 {
     ColoredVKSimpleAlertController *hexWindow = [[ColoredVKSimpleAlertController alloc] init];
-    hexWindow.textField.placeholder = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"EXAMPLE_ALERT_MESSAGE", nil, self.cvkBundle, nil), self.customColor.cvk_hexStringValue];
+    hexWindow.textField.placeholder = [NSString stringWithFormat:CVKLocalizedString(@"EXAMPLE_ALERT_MESSAGE"), self.customColor.cvk_hexStringValue];
     hexWindow.textField.delegate = self;
-    NSString *buttonTitle = NSLocalizedStringFromTableInBundle(@"COPY_SAVED", nil, self.cvkBundle, nil);
+    NSString *buttonTitle = CVKLocalizedString(@"COPY_SAVED");
     [hexWindow.button setTitle:buttonTitle forState:UIControlStateNormal];
     [hexWindow.button addTarget:self action:@selector(actionCopySavedHex) forControlEvents:UIControlEventTouchUpInside];
     [hexWindow.button setBackgroundImage:nil forState:UIControlStateNormal];
     [hexWindow.button setBackgroundImage:nil forState:UIControlStateHighlighted];
-    UIColor *titleColor = [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1.0f];
-    [hexWindow.button setTitleColor:titleColor forState:UIControlStateNormal];
-    [hexWindow.button setTitleColor:titleColor.cvk_darkerColor forState:UIControlStateHighlighted];
+    [hexWindow.button setTitleColor:CVKMainColor forState:UIControlStateNormal];
+    [hexWindow.button setTitleColor:CVKMainColor.cvk_darkerColor forState:UIControlStateHighlighted];
     
-    NSString *locString = NSLocalizedStringFromTableInBundle(@"ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE", nil, self.cvkBundle, nil);
+    NSString *locString = CVKLocalizedString(@"ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE");
     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:locString];
     
     NSRange rangeBefore = NSMakeRange(0, [locString substringToIndex:[locString rangeOfString:@"("].location].length );
@@ -359,7 +358,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView
 {
-    NSString *text = NSLocalizedStringFromTableInBundle(@"OH_YOU_HAVE_NOT_SAVED_COLORS", nil, self.cvkBundle, nil);
+    NSString *text = CVKLocalizedString(@"OH_YOU_HAVE_NOT_SAVED_COLORS");
     
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1],
                                  NSForegroundColorAttributeName: [UIColor lightGrayColor]};

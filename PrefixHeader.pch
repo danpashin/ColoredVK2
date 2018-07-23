@@ -19,11 +19,7 @@
 #define CVK_INLINE inline __attribute__((always_inline))
 
 
-#if __clang_major__ >= 9
 #define ios_available(version) @available(iOS version, *)
-#else
-#define ios_available(version) SYSTEM_VERSION_IS_MORE_THAN(version)
-#endif
 
 #define CVKMainColor    [UIColor colorWithRed:90/255.0f green:130/255.0f blue:180/255.0f alpha:1.0f]
 #define CVKAltColor     [UIColor colorWithRed:65/255.0f green:125/255.0f blue:214/255.0f alpha:1.0f]
@@ -70,10 +66,8 @@
 
 
 #define UIKitLocalizedString(key)             [[NSBundle bundleWithIdentifier:@"com.apple.UIKit"] localizedStringForKey:key value:@"" table:nil]
-#define CVKLocalizedStringFromTableInBundle(key, tbl, bndl) [bndl localizedStringForKey:key value:@"" table:tbl]
-#define CVKLocalizedStringFromTable(key, tbl) CVKLocalizedStringFromTableInBundle(key, tbl, [NSBundle bundleWithPath:CVK_BUNDLE_PATH])
+#define CVKLocalizedStringFromTable(key, tbl) [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] localizedStringForKey:key value:@"" table:tbl]
 #define CVKLocalizedString(key)               CVKLocalizedStringFromTable(key, nil)
-#define CVKLocalizedStringInBundle(key, bndl) CVKLocalizedStringFromTableInBundle(key, nil, bndl)
 
 #define CVKImageInBundle(imgName, bndl) [UIImage imageNamed:imgName inBundle:bndl compatibleWithTraitCollection:nil]
 #define CVKImage(imgName) CVKImageInBundle(imgName, [NSBundle bundleWithPath:CVK_BUNDLE_PATH])
