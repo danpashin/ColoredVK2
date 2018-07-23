@@ -266,7 +266,7 @@
 - (UIImage *)noCover
 {
     if (self.customCover) return [UIImage imageWithContentsOfFile:[CVK_FOLDER_PATH stringByAppendingString:@"/audioCoverImage.png"]];
-    else                  return CVKImageInBundle(@"CoverImage", self.cvkBundle);
+    else                  return CVKImage(@"CoverImage");
 }
 
 - (void)updatePrefs:(NSNotification *)notification
