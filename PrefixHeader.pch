@@ -69,8 +69,7 @@
 #define CVKLocalizedStringFromTable(key, tbl) [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] localizedStringForKey:(key) value:@"" table:tbl]
 #define CVKLocalizedString(key)               CVKLocalizedStringFromTable(key, nil)
 
-#define CVKImageInBundle(imgName, bndl) [UIImage imageNamed:imgName inBundle:bndl compatibleWithTraitCollection:nil]
-#define CVKImage(imgName) CVKImageInBundle(imgName, [NSBundle bundleWithPath:CVK_BUNDLE_PATH])
+#define CVKImage(imgName) [UIImage imageNamed:imgName inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil]
 
 #define IS_IPAD                               (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 #define SYSTEM_VERSION_IS_LESS_THAN(version)  ([[UIDevice currentDevice].systemVersion compare:@#version options:NSNumericSearch] != NSOrderedDescending)

@@ -2795,8 +2795,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8ED8B25B7678C3F78CD9D769 /* Pods-Prefs Application.debug_deb.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = VW97WHTS78;
 				ENABLE_TESTABILITY = YES;
@@ -2946,8 +2944,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DC148E507C43AEB0C99B19C2 /* Pods-Prefs Application.debug_ipa.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = VW97WHTS78;
 				ENABLE_TESTABILITY = YES;
@@ -3023,8 +3019,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 23AD9256D57C379E5BB2DC5C /* Pods-Prefs Application.release_deb.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = VW97WHTS78;
 				ENABLE_TESTABILITY = YES;
@@ -3042,8 +3036,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2E9DD8E99CAE49D51F6AF7AC /* Pods-Prefs Application.release_ipa.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = VW97WHTS78;
 				ENABLE_TESTABILITY = YES;
@@ -3194,8 +3186,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4FE661DDC731F752ABE4D040 /* Pods-Prefs Application.debug_app.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Marina Sotnileva (62DQNF58FV)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = VW97WHTS78;
 				ENABLE_TESTABILITY = YES;

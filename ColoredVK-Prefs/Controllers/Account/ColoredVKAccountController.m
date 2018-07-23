@@ -65,7 +65,7 @@
     UIView *contentAccessoryView = [[UIView alloc] initWithFrame:accessoryViewFrame];
     CGRect imageViewFrame = CGRectMake(14.0f, 0.0f, CGRectGetHeight(accessoryViewFrame), CGRectGetHeight(accessoryViewFrame));
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:imageViewFrame];
-    imageView.image = CVKImageInBundle(@"user/CrownIcon", self.cvkBundle);
+    imageView.image = CVKImage(@"user/CrownIcon");
     imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     imageView.tintColor = [UIColor colorWithRed:255/255.0f green:156/255.0f blue:60/255.0f alpha:1.0f];
     [contentAccessoryView addSubview:imageView];

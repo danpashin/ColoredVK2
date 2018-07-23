@@ -75,7 +75,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     [self.contentView addSubview:self.contentViewNavigationBar];
     
     UINavigationItem *navItem = self.contentViewNavigationBar.items.firstObject;
-    UIImage *resetImage = [CVKImageInBundle(@"color_picker/ResetIcon", self.cvkBundle) imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    UIImage *resetImage = [CVKImage(@"color_picker/ResetIcon") imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     navItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:resetImage style:UIBarButtonItemStylePlain target:self action:@selector(actionResetColor)];
     navItem.leftBarButtonItem.accessibilityLabel = CVKLocalizedString(@"RESET_COLOR");
     
@@ -353,7 +353,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 - (UIImage *)imageForEmptyDataSet:(UIScrollView *)scrollView
 {
-    return CVKImageInBundle(@"color_picker/WindowsIcon", self.cvkBundle);
+    return CVKImage(@"color_picker/WindowsIcon");
 }
 
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView

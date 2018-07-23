@@ -86,7 +86,7 @@ __strong NSString *__biometryPasscode;
         self.contentView.bottomLeftButton.alpha = 0.8f;
         
         NSString *imageName = self.supportsTouchID ? @"prefs/FingerprintIcon" : @"prefs/FaceIcon";
-        UIImage *image = CVKImageInBundle(imageName, self.cvkBundle);
+        UIImage *image = CVKImage(imageName);
         image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         [self.contentView.bottomLeftButton setImage:image forState:UIControlStateNormal];
     }

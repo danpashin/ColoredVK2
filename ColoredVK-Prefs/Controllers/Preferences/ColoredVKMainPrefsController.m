@@ -112,7 +112,7 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
         [contentView addSubview:footerLabel];
         
         UIButton *hideButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        UIImage *image = CVKImageInBundle(@"CloseIconAlt", self.cvkBundle);
+        UIImage *image = CVKImage(@"CloseIconAlt");
         [hideButton setImage:image forState:UIControlStateNormal];
         hideButton.accessibilityLabel = CVKLocalizedString(@"HIDE");
         [hideButton addTarget:self action:@selector(actionHideFreeVersionFooter) forControlEvents:UIControlEventTouchUpInside];

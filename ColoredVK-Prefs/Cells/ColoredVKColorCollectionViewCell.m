@@ -26,10 +26,8 @@
         _colorPreview = [[ColoredVKColorPreview alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame))];
         [self.contentView addSubview:_colorPreview];
         
-        NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-        
         CGFloat size = 32.0f;
-        UIImage *deleteImage = CVKImageInBundle(@"color_picker/DeleteIcon", cvkBundle);
+        UIImage *deleteImage = CVKImage(@"color_picker/DeleteIcon");
         
         _deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _deleteButton.frame = CGRectMake(0, 0, size, size);
