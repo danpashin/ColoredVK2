@@ -34,5 +34,16 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable void *)cvk_executeSelector:(SEL)selector;
 
+
+/**
+ *  Выполняет декодирование всех пропертей объекта
+ */
+- (void)cvk_decodeObjectsWithCoder:(NSCoder *)aDecoder;
+
+/**
+ *  Выполняет кодирование всех пропертей объекта
+ */
+- (void)cvk_encodeObjectsWithCoder:(NSCoder *)aCoder;
+
 @end
 NS_ASSUME_NONNULL_END

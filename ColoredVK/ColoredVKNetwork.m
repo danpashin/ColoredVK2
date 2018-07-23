@@ -11,6 +11,7 @@
 #if TARGET_OS_IOS
 #import <UIKit/UIDevice.h>
 #import <UIKit/UIApplication.h>
+#import <sys/utsname.h>
 #endif
 
 @interface ColoredVKNetwork  () <NSURLSessionDelegate>
@@ -100,7 +101,7 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
 {
     [self performBackgroundBlock:^{
         NSError *requestError = nil;
-        NSURLRequest *request = [self requestWithMethod:method URLString:url parameters:parameters error:&requestError];
+        NSURLRequest *request = [self requestWithMethod:method url:url parameters:parameters error:&requestError];
         if (requestError) {
             failure(request, nil, requestError);
             return;
@@ -109,11 +110,11 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     }];
 }
 
-- (void)sendJSONRequestWithMethod:(NSString *)method stringURL:(NSString *)stringURL parameters:(id)parameters
+- (void)sendJSONRequestWithMethod:(NSString *)method url:(NSString *)url parameters:(id)parameters
                           success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json))success 
                           failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
 {
-    [self sendRequestWithMethod:method url:stringURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
+    [self sendRequestWithMethod:method url:url parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
         
         NSDictionary *headers = httpResponse.allHeaderFields;
         NSString *contentType = headers[@"Content-Type"];
@@ -146,7 +147,7 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     
     dispatch_async(self.parseQueue, ^{
         NSError *requestError = nil;        
-        NSMutableURLRequest *request = [self requestWithMethod:@"POST" URLString:remoteURL parameters:nil error:&requestError];
+        NSMutableURLRequest *request = [self requestWithMethod:@"POST" url:remoteURL parameters:nil error:&requestError];
         if (requestError) {
             if (failure)
                 failure(nil, requestError);
@@ -169,11 +170,11 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     });
 }
 
-- (void)downloadDataFromURL:(NSString *)stringURL
+- (void)downloadDataFromURL:(NSString *)url
                     success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))success 
                     failure:(void(^)(NSHTTPURLResponse *response, NSError *error))failure
 {
-    [self sendRequestWithMethod:@"GET" url:stringURL parameters:nil success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
+    [self sendRequestWithMethod:@"GET" url:url parameters:nil success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
         if (success)
             success(httpResponse, rawData);
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error) {
@@ -182,7 +183,7 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     }];
 }
 
-- (NSMutableURLRequest *)requestWithMethod:(NSString *)method URLString:(NSString *)urlString parameters:(id)parameters error:(NSError *__autoreleasing *)error
+- (NSMutableURLRequest *)requestWithMethod:(NSString *)method url:(NSString *)url parameters:(id)parameters error:(NSError *__autoreleasing *)error
 {
     NSArray *methodsAvailable = @[@"GET", @"POST"];
     if (![methodsAvailable containsObject:method.uppercaseString]) {
@@ -210,12 +211,12 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     }
     
     if ([method.uppercaseString isEqualToString:@"GET"])
-        urlString = [urlString stringByAppendingString:[NSString stringWithFormat:@"?%@", stringParameters]];
+        url = [url stringByAppendingString:[NSString stringWithFormat:@"?%@", stringParameters]];
     
-    urlString = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     
     
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]
                                                            cachePolicy:self.configuration.requestCachePolicy
                                                        timeoutInterval:self.configuration.timeoutIntervalForResource];
     
@@ -235,7 +236,9 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     if (!_defaultUserAgent) {
         
 #if TARGET_OS_IOS
-        NSString *deviceModelName = [UIDevice currentDevice].model;
+        struct utsname systemInfo;
+        uname(&systemInfo);
+        NSString *deviceModelName = @(systemInfo.machine);
         NSString *systemVersion = [UIDevice currentDevice].systemVersion;
 #elif TARGET_OS_OSX
         NSString *deviceModelName = @"macOS";

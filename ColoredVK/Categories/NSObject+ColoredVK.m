@@ -6,6 +6,9 @@
 //
 
 #import "NSObject+ColoredVK.h"
+#import <objc/runtime.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @implementation NSObject (ColoredVK)
 
@@ -20,12 +23,12 @@
         dispatch_async(dispatch_get_main_queue(), block);
 }
 
-- (void *)cvk_executeSelector:(SEL)selector
+- (nullable void *)cvk_executeSelector:(SEL)selector
 {
     return [self cvk_executeSelector:selector arguments:nil];
 }
 
-- (void *)cvk_executeSelector:(SEL)selector arguments:(id)firstArgument, ...
+- (nullable void *)cvk_executeSelector:(SEL)selector arguments:(nullable id)firstArgument, ...
 {
     if (![self respondsToSelector:selector])
         return nil;
@@ -57,4 +60,130 @@
     return result;
 }
 
+
++ (NSDictionary<NSString *, Class> *)cvk_codableProperties
+{
+    unsigned int propertyCount;
+    __autoreleasing NSMutableDictionary *codableProperties = [NSMutableDictionary dictionary];
+    objc_property_t *properties = class_copyPropertyList(self, &propertyCount);
+    for (unsigned int i = 0; i < propertyCount; i++) {
+            //get property name
+        objc_property_t property = properties[i];
+        const char *propertyName = property_getName(property);
+        __autoreleasing NSString *key = @(propertyName);
+        
+            //get property type
+        Class propertyClass = nil;
+        char *typeEncoding = property_copyAttributeValue(property, "T");
+        switch (typeEncoding[0]) {
+            case '@': {
+                if (strlen(typeEncoding) >= 3) {
+                    char *className = strndup(typeEncoding + 2, strlen(typeEncoding) - 3);
+                    __autoreleasing NSString *name = @(className);
+                    NSRange range = [name rangeOfString:@"<"];
+                    if (range.location != NSNotFound) {
+                        name = [name substringToIndex:range.location];
+                        }
+                    propertyClass = NSClassFromString(name) ?: [NSObject class];
+                    free(className);
+                }
+                break;
+            }
+            case 'c':
+            case 'i':
+            case 's':
+            case 'l':
+            case 'q':
+            case 'C':
+            case 'I':
+            case 'S':
+            case 'L':
+            case 'Q':
+            case 'f':
+            case 'd':
+            case 'B': {
+                propertyClass = [NSNumber class];
+                break;
+            }
+            case '{': {
+                propertyClass = [NSValue class];
+                break;
+            }
+        }
+        free(typeEncoding);
+        
+        if (propertyClass) {
+                //check if there is a backing ivar
+            char *ivar = property_copyAttributeValue(property, "V");
+            if (ivar) {
+                    //check if ivar has KVC-compliant name
+                __autoreleasing NSString *ivarName = @(ivar);
+                if ([ivarName isEqualToString:key] || [ivarName isEqualToString:[@"_" stringByAppendingString:key]]) {
+                        //no setter, but setValue:forKey: will still work
+                    codableProperties[key] = propertyClass;
+                }
+                free(ivar);
+            } else {
+                    //check if property is dynamic and readwrite
+                char *dynamic = property_copyAttributeValue(property, "D");
+                char *readonly = property_copyAttributeValue(property, "R");
+                if (dynamic && !readonly) {
+                        //no ivar, but setValue:forKey: will still work
+                    codableProperties[key] = propertyClass;
+                }
+                free(dynamic);
+                free(readonly);
+            }
+        }
+    }
+    
+    free(properties);
+    return codableProperties;
+}
+
+- (NSDictionary<NSString *, Class> *)cvk_codableProperties
+{
+    NSMutableDictionary *codableProperties = [NSMutableDictionary dictionary];
+    Class subclass = [self class];
+    while (subclass != [NSObject class]) {
+        [(NSMutableDictionary *)codableProperties addEntriesFromDictionary:[subclass cvk_codableProperties]];
+        subclass = [subclass superclass];
+    }
+    
+    return codableProperties;
+}
+
+- (void)cvk_decodeObjectsWithCoder:(NSCoder *)aDecoder
+{
+    BOOL secureAvailable = [aDecoder respondsToSelector:@selector(decodeObjectOfClass:forKey:)];
+    BOOL secureSupported = [[self class] supportsSecureCoding];
+    NSDictionary *properties = self.cvk_codableProperties;
+    for (NSString *key in properties) {
+        id object = nil;
+        Class propertyClass = properties[key];
+        if (secureAvailable) {
+            object = [aDecoder decodeObjectOfClass:propertyClass forKey:key];
+        }
+        else {
+            object = [aDecoder decodeObjectForKey:key];
+        }
+        if (object) {
+            if (secureSupported && ![object isKindOfClass:propertyClass] && object != [NSNull null])
+                return;
+            
+            [self setValue:object forKey:key];
+        }
+    }
+}
+
+- (void)cvk_encodeObjectsWithCoder:(NSCoder *)aCoder
+{
+    for (NSString *key in self.cvk_codableProperties) {
+        id object = [self valueForKey:key];
+        if (object) [aCoder encodeObject:object forKey:key];
+    }
+}
+
 @end
+
+NS_ASSUME_NONNULL_END

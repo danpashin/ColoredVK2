@@ -9,6 +9,7 @@
 #import "ColoredVKHUD.h"
 #import "ColoredVKWebViewController.h"
 #import "ColoredVKNetwork.h"
+#import "NSObject+ColoredVK.h"
 
 @interface ColoredVKNewInstaller ()
 extern NSString *__key;
@@ -32,29 +33,14 @@ extern NSString *__key;
     self = [super init];
     if (self) {
         [self clearUser];
-        
-        [self setValue:@([aDecoder decodeIntegerForKey:@"accountStatus"]) forKey:@"accountStatus"];
-        [self setValue:@([aDecoder decodeBoolForKey:@"authenticated"]) forKey:@"authenticated"];
-        
-        [self setValue:[aDecoder decodeObjectForKey:@"userID"] forKey:@"userID"];
-        [self setValue:[aDecoder decodeObjectForKey:@"email"] forKey:@"email"];
-        [self setValue:[aDecoder decodeObjectForKey:@"name"] forKey:@"name"];
-        [self setValue:[aDecoder decodeObjectForKey:@"accessToken"] forKey:@"accessToken"];
-        [self setValue:[aDecoder decodeObjectForKey:@"menuPasscode"] forKey:@"menuPasscode"];
+        [self cvk_decodeObjectsWithCoder:aDecoder];
     }
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-    [aCoder encodeInteger:self.accountStatus forKey:@"accountStatus"];
-    [aCoder encodeBool:self.authenticated forKey:@"authenticated"];
-    
-    [aCoder encodeObject:self.userID forKey:@"userID"];
-    [aCoder encodeObject:self.email forKey:@"email"];
-    [aCoder encodeObject:self.name forKey:@"name"];
-    [aCoder encodeObject:self.accessToken forKey:@"accessToken"];
-    [aCoder encodeObject:self.menuPasscode forKey:@"menuPasscode"];
+    [self cvk_encodeObjectsWithCoder:aCoder];
 }
 
 - (instancetype)init
@@ -86,7 +72,7 @@ extern NSString *__key;
     NSDictionary *params = @{@"user_id" :self.userID, @"profile_team_id": newInstaller.application.teamIdentifier};
     
     ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
-    webController.request = [[ColoredVKNetwork sharedNetwork] requestWithMethod:@"POST" URLString:kPackagePurchaseLink 
+    webController.request = [[ColoredVKNetwork sharedNetwork] requestWithMethod:@"POST" url:kPackagePurchaseLink 
                                                                      parameters:params error:nil];
     [webController present];
 }

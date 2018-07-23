@@ -52,12 +52,12 @@ NS_ASSUME_NONNULL_BEGIN
  *  Отсылает запрос с предполагаемым ответом в формате JSON.
  *
  *  @param method Метод запроса. На данный момент валиден POST и GET. Регистр значения не имеет.
- *  @param stringURL Адрес удаленного сервера. Может быть уже отформатирован как GET запрос.
+ *  @param url Адрес удаленного сервера. Может быть уже отформатирован как GET запрос.
  *  @param parameters Параметры для построения запроса. Могут быть как в формате строки @"arg1=val1&arg2=val2", так и в формате массива. Другие форматы не предусмотрены.
  *  @param success Блок, который вызывается при успешном запросе. Содержит оригинальный запрос, ответ и данные ответа.
  *  @param failure Блок, который вызывается при неудачном запросе. Содержит оригинальный запрос, ответ и ошибку запроса.
  */
-- (void)sendJSONRequestWithMethod:(NSString *)method stringURL:(NSString *)stringURL parameters:(id _Nullable)parameters 
+- (void)sendJSONRequestWithMethod:(NSString *)method url:(NSString *)url parameters:(id _Nullable)parameters 
                           success:(void(^_Nullable)(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json))success 
                           failure:(ColoredVKNetworkFailureBlock _Nullable)failure;
 
@@ -85,11 +85,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Выполняет скачивание данных.
  *
- *  @param stringURL Адрес удаленного сервера. Может быть уже отформатирован как GET запрос.
+ *  @param url Адрес удаленного сервера. Может быть уже отформатирован как GET запрос.
  *  @param success Блок, который вызывается при успешном запросе. Содержит оригинальный запрос и данные ответа.
  *  @param failure Блок, который вызывается при неудачном запросе. Содержит оригинальный запрос и ошибку запроса.
  */
-- (void)downloadDataFromURL:(NSString *)stringURL
+- (void)downloadDataFromURL:(NSString *)url
                     success:(void(^_Nullable)(NSHTTPURLResponse *httpResponse, NSData *rawData))success 
                     failure:(void(^_Nullable)(NSHTTPURLResponse *httpResponse, NSError *error))failure;
 
@@ -97,13 +97,13 @@ NS_ASSUME_NONNULL_BEGIN
  *  Выполняет построение запроса, используя указанные аргументы.
  *
  *  @param method Метод запроса. На данный момент валиден POST и GET. Регистр значения не имеет.
- *  @param urlString Адрес удаленного сервера. Может быть уже отформатирован как GET запрос.
+ *  @param url Адрес удаленного сервера. Может быть уже отформатирован как GET запрос.
  *  @param parameters Параметры для построения запроса. Могут быть как в формате строки @"arg1=val1&arg2=val2", так и в формате массива. Другие форматы не предусмотрены.
  *  @param error Возвращает ошибку при выполнении построения.
  *
  *  @return Возвращает запрос, если при построении не было никаких ошибок. В ином случае возвращает nil.
  */
-- (NSMutableURLRequest * _Nullable)requestWithMethod:(NSString *)method URLString:(NSString *)urlString parameters:(id _Nullable)parameters error:( NSError * _Nullable __autoreleasing *)error;
+- (NSMutableURLRequest * _Nullable)requestWithMethod:(NSString *)method url:(NSString *)url parameters:(id _Nullable)parameters error:( NSError * _Nullable __autoreleasing *)error;
 
 @end
 NS_ASSUME_NONNULL_END

@@ -60,34 +60,25 @@ CPDistributedMessagingCenter *cvk_notifyCenter(void);
 
 + (BOOL)writePrefs:(NSDictionary *)notifyUserInfo
 {
-    if ([notifyUserInfo[@"prefs"] isKindOfClass:[NSDictionary class]]) {
-        BOOL success = [notifyUserInfo[@"prefs"] writeToFile:CVK_PREFS_PATH atomically:YES];
-        
-        if ([notifyUserInfo[@"notifyName"] length] > 0)
-            POST_CORE_NOTIFICATION(notifyUserInfo[@"notifyName"]);
-        
-        return success;
-    }
+    BOOL success = [notifyUserInfo[@"prefs"] writeToFile:CVK_PREFS_PATH atomically:YES];
+    
+    if ([notifyUserInfo[@"notifyName"] length] > 0)
+        POST_CORE_NOTIFICATION(notifyUserInfo[@"notifyName"]);
+    
+    return success;
     
     return NO;
 }
 
 + (NSError *)writeData:(NSDictionary *)notifyUserInfo
 {
-    if ([notifyUserInfo[@"data"] isKindOfClass:[NSData class]]) {
-        NSData *data = notifyUserInfo[@"data"];
-        NSString *path = notifyUserInfo[@"path"];
-        
-        NSError *error = nil;
-        [data writeToFile:path options:NSDataWritingAtomic error:&error];
-        
-        if ([notifyUserInfo[@"notifyName"] length] > 0)
-            POST_CORE_NOTIFICATION(notifyUserInfo[@"notifyName"]);
-        
-        return error;
-    }
+    NSData *data = notifyUserInfo[@"data"];
+    NSString *path = notifyUserInfo[@"path"];
     
-    return nil;
+    NSError *error = nil;
+    [data writeToFile:path options:NSDataWritingAtomic error:&error];
+    
+    return error;
 }
 
 + (NSError *)removeFile:(NSDictionary *)notifyUserInfo

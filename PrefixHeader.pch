@@ -66,7 +66,7 @@
 
 
 #define UIKitLocalizedString(key)             [[NSBundle bundleWithIdentifier:@"com.apple.UIKit"] localizedStringForKey:key value:@"" table:nil]
-#define CVKLocalizedStringFromTable(key, tbl) [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] localizedStringForKey:key value:@"" table:tbl]
+#define CVKLocalizedStringFromTable(key, tbl) [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] localizedStringForKey:(key) value:@"" table:tbl]
 #define CVKLocalizedString(key)               CVKLocalizedStringFromTable(key, nil)
 
 #define CVKImageInBundle(imgName, bndl) [UIImage imageNamed:imgName inBundle:bndl compatibleWithTraitCollection:nil]
@@ -107,3 +107,6 @@ NS_ASSUME_NONNULL_END
 
 #define NIGHT_THEME_DISABLE_CUSTOMISATION(view) objc_setAssociatedObject(view, "cvk_night_theme_should_customize", @NO, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 #define NIGHT_THEME_SHOULD_CUSTOMIZE(view)      objc_getAssociatedObject(view, "cvk_night_theme_should_customize")
+
+
+#define RGB_COLOR(redVal, greenVal, blueVal) [UIColor colorWithRed:redVal/255.0f green:greenVal/255.0f blue:blueVal/255.0f alpha:1.0f]

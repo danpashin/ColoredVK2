@@ -28,7 +28,7 @@
 	<array>
 		<string>vk</string>
 	</array>
-	<key>NSFaceIUsageDescription</key>
+	<key>NSFaceIDUsageDescription</key>
 	<string>ACCESS_TO_ENCRYPTED_MENU</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Allow ColoredVK 2 access photos to save images</string>

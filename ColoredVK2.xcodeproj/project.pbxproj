@@ -820,7 +820,7 @@
 		A52147C5206F86AC00224F6B /* TweakVariables.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TweakVariables.h; sourceTree = "<group>"; };
 		A523509D1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKBarDownloadButton.h; sourceTree = "<group>"; };
 		A523509E1DF1F8AE00028DD2 /* ColoredVKBarDownloadButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKBarDownloadButton.m; sourceTree = "<group>"; };
-		A52433EB20F623BF000B06D2 /* ColoredVK2PrefsHandler.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; name = ColoredVK2PrefsHandler.dylib; path = ColoredVK2_SBHelper.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		A52433EB20F623BF000B06D2 /* ColoredVK2_SBHelper.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ColoredVK2_SBHelper.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		A52433F520F623BF000B06D2 /* HelperMain.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelperMain.m; sourceTree = "<group>"; };
 		A524347220F63E92000B06D2 /* ColoredVKFileSystem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKFileSystem.m; sourceTree = "<group>"; };
 		A524347B20F65DE7000B06D2 /* MessagingCenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessagingCenter.h; sourceTree = "<group>"; };
@@ -1181,7 +1181,7 @@
 				A5B6ED061D3D659800383425 /* ColoredVK2.bundle */,
 				A576D1A11DC621B90039884F /* ColoredVK2.dylib */,
 				A5D56AC71E70427300A8FFB5 /* ColoredVK2.app */,
-				A52433EB20F623BF000B06D2 /* ColoredVK2PrefsHandler.dylib */,
+				A52433EB20F623BF000B06D2 /* ColoredVK2_SBHelper.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2018,7 +2018,7 @@
 			);
 			name = ColoredVK2_SBHelper;
 			productName = ColoredVK2PrefsHandler;
-			productReference = A52433EB20F623BF000B06D2 /* ColoredVK2PrefsHandler.dylib */;
+			productReference = A52433EB20F623BF000B06D2 /* ColoredVK2_SBHelper.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 		A576D17E1DC621B90039884F /* ColoredVK-NonJail */ = {
@@ -2662,7 +2662,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = "4.4.16-b2";
+				APP_VERSION = 4.4.16;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_GCD_PERFORMANCE = YES;
@@ -2746,12 +2746,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
-				LOCALIZED_STRING_MACRO_NAMES = (
-					NSLocalizedString,
-					CFLocalizedString,
-					CVKLocalizedString,
-					UIKitLocalizedString,
-				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
@@ -2768,16 +2762,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1AA51AB455174E5512499D30 /* Pods-ColoredVK.debug_deb.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 			};
 			name = Debug_DEB;
 		};
@@ -2786,15 +2771,7 @@
 			baseConfigurationReference = 7C2CE7C60751E4A99E541E9C /* Pods-ColoredVK-Prefs.debug_deb.xcconfig */;
 			buildSettings = {
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/PreferenceBundles;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug_DEB;
@@ -2837,7 +2814,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = "4.4.16-b2";
+				APP_VERSION = 4.4.16;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_GCD_PERFORMANCE = YES;
@@ -2920,12 +2897,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
-				LOCALIZED_STRING_MACRO_NAMES = (
-					NSLocalizedString,
-					CFLocalizedString,
-					CVKLocalizedString,
-					UIKitLocalizedString,
-				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
@@ -2942,16 +2913,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C04EDD04C179B0701D3EAC9B /* Pods-ColoredVK.debug_ipa.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 			};
 			name = Debug_IPA;
 		};
@@ -2960,15 +2922,7 @@
 			baseConfigurationReference = 39DB2B57F462B9F384F184B5 /* Pods-ColoredVK-Prefs.debug_ipa.xcconfig */;
 			buildSettings = {
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/PreferenceBundles;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug_IPA;
@@ -3010,15 +2964,7 @@
 		A52433FB20F623BF000B06D2 /* Release_DEB */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release_DEB;
@@ -3026,15 +2972,7 @@
 		A52433FC20F623BF000B06D2 /* Debug_DEB */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug_DEB;
@@ -3042,15 +2980,7 @@
 		A52433FD20F623BF000B06D2 /* Release_IPA */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release_IPA;
@@ -3058,15 +2988,7 @@
 		A52433FE20F623BF000B06D2 /* Debug_IPA */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug_IPA;
@@ -3074,15 +2996,7 @@
 		A52433FF20F623BF000B06D2 /* Debug_APP */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug_APP;
@@ -3147,7 +3061,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = "4.4.16-b2";
+				APP_VERSION = 4.4.16;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_GCD_PERFORMANCE = YES;
@@ -3231,12 +3145,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
-				LOCALIZED_STRING_MACRO_NAMES = (
-					NSLocalizedString,
-					CFLocalizedString,
-					CVKLocalizedString,
-					UIKitLocalizedString,
-				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
@@ -3253,16 +3161,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0B58120A8B7E45F6585D53CB /* Pods-ColoredVK.debug_app.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 			};
 			name = Debug_APP;
 		};
@@ -3271,15 +3170,7 @@
 			baseConfigurationReference = 631857E675D094524CB703CA /* Pods-ColoredVK-Prefs.debug_app.xcconfig */;
 			buildSettings = {
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/PreferenceBundles;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug_APP;
@@ -3324,7 +3215,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = "4.4.16-b2";
+				APP_VERSION = 4.4.16;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_GCD_PERFORMANCE = YES;
@@ -3406,12 +3297,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
-				LOCALIZED_STRING_MACRO_NAMES = (
-					NSLocalizedString,
-					CFLocalizedString,
-					CVKLocalizedString,
-					UIKitLocalizedString,
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
@@ -3427,16 +3312,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8280A3CCA9498A53F2C1EBE2 /* Pods-ColoredVK.release_deb.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 			};
 			name = Release_DEB;
 		};
@@ -3445,15 +3321,7 @@
 			baseConfigurationReference = 387AF2E9EB2BA45D2EDEAF7D /* Pods-ColoredVK-Prefs.release_deb.xcconfig */;
 			buildSettings = {
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/PreferenceBundles;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release_DEB;
@@ -3462,7 +3330,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = "4.4.16-b2";
+				APP_VERSION = 4.4.16;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_GCD_PERFORMANCE = YES;
@@ -3541,12 +3409,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
-				LOCALIZED_STRING_MACRO_NAMES = (
-					NSLocalizedString,
-					CFLocalizedString,
-					CVKLocalizedString,
-					UIKitLocalizedString,
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
@@ -3562,16 +3424,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9E8BB3164FD3E144BEEF6B51 /* Pods-ColoredVK.release_ipa.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 			};
 			name = Release_IPA;
 		};
@@ -3580,15 +3433,7 @@
 			baseConfigurationReference = 86C2C35891F936D0F9488A29 /* Pods-ColoredVK-Prefs.release_ipa.xcconfig */;
 			buildSettings = {
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/PreferenceBundles;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release_IPA;

@@ -164,7 +164,7 @@
                              @"token":newInstaller.user.accessToken, @"email":newInstaller.user.email};
     
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-    [network sendJSONRequestWithMethod:@"POST" stringURL:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+    [network sendJSONRequestWithMethod:@"POST" url:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
         if (!json[@"error"]) {
             NSDictionary *responseDict = json[@"response"];
             if ([responseDict[@"code"] integerValue] == 1) {

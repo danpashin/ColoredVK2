@@ -203,7 +203,7 @@
             return;
         }
         ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-        NSMutableURLRequest *urlRequest = [network requestWithMethod:@"GET" URLString:@"https://itunes.apple.com/search" 
+        NSMutableURLRequest *urlRequest = [network requestWithMethod:@"GET" url:@"https://itunes.apple.com/search" 
                                                           parameters:@{@"limit":@1, @"media":@"music", @"term":query} error:nil];
         urlRequest.accessibilityValue = query;
         
@@ -292,7 +292,7 @@
     NSDictionary *params = @{@"artist":artist, @"title":title};
     
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-    [network sendJSONRequestWithMethod:@"GET" stringURL:url parameters:params success:^(NSURLRequest *blockRequest, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
+    [network sendJSONRequestWithMethod:@"GET" url:url parameters:params success:^(NSURLRequest *blockRequest, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
         if (!json[@"response"]) {
             [self.audioLyricsView resetState];
             return;
