@@ -26,7 +26,6 @@
 @property (strong, nonatomic) CAGradientLayer *topCoverGradient;
 @property (strong, nonatomic) ColoredVKAudioLyricsView *audioLyricsView;
 
-@property (strong, nonatomic) NSBundle *cvkBundle;
 @property (strong, nonatomic, readonly) UIImage *noCover;
 @property (strong, nonatomic) SDWebImageManager *manager;
 
@@ -48,7 +47,6 @@
         _artist = @"";
         _track = @"";
         _color = [UIColor whiteColor];
-        _cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         [self updatePrefs:nil];
         
         _topImageView = [[UIImageView alloc] initWithImage:self.noCover];

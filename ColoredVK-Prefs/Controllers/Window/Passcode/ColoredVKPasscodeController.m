@@ -39,7 +39,6 @@
 {
     self = [super init];
     if (self) {
-        self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         self.backgroundStyle = ColoredVKWindowBackgroundStyleCustom;
         self.statusBarNeedsHidden = NO;
         self.hideByTouch = NO;
@@ -57,7 +56,7 @@
     _UIBackdropView *backgroundView = [[_UIBackdropView alloc] initWithStyle:backgroundStyle];
     self.backgroundView = backgroundView;
     
-    self.contentView = [ColoredVKPasscodeView loadNib];
+    self.contentView = ColoredVKPasscodeView.defaultNIBView;
     self.contentView.titleText = CVKLocalizedString(@"ENTER_PASSCODE");
     self.contentView.delegate = self;
     self.contentView.backgroundColor = [UIColor clearColor];

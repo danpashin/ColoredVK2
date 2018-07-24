@@ -17,13 +17,6 @@
     return UIStatusBarStyleLightContent;
 }
 
-- (void)loadView
-{
-    [super loadView];
-    
-    self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];

@@ -25,7 +25,7 @@
 
 @implementation ColoredVKUserInfoView
 
-+ (ColoredVKUserInfoView *)defaultNibView
++ (ColoredVKUserInfoView *)defaultNIBView
 {
     id nibView = nil;
     NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];

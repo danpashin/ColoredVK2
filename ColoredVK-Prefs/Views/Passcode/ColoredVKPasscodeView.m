@@ -23,7 +23,7 @@
 
 @implementation ColoredVKPasscodeView
 
-+ (ColoredVKPasscodeView *)loadNib
++ (ColoredVKPasscodeView *)defaultNIBView
 {
     id nibOwner = nil;
     NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];

@@ -20,7 +20,7 @@
 
 @interface ColoredVKPasscodeView : UIView
 
-+ (ColoredVKPasscodeView *)loadNib;
+@property (strong, nonatomic, readonly, class) ColoredVKPasscodeView *defaultNIBView;
 
 @property (assign, nonatomic) IBInspectable NSUInteger maxDigits;
 

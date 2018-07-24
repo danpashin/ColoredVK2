@@ -15,7 +15,8 @@
 NS_ASSUME_NONNULL_BEGIN
 @interface ColoredVKColorPickerContainer : UIView
 
-+ (ColoredVKColorPickerContainer *)loadNib;
+@property (strong, nonatomic, readonly, class) ColoredVKColorPickerContainer *defaultNIBView;
+
 
 @property (strong, nonatomic) IBOutlet UIStackView *mainStackView;
 

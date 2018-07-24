@@ -14,7 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)performFeedbackWithType:(UINotificationFeedbackType)type;
 
-@property (strong, nonatomic) NSBundle *cvkBundle;
 @property (strong, nonatomic) ColoredVKPasscodeView *contentView;
 
 - (void)performFeedbackWithType:(UINotificationFeedbackType)type;

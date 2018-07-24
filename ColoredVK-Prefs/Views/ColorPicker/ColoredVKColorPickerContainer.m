@@ -22,7 +22,7 @@
 
 @implementation ColoredVKColorPickerContainer
 
-+ (ColoredVKColorPickerContainer *)loadNib
++ (ColoredVKColorPickerContainer *)defaultNIBView
 {
     ColoredVKColorPickerContainer *container = nil;
     NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];

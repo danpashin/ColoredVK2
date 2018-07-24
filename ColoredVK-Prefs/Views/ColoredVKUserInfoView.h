@@ -15,7 +15,7 @@
 
 @interface ColoredVKUserInfoView : UIView
 
-@property (strong, nonatomic, readonly, class) ColoredVKUserInfoView *defaultNibView;
+@property (strong, nonatomic, readonly, class) ColoredVKUserInfoView *defaultNIBView;
 
 @property (strong, nonatomic) UIImage *avatar;
 @property (strong, nonatomic) NSString *username;

@@ -43,8 +43,14 @@ CVK_INLINE NSString *RSAEncryptServerString(NSString *string)
     return [_performCryptOperation(kCCEncrypt, data, kDRMServerKey) base64EncodedStringWithOptions:0];
 }
 
-CVK_INLINE NSDictionary *RSADecryptServerData(NSData *rawData, NSError *__autoreleasing *error)
+CVK_INLINE NSDictionary *RSADecryptServerData(NSData *rawData, NSURLResponse *response, NSError *__autoreleasing *error)
 {
+    if (![response.MIMEType isEqualToString:@"multipart/encrypted"]) {
+        if (error)
+            *error = [NSError errorWithDomain:KDRMErrorKey code:-1001 userInfo:@{NSLocalizedDescriptionKey:@"Server header is invalid."}];
+        return nil;
+    }
+    
     NSData *decrypted = _performCryptOperation(kCCDecrypt, rawData, kDRMServerKey);
     if (!decrypted || decrypted.length == 0) {
         if (error)

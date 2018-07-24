@@ -93,7 +93,7 @@ extern NSString *__key;
         ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
         [network sendRequestWithMethod:@"POST" url:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
             NSError *decryptError = nil;
-            NSDictionary *json = RSADecryptServerData(rawData, &decryptError);
+            NSDictionary *json = RSADecryptServerData(rawData, httpResponse, &decryptError);
             
             if (!json || decryptError)
                 return;
@@ -157,7 +157,7 @@ extern NSString *__key;
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
     [network sendRequestWithMethod:@"POST" url:url parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
         NSError *decryptError = nil;
-        NSDictionary *json = RSADecryptServerData(rawData, &decryptError);
+        NSDictionary *json = RSADecryptServerData(rawData, httpResponse, &decryptError);
         
         if (!json || decryptError) {
             if (!decryptError)

@@ -6,13 +6,14 @@
 //  Copyright (c) 2016 Daniil Pashin. All rights reserved.
 //
 
-
-#import "ColoredVKHUD.h"
-#import "ColoredVKAlertController.h"
-
 #import "ColoredVKImagePrefsCell.h"
 #import "ColoredVKPrefs.h"
 #import "ColoredVKSwitch.h"
+
+#import "ColoredVKHUD.h"
+#import "ColoredVKAlertController.h"
+#import "ColoredVKImagePreviewController.h"
+
 
 @interface ColoredVKImagePrefsCell ()
 @property (strong, nonatomic, readonly) NSString *switchKey;
@@ -186,6 +187,33 @@
 {
     ColoredVKHUD *hud = CFBridgingRelease(contextInfo);
     error ? [hud showFailureWithStatus:error.localizedFailureReason] : [hud showSuccess];
+}
+
+- (nullable UIViewController *)forceTouchPreviewController
+{
+    NSString *imagePath = [NSString stringWithFormat:@"%@/%@.png", CVK_FOLDER_PATH, self.specifier.identifier];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:imagePath])
+        return nil;
+    
+    UIPreviewAction *saveAction = [UIPreviewAction actionWithTitle:UIKitLocalizedString(@"Save to Camera Roll")style:UIPreviewActionStyleDefault 
+                                                           handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+                                                               [self actionSaveImage:imagePath];
+                                                           }];
+    
+    UIPreviewAction *shareAction = [UIPreviewAction actionWithTitle:UIKitLocalizedString(@"Share...") style:UIPreviewActionStyleDefault 
+                                                            handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+                                                                [self actionShareImage:imagePath];
+                                                            }];
+    
+    UIPreviewAction *removeAction = [UIPreviewAction actionWithTitle:UIKitLocalizedString(@"Delete") style:UIPreviewActionStyleDestructive 
+                                                             handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+                                                                 [self actionRemoveImage];
+                                                             }];
+    
+    ColoredVKImagePreviewController *previewController = [[ColoredVKImagePreviewController alloc] initWithImageAtPath:imagePath 
+                                                                                                       previewActions:@[saveAction, shareAction, removeAction]];
+    
+    return previewController;
 }
 
 @end

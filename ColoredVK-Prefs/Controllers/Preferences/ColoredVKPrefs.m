@@ -37,10 +37,6 @@
 
 - (void)commonInit
 {
-    _cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    if (!self.cvkBundle)
-        _cvkBundle = [NSBundle mainBundle];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadPrefsNotification) name:kPackageNotificationReloadInternalPrefs object:nil];
     
     [self readPrefsWithCompetion:^{
@@ -235,11 +231,12 @@
 
 - (NSArray <PSSpecifier*> *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize 
 {
-    NSMutableArray <PSSpecifier *> *specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:self.cvkBundle] mutableCopy];
+    NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
+    NSMutableArray <PSSpecifier *> *specifiersArray = [[self loadSpecifiersFromPlistName:plistName target:self bundle:cvkBundle] mutableCopy];
     
     @autoreleasepool {
         if (specifiersArray.count > 0 && localize) {
-            NSString *path = [self.cvkBundle pathForResource:@"ColoredVK" ofType:@"strings"];
+            NSString *path = [cvkBundle pathForResource:@"ColoredVK" ofType:@"strings"];
             NSDictionary *localizable = [NSDictionary dictionaryWithContentsOfFile:path];
             NSString *(^localizedStringForKey)(NSString *key) = ^NSString *(NSString *key) {
                 if (!key)
@@ -356,6 +353,10 @@
 //    CGFloat edgeOffset = IS_IPAD ? 36.0f : 18.0f;
     cell.layoutMargins = UIEdgeInsetsMake(0.0f, 18.0f, 0.0f, 18.0f);
     
+    if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable) {
+        [self registerForPreviewingWithDelegate:self sourceView:cell];
+    }
+    
     return cell;
 }
 
@@ -382,7 +383,7 @@
 
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView
 {
-    NSString *text = self.cvkBundle ? CVKLocalizedString(@"LOADING_TWEAK_FILES_ERROR_MESSAGE") : @"";
+    NSString *text = CVKLocalizedString(@"LOADING_TWEAK_FILES_ERROR_MESSAGE");
     NSDictionary *attributes = @{NSFontAttributeName: [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1],
                                  NSForegroundColorAttributeName: [UIColor darkGrayColor]};
     
@@ -392,6 +393,28 @@
 - (CGFloat)verticalOffsetForEmptyDataSet:(UIScrollView *)scrollView
 {
     return self.table.tableHeaderView ? -100.0f : -150.0f;
+}
+
+
+#pragma mark -
+#pragma mark UIViewControllerPreviewingDelegate
+#pragma mark -
+
+- (nullable UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location
+{
+    ColoredVKPrefsCell *prefsCell = (ColoredVKPrefsCell *)previewingContext.sourceView;
+    if ([prefsCell isKindOfClass:[ColoredVKPrefsCell class]]) {
+        previewingContext.sourceRect = [self.view convertRect:prefsCell.frame fromView:self.table];
+        return prefsCell.forceTouchPreviewController;
+    }
+    
+    return nil;
+}
+
+- (void)previewingContext:(id <UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit
+{
+    viewControllerToCommit.view.backgroundColor = [UIColor whiteColor];
+    [self showViewController:viewControllerToCommit sender:nil];
 }
 
 @end

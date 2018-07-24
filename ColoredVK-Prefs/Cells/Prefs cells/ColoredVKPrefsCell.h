@@ -15,6 +15,7 @@
 
 @property (assign, nonatomic, readonly) SEL defaultPrefsGetter;
 @property (weak, nonatomic, readonly) id currentPrefsValue;
+@property (strong, nonatomic, readonly) UIViewController *forceTouchPreviewController;
 
 @property (strong, nonatomic) ColoredVKCellBackgroundView *customBackgroundView;
 

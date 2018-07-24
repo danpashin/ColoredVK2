@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -215,6 +215,14 @@
 		A526A6C11DD50D4700B47104 /* ColoredVKAudioLyricsView.h in Headers */ = {isa = PBXBuildFile; fileRef = A526A6BE1DD50D4700B47104 /* ColoredVKAudioLyricsView.h */; };
 		A526A6C21DD50D4700B47104 /* ColoredVKAudioLyricsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A526A6BF1DD50D4700B47104 /* ColoredVKAudioLyricsView.m */; };
 		A526A6C31DD50D4700B47104 /* ColoredVKAudioLyricsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A526A6BF1DD50D4700B47104 /* ColoredVKAudioLyricsView.m */; };
+		A526DBBF210705E100C0EA7F /* ColoredVKImagePreviewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A526DBBD210705E100C0EA7F /* ColoredVKImagePreviewController.h */; };
+		A526DBC0210705E100C0EA7F /* ColoredVKImagePreviewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A526DBBD210705E100C0EA7F /* ColoredVKImagePreviewController.h */; };
+		A526DBC1210705E100C0EA7F /* ColoredVKImagePreviewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A526DBBD210705E100C0EA7F /* ColoredVKImagePreviewController.h */; };
+		A526DBC2210705E100C0EA7F /* ColoredVKImagePreviewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A526DBBD210705E100C0EA7F /* ColoredVKImagePreviewController.h */; };
+		A526DBC3210705E100C0EA7F /* ColoredVKImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A526DBBE210705E100C0EA7F /* ColoredVKImagePreviewController.m */; };
+		A526DBC4210705E100C0EA7F /* ColoredVKImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A526DBBE210705E100C0EA7F /* ColoredVKImagePreviewController.m */; };
+		A526DBC5210705E100C0EA7F /* ColoredVKImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A526DBBE210705E100C0EA7F /* ColoredVKImagePreviewController.m */; };
+		A526DBC6210705E100C0EA7F /* ColoredVKImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A526DBBE210705E100C0EA7F /* ColoredVKImagePreviewController.m */; };
 		A528D8841DE9FCAF00B299C1 /* ColoredVKMainController.h in Headers */ = {isa = PBXBuildFile; fileRef = A528D8821DE9FCAF00B299C1 /* ColoredVKMainController.h */; };
 		A528D8851DE9FCAF00B299C1 /* ColoredVKMainController.h in Headers */ = {isa = PBXBuildFile; fileRef = A528D8821DE9FCAF00B299C1 /* ColoredVKMainController.h */; };
 		A528D8861DE9FCAF00B299C1 /* ColoredVKMainController.m in Sources */ = {isa = PBXBuildFile; fileRef = A528D8831DE9FCAF00B299C1 /* ColoredVKMainController.m */; };
@@ -828,6 +836,8 @@
 		A524778420F111AC00A529C1 /* MenuSwizzle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MenuSwizzle.m; sourceTree = "<group>"; };
 		A526A6BE1DD50D4700B47104 /* ColoredVKAudioLyricsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKAudioLyricsView.h; sourceTree = "<group>"; };
 		A526A6BF1DD50D4700B47104 /* ColoredVKAudioLyricsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColoredVKAudioLyricsView.m; sourceTree = "<group>"; };
+		A526DBBD210705E100C0EA7F /* ColoredVKImagePreviewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKImagePreviewController.h; sourceTree = "<group>"; };
+		A526DBBE210705E100C0EA7F /* ColoredVKImagePreviewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKImagePreviewController.m; sourceTree = "<group>"; };
 		A5288C412037327800A11223 /* ColoredVKColorMapView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ColoredVKColorMapView.h; sourceTree = "<group>"; };
 		A5288C422037327800A11223 /* ColoredVKColorMapView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ColoredVKColorMapView.m; sourceTree = "<group>"; };
 		A528D8821DE9FCAF00B299C1 /* ColoredVKMainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColoredVKMainController.h; sourceTree = "<group>"; };
@@ -1316,6 +1326,8 @@
 				A5BC53A91F1234C200C4E1E0 /* ColoredVKAlertController.m */,
 				A51E68B72033231400B72082 /* ColoredVKCardController.h */,
 				A51E68B82033231400B72082 /* ColoredVKCardController.m */,
+				A526DBBD210705E100C0EA7F /* ColoredVKImagePreviewController.h */,
+				A526DBBE210705E100C0EA7F /* ColoredVKImagePreviewController.m */,
 				A55D209720332E5500C43454 /* ColoredVKMain.storyboard */,
 			);
 			path = Controllers;
@@ -1690,6 +1702,7 @@
 				A524345020F63C1E000B06D2 /* ColoredVKImagePrefsCell.h in Headers */,
 				A524341820F63BEA000B06D2 /* ColoredVKBlurPrefsController.h in Headers */,
 				A524341C20F63BEA000B06D2 /* ColoredVKUpdatesPrefsController.h in Headers */,
+				A526DBBF210705E100C0EA7F /* ColoredVKImagePreviewController.h in Headers */,
 				A52B8F3B1F991A2600898168 /* ColoredVKNightScheme.h in Headers */,
 				A5E7965C20F7343E00118D21 /* ColoredVKFileSystem.h in Headers */,
 				A524342320F63BEA000B06D2 /* ColoredVKCardController.h in Headers */,
@@ -1782,6 +1795,7 @@
 				A510E7CE1EF98866001D6798 /* ColoredVKColorCollectionViewCell.h in Headers */,
 				A563079A202E263A001CD95B /* ColoredVKPassChangeController.h in Headers */,
 				A5739D561EA0159700367595 /* ColoredVKColorPickerController.h in Headers */,
+				A526DBC1210705E100C0EA7F /* ColoredVKImagePreviewController.h in Headers */,
 				A5739D661EA015B200367595 /* ColoredVKColorCell.h in Headers */,
 				A55D209D20333DD200C43454 /* ColoredVKCollectionCardCell.h in Headers */,
 				A576D1D91DC6222C0039884F /* LHAcvitityIndicator.h in Headers */,
@@ -1826,6 +1840,7 @@
 				A570305720CD1A3F0036FA8F /* ColoredVKMusicPrefs.h in Headers */,
 				A58FE2FD210321F4007DF805 /* ColoredVKPasscodeUpdateController.h in Headers */,
 				A5DB61CC1F10DBFF00FFAFF9 /* ColoredVKNewInstaller.h in Headers */,
+				A526DBC0210705E100C0EA7F /* ColoredVKImagePreviewController.h in Headers */,
 				A58FE2D821031CF8007DF805 /* ColoredVKPasscodeController.h in Headers */,
 				A58FE2DA21031CF8007DF805 /* ColoredVKBiometry.h in Headers */,
 				A52F515020FA007800835D37 /* ColoredVKSwitch.h in Headers */,
@@ -1908,6 +1923,7 @@
 				A50177D2201F936000032A8D /* ColoredVKNavigationController.h in Headers */,
 				A58FE2FF210321F4007DF805 /* ColoredVKPasscodeUpdateController.h in Headers */,
 				A5D56A591E70427300A8FFB5 /* ColoredVKMainPrefsController.h in Headers */,
+				A526DBC2210705E100C0EA7F /* ColoredVKImagePreviewController.h in Headers */,
 				A58FE2D021031CF6007DF805 /* ColoredVKPasscodeController.h in Headers */,
 				A58FE2D221031CF6007DF805 /* ColoredVKBiometry.h in Headers */,
 				A52F515220FA007800835D37 /* ColoredVKSwitch.h in Headers */,
@@ -2121,7 +2137,7 @@
 				};
 			};
 			buildConfigurationList = A5079FAC1CC92157005B9693 /* Build configuration list for PBXProject "ColoredVK2" */;
-			compatibilityVersion = "Xcode 10.0";
+			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -2324,6 +2340,7 @@
 				A5D979631DAEB87900607F06 /* Tweak.m in Sources */,
 				A524342A20F63BFF000B06D2 /* ColoredVKWindowController.m in Sources */,
 				A5150F1920FCB6FA0029F23E /* ColoredVKMessageBubbleViewLayer.m in Sources */,
+				A526DBC3210705E100C0EA7F /* ColoredVKImagePreviewController.m in Sources */,
 				A59270132087C74600027F72 /* ColoredVKShadowView.m in Sources */,
 				A524342C20F63BFF000B06D2 /* ColoredVKColorPickerController.m in Sources */,
 				A501C28620DCE6E500750063 /* SystemNightTheme.m in Sources */,
@@ -2411,6 +2428,7 @@
 				A5D3D0701FE063D0007AAEF7 /* TweakNightTheme.m in Sources */,
 				A5BF98D420E407620001A532 /* ColoredVKSwitchPrefsCell.m in Sources */,
 				A5788AA21EA0A5B600BC2B54 /* ColoredVKAccountController.m in Sources */,
+				A526DBC5210705E100C0EA7F /* ColoredVKImagePreviewController.m in Sources */,
 				A5AC322020F1193100AE11B0 /* ColoredVKImagePrefsCell.m in Sources */,
 				A54249CB1E052A930018D3E3 /* ColoredVKAudioCover.m in Sources */,
 				A5480D6F20E4EDA3007CE28A /* ColoredVKControlPrefsCell.m in Sources */,
@@ -2512,6 +2530,7 @@
 				A5D979C21DAEC1CB00607F06 /* LHAcvitityIndicator.m in Sources */,
 				A58FE2E821031D0B007DF805 /* ColoredVKPasscodeView.m in Sources */,
 				A5D979C31DAEC1CB00607F06 /* LHBackgroundView.m in Sources */,
+				A526DBC4210705E100C0EA7F /* ColoredVKImagePreviewController.m in Sources */,
 				A5AC323A20F1199E00AE11B0 /* ColoredVKStepperButton.m in Sources */,
 				A5480D6E20E4EDA3007CE28A /* ColoredVKControlPrefsCell.m in Sources */,
 				A51E68BC2033231400B72082 /* ColoredVKCardController.m in Sources */,
@@ -2645,6 +2664,7 @@
 				A5AC322920F1199D00AE11B0 /* ColoredVKColorPreview.m in Sources */,
 				A5D56AB21E70427300A8FFB5 /* ColoredVKHUD.m in Sources */,
 				A58FE2E421031D09007DF805 /* ColoredVKPasscodeButton.m in Sources */,
+				A526DBC6210705E100C0EA7F /* ColoredVKImagePreviewController.m in Sources */,
 				A50177D5201F936000032A8D /* ColoredVKNavigationController.m in Sources */,
 				A5480D6820E4CAE8007CE28A /* PSTableCellHook.m in Sources */,
 				A58FE2E621031D09007DF805 /* ColoredVKPasscodeCircle.m in Sources */,
@@ -2739,20 +2759,18 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_PROFILING_CODE = YES;
 				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Packaging/Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "arm64 armv7";
 				iOSOpenDevPath = /opt/iOSOpenDev;
 			};
@@ -2800,7 +2818,6 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Packaging/Info-app.plist";
-				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
@@ -2888,20 +2905,18 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_PROFILING_CODE = YES;
 				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Packaging/Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "arm64 armv7";
 				iOSOpenDevPath = /opt/iOSOpenDev;
 			};
@@ -2949,7 +2964,6 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Packaging/Info-app.plist";
-				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
@@ -3024,7 +3038,6 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Packaging/Info-app.plist";
-				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
@@ -3041,7 +3054,6 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Packaging/Info-app.plist";
-				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
@@ -3130,20 +3142,18 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_PROFILING_CODE = YES;
 				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Packaging/Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "arm64 armv7";
 				iOSOpenDevPath = /opt/iOSOpenDev;
 			};
@@ -3191,7 +3201,6 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Packaging/Info-app.plist";
-				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
@@ -3280,19 +3289,18 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_PROFILING_CODE = YES;
 				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Packaging/Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "arm64 armv7";
 				iOSOpenDevPath = /opt/iOSOpenDev;
 			};
@@ -3392,19 +3400,18 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_PROFILING_CODE = YES;
 				HEADER_SEARCH_PATHS = "$(iOSOpenDevPath)/include/**";
 				INFOPLIST_FILE = "$(PROJECT_DIR)/Packaging/Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "arm64 armv7";
 				iOSOpenDevPath = /opt/iOSOpenDev;
 			};

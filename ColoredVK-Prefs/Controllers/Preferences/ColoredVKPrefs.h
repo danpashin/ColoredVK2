@@ -13,9 +13,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ColoredVKPrefs : PSListController <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate>
+@interface ColoredVKPrefs : PSListController <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate, UIViewControllerPreviewingDelegate>
 
-@property (strong, nonatomic, readonly) NSBundle *cvkBundle;
 @property (strong, nonatomic) NSMutableDictionary *cachedPrefs;
 
 - (void)commonInit NS_REQUIRES_SUPER;

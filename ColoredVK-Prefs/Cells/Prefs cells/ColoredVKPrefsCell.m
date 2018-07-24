@@ -99,11 +99,6 @@
     }
 }
 
-- (void)setCellEnabled:(BOOL)cellEnabled
-{
-    super.cellEnabled = YES;
-}
-
 #pragma mark -
 #pragma mark Getters
 #pragma mark -
@@ -156,7 +151,16 @@
 
 - (BOOL)cellEnabled
 {
+    NSNumber *specifierEnabled = [self.specifier propertyForKey:@"enabled"];
+    if (specifierEnabled)
+        return specifierEnabled.boolValue;
+    
     return YES;
+}
+
+- (nullable UIViewController *)forceTouchPreviewController
+{
+    return nil;
 }
 
 @end

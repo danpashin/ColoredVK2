@@ -47,7 +47,7 @@
     [super viewDidLoad];
     self.defaultPasswordIsSet = ColoredVKBiometry.defaultPasswordIsSet;
     
-    self.infoHeaderView =  ColoredVKUserInfoView.defaultNibView;
+    self.infoHeaderView =  ColoredVKUserInfoView.defaultNIBView;
     CGRect headerFrame = self.infoHeaderView.frame;
     headerFrame.size = CGSizeMake(CGRectGetWidth(self.tableView.frame), 176.0f);
     self.infoHeaderView.frame = headerFrame;

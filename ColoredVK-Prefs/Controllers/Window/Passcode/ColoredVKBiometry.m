@@ -70,7 +70,7 @@ __strong NSString *__biometryPasscode;
         _supportsTouchID = [self.authContext canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:nil];
         if (@available(iOS 11.0, *)) {
             _supportsFaceID = (self.authContext.biometryType == LABiometryTypeFaceID);
-            _supportsFaceID = (self.supportsFaceID && [self.cvkBundle objectForInfoDictionaryKey:@"NSFaceIDUsageDescription"]);
+            _supportsFaceID = (self.supportsFaceID && [[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSFaceIDUsageDescription"]);
             
             _supportsTouchID = (self.supportsTouchID && (self.authContext.biometryType == LABiometryTypeTouchID));
         }

@@ -13,7 +13,6 @@
 #import "SSZipArchive.h"
 
 @interface ColoredVKBackupsModel ()
-@property (strong, nonatomic) NSBundle *cvkBundle;
 @property (strong, nonatomic) dispatch_queue_t backgroundQueue;
 @end
 
@@ -25,7 +24,6 @@
     if (self) {
         _availableBackups = @[];
         self.backgroundQueue = dispatch_queue_create("ru.danpashin.coloredvk2.backups.queue", DISPATCH_QUEUE_CONCURRENT);
-        self.cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
         
         [self updateBackups];
     }

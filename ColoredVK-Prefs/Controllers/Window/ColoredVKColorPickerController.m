@@ -27,7 +27,6 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
 
 @interface ColoredVKColorPickerController () <UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate, ColoredVKColorCollectionViewCellDelegate>
 
-@property (strong, nonatomic, readonly) NSBundle *cvkBundle;
 @property (assign, nonatomic) ColoredVKColorPickerState state;
 @property (assign, nonatomic) CGFloat brightness;
 @property (strong, nonatomic) UIColor *customColor;
@@ -69,8 +68,6 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     self.backgroundStyle = ColoredVKWindowBackgroundStyleCustom;
     self.backgroundView = [UIView new];
     
-    _cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-    
     [self setupDefaultContentView];
     [self.contentView addSubview:self.contentViewNavigationBar];
     
@@ -79,7 +76,7 @@ typedef NS_ENUM(NSUInteger, ColoredVKColorPickerState) {
     navItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:resetImage style:UIBarButtonItemStylePlain target:self action:@selector(actionResetColor)];
     navItem.leftBarButtonItem.accessibilityLabel = CVKLocalizedString(@"RESET_COLOR");
     
-    self.container = [ColoredVKColorPickerContainer loadNib];
+    self.container = ColoredVKColorPickerContainer.defaultNIBView;
     [self.contentView addSubview:self.container];
     
     

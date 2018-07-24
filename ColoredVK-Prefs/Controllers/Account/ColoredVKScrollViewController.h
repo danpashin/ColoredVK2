@@ -16,6 +16,4 @@
  */
 @property (assign, nonatomic, readonly) BOOL controllerShouldPop;
 
-@property (strong, nonatomic) NSBundle *cvkBundle;
-
 @end
