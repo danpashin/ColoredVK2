@@ -7,6 +7,7 @@
 
 #import "Tweak.h"
 #import <CoreText/CoreText.h>
+#import "ColoredVKAlertController.h"
 @import SafariServices.SFSafariViewController;
 
 

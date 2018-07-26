@@ -7,7 +7,6 @@
 //
 
 #import "ColoredVKMainController.h"
-#import "ColoredVKAlertController.h"
 #import "UIImage+ColoredVK.h"
 #import "ColoredVKNewInstaller.h"
 #import "UIColor+ColoredVK.h"
@@ -23,8 +22,8 @@
 #import "TweakNightFunctions.h"
 #import "TweakVariables.h"
 
-#import "CaptainHook/CaptainHook.h"
-#import "fishhook.h"
+#import <CaptainHook/CaptainHook.h>
+#import <fishhook.h>
 
 
 #define CVKHook(return_type, name, args...)\

@@ -240,8 +240,11 @@ CHDeclareClass(BackgroundView);
 CHDeclareMethod(1, void, BackgroundView, drawRect, CGRect, rect)
 {
     if (enabled) {
-        self.layer.cornerRadius = self.cornerRadius;
-        self.layer.masksToBounds = YES;
+        if ([self respondsToSelector:@selector(cornerRadius)]) {
+            self.layer.cornerRadius = self.cornerRadius;
+            self.layer.masksToBounds = YES;
+        }
+        
         if (enableNightTheme)
             self.layer.backgroundColor = cvkMainController.nightThemeScheme.unreadBackgroundColor.CGColor;
         else if (enabledMessagesListImage)

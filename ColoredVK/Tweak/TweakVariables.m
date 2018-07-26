@@ -378,6 +378,8 @@ void reloadPrefs(void(^completion)(void))
             if (cvkMainController.navBarImageView)
                 [cvkMainController.navBarImageView updateViewWithBlackout:navbarImageBlackout];
             
+            [cvkMainController setMenuCellSwitchOn:enabled];
+            
             if (completion)
                 completion();
         }];

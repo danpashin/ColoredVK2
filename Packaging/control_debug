@@ -10,4 +10,4 @@ Maintainer: Daniil Pashin <admin@danpashin.ru>
 Icon: file:///Library/PreferenceBundles/ColoredVK2.bundle/Icon-big.png
 Depiction: https://danpashin.ru/repo/depictions?pack=ru.danpashin.coloredvk2
 Homepage: https://danpashin.ru/repo/depictions?pack=ru.danpashin.coloredvk2
-Tag: purpose::extension, compatible_min::ios9, compatible_max::ios12
+Tag: cydia::commercial, purpose::extension, compatible::ios9, compatible::ios10, compatible::ios11 compatible_max::ios12

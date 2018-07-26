@@ -678,7 +678,6 @@ void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringR
                 [dialogsController.tableView reloadData];
             }
         }
-        [cvkMainController setMenuCellSwitchOn:enabled];
         
         setupTabbar();
         updateNavBarColor();
