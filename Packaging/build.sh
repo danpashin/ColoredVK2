@@ -57,6 +57,7 @@ makeDEB () {
     codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle"
     codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/ColoredVK2.dylib"
     codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/ColoredVK2_SBHelper.dylib"
+    codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/ColoredVK2_Prefs.dylib"
 
     echo "[->] Copying resources to temp directory (stage 2)..."
     mkdir -p $FOLDER_TO_PACK/Package/{DEBIAN,Library/{MobileSubstrate/DynamicLibraries,PreferenceBundles,PreferenceLoader/Preferences}}
@@ -77,10 +78,12 @@ makeDEB () {
     cp -r "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle"         "$FOLDER_TO_PACK/Package/Library/PreferenceBundles"
     cp "${BUILT_PRODUCTS_DIR}/ColoredVK2.dylib"             "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries"
     cp "${BUILT_PRODUCTS_DIR}/ColoredVK2_SBHelper.dylib" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries"
+    cp "${BUILT_PRODUCTS_DIR}/ColoredVK2_Prefs.dylib" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries"
 
     cp "${PROJECT_DIR}/Packaging/ColoredVK2.plist"              "$FOLDER_TO_PACK/Package/Library/PreferenceLoader/Preferences"
     cp "${PROJECT_DIR}/Packaging/ColoredVK2-dylib.plist"        "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/ColoredVK2.plist"
     cp "${PROJECT_DIR}/Packaging/ColoredVK2_SBHelper.plist"  "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/"
+    cp "${PROJECT_DIR}/Packaging/ColoredVK2_Prefs.plist"  "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/"
 
     cd $FOLDER_TO_PACK
 

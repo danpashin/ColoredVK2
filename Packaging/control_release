@@ -10,4 +10,4 @@ Maintainer: Daniil Pashin <daniilpashin@icloud.com>
 Icon: file:///Library/PreferenceBundles/ColoredVK2.bundle/Icon-big.png
 Depiction: http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=coloredvk2Dp
 Homepage: http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=coloredvk2Dp
-Tag: purpose::extension, compatible::ios9, compatible::ios10, compatible::ios11 compatible_max::ios12
+Tag: purpose::extension, compatible::ios9, compatible::ios10, compatible::ios11, compatible::ios12
