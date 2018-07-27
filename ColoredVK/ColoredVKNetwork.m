@@ -14,6 +14,12 @@
 #import <sys/utsname.h>
 #endif
 
+#ifdef CVKLocalizedString
+#define NetworkLocalizedString(str) CVKLocalizedString(str)
+#else
+#define NetworkLocalizedString(str) NSLocalizedString(str, @"")
+#endif
+
 @interface ColoredVKNetwork  () <NSURLSessionDelegate>
 
 @property (strong, nonatomic) NSURLSession *session;
@@ -65,7 +71,7 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
                 
                 if (![httpResponse.URL isEqual:request.URL]) {
                     if (failure)
-                        failure(request, httpResponse, [self errorWithCode:1002 description:@"Response URL is invalid"]);
+                        failure(request, httpResponse, [self errorWithCode:1002 description:@"Request URL was changed"]);
                     
                     return;
                 }
@@ -116,11 +122,9 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
 {
     [self sendRequestWithMethod:method url:url parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
         
-        NSDictionary *headers = httpResponse.allHeaderFields;
-        NSString *contentType = headers[@"Content-Type"];
-        if (![contentType isKindOfClass:[NSString class]] || ![contentType containsString:@"json"]) {
+        if (![httpResponse.MIMEType containsString:@"json"]) {
             if (failure)
-                failure(request, httpResponse, [self errorWithCode:1003 description:@"Response has invalid header: 'Content-Type'"]);
+                failure(request, httpResponse, [self errorWithCode:1003 description:@"Response has invalid header: %@", @"'Content-Type'"]);
             
             return;
         }
@@ -188,7 +192,7 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     NSArray *methodsAvailable = @[@"GET", @"POST"];
     if (![methodsAvailable containsObject:method.uppercaseString]) {
         if (error)
-            *error = [self errorWithCode:1000 description:@"Method is invalid. Must be 'POST' or 'GET'."];
+            *error = [self errorWithCode:1000 description:@"Request method is unsupported. Must be 'POST' or 'GET'."];
         return nil;
     }
     
@@ -206,7 +210,7 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
         [stringParameters appendString:(NSString *)parameters];
     } else if (parameters) {
         if (error)
-            *error = [self errorWithCode:1001 description:@"Parameters class is invalid. Use NSDictionary or NSString."];
+            *error = [self errorWithCode:1001 description:@"Class of argument 'parameters' is unsupported. Must be NSDictionary or NSString."];
         return nil;
     }
     
@@ -283,10 +287,15 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     }
 }
 
-- (NSError * __nonnull)errorWithCode:(NSInteger)code description:(NSString * _Nonnull)description
+- (NSError * __nonnull)errorWithCode:(NSInteger)code description:(NSString * _Nonnull)description, ...
 {
+    va_list args;
+    va_start(args, description);
+    NSString *localizedDescription = [[NSString alloc] initWithFormat:NetworkLocalizedString(description) arguments:args];
+    va_end(args);
+    
     return [NSError errorWithDomain:kColoredVKNetworkErrorDomain code:code 
-                           userInfo:@{NSLocalizedDescriptionKey:description}];
+                           userInfo:@{NSLocalizedDescriptionKey:localizedDescription}];
 }
 
 @end

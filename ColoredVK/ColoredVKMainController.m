@@ -142,11 +142,7 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
 
 - (__kindof UIViewController *)safePreferencesController
 {
-//    NSBundle *cvkBundle = [NSBundle bundleWithPath:CVK_BUNDLE_PATH];
-//    if (!cvkBundle.loaded)
-//        [cvkBundle load];
-    
-    UIViewController *prefs = [[NSClassFromString(@"ColoredVKMainPrefsController") alloc] init];
+    UIViewController *prefs = [objc_lookUpClass("ColoredVKMainPrefsController") new];
     if (!prefs)
         prefs = [UIViewController new];
     
@@ -193,10 +189,10 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
         if (__deviceModel.length == 0)
             return;
         
-        ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-        NSDictionary *allInfo = @{@"vk_version":newInstaller.application.detailedVersion, @"app_odentifier":@"", @"cvk_version":kPackageVersion, 
-                                  @"ios_version": [UIDevice currentDevice].systemVersion,  @"device": __deviceModel,
-                                  @"crash":crash};
+        ColoredVKApplicationModel *application = [ColoredVKNewInstaller sharedInstaller].application;
+        NSDictionary *allInfo = @{@"vk_version":application.detailedVersion, @"app_identifier":application.identifier, 
+                                  @"cvk_version":kPackageVersion, @"ios_version": [UIDevice currentDevice].systemVersion,
+                                  @"device": __deviceModel, @"crash":crash};
         
         NSError *error = nil;
         NSData *data = [NSJSONSerialization dataWithJSONObject:allInfo options:0 error:&error];

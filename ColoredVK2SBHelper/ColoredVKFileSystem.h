@@ -8,7 +8,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-
 BOOL cvk_writePrefs(NSDictionary *prefs, NSString *_Nullable notificationName);
 BOOL cvk_writeData(NSData *data, NSString *path, NSError *__autoreleasing *error);
 

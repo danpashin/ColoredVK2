@@ -67,7 +67,7 @@
 
 #define UIKitLocalizedString(key)             [[NSBundle bundleWithIdentifier:@"com.apple.UIKit"] localizedStringForKey:key value:@"" table:nil]
 #define CVKLocalizedStringFromTable(key, tbl) [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] localizedStringForKey:(key) value:@"" table:tbl]
-#define CVKLocalizedString(key)               CVKLocalizedStringFromTable(key, nil)
+#define CVKLocalizedString(key)               [[NSBundle bundleWithPath:CVK_BUNDLE_PATH] localizedStringForKey:(key) value:@"" table:nil]
 
 #define CVKImage(imgName) [UIImage imageNamed:imgName inBundle:[NSBundle bundleWithPath:CVK_BUNDLE_PATH] compatibleWithTraitCollection:nil]
 

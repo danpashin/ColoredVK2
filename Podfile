@@ -24,7 +24,6 @@ end
 
 
 target 'ColoredVK' do
-  prefs_pods
   tweak_pods
 end
 

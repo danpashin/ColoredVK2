@@ -500,11 +500,10 @@ void uncaughtExceptionHandler(NSException *exception)
         if (strstr(libName, "/System/Library/") != NULL) {
             [systemLibs addObject:@(libName)];
         } else if (strstr(libName, "/usr/lib/") != NULL) {
-            [systemLibs addObject:@(libName)];
+            [usrLibs addObject:@(libName)];
         } else if (strstr(libName, "/Library/TweakInject/") != NULL) {
             [tweakLibs addObject:@(libName)];
-        }
-        else {
+        } else {
             [otherLibs addObject:@(libName)];
         }
     }
@@ -512,7 +511,8 @@ void uncaughtExceptionHandler(NSException *exception)
     NSMutableArray *callStack = handleCallStack(exception.callStackSymbols, exception.callStackReturnAddresses);
     
     NSDictionary *crash = @{@"reason": exception.reason,
-                            @"call_stack":callStack, @"date":stringDate, @"loaded_libraries":@{@"system":systemLibs, @"usr":usrLibs, @"tweaks":tweakLibs, @"other":otherLibs}, 
+                            @"call_stack":callStack, @"date":stringDate, 
+                            @"loaded_libraries":@{@"system":systemLibs, @"usr":usrLibs, @"tweaks":tweakLibs, @"other":otherLibs}, 
                             @"current_thread":[NSThread currentThread].description
                             };
     NSData *crashData = [NSKeyedArchiver archivedDataWithRootObject:crash];

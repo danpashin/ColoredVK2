@@ -27,15 +27,16 @@
 
 
 #define CVKHook(return_type, name, args...)\
-static return_type (*name ## _closure)(args);\
-return_type name ## _method(args);\
-static void __attribute__((constructor)) name ## _constructor() {\
-rebind_symbols((struct rebinding[1]){{#name, name ## _method, (void *)&name ## _closure}}, 1);\
-}\
-return_type name ## _method(args)
+    static return_type (*cvk_ ## name ## _orig)(args);\
+    return_type cvk_ ## name(args);\
+    \
+    static void __attribute__((constructor)) cvk_ ## name ## _register() {\
+        rebind_symbols((struct rebinding[1]){{#name, cvk_ ## name, (void *)&cvk_ ## name ## _orig}}, 1);\
+    }\
+    return_type cvk_ ## name(args)
 
 #define CVKHookSuper(name, args...)\
-name ## _closure(args)
+    cvk_ ## name ## _orig(args)
 
 
 #define kMenuCellBackgroundColor [UIColor colorWithRed:56/255.0f green:69/255.0f blue:84/255.0f alpha:1.0f]

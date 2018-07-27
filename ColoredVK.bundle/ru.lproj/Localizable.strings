@@ -127,3 +127,14 @@
 "SHOW_HIDE_PASSWORD" = "Показать или скрыть пароль";
 "SHARE_BACKUP" = "Поделиться копией";
 "TWEAK_IS_ENABLED" = "Твик включен";
+
+
+// Ошибки NSError
+"Request URL was changed" = "Похоже, адрес запроса был изменен.";
+"Response data has wrong size" = "Похоже, тело ответа имеет неверный размер.";
+"Response has invalid header: %@" = "Похоже, ответ сервера имеет неверный заголовок: %@";
+"Request method is unsupported. Must be 'POST' or 'GET'." = "Метод запроса не поддерживается. Должен быть 'POST' или 'GET'.";
+"Class of argument 'parameters' is unsupported. Must be NSDictionary or NSString." = "Класс аргумента 'parameters' не поддерживается. Должен быть NSDictionary или NSString";
+"Licence file does not exist." = "Файл лицензии не существует.";
+"Licence file is damaged." = "Файл лицензии повреждён.";
+"Response data can not be decrypted." = "Ответ сервера не может быть расшифрован.";

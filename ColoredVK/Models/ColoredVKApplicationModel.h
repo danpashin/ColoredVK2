@@ -20,6 +20,7 @@ typedef NS_ENUM(NSInteger, ColoredVKVersionCompare)
 @property (assign, nonatomic, readonly) BOOL isVKApp;
 @property (copy, nonatomic, readonly) NSString *version;
 @property (copy, nonatomic, readonly) NSString *detailedVersion;
+@property (copy, nonatomic, readonly) NSString *identifier;
 
 @property (copy, nonatomic, readonly) NSString *teamIdentifier;
 @property (copy, nonatomic, readonly) NSString *teamName;

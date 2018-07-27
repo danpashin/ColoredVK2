@@ -12,8 +12,6 @@
 #import <AppSupport/CPDistributedMessagingCenter.h>
 
 NS_ASSUME_NONNULL_BEGIN
-static NSString *const kPackageNotificationWritePrefs =     @"ru.danpashin.coloredvk2.prefs.write";
-
 static NSString *const kPackageNotificationWriteData =      @"ru.danpashin.coloredvk2.file.write";
 static NSString *const kPackageNotificationRemoveFile =     @"ru.danpashin.coloredvk2.file.remove";
 static NSString *const kPackageNotificationMoveFile =       @"ru.danpashin.coloredvk2.file.move";

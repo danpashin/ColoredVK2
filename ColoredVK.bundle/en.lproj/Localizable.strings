@@ -127,3 +127,14 @@
 "SHOW_HIDE_PASSWORD" = "Show or hide password";
 "SHARE_BACKUP" = "Share backup";
 "TWEAK_IS_ENABLED" = "Tweak is enabled";
+
+
+// Ошибки NSError
+"Request URL was changed" = "It seems the request address has been changed.";
+"Response data has wrong size" = "It seems the response body has the wrong size.";
+"Response has invalid header: %@" = "It seems the server response has an incorrect header: %@";
+"Request method is unsupported. Must be 'POST' or 'GET'." = "The request method is not supported. Must be 'POST' or 'GET'.";
+"Class of argument 'parameters' is unsupported. Must be NSDictionary or NSString." = "The 'parameters' argument class is not supported. Must be NSDictionary or NSString";
+"Licence file does not exist." = "License file does not exist.";
+"Licence file is damaged." = "License file is damaged.";
+"Response data can not be decrypted." = "Server response could not be decrypted.";

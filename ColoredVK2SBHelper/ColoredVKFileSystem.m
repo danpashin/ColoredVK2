@@ -24,14 +24,17 @@ BOOL cvk_writePrefs(NSDictionary *prefs, NSString *notificationName)
     if (!prefs)
         return NO;
     
-    BOOL success = [prefs writeToFile:CVK_PREFS_PATH atomically:YES];
-    
-#ifdef COMPILE_FOR_JAIL
-    if (!success) {
-        NSDictionary *reply = cvk_sendNotification(kPackageNotificationWritePrefs, @{@"prefs":prefs});
-        success = [reply[@"success"] boolValue];
+    CFErrorRef error = nil;
+    CFDataRef data = CFPropertyListCreateData(kCFAllocatorDefault, (__bridge CFPropertyListRef)prefs, kCFPropertyListXMLFormat_v1_0, 0, &error);
+    if (error) {
+        CFRelease(error);
+        if (data)
+            CFRelease(data);
+        
+        return NO;
     }
-#endif
+    
+    BOOL success = cvk_writeData(CFBridgingRelease(data), CVK_PREFS_PATH, nil);
     
     if (notificationName)
         POST_CORE_NOTIFICATION(notificationName);

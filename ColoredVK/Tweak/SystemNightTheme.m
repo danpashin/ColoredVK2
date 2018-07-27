@@ -13,7 +13,7 @@
 
 CVKHook(CTFramesetterRef, CTFramesetterCreateWithAttributedString, CFAttributedStringRef string)
 {
-    CFAttributedStringRef newString = CFAttributedStringCreateCopy(NULL, string);
+    CFAttributedStringRef newString = CFAttributedStringCreateCopy(kCFAllocatorDefault, string);
     
     if (enabled && enableNightTheme && newString != NULL && CFAttributedStringGetLength(newString) > 0) {
         NSAttributedString *attributed = CFBridgingRelease(newString);

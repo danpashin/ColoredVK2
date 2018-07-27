@@ -2030,12 +2030,12 @@
 			projectRoot = "";
 			targets = (
 				A5079FB11CC92157005B9693 /* ColoredVK */,
-				A5B6ED051D3D659800383425 /* ColoredVK2_PrefsBundle */,
-				A5D979AB1DAEBB0E00607F06 /* ColoredVK-Builder */,
+				A5178E7E210B2E8200DB8A15 /* ColoredVK2_Prefs */,
 				A576D17E1DC621B90039884F /* ColoredVK-NonJail */,
 				A5D56A561E70427300A8FFB5 /* Prefs Application */,
+				A5B6ED051D3D659800383425 /* ColoredVK2_PrefsBundle */,
 				A52433EA20F623BF000B06D2 /* ColoredVK2_SBHelper */,
-				A5178E7E210B2E8200DB8A15 /* ColoredVK2_Prefs */,
+				A5D979AB1DAEBB0E00607F06 /* ColoredVK-Builder */,
 			);
 		};
 /* End PBXProject section */
@@ -2520,7 +2520,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.16;
+				APP_VERSION = "4.4.17-b1";
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_GCD_PERFORMANCE = YES;
@@ -2668,7 +2668,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.16;
+				APP_VERSION = "4.4.17-b1";
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_GCD_PERFORMANCE = YES;
@@ -2815,15 +2815,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D530D3B3145D48003E2DF7C8 /* Pods-ColoredVK2_Prefs.release_deb.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release_DEB;
@@ -2832,15 +2824,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8D0AE87D3B7AC7DC0B6DA31B /* Pods-ColoredVK2_Prefs.debug_deb.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug_DEB;
@@ -2849,15 +2833,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7C1C6B5EE794B2C1D900D666 /* Pods-ColoredVK2_Prefs.release_ipa.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release_IPA;
@@ -2866,15 +2842,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 24B893E4116E1706BD754228 /* Pods-ColoredVK2_Prefs.debug_ipa.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug_IPA;
@@ -2883,15 +2851,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1A36F40682D328CE06AEA6A1 /* Pods-ColoredVK2_Prefs.debug_app.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/frameworks,
-				);
 				INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/opt/iOSOpenDev/lib,
-				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug_APP;
@@ -2990,7 +2950,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.16;
+				APP_VERSION = "4.4.17-b1";
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_GCD_PERFORMANCE = YES;
@@ -3140,7 +3100,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.16;
+				APP_VERSION = "4.4.17-b1";
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_GCD_PERFORMANCE = YES;
@@ -3255,7 +3215,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLY_RULES_IN_COPY_FILES = YES;
-				APP_VERSION = 4.4.16;
+				APP_VERSION = "4.4.17-b1";
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_GCD_PERFORMANCE = YES;

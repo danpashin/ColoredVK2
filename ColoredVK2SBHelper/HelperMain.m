@@ -9,7 +9,7 @@
 #import "MessagingCenter.h"
 #import <dlfcn.h>
 
-CPDistributedMessagingCenter *cvk_notifyCenter(void);
+extern CPDistributedMessagingCenter *cvk_notifyCenter(void);
 
 
 @interface ColoredVKFSHandler : NSObject
@@ -21,11 +21,8 @@ CPDistributedMessagingCenter *cvk_notifyCenter(void);
     NSArray *folderContents = nil;
     NSDictionary *itemAttributes = nil;
     NSError *error = nil;
-    BOOL success = NO;
     
-    if ([name isEqualToString:kPackageNotificationWritePrefs]) {
-        success = [self writePrefs:userInfo];
-    } else if ([name isEqualToString:kPackageNotificationWriteData]) {
+   if ([name isEqualToString:kPackageNotificationWriteData]) {
         error = [self writeData:userInfo];
     } else if ([name isEqualToString:kPackageNotificationRemoveFile]) {
         error = [self removeFile:userInfo];
@@ -41,10 +38,8 @@ CPDistributedMessagingCenter *cvk_notifyCenter(void);
         error = [self copyFile:userInfo];
     }
     
-    success = (error == nil);
-    
     NSMutableDictionary *reply = [NSMutableDictionary dictionary];
-    reply[@"success"] = @(success);
+    reply[@"success"] = @((error == nil));
     
     if (error)
         reply[@"error"] = error;
@@ -56,18 +51,6 @@ CPDistributedMessagingCenter *cvk_notifyCenter(void);
         reply[@"itemAttributes"] = itemAttributes;
     
     return reply;
-}
-
-+ (BOOL)writePrefs:(NSDictionary *)notifyUserInfo
-{
-    BOOL success = [notifyUserInfo[@"prefs"] writeToFile:CVK_PREFS_PATH atomically:YES];
-    
-    if ([notifyUserInfo[@"notifyName"] length] > 0)
-        POST_CORE_NOTIFICATION(notifyUserInfo[@"notifyName"]);
-    
-    return success;
-    
-    return NO;
 }
 
 + (NSError *)writeData:(NSDictionary *)notifyUserInfo
@@ -148,16 +131,15 @@ CVK_CONSTRUCTOR
         Class targetClass = [ColoredVKFSHandler class];
         SEL targetSelector = @selector(handleMessageNamed:userInfo:);
         
-        [center registerForMessageName:kPackageNotificationWritePrefs   target:targetClass selector:targetSelector];
         [center registerForMessageName:kPackageNotificationWriteData    target:targetClass selector:targetSelector];
         
         [center registerForMessageName:kPackageNotificationRemoveFile   target:targetClass selector:targetSelector];
-        [center registerForMessageName:kPackageNotificationCreateFolder target:targetClass selector:targetSelector];
-        
         [center registerForMessageName:kPackageNotificationMoveFile     target:targetClass selector:targetSelector];
         [center registerForMessageName:kPackageNotificationCopyFile     target:targetClass selector:targetSelector];
         
+        [center registerForMessageName:kPackageNotificationCreateFolder     target:targetClass selector:targetSelector];
         [center registerForMessageName:kPackageNotificationFolderContents   target:targetClass selector:targetSelector];
+        
         [center registerForMessageName:kPackageNotificationItemAttributes   target:targetClass selector:targetSelector];
         
         [center runServerOnCurrentThread];

@@ -35,6 +35,7 @@ NSString *__deviceModel;
 NSData *_performCryptOperation(CCOperation operation, NSData *data, NSString *key);
 CFPropertyListRef MGCopyAnswer(CFStringRef property);
 
+static NSError * __nonnull errorWithCode(NSInteger code, NSString * _Nonnull description, ...);
 
 
 CVK_INLINE NSString *RSAEncryptServerString(NSString *string)
@@ -47,14 +48,14 @@ CVK_INLINE NSDictionary *RSADecryptServerData(NSData *rawData, NSURLResponse *re
 {
     if (![response.MIMEType isEqualToString:@"multipart/encrypted"]) {
         if (error)
-            *error = [NSError errorWithDomain:KDRMErrorKey code:-1001 userInfo:@{NSLocalizedDescriptionKey:@"Server header is invalid."}];
+            *error = errorWithCode(-1000, @"Response has invalid header: %@", @"'Content-Type'");
         return nil;
     }
     
     NSData *decrypted = _performCryptOperation(kCCDecrypt, rawData, kDRMServerKey);
     if (!decrypted || decrypted.length == 0) {
         if (error)
-            *error = [NSError errorWithDomain:KDRMErrorKey code:-1001 userInfo:@{NSLocalizedDescriptionKey:@"Cannot decrypt server data."}];
+            *error = errorWithCode(-1001, @"Response data can not be decrypted.");
         return nil;
     }
     
@@ -64,7 +65,7 @@ CVK_INLINE NSDictionary *RSADecryptServerData(NSData *rawData, NSURLResponse *re
     NSData *jsonData = [decryptedString dataUsingEncoding:NSUTF8StringEncoding];
     if (!jsonData) {
         if (error)
-            *error = [NSError errorWithDomain:KDRMErrorKey code:-1002 userInfo:@{NSLocalizedDescriptionKey:@"Cannot decrypt server data."}];
+            *error = errorWithCode(-1002, @"Response data can not be decrypted.");
         return nil;
     }
     
@@ -86,7 +87,7 @@ CVK_INLINE NSDictionary *RSADecryptLicenceData(NSError *__autoreleasing *error)
     NSData *licenceData = [NSData dataWithContentsOfFile:kDRMLicencePath];
     if (!licenceData) {
         if (error)
-            *error = [NSError errorWithDomain:KDRMErrorKey code:0 userInfo:@{NSLocalizedDescriptionKey:@"Licence does not exist"}];
+            *error = errorWithCode(0, @"Licence file does not exist.");
         
         return nil;
     }
@@ -96,7 +97,7 @@ CVK_INLINE NSDictionary *RSADecryptLicenceData(NSError *__autoreleasing *error)
     
     if (![licence isKindOfClass:[NSDictionary class]] || (licence.allKeys.count == 0)) {
         if (error)
-            *error = [NSError errorWithDomain:KDRMErrorKey code:0 userInfo:@{NSLocalizedDescriptionKey:@"Licence file is not valid"}];
+            *error = errorWithCode(0, @"Licence file is damaged.");
         
         return nil;
     }
@@ -266,4 +267,15 @@ CVK_CONSTRUCTOR
             abort();
         }
     });
+}
+
+static NSError * __nonnull errorWithCode(NSInteger code, NSString * _Nonnull description, ...)
+{
+    va_list args;
+    va_start(args, description);
+    NSString *localizedDescription = [[NSString alloc] initWithFormat:CVKLocalizedString(description) arguments:args];
+    va_end(args);
+    
+    return [NSError errorWithDomain:KDRMErrorKey code:code 
+                           userInfo:@{NSLocalizedDescriptionKey:localizedDescription}];
 }

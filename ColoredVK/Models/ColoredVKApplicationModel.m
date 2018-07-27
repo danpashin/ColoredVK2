@@ -29,6 +29,8 @@
         _isVKApp = [executableName.lowercaseString isEqualToString:@"vkclient"];
         CFRelease(executableURL);
         
+        _identifier = (__bridge NSString *)CFBundleGetIdentifier(mainBundle);
+        
         [self updateTeamInformation];
     }
     return self;
