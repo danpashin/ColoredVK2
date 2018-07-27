@@ -490,15 +490,30 @@ void uncaughtExceptionHandler(NSException *exception)
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
     NSString *stringDate = [dateFormatter stringFromDate:[NSDate date]];
     
-    NSMutableArray <NSString *> *loadedLibs = [NSMutableArray array];
+    NSMutableArray <NSString *> *systemLibs = [NSMutableArray array];
+    NSMutableArray <NSString *> *usrLibs = [NSMutableArray array];
+    NSMutableArray <NSString *> *tweakLibs = [NSMutableArray array];
+    NSMutableArray <NSString *> *otherLibs = [NSMutableArray array];
+    
     for (uint32_t i=0; i<_dyld_image_count(); i++) {
-        [loadedLibs addObject:@(_dyld_get_image_name(i))];
+        const char *libName = _dyld_get_image_name(i);
+        if (strstr(libName, "/System/Library/") != NULL) {
+            [systemLibs addObject:@(libName)];
+        } else if (strstr(libName, "/usr/lib/") != NULL) {
+            [systemLibs addObject:@(libName)];
+        } else if (strstr(libName, "/Library/TweakInject/") != NULL) {
+            [tweakLibs addObject:@(libName)];
+        }
+        else {
+            [otherLibs addObject:@(libName)];
+        }
     }
     
     NSMutableArray *callStack = handleCallStack(exception.callStackSymbols, exception.callStackReturnAddresses);
     
     NSDictionary *crash = @{@"reason": exception.reason,
-                            @"callStack":callStack, @"date":stringDate, @"loadedLibs":loadedLibs,@"currentThread":[NSThread currentThread].description
+                            @"call_stack":callStack, @"date":stringDate, @"loaded_libraries":@{@"system":systemLibs, @"usr":usrLibs, @"tweaks":tweakLibs, @"other":otherLibs}, 
+                            @"current_thread":[NSThread currentThread].description
                             };
     NSData *crashData = [NSKeyedArchiver archivedDataWithRootObject:crash];
     cvk_writeData(crashData, CVK_CRASH_PATH, nil);

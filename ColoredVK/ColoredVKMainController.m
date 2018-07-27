@@ -194,9 +194,9 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
             return;
         
         ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
-        NSDictionary *allInfo = @{@"vk_version":newInstaller.application.detailedVersion, @"cvk_version":kPackageVersion, 
+        NSDictionary *allInfo = @{@"vk_version":newInstaller.application.detailedVersion, @"app_odentifier":@"", @"cvk_version":kPackageVersion, 
                                   @"ios_version": [UIDevice currentDevice].systemVersion,  @"device": __deviceModel,
-                                  @"crash_info":crash};
+                                  @"crash":crash};
         
         NSError *error = nil;
         NSData *data = [NSJSONSerialization dataWithJSONObject:allInfo options:0 error:&error];
