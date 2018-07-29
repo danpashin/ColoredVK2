@@ -197,7 +197,7 @@ return;
     NSString *url = [kPackageAPIURL stringByAppendingString:@"/auth/auth_jail.php"];
     
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-    [network sendRequestWithMethod:@"POST" url:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
+    [network sendRequestWithMethod:ColoredVKNetworkMethodTypePOST url:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
         
         NSError *decryptError = nil;
         NSDictionary *json = RSADecryptServerData(rawData, httpResponse, &decryptError);

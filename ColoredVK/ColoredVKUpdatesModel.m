@@ -42,7 +42,7 @@ static NSString *const kCVKUpdateTimeFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
                                  @"checkedAutomatically":@(self.checkedAutomatically), @"getIPA":@(shouldReceiveIPA)};
 
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-    [network sendJSONRequestWithMethod:@"GET" url:stringURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+    [network sendJSONRequestWithMethod:ColoredVKNetworkMethodTypeGET url:stringURL parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
         NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:CVK_PREFS_PATH];
         if (!json[@"error"]) {
             self.version = json[@"version"];

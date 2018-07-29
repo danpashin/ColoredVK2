@@ -72,7 +72,7 @@ extern NSString *__key;
     NSDictionary *params = @{@"user_id" :self.userID, @"profile_team_id": newInstaller.application.teamIdentifier};
     
     ColoredVKWebViewController *webController = [ColoredVKWebViewController new];
-    webController.request = [[ColoredVKNetwork sharedNetwork] requestWithMethod:@"POST" url:kPackagePurchaseLink 
+    webController.request = [[ColoredVKNetwork sharedNetwork] requestWithMethod:ColoredVKNetworkMethodTypePOST url:kPackagePurchaseLink 
                                                                      parameters:params error:nil];
     [webController present];
 }
@@ -91,7 +91,7 @@ extern NSString *__key;
         NSDictionary *params = @{@"user_id":self.userID, @"token":self.accessToken};
         
         ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-        [network sendRequestWithMethod:@"POST" url:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
+        [network sendRequestWithMethod:ColoredVKNetworkMethodTypePOST url:url parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
             NSError *decryptError = nil;
             NSDictionary *json = RSADecryptServerData(rawData, httpResponse, &decryptError);
             
@@ -155,7 +155,7 @@ extern NSString *__key;
     };
     
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-    [network sendRequestWithMethod:@"POST" url:url parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
+    [network sendRequestWithMethod:ColoredVKNetworkMethodTypePOST url:url parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
         NSError *decryptError = nil;
         NSDictionary *json = RSADecryptServerData(rawData, httpResponse, &decryptError);
         
@@ -220,7 +220,7 @@ extern NSString *__key;
                                  @"version": kPackageVersion, @"device": device, @"key": __key
                                  };
     NSString *url = [kPackageAPIURL stringByAppendingString:@"/auth/authenticate.php"];
-    [[ColoredVKNetwork sharedNetwork] sendRequestWithMethod:@"POST" url:url parameters:parameters success:nil failure:nil];
+    [[ColoredVKNetwork sharedNetwork] sendRequestWithMethod:ColoredVKNetworkMethodTypePOST url:url parameters:parameters success:nil failure:nil];
     
     
     [[ColoredVKNewInstaller sharedInstaller] writeFreeLicence];

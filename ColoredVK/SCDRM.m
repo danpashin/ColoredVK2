@@ -173,7 +173,7 @@ CVK_INLINE void generateKey(void)
     if (strlen(machineName) < 5) {
         struct utsname deviceInfo;
         uname(&deviceInfo);
-        strcpy(machineName, deviceInfo.machine);
+        strlcpy(machineName, deviceInfo.machine, sizeof(deviceInfo.machine));
     }
     __deviceModel = @(machineName);
     
@@ -202,7 +202,7 @@ CVK_INLINE void generateNewKey(void)
     if (strlen(machineName) < 5) {
         struct utsname deviceInfo;
         uname(&deviceInfo);
-        strcpy(machineName, deviceInfo.machine);
+        strlcpy(machineName, deviceInfo.machine, sizeof(deviceInfo.machine));
     }
 //    __deviceModel = @(machineName);
     

@@ -13,9 +13,9 @@
  *
  *  @param request Оригинальный запрос.
  *  @param httpResponse Ответ сервера, его заголовки.
- *  @param rawData Тело ответа. 
+ *  @param responseData Тело ответа. 
  */
-typedef void(^ColoredVKNetworkSuccessBlock)(NSURLRequest * _Nullable request, NSHTTPURLResponse * _Nullable httpResponse, NSData * _Nullable rawData);
+typedef void(^ColoredVKNetworkSuccessBlock)(NSURLRequest * _Nullable request, NSHTTPURLResponse * _Nullable httpResponse, id _Nullable responseData);
 
 /**
  *  Блок, который вызывается при неудачном запросе.
@@ -25,6 +25,19 @@ typedef void(^ColoredVKNetworkSuccessBlock)(NSURLRequest * _Nullable request, NS
  *  @param error Ошибка запроса. 
  */
 typedef void(^ColoredVKNetworkFailureBlock)(NSURLRequest * _Nullable request, NSHTTPURLResponse * _Nullable httpResponse, NSError * _Nullable error);
+
+
+
+/**
+ Тип HTTP метода. На данный момент поддерживаются только два типа.
+
+ - ColoredVKNetworkRequestMethodTypeGET: GET
+ - ColoredVKNetworkRequestMethodTypePOST: POST
+ */
+typedef NS_ENUM(NSInteger, ColoredVKNetworkMethodType) {
+    ColoredVKNetworkMethodTypeGET,
+    ColoredVKNetworkMethodTypePOST
+};
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -44,7 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param success Блок, который вызывается при успешном запросе. Содержит оригинальный запрос, ответ и данные ответа.
  *  @param failure Блок, который вызывается при неудачном запросе. Содержит оригинальный запрос, ответ и ошибку запроса.
  */
-- (void)sendRequestWithMethod:(NSString *)method url:(NSString *)url parameters:(id _Nullable)parameters 
+- (void)sendRequestWithMethod:(ColoredVKNetworkMethodType)method url:(NSString *)url parameters:(id _Nullable)parameters 
                       success:(ColoredVKNetworkSuccessBlock _Nullable)success 
                       failure:(ColoredVKNetworkFailureBlock _Nullable)failure;
 
@@ -57,8 +70,8 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param success Блок, который вызывается при успешном запросе. Содержит оригинальный запрос, ответ и данные ответа.
  *  @param failure Блок, который вызывается при неудачном запросе. Содержит оригинальный запрос, ответ и ошибку запроса.
  */
-- (void)sendJSONRequestWithMethod:(NSString *)method url:(NSString *)url parameters:(id _Nullable)parameters 
-                          success:(void(^_Nullable)(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSDictionary *json))success 
+- (void)sendJSONRequestWithMethod:(ColoredVKNetworkMethodType)method url:(NSString *)url parameters:(id _Nullable)parameters 
+                          success:(ColoredVKNetworkSuccessBlock _Nullable)success 
                           failure:(ColoredVKNetworkFailureBlock _Nullable)failure;
 
 /**
@@ -80,7 +93,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)uploadData:(NSData *)dataToUpload toRemoteURL:(NSString *)remoteURL 
            success:(void(^_Nullable)(NSHTTPURLResponse *httpResponse, NSData *rawData))success 
-           failure:(void(^_Nullable)(NSHTTPURLResponse *httpResponse, NSError *error))failure;
+           failure:(void(^_Nullable)(NSHTTPURLResponse * _Nullable httpResponse, NSError *error))failure;
 
 /**
  *  Выполняет скачивание данных.
@@ -103,7 +116,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @return Возвращает запрос, если при построении не было никаких ошибок. В ином случае возвращает nil.
  */
-- (NSMutableURLRequest * _Nullable)requestWithMethod:(NSString *)method url:(NSString *)url parameters:(id _Nullable)parameters error:( NSError * _Nullable __autoreleasing *)error;
+- (NSMutableURLRequest * _Nullable)requestWithMethod:(ColoredVKNetworkMethodType)method url:(NSString *)url parameters:(id _Nullable)parameters error:( NSError * _Nullable __autoreleasing *)error;
 
 @end
 NS_ASSUME_NONNULL_END

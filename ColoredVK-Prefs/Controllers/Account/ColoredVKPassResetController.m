@@ -132,7 +132,7 @@
     NSDictionary *params = @{@"login":self.login, @"email":self.email, @"new_pass":self.passTextField.text, @"token":self.token};
     
     ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-    [network sendJSONRequestWithMethod:@"POST" url:stringURL parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
+    [network sendJSONRequestWithMethod:ColoredVKNetworkMethodTypePOST url:stringURL parameters:params success:^(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json) {
         if (json[@"response"]) {
             NSDictionary *responseDict = json[@"response"];
             

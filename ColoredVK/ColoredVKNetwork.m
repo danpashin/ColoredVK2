@@ -14,10 +14,30 @@
 #import <sys/utsname.h>
 #endif
 
+
+NS_ASSUME_NONNULL_BEGIN
+
+#ifndef CVKStringize
+#define CVKStringize_internal(string) #string
+#define CVKStringize(string) @CVKStringize_internal(string)
+#endif
+
 #ifdef CVKLocalizedString
 #define NetworkLocalizedString(str) CVKLocalizedString(str)
 #else
 #define NetworkLocalizedString(str) NSLocalizedString(str, @"")
+#endif
+
+#ifdef CVKPackageIdentifier
+static NSString *const kCVKNetworkPackageName = CVKPackageIdentifier;
+#else
+static NSString *const kCVKNetworkPackageName = @"";
+#endif
+
+#ifdef APP_VERSION
+static NSString *const kCVKNetworkPackageVersion = CVKStringize(APP_VERSION);
+#else
+static NSString *const kCVKNetworkPackageVersion = @"";
 #endif
 
 @interface ColoredVKNetwork  () <NSURLSessionDelegate>
@@ -59,9 +79,7 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     return self;
 }
 
-- (void)sendRequest:(NSURLRequest *)request 
-            success:(void(^)(NSURLRequest *httpRequest, NSHTTPURLResponse *response, NSData *rawData))success 
-            failure:(void(^)(NSURLRequest *httpRequest, NSHTTPURLResponse *response, NSError *error))failure
+- (void)sendRequest:(NSURLRequest *)request success:(ColoredVKNetworkSuccessBlock _Nullable)success failure:(ColoredVKNetworkFailureBlock _Nullable)failure
 {
     [self performBackgroundBlock:^{
         NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -101,9 +119,9 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     }];
 }
 
-- (void)sendRequestWithMethod:(NSString *)method url:(NSString *)url parameters:(id)parameters 
-                      success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSData *rawData))success 
-                      failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+- (void)sendRequestWithMethod:(ColoredVKNetworkMethodType)method url:(NSString *)url parameters:(id _Nullable)parameters 
+                      success:(ColoredVKNetworkSuccessBlock _Nullable)success 
+                      failure:(ColoredVKNetworkFailureBlock _Nullable)failure
 {
     [self performBackgroundBlock:^{
         NSError *requestError = nil;
@@ -116,13 +134,13 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     }];
 }
 
-- (void)sendJSONRequestWithMethod:(NSString *)method url:(NSString *)url parameters:(id)parameters
-                          success:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSDictionary *json))success 
-                          failure:(void(^)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error))failure
+- (void)sendJSONRequestWithMethod:(ColoredVKNetworkMethodType)method url:(NSString *)url parameters:(id _Nullable)parameters
+                          success:(ColoredVKNetworkSuccessBlock _Nullable)success 
+                          failure:(ColoredVKNetworkFailureBlock _Nullable)failure
 {
     [self sendRequestWithMethod:method url:url parameters:parameters success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
         
-        if (![httpResponse.MIMEType containsString:@"json"]) {
+        if (![httpResponse.MIMEType.lowercaseString containsString:@"json"]) {
             if (failure)
                 failure(request, httpResponse, [self errorWithCode:1003 description:@"Response has invalid header: %@", @"'Content-Type'"]);
             
@@ -143,15 +161,15 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
 
 
 - (void)uploadData:(NSData *)dataToUpload toRemoteURL:(NSString *)remoteURL 
-           success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))success 
-           failure:(void(^)(NSHTTPURLResponse *response, NSError *error))failure
+           success:(void(^_Nullable)(NSHTTPURLResponse *response, NSData *rawData))success 
+           failure:(void(^_Nullable)(NSHTTPURLResponse * _Nullable response, NSError *error))failure
 {
     if (!dataToUpload)
         return;
     
     dispatch_async(self.parseQueue, ^{
         NSError *requestError = nil;        
-        NSMutableURLRequest *request = [self requestWithMethod:@"POST" url:remoteURL parameters:nil error:&requestError];
+        NSMutableURLRequest *request = [self requestWithMethod:ColoredVKNetworkMethodTypePOST url:remoteURL parameters:nil error:&requestError];
         if (requestError) {
             if (failure)
                 failure(nil, requestError);
@@ -175,10 +193,10 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
 }
 
 - (void)downloadDataFromURL:(NSString *)url
-                    success:(void(^)(NSHTTPURLResponse *response, NSData *rawData))success 
-                    failure:(void(^)(NSHTTPURLResponse *response, NSError *error))failure
+                    success:(void(^_Nullable)(NSHTTPURLResponse *response, NSData *rawData))success 
+                    failure:(void(^_Nullable)(NSHTTPURLResponse *response, NSError *error))failure
 {
-    [self sendRequestWithMethod:@"GET" url:url parameters:nil success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
+    [self sendRequestWithMethod:ColoredVKNetworkMethodTypeGET url:url parameters:nil success:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSData *rawData) {
         if (success)
             success(httpResponse, rawData);
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *httpResponse, NSError *error) {
@@ -187,12 +205,12 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     }];
 }
 
-- (NSMutableURLRequest *)requestWithMethod:(NSString *)method url:(NSString *)url parameters:(id)parameters error:(NSError *__autoreleasing *)error
+- (NSMutableURLRequest * _Nullable )requestWithMethod:(ColoredVKNetworkMethodType)method url:(NSString *)url parameters:(id _Nullable)parameters error:(NSError *_Nullable __autoreleasing *)error
 {
-    NSArray *methodsAvailable = @[@"GET", @"POST"];
-    if (![methodsAvailable containsObject:method.uppercaseString]) {
+    NSString *stringMethod = [self httpMethodForType:method];
+    if (!stringMethod) {
         if (error)
-            *error = [self errorWithCode:1000 description:@"Request method is unsupported. Must be 'POST' or 'GET'."];
+            *error = [self errorWithCode:1000 description:@"Request method is unsupported."];
         return nil;
     }
     
@@ -214,7 +232,7 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
         return nil;
     }
     
-    if ([method.uppercaseString isEqualToString:@"GET"])
+    if (method == ColoredVKNetworkMethodTypeGET)
         url = [url stringByAppendingString:[NSString stringWithFormat:@"?%@", stringParameters]];
     
     url = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
@@ -224,12 +242,12 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
                                                            cachePolicy:self.configuration.requestCachePolicy
                                                        timeoutInterval:self.configuration.timeoutIntervalForResource];
     
-    if ([method.uppercaseString isEqualToString:@"POST"]) {
+    if (method == ColoredVKNetworkMethodTypePOST) {
         request.HTTPBody = [stringParameters dataUsingEncoding:NSUTF8StringEncoding];
         [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     }
     
-    request.HTTPMethod = method.uppercaseString;
+    request.HTTPMethod = stringMethod;
     [request setValue:self.defaultUserAgent forHTTPHeaderField:@"User-Agent"];
     
     return request;
@@ -249,8 +267,8 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
         NSString *systemVersion = [NSProcessInfo processInfo].operatingSystemVersionString;
 #endif
         
-        _defaultUserAgent = [NSString stringWithFormat:@"ColoredVK2/%@ (%@/%@ | %@/%@)", 
-                             kPackageVersion, [NSBundle mainBundle].bundleIdentifier, 
+        _defaultUserAgent = [NSString stringWithFormat:@"%@/%@ (%@/%@ | %@/%@)", 
+                             kCVKNetworkPackageName, kCVKNetworkPackageVersion, [NSBundle mainBundle].bundleIdentifier, 
                              [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], deviceModelName, 
                              systemVersion];
     }
@@ -258,7 +276,7 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
     return _defaultUserAgent;
 }
 
-- (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler
+- (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * _Nullable credential))completionHandler
 {
     if ([challenge.protectionSpace.host containsString:@"danpashin.ru"] && [challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
         completionHandler(NSURLSessionAuthChallengeUseCredential, [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust]);
@@ -298,4 +316,14 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
                            userInfo:@{NSLocalizedDescriptionKey:localizedDescription}];
 }
 
+- (NSString * _Nullable )httpMethodForType:(ColoredVKNetworkMethodType)type
+{
+    if (type == ColoredVKNetworkMethodTypeGET)         return @"GET";
+    else if (type == ColoredVKNetworkMethodTypePOST)   return @"POST";
+    
+    return nil;
+}
+
 @end
+
+NS_ASSUME_NONNULL_END

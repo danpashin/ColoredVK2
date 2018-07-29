@@ -81,7 +81,8 @@
 
 
 NS_ASSUME_NONNULL_BEGIN
-static NSString *const kPackageIdentifier = @"com.daniilpashin.coloredvk2";
+static NSString *const kPackageIdentifier = @"ru.danpashin.coloredvk2";
+#define CVKPackageIdentifier kPackageIdentifier
 static NSString *const kPackageName = @"ColoredVK 2";
 static NSString *const kPackageVersion = CVKStringize(APP_VERSION);
 
