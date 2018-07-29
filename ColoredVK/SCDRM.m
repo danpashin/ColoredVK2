@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "SCDRM.h"
+#import "NSError+ColoredVK.h"
 
 #import <CommonCrypto/CommonCrypto.h>
 #import <CommonCrypto/CommonHMAC.h>
@@ -23,7 +24,7 @@
 #define kDRMOLDLicencePath [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
 
 NSString *const kDRMServerKey = @"ACBEBB5F70D0883E875DAA6E1C5C59ED";
-NSString *const KDRMErrorKey = @"ru.danpashin.coloredvk2.drm.error";
+NSString *const KDRMErrorDomain = @"ru.danpashin.coloredvk2.drm.error";
 
 BOOL __suspiciousLibsDetected;
 BOOL __deviceIsJailed;
@@ -37,8 +38,6 @@ NSData *_performCryptOperation(CCOperation operation, NSData *data, NSString *ke
 NSData *_performNewCryptOperation(CCOperation operation, NSData *data, NSString *key);
 CFPropertyListRef MGCopyAnswer(CFStringRef property);
 
-static NSError * __nonnull errorWithCode(NSInteger code, NSString * _Nonnull description, ...);
-
 
 CVK_INLINE NSString *RSAEncryptServerString(NSString *string)
 {
@@ -50,14 +49,14 @@ CVK_INLINE NSDictionary *RSADecryptServerData(NSData *rawData, NSURLResponse *re
 {
     if (![response.MIMEType isEqualToString:@"multipart/encrypted"]) {
         if (error)
-            *error = errorWithCode(-1000, @"Response has invalid header: %@", @"'Content-Type'");
+            *error = [NSError cvk_localizedErrorWithDomain:KDRMErrorDomain code:-1000 description:@"Response has invalid header: %@", @"'Content-Type'"];
         return nil;
     }
     
     NSData *decrypted = _performCryptOperation(kCCDecrypt, rawData, kDRMServerKey);
     if (!decrypted || decrypted.length == 0) {
         if (error)
-            *error = errorWithCode(-1001, @"Response data can not be decrypted.");
+            *error = [NSError cvk_localizedErrorWithDomain:KDRMErrorDomain code:-1001 description:@"Response data can not be decrypted."];
         return nil;
     }
     
@@ -67,7 +66,7 @@ CVK_INLINE NSDictionary *RSADecryptServerData(NSData *rawData, NSURLResponse *re
     NSData *jsonData = [decryptedString dataUsingEncoding:NSUTF8StringEncoding];
     if (!jsonData) {
         if (error)
-            *error = errorWithCode(-1002, @"Response data can not be decrypted.");
+            *error = [NSError cvk_localizedErrorWithDomain:KDRMErrorDomain code:-1002 description:@"Response data can not be decrypted."];
         return nil;
     }
     
@@ -92,7 +91,7 @@ CVK_INLINE NSDictionary *RSADecryptLicenceData(NSError *__autoreleasing *error)
         licenceData = [NSData dataWithContentsOfFile:CVK_LICENSE_PATH];
         if (!licenceData) {
             if (error)
-                *error = errorWithCode(0, @"Licence file does not exist.");
+                *error = [NSError cvk_localizedErrorWithDomain:KDRMErrorDomain code:0 description:@"Licence file does not exist."];
             
             return nil;
         } else {
@@ -105,7 +104,7 @@ CVK_INLINE NSDictionary *RSADecryptLicenceData(NSError *__autoreleasing *error)
     
     if (![licence isKindOfClass:[NSDictionary class]] || (licence.allKeys.count == 0)) {
         if (error)
-            *error = errorWithCode(0, @"Licence file is damaged.");
+            *error = [NSError cvk_localizedErrorWithDomain:KDRMErrorDomain code:0 description:@"Licence file is damaged."];
         
         return nil;
     }
@@ -227,11 +226,9 @@ CVK_INLINE void generateNewKey(void)
 
 
 
+#ifndef COMPILE_APP
 CVK_INLINE BOOL isDebugged(void)
 {
-#ifdef COMPILE_APP
-    return NO;
-#else
     int fd = STDERR_FILENO;
     
     if (fcntl(fd, F_GETFD, 0) < 0) {
@@ -252,14 +249,12 @@ CVK_INLINE BOOL isDebugged(void)
     }
     
     return type != 2;
-#endif
 }
 
 CVK_INLINE void checkLibs(void)
 {
-#ifdef COMPILE_APP
     __suspiciousLibsDetected = NO;
-#else
+
     char pathbuf[MAXPATHLEN + 1];
     uint32_t bufsize = sizeof(pathbuf);
     _NSGetExecutablePath(pathbuf, &bufsize);
@@ -277,21 +272,13 @@ CVK_INLINE void checkLibs(void)
             libsCount++;
         } else if (strstr(imageName, "coloredvk2") != NULL) {
             libsCount++;
-        } 
-//        else if (strstr(imageName, "Crack") != NULL) {
-//            libsCount++;
-//        } else if (strstr(imageName, "crack") != NULL) {
-//            libsCount++;
-//        } else if (strstr(imageName, "Hack") != NULL) {
-//            libsCount++;
-//        } else if (strstr(imageName, "hack") != NULL) {
-//            libsCount++;
-//        }
+        }
     }
     
     __suspiciousLibsDetected = (libsCount > maxLibsCount);
-#endif
+
 }
+#endif
 
 CVK_CONSTRUCTOR
 {
@@ -311,22 +298,30 @@ CVK_CONSTRUCTOR
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         generateKey();
         generateNewKey();
-        checkLibs();
-        
-        if (isDebugged()) {
-            __suspiciousLibsDetected = YES;
-            abort();
-        }
     });
-}
-
-static NSError * __nonnull errorWithCode(NSInteger code, NSString * _Nonnull description, ...)
-{
-    va_list args;
-    va_start(args, description);
-    NSString *localizedDescription = [[NSString alloc] initWithFormat:CVKLocalizedString(description) arguments:args];
-    va_end(args);
     
-    return [NSError errorWithDomain:KDRMErrorKey code:code 
-                           userInfo:@{NSLocalizedDescriptionKey:localizedDescription}];
+#ifndef COMPILE_APP
+    dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+    dispatch_async(backgroundQueue, ^{
+        checkLibs();
+    });
+    
+    void (^libsCheckBlock)(void) = ^{
+        dispatch_async(backgroundQueue, ^{
+            if (isDebugged()) {
+                __suspiciousLibsDetected = YES;
+                abort();
+            }
+        });
+    };
+    
+    if (ios_available(10_0)) {
+        NSTimer *scheduledTimer = [NSTimer scheduledTimerWithTimeInterval:5 * 60 repeats:YES block:^(NSTimer * _Nonnull blockTimer) {
+            libsCheckBlock();
+        }];
+        [scheduledTimer fire];
+    } else {
+        libsCheckBlock();
+    }
+#endif
 }

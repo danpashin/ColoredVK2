@@ -10,6 +10,7 @@
 #import "ColoredVKWebViewController.h"
 #import "ColoredVKNetwork.h"
 #import "NSObject+ColoredVK.h"
+#import "NSError+ColoredVK.h"
 
 @interface ColoredVKNewInstaller ()
 extern NSString *__key;
@@ -144,8 +145,7 @@ extern NSString *__key;
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             if (error) {
-                NSString *text = [NSString stringWithFormat:@"%@\n(Client code %@)", error.localizedDescription, @(error.code)];
-                [newInstaller showAlertWithTitle:CVKLocalizedString(@"ERROR") text:text buttons:nil];
+                [newInstaller showAlertWithTitle:CVKLocalizedString(@"ERROR_OCCURED") text:error.localizedDescription buttons:nil];
             }
             
             if (completionBlock)
@@ -160,25 +160,21 @@ extern NSString *__key;
         NSDictionary *json = RSADecryptServerData(rawData, httpResponse, &decryptError);
         
         if (!json || decryptError) {
-            if (!decryptError)
-                decryptError = [NSError errorWithDomain:NSCocoaErrorDomain code:100
-                                               userInfo:@{NSLocalizedDescriptionKey:@"Unknown error"}];
-            
             showAlertBlock(decryptError);
             return;
         }
         
         if (json[@"error"]) {
-            NSString *errorMessages = json ? json[@"error"] : @"Unknown error";
-            showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain code:101 
-                                           userInfo:@{NSLocalizedDescriptionKey:errorMessages}]);
+            NSString *errorMessage = json ? json[@"error"] : @"Unknown error.";
+            showAlertBlock([NSError cvk_localizedErrorWithDomain:NSCocoaErrorDomain code:101 
+                                                     description:@"%@", errorMessage]);
             return;
         }
         
         NSDictionary *response = json[@"response"];        
         if (!response[@"login"] || !response[@"user_id"] || !response[@"token"] || ![response[@"key"] isEqualToString:__key]) {
-            showAlertBlock([NSError errorWithDomain:NSCocoaErrorDomain code:101 
-                                           userInfo:@{NSLocalizedDescriptionKey:@"Cannot authenticate. Invalid response."}]);
+            showAlertBlock([NSError cvk_localizedErrorWithDomain:NSCocoaErrorDomain code:101 
+                                                     description:@"Cannot authenticate. Invalid response."]);
             return;
         }
         

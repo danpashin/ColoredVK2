@@ -130,6 +130,7 @@
 
 
 // Ошибки NSError
+"ERROR_OCCURED" = "Произошла ошибка";
 "Request URL was changed" = "Похоже, адрес запроса был изменен.";
 "Response data has wrong size" = "Похоже, тело ответа имеет неверный размер.";
 "Response has invalid header: %@" = "Похоже, ответ сервера имеет неверный заголовок: %@";
@@ -138,3 +139,5 @@
 "Licence file does not exist." = "Файл лицензии не существует.";
 "Licence file is damaged." = "Файл лицензии повреждён.";
 "Response data can not be decrypted." = "Ответ сервера не может быть расшифрован.";
+"Cannot authenticate. Invalid response." = "Невозможно выполнить авторизацию. Неверный ответ сервера.";
+"Unknown error." = "Неизвестная ошибка.";
