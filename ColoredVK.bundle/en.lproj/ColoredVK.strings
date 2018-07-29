@@ -150,19 +150,18 @@
  FOOTERS
  
  */
-"SEND_STATISTICS_FOOTER" = "This information does NOT include any private info, only general information about device.";
 "MANAGE_SETTINGS_FOOTER" = "Backups are stored in %@. When you restore the device in iTunes they will be removed.";
-"CUSTOM_COVER_FOOTER" = "If you don't like ColoredVK 2 standard cover, you can change it to your.";
+"CUSTOM_COVER_FOOTER" = "If you don't like ColoredVK 2 default cover, you can change it to yours.";
 "CACHE_COVERS_FOOTER" = "Caching of covers will help to reduce the load time, but will require more space on the device.";
-"NEW_PLAYER_DESIGN_FOOTER" = "This option will make the player more minimalist - cover will vary depending on the song, and the colors will be more readable. Also, a window with the song lyrics will be added. Just click the cover!\n\nDoes not work in VK App 3.0.2 and higher.";
+"NEW_PLAYER_DESIGN_FOOTER" = "This option will make the player more minimalist - player's cover will vary depending on the song, and the colors will be more readable. Also, a window with the song lyrics will be added. Just click the cover!\n\nDoes not work in VK App 3.0.2 and higher.";
 "PLAYER_GESTURES_FOOTER" = "Swipe down to close the player, swipe up - show playlist, swipe left/right - change the track.";
-"ALWAYS_SHOW_NAVIGATION_BAR_FOOTER" = "By default VK App hides the navigation bar in the news when scrolling. This function disables this concealment.";
+"ALWAYS_SHOW_NAVIGATION_BAR_FOOTER" = "By default, VK App hides the navigation bar in the news when scrolling. This function disables this concealment.";
 "MESSAGE_BUBBLE_COLOR_FOOTER" = "This function changes the color of the message bubble.";
 "HIDE_MESSAGE_NAV_BAR_ITEMS_FOOTER" = "Will hide the person's name and avatar from the navigation bar. It would be very useful if you don't want others to see who you write.";
 "DISABLE_GROUP_COVERS_FOOTER" = "Disabling of covers gives an increase in speed and time of opening of groups.";
-"CHANGE_PASSWORD_FOOTER" = "If you are logged in with your account, in this menu you can change the password.";
+
 "BLUR_PREFS_FOOTER" = "Blur will be applied to the navigation bar and toolbar (if any)";
-"SHOW_FAST_DOWNLOAD_BUTTON_FOOTER" = "If this feature is enabled, when viewing any image quick download button will be added in navigation bar. It will allow you to quickly set an image without having to save it to camera Roll.";
-"SHOW_SECTION_IN_MENU_FOOTER" = "ColoredVK 2 tab shows in VKApp main menu by default. Turning this off, you will be able to go into the settings of the tweak only using settings of VKApp.";
-"CHANGE_MESSAGES_TEXT_COLOR_FOOTER" = "In general, this function should change the color of all text in messages. But at this moment  it changes only color of time label.";
+"SHOW_FAST_DOWNLOAD_BUTTON_FOOTER" = "If this feature is enabled, when viewing any image quick download button will be added in the navigation bar. It will allow you to quickly set an image without having to save it to Camera Roll.";
+"SHOW_SECTION_IN_MENU_FOOTER" = "ColoredVK 2 tab shows in the VKApp main menu by default. Turning this off, you will be able to go into the settings of the tweak only using settings of VKApp.";
+"CHANGE_MESSAGES_TEXT_COLOR_FOOTER" = "In general, this function should change the color of all text in messages. But at this moment it only changes the time label's color.";
 

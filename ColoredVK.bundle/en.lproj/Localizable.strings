@@ -10,14 +10,14 @@
 "ERROR %@" = "Error:\n%@";
 "WARNING" = "Warning";
 "THIS_ACTION_CAN_NOT_BE_UNDONE" = "This action can not be undone";
-"REMOVE_IMAGE_WARNING" = "Removal of image is not reversible. Use this function with caution.";
-"CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Can not save image. Try again or contact developer.";
+"REMOVE_IMAGE_WARNING" = "Removal of the image is not reversible. Use this function with caution.";
+"CAN_NOT_SAVE_IMAGE_TRY_AGAIN" = "Can not save the image. Try again or contact developer.";
 "DISMISS" = "Dismiss";
 "CALCULATING..." = "Calculating...";
 
 //  Окно обновлений
-"UPDATE_IS_AVAILABLE" = "Update is available (%@). Tap here for more information.";
-"UPDATE_IS_AVAILABLE_DETAIL" = "Update is available (%@).\n\nChangelog:\n%@\n\nUpdate?";
+"UPDATE_IS_AVAILABLE" = "An update is available (%@). Tap here for more information.";
+"UPDATE_IS_AVAILABLE_DETAIL" = "An Update is available (%@).\n\nChangelog:\n%@\n\nUpdate?";
 "REMIND_LATER" = "Remind later";
 "SKIP_THIS_UPDATE" = "Skip this version";
 "UPDATE_NOW" = "Update now";
@@ -31,8 +31,8 @@
 "COPY_SAVED" = "Copy saved";
 "ENTER_HEXEDECIMAL_COLOR_CODE_ALERT_MESSAGE" = "Enter a hexadecimal color code\n(Symbol # is not necessary)";
 "EXAMPLE_ALERT_MESSAGE" = "Like %@";
-"RESET_COLOR_QUESTION" = "Are you really want to reset color?";
-"REMOVE_SAVED_COLOR" = "Remove color";
+"RESET_COLOR_QUESTION" = "Are you really want to reset saved color to default?";
+"REMOVE_SAVED_COLOR" = "Reset color";
 "RESET_SETTINGS_QUESTION" = "Are you really want to reset settings?";
 "RESTORE_BACKUP_QUESTION" = "Are you sure you want to restore this backup?\n\n%@";
 "YES_I_AM_SURE" = "Yeah, I'm sure";
@@ -55,7 +55,7 @@
 "PURCHASE" = "Purchase";
 "HIDE" = "Hide";
 
-"CLOSE_APP_FOOTER_TEXT" = "Settings are applied automatically, but for full theme application it is recommended to restart the client.";
+"CLOSE_APP_FOOTER_TEXT" = "Settings are applied automatically, but for full theme application, it is recommended to restart the client.";
 "CLOSE_APP_FOOTER_BUTTON_TEXT" = "Close VK App";
 
 
@@ -112,12 +112,12 @@
 // О статусах аккаунта
 "YOUR_STATUS" = "Your status";
 "FREE" = "Free";
-"MORE_ABOUT_FREE_ACCOUNT" = "Free account has some limited functionality. It has following features:\n\n●  Change colors of navigation bar and toolbar\n●  Change tabbar (only for VK App 3.0 and higher)\n●  Full change of the main menu\n●  Full change of the messages section";
+"MORE_ABOUT_FREE_ACCOUNT" = "The free account has some limited functionality. It has the following features:\n\n●  Change colors of the navigation bar and toolbar\n●  Change tab bar (only for VK App 3.0 and higher)\n●  Full change of the main menu\n●  Full change of the messages section";
 "PREMIUM" = "Premium";
-"MORE_ABOUT_PREMIUM_ACCOUNT" = "Premium account, unlike free, opens the full functionality of the add-on. It additionally adds:\n\n● Night theme (2 preinstalled on your choise + one custom)\n● Change of other sections (groups, settings, etc.)\n● Change colors of status bar, switches and other small items\n● Backing up and restoring settings";
+"MORE_ABOUT_PREMIUM_ACCOUNT" = "Premium account, unlike free, opens the full functionality of the add-on. It additionally adds:\n\n● Night theme (2 preinstalled on your choice + one custom)\n● Change of other sections (groups, settings, etc.)\n● Change colors of the status bar, switches, and other small items\n● Backing up and restoring settings";
 "BUY_PREMIUM" = "Purchase Premium";
 
-"ACTIVATED_VIA_BIGBOSS" = "Your copy of ColoredVK 2 is activated via BigBoss digital licence! Authorization or other actions are not required.";
+"ACTIVATED_VIA_BIGBOSS" = "Your copy of ColoredVK 2 is activated via BigBoss digital license! Authorization or other actions are not required.";
 "CANNOT_GET_JAIL_PURCHASE_INFO" = "Cannot get purchase information. Tap to view the details.";
 "CANNOT_GET_JAIL_PURCHASE_INFO_DETAIL" = "Unfortunately, this copy of the tweak cannot be activated automatically. This is most likely due to the fact that the tweak was installed from a third-party repository. In this case, reinstall it from the official BigBoss repository.\n\nIf you have a jailbreak that is different from doubleH3lix, maybe going to this section from the 'Settings' app will solve the problem.\n\nIf you purchased an account, just log in, and this warning will disappear.";
 
@@ -130,11 +130,11 @@
 
 
 // Ошибки NSError
-"Request URL was changed" = "It seems the request address has been changed.";
+"Request URL was changed" = "It seems the request address changed.";
 "Response data has wrong size" = "It seems the response body has the wrong size.";
 "Response has invalid header: %@" = "It seems the server response has an incorrect header: %@";
 "Request method is unsupported. Must be 'POST' or 'GET'." = "The request method is not supported. Must be 'POST' or 'GET'.";
 "Class of argument 'parameters' is unsupported. Must be NSDictionary or NSString." = "The 'parameters' argument class is not supported. Must be NSDictionary or NSString";
 "Licence file does not exist." = "License file does not exist.";
-"Licence file is damaged." = "License file is damaged.";
-"Response data can not be decrypted." = "Server response could not be decrypted.";
+"Licence file is damaged." = "The license file is damaged.";
+"Response data can not be decrypted." = "Server response cannot be decrypted.";

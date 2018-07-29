@@ -20,7 +20,7 @@
 #import <sys/utsname.h>
 
 
-#define kDRMLicencePath [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
+#define kDRMOLDLicencePath [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
 
 NSString *const kDRMServerKey = @"ACBEBB5F70D0883E875DAA6E1C5C59ED";
 NSString *const KDRMErrorKey = @"ru.danpashin.coloredvk2.drm.error";
@@ -29,10 +29,12 @@ BOOL __suspiciousLibsDetected;
 BOOL __deviceIsJailed;
 
 NSString *__cvkKey;
+NSString *__cvkNewKey;
 NSString *__udid;
 NSString *__deviceModel;
 
 NSData *_performCryptOperation(CCOperation operation, NSData *data, NSString *key);
+NSData *_performNewCryptOperation(CCOperation operation, NSData *data, NSString *key);
 CFPropertyListRef MGCopyAnswer(CFStringRef property);
 
 static NSError * __nonnull errorWithCode(NSInteger code, NSString * _Nonnull description, ...);
@@ -84,15 +86,21 @@ CVK_INLINE NSDictionary *RSADecryptServerData(NSData *rawData, NSURLResponse *re
 
 CVK_INLINE NSDictionary *RSADecryptLicenceData(NSError *__autoreleasing *error)
 {
-    NSData *licenceData = [NSData dataWithContentsOfFile:kDRMLicencePath];
+    BOOL useNewDECMethod = NO;
+    NSData *licenceData = [NSData dataWithContentsOfFile:kDRMOLDLicencePath];
     if (!licenceData) {
-        if (error)
-            *error = errorWithCode(0, @"Licence file does not exist.");
-        
-        return nil;
+        licenceData = [NSData dataWithContentsOfFile:CVK_LICENSE_PATH];
+        if (!licenceData) {
+            if (error)
+                *error = errorWithCode(0, @"Licence file does not exist.");
+            
+            return nil;
+        } else {
+            useNewDECMethod = YES;
+        }
     }
     
-    NSData *decryptedLicenceData = _performCryptOperation(kCCDecrypt, licenceData, __cvkKey);
+    NSData *decryptedLicenceData = _performCryptOperation(kCCDecrypt, licenceData, useNewDECMethod ? __cvkNewKey : __cvkKey);
     NSDictionary *licence = [NSKeyedUnarchiver unarchiveObjectWithData:decryptedLicenceData];
     
     if (![licence isKindOfClass:[NSDictionary class]] || (licence.allKeys.count == 0)) {
@@ -108,9 +116,10 @@ CVK_INLINE NSDictionary *RSADecryptLicenceData(NSError *__autoreleasing *error)
 CVK_INLINE BOOL RSAEncryptAndWriteLicenceData(NSDictionary *licence, NSError *__autoreleasing *error)
 {
     NSData *rawData = [NSKeyedArchiver archivedDataWithRootObject:licence];
-    NSData *encryptedLicence = _performCryptOperation(kCCEncrypt, rawData, __cvkKey);
+    NSData *encryptedLicence = _performCryptOperation(kCCEncrypt, rawData, __cvkNewKey);
     
-    return cvk_writeData(encryptedLicence, kDRMLicencePath, error);
+    cvk_removeItem(kDRMOLDLicencePath, nil);
+    return cvk_writeData(encryptedLicence, CVK_LICENSE_PATH, error);
 }
 
 
@@ -121,16 +130,30 @@ CVK_INLINE NSData *_performCryptOperation(CCOperation operation, NSData *data, N
     if (key.length == 0)
         return nil;
     
-    char keyPtr[kCCKeySizeAES256+1];
-    bzero(keyPtr, sizeof(keyPtr));
-    [key getCString:keyPtr maxLength:sizeof(keyPtr) encoding:NSUTF8StringEncoding];
+    void *cryptKey = NULL;
+    if ([key isEqualToString:__cvkNewKey] || [key isEqualToString:kDRMServerKey]) {
+        CVKLog(@"Using new encryption key");
+        const char *keyBytes = key.UTF8String;
+        size_t keySize = kCCKeySizeAES256;
+        
+        cryptKey = malloc(keySize);
+        bzero(cryptKey, keySize);
+        memcpy(cryptKey, keyBytes, keySize);
+    } else {
+        CVKLog(@"Using old encryption key");
+        char keyPtr[kCCKeySizeAES256+1];
+        bzero(keyPtr, sizeof(keyPtr));
+        [key getCString:keyPtr maxLength:sizeof(keyPtr) encoding:NSUTF8StringEncoding];
+        cryptKey = keyPtr;
+    }
+    
     
     size_t bufferSize = data.length + kCCBlockSizeAES128;
     void *buffer = malloc(bufferSize);
     
     size_t numBytesDecrypted = 0;
     CCCryptorStatus cryptStatus = CCCrypt(operation, kCCAlgorithmAES128, kCCOptionPKCS7Padding,
-                                          keyPtr, kCCKeySizeAES256,
+                                          cryptKey, kCCKeySizeAES256,
                                           NULL, data.bytes, data.length, buffer, bufferSize, &numBytesDecrypted);
     
     if (cryptStatus == kCCSuccess) {
@@ -141,25 +164,18 @@ CVK_INLINE NSData *_performCryptOperation(CCOperation operation, NSData *data, N
     return nil;
 }
 
-CVK_INLINE NSString *deviceModel()
-{
-    char machine[256];
-    size_t length = sizeof(machine);
-    int machineName[] = {CTL_HW, HW_MACHINE};
-    sysctl(machineName, 2, &machine, &length, NULL, 0);
-    if (strlen(machine) >= 5) {
-        return @(machine);
-    }
-    
-    struct utsname deviceInfo;
-    uname(&deviceInfo);
-    
-    return @(deviceInfo.machine);
-}
-
 CVK_INLINE void generateKey(void)
 {
-    __deviceModel = deviceModel();
+    char machineName[256];
+    size_t machineLength = sizeof(machineName);
+    int machineNameID[] = {CTL_HW, HW_MACHINE};
+    sysctl(machineNameID, 2, &machineName, &machineLength, NULL, 0);
+    if (strlen(machineName) < 5) {
+        struct utsname deviceInfo;
+        uname(&deviceInfo);
+        strcpy(machineName, deviceInfo.machine);
+    }
+    __deviceModel = @(machineName);
     
     uint64_t ramSize;
     size_t len = sizeof(ramSize);
@@ -176,6 +192,40 @@ CVK_INLINE void generateKey(void)
     encryptionKey = [encryptionKey stringByReplacingOccurrencesOfString:@">" withString:@""];
     __cvkKey = encryptionKey;
 }
+
+CVK_INLINE void generateNewKey(void)
+{
+    char machineName[256];
+    size_t machineLength = sizeof(machineName);
+    int machineNameID[] = {CTL_HW, HW_MACHINE};
+    sysctl(machineNameID, 2, &machineName, &machineLength, NULL, 0);
+    if (strlen(machineName) < 5) {
+        struct utsname deviceInfo;
+        uname(&deviceInfo);
+        strcpy(machineName, deviceInfo.machine);
+    }
+//    __deviceModel = @(machineName);
+    
+    uint64_t ramSize;
+    size_t ramLength = sizeof(ramSize);
+    int ramSizeID[] = {CTL_HW, HW_MEMSIZE};
+    sysctl(ramSizeID, 2, &ramSize, &ramLength, NULL, 0);
+    
+    char *rawKey;
+    asprintf(&rawKey, "%s%s%llu", kDRMServerKey.UTF8String, machineName, ramSize);
+    
+    size_t derivedKeyBufferLen = kCCKeySizeAES256;
+    uint8_t *derivedKeyBuffer = malloc(derivedKeyBufferLen);
+    
+    uint8_t *salt = (uint8_t *)&ramSize;
+    CCKeyDerivationPBKDF(kCCPBKDF2, rawKey, strlen(rawKey), salt, sizeof(salt), kCCPRFHmacAlgSHA256, 10000, derivedKeyBuffer, derivedKeyBufferLen);
+    
+    NSData *derivedKey = [NSData dataWithBytesNoCopy:derivedKeyBuffer length:derivedKeyBufferLen];
+    __cvkNewKey = [derivedKey base64EncodedStringWithOptions:0];
+}
+
+
+
 
 CVK_INLINE BOOL isDebugged(void)
 {
@@ -260,6 +310,7 @@ CVK_CONSTRUCTOR
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         generateKey();
+        generateNewKey();
         checkLibs();
         
         if (isDebugged()) {

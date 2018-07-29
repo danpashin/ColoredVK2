@@ -6,4 +6,4 @@
 //  Copyright (©) Daniil Pashin 2017. All rights reserved.
 //  
 
-"NSPhotoLibraryUsageDescription" = "Allow to access your photos library to set backgrounds in your VKApp";
+"NSPhotoLibraryUsageDescription" = "Allow accessing your photos library to set backgrounds in your VKApp";
