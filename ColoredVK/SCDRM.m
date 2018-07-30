@@ -85,18 +85,22 @@ CVK_INLINE NSDictionary *RSADecryptServerData(NSData *rawData, NSURLResponse *re
 
 CVK_INLINE NSDictionary *RSADecryptLicenceData(NSError *__autoreleasing *error)
 {
+    NSData *licenceData = nil;
     BOOL useNewDECMethod = NO;
-    NSData *licenceData = [NSData dataWithContentsOfFile:kDRMOLDLicencePath];
-    if (!licenceData) {
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([fileManager fileExistsAtPath:kDRMOLDLicencePath]) {
+        licenceData = [NSData dataWithContentsOfFile:kDRMOLDLicencePath];
+    } else if ([fileManager fileExistsAtPath:CVK_LICENSE_PATH]) {
+        useNewDECMethod = YES;
         licenceData = [NSData dataWithContentsOfFile:CVK_LICENSE_PATH];
-        if (!licenceData) {
-            if (error)
-                *error = [NSError cvk_localizedErrorWithDomain:KDRMErrorDomain code:0 description:@"Licence file does not exist."];
-            
-            return nil;
-        } else {
-            useNewDECMethod = YES;
-        }
+    }
+    
+    if (!licenceData) {
+        if (error)
+            *error = [NSError cvk_localizedErrorWithDomain:KDRMErrorDomain code:0 description:@"Licence file does not exist."];
+
+        return nil;
     }
     
     NSData *decryptedLicenceData = _performCryptOperation(kCCDecrypt, licenceData, useNewDECMethod ? __cvkNewKey : __cvkKey);
@@ -131,15 +135,12 @@ CVK_INLINE NSData *_performCryptOperation(CCOperation operation, NSData *data, N
     
     void *cryptKey = NULL;
     if ([key isEqualToString:__cvkNewKey] || [key isEqualToString:kDRMServerKey]) {
-        CVKLog(@"Using new encryption key");
-        const char *keyBytes = key.UTF8String;
         size_t keySize = kCCKeySizeAES256;
         
         cryptKey = malloc(keySize);
-        bzero(cryptKey, keySize);
-        memcpy(cryptKey, keyBytes, keySize);
+        memset(cryptKey, 0, keySize);
+        memcpy(cryptKey, key.UTF8String, keySize);
     } else {
-        CVKLog(@"Using old encryption key");
         char keyPtr[kCCKeySizeAES256+1];
         bzero(keyPtr, sizeof(keyPtr));
         [key getCString:keyPtr maxLength:sizeof(keyPtr) encoding:NSUTF8StringEncoding];

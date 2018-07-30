@@ -20,7 +20,7 @@ typedef NS_ENUM(NSInteger, CVKNightThemeType) {
 
 + (instancetype)sharedScheme;
 
-@property (assign, nonatomic) BOOL enabled;
+@property (assign, atomic) BOOL enabled;
 @property (assign, nonatomic, readonly) CVKNightThemeType type;
 
 @property (strong, nonatomic, readonly) UIColor *backgroundColor;

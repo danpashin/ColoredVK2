@@ -130,7 +130,8 @@
 
 
 // Ошибки NSError
-"ERROR_OCCURED" = "Произошла ошибка";
+"Error occurred" = "Произошла ошибка";
+"\n(Error code %i)" = "\n(Код ошибки %i)";
 "Request URL was changed" = "Похоже, адрес запроса был изменен.";
 "Response data has wrong size" = "Похоже, тело ответа имеет неверный размер.";
 "Response has invalid header: %@" = "Похоже, ответ сервера имеет неверный заголовок: %@";
