@@ -2624,7 +2624,7 @@
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
+				PRODUCT_BUNDLE_IDENTIFIER = "ru.danpashin.coloredvk2-beta";
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -2771,7 +2771,7 @@
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
+				PRODUCT_BUNDLE_IDENTIFIER = "ru.danpashin.coloredvk2-beta";
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -3054,7 +3054,7 @@
 				LIBRARY_SEARCH_PATHS = "$(iOSOpenDevPath)/lib/**";
 				LLVM_LTO = YES;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = ru.danpashin.coloredvk2;
+				PRODUCT_BUNDLE_IDENTIFIER = "ru.danpashin.coloredvk2-beta";
 				PRODUCT_NAME = ColoredVK2;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
