@@ -90,8 +90,12 @@ makeDEB () {
     echo "[->] Cleaning (stage 1)..."
     find "Package" -name ".DS_Store" -exec rm -f {} \;
 
+    FOLDER_SIZE=$(du -sk "Package")
+    INSTALLED_SIZE=$(echo $FOLDER_SIZE | tr -dc '0-9' )
+    sed -i '' "s/PACKAGE_SIZE/${INSTALLED_SIZE}/g" "$FOLDER_TO_PACK/Package/DEBIAN/control"
+
     echo "[->] Packaging..."
-    dpkg-deb -b -Zlzma "Package" "${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}_${PLATFORM_NAME}-arm.deb" >> /dev/null
+    dpkg-deb -b -Zlzma "Package" "${PRODUCT_BUNDLE_IDENTIFIER}_${APP_VERSION}_${PLATFORM_NAME}-arm.deb" 2> /dev/null
 
     echo "[->] Cleaning (stage 2)..."
     rm -rf Package
