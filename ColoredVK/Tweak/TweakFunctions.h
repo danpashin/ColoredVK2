@@ -48,3 +48,5 @@ extern void updateControllerBlurInfo(UIViewController *controller);
 
 extern void updateNavBarColor(void);
 extern void setupNewAppMenuCell(UITableViewCell *cell);
+
+extern void setupQuickMenuController(void);

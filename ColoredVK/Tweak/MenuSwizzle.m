@@ -66,6 +66,12 @@ CHDeclareMethod(0, void, VKMMainController, viewDidLoad)
     }
 }
 
+CHDeclareMethod(1, void, VKMMainController, traitCollectionDidChange, UITraitCollection *, previousTraitCollection)
+{
+    CHSuper(1, VKMMainController, traitCollectionDidChange, previousTraitCollection);
+    setupQuickMenuController();
+}
+
 CHDeclareMethod(0, void, VKMMainController, viewWillLayoutSubviews)
 {
     CHSuper(0, VKMMainController, viewWillLayoutSubviews);
@@ -178,7 +184,7 @@ CHDeclareMethod(2, UITableViewCell*, MenuViewController, tableView, UITableView*
 {
     UITableViewCell *cell = CHSuper(2, MenuViewController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     
-    if ([cell.textLabel.text isEqualToString:@"ColoredVK 2"] && ![cell isEqual:cvkMainController.menuCell]) {
+    if ([cell.textLabel.text isEqualToString:@"ColoredVK 2"]) {
         cell = cvkMainController.menuCell;
     }
     
@@ -228,7 +234,8 @@ CHDeclareMethod(0, NSArray *, MenuViewController, menu)
 
 CHDeclareMethod(2, void, MenuViewController, tableView, UITableView *, tableView, didSelectRowAtIndexPath, NSIndexPath *, indexPath)
 {
-    if (indexPath.section == 1 && indexPath.row == [self.tableView numberOfRowsInSection:1]-1) {
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    if ([cell.reuseIdentifier isEqualToString:cvkMainController.menuCell.reuseIdentifier]) {
         [self.navigationController pushViewController:cvkMainController.safePreferencesController animated:YES];
     } else {
         CHSuper(2, MenuViewController, tableView, tableView, didSelectRowAtIndexPath, indexPath);
@@ -243,7 +250,8 @@ CHDeclareMethod(0, NSArray *, MenuModel, baseMenuItems)
     if (showMenuCell) {
         NSMutableArray <MenuItem *> *tempArray = [items mutableCopy];
         
-        MenuItem *cvkItem = [[objc_lookUpClass("MenuItem") alloc] initWithType:1204 imageName:@"vkapp/VKMenuIconAlt" title:@"ColoredVK 2" statId:@""];
+        MenuItem *cvkItem = [[objc_lookUpClass("MenuItem") alloc] initWithType:1204 imageName:@"vkapp/VKMenuIconAlt" 
+                                                                         title:@"ColoredVK 2" statId:@""];
         [tempArray addObject:cvkItem];
         
         items = tempArray;

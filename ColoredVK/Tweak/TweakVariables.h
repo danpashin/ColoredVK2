@@ -25,6 +25,10 @@ extern BOOL isNew3XClient;
 extern BOOL premiumEnabled;
 extern NSBundle *vksBundle;
 
+extern BOOL enableQuickAccessMenu;
+extern BOOL enableQuickAccessMenuForceTouch;
+extern BOOL enableQuickAccessMenuLongPress;
+
 extern CVKCellSelectionStyle menuSelectionStyle;
 
 extern BOOL enableNightTheme;

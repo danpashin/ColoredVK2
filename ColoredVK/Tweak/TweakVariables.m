@@ -24,6 +24,10 @@ BOOL isNew3XClient;
 BOOL premiumEnabled;
 NSBundle *vksBundle;
 
+BOOL enableQuickAccessMenu;
+BOOL enableQuickAccessMenuForceTouch;
+BOOL enableQuickAccessMenuLongPress;
+
 CVKCellSelectionStyle menuSelectionStyle;
 
 BOOL enableNightTheme;
@@ -182,8 +186,12 @@ void reloadPrefs(void(^completion)(void))
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSDictionary *prefs = [[NSDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
         
+        enableQuickAccessMenu = prefs[@"enableQuickAccessMenu"] ? [prefs[@"enableQuickAccessMenu"] boolValue] : YES;
+        enableQuickAccessMenuForceTouch = prefs[@"enableQuickAccessMenuForceTouch"] ? [prefs[@"enableQuickAccessMenuForceTouch"] boolValue] : YES;
+        enableQuickAccessMenuLongPress = prefs[@"enableQuickAccessMenuLongPress"] ? [prefs[@"enableQuickAccessMenuLongPress"] boolValue] : YES;
         showFastDownloadButton = prefs[@"showFastDownloadButton"] ? [prefs[@"showFastDownloadButton"] boolValue] : YES;
         showMenuCell = prefs[@"showMenuCell"] ? [prefs[@"showMenuCell"] boolValue] : YES;
+        
         enabled = [prefs[@"enabled"] boolValue];
         hideMenuSearch = [prefs[@"hideMenuSearch"] boolValue];
         enabledMenuImage = [prefs[@"enabledMenuImage"] boolValue];

@@ -54,6 +54,60 @@
 			<key>label</key>
 			<string>SHOW_SECTION_IN_MENU</string>
 		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>QUICK_ACCESS_MENU</string>
+			<key>footerText</key>
+			<string>ENABLE_QUICK_ACCESS_MENU_FOOTER</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
+			<key>default</key>
+			<true/>
+			<key>key</key>
+			<string>enableQuickAccessMenu</string>
+			<key>label</key>
+			<string>ENABLE_QUICK_ACCESS_MENU</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>ENABLE_QUICK_ACCESS_MENU_LONG_PRESS_FOOTER</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
+			<key>default</key>
+			<true/>
+			<key>key</key>
+			<string>enableQuickAccessMenuForceTouch</string>
+			<key>label</key>
+			<string>ENABLE_QUICK_ACCESS_MENU_FORCE_TOUCH</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>cellClass</key>
+			<string>ColoredVKSwitchPrefsCell</string>
+			<key>default</key>
+			<true/>
+			<key>key</key>
+			<string>enableQuickAccessMenuLongPress</string>
+			<key>label</key>
+			<string>ENABLE_QUICK_ACCESS_MENU_LONG_PRESS</string>
+		</dict>
 	</array>
 </dict>
 </plist>

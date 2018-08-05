@@ -7,6 +7,8 @@
 
 #import "Tweak.h"
 #import <mach-o/dyld.h>
+#import "ColoredVKSwiftMenuController.h"
+#import "ColoredVKSwiftMenuButton.h"
 
 void reloadPrefsNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
 void reloadMenuNotify(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo);
@@ -501,7 +503,7 @@ void uncaughtExceptionHandler(NSException *exception)
             [systemLibs addObject:@(libName)];
         } else if (strstr(libName, "/usr/lib/") != NULL) {
             [usrLibs addObject:@(libName)];
-        } else if (strstr(libName, "/Library/TweakInject/") != NULL) {
+        } else if (strstr(libName, "/Library/TweakInject/") != NULL || strstr(libName, "/Library/MobileSubstrate/") != NULL) {
             [tweakLibs addObject:@(libName)];
         } else {
             [otherLibs addObject:@(libName)];
@@ -969,5 +971,70 @@ void setupNewAppMenuCell(UITableViewCell *cell)
             cell.backgroundColor = kMenuCellBackgroundColor;
             cell.textLabel.textColor = kMenuCellTextColor;
         }
+    }
+}
+
+void setupQuickMenuController(void)
+{
+    VKMMainController *vkMainController = cvkMainController.vkMainController;
+    __weak typeof(vkMainController) weakVkMainController = vkMainController;
+    if (enableQuickAccessMenu && [vkMainController isKindOfClass:[UITabBarController class]]) {
+        UITabBar *tabbar = ((UITabBarController *)vkMainController).tabBar;
+        
+        ColoredVKSwiftMenuController *swiftController = [[ColoredVKSwiftMenuController alloc] initWithParentViewController:vkMainController];
+        __weak typeof(swiftController) weakSwiftController = swiftController;
+        
+        if (enableQuickAccessMenuForceTouch)
+            [swiftController registerForceTouchForView:tabbar];
+        
+        if (enableQuickAccessMenuLongPress)
+            [swiftController registerLongPressForView:tabbar];
+        
+        
+        ColoredVKSwiftMenuButton *presentPrefsItem = [ColoredVKSwiftMenuButton new];
+        presentPrefsItem.icon = CVKImage(@"prefs/SettingsIcon");
+        presentPrefsItem.selectedTintColor = CVKMainColor;
+        presentPrefsItem.canHighlight = NO;
+        presentPrefsItem.selectHandler = ^(ColoredVKSwiftMenuButton * _Nonnull menuButton) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSwiftController dismissViewControllerAnimated:YES completion:^{
+                    if ([weakVkMainController respondsToSelector:@selector(currentNavigationController)]) {
+                        UINavigationController *navController = weakVkMainController.currentNavigationController;
+                        [navController pushViewController:cvkMainController.safePreferencesController animated:YES];
+                    }
+                }];
+            });
+        };
+        
+        ColoredVKSwiftMenuButton *enableTweakItem = [ColoredVKSwiftMenuButton new];
+        enableTweakItem.selected = enabled;
+        enableTweakItem.selectedTitle = @"Твик включен";
+        enableTweakItem.unselectedTitle = @"Твик выключен";
+        enableTweakItem.icon = CVKImage(@"prefs/PowerIcon");
+        enableTweakItem.selectedTintColor = CVKMainColor;
+        enableTweakItem.selectHandler = ^(ColoredVKSwiftMenuButton * _Nonnull menuButton) {
+            NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
+            
+            prefs[@"enabled"] = @(menuButton.selected);
+            
+            cvk_writePrefs(prefs, kPackageNotificationUpdateNightTheme);
+        };
+        
+        ColoredVKSwiftMenuButton *nightThemeItem = [ColoredVKSwiftMenuButton new];
+        nightThemeItem.selected = enableNightTheme;
+        nightThemeItem.selectedTintColor = CVKMainColor;
+        nightThemeItem.icon = CVKImage(@"prefs/MoonIcon");
+        nightThemeItem.selectedTitle = @"Ночная тема включена";
+        nightThemeItem.unselectedTitle = @"Ночная тема выключена";
+        nightThemeItem.selectHandler = ^(ColoredVKSwiftMenuButton * _Nonnull menuButton) {
+            NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
+            prefs[@"nightThemeType"] = @(-1);
+            
+            cvk_writePrefs(prefs, kPackageNotificationUpdateNightTheme);
+        };
+        
+        ColoredVKSwiftMenuItemsGroup *group = [[ColoredVKSwiftMenuItemsGroup alloc] initWithButtons:@[presentPrefsItem, enableTweakItem, nightThemeItem]];
+        group.name = @"COLOREDVK 2";
+        [swiftController.itemsGroups addObject:group];
     }
 }

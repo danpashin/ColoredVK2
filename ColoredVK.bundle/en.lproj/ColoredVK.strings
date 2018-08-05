@@ -99,6 +99,11 @@
 "SHOW_FAST_DOWNLOAD_BUTTON" = "Download image button";
 "SHOW_SECTION_IN_MENU" = "Show tab in menu";
 
+"QUICK_ACCESS_MENU" = "Quick access menu";
+"ENABLE_QUICK_ACCESS_MENU" = "Enable Quick Access menu";
+"ENABLE_QUICK_ACCESS_MENU_FORCE_TOUCH" = "Enable ForceTouch";
+"ENABLE_QUICK_ACCESS_MENU_LONG_PRESS" = "Enable long press";
+
 
 // About controller
 "SETTINGS" = "Settings";
@@ -164,4 +169,6 @@
 "SHOW_FAST_DOWNLOAD_BUTTON_FOOTER" = "If this feature is enabled, when viewing any image quick download button will be added in the navigation bar. It will allow you to quickly set an image without having to save it to Camera Roll.";
 "SHOW_SECTION_IN_MENU_FOOTER" = "ColoredVK 2 tab shows in the VKApp main menu by default. Turning this off, you will be able to go into the settings of the tweak only using settings of VKApp.";
 "CHANGE_MESSAGES_TEXT_COLOR_FOOTER" = "In general, this function should change the color of all text in messages. But at this moment it only changes the time label's color.";
+"ENABLE_QUICK_ACCESS_MENU_FOOTER" = "In VK App 4.9, the settings tab in the main menu was broken, so an alternative and more convenient solution was made. With this function, you can open the quick access menu to the main tweak settings by simply clicking on the tab bar. To change these settings, VK App requires a restart.";
+"ENABLE_QUICK_ACCESS_MENU_LONG_PRESS_FOOTER" = "To use a long press, press the tab bar twice and hold your finger for a second. After that, the quick access menu will open, where you can change some tweak options.";
 

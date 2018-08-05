@@ -63,6 +63,8 @@
 @property (strong, nonatomic) VKMController *discoverController;
 @property (strong, nonatomic) UIView *tabBarShadowView;
 @property (strong, nonatomic) UIViewController *feedbackController;
+
+- (id)currentNavigationController;
 @end
 
 //  Аудио

@@ -20,7 +20,7 @@ makeIPA () {
     
     echo "[->] Compiling additional resources..."
     ${DEVELOPER_BIN_DIR}/actool --minimum-deployment-target ${IPHONEOS_DEPLOYMENT_TARGET} --platform ${PLATFORM_NAME} --compile "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle" "${PROJECT_DIR}/ColoredVK-Prefs/Support/Images.xcassets" >/dev/null
-    find ${PROJECT_DIR} -iname '*.xib' -exec bash -c 'FULL_XIB=$(basename {}); XIB_NAME="${FULL_XIB%.*}"; ${DEVELOPER_BIN_DIR}/ibtool --compile "${BUILT_PRODUCTS_DIR}/$XIB_NAME.nib" {} >> /dev/null' \;
+    find ${PROJECT_DIR} -iname '*.xib' -exec bash -c 'FULL_XIB=$(basename {}); XIB_NAME="${FULL_XIB%.*}"; ${DEVELOPER_BIN_DIR}/ibtool --target-device iphone --target-device ipad --minimum-deployment-target 9.0 --compile "${BUILT_PRODUCTS_DIR}/$XIB_NAME.nib" {} >> /dev/null' \;
     find ${PROJECT_DIR} -type f \( -iname '*.storyboard' ! -iname "Launch Screen.storyboard" ! -iname "Main.storyboard" \) -exec bash -c 'FULL_SB=$(basename {}); SB_NAME="${FULL_SB%.*}"; ${DEVELOPER_BIN_DIR}/ibtool --target-device iphone --target-device ipad --minimum-deployment-target 9.0 --compilation-directory "${BUILT_PRODUCTS_DIR}" "{}" >> /dev/null' \;
     rm -rf ${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle/*.nib
     rm -rf ${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle/*.storyboardc
