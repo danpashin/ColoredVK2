@@ -993,7 +993,6 @@ void setupQuickMenuController(void)
         
         ColoredVKSwiftMenuButton *presentPrefsItem = [ColoredVKSwiftMenuButton new];
         presentPrefsItem.icon = CVKImage(@"prefs/SettingsIcon");
-        presentPrefsItem.selectedTintColor = CVKMainColor;
         presentPrefsItem.canHighlight = NO;
         presentPrefsItem.selectHandler = ^(ColoredVKSwiftMenuButton * _Nonnull menuButton) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -1014,7 +1013,6 @@ void setupQuickMenuController(void)
         enableTweakItem.selectedTintColor = CVKMainColor;
         enableTweakItem.selectHandler = ^(ColoredVKSwiftMenuButton * _Nonnull menuButton) {
             NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
-            
             prefs[@"enabled"] = @(menuButton.selected);
             
             cvk_writePrefs(prefs, kPackageNotificationUpdateNightTheme);
@@ -1028,7 +1026,11 @@ void setupQuickMenuController(void)
         nightThemeItem.unselectedTitle = @"Ночная тема выключена";
         nightThemeItem.selectHandler = ^(ColoredVKSwiftMenuButton * _Nonnull menuButton) {
             NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
-            prefs[@"nightThemeType"] = @(-1);
+            
+            ColoredVKNightScheme *nightScheme = cvkMainController.nightThemeScheme;
+            CVKNightThemeType nightThemeType = menuButton.selected ? nightScheme.userSelectedType : CVKNightThemeTypeDisabled;
+            menuButton.selected = (nightThemeType != CVKNightThemeTypeDisabled);
+            prefs[@"nightThemeType"] = @(nightThemeType);
             
             cvk_writePrefs(prefs, kPackageNotificationUpdateNightTheme);
         };

@@ -313,7 +313,8 @@
     return cell;
 }
 
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind 
+                                 atIndexPath:(NSIndexPath *)indexPath
 {
     ColoredVKSwiftMenuFooterView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:kind
                                                                                   withReuseIdentifier:@"FooterView" forIndexPath:indexPath];
@@ -333,6 +334,18 @@
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     [self handleSelectForItemAtIndexPath:indexPath];
+}
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewFlowLayout *)collectionViewLayout 
+        insetForSectionAtIndex:(NSInteger)section
+{
+    ColoredVKSwiftMenuItemsGroup *group = self.itemsGroups[section];
+    CGFloat totalCellWidth = group.buttons.count * collectionViewLayout.itemSize.width;
+    CGFloat totalSpacingWidth = 20.0f * (group.buttons.count - 1);
+    
+    CGFloat inset = (CGRectGetWidth(collectionView.frame) - totalCellWidth - totalSpacingWidth) - 30.0f;
+    
+    return UIEdgeInsetsMake(30.0f, 30.0f, 5.0f, MAX(30.0f, inset));
 }
 
 @end

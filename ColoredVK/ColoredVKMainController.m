@@ -98,7 +98,7 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
         backgroundView.backgroundColor = kMenuCellSelectedColor;
         cell.selectedBackgroundView = backgroundView;
         
-        self.menuCellSwitch = [ColoredVKSwitch new];
+        self.menuCellSwitch = [objc_lookUpClass("ColoredVKSwitch") new];
         self.menuCellSwitch.on = enabled;
         [self.menuCellSwitch addTarget:self action:@selector(switchTriggered) forControlEvents:UIControlEventValueChanged];
         self.menuCellSwitch.accessibilityLabel = CVKLocalizedString(@"TWEAK_IS_ENABLED");

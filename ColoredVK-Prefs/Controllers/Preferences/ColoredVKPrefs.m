@@ -328,10 +328,8 @@
                 });
                 
                 POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
-                return;
-            }
-            
-            if ([identificsToReloadMenu containsObject:key]) {
+                
+            } else if ([identificsToReloadMenu containsObject:key]) {
                 POST_CORE_NOTIFICATION(kPackageNotificationReloadMenu);
             } else {
                 POST_CORE_NOTIFICATION(kPackageNotificationReloadPrefs);

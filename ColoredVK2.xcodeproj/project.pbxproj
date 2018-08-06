@@ -291,10 +291,8 @@
 		A52B8F3C1F991A2600898168 /* ColoredVKNightScheme.h in Headers */ = {isa = PBXBuildFile; fileRef = A52B8F391F991A2600898168 /* ColoredVKNightScheme.h */; };
 		A52B8F3D1F991A2600898168 /* ColoredVKNightScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = A52B8F3A1F991A2600898168 /* ColoredVKNightScheme.m */; };
 		A52B8F3E1F991A2600898168 /* ColoredVKNightScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = A52B8F3A1F991A2600898168 /* ColoredVKNightScheme.m */; };
-		A52F514F20FA007800835D37 /* ColoredVKSwitch.h in Headers */ = {isa = PBXBuildFile; fileRef = A52F514D20FA007800835D37 /* ColoredVKSwitch.h */; };
 		A52F515120FA007800835D37 /* ColoredVKSwitch.h in Headers */ = {isa = PBXBuildFile; fileRef = A52F514D20FA007800835D37 /* ColoredVKSwitch.h */; };
 		A52F515220FA007800835D37 /* ColoredVKSwitch.h in Headers */ = {isa = PBXBuildFile; fileRef = A52F514D20FA007800835D37 /* ColoredVKSwitch.h */; };
-		A52F515320FA007800835D37 /* ColoredVKSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = A52F514E20FA007800835D37 /* ColoredVKSwitch.m */; };
 		A52F515520FA007800835D37 /* ColoredVKSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = A52F514E20FA007800835D37 /* ColoredVKSwitch.m */; };
 		A52F515620FA007800835D37 /* ColoredVKSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = A52F514E20FA007800835D37 /* ColoredVKSwitch.m */; };
 		A52F515720FA0C1300835D37 /* LHProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DA87C51D944E1000763B5F /* LHProgressHUD.m */; };
@@ -1661,7 +1659,6 @@
 				A5178F4C210B394100DB8A15 /* ColoredVKBadgeViewLayer.h in Headers */,
 				A5178F37210B345500DB8A15 /* ColoredVKNavigationController.h in Headers */,
 				A59FFD77210F24030018079F /* NSError+ColoredVK.h in Headers */,
-				A52F514F20FA007800835D37 /* ColoredVKSwitch.h in Headers */,
 				A5178F3B210B37BF00DB8A15 /* TweakFunctions.h in Headers */,
 				A5178F43210B392200DB8A15 /* TweakNightFunctions.h in Headers */,
 				A57D40D5208147B900CDC7DD /* ColoredVKUINotification.h in Headers */,
@@ -2287,7 +2284,6 @@
 				A5178F4B210B392200DB8A15 /* SystemNightTheme.m in Sources */,
 				A5F09DA11F0FFA5D00024198 /* SCDRM.m in Sources */,
 				A5178F3E210B37DA00DB8A15 /* ColoredVKMainController.m in Sources */,
-				A52F515320FA007800835D37 /* ColoredVKSwitch.m in Sources */,
 				A5210C961DE785C1004F7E11 /* LHBackgroundView.m in Sources */,
 				A5178F4A210B392200DB8A15 /* TweakNightTheme.m in Sources */,
 				A5178F44210B392200DB8A15 /* TweakNightFunctions.m in Sources */,

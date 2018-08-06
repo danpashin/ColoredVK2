@@ -22,6 +22,7 @@ typedef NS_ENUM(NSInteger, CVKNightThemeType) {
 
 @property (assign, atomic) BOOL enabled;
 @property (assign, nonatomic, readonly) CVKNightThemeType type;
+@property (assign, nonatomic) CVKNightThemeType userSelectedType;
 
 @property (strong, nonatomic, readonly) UIColor *backgroundColor;
 @property (strong, nonatomic, readonly) UIColor *navbackgroundColor;

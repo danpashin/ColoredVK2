@@ -191,6 +191,7 @@ void reloadPrefs(void(^completion)(void))
         enableQuickAccessMenuLongPress = prefs[@"enableQuickAccessMenuLongPress"] ? [prefs[@"enableQuickAccessMenuLongPress"] boolValue] : YES;
         showFastDownloadButton = prefs[@"showFastDownloadButton"] ? [prefs[@"showFastDownloadButton"] boolValue] : YES;
         showMenuCell = prefs[@"showMenuCell"] ? [prefs[@"showMenuCell"] boolValue] : YES;
+        cvkMainController.nightThemeScheme.userSelectedType = prefs[@"userSelectednightThemeType"] ? [prefs[@"userSelectednightThemeType"] integerValue] : -1;
         
         enabled = [prefs[@"enabled"] boolValue];
         hideMenuSearch = [prefs[@"hideMenuSearch"] boolValue];

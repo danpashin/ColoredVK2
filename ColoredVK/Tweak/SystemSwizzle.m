@@ -153,6 +153,7 @@ CHDeclareMethod(0, void, UISwitch, layoutSubviews)
     CHSuper(0, UISwitch, layoutSubviews);
     
     if ([self isKindOfClass:[UISwitch class]]) {
+        Class cvkSwitchClass = objc_lookUpClass("ColoredVKSwitch");
         if (enabled && enableNightTheme) {
             self.tintColor = [UIColor clearColor];
             self.onTintColor = cvkMainController.nightThemeScheme.switchOnTintColor;
@@ -162,11 +163,11 @@ CHDeclareMethod(0, void, UISwitch, layoutSubviews)
         } else if (enabled && changeSwitchColor) {
             self.tintColor = switchesTintColor;
             self.onTintColor = switchesOnTintColor;
-            if (![self isKindOfClass:[ColoredVKSwitch class]]) {
+            if (![self isKindOfClass:cvkSwitchClass]) {
                 self.thumbTintColor = nil;
                 self.backgroundColor = nil;
             }
-        } else if (![self isKindOfClass:[ColoredVKSwitch class]])  {
+        } else if (![self isKindOfClass:cvkSwitchClass])  {
             self.tintColor = nil;
             self.onTintColor = nil;
             self.thumbTintColor = nil;
