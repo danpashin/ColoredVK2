@@ -323,7 +323,7 @@ CHDeclareMethod(0, void, ChatController, viewDidLoad)
 {
     CHSuper(0, ChatController, viewDidLoad);
     
-    if (![self isKindOfClass:objc_lookUpClass("ChatController")] || !enabled || (enabled && enableNightTheme))
+    if (![self isKindOfClass:objc_lookUpClass("ChatController")] || !enabled)
         return;
     
     ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.5"];
@@ -345,7 +345,7 @@ CHDeclareMethod(0, void, ChatController, viewDidLoad)
         }
     }
     
-    if (!enabled || !enabledMessagesImage)
+    if (!enabled || !enabledMessagesImage || (enabled && enableNightTheme))
         return;
     
     BOOL isTableView = [self respondsToSelector:@selector(tableView)];

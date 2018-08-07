@@ -11,5 +11,5 @@ Icon: file:///Library/PreferenceBundles/ColoredVK2.bundle/Icon-big.png
 Depiction: http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=coloredvk2Dp
 Homepage: http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=coloredvk2Dp
 Tag: cydia::commercial, purpose::extension, compatible::ios9, compatible::ios10, compatible::ios11
-Replaces: com.daniilpashin.coloredvk2-beta
+Conflicts: com.daniilpashin.coloredvk, com.daniilpashin.coloredvk2-beta
 Installed-Size: PACKAGE_SIZE

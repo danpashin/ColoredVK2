@@ -107,13 +107,6 @@ CHDeclareMethod(0, UIView *, ProfileCoverImageView, overlayView)
 
 #pragma mark PostEditController
 CHDeclareClass(PostEditController);
-CHDeclareMethod(0, UIStatusBarStyle, PostEditController, preferredStatusBarStyle)
-{
-    if ([self isKindOfClass:objc_lookUpClass("PostEditController")] && enabled && (enabledBarColor || enableNightTheme))
-        return UIStatusBarStyleLightContent;
-    return CHSuper(0, PostEditController, preferredStatusBarStyle);
-}
-
 CHDeclareMethod(0, void, PostEditController, viewDidLoad)
 {
     CHSuper(0, PostEditController, viewDidLoad);

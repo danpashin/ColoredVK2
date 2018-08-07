@@ -73,3 +73,7 @@
 
 @interface _UIPageViewControllerContentView : UIView
 @end
+
+@interface UIViewController (ColoredVK)
+- (UIStatusBarStyle)orig_preferredStatusBarStyle;
+@end

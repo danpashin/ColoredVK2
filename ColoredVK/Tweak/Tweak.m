@@ -46,15 +46,6 @@ CHDeclareMethod(0, void, VKMController, VKMNavigationBarUpdate)
 
 #pragma mark VKMLiveController 
 CHDeclareClass(VKMLiveController);
-
-CHDeclareMethod(0, UIStatusBarStyle, VKMLiveController, preferredStatusBarStyle)
-{
-    if (enabledGroupsListImage && [self.model.description containsString:@"GroupsSearchModel"])
-        return UIStatusBarStyleLightContent;
-    
-    return CHSuper(0, VKMLiveController, preferredStatusBarStyle);
-}
-
 CHDeclareMethod(1, void, VKMLiveController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, VKMLiveController, viewWillAppear, animated);
@@ -292,13 +283,6 @@ CHDeclareMethod(1, void, PhotoBrowserController, viewWillAppear, BOOL, animated)
 #pragma mark VKMBrowserController
 CHDeclareClass(VKMBrowserController);
 
-CHDeclareMethod(0, UIStatusBarStyle, VKMBrowserController, preferredStatusBarStyle)
-{
-    if ([self isKindOfClass:objc_lookUpClass("VKMBrowserController")] && enabled && (enabledBarColor || enableNightTheme))
-        return UIStatusBarStyleLightContent;
-    else return CHSuper(0, VKMBrowserController, preferredStatusBarStyle);
-}
-
 CHDeclareMethod(0, void, VKMBrowserController, viewDidLoad)
 {
     CHSuper(0, VKMBrowserController, viewDidLoad);
@@ -396,24 +380,9 @@ CHDeclareMethod(2, UITableViewCell*, VKMLiveSearchController, tableView, UITable
 
 
 
-#pragma mark ProfileInfoEditController
-CHDeclareClass(ProfileInfoEditController);
-CHDeclareMethod(0, UIStatusBarStyle, ProfileInfoEditController, preferredStatusBarStyle)
-{
-    if ([self isKindOfClass:objc_lookUpClass("ProfileInfoEditController")] && enabled && (enabledBarColor || enableNightTheme))
-        return UIStatusBarStyleLightContent;
-    return CHSuper(0, ProfileInfoEditController, preferredStatusBarStyle);
-}
 
 #pragma mark OptionSelectionController
 CHDeclareClass(OptionSelectionController);
-CHDeclareMethod(0, UIStatusBarStyle, OptionSelectionController, preferredStatusBarStyle)
-{
-    if ([self isKindOfClass:objc_lookUpClass("OptionSelectionController")] && enabled && (enabledBarColor || enableNightTheme))
-        return UIStatusBarStyleLightContent;
-    return CHSuper(0, OptionSelectionController, preferredStatusBarStyle);
-}
-
 CHDeclareMethod(1, void, OptionSelectionController, viewWillAppear, BOOL, animated)
 {
     CHSuper(1, OptionSelectionController, viewWillAppear, animated);
@@ -421,15 +390,6 @@ CHDeclareMethod(1, void, OptionSelectionController, viewWillAppear, BOOL, animat
         resetNavigationBar(self.navigationController.navigationBar);
         resetTabBar();
     }
-}
-
-#pragma mark VKRegionSelectionViewController
-CHDeclareClass(VKRegionSelectionViewController);
-CHDeclareMethod(0, UIStatusBarStyle, VKRegionSelectionViewController, preferredStatusBarStyle)
-{
-    if ([self isKindOfClass:objc_lookUpClass("VKRegionSelectionViewController")] && enabled && (enabledBarColor || enableNightTheme))
-        return UIStatusBarStyleLightContent;
-    return CHSuper(0, VKRegionSelectionViewController, preferredStatusBarStyle);
 }
 
 #pragma mark ProfileFriendsController

@@ -441,13 +441,6 @@ CHDeclareMethod(2, UITableViewCell*, AudioPlaylistsController, tableView, UITabl
 
 #pragma mark VKAudioPlayerListTableViewController
 CHDeclareClass(VKAudioPlayerListTableViewController);
-CHDeclareMethod(0, UIStatusBarStyle, VKAudioPlayerListTableViewController, preferredStatusBarStyle)
-{
-    if ([self isKindOfClass:objc_lookUpClass("VKAudioPlayerListTableViewController")] && enabled && (enabledBarColor || enableNightTheme))
-        return UIStatusBarStyleLightContent;
-    else return CHSuper(0, VKAudioPlayerListTableViewController, preferredStatusBarStyle);
-}
-
 CHDeclareMethod(0, void, VKAudioPlayerListTableViewController, viewDidLoad)
 {
     CHSuper(0, VKAudioPlayerListTableViewController, viewDidLoad);

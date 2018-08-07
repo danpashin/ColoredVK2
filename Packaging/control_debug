@@ -11,6 +11,5 @@ Icon: file:///Library/PreferenceBundles/ColoredVK2.bundle/Icon-big.png
 Depiction: https://danpashin.ru/repo/depictions?pack=ru.danpashin.coloredvk2-beta
 Homepage: https://danpashin.ru/repo/depictions?pack=ru.danpashin.coloredvk2-beta
 Tag: purpose::extension, compatible::ios9, compatible::ios10, compatible::ios11
-Replaces: com.daniilpashin.coloredvk2
-Priority: optional
+Conflicts: com.daniilpashin.coloredvk2
 Installed-Size: PACKAGE_SIZE

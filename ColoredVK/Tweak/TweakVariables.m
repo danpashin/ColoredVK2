@@ -378,6 +378,12 @@ void reloadPrefs(void(^completion)(void))
             videosBlurTone =            [[UIColor cvk_savedColorForIdentifier:@"videosBlurTone"         fromPrefs:prefs] colorWithAlphaComponent:0.3f];
             settingsBlurTone =          [[UIColor cvk_savedColorForIdentifier:@"settingsBlurTone"       fromPrefs:prefs] colorWithAlphaComponent:0.3f];
             settingsExtraBlurTone =     [[UIColor cvk_savedColorForIdentifier:@"settingsExtraBlurTone"  fromPrefs:prefs] colorWithAlphaComponent:0.3f];
+            
+            
+            ColoredVKVersionCompare client302Compare = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0.2"];
+            if (client302Compare >= ColoredVKVersionCompareEqual) {
+                changeAudioPlayerAppearance = NO;
+            }
         }
         
         [NSObject cvk_runBlockOnMainThread:^{

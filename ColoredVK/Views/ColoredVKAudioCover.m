@@ -275,30 +275,30 @@
 
 - (void)updateLyrycsForArtist:(NSString *)artist title:(NSString *)title
 {
-    if (artist.length == 0 || title.length == 0)
-        return;
-    
-    if ([artist hasPrefix:@"+"]) artist = [artist substringFromIndex:1];
-    if ([artist hasSuffix:@"+"]) artist = [artist substringToIndex:artist.length - 1];
-    if ([title hasPrefix:@"+"]) title = [title substringFromIndex:1];
-    if ([title hasSuffix:@"+"]) title = [title substringToIndex:title.length - 1];
-    
-    title = [self convertStringToURLSafe:title];
-    artist = [self convertStringToURLSafe:artist];
-    
-    NSString *url = [NSString stringWithFormat:@"%@/lyrics.php",  kPackageAPIURL];
-    NSDictionary *params = @{@"artist":artist, @"title":title};
-    
-    ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
-    [network sendJSONRequestWithMethod:ColoredVKNetworkMethodTypeGET url:url parameters:params success:^(NSURLRequest *blockRequest, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
-        if (!json[@"response"]) {
-            [self.audioLyricsView resetState];
-            return;
-        }
-        self.audioLyricsView.text = json[@"response"][@"lyrics"];        
-    }  failure:^(NSURLRequest *blockRequest, NSHTTPURLResponse *response, NSError *error) {
-        [self.audioLyricsView resetState];
-    }];
+//    if (artist.length == 0 || title.length == 0)
+//        return;
+//    
+//    if ([artist hasPrefix:@"+"]) artist = [artist substringFromIndex:1];
+//    if ([artist hasSuffix:@"+"]) artist = [artist substringToIndex:artist.length - 1];
+//    if ([title hasPrefix:@"+"]) title = [title substringFromIndex:1];
+//    if ([title hasSuffix:@"+"]) title = [title substringToIndex:title.length - 1];
+//    
+//    title = [self convertStringToURLSafe:title];
+//    artist = [self convertStringToURLSafe:artist];
+//    
+//    NSString *url = [NSString stringWithFormat:@"%@/lyrics.php",  kPackageAPIURL];
+//    NSDictionary *params = @{@"artist":artist, @"title":title};
+//    
+//    ColoredVKNetwork *network = [ColoredVKNetwork sharedNetwork];
+//    [network sendJSONRequestWithMethod:ColoredVKNetworkMethodTypeGET url:url parameters:params success:^(NSURLRequest *blockRequest, NSHTTPURLResponse *httpResponse, NSDictionary *json) {
+//        if (!json[@"response"]) {
+//            [self.audioLyricsView resetState];
+//            return;
+//        }
+//        self.audioLyricsView.text = json[@"response"][@"lyrics"];        
+//    }  failure:^(NSURLRequest *blockRequest, NSHTTPURLResponse *response, NSError *error) {
+//        [self.audioLyricsView resetState];
+//    }];
 }
 
 - (NSString *)convertStringToURLSafe:(NSString *)string

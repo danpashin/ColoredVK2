@@ -315,14 +315,6 @@ CHDeclareMethod(0, void, StoreStockItemView, layoutSubviews)
 }
 
 CHDeclareClass(VKPhotoPicker);
-CHDeclareMethod(0, UIStatusBarStyle, VKPhotoPicker, preferredStatusBarStyle)
-{
-    if ([self isKindOfClass:objc_lookUpClass("VKPhotoPicker")] && enabled && (enabledBarColor || enableNightTheme || enabledBarImage))
-        return UIStatusBarStyleLightContent;
-    
-    return CHSuper(0, VKPhotoPicker, preferredStatusBarStyle);
-}
-
 CHDeclareMethod(0, void, VKPhotoPicker, viewDidLoad)
 {
     CHSuper(0, VKPhotoPicker, viewDidLoad);
@@ -632,14 +624,6 @@ CHDeclareMethod(0, void, LicensesViewController, viewDidLoad)
 }
 
 CHDeclareClass(VKAudioPlayerViewController);
-CHDeclareMethod(0, UIStatusBarStyle, VKAudioPlayerViewController, preferredStatusBarStyle)
-{
-    if (enabled && enableNightTheme)
-        return UIStatusBarStyleLightContent;
-    
-    return CHSuper(0, VKAudioPlayerViewController, preferredStatusBarStyle);
-}
-
 CHDeclareMethod(0, void, VKAudioPlayerViewController, viewDidLoad)
 {
     CHSuper(0, VKAudioPlayerViewController, viewDidLoad);
@@ -736,13 +720,6 @@ CHDeclareMethod(0, void, SendMessagePopupView, layoutSubviews)
 }
 
 CHDeclareClass(StoryEditorSendViewController);
-CHDeclareMethod(0, UIStatusBarStyle, StoryEditorSendViewController, preferredStatusBarStyle)
-{
-    if (enabled && enableNightTheme)
-        return UIStatusBarStyleLightContent;
-    
-    return CHSuper(0, StoryEditorSendViewController, preferredStatusBarStyle);
-}
 CHDeclareMethod(0, void, StoryEditorSendViewController, viewWillLayoutSubviews)
 {
     CHSuper(0, StoryEditorSendViewController, viewWillLayoutSubviews);

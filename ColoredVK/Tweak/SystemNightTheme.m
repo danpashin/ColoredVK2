@@ -291,6 +291,15 @@ CHDeclareMethod(0, void, UITextView, layoutSubviews)
     }
 }
 
+CHDeclareMethod(0, void, UITextView, deleteBackward)
+{
+    CHSuper(0, UITextView, deleteBackward);
+    
+    if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("UITextView")]) {
+        self.textColor = cvkMainController.nightThemeScheme.textColor;
+    }
+}
+
 CHDeclareClass(UITextField);
 CHDeclareMethod(0, void, UITextField, layoutSubviews)
 {
