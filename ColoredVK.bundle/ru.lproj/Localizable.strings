@@ -142,3 +142,9 @@
 "Response data can not be decrypted." = "Ответ сервера не может быть расшифрован.";
 "Cannot authenticate. Invalid response." = "Невозможно выполнить авторизацию. Неверный ответ сервера.";
 "Unknown error." = "Неизвестная ошибка.";
+
+// Меню быстрого доступа
+"TWEAK_IS_NOW_ENABLED" =  "Твик включен";
+"TWEAK_IS_NOW_DISABLED" =  "Твик выключен";
+"NIGHT_THEME_IS_NOW_ENABLED" =  "Ночная тема включена";
+"NIGHT_THEME_IS_NOW_DISABLED" =  "Ночная тема выключена";

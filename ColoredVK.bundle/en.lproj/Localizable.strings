@@ -142,3 +142,9 @@
 "Response data can not be decrypted." = "Server response cannot be decrypted.";
 "Cannot authenticate. Invalid response." = "It is impossible to perform authorization. Invalid server response.";
 "Unknown error." = "Unknown error.";
+
+    // Меню быстрого доступа
+"TWEAK_IS_NOW_ENABLED" =  "Tweak is now enabled";
+"TWEAK_IS_NOW_DISABLED" =  "Tweak is now disabled";
+"NIGHT_THEME_IS_NOW_ENABLED" =  "Night theme is now enabled";
+"NIGHT_THEME_IS_NOW_DISABLED" =  "Night theme is now disabled";

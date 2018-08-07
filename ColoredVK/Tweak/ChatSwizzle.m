@@ -310,7 +310,7 @@ CHDeclareMethod(1, void, ChatController, viewWillAppear, BOOL, animated)
     if (self.childViewControllers.count == 0)
         return;
     UICollectionViewController *collectionViewController = self.childViewControllers.firstObject;
-    if (![self.childViewControllers.firstObject isKindOfClass:objc_lookUpClass("vkm.HistoryCollectionViewController")])
+    if (![collectionViewController isKindOfClass:objc_lookUpClass("vkm.HistoryCollectionViewController")])
         return;
     
     UIColor *backColor = enableNightTheme ? cvkMainController.nightThemeScheme.foregroundColor : [UIColor clearColor];

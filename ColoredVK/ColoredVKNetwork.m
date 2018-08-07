@@ -87,7 +87,7 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
             dispatch_async(self.parseQueue, ^{
                 NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                 
-                if (![httpResponse.URL isEqual:request.URL]) {
+                if (![httpResponse.URL.resourceSpecifier isEqual:request.URL.resourceSpecifier]) {
                     if (failure)
                         failure(request, httpResponse, [self errorWithCode:1002 description:@"Request URL was changed"]);
                     

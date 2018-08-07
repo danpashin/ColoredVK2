@@ -1007,14 +1007,13 @@ void setupQuickMenuController(void)
         
         ColoredVKSwiftMenuButton *enableTweakItem = [ColoredVKSwiftMenuButton new];
         enableTweakItem.selected = enabled;
-        enableTweakItem.selectedTitle = @"Твик включен";
-        enableTweakItem.unselectedTitle = @"Твик выключен";
+        enableTweakItem.selectedTitle = CVKLocalizedString(@"TWEAK_IS_NOW_ENABLED");
+        enableTweakItem.unselectedTitle = CVKLocalizedString(@"TWEAK_IS_NOW_DISABLED");
         enableTweakItem.icon = CVKImage(@"prefs/PowerIcon");
         enableTweakItem.selectedTintColor = CVKMainColor;
         enableTweakItem.selectHandler = ^(ColoredVKSwiftMenuButton * _Nonnull menuButton) {
             NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
             prefs[@"enabled"] = @(menuButton.selected);
-            
             cvk_writePrefs(prefs, kPackageNotificationUpdateNightTheme);
         };
         
@@ -1022,8 +1021,8 @@ void setupQuickMenuController(void)
         nightThemeItem.selected = enableNightTheme;
         nightThemeItem.selectedTintColor = CVKMainColor;
         nightThemeItem.icon = CVKImage(@"prefs/MoonIcon");
-        nightThemeItem.selectedTitle = @"Ночная тема включена";
-        nightThemeItem.unselectedTitle = @"Ночная тема выключена";
+        nightThemeItem.selectedTitle = CVKLocalizedString(@"NIGHT_THEME_IS_NOW_ENABLED");
+        nightThemeItem.unselectedTitle = CVKLocalizedString(@"NIGHT_THEME_IS_NOW_DISABLED");
         nightThemeItem.selectHandler = ^(ColoredVKSwiftMenuButton * _Nonnull menuButton) {
             NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:CVK_PREFS_PATH];
             
