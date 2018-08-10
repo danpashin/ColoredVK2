@@ -338,7 +338,7 @@ CHDeclareMethod(1, void, UITabBarItem, setSelectedImage, UIImage *, selectedImag
 
 
 
-static UIStatusBarStyle hooked_preferredStatusBarStyle(id self, SEL __cmd)
+static UIStatusBarStyle preferredStatusBarStyle_method(id self, SEL __cmd)
 {
     if (enabled && (enabledBarColor || enableNightTheme || enabledBarImage)
         && ![self isKindOfClass:objc_lookUpClass("SFSafariViewController")]
@@ -357,22 +357,5 @@ static UIStatusBarStyle hooked_preferredStatusBarStyle(id self, SEL __cmd)
 
 CVK_CONSTRUCTOR
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        unsigned int classCount;
-        Class *classes = objc_copyClassList(&classCount);
-        for (unsigned int index = 0; index < classCount; index++) {
-            Class hookClass = classes[index];
-            
-            SEL origSelector = @selector(preferredStatusBarStyle);
-            if (class_respondsToSelector(hookClass, origSelector)) {
-                Method origMethod = class_getInstanceMethod(hookClass, origSelector);
-                if (origMethod) {
-                    const char *methodEncoding = method_getTypeEncoding(origMethod);
-                    IMP oldImplementation = class_replaceMethod(hookClass, origSelector, (IMP)&hooked_preferredStatusBarStyle, methodEncoding);
-                    class_addMethod(hookClass, @selector(orig_preferredStatusBarStyle), oldImplementation, methodEncoding);
-                }
-            }
-        }
-        free(classes);
-    });
+    sc_hookAllClassesInBackground(@selector(preferredStatusBarStyle), (IMP)&preferredStatusBarStyle_method);
 }

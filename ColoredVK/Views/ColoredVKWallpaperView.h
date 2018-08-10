@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "_UIBackdropView.h"
+#import <UIKit/_UIBackdropView.h>
 
 @interface ColoredVKWallpaperView : UIView <NSCopying>
 

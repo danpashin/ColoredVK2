@@ -9,7 +9,7 @@
 #import "ColoredVKAlertController.h"
 
 #import "ColoredVKNightScheme.h"
-#import "_UIBackdropView.h"
+#import <UIKit/_UIBackdropView.h>
 #import "ColoredVKNewInstaller.h"
 
 @interface ColoredVKPasscodeController ()

@@ -16,8 +16,13 @@
 @property (nonatomic, strong) UIColor *foregroundColor;
 @end
 
+
+@interface _UIBarBackground : UIView
+@property (nonatomic, retain) UIView *customBackgroundView;
+@end
+
 @interface UINavigationBar ()
-@property (nonatomic, readonly, strong) UIView *_backgroundView;
+@property (nonatomic, readonly, strong) _UIBarBackground *_backgroundView;
 @end
 
 @interface UISearchBarTextField : UITextField
