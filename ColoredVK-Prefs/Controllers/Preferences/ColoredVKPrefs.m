@@ -360,7 +360,7 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(__kindof ColoredVKPrefsCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [cell renderBackgroundWithColor:nil separatorColor:nil forTableView:tableView indexPath:indexPath];
+    [cell renderBackgroundWithColor:nil forTableView:tableView indexPath:indexPath];
     [self updateCellAppearance:cell animated:NO];
 }
 

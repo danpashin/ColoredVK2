@@ -39,9 +39,6 @@ CHDeclareMethod(0, void, UITableViewCell, layoutSubviews)
     if (!shouldChangeBackground)
         shouldChangeBackground = @YES;
     
-    if ([self isKindOfClass:objc_lookUpClass("ColoredVKPrefsCell")])
-        return;
-    
     if ([self isKindOfClass:objc_lookUpClass("MessageCell")])
         return;
     

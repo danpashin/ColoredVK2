@@ -624,6 +624,14 @@ CHDeclareMethod(0, void, LicensesViewController, viewDidLoad)
 }
 
 CHDeclareClass(VKAudioPlayerViewController);
+CHDeclareMethod(0, UIStatusBarStyle, VKAudioPlayerViewController, preferredStatusBarStyle)
+{
+    if (enabled && (enableNightTheme))
+        return UIStatusBarStyleLightContent;
+    
+    return CHSuper(0, VKAudioPlayerViewController, preferredStatusBarStyle);
+}
+
 CHDeclareMethod(0, void, VKAudioPlayerViewController, viewDidLoad)
 {
     CHSuper(0, VKAudioPlayerViewController, viewDidLoad);

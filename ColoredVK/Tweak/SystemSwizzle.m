@@ -338,25 +338,26 @@ CHDeclareMethod(1, void, UITabBarItem, setSelectedImage, UIImage *, selectedImag
 
 
 
-static UIStatusBarStyle preferredStatusBarStyle_method(id self, SEL __cmd)
-{
-    if (enabled && (enabledBarColor || enableNightTheme || enabledBarImage)
-        ) {
-        return UIStatusBarStyleLightContent;
-    } else if ([self respondsToSelector:@selector(orig_preferredStatusBarStyle)]) {
-        IMP oldIMP = class_getMethodImplementation([self class], @selector(orig_preferredStatusBarStyle));
-        
-        if ((IMP)preferredStatusBarStyle_method != oldIMP) {
-            return [self orig_preferredStatusBarStyle];
-        }
-    }
-    
-    return UIStatusBarStyleDefault;
-}
 
-CVK_CONSTRUCTOR
-{
-    NSArray *excludedClasses = @[@"VKAPViewController", @"SketchController", @"VKAudioPlayerViewController", 
-                                 @"_UIRemoteViewController", @"ColoredVKPasscodeUpdateController"];
-    sc_hookAllClassesInBackground(@selector(preferredStatusBarStyle), (IMP)&preferredStatusBarStyle_method, excludedClasses);
-}
+#define HOOK_STATUS_BAR_STYLE(Class) \
+    CHDeclareMethod(0, UIStatusBarStyle, Class, preferredStatusBarStyle) { \
+        if (enabled && (enabledBarColor || enableNightTheme || enabledBarImage)) return UIStatusBarStyleLightContent;  \
+        return CHSuper(0, Class, preferredStatusBarStyle); \
+    }
+
+CHDeclareClass(ArticlePageController);
+HOOK_STATUS_BAR_STYLE(ArticlePageController)
+
+CHDeclareClass(VKAudioPlayerListTableViewController);
+HOOK_STATUS_BAR_STYLE(VKAudioPlayerListTableViewController)
+
+CHDeclareClass(PostEditController);
+HOOK_STATUS_BAR_STYLE(PostEditController)
+
+CHDeclareClass(VKPhotoPicker);
+HOOK_STATUS_BAR_STYLE(VKPhotoPicker)
+
+CHDeclareClass(StoryEditorSendViewController);
+HOOK_STATUS_BAR_STYLE(StoryEditorSendViewController)
+
+#undef HOOK_STATUS_BAR_STYLE

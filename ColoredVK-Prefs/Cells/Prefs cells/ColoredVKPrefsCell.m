@@ -13,6 +13,8 @@
 
 @interface ColoredVKPrefsCell ()
 @property (assign, nonatomic, readonly) BOOL backgroundRendered;
+@property (strong, nonatomic) UIColor *cachedBackgroundColor;
+@property (strong, nonatomic) UIView *cachedSelectedBackgroundView;
 @end
 
 @implementation ColoredVKPrefsCell
@@ -36,8 +38,7 @@
     }
 }
 
-- (void)renderBackgroundWithColor:(UIColor *)backgroundColor separatorColor:(UIColor *)separatorColor 
-                     forTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
+- (void)renderBackgroundWithColor:(UIColor *)backgroundColor forTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
 {
     if (!self.backgroundView) {
         ColoredVKCellBackgroundView *backgroundView = self.customBackgroundView;
@@ -45,10 +46,8 @@
         backgroundView.tableViewCell = self;
         backgroundView.indexPath = indexPath;
         
-        backgroundView.backgroundColor = backgroundColor;
-        backgroundView.separatorColor = separatorColor;
-        
-        self.backgroundColor = [UIColor clearColor];
+        self.selectedBackgroundView = self.cachedSelectedBackgroundView;
+        self.backgroundColor = backgroundColor;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
         
         self.backgroundView = backgroundView;
@@ -76,8 +75,8 @@
     if (self.backgroundRendered) {
         ColoredVKCellBackgroundView *backView = self.customBackgroundView;
         void (^animationBlock)(void) = ^{
-            backView.backgroundColor = selected ? backView.selectedBackgroundColor : nil;
-            backView.separatorColor = nil;
+            backView.backgroundColor = selected ? backView.selectedBackgroundColor : self.cachedBackgroundColor;
+            backView.separatorColor = backView.tableView.separatorColor;
         };
         if (animated) {
             [UIView animateWithDuration:0.5f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction 
@@ -88,14 +87,35 @@
     }
 }
 
+- (void)setBackgroundColor:(UIColor *)backgroundColor
+{
+    if (!backgroundColor)
+        backgroundColor = [UIColor whiteColor];
+    
+    self.cachedBackgroundColor = backgroundColor;
+    
+    if (self.backgroundRendered) {
+        self.customBackgroundView.backgroundColor = backgroundColor;
+    }
+}
+
+- (void)setSelectedBackgroundView:(UIView *)selectedBackgroundView
+{
+    self.cachedSelectedBackgroundView = selectedBackgroundView;
+    
+    if (self.backgroundRendered) {
+        self.customBackgroundView.selectedBackgroundColor = selectedBackgroundView.backgroundColor;
+    }
+}
+
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
 {
     [super setHighlighted:highlighted animated:animated];
     
     if (self.backgroundRendered) {
         ColoredVKCellBackgroundView *backView = self.customBackgroundView;
-        backView.backgroundColor = highlighted ? backView.selectedBackgroundColor : nil;
-        backView.separatorColor = nil;
+        backView.backgroundColor = highlighted ? backView.selectedBackgroundColor : self.cachedBackgroundColor;
+        backView.separatorColor = backView.tableView.separatorColor;
     }
 }
 

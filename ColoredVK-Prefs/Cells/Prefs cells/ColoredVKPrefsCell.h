@@ -23,13 +23,11 @@
  *  Делает рендер кастомного бекграунда с заданными цветами.
  *
  *  @param backgroundColor Цвет фона.
- *  @param separatorColor Цвет сепаратора (-ов, если ячейка не одна).
  *  @param tableView Таблица, для которой необходимо делать рендер.
  *  @param indexPath Индекс ячейки. Нужен для расчета закругления.
  */
 
-- (void)renderBackgroundWithColor:(UIColor *)backgroundColor separatorColor:(UIColor *)separatorColor 
-                     forTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath;
+- (void)renderBackgroundWithColor:(UIColor *)backgroundColor forTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath;
 
 
 @end

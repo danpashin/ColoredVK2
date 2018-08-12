@@ -235,7 +235,7 @@
         cell.textLabel.textColor = CVKMainColor;
     }
     
-    [cell renderBackgroundWithColor:nil separatorColor:nil forTableView:tableView indexPath:indexPath];
+    [cell renderBackgroundWithColor:nil forTableView:tableView indexPath:indexPath];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
