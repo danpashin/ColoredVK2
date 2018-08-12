@@ -98,6 +98,5 @@
 
 @interface MenuItem : NSObject
 @property (copy, nonatomic, readonly) NSString *statId; 
-- (instancetype)initWithType:(NSInteger)type imageName:(NSString *)imageName title:(NSString *)title statId:(NSString *)statId __attribute__((deprecated));
-- (instancetype)initWithType:(NSInteger)type imageName:(NSString *)imageName title:(NSString *)title statId:(NSString *)statId accentColor:(UIColor *)accentColor;
+- (instancetype)initWithType:(NSInteger)type imageName:(NSString *)imageName title:(NSString *)title statId:(NSString *)statId;
 @end

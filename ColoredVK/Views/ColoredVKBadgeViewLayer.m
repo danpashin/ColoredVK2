@@ -7,6 +7,8 @@
 
 #import "ColoredVKBadgeViewLayer.h"
 #import "ColoredVKMainController.h"
+#import "UIView+ColoredVK.h"
+#import <objc/runtime.h>
 
 extern BOOL enabled;
 extern BOOL enableNightTheme;
@@ -16,11 +18,16 @@ extern BOOL enableNightTheme;
 - (void)setFillColor:(CGColorRef)fillColor
 {
     if (enabled && enableNightTheme) {
-        const CGFloat *components = CGColorGetComponents(fillColor);
-        if (components[2] >= 0.79f) {
-            fillColor = cvkMainController.nightThemeScheme.buttonSelectedColor.CGColor;
-        } else if (components[2] > 0.0f) {
-            fillColor = cvkMainController.nightThemeScheme.navbackgroundColor.CGColor;
+        if ([self.delegate isKindOfClass:[UIView class]]) {
+            UIViewController *parentViewController = ((UIView *)self.delegate).cvk_parentViewController;
+            if (parentViewController && [parentViewController isKindOfClass:objc_lookUpClass("DLVController")]) {
+                const CGFloat *components = CGColorGetComponents(fillColor);
+                if (components[2] >= 0.79f) {
+                    fillColor = cvkMainController.nightThemeScheme.buttonSelectedColor.CGColor;
+                } else if (components[2] > 0.0f) {
+                    fillColor = cvkMainController.nightThemeScheme.navbackgroundColor.CGColor;
+                }
+            }
         }
     }
     

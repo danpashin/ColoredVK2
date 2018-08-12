@@ -321,7 +321,7 @@ CHDeclareMethod(0, void, VKPhotoPicker, viewDidLoad)
     
     if (enabled && enableNightTheme) {
         self.pickerToolbar.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
-        self.pickerToolbar.bg._backgroundView.hidden = YES;
+        self.pickerToolbar.bg.hidden = YES;
     }
 }
 

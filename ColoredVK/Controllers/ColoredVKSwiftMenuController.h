@@ -19,12 +19,12 @@ NS_ASSUME_NONNULL_BEGIN
  @param viewController Контроллер, который был зарегистрирован.
  @return Вернет контроллер меню, если регистрация была выполнена. В ином случае вернет nil.
  */
-+ (nullable instancetype)menuControllerForController:(UIViewController *)viewController;
++ (nullable instancetype)menuControllerForController:(__kindof UIViewController *)viewController;
 
 
 @property (strong, nonatomic, null_resettable) NSMutableArray <ColoredVKSwiftMenuItemsGroup *> *itemsGroups;
 
-- (instancetype)initWithParentViewController:(UIViewController * _Nullable)parentViewController NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithParentViewController:(__kindof UIViewController * _Nullable)parentViewController NS_DESIGNATED_INITIALIZER;
 
 /**
  Выполняет представление контроллера на экране.

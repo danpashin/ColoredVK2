@@ -945,6 +945,7 @@ void setupNewAppMenuCell(UITableViewCell *cell)
         cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         cell.imageView.tintColor = cvkMainController.nightThemeScheme.buttonColor;
         cell.textLabel.textColor = cvkMainController.nightThemeScheme.textColor;
+        cell.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     } else if (enabled && enabledMenuImage) {
         cell.backgroundColor = [UIColor clearColor];
         

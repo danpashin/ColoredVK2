@@ -288,6 +288,7 @@ CHDeclareMethod(0, void, UITextView, layoutSubviews)
     if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("UITextView")]) {
         self.backgroundColor = [UIColor clearColor];
         self.tintColor = cvkMainController.nightThemeScheme.textColor;
+        self.textColor = cvkMainController.nightThemeScheme.textColor;
     }
 }
 

@@ -69,7 +69,11 @@ CHDeclareMethod(0, void, VKMMainController, viewDidLoad)
 CHDeclareMethod(1, void, VKMMainController, traitCollectionDidChange, UITraitCollection *, previousTraitCollection)
 {
     CHSuper(1, VKMMainController, traitCollectionDidChange, previousTraitCollection);
-    setupQuickMenuController();
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        setupQuickMenuController();
+    });
 }
 
 CHDeclareMethod(0, void, VKMMainController, viewWillLayoutSubviews)
@@ -103,6 +107,8 @@ CHDeclareMethod(2, UITableViewCell*, VKMMainController, tableView, UITableView*,
         tableView.separatorColor = kMenuCellSeparatorColor;
     
     if (enabled && enableNightTheme) {
+        cell.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        tableView.backgroundColor = cell.backgroundColor;
         cell.contentView.backgroundColor = [UIColor clearColor];
     }
     else if (enabled && enabledMenuImage) {
@@ -203,7 +209,7 @@ CHDeclareMethod(2, UITableViewCell*, MenuViewController, tableView, UITableView*
             
         } else selectedBackView.backgroundColor = [UIColor clearColor];
         cell.selectedBackgroundView = selectedBackView;
-    } else {
+    } else if (!enabled) {
         cell.selectedBackgroundView = nil;
     }
     

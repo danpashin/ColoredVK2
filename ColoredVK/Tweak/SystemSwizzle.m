@@ -341,15 +341,14 @@ CHDeclareMethod(1, void, UITabBarItem, setSelectedImage, UIImage *, selectedImag
 static UIStatusBarStyle preferredStatusBarStyle_method(id self, SEL __cmd)
 {
     if (enabled && (enabledBarColor || enableNightTheme || enabledBarImage)
-        && ![self isKindOfClass:objc_lookUpClass("SFSafariViewController")]
-        && ![self isKindOfClass:objc_lookUpClass("_UIRemoteViewControllerConnectionInfo")]
-        && ![self isKindOfClass:objc_lookUpClass("SFBrowserRemoteViewController")]
-        && ![self isKindOfClass:objc_lookUpClass("VKAudioPlayerViewController")]
         ) {
         return UIStatusBarStyleLightContent;
-    } 
-    else if ([self respondsToSelector:@selector(orig_preferredStatusBarStyle)]) {
-        return [self orig_preferredStatusBarStyle];
+    } else if ([self respondsToSelector:@selector(orig_preferredStatusBarStyle)]) {
+        IMP oldIMP = class_getMethodImplementation([self class], @selector(orig_preferredStatusBarStyle));
+        
+        if ((IMP)preferredStatusBarStyle_method != oldIMP) {
+            return [self orig_preferredStatusBarStyle];
+        }
     }
     
     return UIStatusBarStyleDefault;
@@ -357,5 +356,7 @@ static UIStatusBarStyle preferredStatusBarStyle_method(id self, SEL __cmd)
 
 CVK_CONSTRUCTOR
 {
-    sc_hookAllClassesInBackground(@selector(preferredStatusBarStyle), (IMP)&preferredStatusBarStyle_method);
+    NSArray *excludedClasses = @[@"VKAPViewController", @"SketchController", @"VKAudioPlayerViewController", 
+                                 @"_UIRemoteViewController", @"ColoredVKPasscodeUpdateController"];
+    sc_hookAllClassesInBackground(@selector(preferredStatusBarStyle), (IMP)&preferredStatusBarStyle_method, excludedClasses);
 }
