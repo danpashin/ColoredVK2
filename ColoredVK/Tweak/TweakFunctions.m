@@ -1035,8 +1035,22 @@ void setupQuickMenuController(void)
             cvk_writePrefs(prefs, kPackageNotificationUpdateNightTheme);
         };
         
-        ColoredVKSwiftMenuItemsGroup *group = [[ColoredVKSwiftMenuItemsGroup alloc] initWithButtons:@[presentPrefsItem, enableTweakItem, nightThemeItem]];
+        ColoredVKSwiftMenuItemsGroup *group = [[ColoredVKSwiftMenuItemsGroup alloc] initWithButtons:@[enableTweakItem, nightThemeItem, presentPrefsItem]];
         group.name = @"COLOREDVK 2";
         [swiftController.itemsGroups addObject:group];
     }
+}
+
+UIStatusBarStyle statusBarStyleForController(id self, UIStatusBarStyle defaultStyle)
+{
+    if (enabled && enableNightTheme) {
+        return UIStatusBarStyleLightContent;
+    } else if (enabled && enabledBarColor && [self respondsToSelector:@selector(navigationController)]) {
+        const CGFloat *components = CGColorGetComponents(barBackgroundColor.CGColor);
+        CGFloat white = (components[0] + components[1] + components[2]) / 3.0f;
+        
+        return (white < 0.7f) ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
+    }
+    
+    return defaultStyle;
 }

@@ -50,3 +50,4 @@ extern void updateNavBarColor(void);
 extern void setupNewAppMenuCell(UITableViewCell *cell);
 
 extern void setupQuickMenuController(void);
+extern UIStatusBarStyle statusBarStyleForController(id self, UIStatusBarStyle defaultStyle);

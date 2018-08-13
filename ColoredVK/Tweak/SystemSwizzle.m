@@ -337,27 +337,18 @@ CHDeclareMethod(1, void, UITabBarItem, setSelectedImage, UIImage *, selectedImag
 }
 
 
-
-
 #define HOOK_STATUS_BAR_STYLE(Class) \
+    CHDeclareClass(Class); \
     CHDeclareMethod(0, UIStatusBarStyle, Class, preferredStatusBarStyle) { \
-        if (enabled && (enabledBarColor || enableNightTheme || enabledBarImage)) return UIStatusBarStyleLightContent;  \
-        return CHSuper(0, Class, preferredStatusBarStyle); \
+        return statusBarStyleForController(self, CHSuper(0, Class, preferredStatusBarStyle)); \
     }
 
-CHDeclareClass(ArticlePageController);
 HOOK_STATUS_BAR_STYLE(ArticlePageController)
-
-CHDeclareClass(VKAudioPlayerListTableViewController);
 HOOK_STATUS_BAR_STYLE(VKAudioPlayerListTableViewController)
-
-CHDeclareClass(PostEditController);
 HOOK_STATUS_BAR_STYLE(PostEditController)
-
-CHDeclareClass(VKPhotoPicker);
 HOOK_STATUS_BAR_STYLE(VKPhotoPicker)
-
-CHDeclareClass(StoryEditorSendViewController);
 HOOK_STATUS_BAR_STYLE(StoryEditorSendViewController)
+HOOK_STATUS_BAR_STYLE(VKAPViewController)
+HOOK_STATUS_BAR_STYLE(VKPPAlbumListController)
 
 #undef HOOK_STATUS_BAR_STYLE
