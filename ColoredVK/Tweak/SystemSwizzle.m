@@ -350,5 +350,6 @@ HOOK_STATUS_BAR_STYLE(VKPhotoPicker)
 HOOK_STATUS_BAR_STYLE(StoryEditorSendViewController)
 HOOK_STATUS_BAR_STYLE(VKAPViewController)
 HOOK_STATUS_BAR_STYLE(VKPPAlbumListController)
+HOOK_STATUS_BAR_STYLE(PostEditOptionsController)
 
 #undef HOOK_STATUS_BAR_STYLE

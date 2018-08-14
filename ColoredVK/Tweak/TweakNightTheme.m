@@ -1106,3 +1106,14 @@ CHDeclareMethod(0, void, VKMGradientView, layoutSubviews)
         self.hidden = YES;
     }
 }
+
+
+CHDeclareClass(ChatController);
+CHDeclareMethod(1, void, ChatController, actionHistoryEdit, id, arg1)
+{
+    CHSuper(1, ChatController, actionHistoryEdit, arg1);
+    
+    if (enabled && enableNightTheme) {
+        self.inputPanel.textPanel.textColor = cvkMainController.nightThemeScheme.textColor;
+    }
+}
