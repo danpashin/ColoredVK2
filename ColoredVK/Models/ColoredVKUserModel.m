@@ -219,6 +219,7 @@ extern NSString *__key;
     [[ColoredVKNetwork sharedNetwork] sendRequestWithMethod:ColoredVKNetworkMethodTypePOST url:url parameters:parameters success:nil failure:nil];
     
     
+    [self clearUser];
     [[ColoredVKNewInstaller sharedInstaller] writeFreeLicence];
     POST_NOTIFICATION(kPackageNotificationReloadPrefsMenu);
     
