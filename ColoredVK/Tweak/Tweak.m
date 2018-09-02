@@ -298,8 +298,9 @@ CHDeclareMethod(1, void, VKMBrowserController, viewWillAppear, BOOL, animated)
         
         if (enabled && enableNightTheme) {
             self.webScrollView.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
-//            self.webView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-            [self.safariButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            
+            if ([self respondsToSelector:@selector(safariButton)])
+                [self.safariButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         }
         else if (enabled && enabledBarColor && !enableNightTheme) {
             if ([self respondsToSelector:@selector(headerTitle)])
@@ -325,33 +326,24 @@ CHDeclareMethod(2, void, VKMBrowserController, webView, UIWebView *, webView, di
 
 #pragma mark UserWallController
 CHDeclareClass(UserWallController);
-CHDeclareMethod(0, void, UserWallController, updateProfile)
+CHDeclareMethod(0, void, UserWallController, viewDidLoad)
 {
-    CHSuper(0, UserWallController, updateProfile);
+    CHSuper(0, UserWallController, viewDidLoad);
     
-    [NSObject cvk_runBlockOnMainThread:^{
-        if (!self.profile.item)
-            return;
-        
-        NSDictionary <NSString *, NSString *> *users = @{@"89911723": @"vkapp/DeveloperNavIcon", @"125879328": @"vkapp/id125879328_NavIcon"};
-        NSString *stringID = [NSString stringWithFormat:@"%@", self.profile.item.user.uid];
-        
-        if (users[stringID]) {
-            CGRect navBarFrame = self.navigationController.navigationBar.bounds;
-            UIImageView *titleView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 30.0f, 30.0f)];
-            titleView.center = CGPointMake(CGRectGetMidX(navBarFrame), CGRectGetMidY(navBarFrame));
-            titleView.image = CVKImage(users[stringID]);
-            if ([stringID isEqualToString:@"89911723"]) {
-                titleView.image = [titleView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                titleView.tintColor = enableNightTheme ? cvkMainController.nightThemeScheme.textColor : barForegroundColor;
-            }
-            [UIView animateWithDuration:0.15f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-                titleView.alpha = 0.0f;
-                self.navigationItem.titleView = titleView;
-                titleView.alpha = 1.0f;
-            } completion:nil];
+    NSDictionary <NSString *, NSString *> *users = @{@"89911723":@"vkapp/DeveloperNavIcon",
+                                                     @"125879328":@"vkapp/id125879328_NavIcon",
+                                                     @"138127148":@"vkapp/tiger_icon"};
+    NSString *stringID = [NSString stringWithFormat:@"%@", self.profile.owner];
+    
+    if (users[stringID]) {
+        UIImageView *titleView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 30.0f, 30.0f)];
+        titleView.image = CVKImage(users[stringID]);
+        if (![stringID isEqualToString:@"125879328"]) {
+            titleView.image = [titleView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            titleView.tintColor = enableNightTheme ? cvkMainController.nightThemeScheme.textColor : barForegroundColor;
         }
-    }];
+        self.navigationItem.titleView = titleView;
+    }
 }
 
 #pragma GCC diagnostic push 

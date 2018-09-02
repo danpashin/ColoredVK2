@@ -33,10 +33,6 @@ CHDeclareMethod(2, BOOL, AppDelegate, application, UIApplication*, application, 
 {
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
     
-    reloadPrefs(nil);
-    
-    BOOL orig = CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);
-    
     ColoredVKNewInstaller *newInstaller = [ColoredVKNewInstaller sharedInstaller];
     installerCompletionBlock = ^(BOOL purchased) {
         premiumEnabled = purchased;
@@ -44,7 +40,7 @@ CHDeclareMethod(2, BOOL, AppDelegate, application, UIApplication*, application, 
     };
     [newInstaller checkStatus];
     
-    return orig;
+    return CHSuper(2, AppDelegate, application, application, didFinishLaunchingWithOptions, options);;
 }
 
 CHDeclareMethod(1, void, AppDelegate, applicationDidBecomeActive, UIApplication *, application)

@@ -203,7 +203,9 @@ CHDeclareMethod(0, void, VKAPBottomToolbar, layoutToolbarInSuperView)
     CHSuper(0, VKAPBottomToolbar, layoutToolbarInSuperView);
     
     if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("VKAPBottomToolbar")]) {
-        self.hostView.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+        [self.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull subview, NSUInteger idx, BOOL * _Nonnull stop) {
+            subview.backgroundColor = cvkMainController.nightThemeScheme.navbackgroundColor;
+        }];
     }
 }
 
@@ -1113,7 +1115,7 @@ CHDeclareMethod(1, void, ChatController, actionHistoryEdit, id, arg1)
 {
     CHSuper(1, ChatController, actionHistoryEdit, arg1);
     
-    if (enabled && enableNightTheme) {
+    if (enabled && enableNightTheme && [self.inputPanel respondsToSelector:@selector(textPanel)]) {
         self.inputPanel.textPanel.textColor = cvkMainController.nightThemeScheme.textColor;
     }
 }

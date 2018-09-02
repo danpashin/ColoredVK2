@@ -302,9 +302,12 @@ CHDeclareMethod(1, void, ChatController, viewWillAppear, BOOL, animated)
         
         self.inputPanel.overlay.backgroundColor = messagesInputBackColor;
         self.inputPanel.overlay.layer.borderColor = messagesInputBackColor.CGColor;
-        self.inputPanel.textPanel.textColor = messagesInputTextColor;
-        self.inputPanel.textPanel.tintColor = messagesInputTextColor;
-        self.inputPanel.textPanel.placeholderLabel.textColor = messagesInputTextColor;
+        
+        if ([self.inputPanel respondsToSelector:@selector(textPanel)]) {
+            self.inputPanel.textPanel.textColor = messagesInputTextColor;
+            self.inputPanel.textPanel.tintColor = messagesInputTextColor;
+            self.inputPanel.textPanel.placeholderLabel.textColor = messagesInputTextColor;
+        }
     }
     
     if (self.childViewControllers.count == 0)

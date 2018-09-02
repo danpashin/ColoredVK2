@@ -52,7 +52,7 @@
     
     BOOL nightSchemeEnabled = [ColoredVKNightScheme sharedScheme].enabled;
     
-    _UIBackdropViewStyle backgroundStyle = nightSchemeEnabled ? _UIBackdropViewStyleDark : _UIBackdropViewSettingsUltraLight;
+    _UIBackdropViewStyle backgroundStyle = nightSchemeEnabled ? _UIBackdropViewStyleDark : _UIBackdropViewStyleUltraLight;
     _UIBackdropView *backgroundView = [[_UIBackdropView alloc] initWithStyle:backgroundStyle];
     self.backgroundView = backgroundView;
     

@@ -64,6 +64,7 @@
 
 @interface ProfileModel : NSObject
 @property (readonly, strong, nonatomic) VKProfile *item;
+@property (strong, nonatomic) NSNumber *owner;
 @end
 
 

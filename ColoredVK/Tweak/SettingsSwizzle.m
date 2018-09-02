@@ -10,11 +10,13 @@
 
 #pragma mark - ModernSettingsController
 
+NSInteger settingsCellCount = 0;
 CHDeclareClass(ModernSettingsController);
 CHDeclareMethod(2, NSInteger, ModernSettingsController, tableView, UITableView *, tableView, numberOfRowsInSection, NSInteger, section)
 {
     NSInteger rowsCount = CHSuper(2, ModernSettingsController, tableView, tableView, numberOfRowsInSection, section);
     if (section == 1) {
+        settingsCellCount = rowsCount;
         rowsCount++;
     }
     return rowsCount;
@@ -22,8 +24,11 @@ CHDeclareMethod(2, NSInteger, ModernSettingsController, tableView, UITableView *
 
 CHDeclareMethod(2, UITableViewCell*, ModernSettingsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
-    UITableViewCell *cell = CHSuper(2, ModernSettingsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    return cell ? cell : cvkMainController.settingsCell;
+    if (indexPath.section == 1 && indexPath.row == settingsCellCount) {
+        return cvkMainController.settingsCell;
+    }
+    
+    return CHSuper(2, ModernSettingsController, tableView, tableView, cellForRowAtIndexPath, indexPath);;
 }
 
 CHDeclareMethod(3, void, ModernSettingsController, tableView, UITableView*, tableView, willDisplayCell, UITableViewCell *, cell, forRowAtIndexPath, NSIndexPath*, indexPath)
@@ -90,17 +95,27 @@ CHDeclareClass(BaseSectionedSettingsController);
 CHDeclareMethod(0, void, BaseSectionedSettingsController, viewWillLayoutSubviews)
 {
     CHSuper(0, BaseSectionedSettingsController, viewWillLayoutSubviews);
-    NSArray <Class> *settingsExtraClasses = @[objc_lookUpClass("ModernGeneralSettings"), objc_lookUpClass("ModernAccountSettings"), objc_lookUpClass("AboutViewController")];
-    if ([settingsExtraClasses containsObject:[self class]])
-        setupExtraSettingsController(self);
+    NSArray <NSString *> *settingsExtraClasses = @[@"ModernGeneralSettings", @"ModernAccountSettings", @"AboutViewController"];
+    [settingsExtraClasses enumerateObjectsUsingBlock:^(NSString * _Nonnull className, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([self isKindOfClass:objc_lookUpClass(className.UTF8String)]) {
+            setupExtraSettingsController(self);
+            *stop = YES;
+        }
+    }];
 }
 
 CHDeclareMethod(2, UITableViewCell*, BaseSectionedSettingsController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     UITableViewCell *cell = CHSuper(2, BaseSectionedSettingsController, tableView, tableView, cellForRowAtIndexPath, indexPath);
-    NSArray <Class> *settingsExtraClasses = @[objc_lookUpClass("ModernGeneralSettings"), objc_lookUpClass("ModernAccountSettings"), objc_lookUpClass("AboutViewController")];
-    if ([settingsExtraClasses containsObject:[self class]])
-        setupExtraSettingsCell(cell);
+    
+    NSArray <NSString *> *settingsExtraClasses = @[@"ModernGeneralSettings", @"ModernAccountSettings", @"AboutViewController"];
+    [settingsExtraClasses enumerateObjectsUsingBlock:^(NSString * _Nonnull className, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([self isKindOfClass:objc_lookUpClass(className.UTF8String)]) {
+            setupExtraSettingsCell(cell);
+            *stop = YES;
+        }
+    }];
+    
     return cell;
 }
 
