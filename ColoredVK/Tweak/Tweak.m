@@ -646,6 +646,12 @@ CHDeclareMethod(0, void, UICollectionView, reloadData)
     [self.collectionViewLayout invalidateLayout];
 }
 
+CHDeclareClass(VATabBarSwappableImageView);
+CHDeclareClassMethod(0, void, VATabBarSwappableImageView, load)
+{
+    
+}
+
 CVK_CONSTRUCTOR
 {
     @autoreleasepool {

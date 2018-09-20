@@ -50,3 +50,6 @@
 #define UITableViewCellTextColor         [UIColor colorWithWhite:1.0f alpha:0.9f]
 #define UITableViewCellDetailedTextColor [UIColor colorWithWhite:0.8f alpha:0.9f]
 #define UITableViewCellBackgroundColor   [UIColor clearColor]
+
+
+extern __weak _TtC3vkm14VKClientScheme *vkclientScheme;

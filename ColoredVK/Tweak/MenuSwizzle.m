@@ -36,8 +36,7 @@ CHDeclareMethod(0, NSArray*, VKMMainController, menu)
 CHDeclareMethod(0, void, VKMMainController, viewDidLoad)
 {
     CHSuper(0, VKMMainController, viewDidLoad);
-    if (!cvkMainController.vkMainController)
-        cvkMainController.vkMainController = self;
+    cvkMainController.vkMainController = self;
     
     if (![self isKindOfClass:[UITabBarController class]]) {
         if (!cvkMainController.menuBackgroundView) {
@@ -70,10 +69,8 @@ CHDeclareMethod(1, void, VKMMainController, traitCollectionDidChange, UITraitCol
 {
     CHSuper(1, VKMMainController, traitCollectionDidChange, previousTraitCollection);
     
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        setupQuickMenuController();
-    });
+    setupQuickMenuController();
+    setupTabbar();
 }
 
 CHDeclareMethod(0, void, VKMMainController, viewWillLayoutSubviews)

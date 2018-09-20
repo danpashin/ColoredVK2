@@ -568,7 +568,13 @@ void setupTabbar()
             barTintColor = tabbarBackgroundColor;
             tintColor = tabbarSelForegroundColor;
             unselectedItemTintColor = tabbarForegroundColor;
-        } else {
+        } 
+//        else if (vkclientScheme) {
+//            barTintColor = vkclientScheme.navbar_background;
+//            tintColor = vkclientScheme.tabbar_icon_active;
+//            unselectedItemTintColor = vkclientScheme.tabbar_icon_inactive;
+//        } 
+        else {
             barTintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarBackgroundColor"];
             tintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarSelForegroundColor"];
             unselectedItemTintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarForegroundColor"];
@@ -975,6 +981,10 @@ void setupNewAppMenuCell(UITableViewCell *cell)
     }
 }
 
+@interface ColoredVKSwiftMenuController (ColoredVKSwiftMenuControllerPrivate)
+@property (weak, nonatomic) UIViewController *parentController;
+@end
+
 void setupQuickMenuController(void)
 {
     VKMMainController *vkMainController = cvkMainController.vkMainController;
@@ -982,22 +992,30 @@ void setupQuickMenuController(void)
     if (enableQuickAccessMenu && [vkMainController isKindOfClass:[UITabBarController class]]) {
         UITabBar *tabbar = ((UITabBarController *)vkMainController).tabBar;
         
-        ColoredVKSwiftMenuController *swiftController = [[ColoredVKSwiftMenuController alloc] initWithParentViewController:vkMainController];
-        __weak typeof(swiftController) weakSwiftController = swiftController;
+        static ColoredVKSwiftMenuController *quickTabbarController;
+        if (!quickTabbarController)
+            quickTabbarController = [[ColoredVKSwiftMenuController alloc] initWithParentViewController:vkMainController];
         
-        if (enableQuickAccessMenuForceTouch)
-            [swiftController registerForceTouchForView:tabbar];
+        if (enableQuickAccessMenuForceTouch) {
+            quickTabbarController.parentController = vkMainController;
+            [quickTabbarController registerForceTouchForView:tabbar];
+        }
         
         if (enableQuickAccessMenuLongPress)
-            [swiftController registerLongPressForView:tabbar];
+            [quickTabbarController registerLongPressForView:tabbar];
         
+        static BOOL quickControllerConfigured = NO;
+        if (quickControllerConfigured)
+            return;
+        
+        quickControllerConfigured = YES;
         
         ColoredVKSwiftMenuButton *presentPrefsItem = [ColoredVKSwiftMenuButton new];
         presentPrefsItem.icon = CVKImage(@"prefs/SettingsIcon");
         presentPrefsItem.canHighlight = NO;
         presentPrefsItem.selectHandler = ^(ColoredVKSwiftMenuButton * _Nonnull menuButton) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSwiftController dismissViewControllerAnimated:YES completion:^{
+                [quickTabbarController dismissViewControllerAnimated:YES completion:^{
                     if ([weakVkMainController respondsToSelector:@selector(currentNavigationController)]) {
                         UINavigationController *navController = weakVkMainController.currentNavigationController;
                         [navController pushViewController:cvkMainController.safePreferencesController animated:YES];
@@ -1037,7 +1055,7 @@ void setupQuickMenuController(void)
         
         ColoredVKSwiftMenuItemsGroup *group = [[ColoredVKSwiftMenuItemsGroup alloc] initWithButtons:@[enableTweakItem, nightThemeItem, presentPrefsItem]];
         group.name = @"COLOREDVK 2";
-        [swiftController.itemsGroups addObject:group];
+        [quickTabbarController.itemsGroups addObject:group];
     }
 }
 

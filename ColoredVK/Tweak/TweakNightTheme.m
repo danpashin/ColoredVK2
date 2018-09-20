@@ -678,6 +678,20 @@ CHDeclareMethod(0, void, VKAudioPlayerControlsViewController, viewDidLoad)
         objc_setAssociatedObject(self.pp,   "shouldChangeImageColor", @1, OBJC_ASSOCIATION_ASSIGN);
         objc_setAssociatedObject(self.prev, "shouldChangeImageColor", @1, OBJC_ASSOCIATION_ASSIGN);
         objc_setAssociatedObject(self.next, "shouldChangeImageColor", @1, OBJC_ASSOCIATION_ASSIGN);
+        
+        self.view.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        
+        for (UIView *subview in self.hostView.subviews) {
+            if ([subview isKindOfClass:[MPVolumeView class]]) {
+                MPVolumeView *volumeView = (MPVolumeView *)subview;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    UIImage *thumbImage = [volumeView volumeThumbImageForState:UIControlStateNormal];
+                    thumbImage = [thumbImage cvk_imageWithTintColor:cvkMainController.nightThemeScheme.buttonColor];
+                    [volumeView setVolumeThumbImage:thumbImage forState:UIControlStateNormal];
+                });
+                break;
+            }
+        }
     }
 }
 
@@ -1118,4 +1132,33 @@ CHDeclareMethod(1, void, ChatController, actionHistoryEdit, id, arg1)
     if (enabled && enableNightTheme && [self.inputPanel respondsToSelector:@selector(textPanel)]) {
         self.inputPanel.textPanel.textColor = cvkMainController.nightThemeScheme.textColor;
     }
+}
+
+__weak _TtC3vkm14VKClientScheme *vkclientScheme;
+CHDeclareClass(_TtC3vkm14VKClientScheme);
+CHDeclareMethod(0, id, _TtC3vkm14VKClientScheme, init)
+{
+    id scheme = CHSuper(0, _TtC3vkm14VKClientScheme, init);
+    vkclientScheme = scheme;
+    return scheme;
+}
+
+CHDeclareClass(DimmingButton);
+CHDeclareMethod(0, void, DimmingButton, layoutSubviews)
+{
+    CHSuper(0, DimmingButton, layoutSubviews);
+    
+    if (enabled && enableNightTheme) {
+        self.backgroundColor = self.superview.backgroundColor;
+    }
+}
+
+CHDeclareClass(MarketGallerySectionHeader);
+CHDeclareMethod(1, void, MarketGallerySectionHeader, setBackgroundColor, UIColor *, backgroundColor)
+{
+    if (enabled && enableNightTheme) {
+        backgroundColor = self.superview.backgroundColor;
+    }
+    
+    CHSuper(1, MarketGallerySectionHeader, setBackgroundColor, backgroundColor);
 }

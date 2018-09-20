@@ -48,11 +48,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)registerLongPressForView:(UIView *)view;
 
-
-
-@property (weak, nonatomic, nullable) UIViewController *viewController DEPRECATED_ATTRIBUTE;
-- (instancetype)initWithViewController:(UIViewController *)viewController andView:(UIView *)view DEPRECATED_MSG_ATTRIBUTE("Use -initWithParentViewController: instead.");
-
 @end
 
 NS_ASSUME_NONNULL_END

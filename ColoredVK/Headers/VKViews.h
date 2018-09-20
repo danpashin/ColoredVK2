@@ -252,3 +252,9 @@
 
 @interface VKMGradientView : UIView
 @end
+
+@interface DimmingButton : UIView
+@end
+
+@interface MarketGallerySectionHeader : UICollectionReusableView
+@end

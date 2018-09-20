@@ -56,8 +56,14 @@ NSAttributedString *attributedStringForNightTheme(NSAttributedString *text)
                 if (detailed)
                     textColor = cvkMainController.nightThemeScheme.detailTextColor;
                 
+                if (attribute.length == 0 || !textColor)
+                    return;
+                
                 if (forMOCTLabel) {
                     textColor = (id)((UIColor *)textColor).CGColor;
+                    if (attribute.length == 0 || !textColor)
+                        return;
+                    
                     if (isLink) {
                         [mutableText addAttribute:@"MOCTLinkInactiveAttributeName" value:@{@"CTForegroundColor": textColor} range:range];
                         [mutableText addAttribute:@"MOCTLinkActiveAttributeName" value:@{@"CTForegroundColor": textColor} range:range];

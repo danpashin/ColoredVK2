@@ -101,3 +101,17 @@
 @property (copy, nonatomic, readonly) NSString *statId; 
 - (instancetype)initWithType:(NSInteger)type imageName:(NSString *)imageName title:(NSString *)title statId:(NSString *)statId;
 @end
+
+
+@interface _TtC3vkm14VKClientScheme : NSObject
+//@property (strong, nonatomic) UIColor *app_background;
+//@property (strong, nonatomic) UIColor *app_background_secondary;
+//@property (strong, nonatomic) UIColor *messenger_background;
+//@property (strong, nonatomic) UIColor *app_accent;
+//@property (strong, nonatomic) UIColor *app_tint;
+@property (strong, nonatomic) UIColor *navbar_background;
+@property (strong, nonatomic) UIColor *tabbar_icon_active;
+@property (strong, nonatomic) UIColor *tabbar_icon_inactive;
+@property (strong, nonatomic) UIColor *common_cell_foreground;
+@property (strong, nonatomic) UIColor *common_cell_foreground_subhead;
+@end

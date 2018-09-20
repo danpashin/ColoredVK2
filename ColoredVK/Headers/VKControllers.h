@@ -118,6 +118,8 @@
 @property (strong, nonatomic) UIButton *next;
 @property (strong, nonatomic) UIButton *prev;
 @property (strong, nonatomic) UIButton *pp;
+@property (strong, nonatomic) UISlider *seek;
+@property (strong, nonatomic) UIView *hostView;
 @end
 
 @interface AudioAlbumController : VKMLiveController
@@ -135,6 +137,7 @@
 @property (strong, nonatomic) UIView *editToolbar;
 @property (strong, nonatomic) VKMImageButton *headerImage;
 @property (strong, nonatomic) Component5HostView *componentTitleView;
+@property (strong, nonatomic) UIView *conversationBarView;
 @end
 
 @interface DialogsSearchController : VKMSearchController

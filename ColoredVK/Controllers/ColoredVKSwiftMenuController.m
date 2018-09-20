@@ -46,10 +46,6 @@
     return YES;
 }
 
-- (instancetype)initWithViewController:(UIViewController *)viewController andView:(UIView *)view
-{
-    return [self initWithParentViewController:nil];
-}
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     return [self initWithParentViewController:nil];
@@ -174,7 +170,8 @@
     while (viewController.presentedViewController)
         viewController = viewController.presentedViewController;
     
-    [viewController presentViewController:self animated:YES completion:nil];
+    if (![viewController isKindOfClass:self.class])
+        [viewController presentViewController:self animated:YES completion:nil];
 }
 
 - (void)dismiss

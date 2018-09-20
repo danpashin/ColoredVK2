@@ -106,7 +106,7 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
     
     if (enabled && enableNightTheme && [self isKindOfClass:[UIButton class]]) {
         NSNumber *should_customize = NIGHT_THEME_SHOULD_CUSTOMIZE(self);
-        if (!should_customize)
+        if (should_customize == nil)
             should_customize = @YES;
         
         if (!should_customize.boolValue)
@@ -117,7 +117,8 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
             ![self isKindOfClass:objc_lookUpClass("LinkButton")] && 
             ![self isKindOfClass:objc_lookUpClass("BorderButton")] &&
             ![self isKindOfClass:objc_lookUpClass("VKReusableButtonView")] &&
-            ![self isKindOfClass:objc_lookUpClass("_TtC3vkm17BotKeyboardButton")]
+            ![self isKindOfClass:objc_lookUpClass("_TtC3vkm17BotKeyboardButton")] &&
+            ![self isKindOfClass:objc_lookUpClass("VKPlusAvatarButton")]
             ) {
             
             if (self.titleLabel) {
@@ -134,7 +135,7 @@ CHDeclareMethod(0, void, UIButton, layoutSubviews)
             if (!changeImageColor)
                 changeImageColor = @NO;
             
-            NSArray <NSString *> *namesToExclude = @[@"attachments/remove", @"search/clear", @"scroll_to_bottom", @"dismiss_light_24"];
+            NSArray <NSString *> *namesToExclude = @[@"attachments/remove", @"search/clear", @"scroll_to_bottom", @"dismiss_light_24", @"attach_remove_20"];
             if (![namesToExclude containsObject:[self imageForState:UIControlStateNormal].imageAsset.assetName] || changeImageColor.boolValue) {
                 if ((CGRectGetWidth(self.imageView.frame) <= 44.0f && CGRectGetHeight(self.imageView.frame) <= 44.0f) || changeImageColor.boolValue) {
                     [self setImage:[[self imageForState:UIControlStateNormal] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
