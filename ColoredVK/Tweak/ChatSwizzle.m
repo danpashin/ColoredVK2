@@ -228,7 +228,7 @@ CHDeclareMethod(2, UITableViewCell*, DLVController, tableView, UITableView*, tab
                     }
                 }
             }
-        } else {
+        } else if (vaappearance.style == 0){
             cell.contentView.backgroundColor = [UIColor whiteColor];
         }
     }

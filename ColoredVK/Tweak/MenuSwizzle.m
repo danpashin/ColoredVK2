@@ -193,7 +193,7 @@ CHDeclareMethod(2, UITableViewCell*, MenuViewController, tableView, UITableView*
     
     if (enabled && hideMenuSeparators) tableView.separatorColor = [UIColor clearColor]; 
     else if (enabled && !hideMenuSeparators) tableView.separatorColor = menuSeparatorColor; 
-    else tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
+    else if (vaappearance.style == 0) tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
     
     setupNewAppMenuCell(cell);
     

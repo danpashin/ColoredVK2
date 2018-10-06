@@ -127,7 +127,9 @@ BOOL VKMIdenticalController(id self, SEL _cmd, id arg1)
 
 - (UITableViewCell *)settingsCell
 {
-    UITableViewCell *settingsCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cvkSettingsCell"];
+    Class cellClass = objc_lookUpClass("VKMCell") ?: [UITableViewCell class];
+    
+    UITableViewCell *settingsCell = [[cellClass alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cvkSettingsCell"];
     settingsCell.selectionStyle = UITableViewCellSelectionStyleGray;
     settingsCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     settingsCell.textLabel.text = kPackageName;

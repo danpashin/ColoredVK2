@@ -1134,15 +1134,6 @@ CHDeclareMethod(1, void, ChatController, actionHistoryEdit, id, arg1)
     }
 }
 
-__weak _TtC3vkm14VKClientScheme *vkclientScheme;
-CHDeclareClass(_TtC3vkm14VKClientScheme);
-CHDeclareMethod(0, id, _TtC3vkm14VKClientScheme, init)
-{
-    id scheme = CHSuper(0, _TtC3vkm14VKClientScheme, init);
-    vkclientScheme = scheme;
-    return scheme;
-}
-
 CHDeclareClass(DimmingButton);
 CHDeclareMethod(0, void, DimmingButton, layoutSubviews)
 {

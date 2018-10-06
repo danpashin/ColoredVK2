@@ -646,11 +646,25 @@ CHDeclareMethod(0, void, UICollectionView, reloadData)
     [self.collectionViewLayout invalidateLayout];
 }
 
-CHDeclareClass(VATabBarSwappableImageView);
-CHDeclareClassMethod(0, void, VATabBarSwappableImageView, load)
+
+
+__weak VAAppearance *vaappearance;
+CHDeclareClass(VAAppearance);
+CHDeclareMethod(0, id, VAAppearance, init)
 {
-    
+    id appearance = CHSuper(0, VAAppearance, init);
+    vaappearance = appearance;
+    return appearance;
 }
+
+CHDeclareClass(VATabbar)
+CHDeclareMethod(0, void, VATabbar, va_recursiveUpdateAppearance)
+{
+    CHSuper(0, VATabbar, va_recursiveUpdateAppearance);
+    resetTabBar();
+}
+
+
 
 CVK_CONSTRUCTOR
 {

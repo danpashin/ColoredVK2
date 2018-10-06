@@ -52,4 +52,4 @@
 #define UITableViewCellBackgroundColor   [UIColor clearColor]
 
 
-extern __weak _TtC3vkm14VKClientScheme *vkclientScheme;
+extern __weak VAAppearance *vaappearance;

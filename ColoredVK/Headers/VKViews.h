@@ -241,7 +241,7 @@
 @end
 
 @interface DiscoverFeedTitleView : UIView
-@property(retain, nonatomic) UIToolbar *toolbar;
+@property (strong, nonatomic) UIToolbar *toolbar;
 @end
 
 @interface _TtC3vkm19PinnedMessageButton : UIButton
@@ -258,3 +258,15 @@
 
 @interface MarketGallerySectionHeader : UICollectionReusableView
 @end
+
+
+@interface VATabbarItemView : UIView
+@property (assign, nonatomic, getter=isSelected) BOOL selected;
+@end
+
+@interface VATabbarItemImageView : VATabbarItemView
+@property (strong, nonatomic) UIColor *unselectedTintColor;
+@property (strong, nonatomic) UIColor *selectedTintColor;
+@property (strong, nonatomic) UIImageView *imageView;
+@end
+

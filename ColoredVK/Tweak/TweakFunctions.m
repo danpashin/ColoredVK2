@@ -82,8 +82,10 @@ void setupBlur(UIView *bar, UIColor *color, UIBlurEffectStyle style)
                 
                 [tabbar insertSubview:blurEffectView atIndex:0];
                 
+                UIView *customBackgroundView = [tabbar cvk_executeSelector:@selector(backgroundView)];
                 [UIView animateWithDuration:0.2f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
                     tabbar._backgroundView.alpha = 0.0f;
+                    customBackgroundView.alpha = 0.0f;
                 } completion:nil];
             }
         } else if  ([bar isKindOfClass:[UIView class]]) {
@@ -141,8 +143,10 @@ void removeBlur(UIView *bar, void(^completion)(void))
             
             effectView.backgroundColor = tabbar.barTintColor;
             effectView.tag = 0;
+            UIView *customBackgroundView = [tabbar cvk_executeSelector:@selector(backgroundView)];
             [UIView animateWithDuration:0.2f delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
                 tabbar._backgroundView.alpha = 1.0f;
+                customBackgroundView.alpha = 1.0f;
             } completion:^(BOOL finishedOne) {
                 [UIView animateWithDuration:0.2f delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
                     effectView.effect = nil;
@@ -568,17 +572,31 @@ void setupTabbar()
             barTintColor = tabbarBackgroundColor;
             tintColor = tabbarSelForegroundColor;
             unselectedItemTintColor = tabbarForegroundColor;
+        }
+        else if (vaappearance.style == 1) {
+            Class VAColorClass = objc_lookUpClass("VAColor");
+            barTintColor = [VAColorClass backgroundContent];
+            tintColor = [VAColorClass tabbarActiveIcon];
+            unselectedItemTintColor = [VAColorClass tabbarInactiveIcon];
         } 
-//        else if (vkclientScheme) {
-//            barTintColor = vkclientScheme.navbar_background;
-//            tintColor = vkclientScheme.tabbar_icon_active;
-//            unselectedItemTintColor = vkclientScheme.tabbar_icon_inactive;
-//        } 
         else {
             barTintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarBackgroundColor"];
             tintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarSelForegroundColor"];
             unselectedItemTintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarForegroundColor"];
         }
+        
+        Class VATabbarItemButtonClass = objc_lookUpClass("VATabbarItemButton");
+        UIView *tabbarContentView = [tabbar cvk_executeSelector:@selector(contentView)];
+        [tabbarContentView.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([obj isKindOfClass:VATabbarItemButtonClass]) {
+                VATabbarItemButton *button = (VATabbarItemButton *)obj;
+                VATabbarItemImageView *imageView = (VATabbarItemImageView *)button.customView;
+                
+                imageView.selectedTintColor = tintColor;
+                imageView.unselectedTintColor = unselectedItemTintColor;
+                imageView.imageView.tintColor = imageView.selected ? imageView.selectedTintColor : imageView.unselectedTintColor;
+            }
+        }];
         
         [NSObject cvk_runBlockOnMainThread:^{
             UIViewAnimationOptions options = UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction;
@@ -968,7 +986,7 @@ void setupNewAppMenuCell(UITableViewCell *cell)
             birthdayCell.name.textColor = cell.textLabel.textColor;
             birthdayCell.status.textColor = cell.textLabel.textColor;
         }
-    } else {
+    } else if (vaappearance.style == 0) {
         if (isNew3XClient) {
             cell.imageView.tintColor = [UIColor colorWithRed:0.667f green:0.682f blue:0.702f alpha:1.0f];
             cell.backgroundColor = [UIColor whiteColor];

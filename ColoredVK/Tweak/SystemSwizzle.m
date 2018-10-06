@@ -233,7 +233,7 @@ CHDeclareMethod(1, void, UITableView, willMoveToWindow, UIWindow *, window)
 {
     CHSuper(1, UITableView, willMoveToWindow, window);
     
-    if (window) {
+    if (window && enabled) {
         self.backgroundColor = self.backgroundColor;
         self.separatorColor = self.separatorColor;
     }

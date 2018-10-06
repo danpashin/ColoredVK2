@@ -103,15 +103,19 @@
 @end
 
 
-@interface _TtC3vkm14VKClientScheme : NSObject
-//@property (strong, nonatomic) UIColor *app_background;
-//@property (strong, nonatomic) UIColor *app_background_secondary;
-//@property (strong, nonatomic) UIColor *messenger_background;
-//@property (strong, nonatomic) UIColor *app_accent;
-//@property (strong, nonatomic) UIColor *app_tint;
-@property (strong, nonatomic) UIColor *navbar_background;
-@property (strong, nonatomic) UIColor *tabbar_icon_active;
-@property (strong, nonatomic) UIColor *tabbar_icon_inactive;
-@property (strong, nonatomic) UIColor *common_cell_foreground;
-@property (strong, nonatomic) UIColor *common_cell_foreground_subhead;
+
+@interface VAAppearance : NSObject
+- (NSUInteger)style;
 @end
+
+@interface VAColor : UIColor
++ (id)tabbarInactiveIcon;
++ (id)tabbarActiveIcon;
++ (id)backgroundContent;
+@end
+
+@interface VATabbarItemButton : UIControl
+@property(nonatomic) __weak UIView *customView;
+@end
+
+
