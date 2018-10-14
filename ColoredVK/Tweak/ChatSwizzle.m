@@ -120,7 +120,8 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
             if ([self respondsToSelector:@selector(rptr)])
                 self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
             
-            tableView.separatorColor =  hideMessagesListSeparators ? [UIColor clearColor] : [tableView.separatorColor colorWithAlphaComponent:0.2f];
+            if (vaappearance.style == 0)
+                tableView.separatorColor =  hideMessagesListSeparators ? [UIColor clearColor] : [tableView.separatorColor colorWithAlphaComponent:0.2f];
             
             if ([search isKindOfClass:objc_lookUpClass("VKSearchBar")]) {
                 setupNewSearchBar((VKSearchBar *)search, placeholderColor, messagesListBlurTone, messagesListBlurStyle);

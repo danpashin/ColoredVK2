@@ -271,20 +271,20 @@ CHDeclareMethod(0, void, LoadingFooterView, layoutSubviews)
 
 #pragma mark - UIViewController
 CHDeclareClass(UIViewController);
-CHDeclareMethod(3, void, UIViewController, presentViewController, UIViewController *, viewControllerToPresent, animated, BOOL, flag, completion, id, completion)
+CHDeclareMethod(3, void, UIViewController, presentViewController, UIViewController *, VCToPresent, animated, BOOL, flag, completion, id, completion)
 {
     if (![NSStringFromClass([self class]) containsString:@"ColoredVK"]) {
-        NSArray <Class> *classes = @[[UIAlertController class], [UIActivityViewController class]];
-        
-        if (([classes containsObject:[viewControllerToPresent class]]) && IS_IPAD) {
-            viewControllerToPresent.modalPresentationStyle = UIModalPresentationPopover;
-            viewControllerToPresent.popoverPresentationController.permittedArrowDirections = 0;
-            viewControllerToPresent.popoverPresentationController.sourceView = self.view;
-            viewControllerToPresent.popoverPresentationController.sourceRect = self.view.bounds;
+        if (IS_IPAD && ([VCToPresent isKindOfClass:[UIAlertController class]] || 
+                        [VCToPresent isKindOfClass:[UIActivityViewController class]]
+                        )) {
+            VCToPresent.modalPresentationStyle = UIModalPresentationPopover;
+            VCToPresent.popoverPresentationController.permittedArrowDirections = 0;
+            VCToPresent.popoverPresentationController.sourceView = self.view;
+            VCToPresent.popoverPresentationController.sourceRect = self.view.bounds;
         }
     }
     
-    CHSuper(3, UIViewController, presentViewController, viewControllerToPresent, animated, flag, completion, completion);
+    CHSuper(3, UIViewController, presentViewController, VCToPresent, animated, flag, completion, completion);
     
 }
 

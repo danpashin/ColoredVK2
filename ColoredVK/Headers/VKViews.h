@@ -270,3 +270,15 @@
 @property (strong, nonatomic) UIImageView *imageView;
 @end
 
+@interface VATabbarItemCompositeImageView : VATabbarItemView
+@property(retain, nonatomic) UIImageView *defaultImage;
+@end
+
+@interface TopicView : UIView
+@property(retain, nonatomic) UIView *separator;
+@property(retain, nonatomic) UILabel *subtitle;
+@property(retain, nonatomic) UILabel *title;
+@property(retain, nonatomic) UIButton *background;
+@end
+
+

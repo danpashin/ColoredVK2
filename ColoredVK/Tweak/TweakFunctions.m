@@ -594,7 +594,12 @@ void setupTabbar()
                 
                 imageView.selectedTintColor = tintColor;
                 imageView.unselectedTintColor = unselectedItemTintColor;
-                imageView.imageView.tintColor = imageView.selected ? imageView.selectedTintColor : imageView.unselectedTintColor;
+                if ([imageView respondsToSelector:@selector(imageView)]) {
+                    imageView.imageView.tintColor = imageView.selected ? tintColor : unselectedItemTintColor;
+                } else if ([imageView respondsToSelector:@selector(defaultImage)]) {
+                    VATabbarItemCompositeImageView *compositeImageView = (VATabbarItemCompositeImageView *)imageView;
+                    compositeImageView.defaultImage.tintColor = imageView.selected ? tintColor : unselectedItemTintColor;
+                }
             }
         }];
         
