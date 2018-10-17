@@ -119,3 +119,14 @@
 @end
 
 
+
+typedef NS_ENUM(NSInteger, VKPollBackgroundType) {
+    VKPollBackgroundTypePreview,
+    VKPollBackgroundTypeGradient,
+    VKPollBackgroundTypeColor
+};
+
+@interface VKPollBackground : NSObject
+@property (strong, nonatomic) UIColor *color;
+@property (assign, nonatomic) VKPollBackgroundType type;
+@end

@@ -109,7 +109,7 @@ extern NSString *__key;
             self.accountStatus = purchased ? ColoredVKUserAccountStatusPaid : ColoredVKUserAccountStatusFree;
             
             NSDictionary *licence = RSADecryptLicenceData(nil);
-            NSMutableDictionary *dict = [licence mutableCopy];
+            NSMutableDictionary *dict = licence ? [licence mutableCopy] : [NSMutableDictionary dictionary];
             dict[@"purchased"] = @(purchased);
             dict[@"user"] = [NSKeyedArchiver archivedDataWithRootObject:self];
             RSAEncryptAndWriteLicenceData(dict, nil);

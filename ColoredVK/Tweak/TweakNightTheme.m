@@ -1154,13 +1154,24 @@ CHDeclareMethod(1, void, MarketGallerySectionHeader, setBackgroundColor, UIColor
     CHSuper(1, MarketGallerySectionHeader, setBackgroundColor, backgroundColor);
 }
 
-//CHDeclareClass(TopicView);
-//CHDeclareMethod(0, void, TopicView, layoutSubviews)
-//{
-//    CHSuper(0, TopicView, layoutSubviews);
-//    
-//    if (enabled && enableNightTheme) {
-//        [self.background setBackgroundImage:[UIImage cvk_imageWithColor:cvkMainController.nightThemeScheme.foregroundColor size:self.background.frame.size] forState:UIControlStateNormal];
-////        self.background.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-//    }
-//}
+CHDeclareClass(TopicView);
+CHDeclareMethod(0, void, TopicView, layoutSubviews)
+{
+    CHSuper(0, TopicView, layoutSubviews);
+
+    if (enabled && enableNightTheme)
+        self.background.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+}
+
+CHDeclareClass(VKPoll);
+CHDeclareMethod(0, id, VKPoll, background)
+{
+    VKPollBackground *background = CHSuper(0, VKPoll, background);
+    if (!background && enabled && enableNightTheme) {
+        background = [objc_lookUpClass("VKPollBackground") new];
+        background.type = VKPollBackgroundTypeColor;
+        background.color = cvkMainController.nightThemeScheme.navbackgroundColor;
+    }
+    
+    return background;
+}

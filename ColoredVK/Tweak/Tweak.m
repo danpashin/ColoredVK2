@@ -664,6 +664,15 @@ CHDeclareMethod(0, void, VATabbar, va_recursiveUpdateAppearance)
     resetTabBar();
 }
 
+CHDeclareClass(VADocumentSchemeColorRegistry);
+CHDeclareMethod(1, id, VADocumentSchemeColorRegistry, colorWithIdentifier, NSString *, identifier)
+{
+    if (!identifier)
+        identifier = @"text_muted";
+    
+    return CHSuper(1, VADocumentSchemeColorRegistry, colorWithIdentifier, identifier);
+}
+
 
 
 CVK_CONSTRUCTOR

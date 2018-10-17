@@ -105,16 +105,15 @@ void setupNightSeparatorForView(UIView *view)
 {
     if ([CLASS_NAME(view) isEqualToString:@"UIView"] || [CLASS_NAME(view) isEqualToString:@"VKReusableColorView"]) {
         if (enabled && enableNightTheme) {
+            if ([cvkMainController.vkMainController respondsToSelector:@selector(tabBarShadowView)]) {
+                if ([view isEqual:cvkMainController.vkMainController.tabBarShadowView])
+                    return;
+            }
+            
             void (^setupBlock)(void) = ^{
-                if ([cvkMainController.vkMainController respondsToSelector:@selector(tabBarShadowView)]) {
-                    if ([view isEqual:cvkMainController.vkMainController.tabBarShadowView])
-                        return;
-                }
-                
                 if ((CGRectGetHeight(view.frame) < 3.0f) && !CGSizeEqualToSize(CGSizeZero, view.frame.size))
                     view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
             };
-            [NSObject cvk_runBlockOnMainThread:setupBlock];
             dispatch_async(dispatch_get_main_queue(), setupBlock);
         }
     }

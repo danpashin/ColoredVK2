@@ -53,7 +53,7 @@ BOOL __oldMenuPasscodeValid = NO;
         userModel.menuPasscode = nil;
         
         NSDictionary *licence = RSADecryptLicenceData(nil);
-        NSMutableDictionary *dict = [licence mutableCopy];
+        NSMutableDictionary *dict = licence ? [licence mutableCopy] : [NSMutableDictionary dictionary];
         dict[@"user"] = [NSKeyedArchiver archivedDataWithRootObject:userModel];
         RSAEncryptAndWriteLicenceData(dict, nil);
         
@@ -110,7 +110,7 @@ BOOL __oldMenuPasscodeValid = NO;
         userModel.menuPasscode = [self.passcode dataUsingEncoding:NSUTF8StringEncoding];
         
         NSDictionary *licence = RSADecryptLicenceData(nil);
-        NSMutableDictionary *dict = [licence mutableCopy];
+        NSMutableDictionary *dict = licence ? [licence mutableCopy] : [NSMutableDictionary dictionary];
         dict[@"user"] = [NSKeyedArchiver archivedDataWithRootObject:userModel];
         RSAEncryptAndWriteLicenceData(dict, nil);
     }
