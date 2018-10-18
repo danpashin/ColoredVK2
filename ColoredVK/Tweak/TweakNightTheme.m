@@ -504,17 +504,17 @@ CHDeclareMethod(1, id, TouchHighlightControl, initWithFrame, CGRect, frame)
     TouchHighlightControl *control = CHSuper(1, TouchHighlightControl, initWithFrame, frame);
     
     if (enabled && enableNightTheme) {
-        [NSObject cvk_runBlockOnMainThread:^{
-            for (UIView *subview in control.subviews) {
-                if ([subview isKindOfClass:[UIImageView class]]) {
-                    UIImageView *imageView = (UIImageView *)subview;
-                    if ([imageView.image.imageAsset.assetName containsString:@"post/settings"]) {
-                        imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                        imageView.tintColor = cvkMainController.nightThemeScheme.textColor;
-                    }
-                }
-            }
-        }];
+//        [NSObject cvk_runBlockOnMainThread:^{
+//            for (UIView *subview in control.subviews) {
+//                if ([subview isKindOfClass:[UIImageView class]]) {
+//                    UIImageView *imageView = (UIImageView *)subview;
+//                    if ([imageView.image.imageAsset.assetName containsString:@"post/settings"]) {
+//                        imageView.image = [imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+//                        imageView.tintColor = cvkMainController.nightThemeScheme.textColor;
+//                    }
+//                }
+//            }
+//        }];
     }
     
     return control;
@@ -1159,8 +1159,13 @@ CHDeclareMethod(0, void, TopicView, layoutSubviews)
 {
     CHSuper(0, TopicView, layoutSubviews);
 
-    if (enabled && enableNightTheme)
-        self.background.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+    if (enabled && enableNightTheme) {
+        UIImage *defaultImage = [UIImage cvk_imageWithColor:cvkMainController.nightThemeScheme.foregroundColor size:self.frame.size];
+        UIImage *selectedImage = [UIImage cvk_imageWithColor:cvkMainController.nightThemeScheme.backgroundColor size:self.frame.size];
+        
+        [self.background setBackgroundImage:defaultImage forState:UIControlStateNormal];
+        [self.background setBackgroundImage:selectedImage forState:UIControlStateFocused | UIControlStateHighlighted];
+    }
 }
 
 CHDeclareClass(VKPoll);
@@ -1175,3 +1180,36 @@ CHDeclareMethod(0, id, VKPoll, background)
     
     return background;
 }
+
+
+@interface LikesNewsFeedHeaderView : UIView
+@end
+
+CHDeclareClass(LikesNewsFeedHeaderView);
+CHDeclareMethod(0, void, LikesNewsFeedHeaderView, layoutSubviews)
+{
+    CHSuper(0, LikesNewsFeedHeaderView, layoutSubviews);
+    
+    if (enabled && enableNightTheme)
+        self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+}
+
+CHDeclareClass(VAButton);
+CHDeclareMethod(1, void, VAButton, setBackgroundColor, UIColor *, backgroundColor)
+{
+    if (enabled && enableNightTheme)
+        backgroundColor = [backgroundColor colorWithAlphaComponent:0.1f];
+    
+    CHSuper(1, VAButton, setBackgroundColor, backgroundColor);
+}
+
+CHDeclareClass(TouchHighlightControl);
+//CHDeclareMethod(1, void, TouchHighlightControl, initWithFrame, CGRect, frame)
+//{
+//    
+//    if (enabled && enableNightTheme && [CLASS_NAME(self.subviews.firstObject) isEqualToString:@"UIView"]) {
+////        void(^updateBlock)
+//        self.subviews.firstObject.backgroundColor = [cvkMainController.nightThemeScheme.buttonColor colorWithAlphaComponent:0.3f];
+//    }
+//    CHSuper(0, TouchHighlightControl, didMoveToWindow);
+//}

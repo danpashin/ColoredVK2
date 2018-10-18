@@ -16,6 +16,7 @@
 #import "ColoredVKColorCell.h"
 #import "ColoredVKImagePrefsCell.h"
 #import "ColoredVKCellBackgroundView.h"
+#import "ColoredVKPrefsTableView.h"
 
 
 @implementation ColoredVKPrefs
@@ -52,6 +53,11 @@
     self.table.emptyDataSetSource = self;
     self.table.emptyDataSetDelegate = self;
 }
+
+//- (Class)tableViewClass
+//{
+//    return [ColoredVKPrefsTableView class];
+//}
 
 - (void)viewDidLoad
 {

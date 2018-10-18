@@ -114,6 +114,7 @@ void setupNightSeparatorForView(UIView *view)
                 if ((CGRectGetHeight(view.frame) < 3.0f) && !CGSizeEqualToSize(CGSizeZero, view.frame.size))
                     view.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
             };
+            [NSObject cvk_runBlockOnMainThread:setupBlock];
             dispatch_async(dispatch_get_main_queue(), setupBlock);
         }
     }
