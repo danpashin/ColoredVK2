@@ -228,14 +228,11 @@
 - (void)tableView:(UITableView *)tableView willDisplayCell:(ColoredVKPrefsCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
-    cell.layoutMargins = UIEdgeInsetsMake(0.0f, 18.0f, 0.0f, 18.0f);
     cell.textLabel.text = CVKLocalizedString(cell.textLabel.text);
     
     if (cell.accessoryType == UITableViewCellAccessoryDisclosureIndicator) {
         cell.textLabel.textColor = CVKMainColor;
     }
-    
-    [cell renderBackgroundWithColor:nil forTableView:tableView indexPath:indexPath];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

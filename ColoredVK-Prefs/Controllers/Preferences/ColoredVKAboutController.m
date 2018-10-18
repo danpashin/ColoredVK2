@@ -20,7 +20,8 @@
 
 - (void)openDeveloperProfile
 {
-    [self openURL:@"https://vk.com/danpashin"];
+    if (![self openURL:kPackageDevVKLink])
+        [self openURL:kPackageDevLink];
 }
 
 - (void)showTextController:(PSSpecifier *)specifier

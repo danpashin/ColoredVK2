@@ -10,17 +10,19 @@
 #import <UIKit/UIKit.h>
 #import <Preferences/PSListController.h>
 #import "UIScrollView+EmptyDataSet.h"
+#import "ColoredVKPrefsTableView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ColoredVKPrefs : PSListController <DZNEmptyDataSetSource, DZNEmptyDataSetDelegate, UIViewControllerPreviewingDelegate>
 
 @property (strong, nonatomic) NSMutableDictionary *cachedPrefs;
+@property (strong, nonatomic, readonly) ColoredVKPrefsTableView *table;
 
 - (void)commonInit NS_REQUIRES_SUPER;
-- (void)updateControllerAppearance:(BOOL)animated NS_REQUIRES_SUPER;
+- (void)updateAppearance:(BOOL)animated NS_REQUIRES_SUPER;
 
-- (void)openURL:(NSString *)url;
+- (BOOL)openURL:(NSString *)stringURL;
 - (void)presentPopover:(UIViewController *)controller;
 - (NSArray <PSSpecifier*> *)specifiersForPlistName:(NSString *)plistName localize:(BOOL)localize;
 

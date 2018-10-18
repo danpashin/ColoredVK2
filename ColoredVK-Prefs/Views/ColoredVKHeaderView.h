@@ -13,4 +13,6 @@
 
 + (instancetype)headerForView:(UIView *)rootView;
 
+- (void)updateAppearance;
+
 @end

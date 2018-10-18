@@ -77,16 +77,16 @@
     });
 }
 
-- (void)updateControllerAppearance:(BOOL)animated
+- (void)updateAppearance:(BOOL)animated
 {
-    [super updateControllerAppearance:animated];
+    [super updateAppearance:animated];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self updateFooterColors:YES];
+        [self updateFooterAppearance:YES];
     });
 }
 
-- (void)updateFooterColors:(BOOL)animated
+- (void)updateFooterAppearance:(BOOL)animated
 {
     ColoredVKNightScheme *nightScheme = [ColoredVKNightScheme sharedScheme];
     
@@ -147,7 +147,7 @@
         _closeAppFooter.title = CVKLocalizedString(@"CLOSE_APP_FOOTER_TEXT");
         _closeAppFooter.buttonTitle = CVKLocalizedString(@"CLOSE_APP_FOOTER_BUTTON_TEXT");
         [_closeAppFooter.button addTarget:self action:@selector(actionCloseApplication) forControlEvents:UIControlEventTouchUpInside];
-        [self updateFooterColors:NO];
+        [self updateFooterAppearance:NO];
     }
     
     return _closeAppFooter;

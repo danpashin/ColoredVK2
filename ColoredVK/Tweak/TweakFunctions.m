@@ -573,7 +573,7 @@ void setupTabbar()
             tintColor = tabbarSelForegroundColor;
             unselectedItemTintColor = tabbarForegroundColor;
         }
-        else if (vaappearance.style == 1) {
+        else if ([vaappearance cvk_executeSelector:@selector(style)] == (void *)0x1) {
             Class VAColorClass = objc_lookUpClass("VAColor");
             barTintColor = [VAColorClass backgroundContent];
             tintColor = [VAColorClass tabbarActiveIcon];
@@ -603,15 +603,21 @@ void setupTabbar()
             }
         }];
         
+        BOOL animated = ([[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"5.2"] == ColoredVKVersionCompareLess);
         [NSObject cvk_runBlockOnMainThread:^{
-            UIViewAnimationOptions options = UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction;
-            [UIView transitionWithView:tabbar duration:0.3f options:options animations:^{
+            void (^updateBlock)(void) = ^{
                 tabbar.barTintColor = barTintColor;
                 tabbar.tintColor = tintColor;
                 
                 if (ios_available(10.0))
                     tabbar.unselectedItemTintColor = unselectedItemTintColor;
-            } completion:nil];
+            };
+            
+            if (animated) {
+                UIViewAnimationOptions options = UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionAllowUserInteraction;
+                [UIView transitionWithView:tabbar duration:0.3f options:options animations:updateBlock completion:nil];
+            } else
+                updateBlock();
         }];
     }
 }
