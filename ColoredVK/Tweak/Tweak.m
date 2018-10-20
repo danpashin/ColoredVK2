@@ -647,16 +647,6 @@ CHDeclareMethod(0, void, UICollectionView, reloadData)
 }
 
 
-
-__weak VAAppearance *vaappearance;
-CHDeclareClass(VAAppearance);
-CHDeclareMethod(0, id, VAAppearance, init)
-{
-    id appearance = CHSuper(0, VAAppearance, init);
-    vaappearance = appearance;
-    return appearance;
-}
-
 CHDeclareClass(VATabbar)
 CHDeclareMethod(0, void, VATabbar, va_recursiveUpdateAppearance)
 {

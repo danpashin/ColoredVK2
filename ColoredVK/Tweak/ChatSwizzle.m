@@ -120,6 +120,7 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
             if ([self respondsToSelector:@selector(rptr)])
                 self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
             
+            VAAppearance *vaappearance = [objc_lookUpClass("VAAppearance") appearance];
             if (vaappearance.style == 0)
                 tableView.separatorColor =  hideMessagesListSeparators ? [UIColor clearColor] : [tableView.separatorColor colorWithAlphaComponent:0.2f];
             
@@ -135,7 +136,10 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
             if ([self respondsToSelector:@selector(rptr)])
                 self.rptr.tintColor = nil;
             
-            tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
+            VAAppearance *vaappearance = [objc_lookUpClass("VAAppearance") appearance];
+            if (vaappearance.style == 0)
+                tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
+            
             if ([search isKindOfClass:objc_lookUpClass("VKSearchBar")]) {
                 resetNewSearchBar((VKSearchBar *)search);
             } if ([search isKindOfClass:[UISearchBar class]]) {
@@ -198,6 +202,8 @@ CHDeclareMethod(2, UITableViewCell*, DLVController, tableView, UITableView*, tab
 {
     _TtC3vkm12PeerListCell *cell = (_TtC3vkm12PeerListCell *)CHSuper(2, DLVController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     if ([self isKindOfClass:objc_lookUpClass("DLVController")] && [cell isKindOfClass:objc_lookUpClass("vkm.PeerListCell")]) {
+        VAAppearance *vaappearance = [objc_lookUpClass("VAAppearance") appearance];
+        
         if (enabled && !enableNightTheme && enabledMessagesListImage) {
             performInitialCellSetup(cell);
             if ([cell respondsToSelector:@selector(titleView)]) {

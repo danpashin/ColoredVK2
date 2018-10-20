@@ -573,16 +573,18 @@ void setupTabbar()
             tintColor = tabbarSelForegroundColor;
             unselectedItemTintColor = tabbarForegroundColor;
         }
-        else if ([vaappearance cvk_executeSelector:@selector(style)] == (void *)0x1) {
-            Class VAColorClass = objc_lookUpClass("VAColor");
-            barTintColor = [VAColorClass backgroundContent];
-            tintColor = [VAColorClass tabbarActiveIcon];
-            unselectedItemTintColor = [VAColorClass tabbarInactiveIcon];
-        } 
         else {
-            barTintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarBackgroundColor"];
-            tintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarSelForegroundColor"];
-            unselectedItemTintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarForegroundColor"];
+            VAAppearance *vaappearance = [objc_lookUpClass("VAAppearance") appearance];
+            if ([vaappearance cvk_executeSelector:@selector(style)] == (void *)0x1) {
+                Class VAColorClass = objc_lookUpClass("VAColor");
+                barTintColor = [VAColorClass backgroundContent];
+                tintColor = [VAColorClass tabbarActiveIcon];
+                unselectedItemTintColor = [VAColorClass tabbarInactiveIcon];
+            } else {
+                barTintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarBackgroundColor"];
+                tintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarSelForegroundColor"];
+                unselectedItemTintColor = [UIColor cvk_defaultColorForIdentifier:@"TabbarForegroundColor"];
+            }
         }
         
         Class VATabbarItemButtonClass = objc_lookUpClass("VATabbarItemButton");
@@ -975,6 +977,8 @@ void updateNavBarColor(void)
 
 void setupNewAppMenuCell(UITableViewCell *cell)
 {
+    VAAppearance *vaappearance = [objc_lookUpClass("VAAppearance") appearance];
+    
     cell.contentView.backgroundColor = [UIColor clearColor];
     if (enabled && enableNightTheme) {
         cell.imageView.image = [cell.imageView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
