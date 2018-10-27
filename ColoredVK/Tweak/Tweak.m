@@ -339,7 +339,7 @@ CHDeclareMethod(0, void, UserWallController, viewDidLoad)
     if (users[stringID]) {
         UIImageView *titleView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 30.0f, 30.0f)];
         titleView.image = CVKImage(users[stringID]);
-        if (![stringID isEqualToString:@"125879328"] || ![stringID isEqualToString:@"91310991"]) {
+        if (![stringID isEqualToString:@"125879328"] && ![stringID isEqualToString:@"91310991"]) {
             titleView.image = [titleView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             titleView.tintColor = enableNightTheme ? cvkMainController.nightThemeScheme.textColor : barForegroundColor;
         }
