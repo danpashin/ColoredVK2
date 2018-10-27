@@ -14,7 +14,9 @@ CHDeclareMethod(0, void, ProfileView, layoutSubviews)
     
     if (enabled && enableNightTheme && [self isKindOfClass:objc_lookUpClass("ProfileView")]) {
         self.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-        self.blocksScroll.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+        
+        if ([self respondsToSelector:@selector(blocksScroll)])
+            self.blocksScroll.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
     }
 }
 
