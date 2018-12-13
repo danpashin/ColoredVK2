@@ -87,6 +87,7 @@ static NSString *const kPackageName = @"ColoredVK 2";
 static NSString *const kPackageVersion = CVKStringize(APP_VERSION);
 
 static NSString *const kPackageAPIURL = @"https://api.danpashin.ru/v1.2";
+static NSString *const kPackageDevVKLink = @"vk://vk.com/danpashin";
 static NSString *const kPackageDevLink = @"https://vk.com/danpashin";
 static NSString *const kPackageAccountRegisterLink = @"https://danpashin.ru/projects/coloredvk/index.html#register";
 static NSString *const kPackageFaqLink = @"https://danpashin.ru/projects/coloredvk/faq.html";

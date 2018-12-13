@@ -332,13 +332,14 @@ CHDeclareMethod(0, void, UserWallController, viewDidLoad)
     
     NSDictionary <NSString *, NSString *> *users = @{@"89911723":@"vkapp/DeveloperNavIcon",
                                                      @"125879328":@"vkapp/id125879328_NavIcon",
-                                                     @"138127148":@"vkapp/tiger_icon"};
+                                                     @"138127148":@"vkapp/tiger_icon",
+                                                     @"91310991":@"vkapp/maaebna_icon"};
     NSString *stringID = [NSString stringWithFormat:@"%@", self.profile.owner];
     
     if (users[stringID]) {
         UIImageView *titleView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 30.0f, 30.0f)];
         titleView.image = CVKImage(users[stringID]);
-        if (![stringID isEqualToString:@"125879328"]) {
+        if (![stringID isEqualToString:@"125879328"] && ![stringID isEqualToString:@"91310991"]) {
             titleView.image = [titleView.image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             titleView.tintColor = enableNightTheme ? cvkMainController.nightThemeScheme.textColor : barForegroundColor;
         }
@@ -646,16 +647,6 @@ CHDeclareMethod(0, void, UICollectionView, reloadData)
     [self.collectionViewLayout invalidateLayout];
 }
 
-
-
-__weak VAAppearance *vaappearance;
-CHDeclareClass(VAAppearance);
-CHDeclareMethod(0, id, VAAppearance, init)
-{
-    id appearance = CHSuper(0, VAAppearance, init);
-    vaappearance = appearance;
-    return appearance;
-}
 
 CHDeclareClass(VATabbar)
 CHDeclareMethod(0, void, VATabbar, va_recursiveUpdateAppearance)

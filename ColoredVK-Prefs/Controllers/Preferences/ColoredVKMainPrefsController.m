@@ -162,6 +162,15 @@ NSArray <NSString *> *cvkPrefsEnabledSpecifiers;
     [self openURL:kPackageFaqLink];
 }
 
+- (void)updateAppearance:(BOOL)animated
+{
+    [super updateAppearance:animated];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [(ColoredVKHeaderView *)self.table.tableHeaderView updateAppearance];
+    });
+}
+
 
 #pragma mark -
 #pragma mark UITableViewDelegate

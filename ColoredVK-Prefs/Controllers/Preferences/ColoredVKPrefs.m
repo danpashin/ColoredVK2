@@ -15,11 +15,10 @@
 
 #import "ColoredVKColorCell.h"
 #import "ColoredVKImagePrefsCell.h"
-#import "ColoredVKCellBackgroundView.h"
-#import "ColoredVKPrefsTableView.h"
 
 
 @implementation ColoredVKPrefs
+@dynamic table;
 
 - (instancetype)initWithNibName:(nullable NSString *)nibNameOrNil bundle:(nullable NSBundle *)nibBundleOrNil
 {
@@ -54,16 +53,17 @@
     self.table.emptyDataSetDelegate = self;
 }
 
-//- (Class)tableViewClass
-//{
-//    return [ColoredVKPrefsTableView class];
-//}
+- (Class)tableViewClass
+{
+    return [ColoredVKPrefsTableView class];
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
     self.navigationItem.title = self.specifier ? self.specifier.name : @"";
+    [self updateAppearance:NO];
 }
 
 #pragma mark -
@@ -117,15 +117,15 @@
     nightThemeColorScheme.enabled = ((themeType != -1) && [self.cachedPrefs[@"enabled"] boolValue] && vkApp);
 }
 
-- (void)updateControllerAppearance:(BOOL)animated
+- (void)updateAppearance:(BOOL)animated
 {
     if (![ColoredVKNewInstaller sharedInstaller].application.isVKApp)
         return;
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         void (^tableBlock)(void) = ^{
-            self.table.separatorColor = [UIColor clearColor];
-            self.table.backgroundColor = [UIColor colorWithRed:0.937255f green:0.937255f blue:0.956863f alpha:1.0f];
+            self.table.separatorColor = [UIColor colorWithRed:232/255.0f green:233/255.0f blue:234/255.0f alpha:1.0f];
+            self.table.backgroundColor = [UIColor groupTableViewBackgroundColor];
             self.navigationController.navigationBar.tintColor = [UIColor colorWithRed:0.235294f green:0.439216f blue:0.662745f alpha:1.0f];
         };
         
@@ -147,24 +147,26 @@
     if (![ColoredVKNewInstaller sharedInstaller].application.isVKApp)
         return;
     
-    if (![cell isKindOfClass:[ColoredVKPrefsCell class]])
-        return;
-    
     ColoredVKNightScheme *nightThemeColorScheme = [ColoredVKNightScheme sharedScheme];
-    ColoredVKCellBackgroundView *backgroundView = cell.customBackgroundView;
+    BOOL nightThemeEnabled = nightThemeColorScheme.enabled;
     
     void (^changeBlock)(void) = ^{
-        backgroundView.backgroundColor         = nightThemeColorScheme.enabled ? nightThemeColorScheme.foregroundColor : nil;
-        backgroundView.separatorColor          = nightThemeColorScheme.enabled ? nightThemeColorScheme.backgroundColor : nil;
-        backgroundView.selectedBackgroundColor = nightThemeColorScheme.enabled ? nightThemeColorScheme.backgroundColor : nil;
+        cell.backgroundColor = nightThemeEnabled ? nightThemeColorScheme.foregroundColor : [UIColor whiteColor];
         
         if (cell.type != PSButtonCell)
-            cell.textLabel.textColor = nightThemeColorScheme.enabled ? nightThemeColorScheme.textColor : [UIColor blackColor];  
+            cell.textLabel.textColor = nightThemeEnabled ? nightThemeColorScheme.textColor : [UIColor blackColor];  
         
-        if (nightThemeColorScheme.enabled) {
+        if (nightThemeEnabled) {
             if ([cell.accessoryView isKindOfClass:NSClassFromString(@"ColoredVKStepperButton")]) {
                 ((UILabel *)[cell.accessoryView valueForKey:@"valueLabel"]).textColor = nightThemeColorScheme.textColor;
             }
+            
+            UIView *selectedView = [UIView new];
+            selectedView.backgroundColor = nightThemeColorScheme.backgroundColor;
+            cell.selectedBackgroundView = selectedView;
+        
+        } else {
+            cell.selectedBackgroundView = nil;
         }
     };
     
@@ -203,11 +205,24 @@
     });
 }
 
-- (void)openURL:(NSString *)url
+- (BOOL)openURL:(NSString *)stringURL
 {
-    SFSafariViewController *safariController = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:url]];
-    safariController.modalPresentationStyle = UIModalPresentationPageSheet;
-    [self presentViewController:safariController animated:YES completion:nil];
+    NSURL *URL = [NSURL URLWithString:stringURL];
+    
+    if ([stringURL hasPrefix:@"http"]) {
+        SFSafariViewController *safariController = [[SFSafariViewController alloc] initWithURL:URL];
+        safariController.modalPresentationStyle = UIModalPresentationPageSheet;
+        [self presentViewController:safariController animated:YES completion:nil];
+        
+        return YES;
+    }
+    
+    UIApplication *app = [UIApplication sharedApplication];
+    BOOL canOpen = [app canOpenURL:URL];
+    if (canOpen)
+        [app openURL:URL];
+    
+    return canOpen;
 }
 
 - (void)dealloc
@@ -330,7 +345,7 @@
             if ([key isEqualToString:@"nightThemeType"] || [key isEqualToString:@"enabled"]) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self updateNightThemeModel];
-                    [self updateControllerAppearance:YES];
+                    [self updateAppearance:YES];
                 });
                 
                 POST_CORE_NOTIFICATION(kPackageNotificationUpdateNightTheme);
@@ -354,20 +369,11 @@
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.userInteractionEnabled = YES;
     
-//    CGFloat edgeOffset = IS_IPAD ? 36.0f : 18.0f;
-    cell.layoutMargins = UIEdgeInsetsMake(0.0f, 18.0f, 0.0f, 18.0f);
-    
     if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable) {
         [self registerForPreviewingWithDelegate:self sourceView:cell];
     }
     
     return cell;
-}
-
-- (void)tableView:(UITableView *)tableView willDisplayCell:(__kindof ColoredVKPrefsCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [cell renderBackgroundWithColor:nil forTableView:tableView indexPath:indexPath];
-    [self updateCellAppearance:cell animated:NO];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

@@ -6,15 +6,9 @@
 //
 
 #import "ColoredVKPrefsCell.h"
-#import "ColoredVKCellBackgroundView.h"
 
-#import <objc/runtime.h>
-#import "ColoredVKPrefs.h"
-
-@interface ColoredVKPrefsCell ()
-@property (assign, nonatomic, readonly) BOOL backgroundRendered;
-@property (strong, nonatomic) UIColor *cachedBackgroundColor;
-@property (strong, nonatomic) UIView *cachedSelectedBackgroundView;
+@interface UITableViewCell (ColoredVK_Private)
+- (int)sectionLocation;
 @end
 
 @implementation ColoredVKPrefsCell
@@ -38,118 +32,40 @@
     }
 }
 
-- (void)renderBackgroundWithColor:(UIColor *)backgroundColor forTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
+
+- (void)layoutSubviews
 {
-    if (!self.backgroundView) {
-        ColoredVKCellBackgroundView *backgroundView = self.customBackgroundView;
-        backgroundView.tableView = tableView;
-        backgroundView.tableViewCell = self;
-        backgroundView.indexPath = indexPath;
+    [super layoutSubviews];
+    
+    UIRectCorner roundCornersMask = 0;
+    int sectionLocation = self.sectionLocation;
+    if (sectionLocation == 4)
+        roundCornersMask = UIRectCornerAllCorners;
+    else if (sectionLocation == 3)
+        roundCornersMask = UIRectCornerBottomLeft | UIRectCornerBottomRight;
+    else if (sectionLocation == 2)
+        roundCornersMask = UIRectCornerTopLeft | UIRectCornerTopRight;
+    
+    if (roundCornersMask != 0) {
+        CAShapeLayer *maskLayer = [CAShapeLayer layer];
+        maskLayer.frame = self.bounds;
         
-        self.selectedBackgroundView = self.cachedSelectedBackgroundView;
-        self.backgroundColor = backgroundColor;
-        self.selectionStyle = UITableViewCellSelectionStyleNone;
-        
-        self.backgroundView = backgroundView;
+        CGFloat cornerRadius = self.cornerRadius;
+        maskLayer.path = [UIBezierPath bezierPathWithRoundedRect:self.bounds byRoundingCorners:roundCornersMask 
+                                                     cornerRadii:CGSizeMake(cornerRadius, cornerRadius)].CGPath;
+        self.layer.mask = maskLayer;
     }
 }
 
-#pragma mark -
-#pragma mark Setters
-#pragma mark -
-
-- (void)setCustomBackgroundView:(ColoredVKCellBackgroundView *)customBackgroundView
+- (CGFloat)cornerRadius
 {
-    if ([self.specifier isKindOfClass:[PSSpecifier class]]) {
-        [self.specifier setProperty:customBackgroundView forKey:@"cvkCellBackgroundView"];
-        return;
-    }
-    
-    objc_setAssociatedObject(self, "cvkCellBackgroundView", customBackgroundView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    return 10.0f;
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
-    [super setSelected:selected animated:animated];
-    
-    if (self.backgroundRendered) {
-        ColoredVKCellBackgroundView *backView = self.customBackgroundView;
-        void (^animationBlock)(void) = ^{
-            backView.backgroundColor = selected ? backView.selectedBackgroundColor : self.cachedBackgroundColor;
-            backView.separatorColor = backView.tableView.separatorColor;
-        };
-        if (animated) {
-            [UIView animateWithDuration:0.5f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction 
-                             animations:animationBlock completion:nil];
-        } else {
-            animationBlock();
-        }
-    }
-}
-
-- (void)setBackgroundColor:(UIColor *)backgroundColor
-{
-    if (!backgroundColor)
-        backgroundColor = [UIColor whiteColor];
-    
-    self.cachedBackgroundColor = backgroundColor;
-    
-    if (self.backgroundRendered) {
-        self.customBackgroundView.backgroundColor = backgroundColor;
-    }
-}
-
-- (void)setSelectedBackgroundView:(UIView *)selectedBackgroundView
-{
-    self.cachedSelectedBackgroundView = selectedBackgroundView;
-    
-    if (self.backgroundRendered) {
-        self.customBackgroundView.selectedBackgroundColor = selectedBackgroundView.backgroundColor;
-    }
-}
-
-- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
-{
-    [super setHighlighted:highlighted animated:animated];
-    
-    if (self.backgroundRendered) {
-        ColoredVKCellBackgroundView *backView = self.customBackgroundView;
-        backView.backgroundColor = highlighted ? backView.selectedBackgroundColor : self.cachedBackgroundColor;
-        backView.separatorColor = backView.tableView.separatorColor;
-    }
-}
 
 #pragma mark -
 #pragma mark Getters
 #pragma mark -
-
-- (BOOL)backgroundRendered
-{
-    if ([self.specifier isKindOfClass:[PSSpecifier class]]) {
-        return [self.specifier propertyForKey:@"cvkCellBackgroundView"] ? YES : NO;
-    }
-    
-    return objc_getAssociatedObject(self, "cvkCellBackgroundView") ? YES : NO;
-}
-
-- (ColoredVKCellBackgroundView *)customBackgroundView
-{
-    if ([self.specifier isKindOfClass:[PSSpecifier class]]) {
-        ColoredVKCellBackgroundView *customBackgroundView = [self.specifier propertyForKey:@"cvkCellBackgroundView"];
-        if (!customBackgroundView) {
-            customBackgroundView = [[ColoredVKCellBackgroundView alloc] init];
-            self.customBackgroundView = customBackgroundView;
-        }
-        return customBackgroundView;
-    }
-    
-    ColoredVKCellBackgroundView *customBackgroundView = objc_getAssociatedObject(self, "cvkCellBackgroundView");
-    if (!customBackgroundView) {
-        customBackgroundView = [[ColoredVKCellBackgroundView alloc] init];
-        self.customBackgroundView = customBackgroundView;
-    }
-    return customBackgroundView;
-}
 
 - (SEL)defaultPrefsGetter
 {
@@ -161,10 +77,6 @@
     if (self.specifier.hasValidGetter) {
         return self.specifier.performGetter;
     }
-    
-//    if ([self.specifier.target respondsToSelector:self.defaultPrefsGetter]) {
-//        return objc_msgSend(self.specifier.target, self.defaultPrefsGetter, self.specifier);
-//    }
     
     return nil;
 }

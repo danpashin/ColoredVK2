@@ -108,6 +108,11 @@
 - (NSUInteger)style;
 @end
 
+@interface VKAppearance : VAAppearance
++ (id)staticColorWithIdentifier:(id)arg1;
++ (id)dynamicColorWithIdentifier:(id)arg1;
+@end
+
 @interface VAColor : UIColor
 + (id)tabbarInactiveIcon;
 + (id)tabbarActiveIcon;
