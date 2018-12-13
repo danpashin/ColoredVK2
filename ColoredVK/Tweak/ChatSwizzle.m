@@ -100,7 +100,14 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
         
         UITableView *tableView = nil;
         if ([self respondsToSelector:@selector(listController)]) {
-            tableView = self.listController.tableView;
+            __kindof UITableViewController *controller = nil;
+            if ([self.listController respondsToSelector:@selector(tableView)]) {
+                controller = (UITableViewController *)self.listController;
+            } else if ([self.listController respondsToSelector:@selector(tableController)]) {
+                controller = [self.listController cvk_executeSelector:@selector(tableController)];
+            }
+            tableView = controller.tableView;
+            
         } else if ([self respondsToSelector:@selector(tableView)]) {
             tableView = self.tableView;
         }

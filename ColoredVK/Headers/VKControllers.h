@@ -157,7 +157,7 @@
 @interface _TtC3vkm17MessageController : UIViewController
 @end
 
-@interface DLVController : UITableViewController
+@interface DLVController : UIViewController
 @end
 
 @interface DialogsController : VKMTableController
