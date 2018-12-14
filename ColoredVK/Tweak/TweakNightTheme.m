@@ -1187,6 +1187,9 @@ CHDeclareMethod(0, id, VKPoll, background)
 @interface LikesNewsFeedHeaderView : UIView
 @end
 
+@interface SectionSeparator : UIView
+@end
+
 CHDeclareClass(LikesNewsFeedHeaderView);
 CHDeclareMethod(0, void, LikesNewsFeedHeaderView, layoutSubviews)
 {
@@ -1215,3 +1218,13 @@ CHDeclareClass(TouchHighlightControl);
 //    }
 //    CHSuper(0, TouchHighlightControl, didMoveToWindow);
 //}
+
+CHDeclareClass(SectionSeparator);
+CHDeclareMethod(0, void, SectionSeparator, layoutSubviews)
+{
+    CHSuper(0, SectionSeparator, layoutSubviews);
+    
+    if (enabled && enableNightTheme) {
+        self.backgroundColor = cvkMainController.nightThemeScheme.backgroundColor;
+    }
+}

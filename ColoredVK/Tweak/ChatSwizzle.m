@@ -100,7 +100,14 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
         
         UITableView *tableView = nil;
         if ([self respondsToSelector:@selector(listController)]) {
-            tableView = self.listController.tableView;
+            __kindof UITableViewController *controller = nil;
+            if ([self.listController respondsToSelector:@selector(tableView)]) {
+                controller = (UITableViewController *)self.listController;
+            } else if ([self.listController respondsToSelector:@selector(tableController)]) {
+                controller = [self.listController cvk_executeSelector:@selector(tableController)];
+            }
+            tableView = controller.tableView;
+            
         } else if ([self respondsToSelector:@selector(tableView)]) {
             tableView = self.tableView;
         }
@@ -196,51 +203,70 @@ CHDeclareMethod(2, UITableViewCell*, DialogsController, tableView, UITableView*,
     return cell;
 }
 
+void setupPeerListCell(UITableView *tableView, _TtC3vkm12PeerListCell *cell, NSIndexPath *indexPath)
+{
+    VAAppearance *vaappearance = [objc_lookUpClass("VAAppearance") appearance];
+        
+    if (enabled && !enableNightTheme && enabledMessagesListImage) {
+        performInitialCellSetup(cell);
+        if ([cell respondsToSelector:@selector(titleView)]) {
+            cell.titleView.textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
+            cell.timeView.textColor = cell.titleView.textColor;
+            cell.bodyView.textColor = cell.titleView.textColor;
+        } else {
+            for (UIView *subview in cell.contentView.subviews) {
+                if ([subview isKindOfClass:[UILabel class]])
+                    ((UILabel *)subview).textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
+            }
+        }
+    } else if (enabled && enableNightTheme) {
+        if ([cell respondsToSelector:@selector(titleView)]) {
+            cell.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
+            cell.titleView.textColor = cvkMainController.nightThemeScheme.textColor;
+            cell.bodyView.textColor = cvkMainController.nightThemeScheme.detailTextColor;
+            NIGHT_THEME_DISABLE_CUSTOMISATION(cell.bodyView);
+            NIGHT_THEME_DISABLE_CUSTOMISATION(cell.titleView);
+        } else {
+            for (UIView *subview in cell.contentView.subviews) {
+                if ([subview isKindOfClass:[UILabel class]]) {
+                    UILabel *label = (UILabel *)subview;
+                    NIGHT_THEME_DISABLE_CUSTOMISATION(label);
+                    
+                    CTFontSymbolicTraits traits = CTFontGetSymbolicTraits((__bridge CTFontRef)label.font);
+                    BOOL isBold = ((traits & kCTFontTraitBold) == kCTFontTraitBold);
+                    label.textColor = isBold ? cvkMainController.nightThemeScheme.textColor : cvkMainController.nightThemeScheme.detailTextColor;
+                }
+            }
+        }
+    } else if (vaappearance.style == 0) {
+        cell.contentView.backgroundColor = [UIColor whiteColor];
+    }
+}
+
 #pragma mark DLVController
 CHDeclareClass(DLVController);
 CHDeclareMethod(2, UITableViewCell*, DLVController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
 {
     _TtC3vkm12PeerListCell *cell = (_TtC3vkm12PeerListCell *)CHSuper(2, DLVController, tableView, tableView, cellForRowAtIndexPath, indexPath);
     if ([self isKindOfClass:objc_lookUpClass("DLVController")] && [cell isKindOfClass:objc_lookUpClass("vkm.PeerListCell")]) {
-        VAAppearance *vaappearance = [objc_lookUpClass("VAAppearance") appearance];
-        
-        if (enabled && !enableNightTheme && enabledMessagesListImage) {
-            performInitialCellSetup(cell);
-            if ([cell respondsToSelector:@selector(titleView)]) {
-                cell.titleView.textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
-                cell.timeView.textColor = cell.titleView.textColor;
-                cell.bodyView.textColor = cell.titleView.textColor;
-            } else {
-                for (UIView *subview in cell.contentView.subviews) {
-                    if ([subview isKindOfClass:[UILabel class]])
-                        ((UILabel *)subview).textColor = changeMessagesListTextColor?messagesListTextColor:[UIColor colorWithWhite:1.0f alpha:0.9f];
-                }
-            }
-        } else if (enabled && enableNightTheme) {
-            if ([cell respondsToSelector:@selector(titleView)]) {
-                cell.contentView.backgroundColor = cvkMainController.nightThemeScheme.foregroundColor;
-                cell.titleView.textColor = cvkMainController.nightThemeScheme.textColor;
-                cell.bodyView.textColor = cvkMainController.nightThemeScheme.detailTextColor;
-                NIGHT_THEME_DISABLE_CUSTOMISATION(cell.bodyView);
-                NIGHT_THEME_DISABLE_CUSTOMISATION(cell.titleView);
-            } else {
-                for (UIView *subview in cell.contentView.subviews) {
-                    if ([subview isKindOfClass:[UILabel class]]) {
-                        UILabel *label = (UILabel *)subview;
-                        NIGHT_THEME_DISABLE_CUSTOMISATION(label);
-                        
-                        CTFontSymbolicTraits traits = CTFontGetSymbolicTraits((__bridge CTFontRef)label.font);
-                        BOOL isBold = ((traits & kCTFontTraitBold) == kCTFontTraitBold);
-                        label.textColor = isBold ? cvkMainController.nightThemeScheme.textColor : cvkMainController.nightThemeScheme.detailTextColor;
-                    }
-                }
-            }
-        } else if (vaappearance.style == 0){
-            cell.contentView.backgroundColor = [UIColor whiteColor];
-        }
+        setupPeerListCell(tableView, cell, indexPath);
     }
     return cell;
 }
+
+@interface _TtC3vkm22PeerListViewController : UIViewController
+@end
+
+CHDeclareClass(_TtC3vkm22PeerListViewController);
+CHDeclareMethod(2, UITableViewCell*, _TtC3vkm22PeerListViewController, tableView, UITableView*, tableView, cellForRowAtIndexPath, NSIndexPath*, indexPath)
+{
+    _TtC3vkm12PeerListCell *cell = (_TtC3vkm12PeerListCell *)CHSuper(2, _TtC3vkm22PeerListViewController, tableView, tableView, cellForRowAtIndexPath, indexPath);
+    if ([self isKindOfClass:objc_lookUpClass("_TtC3vkm22PeerListViewController")] && [cell isKindOfClass:objc_lookUpClass("vkm.PeerListCell")]) {
+        setupPeerListCell(tableView, cell, indexPath);
+    }
+    return cell;
+}
+
 
 #pragma mark BackgroundView
 CHDeclareClass(BackgroundView);
