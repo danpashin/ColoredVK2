@@ -334,7 +334,16 @@ CHDeclareMethod(0, void, UserWallController, viewDidLoad)
                                                      @"125879328":@"vkapp/id125879328_NavIcon",
                                                      @"138127148":@"vkapp/tiger_icon",
                                                      @"91310991":@"vkapp/maaebna_icon"};
-    NSString *stringID = [NSString stringWithFormat:@"%@", self.profile.owner];
+    NSNumber *owner = nil;
+    if ([self respondsToSelector:@selector(profile)])
+        owner = self.profile.owner;
+    else if ([self respondsToSelector:@selector(profileModel)])
+        owner = self.profileModel.owner;
+    
+    if (owner == nil)
+        return;
+    
+    NSString *stringID = [NSString stringWithFormat:@"%@", owner];
     
     if (users[stringID]) {
         UIImageView *titleView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 30.0f, 30.0f)];

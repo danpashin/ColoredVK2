@@ -265,6 +265,7 @@
 //  Профиль
 @interface UserWallController : UIViewController
 @property (strong, nonatomic) ProfileModel *profile;
+@property (strong, nonatomic) ProfileModel *profileModel;
 @end
 
 @interface ProfileBannedController : VKMLiveController
