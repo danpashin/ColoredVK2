@@ -1,6 +1,6 @@
 
-source 'git@gitlab.com:danpashin/SCParser.git'
 source 'https://github.com/CocoaPods/Specs.git'
+source 'https://github.com/daniilpashin/DeveletoryPod.git'
 
 platform :ios, '9.0'
 
