@@ -389,7 +389,6 @@
 		A56E89E91F31D31C0013BAE3 /* ColoredVKNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = A56E89E21F31D31C0013BAE3 /* ColoredVKNetwork.m */; };
 		A56E89EA1F31D31C0013BAE3 /* ColoredVKNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = A56E89E21F31D31C0013BAE3 /* ColoredVKNetwork.m */; };
 		A56F2C9620F6852F004091D3 /* librocketbootstrap.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A56F2C9520F6852F004091D3 /* librocketbootstrap.tbd */; };
-		A56F2C9820F6854B004091D3 /* librocketbootstrap.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A56F2C9520F6852F004091D3 /* librocketbootstrap.tbd */; };
 		A56F2C9A20F68D8A004091D3 /* AppSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A56F2C9920F68D8A004091D3 /* AppSupport.framework */; };
 		A56F2C9B20F68DC7004091D3 /* AppSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A56F2C9920F68D8A004091D3 /* AppSupport.framework */; };
 		A570305820CD1A3F0036FA8F /* ColoredVKMusicPrefs.h in Headers */ = {isa = PBXBuildFile; fileRef = A570305520CD1A3F0036FA8F /* ColoredVKMusicPrefs.h */; };
@@ -1033,7 +1032,6 @@
 			files = (
 				A56F2C9A20F68D8A004091D3 /* AppSupport.framework in Frameworks */,
 				A52433EC20F623BF000B06D2 /* Foundation.framework in Frameworks */,
-				A56F2C9820F6854B004091D3 /* librocketbootstrap.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2229,7 +2227,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -r \"${PROJECT_DIR}/ColoredVK.bundle/\" \"${BUILT_PRODUCTS_DIR}/ColoredVK2.app/\"";
+			shellScript = "cp -r \"${PROJECT_DIR}/ColoredVK.bundle/\" \"${BUILT_PRODUCTS_DIR}/ColoredVK2.app/\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A5D979B01DAEBB1900607F06 /* Package */ = {

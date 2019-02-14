@@ -54,10 +54,10 @@ makeDEB () {
     [ -e "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle/ColoredVK2" ] || exit 1;
 
     echo "[->] Signing binaries..."
-    codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle"
-    codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/ColoredVK2.dylib"
-    codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/ColoredVK2_SBHelper.dylib"
-    codesign -f -v -s "iPhone Developer: Kirill Travin (27VA5352UX)" "${BUILT_PRODUCTS_DIR}/ColoredVK2_Prefs.dylib"
+    ldid2 -S "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle"
+    ldid2 -S "${BUILT_PRODUCTS_DIR}/ColoredVK2.dylib"
+    ldid2 -S "${BUILT_PRODUCTS_DIR}/ColoredVK2_SBHelper.dylib"
+    ldid2 -S "${BUILT_PRODUCTS_DIR}/ColoredVK2_Prefs.dylib"
 
     echo "[->] Copying resources to temp directory (stage 2)..."
     mkdir -p $FOLDER_TO_PACK/Package/{DEBIAN,Library/{MobileSubstrate/DynamicLibraries,PreferenceBundles,PreferenceLoader/Preferences}}
