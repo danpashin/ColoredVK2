@@ -682,7 +682,7 @@ CVK_CONSTRUCTOR
         cvkMainController.nightThemeScheme = [ColoredVKNightScheme sharedScheme];
         
         ColoredVKApplicationModel *application = [ColoredVKNewInstaller sharedInstaller].application;
-        isNew3XClient = ([application compareAppVersionWithVersion:@"3.0"] >= ColoredVKVersionCompareEqual);
+        isNew3XClient = ([application compareAppVersionWith:@"3.0"] >= ColoredVKVersionCompareEqual);
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
             BOOL prefsExist = [[NSFileManager defaultManager] fileExistsAtPath:CVK_PREFS_PATH];

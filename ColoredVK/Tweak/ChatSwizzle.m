@@ -128,8 +128,10 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
                 self.rptr.tintColor = [UIColor colorWithWhite:1.0f alpha:0.8f];
             
             VAAppearance *vaappearance = [objc_lookUpClass("VAAppearance") appearance];
-            if (vaappearance.style == 0)
-                tableView.separatorColor =  hideMessagesListSeparators ? [UIColor clearColor] : [tableView.separatorColor colorWithAlphaComponent:0.2f];
+            if ([vaappearance respondsToSelector:@selector(style)]) {
+                if (vaappearance.style == 0)
+                    tableView.separatorColor =  hideMessagesListSeparators ? [UIColor clearColor] : [tableView.separatorColor colorWithAlphaComponent:0.2f];
+            }
             
             if ([search isKindOfClass:objc_lookUpClass("VKSearchBar")]) {
                 setupNewSearchBar((VKSearchBar *)search, placeholderColor, messagesListBlurTone, messagesListBlurStyle);
@@ -144,8 +146,10 @@ CHDeclareMethod(1, void, DialogsController, viewWillAppear, BOOL, animated)
                 self.rptr.tintColor = nil;
             
             VAAppearance *vaappearance = [objc_lookUpClass("VAAppearance") appearance];
-            if (vaappearance.style == 0)
-                tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
+            if ([vaappearance respondsToSelector:@selector(style)]) {
+                if (vaappearance.style == 0)
+                    tableView.separatorColor = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
+            }
             
             if ([search isKindOfClass:objc_lookUpClass("VKSearchBar")]) {
                 resetNewSearchBar((VKSearchBar *)search);
@@ -238,8 +242,10 @@ void setupPeerListCell(UITableView *tableView, _TtC3vkm12PeerListCell *cell, NSI
                 }
             }
         }
-    } else if (vaappearance.style == 0) {
-        cell.contentView.backgroundColor = [UIColor whiteColor];
+    } else if ([vaappearance respondsToSelector:@selector(style)]) {
+            if (vaappearance.style == 0) {
+                cell.contentView.backgroundColor = [UIColor whiteColor];
+            }
     }
 }
 
@@ -336,8 +342,10 @@ CHDeclareMethod(1, void, ChatController, viewWillAppear, BOOL, animated)
         [inputViewButton setImage:normalImage forState:UIControlStateNormal];
         inputViewButton.imageView.tintColor = messagesInputTextColor;
         
-        self.inputPanel.overlay.backgroundColor = messagesInputBackColor;
-        self.inputPanel.overlay.layer.borderColor = messagesInputBackColor.CGColor;
+        if ([self.inputPanel respondsToSelector:@selector(overlay)]) {
+            self.inputPanel.overlay.backgroundColor = messagesInputBackColor;
+            self.inputPanel.overlay.layer.borderColor = messagesInputBackColor.CGColor;
+        }
         
         if ([self.inputPanel respondsToSelector:@selector(textPanel)]) {
             self.inputPanel.textPanel.textColor = messagesInputTextColor;
@@ -357,6 +365,21 @@ CHDeclareMethod(1, void, ChatController, viewWillAppear, BOOL, animated)
     collectionViewController.collectionView.backgroundColor = backColor;
 }
 
+@interface _TtC3vkm21HistoryCollectionView : UICollectionView @end
+
+CHDeclareClass(_TtC3vkm21HistoryCollectionView);
+CHDeclareMethod(0, void, _TtC3vkm21HistoryCollectionView, layoutSubviews)
+{
+    CHSuper(0, _TtC3vkm21HistoryCollectionView, layoutSubviews);
+    
+    if (!enabled)
+        return;
+    
+    UIColor *backColor = enableNightTheme ? cvkMainController.nightThemeScheme.foregroundColor : [UIColor clearColor];
+    self.backgroundColor = backColor;
+}
+
+
 
 CHDeclareMethod(0, void, ChatController, viewDidLoad)
 {
@@ -365,7 +388,7 @@ CHDeclareMethod(0, void, ChatController, viewDidLoad)
     if (![self isKindOfClass:objc_lookUpClass("ChatController")] || !enabled)
         return;
     
-    ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.5"];
+    ColoredVKVersionCompare compareResult = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWith:@"3.5"];
     if (hideMessagesNavBarItems) {
         self.navigationItem.titleView.hidden = YES;
         if ([self respondsToSelector:@selector(headerImage)])

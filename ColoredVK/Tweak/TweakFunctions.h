@@ -51,3 +51,8 @@ extern void setupNewAppMenuCell(UITableViewCell *cell);
 
 extern void setupQuickMenuController(void);
 extern UIStatusBarStyle statusBarStyleForController(id self, UIStatusBarStyle defaultStyle);
+
+extern UIColor *cvk_UINavigationBar_setBarTintColor(UINavigationBar *self, SEL _cmd, UIColor *barTintColor);
+extern UIColor *cvk_UINavigationBar_setTintColor(UINavigationBar *self, SEL _cmd, UIColor *tintColor);
+extern NSDictionary *cvk_UINavigationBar_setTitleTextAttributes(UINavigationBar *self, SEL _cmd, NSDictionary *attributes);
+extern void cvk_UINavigationBar_setFrame(UINavigationBar *self, SEL _cmd, CGRect frame);

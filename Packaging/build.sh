@@ -54,10 +54,10 @@ makeDEB () {
     [ -e "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle/ColoredVK2" ] || exit 1;
 
     echo "[->] Signing binaries..."
-    ldid2 -S "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle"
+    ldid2 -S "${BUILT_PRODUCTS_DIR}/ColoredVK2.bundle/ColoredVK2"
     ldid2 -S "${BUILT_PRODUCTS_DIR}/ColoredVK2.dylib"
     ldid2 -S "${BUILT_PRODUCTS_DIR}/ColoredVK2_SBHelper.dylib"
-    ldid2 -S "${BUILT_PRODUCTS_DIR}/ColoredVK2_Prefs.dylib"
+#    ldid2 -S "${BUILT_PRODUCTS_DIR}/ColoredVK2_Prefs.dylib"
 
     echo "[->] Copying resources to temp directory (stage 2)..."
     mkdir -p $FOLDER_TO_PACK/Package/{DEBIAN,Library/{MobileSubstrate/DynamicLibraries,PreferenceBundles,PreferenceLoader/Preferences}}
@@ -65,8 +65,6 @@ makeDEB () {
     case ${CONFIGURATION} in
         "Debug_DEB")
             cp "${PROJECT_DIR}/Packaging/control_debug" "$FOLDER_TO_PACK/Package/DEBIAN/control"
-            cp "${PROJECT_DIR}/Packaging/respring" "$FOLDER_TO_PACK/Package/DEBIAN/postinst"
-            cp "${PROJECT_DIR}/Packaging/respring" "$FOLDER_TO_PACK/Package/DEBIAN/postrm"
             ;;
         "Release_DEB")
             cp "${PROJECT_DIR}/Packaging/control_release" "$FOLDER_TO_PACK/Package/DEBIAN/control"
@@ -79,11 +77,13 @@ makeDEB () {
     cp "${BUILT_PRODUCTS_DIR}/ColoredVK2.dylib"             "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries"
     cp "${BUILT_PRODUCTS_DIR}/ColoredVK2_SBHelper.dylib" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries"
     cp "${BUILT_PRODUCTS_DIR}/ColoredVK2_Prefs.dylib" "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries"
+    
+    find "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries" -iname "*.dylib" -exec ldid2 -S"${PROJECT_DIR}/sign.entitlements" "{}" \;
 
     cp "${PROJECT_DIR}/Packaging/ColoredVK2.plist"              "$FOLDER_TO_PACK/Package/Library/PreferenceLoader/Preferences"
     cp "${PROJECT_DIR}/Packaging/ColoredVK2-dylib.plist"        "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/ColoredVK2.plist"
     cp "${PROJECT_DIR}/Packaging/ColoredVK2_SBHelper.plist"  "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/"
-    cp "${PROJECT_DIR}/Packaging/ColoredVK2_Prefs.plist"  "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/"
+#    cp "${PROJECT_DIR}/Packaging/ColoredVK2_Prefs.plist"  "$FOLDER_TO_PACK/Package/Library/MobileSubstrate/DynamicLibraries/"
 
     cd $FOLDER_TO_PACK
 

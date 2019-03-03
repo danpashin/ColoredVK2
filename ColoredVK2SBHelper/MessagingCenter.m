@@ -7,16 +7,16 @@
 
 #import "MessagingCenter.h"
 
-#define ROCKETBOOTSTRAP_LOAD_DYNAMIC
+//#define ROCKETBOOTSTRAP_LOAD_DYNAMIC
 #import <rocketbootstrap/rocketbootstrap.h>
 #import <objc/runtime.h>
 
 CPDistributedMessagingCenter *cvk_notifyCenter(void)
 {
-    CPDistributedMessagingCenter *center = [CPDistributedMessagingCenter centerNamed:@"ru.danpashin.coloredvk2.notification-center"];
-    
+    static CPDistributedMessagingCenter *center;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+        center = [CPDistributedMessagingCenter centerNamed:@"ru.danpashin.coloredvk2.notification-center"];
         if (center)
             rocketbootstrap_distributedmessagingcenter_apply(center);
     });

@@ -24,6 +24,12 @@
 - (void)adjustScrollViewTopInset:(CGFloat)top;
 @end
 
+@interface ColoredVKAccountController () {
+    UINavigationItem *_navigationItem;
+}
+
+@end
+
 
 @implementation ColoredVKAccountController
 
@@ -99,6 +105,20 @@
     [super viewWillDisappear:animated];
 }
 
+- (UINavigationItem *)navigationItem
+{
+    Class VANavigationItemClass = objc_lookUpClass("VANavigationItem");
+    if (VANavigationItemClass && !_navigationItem) {
+        _navigationItem = [[VANavigationItemClass alloc] init];
+    }
+    
+    if (!_navigationItem) {
+        _navigationItem = super.navigationItem;
+    }
+    
+    return _navigationItem;
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change 
                        context:(void *)context
 {
@@ -130,9 +150,9 @@
 - (void)infoView:(ColoredVKUserInfoView *)infoView didUpdateHeight:(CGFloat)height
 {
     if (ios_available(11.0)) {
-        height *= 1.5;
+        height *= (CGFloat)1.5;
     } else {
-        height += 64.0f;
+        height += (CGFloat)64.0f;
         [self.tableView.parallaxHeader adjustScrollViewTopInset:height];
     }
     

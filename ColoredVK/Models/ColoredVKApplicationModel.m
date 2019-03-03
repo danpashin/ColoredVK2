@@ -52,12 +52,12 @@
 #endif
 }
 
-- (ColoredVKVersionCompare)compareAppVersionWithVersion:(NSString *)second_version
+- (ColoredVKVersionCompare)compareAppVersionWith:(NSString *)second_version
 {
-    return [self compareVersion:self.version withVersion:second_version];
+    return [self compareVersion:self.version with:second_version];
 }
 
-- (ColoredVKVersionCompare)compareVersion:(NSString *)first_version withVersion:(NSString *)second_version
+- (ColoredVKVersionCompare)compareVersion:(NSString *)first_version with:(NSString *)second_version
 {
     if ([first_version isEqualToString:second_version] || 
         CFStringGetLength((__bridge CFStringRef)first_version) == 0 || 

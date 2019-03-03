@@ -18,6 +18,8 @@ extern CPDistributedMessagingCenter *cvk_notifyCenter(void);
 
 + (NSDictionary *)handleMessageNamed:(NSString *)name userInfo:(NSDictionary *)userInfo
 {
+    CVKLog(@"name: %@; userInfo: %@", name, userInfo);
+    
     NSArray *folderContents = nil;
     NSDictionary *itemAttributes = nil;
     NSError *error = nil;

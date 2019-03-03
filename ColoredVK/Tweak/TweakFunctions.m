@@ -605,7 +605,7 @@ void setupTabbar()
             }
         }];
         
-        BOOL animated = ([[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"5.2"] == ColoredVKVersionCompareLess);
+        BOOL animated = ([[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWith:@"5.2"] == ColoredVKVersionCompareLess);
         [NSObject cvk_runBlockOnMainThread:^{
             void (^updateBlock)(void) = ^{
                 tabbar.barTintColor = barTintColor;

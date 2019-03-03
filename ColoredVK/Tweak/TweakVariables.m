@@ -380,7 +380,7 @@ void reloadPrefs(void(^completion)(void))
             settingsExtraBlurTone =     [[UIColor cvk_savedColorForIdentifier:@"settingsExtraBlurTone"  fromPrefs:prefs] colorWithAlphaComponent:0.3f];
             
             
-            ColoredVKVersionCompare client302Compare = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWithVersion:@"3.0.2"];
+            ColoredVKVersionCompare client302Compare = [[ColoredVKNewInstaller sharedInstaller].application compareAppVersionWith:@"3.0.2"];
             if (client302Compare >= ColoredVKVersionCompareEqual) {
                 changeAudioPlayerAppearance = NO;
             }

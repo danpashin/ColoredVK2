@@ -8,6 +8,7 @@
 
 #import "ColoredVKPrefs.h"
 @import SafariServices.SFSafariViewController;
+#import <objc/runtime.h>
 
 #import "ColoredVKNewInstaller.h"
 #import "ColoredVKNightScheme.h"
@@ -15,6 +16,14 @@
 
 #import "ColoredVKColorCell.h"
 #import "ColoredVKImagePrefsCell.h"
+
+@interface ColoredVKPrefs () {
+    UINavigationItem *_navigationItem;
+}
+
+@property (strong, nonatomic) id <UIViewControllerPreviewing> forceTouchContext;
+
+@end
 
 
 @implementation ColoredVKPrefs
@@ -58,12 +67,44 @@
     return [ColoredVKPrefsTableView class];
 }
 
+- (UINavigationItem *)navigationItem
+{
+    Class VANavigationItemClass = objc_lookUpClass("VANavigationItem");
+    if (VANavigationItemClass && !_navigationItem) {
+        _navigationItem = [[VANavigationItemClass alloc] init];
+    }
+    
+    if (!_navigationItem) {
+        _navigationItem = super.navigationItem;
+    }
+    
+    return _navigationItem;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
     self.navigationItem.title = self.specifier ? self.specifier.name : @"";
     [self updateAppearance:NO];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable && !self.forceTouchContext) {
+        self.forceTouchContext = [self registerForPreviewingWithDelegate:self sourceView:self.table];
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
+    if (self.forceTouchContext) {
+        [self unregisterForPreviewingWithContext:self.forceTouchContext];
+    }
 }
 
 #pragma mark -
@@ -77,14 +118,12 @@
 
 - (void)writePrefsWithCompetion:(nullable void(^)(void))completionBlock
 {
-    @synchronized(self) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-            cvk_writePrefs([self.cachedPrefs copy], kPackageNotificationReloadInternalPrefs);
-            
-            if (completionBlock)
-                completionBlock();
-        });
-    }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        cvk_writePrefs([self.cachedPrefs copy], kPackageNotificationReloadInternalPrefs);
+        
+        if (completionBlock)
+            completionBlock();
+    });
 }
 
 - (void)readPrefsWithCompetion:(nullable void(^)(void))completionBlock
@@ -369,9 +408,6 @@
     cell.textLabel.adjustsFontSizeToFitWidth = YES;
     cell.userInteractionEnabled = YES;
     
-    if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable) {
-        [self registerForPreviewingWithDelegate:self sourceView:cell];
-    }
     
     return cell;
 }

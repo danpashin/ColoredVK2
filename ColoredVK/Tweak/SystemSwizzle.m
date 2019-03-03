@@ -57,61 +57,42 @@ CHDeclareMethod(1, void, AppDelegate, applicationDidBecomeActive, UIApplication 
 
 
 #pragma mark UINavigationBar
-CHDeclareClass(UINavigationBar);
-CHDeclareMethod(1, void, UINavigationBar, setBarTintColor, UIColor*, barTintColor)
-{
-    if (enabled) {
-        if (enableNightTheme) {
-            barTintColor = cvkMainController.nightThemeScheme.navbackgroundColor;
-        }
-        else if (enabledBarImage && self.tag != 26) {
-            barTintColor = cvkMainController.navBarImageView ? [UIColor colorWithPatternImage:cvkMainController.navBarImageView.imageView.image] : barBackgroundColor;
-        }
-        else if (enabledBarColor && self.tag != 26) {
-            barTintColor = barBackgroundColor;
-        }
-    }
-    
-    CHSuper(1, UINavigationBar, setBarTintColor, barTintColor);
+#define DEFAULT_NAVIGATION_BAR_SWIZZLE(nav_bar_class)\
+CHDeclareClass(nav_bar_class)\
+CHDeclareMethod(1, void, nav_bar_class, setBarTintColor, UIColor*, barTintColor) {\
+    barTintColor = cvk_UINavigationBar_setBarTintColor(self, _cmd, barTintColor);\
+    CHSuper(1, nav_bar_class, setBarTintColor, barTintColor);\
+}CHDeclareMethod(1, void, nav_bar_class, setTintColor, UIColor*, tintColor){\
+    tintColor = cvk_UINavigationBar_setTintColor(self, _cmd, tintColor);\
+    CHSuper(1, nav_bar_class, setTintColor, tintColor);\
+}CHDeclareMethod(1, void, nav_bar_class, setTitleTextAttributes, NSDictionary*, attributes){\
+    attributes = cvk_UINavigationBar_setTitleTextAttributes(self, _cmd, attributes);\
+    CHSuper(1, nav_bar_class, setTitleTextAttributes, attributes);\
+}CHDeclareMethod(1, void, nav_bar_class, setFrame, CGRect, frame) {\
+    CHSuper(1, nav_bar_class, setFrame, frame);\
+    cvk_UINavigationBar_setFrame(self, _cmd, frame);\
 }
 
-CHDeclareMethod(1, void, UINavigationBar, setTintColor, UIColor*, tintColor)
+@interface VANavigationBar : UINavigationBar @end
+
+@interface VANavigationItem : UINavigationItem
+@property(nonatomic) __weak VANavigationBar *navigationBar;
+@end
+
+DEFAULT_NAVIGATION_BAR_SWIZZLE(UINavigationBar)
+//DEFAULT_NAVIGATION_BAR_SWIZZLE(VANavigationBar)
+
+CHDeclareClass(VANavigationItem);
+CHDeclareMethod(0, UIColor *, VANavigationItem, barTintColor)
 {
-    if (enabled) {
-        self.barTintColor = self.barTintColor;
-        if (enableNightTheme)
-            tintColor = cvkMainController.nightThemeScheme.buttonSelectedColor;
-        else if (enabledBarColor && self.tag != 26)
-            tintColor = barForegroundColor;
-    }
-    
-    CHSuper(1, UINavigationBar, setTintColor, tintColor);
+    UIColor *origColor = CHSuper(0, VANavigationItem, barTintColor);
+    return cvk_UINavigationBar_setBarTintColor(self.navigationBar, _cmd, origColor);
 }
 
-CHDeclareMethod(1, void, UINavigationBar, setTitleTextAttributes, NSDictionary*, attributes)
+CHDeclareMethod(0, UIColor *, VANavigationItem, tintColor)
 {
-    NSMutableDictionary *mutableAttributes = [attributes mutableCopy];
-    if (!mutableAttributes)
-        mutableAttributes = [NSMutableDictionary dictionary];
-    
-    if (enabled) {
-        if (enableNightTheme)
-            mutableAttributes[NSForegroundColorAttributeName] = cvkMainController.nightThemeScheme.textColor;
-        else if (enabledBarColor && self.tag != 26)
-            mutableAttributes[NSForegroundColorAttributeName] = barForegroundColor;
-    }
-    
-    CHSuper(1, UINavigationBar, setTitleTextAttributes, mutableAttributes);
-}
-
-CHDeclareMethod(1, void, UINavigationBar, setFrame, CGRect, frame)
-{
-    CHSuper(1, UINavigationBar, setFrame, frame);
-    
-    if (enabled) {
-        self.tintColor = self.tintColor;
-        self.titleTextAttributes = self.titleTextAttributes;
-    }
+    UIColor *origColor = CHSuper(0, VANavigationItem, tintColor);
+    return cvk_UINavigationBar_setTintColor(self.navigationBar, _cmd, origColor);
 }
 
 CHDeclareClass(UISearchBar);
