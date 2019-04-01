@@ -33,7 +33,7 @@ target 'ColoredVK-NonJail' do
   tweak_pods
 end
 
-target 'ColoredVK2_PrefsBundle' do
+target 'ColoredVK2_Prefs' do
   prefs_pods
 end
 
