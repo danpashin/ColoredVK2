@@ -7,7 +7,7 @@
 
 #import "MessagingCenter.h"
 
-//#define ROCKETBOOTSTRAP_LOAD_DYNAMIC
+#define ROCKETBOOTSTRAP_LOAD_DYNAMIC
 #import <rocketbootstrap/rocketbootstrap.h>
 #import <objc/runtime.h>
 

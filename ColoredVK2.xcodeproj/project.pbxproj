@@ -631,6 +631,7 @@
 		A5D9A6861FACDBD900403A49 /* ColoredVKPrefsSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = A5D9A6821FACDBD900403A49 /* ColoredVKPrefsSelector.h */; };
 		A5D9A6881FACDBD900403A49 /* ColoredVKPrefsSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D9A6831FACDBD900403A49 /* ColoredVKPrefsSelector.m */; };
 		A5D9A6891FACDBD900403A49 /* ColoredVKPrefsSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D9A6831FACDBD900403A49 /* ColoredVKPrefsSelector.m */; };
+		A5E131DF2252970F001FD40C /* NavigationFuncs.m in Sources */ = {isa = PBXBuildFile; fileRef = A56017FE222C161500C3D394 /* NavigationFuncs.m */; };
 		A5E1E08620656CE200709696 /* SystemSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E1E08520656CE200709696 /* SystemSwizzle.m */; };
 		A5E1E0872065713100709696 /* SettingsSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E1E08320656C3700709696 /* SettingsSwizzle.m */; };
 		A5E1E0882065713400709696 /* AudioSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E1E08020656BA300709696 /* AudioSwizzle.m */; };
@@ -1987,11 +1988,12 @@
 			};
 			buildConfigurationList = A5079FAC1CC92157005B9693 /* Build configuration list for PBXProject "ColoredVK2" */;
 			compatibilityVersion = "Xcode 8.0";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				ru,
+				Base,
 			);
 			mainGroup = A5079FA81CC92157005B9693;
 			productRefGroup = A5079FB31CC92157005B9693 /* Products */;
@@ -2336,6 +2338,7 @@
 				A536432C207BD5D000030DD7 /* NSObject+ColoredVK.m in Sources */,
 				A51D53701F769E3B00F6952A /* ColoredVKImageProcessor.m in Sources */,
 				A54D2E0A2021EA44005F95E1 /* ColoredVKPassResetController.m in Sources */,
+				A5E131DF2252970F001FD40C /* NavigationFuncs.m in Sources */,
 				A599A8321EA140F600D747D7 /* ColoredVKGeneralPrefs.m in Sources */,
 				A52F515820FA0C1C00835D37 /* LHProgressHUD.m in Sources */,
 				A52B8F3E1F991A2600898168 /* ColoredVKNightScheme.m in Sources */,
