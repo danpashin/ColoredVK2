@@ -1,6 +1,6 @@
 
 source 'https://github.com/CocoaPods/Specs.git'
-source 'https://github.com/daniilpashin/DeveletoryPod.git'
+source 'https://github.com/danpashin/DeveletoryPod.git'
 
 platform :ios, '9.0'
 
