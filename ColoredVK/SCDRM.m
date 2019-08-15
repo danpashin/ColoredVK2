@@ -20,16 +20,12 @@
 #import <sys/ioctl.h>
 #import <sys/utsname.h>
 
-
-#define kDRMOLDLicencePath [CVK_PREFS_PATH stringByReplacingOccurrencesOfString:@"plist" withString:@"licence"]
-
 NSString *const kDRMServerKey = @"ACBEBB5F70D0883E875DAA6E1C5C59ED";
 NSString *const KDRMErrorDomain = @"ru.danpashin.coloredvk2.drm.error";
 
 BOOL __suspiciousLibsDetected;
 BOOL __deviceIsJailed;
 
-NSString *__cvkKey;
 NSString *__cvkNewKey;
 NSString *__udid;
 NSString *__deviceModel;
@@ -85,16 +81,7 @@ CVK_INLINE NSDictionary *RSADecryptServerData(NSData *rawData, NSURLResponse *re
 
 CVK_INLINE NSDictionary *RSADecryptLicenceData(NSError *__autoreleasing *error)
 {
-    NSData *licenceData = nil;
-    BOOL useNewDECMethod = NO;
-    
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if ([fileManager fileExistsAtPath:kDRMOLDLicencePath]) {
-        licenceData = [NSData dataWithContentsOfFile:kDRMOLDLicencePath];
-    } else if ([fileManager fileExistsAtPath:CVK_LICENSE_PATH]) {
-        useNewDECMethod = YES;
-        licenceData = [NSData dataWithContentsOfFile:CVK_LICENSE_PATH];
-    }
+    NSData *licenceData = [NSData dataWithContentsOfFile:CVK_LICENSE_PATH];
     
     if (!licenceData) {
         if (error)
@@ -103,7 +90,7 @@ CVK_INLINE NSDictionary *RSADecryptLicenceData(NSError *__autoreleasing *error)
         return nil;
     }
     
-    NSData *decryptedLicenceData = _performCryptOperation(kCCDecrypt, licenceData, useNewDECMethod ? __cvkNewKey : __cvkKey);
+    NSData *decryptedLicenceData = _performCryptOperation(kCCDecrypt, licenceData, __cvkNewKey);
     NSDictionary *licence = [NSKeyedUnarchiver unarchiveObjectWithData:decryptedLicenceData];
     
     if (![licence isKindOfClass:[NSDictionary class]] || (licence.allKeys.count == 0)) {
@@ -121,7 +108,6 @@ CVK_INLINE BOOL RSAEncryptAndWriteLicenceData(NSDictionary *licence, NSError *__
     NSData *rawData = [NSKeyedArchiver archivedDataWithRootObject:licence];
     NSData *encryptedLicence = _performCryptOperation(kCCEncrypt, rawData, __cvkNewKey);
     
-    cvk_removeItem(kDRMOLDLicencePath, nil);
     return cvk_writeData(encryptedLicence, CVK_LICENSE_PATH, error);
 }
 
@@ -164,35 +150,6 @@ CVK_INLINE NSData *_performCryptOperation(CCOperation operation, NSData *data, N
     return nil;
 }
 
-CVK_INLINE void generateKey(void)
-{
-    char machineName[256];
-    size_t machineLength = sizeof(machineName);
-    int machineNameID[] = {CTL_HW, HW_MACHINE};
-    sysctl(machineNameID, 2, &machineName, &machineLength, NULL, 0);
-    if (strlen(machineName) < 5) {
-        struct utsname deviceInfo;
-        uname(&deviceInfo);
-        strlcpy(machineName, deviceInfo.machine, sizeof(deviceInfo.machine));
-    }
-    __deviceModel = @(machineName);
-    
-    uint64_t ramSize;
-    size_t len = sizeof(ramSize);
-    int memSizeName[] = {CTL_HW, HW_MEMSIZE};
-    sysctl(memSizeName, 2, &ramSize, &len, NULL, 0);
-    
-    NSString *string = [NSString stringWithFormat:@"d=%@&r=%llu", __deviceModel, ramSize];
-    NSData *keyData = [kDRMServerKey dataUsingEncoding:NSUTF8StringEncoding];
-    NSData *encData = [string dataUsingEncoding:NSUTF8StringEncoding];
-    NSMutableData *signatureData = [NSMutableData dataWithLength:CC_SHA512_DIGEST_LENGTH];
-    CCHmac(kCCHmacAlgSHA512, keyData.bytes, keyData.length, encData.bytes, encData.length, signatureData.mutableBytes);
-    NSString *encryptionKey = [signatureData.description stringByReplacingOccurrencesOfString:@" " withString:@""];
-    encryptionKey = [encryptionKey stringByReplacingOccurrencesOfString:@"<" withString:@""];
-    encryptionKey = [encryptionKey stringByReplacingOccurrencesOfString:@">" withString:@""];
-    __cvkKey = encryptionKey;
-}
-
 CVK_INLINE void generateNewKey(void)
 {
     char machineName[256];
@@ -204,7 +161,7 @@ CVK_INLINE void generateNewKey(void)
         uname(&deviceInfo);
         strlcpy(machineName, deviceInfo.machine, sizeof(deviceInfo.machine));
     }
-//    __deviceModel = @(machineName);
+    __deviceModel = @(machineName);
     
     uint64_t ramSize;
     size_t ramLength = sizeof(ramSize);
@@ -225,62 +182,6 @@ CVK_INLINE void generateNewKey(void)
 }
 
 
-
-
-#ifndef COMPILE_APP
-CVK_INLINE BOOL isDebugged(void)
-{
-    int fd = STDERR_FILENO;
-    
-    if (fcntl(fd, F_GETFD, 0) < 0) {
-        return NO;
-    }
-    
-    char buf[MAXPATHLEN + 1];
-    if (fcntl(fd, F_GETPATH, buf ) >= 0) {
-        if (strcmp(buf, "/dev/null") == 0)
-            return NO;
-        if (strncmp(buf, "/dev/tty", 8) == 0)
-            return YES;
-    }
-    
-    int type;
-    if (ioctl(fd, FIODTYPE, &type) < 0) {
-        return NO;
-    }
-    
-    return type != 2;
-}
-
-CVK_INLINE void checkLibs(void)
-{
-    __suspiciousLibsDetected = NO;
-
-    char pathbuf[MAXPATHLEN + 1];
-    uint32_t bufsize = sizeof(pathbuf);
-    _NSGetExecutablePath(pathbuf, &bufsize);
-    
-    char *executable_name = basename(pathbuf);
-    for(int i = 0; executable_name[i]; i++){
-        executable_name[i] = (char)tolower(executable_name[i]);
-    }
-    
-    int maxLibsCount = (strstr(executable_name, "vkclient") != NULL) ? 2 : 1;
-    int libsCount = 0;
-    for (uint32_t i=0; i<_dyld_image_count(); i++) {
-        const char *imageName = _dyld_get_image_name(i);
-        if (strstr(imageName, "ColoredVK2") != NULL) {
-            libsCount++;
-        } else if (strstr(imageName, "coloredvk2") != NULL) {
-            libsCount++;
-        }
-    }
-    
-    __suspiciousLibsDetected = (libsCount > maxLibsCount);
-
-}
-#endif
-
 CVK_CONSTRUCTOR
 {
     __deviceModel = @"";
@@ -297,32 +198,6 @@ CVK_CONSTRUCTOR
     }
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        generateKey();
         generateNewKey();
     });
-    
-#ifndef COMPILE_APP
-    dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
-    dispatch_async(backgroundQueue, ^{
-        checkLibs();
-    });
-    
-    void (^libsCheckBlock)(void) = ^{
-        dispatch_async(backgroundQueue, ^{
-            if (isDebugged()) {
-                __suspiciousLibsDetected = YES;
-                abort();
-            }
-        });
-    };
-    
-    if (ios_available(10_0)) {
-        NSTimer *scheduledTimer = [NSTimer scheduledTimerWithTimeInterval:5 * 60 repeats:YES block:^(NSTimer * _Nonnull blockTimer) {
-            libsCheckBlock();
-        }];
-        [scheduledTimer fire];
-    } else {
-        libsCheckBlock();
-    }
-#endif
 }

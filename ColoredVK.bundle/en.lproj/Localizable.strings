@@ -46,13 +46,9 @@
 "CHANGE_PASSWORD_TITLE" = "Change password";
 "USERNAME" = "User name";
 
-"YOU_HAVE_FREE_VERSION" = "You are using the free version of the program. Note that the functionality may be limited.";
+"YOU_HAVE_FREE_VERSION" = "To gain access to all menus ColoredVK 2, please, authorize.";
 "PLEASE_WAIT" = "Please, wait...";
 "ENTER_ACCOUNT_FIRST" = "First, log in to your account.";
-"AVAILABLE_IN_FULL_VERSION" = "This function is only available in the full version of the tweak. Want to buy?";
-"THINK_LATER" = "I think a little later";
-"OF_COURSE" = "Of course";
-"PURCHASE" = "Purchase";
 "HIDE" = "Hide";
 
 "CLOSE_APP_FOOTER_TEXT" = "Settings are applied automatically, but for full theme application, it is recommended to restart the client.";

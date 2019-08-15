@@ -3,12 +3,12 @@ PODS:
   - DZNEmptyDataSet (1.8.1)
   - fishhook (0.2)
   - LEColorPicker (1.0.3)
-  - MXParallaxHeader (0.6.1)
+  - MXParallaxHeader (1.0.0)
   - SCParser (1.1)
-  - SDWebImage (4.4.5):
-    - SDWebImage/Core (= 4.4.5)
-  - SDWebImage/Core (4.4.5)
-  - SSZipArchive (2.1.4)
+  - SDWebImage (4.4.7):
+    - SDWebImage/Core (= 4.4.7)
+  - SDWebImage/Core (4.4.7)
+  - SSZipArchive (2.2.2)
 
 DEPENDENCIES:
   - Color-Picker-for-iOS
@@ -29,7 +29,7 @@ SPEC REPOS:
     - MXParallaxHeader
     - SDWebImage
     - SSZipArchive
-  https://github.com/daniilpashin/DeveletoryPod.git:
+  https://github.com/danpashin/DeveletoryPod.git:
     - SCParser
 
 SPEC CHECKSUMS:
@@ -37,11 +37,11 @@ SPEC CHECKSUMS:
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
   fishhook: ea19933abfe8f2f52c55fd8b6e2718467d3ebc89
   LEColorPicker: 34509a9df7a128b1109a5dbe3f25921fc511c03d
-  MXParallaxHeader: 858c403532ed933b381556a81ce333d7065ad182
+  MXParallaxHeader: a95e0af1f485b1b718a6939f583f0dbae6992c41
   SCParser: 47e0f590bba01509927cea9d45a72342ec1f4c9e
-  SDWebImage: ecc03494e973b93b80213649d32175f8d2d17d4d
-  SSZipArchive: 41455d4b8d2b6ab93990820b50dc697c2554a322
+  SDWebImage: c10d14a8883ebd89664f02a422006f66a85c0c5d
+  SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
 
-PODFILE CHECKSUM: 1272d1baa8dbb16fb19168466c00e837c7c0f1df
+PODFILE CHECKSUM: e79e8c4481131b5f5538a9bdf75e187301852435
 
-COCOAPODS: 1.6.0
+COCOAPODS: 1.7.5

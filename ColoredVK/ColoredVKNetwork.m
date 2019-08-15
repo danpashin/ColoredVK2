@@ -87,25 +87,7 @@ static NSString *const kColoredVKNetworkErrorDomain = @"ru.danpashin.coloredvk2.
             dispatch_async(self.parseQueue, ^{
                 NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                 
-//                if (![httpResponse.URL.resourceSpecifier isEqual:request.URL.resourceSpecifier]) {
-//                    if (failure)
-//                        failure(request, httpResponse, [self errorWithCode:1002 description:@"Request URL was changed"]);
-//                    
-//                    return;
-//                }
-                
                 if (!error && data) {
-                    id expectedLengthHeader = httpResponse.allHeaderFields[@"Expected-Length"];
-                    NSInteger expectedContentLength = expectedLengthHeader ? [expectedLengthHeader integerValue] : -1;
-                    if ((expectedContentLength != -1)) {
-                        if ((NSUInteger)expectedContentLength != data.length) {
-                            if (failure)
-                                failure(request, httpResponse, [self errorWithCode:1004 description:@"Response data has wrong size"]);
-                            
-                            return;
-                        }
-                    }
-                    
                     if (success)
                         success(request, httpResponse, data);
                 } else {
