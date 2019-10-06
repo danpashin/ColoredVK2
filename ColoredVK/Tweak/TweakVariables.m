@@ -253,20 +253,23 @@ void reloadPrefs(void(^completion)(void))
             menuSeparatorColor  = [UIColor colorWithRed:215/255.0f green:216/255.0f blue:217/255.0f alpha:1.0f];
         }
         
-        [NSObject cvk_runBlockOnMainThread:^{
-            UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
-            if (statusBar != nil) {
-                if (enabled && enableNightTheme) {
-                    statusBar.foregroundColor = [UIColor whiteColor];
-                } else if (enabled && changeSBColors) {
-                    statusBar.foregroundColor = SBForegroundColor;
-                    statusBar.backgroundColor = SBBackgroundColor;
-                } else {
-                    statusBar.foregroundColor = nil;
-                    statusBar.backgroundColor = nil;
+
+        if (@available(iOS 13.0, *)) {} else {
+            [NSObject cvk_runBlockOnMainThread:^{
+                UIStatusBar *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBar"];
+                if (statusBar != nil) {
+                    if (enabled && enableNightTheme) {
+                        statusBar.foregroundColor = [UIColor whiteColor];
+                    } else if (enabled && changeSBColors) {
+                        statusBar.foregroundColor = SBForegroundColor;
+                        statusBar.backgroundColor = SBBackgroundColor;
+                    } else {
+                        statusBar.foregroundColor = nil;
+                        statusBar.backgroundColor = nil;
+                    }
                 }
-            }
-        }];
+            }];
+        }
         
         if (prefs && premiumEnabled) {
             enableNightTheme = prefs[@"nightThemeType"] ? ([prefs[@"nightThemeType"] integerValue] != -1) : NO;
